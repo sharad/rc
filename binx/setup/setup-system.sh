@@ -87,7 +87,6 @@ function setup_packages()
 
 
     running setup_apache_usermod
-    running setup_res_dir
 }
 
 function setup_quicklisp_package()
@@ -166,37 +165,42 @@ function setup_stumwpm_packages()
 {
     sudo apt -y install autoconf stow texinfo cl-swank
 
-    if [ ! -d $SITEDIR/build/stumpwm ]
+    if [ ! -L /usr/local/bin/stumpwm -o ! -x /usr/local/stow/stumpwm/bin/stumpwm ]
     then
-        # git clone https://sharad@github.com/sharad/stumpwm.git $SITEDIR/build/stumpwm
-        ln -s $SITEDIR/.repos/git/packages/common-lisp/source/sharad/stumpwm $SITEDIR/build/stumpwm
+
+        if [ ! -d $SITEDIR/build/stumpwm ]
+        then
+            # git clone https://sharad@github.com/sharad/stumpwm.git $SITEDIR/build/stumpwm
+            ln -s $SITEDIR/.repos/git/packages/common-lisp/source/sharad/stumpwm $SITEDIR/build/stumpwm
+            if [ -d $SITEDIR/build/stumpwm ]
+            then
+                cd $SITEDIR/build/stumpwm
+                git checkout pa-point-timeout
+                cd -
+            fi
+        fi
+
         if [ -d $SITEDIR/build/stumpwm ]
         then
             cd $SITEDIR/build/stumpwm
             git checkout pa-point-timeout
+            mkdir -p $TMPDIR
+            ./autogen.sh
+            ./configure --prefix=/usr/local/stow/stumpwm --with-lisp=sbcl
+
+            sbcl --eval '(ql:quickload "quickproject")' \
+                 --eval '(quit)'
+
+            make
+            sudo make install
+            cd -
+            cd /usr/local/stow
+            sudo stow stumpwm
             cd -
         fi
+    else
+        echo stumpwm already installed. >&2
     fi
-
-    if [ -d $SITEDIR/build/stumpwm ]
-    then
-        cd $SITEDIR/build/stumpwm
-        git checkout pa-point-timeout
-        mkdir -p $TMPDIR
-        ./autogen.sh
-        ./configure --prefix=/usr/local/stow/stumpwm --with-lisp=sbcl
-
-        sbcl --eval '(ql:quickload "quickproject")' \
-             --eval '(quit)'
-
-        make
-        sudo make install
-        cd -
-        cd /usr/local/stow
-        sudo stow stumpwm
-        cd -
-    fi
-
 }
 
 function setup_stumwpm_contrib_packages()
@@ -265,38 +269,43 @@ function setup_misc()
 
 function setup_conkeror_package()
 {
-
-    if [ ! -d /opt/firefox ]
+    if [ ! -L /usr/local/bin/conkeror -o ! -x /usr/local/stow/conkeror/bin/conkeror ]
     then
-        FOXVER=56.0
-        FOXURL="https://ftp.mozilla.org/pub/firefox/releases/${FOXVER}/linux-x86_64/en-US/firefox-${FOXVER}.tar.bz2"
-        if [ -e /opt/firefox ]
+
+        if [ ! -d /opt/firefox ]
         then
-            sudo rm -rf /opt/firefox
+            FOXVER=56.0
+            FOXURL="https://ftp.mozilla.org/pub/firefox/releases/${FOXVER}/linux-x86_64/en-US/firefox-${FOXVER}.tar.bz2"
+            if [ -e /opt/firefox ]
+            then
+                sudo rm -rf /opt/firefox
+            fi
+            wget -c $FOXURL -O - | sudo tar  xjf - -C /opt
         fi
-        wget -c $FOXURL -O - | sudo tar  xjf - -C /opt
-    fi
 
-    # /opt, and change /usr/local/bin/conkeror file also.
-    sudo apt -y install stow
+        # /opt, and change /usr/local/bin/conkeror file also.
+        sudo apt -y install stow
 
-    if [ ! -d $SITEDIR/build/conkeror ]
-    then
-	      mkdir -p $SITEDIR/build
-	      git clone git://repo.or.cz/conkeror.git $SITEDIR/build/conkeror
+        if [ ! -d $SITEDIR/build/conkeror ]
+        then
+	          mkdir -p $SITEDIR/build
+	          git clone git://repo.or.cz/conkeror.git $SITEDIR/build/conkeror
+        else
+            git -C $SITEDIR/build/conkeror pull --rebase
+        fi
+
+        make PREFIX=/usr/local/stow/conkeror -C $SITEDIR/build/conkeror
+        sudo make PREFIX=/usr/local/stow/conkeror -C $SITEDIR/build/conkeror install
+        cd /usr/local/stow
+        sudo stow conkeror
+        if [ -r /usr/local/bin/conkeror ]
+        then
+            sed -i 's@exec firefox@exec /opt/firefox/firefox@' $(readlink -m /usr/local/bin/conkeror)
+        fi
+        cd -
     else
-        git -C $SITEDIR/build/conkeror pull --rebase
+        echo conkeror already installed. >&2
     fi
-
-    make PREFIX=/usr/local/stow/conkeror -C $SITEDIR/build/conkeror
-    sudo make PREFIX=/usr/local/stow/conkeror -C $SITEDIR/build/conkeror install
-    cd /usr/local/stow
-    sudo stow conkeror
-    if [ -r /usr/local/bin/conkeror ]
-    then
-        sed -i 's@exec firefox@exec /opt/firefox/firefox@' $(readlink -m /usr/local/bin/conkeror)
-    fi
-    cd -
 }
 
 function setup_paradise()
@@ -338,7 +347,7 @@ function setup_dovecot()
         fi
         sudo sh -c "cp $SITEDIR/.repos/git/system/system/ubuntu/etc/dovcot/* /etc/postfix/"
     else
-        echo $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix donot exists. >&2
+        echo $SITEDIR/.repos/git/system/system/ubuntu/etc/dovcot donot exists. >&2
     fi
 }
 
@@ -364,7 +373,7 @@ function setup_offlineimap()
     sudo apt -y install offlineimap
 
     local class=maildata       # later change it to mail data
-    local maildatadir=~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/view.d/$class
+    local maildatadir=~/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/view.d/$class
     local reqfstype=reiserfs
 
     if [ -d $maildatadir ]
@@ -396,23 +405,27 @@ function setup_offlineimap()
 
 function setup_mail_server_client()
 {
-    # local MOUNTPOINT=/srv/volumes/local/res01/reiser01
-    # local VOL_RESIER=vgres01
-    # local LVOL_RESIER=lvreiser01
+    local class=maildata       # later change it to mail data
+    local maildatadir=~/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/view.d/$class
+    local reqfstype=reiserfs
 
-    # if [ "/dev/mapper/${VOL_RESIER}-${LVOL_RESIER}" = "$(df --output=source $MOUNTPOINT | sed -n 2p)" ]
-    # then
-    #     running setup_dovecot
-    #     running setup_postfix
-    #     running setup_offlineimap
-    # else
-    #     echo $MOUNTPOINT is not mounted on "/dev/mapper/${VOL_RESIER}-${LVOL_RESIER}"
-    # fi
-
-    running setup_dovecot
-    running setup_postfix
-    running setup_offlineimap
-
+    if [ -d $maildatadir ]
+    then
+        fstype="$(df --output=fstype ${maildatadir}/ | sed -n 2p)"
+        if [ $reqfstype = "$fstype" ]
+        then
+            running setup_res_dir
+            running setup_dovecot
+            running setup_postfix
+            running setup_offlineimap
+        else
+            echo $maildatadir/ is not mounted on $reqfstype, correct it. >&2
+            return 1
+        fi
+    else
+        echo maildatadir $maildatadir is broken correct, setup link in ~/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/view.d >&2
+        return 1
+    fi
 }
 
 function setup_apache_usermod()
@@ -447,39 +460,65 @@ function setup_res_dir()
 
     local MOUNTPOINT=/srv/volumes/local/res01/reiser01
     local VOL_RESIER=vgres01
-    local LVOL_RESIER=lvreiser01
+    local LVOL_RESIER=lvres01
 
-    sudo mkdir -p /srv
-    if sudo vgs --noheadings -o vg_name $VOL_RESIER
+
+    local class=maildata       # later change it to mail data
+    local maildatadir=~/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/view.d/$class
+    local reqfstype=reiserfs
+
+    if [ -d $maildatadir ]
     then
-       sudo apt -y install reiserfsprogs
-       if ! sudo lvs --noheadings -o vg_name,lv_name $VOL_RESIER/$LVOL_RESIER
-       then
-           echo going to create 1G lv $LVOL_RESIER in vg $VOL_RESIER
-           if sudo lvcreate $VOL_RESIER -n $LVOL_RESIER -L 1G
-           then
-               if sudo mkreiserfs /dev/mapper/$VOL_RESIER-$LVOL_RESIER
-               then
-                   if sudo mkdir -p $MOUNTPOINT
-                   then
-                       if ! grep /dev/mapper/$VOL_RESIER-$LVOL_RESIER /etc/fstab
-                       then
-                           sudo cp /etc/fstab /etc/fstab-ORG
-                           echo copied /etc/fstab into /etc/fstab-ORG
-                           sudo bash -c 'echo  >> /etc/fstab'
-                           sudo bash -c 'echo /dev/mapper/$VOL_RESIER-$LVOL_RESIER $MOUNTPOINT reiserfs defaults,auto 1 1 >> /etc/fstab'
-                           sudo bash -c 'echo  >> /etc/fstab'
-                       fi
-                   fi
-               fi
-           fi
-       else
-           return 1
-       fi                       # if ! sudo lvs --noheadings -o vg_name,lv_name $VOL_RESIER/$LVOL_RESIER
+        fstype="$(df --output=fstype ${maildatadir}/ | sed -n 2p)"
+        if [ $reqfstype != "$fstype" ]
+        then
+
+            sudo mkdir -p /srv
+            if sudo vgs --noheadings -o vg_name $VOL_RESIER
+            then
+                sudo apt -y install reiserfsprogs
+                if ! sudo lvs --noheadings -o vg_name,lv_name $VOL_RESIER/$LVOL_RESIER
+                then
+                    echo going to create 1G lv $LVOL_RESIER in vg $VOL_RESIER
+                    if confirm "Should I create /dev/mapper/$VOL_RESIER-$LVOL_RESIER ?: "
+                    then
+                        if sudo lvcreate $VOL_RESIER -n $LVOL_RESIER -L 1G
+                        then
+                            if sudo mkreiserfs /dev/mapper/$VOL_RESIER-$LVOL_RESIER
+                            then
+                                if sudo mkdir -p $MOUNTPOINT
+                                then
+                                    if ! grep /dev/mapper/$VOL_RESIER-$LVOL_RESIER /etc/fstab
+                                    then
+                                        sudo cp /etc/fstab /etc/fstab-ORG
+                                        echo copied /etc/fstab into /etc/fstab-ORG
+                                        sudo bash -c 'echo  >> /etc/fstab'
+                                        sudo bash -c 'echo /dev/mapper/$VOL_RESIER-$LVOL_RESIER $MOUNTPOINT reiserfs defaults,auto 1 1 >> /etc/fstab'
+                                        sudo bash -c 'echo  >> /etc/fstab'
+                                    fi
+                                fi
+                            fi
+                        fi
+                        echo Stopped the creatin of /dev/mapper/$VOL_RESIER-$LVOL_RESIER >&2
+                    fi
+                else
+                    return 1
+                fi                       # if ! sudo lvs --noheadings -o vg_name,lv_name $VOL_RESIER/$LVOL_RESIER
+            else
+                echo Warning: $VOL_RESIER volume group do not exists. >&2
+                return 1
+            fi                          # if sudo vgs --noheadings -o vg_name $VOL_RESIER
+
+        else
+            echo volume /dev/mapper/$VOL_RESIER-$LVOL_RESIER already present. >&2
+            return 0
+        fi
     else
-        echo Warning: $VOL_RESIER volume group do not exists. >&2
+        echo maildatadir $maildatadir is broken correct, setup link in ~/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/view.d >&2
         return 1
-    fi                          # if sudo vgs --noheadings -o vg_name $VOL_RESIER
+    fi
+
+
 }
 
 function process_arg() {
@@ -508,6 +547,20 @@ function process_arg() {
         esac
         shift
     done
+}
+
+function confirm()
+{
+    # call with a prompt string or use a default
+    read -r -p "${1:-Are you sure? [y/N]} " response
+    case "$response" in
+        [yY][eE][sS]|[yY])
+            true
+            ;;
+        *)
+            false
+            ;;
+    esac
 }
 
 function running()

@@ -1859,7 +1859,19 @@ function setup_dirs()
         # TODO
         # do it for all basename /srv/volumes/*
         # below /srv/volumes/ for all mounted paths
-        running setup_deps_dirs "local"
+
+
+        # ~% df --output=target | grep  '^/srv/volumes'  
+        # /srv/volumes/local/vg01/lv01
+        # /srv/volumes/local/vgres01/lvres01
+
+        for mntpnt in $(df --output=target | grep  '^/srv/volumes/' | cut -d/ -f4- | rev | cut -d/ -f3-  | rev)
+        do
+            running setup_deps_dirs "$mntpnt"
+        done
+
+        # running setup_deps_dirs "local"
+
         # running setup_deps_dirs "externdisk/mywd5hgb"
         # running setup_deps_dirs "network/office"
         # running setup_deps_dirs "network/cloud/droplet"
