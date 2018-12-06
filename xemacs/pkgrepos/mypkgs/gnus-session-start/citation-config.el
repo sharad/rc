@@ -94,31 +94,35 @@
                   (remove-if (lambda (s)
                                (string-match "^\s*$" s))
                              (split-string (message-fetch-field "to") "[,;]") )))
-                from-address))
-           (my-bbdb-record (bbdb-search-simple (cdr parsed-address) (car parsed-address)))
-           (start-pos (point))
-           following-text
-           (following-newlines 2)
-           (overlay)
-           (anrede (when my-bbdb-record (bbdb-record-getprop my-bbdb-record 'anrede)))
-           (first-name (funcall 'get-proper-citation-name (car parsed-address) (cdr parsed-address)))
-           (name-to-use
-            (or (if my-bbdb-record
-                    (bbdb-record-name my-bbdb-record)
-                    first-name)
-                "Sharad Pratap")))
-      (progn
-        (if anrede
-            (insert (format "%s\n\n" anrede))
-            (funcall xsteve-message-citation-function first-name))
-        (if following-text (insert following-text))
-        (when following-newlines
-          (dotimes (v following-newlines)
-            (insert "\n"))
-          (forward-line (- following-newlines 1))))
-      (unless (eq start-pos (point))
-        (setq overlay (make-overlay start-pos (point)))
-        (overlay-put overlay 'xsteve-message-citation nil)))))
+              from-address)))
+      (if (functionp 'bbdb-search-simple)
+          (let ((my-bbdb-record (bbdb-search-simple (cdr parsed-address) (car parsed-address)))
+                (start-pos (point))
+                following-text
+                (following-newlines 2)
+                (overlay)
+                (anrede (when my-bbdb-record (bbdb-record-getprop my-bbdb-record 'anrede)))
+                (first-name (funcall 'get-proper-citation-name (car parsed-address) (cdr parsed-address)))
+                (name-to-use
+                 (or (if my-bbdb-record
+                         (bbdb-record-name my-bbdb-record)
+                       first-name)
+                     "Sharad Pratap")))
+            (progn
+              (if anrede
+                  (insert (format "%s\n\n" anrede))
+                (funcall xsteve-message-citation-function first-name))
+              (if following-text (insert following-text))
+              (when following-newlines
+                (dotimes (v following-newlines)
+                  (insert "\n"))
+                (forward-line (- following-newlines 1))))
+            (unless (eq start-pos (point))
+              (setq overlay (make-overlay start-pos (point)))
+              (overlay-put overlay 'xsteve-message-citation nil)))
+        (message "bbdb3 not have #'bbdb-search-simple use #'bbdb-search-mail from bbdb3 for name %s address %s"
+                 (cdr parsed-address)
+                 (car parsed-address))))))
 
 (defun xsteve-message-citation-hallo (name)
   (insert "Hallo " name "!"))

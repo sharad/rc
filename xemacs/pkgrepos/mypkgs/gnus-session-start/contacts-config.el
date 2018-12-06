@@ -30,21 +30,25 @@
   (setq bbdb-file (auto-config-file "bbdb/bbdb"))
 
   (defun bbdb/gnus-pop-up-bbdb-buffer-for-some-time ()
-    (bbdb/gnus-pop-up-bbdb-buffer)
-    ;; (with-selected-window (get-buffer-window gnus-article-buffer)
-    ;;   (gnus-summary-goto-subject (cdr gnus-article-current)))
-    (let ((win-bbdb (get-buffer-window "*BBDB*")))
-      (when win-bbdb
-        ;; (run-at-time "4 sec" nil #'delete-window w))))
-        (run-at-time "4 sec" nil #'(lambda (w)
-                                     (if (and
-                                          (windowp w)
-                                          (window-valid-p w))
-                                         ;; (old-delete-window w)
-                                         (progn
-                                           (delete-window w)
-                                           (message "deleted %s window" w))))
-                     win-bbdb))))
+    (if (functionp 'bbdb/gnus-pop-up-bbdb-buffer)
+        (progn
+          (bbdb/gnus-pop-up-bbdb-buffer)
+          ;; (with-selected-window (get-buffer-window gnus-article-buffer)
+          ;;   (gnus-summary-goto-subject (cdr gnus-article-current)))
+          (let ((win-bbdb (get-buffer-window "*BBDB*")))
+            (when win-bbdb
+              ;; (run-at-time "4 sec" nil #'delete-window w))))
+              (run-at-time "4 sec" nil #'(lambda (w)
+                                           (if (and
+                                                (windowp w)
+                                                (window-valid-p w))
+                                               ;; (old-delete-window w)
+                                               (progn
+                                                 (delete-window w)
+                                                 (message "deleted %s window" w))))
+                           win-bbdb))))
+      (message "#'bbdb/gnus-pop-up-bbdb-buffer is not present in bbdb3 use some other function for popup.")))
+
   (define-key gnus-summary-mode-map (kbd "s-c s-v")  'bbdb/gnus-pop-up-bbdb-buffer)
 
   (setq bbdb-use-pop-up t

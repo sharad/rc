@@ -472,6 +472,12 @@ function setup-_password()
     echo ~/.ldappass /etc/postfix/sasl_passwd etc
 }
 
+function setup_notmuch()
+{
+    # notmuch setup
+    echo M4 TODO ~/.setup/notmuch-config.m4
+}
+
 function setup_mail_server_client()
 {
     local class=maildata       # later change it to mail data
