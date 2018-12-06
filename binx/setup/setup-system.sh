@@ -416,6 +416,11 @@ function setup_postfix()
     cd -
 }
 
+function setup_gnomekeyring_imaps_smtps()
+{
+    echo TODO setup_gnomekeyring_imaps_smtps for imaps and smtps
+}
+
 function setup_offlineimap()
 {
     sudo apt -y install offlineimap
@@ -436,6 +441,9 @@ function setup_offlineimap()
                echo  make sure to copy correct ~/.offlineimaprc
 
                echo and copy ~/.emacs.d/autoconfig/gnus/newsrc.eld from some other machine.
+
+               running setup_gnomekeyring_imaps_smtps
+
            else
                echo ~/.maildir ~/.offlineimap are not created. >&2
                echo chek them by >&2
@@ -453,6 +461,7 @@ function setup_offlineimap()
         echo maildatadir $maildatadir is broken correct, setup link in ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/view.d >&2
         return 1
     fi
+
 }
 
 function setup_mail_notification()
