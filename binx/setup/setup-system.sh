@@ -455,6 +455,11 @@ function setup_offlineimap()
     fi
 }
 
+function setup_mail_notification()
+{
+    echo todo implement setup_mail_notification >&2
+}
+
 function setup_mail_server_client()
 {
     local class=maildata       # later change it to mail data
@@ -470,6 +475,7 @@ function setup_mail_server_client()
             running setup_dovecot
             running setup_postfix
             running setup_offlineimap
+            running setup_mail_notification
         else
             echo $maildatadir/ is not mounted on $reqfstype, correct it. >&2
             return 1
