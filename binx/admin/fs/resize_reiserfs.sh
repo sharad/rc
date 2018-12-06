@@ -26,7 +26,7 @@ then
     echo sleep 10s
     sleep 10s
     sudo reiserfsck --check $LVPART
-    sudo lvresize -L +2G $LVPART
+    sudo lvresize -L +1G $LVPART
     sudo resize_reiserfs $LVPART
 else
     sudo lsod $LVPART
