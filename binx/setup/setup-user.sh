@@ -104,7 +104,7 @@ function main()
 
     cd ~/
 
-    # running setup_apt_packages
+    running setup_apt_packages
 
     running setup_ecrypt_private
 
@@ -117,7 +117,7 @@ function main()
     fi
 
     # will set the ~/.setup also
-    # running setup_git_repos
+    running setup_git_repos
 
     running setup_config_dirs
 
@@ -137,7 +137,9 @@ function main()
 
     running setup_mail
 
-    running setup_ldapserch
+    running setup_ldapsearch
+
+    running setup-_password
 
     running setup_crontab
 
@@ -384,49 +386,60 @@ function setup_apt_packages()
 
     sudo apt update
 
-    for pkg in \
-        "DEB_PKG_FIRST_INTERCATIVE_QA" \
-        "DEB_PKG_FIRST_INSTALL" \
-        "DEB_PKG_NECESSARY" \
-				"DEB_PKGS1" \
-				"DEB_PKGS2" \
-				"DEB_EXTRA_PKG1" \
-				"DEB_EXTRA_PKG2" \
-				"DEB_EXTRA_PKG3" \
-				"DEB_EXTRA_SEC_PKG1" \
-				"DEB_DEV_PKG1" \
-				"DEB_EXTRA_PKG_FONTS" \
-				"DEB_EXTRA_PKG_LISP" \
-				"DEB_EXTRA_PKG_COMMUNICATION" \
-				"DEB_EXTRA_PKG_VIRTUAL" \
-				"DEB_EXTRA_PKG3_UTILS" \
-				"DEB_PKG_APPEARANCE" \
-				"DEB_PKG_VIRTURALMACHINE" \
-				"DEB_PKG_SYSTEM" \
-				"DEB_PKG_DEV" \
-				"DEB_PKG_EMACS" \
-        "DEB_PKG_MESSAGING" \
-				"DEB_PKG_TOOL_TEST" \
-				"DEB_SYS_PKG1" \
-				"DEB_PKGS_BACKUP" \
-				"DEB_PKG_GAME" \
-				"DEB_PKG_NECESSARY_MORE1" \
-				"DEB_PKG_NECESSARY_MORE2" \
-				"DEB_PKG_NECESSARY_MORE3" \
-				"DEB_PKG_NECESSARY_MORE4" \
-        "DEB_SYS_MAIL" \
-        "DEB_DEV_GTD" \
-        "DEB_PKG_LEARNING" \
-        "DEB_PKG_TOOL_GUI" \
-        "DEB_PKG_XWM" \
-        "DEB_PKG_XML" \
-        "DEB_PKG_UTILS" \
-        "DEB_PKG_MEDIA" \
-        "DEB_PKG_WINDOW" \
-        "DEB_PKG1_NET" \
-        "DEB_PKG_DOC"  \
-        "DEB_PKG_DOC_PUB"
+
+    locl deb_pkg_lists=(
+        DEB_PKG_FIRST_INTERCATIVE_QA
+        DEB_PKG_FIRST_INSTALL
+        DEB_PKG_EMACS
+        DEB_PKG_MESSAGING
+        DEB_PKG_NECESSARY_MORE1
+        # TODO BUG set zsh as login shell
+        DEB_PKG_NECESSARY_MORE2
+        ##  hello-traditional
+        hDEB_PKG_NECESSARY_MORE3
+        DEB_PKG_NECESSARY_MORE4
+        DEB_PKG_GAME
+        DEB_PKGS_BACKUP
+        DEB_PKG_NECESSARY
+        DEB_PKG_WITH_ERROR
+        DEB_PKG_APPEARANCE
+        DEB_PKG_VIRTURALMACHINE
+        DEB_PKGS1
+
+        DEB_PKGS2
+        DEB_EXTRA_PKG1
+        DEB_EXTRA_PKG_COMMUNICATION
+        DEB_EXTRA_PKG_VIRTUAL
+        DEB_EXTRA_PKG_FONTS
+        DEB_EXTRA_PKG_LISP
+        DEB_EXTRA_PKG2
+        DEB_EXTRA_PKG3
+        DEB_EXTRA_SEC_PKG1
+        DEB_DEV_PKG1
+        DEB_EXTRA_PKG3_UTILS
+        # https://www.cyberciti.biz/faq/removing-pass
+        DEB_PKG_DEV
+        DEB_PKG_SYSTEM
+        DEB_PKG_TOOL_TEST
+        DEB_SYS_PKG1
+        # https://linuxconfig.org/fetch-stock-quotes-
+        DEB_SYS_MAIL
+        DEB_DEV_GTD
+        DEB_PKG_LEARNING
+        DEB_PKG_TOOL_GUI
+        DEB_PKG_XWM
+        DEB_PKG_XML
+        DEB_PKG_UTILS
+        DEB_PKG_MEDIA
+        DEB_PKG_WINDOW
+        DEB_PKG1_NET
+        DEB_PKG_DOC
+        DEB_PKG_DOC_PUB
+    )
+
+    for pkg in ${deb_pkg_lists[*]}
     do
+        echo Intalling pkg list = $pkg
         if ! eval sudo apt -y install \$$pkg
         then
             for p in $(eval print \$$pkg)
@@ -797,10 +810,16 @@ function setup_mail()
     fi
 }
 
-function setup_ldapserch()
+function setup_ldapsearch()
 {
-    # TODO?
-    :
+    echo todo implement setup_ldapsearch >&2
+
+    echo M4 TODO .ldapsearh
+}
+
+function setup-_password()
+{
+    echo ~/.ldappass /etc/postfix/sasl_passwd etc
 }
 
 function setup_crontab()

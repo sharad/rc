@@ -460,6 +460,18 @@ function setup_mail_notification()
     echo todo implement setup_mail_notification >&2
 }
 
+function setup_ldapsearch()
+{
+    echo todo implement setup_ldapsearch >&2
+
+    echo M4 TODO .ldapsearh
+}
+
+function setup-_password()
+{
+    echo ~/.ldappass /etc/postfix/sasl_passwd etc
+}
+
 function setup_mail_server_client()
 {
     local class=maildata       # later change it to mail data
@@ -476,6 +488,11 @@ function setup_mail_server_client()
             running setup_postfix
             running setup_offlineimap
             running setup_mail_notification
+            running setup_ldapsearch
+            running setup_password
+
+            echo also see if $HOST required to be added to office-host-names variable in ~/.fa/osetup/info.d/common/elisp/common-info.el >&2
+
         else
             echo $maildatadir/ is not mounted on $reqfstype, correct it. >&2
             return 1
