@@ -51,8 +51,8 @@
     (trampver :location local)
     (tramp-sh :location local)
     ido
-    password-cache
-    )
+    password-cache)
+
   "The list of Lisp packages required by the lotus-remote layer.
 
 Each entry is either:
@@ -87,7 +87,7 @@ Each entry is either:
       :config
       (progn
 
-        (progn
+        (progn)
           ;; for editing remote files
           ;;(require 'tramp) ;stop error caused by no availability of tramp.
           ;; check C-h f require
@@ -96,7 +96,7 @@ Each entry is either:
           ;; set shell based on
           ;; "TERM=dumb" "EMACS=t" "INSIDE_EMACS='23.4.1,tramp:2.1.21-pre'"
           ;;
-          )
+
 
         (progn ;; "All Tramp"
 
@@ -129,27 +129,27 @@ Each entry is either:
         (progn
           (autoload 'password-in-cache-p "password-cache")
           (use-package password-cache
-              :defer t
-              ))
+              :defer t))
+
         (progn
           (setq tramp-persistency-file-name (auto-config-file "tramp/persistency"))
           (use-package startup-hooks
               :defer t
               :config
               (progn
-                (progn
+                (progn)))
           (add-to-disable-startup-interrupting-feature-hook
                     ;;will not be called.
                     '(lambda () ;very necessary.
-                      (setq tramp-mode nil ido-mode nil)))))))
+                      (setq tramp-mode nil ido-mode nil))))
         (progn
           (with-eval-after-load "ido"
             (setq
              ;; ido-enable-tramp-completion t ;this guy was missing
              ;; ido-enable-tramp-completion nil ;this guy was missing
              ido-enable-tramp-completion t ;Very much require to complete tramp user /server names.
-             ido-record-ftp-work-directories t ;must be true for tramp partial match, very useful.
-             )
+             ido-record-ftp-work-directories t) ;must be true for tramp partial match, very useful.
+
             (progn ;; "ido tramp problem"
               (when nil
                 (setq ido-dir-file-cache (remove-if-not
@@ -180,13 +180,13 @@ Each entry is either:
             (use-package tramp-gvfs
                 :defer t
                 :config
-                (progn
+                (progn))))
                   ;; need it.
                   ;; http://comments.gmane.org/gmane.emacs.tramp/6704
                   ;; http://www.gnu.org/software/emacs/manual/html_node/tramp/GVFS-based-methods.html
-                  ))))
-        (progn
-          )
+
+        (progn)
+
         (progn
           (defun find-alternative-file-with-sudo () ; put in keybinding.el
             (interactive)
@@ -208,16 +208,16 @@ Each entry is either:
 
           (defun sudo-edit-current-file ()
             (interactive)
-            (find-alternate-file (concat "/sudo:root@localhost:" (buffer-file-name (current-buffer)))))
+            (find-alternate-file (concat "/sudo:root@localhost:" (buffer-file-name (current-buffer))))))
 
           ;; (global-set-key (kbd "C-c C-r") 'sudo-edit-current-file)
-          )
-        (progn
-          )
-        (progn
-          )
-        (progn
-          )
+
+        (progn)
+
+        (progn)
+
+        (progn)
+
         (progn
           (use-package desktop
               :demand t
@@ -266,9 +266,9 @@ Each entry is either:
               (after tramp-copy-beep-advice activate)
             " make tramp beep after copying a file."
             (interactive)
-            (beep))
+            (beep)))
           ;; }}
-          )
+
 
 
 
@@ -330,10 +330,10 @@ Each entry is either:
                                  `((regexp-quote ,hostname) nil nil)))
 
                   (defun tramp-reset-no-proxy (hostname)
-                    (interactive "shostname: ")
+                    (interactive "shostname: "))
                     ;; (add-to-list 'tramp-default-proxies-alist
                     ;;              `((regexp-quote ,hostname) nil nil))
-                    )
+
 
                   (progn
                     (use-package mime-def
@@ -379,13 +379,13 @@ Each entry is either:
 
                               (when nil ;; e.g.
                                 (add-to-list 'tramp-default-proxies-alist
-                                             '("\\`method" "\\`host\\'" user) t))))))
+                                             '("\\`method" "\\`host\\'" user) t)))))))))))
 
 
-                    ))
 
 
-                )))
+
+
 
 
 
@@ -414,10 +414,10 @@ Each entry is either:
             (cond ((string-match getpass-ssh-add-prompt input)
                    (getpass-ssh-send-passwd process input))
                   ((string-match getpass-ssh-add-invalid-prompt input)
-                   (getpass-ssh-send-passwd process input))
+                   (getpass-ssh-send-passwd process input))))
                   ;; (t (with-current-buffer (get-buffer-create ssh-agent-buffer)
                   ;;      (insert input)))
-                  ))
+
 
           (defun getpass-ssh-add (&optional cmd)
             "run ssh-add"
@@ -437,7 +437,7 @@ Each entry is either:
 
         (progn
           (defun ssh-agent-add-key ()
-            (require 'misc-config)
+            ;; (require 'misc-config) ;; -- commenting it.
             (provide 'host-info)
             ;; (message "Calling update-ssh-agent > ssh-agent-add-key")
             ;; (message "tramp-mode %s" tramp-mode)
@@ -516,15 +516,15 @@ Each entry is either:
             (when nil
               (ad-remove-advice 'tramp-file-name-handler 'before 'ad-update-ssh-agent-env)
               (ad-update 'tramp-file-name-handler)
-              (ad-activate 'tramp-file-name-handler))
+              (ad-activate 'tramp-file-name-handler))))
 
             ;; run, do not run it, it trouble at start-up time.
             ;; (update-ssh-agent)
-            ))
 
 
-        (progn
-          )
+
+        (progn)
+
         (progn
           ;; (testing
           (when nil
@@ -550,10 +550,10 @@ Each entry is either:
                 (goto-char (point-min))
 
                 (while (re-search-forward "\n\\$ " nil t)
-                  (replace-match "\n$\n" nil nil))
+                  (replace-match "\n$\n" nil nil)))))
 
                 ;;(replace-regexp "\n\\$ " "\n$\n")
-                )))
+
 
           (add-hook 'grep-mode-hook #'tramp-output-wash)
           (add-hook 'cscope-list-entry-hook #'tramp-output-wash))
@@ -654,9 +654,9 @@ Each entry is either:
                 (tramp-get-remote-stat vec)
                 (if (eq id-format 'integer) "%u" "\"%U\"")
                 (if (eq id-format 'integer) "%g" "\"%G\""))))))
-        (progn
-          )
-        (progn
+        (progn)
+
+        (progn)
 
           ;;{{ from: http://stackoverflow.com/a/4371566
           ;; throwing error.
@@ -668,8 +668,8 @@ Each entry is either:
           ;;       (keyboard-quit))))
           ;; (add-hook 'find-file-hook 'tramp-find-file-timeout)
           ;;}}
-          )
-        (progn
+
+        (progn)
           ;; (setq vc-ignore-dir-regexp "\\`\\(?:[\\/][\\/][^\\/]+[\\/]\\|/\\(?:net\\|afs\\|\\.\\.\\.\\)/\\)\\'\\|etc")
 
 
@@ -678,7 +678,7 @@ Each entry is either:
           ;; (P4 RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
 
 
-          )
+
         (progn ;; "tramp"
           ;; https://idlebox.net/2011/apidocs/emacs-23.3.zip/tramp/tramp_5.html#SEC31
 
