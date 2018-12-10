@@ -401,7 +401,7 @@ function setup_apt_packages()
         DEB_PKG_GAME
         DEB_PKGS_BACKUP
         DEB_PKG_NECESSARY
-        DEB_PKG_WITH_ERROR
+        # DEB_PKG_WITH_ERROR
         DEB_PKG_APPEARANCE
         DEB_PKG_VIRTURALMACHINE
         DEB_PKGS1
@@ -815,6 +815,12 @@ function setup_ldapsearch()
     echo todo implement setup_ldapsearch >&2
 
     echo M4 TODO .ldapsearh
+}
+
+function setup_gnomekeyring()
+{
+    echo secret-tool store --label offlineimap server localhost user "$USER" protocol imap
+    echo secret-tool store --label offlineimap server '$IMAP_SERVER' user '$DOMAIN\$USER' protocol imap
 }
 
 function setup-_password()
