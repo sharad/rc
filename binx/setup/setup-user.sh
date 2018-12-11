@@ -1974,6 +1974,9 @@ function setup_sourcecode_pro_font()
 function setup_apache_usermod()
 {
     local SYSTEM_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/system/system
+
+    sudo a2enmod userdir
+
     if [ -r /etc/apache2/apache2.conf ]
     then
         if [ ! -d /usr/local/etc/apache ]

@@ -520,6 +520,9 @@ function setup_mail_server_client()
 
 function setup_apache_usermod()
 {
+
+    sudo a2enmod userdir
+
     if [ -r /etc/apache2/apache2.conf ]
     then
         if [ ! -d /usr/local/etc/apache ]

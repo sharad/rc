@@ -224,21 +224,14 @@ fi
 # fp ath=( $fp ath ~/.zshall/functions ~/.zshall/completion )
 # fp ath=( $fp ath /usr/local/etc/zsh/completion )
 
-
-
-# {{{ *Zstyle*
-[ -r ~/.zshall/zstyle ] && source ~/.zshall/zstyle
-# }}}
-
 # zsh specific options
 setopt appendhistory autocd beep extendedglob nomatch notify
 bindkey -e
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
 if [ `uname -s` != "SunOS" ] ; then
-    zstyle :compinstall filename '/home/s/hell//.zshrc'
+    zstyle :compinstall filename '/home/s/hell/.zshrc'
 fi
-
 # End of lines added by compinstall
 
 # {{{ *Aliases*
@@ -253,6 +246,10 @@ fi
 # {{{ *Variables for Zsh*
 [ -r ~/.zshall/prompt ] &&
 source ~/.zshall/prompt # set prompt.
+
+# {{{ *Zstyle*
+[ -r ~/.zshall/zstyle ] && source ~/.zshall/zstyle
+# }}}
 
 # Lines configured by zsh-newuser-install
 CVSROOT=$LOCALCVSROOT
@@ -333,7 +330,6 @@ export TDL_DATABASE=~/.tdldb
 if [ -r ~/.LESS_TERMCAP ] ; then
     source ~/.LESS_TERMCAP
 fi
-
 
 # take mailbox from ~/.mutt/muttrc
 [ -r ~/.mutt/muttrc ] &&
@@ -416,7 +412,6 @@ chpwd() {
 
 # }}}
 
-
 [ -r ~/.zshall/editing ] && source ~/.zshall/editing
 
 [ -r ~/.zshall/terminal ] && source ~/.zshall/terminal
@@ -436,8 +431,6 @@ chpwd() {
 ###################
 [ -r ~/.zshall/tramp ] && source ~/.zshall/tramp
 # }}}
-
-
 
 # {{{ load all ~/.zshall/rc.d
 foreach f ( ~/.zshall/rc.d/*.zsh ) {
