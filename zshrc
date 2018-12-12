@@ -374,13 +374,17 @@ setcursor		# producing empty line.
 ##
 ## I modified the xterm version because it was too plain.
 chpwd() {
-  [[ -t 1 ]] || return
-  case $TERM in
-    sun-cmd) print -Pn "\e]l%~\e\\"
-      ;;
-    *xterm*|rxvt|(dt|k|E)term) print -Pn "\e]2;% [zsh $ZSH_VERSION] %n@%m: %~\a"
-      ;;
-  esac
+    if [[ -t 1 ]]
+    then
+        case $TERM in
+            sun-cmd)
+                print -Pn "\e]l%~\e\\"
+                ;;
+            *xterm*|rxvt|(dt|k|E)term)
+                print -Pn "\e]2;% [zsh $ZSH_VERSION] %n@%m: %~\a"
+                ;;
+        esac
+    fi
 }
 
 # }}}
