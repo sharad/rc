@@ -47,6 +47,7 @@
     paren
     corral
     (autorevert :location local)
+    (simple :location local)
     )
   "The list of Lisp packages required by the lotus-editing layer.
 
@@ -241,11 +242,19 @@ Each entry is either:
          auto-revert-notify-exclude-dir-regexp (auto-revert-notify-exclude-dir-regexp-add-regex
                                                 (concat "\\|" "^" (expand-file-name "." "~") "/$"))))))
 
+(defun lotus-editing/init-simple ()
+  (use-package simple
+    :defer t
+    :config
+    (progn
+      (progn
+        (setq kill-whole-line t)))))
+
 (defun lotus-editing/init-PACKAGE ()
   (use-package PACKAGE
-      :defer t
-      :config
-      (progn
-        )))
+    :defer t
+    :config
+    (progn
+      )))
 
 ;;; packages.el ends here

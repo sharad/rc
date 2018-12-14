@@ -131,160 +131,161 @@ Each entry is either:
 
   ;; END: Editing
   (use-package cperl-mode
-               :defer t
-               :config
-               (progn
-                 (defalias 'perl-mode 'cperl-mode)
-                 (defun pde-perl-mode-hook ()
-                   (abbrev-mode t)
-                   (add-to-list 'cperl-style-alist
-                                '("PDE"
-                                  (cperl-auto-newline                         . t)
-                                  (cperl-brace-offset                         . 0)
-                                  (cperl-close-paren-offset                   . -4)
-                                  (cperl-continued-brace-offset               . 0)
-                                  (cperl-continued-statement-offset           . 4)
-                                  (cperl-extra-newline-before-brace           . nil)
-                                  (cperl-extra-newline-before-brace-multiline . nil)
-                                  (cperl-indent-level                         . 4)
-                                  (cperl-indent-parens-as-block               . t)
-                                  (cperl-label-offset                         . -4)
-                                  (cperl-merge-trailing-else                  . t)
-                                  (cperl-tab-always-indent                    . t)))
-                   (cperl-set-style "PDE")
-                   ;; chmod when saving
-                   (when (and
-                          buffer-file-name
-                          (not (string-match "\\.\\(pm\\|pod\\)$" (buffer-file-name))))
-                     (add-hook 'after-save-hook 'executable-chmod nil t))
-                   (set (make-local-variable 'compile-dwim-check-tools) nil)
+    :defer t
+    :config
+    (progn
+      (defalias 'perl-mode 'cperl-mode)
+      (defun pde-perl-mode-hook ()
+        (abbrev-mode t)
+        (add-to-list 'cperl-style-alist
+                     '("PDE"
+                       ;; (cperl-auto-newline                         . t)
+                       (cperl-auto-newline                         . nil)
+                       (cperl-brace-offset                         . 0)
+                       (cperl-close-paren-offset                   . -4)
+                       (cperl-continued-brace-offset               . 0)
+                       (cperl-continued-statement-offset           . 4)
+                       (cperl-extra-newline-before-brace           . nil)
+                       (cperl-extra-newline-before-brace-multiline . nil)
+                       (cperl-indent-level                         . 4)
+                       (cperl-indent-parens-as-block               . t)
+                       (cperl-label-offset                         . -4)
+                       (cperl-merge-trailing-else                  . t)
+                       (cperl-tab-always-indent                    . t)))
+        (cperl-set-style "PDE")
+        ;; chmod when saving
+        (when (and
+               buffer-file-name
+               (not (string-match "\\.\\(pm\\|pod\\)$" (buffer-file-name))))
+          (add-hook 'after-save-hook 'executable-chmod nil t))
+        (set (make-local-variable 'compile-dwim-check-tools) nil)
 
-                   ;; A wonderful minibuffer completion mode
-                   (if (functionp 'partial-completion-mode)
-                       (partial-completion-mode 1))
-                   (setq cperl-lazy-help-time 2)
-                   (cperl-lazy-install)
+        ;; A wonderful minibuffer completion mode
+        (if (functionp 'partial-completion-mode)
+            (partial-completion-mode 1))
+        (setq cperl-lazy-help-time 2)
+        (cperl-lazy-install)
 
-                   ;; Interactive shell
+        ;; Interactive shell
 
-                   ;; A striking feature of dynamic language is it provides eval
-                   ;; function. The eval function make it possible to build a huge project
-                   ;; like building blocks. `perl -de 1' is good candicate for interactive
-                   ;; shell. But PDE provides another interactive shell for easy
-                   ;; customization and extending, and echo result of eval.
+        ;; A striking feature of dynamic language is it provides eval
+        ;; function. The eval function make it possible to build a huge project
+        ;; like building blocks. `perl -de 1' is good candicate for interactive
+        ;; shell. But PDE provides another interactive shell for easy
+        ;; customization and extending, and echo result of eval.
 
-                   ;; (autoload 'run-perl "inf-perl" "Start perl interactive shell" t)
-                   ;; Commands
-                   ;;     * run-perl
-                   ;;     * inf-perl-send
-                   ;;     * inf-perl-send-line
-                   ;;     * inf-perl-send-region
-                   ;;     * inf-perl-load-file
+        ;; (autoload 'run-perl "inf-perl" "Start perl interactive shell" t)
+        ;; Commands
+        ;;     * run-perl
+        ;;     * inf-perl-send
+        ;;     * inf-perl-send-line
+        ;;     * inf-perl-send-region
+        ;;     * inf-perl-load-file
 
-                   ;; END: Interactive shell
-                   ;; Debugger
+        ;; END: Interactive shell
+        ;; Debugger
 
-                   ;; gud of emacs supports perldb, but it is simple and crude compare with
-                   ;; gdb-ui. PDE provides a similar interface like gdb-ui. But it is known
-                   ;; not stable. You may have a try.
+        ;; gud of emacs supports perldb, but it is simple and crude compare with
+        ;; gdb-ui. PDE provides a similar interface like gdb-ui. But it is known
+        ;; not stable. You may have a try.
 
-                   ;; Perl Debugger
+        ;; Perl Debugger
 
-                   ;; perl5db provides a convenient command line interface, and maybe it
-                   ;; more quick to use command than using emacs command. Remember perl5db
-                   ;; commands is worth if you want to debug perl script. Except n, s, c, b,
-                   ;; B, w, W, L, p, x these most used commands, these are also convenient:
+        ;; perl5db provides a convenient command line interface, and maybe it
+        ;; more quick to use command than using emacs command. Remember perl5db
+        ;; commands is worth if you want to debug perl script. Except n, s, c, b,
+        ;; B, w, W, L, p, x these most used commands, these are also convenient:
 
-                   ;;     * f Switch to a loaded file
-                   ;;     * l Jump to line or function
-                   ;;     * . Back to current line
-                   ;;     * r Return from current subroutine
-                   ;;     * V Search for variable
-                   ;;     * S Search for function
-                   ;;     * y List lexcial variables
+        ;;     * f Switch to a loaded file
+        ;;     * l Jump to line or function
+        ;;     * . Back to current line
+        ;;     * r Return from current subroutine
+        ;;     * V Search for variable
+        ;;     * S Search for function
+        ;;     * y List lexcial variables
 
-                   ;; (autoload 'perldb-ui "perldb-ui" "perl debugger" t)
+        ;; (autoload 'perldb-ui "perldb-ui" "perl debugger" t)
 
-                   ;; Commands
-                   ;;     * perldb-ui
-                   ;;     * perldb-many-windows
-                   ;;     * perldb-restore-windows
-
-
-                   ;; Syntax Checking and Running
-                   ;; cperl-mode doesn't provide command for syntax checking and running. It
-                   ;; did put them on menu. Activating them requires mode-compile. But I
-                   ;; don't like mode-compile, it makes simple problem complicated. I like
-                   ;; smark-compile+. But customizing and extending smart-compile+ is not
-                   ;; convenient, so I rewrite the library to compile-dwim. You can use
-                   ;; compile-dwim-compile for syntax checking and compile-dwim-run to run
-                   ;; the script.
-
-                   ;; If you have experience of GUI programming, a problem may raise when
-                   ;; running several programs at the same time. compile asks you to kill
-                   ;; previous process before the new one starts. If you think this is not
-                   ;; convenient, you can set compilation-buffer-name-function to
-                   ;; pde-compilation-buffer-name.
-
-                   ;; Emacs provides flymake to do on-the-fly syntax checking. in my humble
-                   ;; opinion, it is not very useful. But you can turn it on if you want
-                   ;; emacs seems more like IDE.
-
-                   ;; For perl novice, it is common forgeting chmod before running perl
-                   ;; script. The library executable provide a solution for automatic chmod
-                   ;; when saving file.
-                   (use-package pde
-                                :defer t
-                                :config
-                                (progn
-                                  (add-hook 'cperl-mode-hook
-                                            '(lambda ()
-                                              (make-local-variable 'compilation-buffer-name-function)
-                                              (setq
-                                               compilation-buffer-name-function
-                                               'pde-compilation-buffer-name)))))
-
-                   ;; Commands
-                   ;;     * C-c s compile-dwim-compile
-                   ;;     * C-c r compile-dwim-run
-                   ;;     * compile
-                   ;;     * flymake-mode
-                   ;;     * executable-set-magic
+        ;; Commands
+        ;;     * perldb-ui
+        ;;     * perldb-many-windows
+        ;;     * perldb-restore-windows
 
 
-                   ;; END: Syntax Checking and Running
-                   )
+        ;; Syntax Checking and Running
+        ;; cperl-mode doesn't provide command for syntax checking and running. It
+        ;; did put them on menu. Activating them requires mode-compile. But I
+        ;; don't like mode-compile, it makes simple problem complicated. I like
+        ;; smark-compile+. But customizing and extending smart-compile+ is not
+        ;; convenient, so I rewrite the library to compile-dwim. You can use
+        ;; compile-dwim-compile for syntax checking and compile-dwim-run to run
+        ;; the script.
+
+        ;; If you have experience of GUI programming, a problem may raise when
+        ;; running several programs at the same time. compile asks you to kill
+        ;; previous process before the new one starts. If you think this is not
+        ;; convenient, you can set compilation-buffer-name-function to
+        ;; pde-compilation-buffer-name.
+
+        ;; Emacs provides flymake to do on-the-fly syntax checking. in my humble
+        ;; opinion, it is not very useful. But you can turn it on if you want
+        ;; emacs seems more like IDE.
+
+        ;; For perl novice, it is common forgeting chmod before running perl
+        ;; script. The library executable provide a solution for automatic chmod
+        ;; when saving file.
+        (use-package pde
+          :defer t
+          :config
+          (progn
+            (add-hook 'cperl-mode-hook
+                      '(lambda ()
+                         (make-local-variable 'compilation-buffer-name-function)
+                         (setq
+                          compilation-buffer-name-function
+                          'pde-compilation-buffer-name))))))
+
+      ;; Commands
+      ;;     * C-c s compile-dwim-compile
+      ;;     * C-c r compile-dwim-run
+      ;;     * compile
+      ;;     * flymake-mode
+      ;;     * executable-set-magic
+
+
+      ;; END: Syntax Checking and Running
 
 
 
-                 (add-hook 'cperl-mode-hook
-                           '(lambda ()
-                             (pde-perl-mode-hook)
-                             (setq indent-tabs-mode nil))
-                           )
 
-                 (autoload 'executable-chmod "executable"
-                           "Make sure the file is executable.")
+      (add-hook 'cperl-mode-hook
+                '(lambda ()
+                   (pde-perl-mode-hook)
+                   (setq indent-tabs-mode nil)))
 
-                 (use-package comint
-                              :defer t)
-                 (use-package inf-perl
-                              :defer t)
-                 (use-package perldb-ui
-                              :defer t)
-                 (use-package compile-dwim
-                              :defer t)
-                 (use-package imenu
-                              :defer t
-                              :config
-                              (progn
-                                (defalias 'imenu--completion-buffer 'pde-ido-imenu-completion)))
-                 (autoload 'comint-dynamic-complete "comint" "Complete for file name" t)
-                 (autoload 'run-perl "inf-perl" "Start perl interactive shell" t)
-                 (autoload 'perldb-ui "perldb-ui" "perl debugger" t)
-                 (autoload 'compile-dwim-run "compile-dwim" "Build and run" t)
-                 (autoload 'compile-dwim-compile "compile-dwim" "Compile or check syntax" t)
-                 (autoload 'imenu-tree "imenu-tree" "Show imenu tree" t))))
+
+      (autoload 'executable-chmod "executable"
+        "Make sure the file is executable.")
+
+      (use-package comint
+        :defer t)
+      (use-package inf-perl
+        :defer t)
+      (use-package perldb-ui
+        :defer t)
+      (use-package compile-dwim
+        :defer t)
+      (use-package imenu
+        :defer t
+        :config
+        (progn
+          (defalias 'imenu--completion-buffer 'pde-ido-imenu-completion)))
+      (autoload 'comint-dynamic-complete "comint" "Complete for file name" t)
+      (autoload 'run-perl "inf-perl" "Start perl interactive shell" t)
+      (autoload 'perldb-ui "perldb-ui" "perl debugger" t)
+      (autoload 'compile-dwim-run "compile-dwim" "Build and run" t)
+      (autoload 'compile-dwim-compile "compile-dwim" "Compile or check syntax" t)
+      (autoload 'imenu-tree "imenu-tree" "Show imenu tree" t))))
 
 (defun lotus-perl/init-compile-dwim ()
   (use-package compile-dwim

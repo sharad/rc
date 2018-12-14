@@ -482,6 +482,7 @@
           (load-file custom-override-file)))))
 
 
+  ;;TODO
   (require 'misc-utils)
 
   (progn ;;  server
@@ -544,7 +545,7 @@
    t)
 
 
-
+  (setq kill-whole-line t)
   (delete-selection-mode 1)
   (message "loading lotus-emacs-user-init-begin finished"))
 

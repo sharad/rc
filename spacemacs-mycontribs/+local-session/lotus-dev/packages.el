@@ -754,120 +754,123 @@ Add directory to search path for source files using the GDB command, dir."))
                (progn
                  (setq
                   compilation-auto-jump-to-first-error t
-                  compilation-skip-threshold 2  ;; 2 - errors, 1 - warnings
-                  ))))
+                  compilation-skip-threshold 2))))  ;; 2 - errors, 1 - warnings
+
 
 (defun lotus-dev/init-cc-vars ()
   (use-package cc-vars
-      :defer t
-      :config
+    :defer t
+    :config
+    (progn
+      ;; https://www.emacswiki.org/emacs/IndentingC
       (progn
-        ;; https://www.emacswiki.org/emacs/IndentingC
-        (progn
 
-          (add-hook
-           'c-mode-common-hook
-           '(lambda ()
-             (setq
-              c-default-style "stroustrup"
-              c-basic-offset 2)))
+        (add-hook
+         'c-mode-common-hook
+         '(lambda ()
+            (setq
+             c-default-style "stroustrup"
+             c-basic-offset 2)))
 
-          ;; Automatic Indentation
+        ;; Automatic Indentation
 
-          ;; Add the following to your ~/.emacs file. Whenever you type certain
-          ;; characters, a newline will be inserted automatically. Some like it,
-          ;; some hate it.
+        ;; Add the following to your ~/.emacs file. Whenever you type certain
+        ;; characters, a newline will be inserted automatically. Some like it,
+        ;; some hate it.
 
-          (use-package cc-cmds
-              :defer t
-              :config
-              (progn
-                (add-hook
-                 'c-mode-common-hook
-                 '(lambda ()
-                   ;; (c-toggle-auto-state 1)
-                   (c-toggle-auto-state 0)))))
+        (use-package cc-cmds
+          :defer t
+          :config
+          (progn
+            (add-hook
+             'c-mode-common-hook
+             #'(lambda ()
+                 ;; ref: auto-newline
+                 ;; ref: c-toggle-auto-newline
+                 ;; ref: c-toggle-auto-state
+                 ;; (c-toggle-auto-newline 1)
+                 (c-toggle-auto-newline -1)))))
 
-          ;; If you like this you might also be interested in
-          ;; ‘c-toggle-hungry-state’, which will delete all characters until
-          ;; next non-whitespace when you delete whitespace. Another form of
-          ;; Automatic Indentation
+        ;; If you like this you might also be interested in
+        ;; ‘c-toggle-hungry-state’, which will delete all characters until
+        ;; next non-whitespace when you delete whitespace. Another form of
+        ;; Automatic Indentation
 
-          ;; For people who don’t like automatic indentation, but don’t want to
-          ;; hit tab on every line, here’s another method:
-          (use-package cc-mode
-              :defer t
-              :config
-              (progn
-                (add-hook
-                 'c-mode-common-hook
-                 '(lambda ()
-                   (define-key c-mode-base-map (kbd "RET") 'newline-and-indent)))))
+        ;; For people who don’t like automatic indentation, but don’t want to
+        ;; hit tab on every line, here’s another method:
+        (use-package cc-mode
+          :defer t
+          :config
+          (progn
+            (add-hook
+             'c-mode-common-hook
+             '(lambda ()
+                (define-key c-mode-base-map (kbd "RET") 'newline-and-indent))))))
 
-          ;; This maps newline-and-indent (normally C-j) to the return key. It’s
-          ;; exactly equivalent to hitting tab after every time you hit return.
+      ;; This maps newline-and-indent (normally C-j) to the return key. It’s
+      ;; exactly equivalent to hitting tab after every time you hit return.
 
-          ;; Note: In order to add this to your .emacs you must add `(require
-          ;; ‘cc-mode)’ if you don’t have it already.
+      ;; Note: In order to add this to your .emacs you must add `(require
+      ;; ‘cc-mode)’ if you don’t have it already.
 
 
-          )
 
-        (progn ;; "if0"
-          ;; http://stackoverflow.com/questions/4549015/in-c-c-mode-in-emacs-change-face-of-code-in-if-0-endif-block-to-comment-f
 
-          (defun my-c-mode-font-lock-if0 (limit)
-            (save-restriction
-              (widen)
-              (save-excursion
-                (goto-char (point-min))
-                (let ((depth 0) str start start-depth)
-                  (while (re-search-forward "^\\s-*#\\s-*\\(if\\|else\\|endif\\)" limit 'move)
-                    (setq str (match-string 1))
-                    (if (string= str "if")
-                        (progn
-                          (setq depth (1+ depth))
-                          (when (and (null start) (looking-at "\\s-+0"))
-                            (setq start (match-end 0)
-                                  start-depth depth)))
-                        (when (and start (= depth start-depth))
-                          (c-put-font-lock-face start (match-beginning 0) 'font-lock-comment-face)
-                          (setq start nil))
-                        (when (string= str "endif")
-                          (setq depth (1- depth)))))
-                  (when (and start (> depth 0))
-                    (c-put-font-lock-face start (point) 'font-lock-comment-face)))))
-            nil)
+      (progn ;; "if0"
+        ;; http://stackoverflow.com/questions/4549015/in-c-c-mode-in-emacs-change-face-of-code-in-if-0-endif-block-to-comment-f
 
-          (defun my-c-mode-common-hook ()
-            (font-lock-add-keywords
-             nil
-             '((my-c-mode-font-lock-if0 (0 font-lock-comment-face prepend))) 'add-to-end))
+        (defun my-c-mode-font-lock-if0 (limit)
+          (save-restriction
+            (widen)
+            (save-excursion
+              (goto-char (point-min))
+              (let ((depth 0) str start start-depth)
+                (while (re-search-forward "^\\s-*#\\s-*\\(if\\|else\\|endif\\)" limit 'move)
+                  (setq str (match-string 1))
+                  (if (string= str "if")
+                      (progn
+                        (setq depth (1+ depth))
+                        (when (and (null start) (looking-at "\\s-+0"))
+                          (setq start (match-end 0)
+                                start-depth depth)))
+                    (when (and start (= depth start-depth))
+                      (c-put-font-lock-face start (match-beginning 0) 'font-lock-comment-face)
+                      (setq start nil))
+                    (when (string= str "endif")
+                      (setq depth (1- depth)))))
+                (when (and start (> depth 0))
+                  (c-put-font-lock-face start (point) 'font-lock-comment-face)))))
+          nil)
 
-          (add-hook 'c-mode-common-hook 'my-c-mode-common-hook))
+        (defun my-c-mode-common-hook ()
+          (font-lock-add-keywords
+           nil
+           '((my-c-mode-font-lock-if0 (0 font-lock-comment-face prepend))) 'add-to-end))
 
-        (progn ;; "if0"
-          ;; http://alex-epico.blogspot.in/2011/09/how-to-high-light-if-0-in-emacs.html
-          (defun my-cpp-highlight ()
-            "highlight c/c++ #if 0 #endif macros"
-            ;; (interactive)
-            (setq cpp-known-face 'default)
-            (setq cpp-unknown-face 'default)
-            (setq cpp-known-writable 't)
-            (setq cpp-unknown-writable 't)
-            (setq cpp-edit-list '(("0" font-lock-comment-face default both)
-                                  ("1" default font-lock-comment-face both)))
-            (cpp-highlight-buffer t))
+        (add-hook 'c-mode-common-hook 'my-c-mode-common-hook))
 
-          (add-hook 'c-mode-common-hook 'my-cpp-highlight))
+      (progn ;; "if0"
+        ;; http://alex-epico.blogspot.in/2011/09/how-to-high-light-if-0-in-emacs.html
+        (defun my-cpp-highlight ()
+          "highlight c/c++ #if 0 #endif macros"
+          ;; (interactive)
+          (setq cpp-known-face 'default)
+          (setq cpp-unknown-face 'default)
+          (setq cpp-known-writable 't)
+          (setq cpp-unknown-writable 't)
+          (setq cpp-edit-list '(("0" font-lock-comment-face default both)
+                                ("1" default font-lock-comment-face both)))
+          (cpp-highlight-buffer t))
 
-        (progn
-          (with-eval-after-load "session"
-            (add-to-list 'session-locals-include
-                         'c-indentation-style))
-          (with-eval-after-load "desktop"
-            (add-to-list 'desktop-locals-to-save
-                         'c-indentation-style))))))
+        (add-hook 'c-mode-common-hook 'my-cpp-highlight))
+
+      (progn
+        (with-eval-after-load "session"
+          (add-to-list 'session-locals-include
+                       'c-indentation-style))
+        (with-eval-after-load "desktop"
+          (add-to-list 'desktop-locals-to-save
+                       'c-indentation-style))))))
 
 (defun lotus-dev/post-init-disaster ()
   ;; ![Screenshot](http://i.imgur.com/kMoN1m6.png)

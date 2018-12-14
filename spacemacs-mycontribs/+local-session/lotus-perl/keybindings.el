@@ -1,18 +1,18 @@
 
 (when (configuration-layer/package-usedp 'cperl-mode)
   (defun spacemacs/cperl-mode-enable ()
-    (progn ;; "Keybinding: Elscreen"
+    (progn)) ;; "Keybinding: Elscreen"
       ;;{{ elscreen
       ;; (define-key evil-emacs-state-map (kbd "") nil)
       ;; (global-unset-key [C-z])
       ;; (global-set-key [] 'elscreen-create)
-      ))
+
 
   (defun spacemacs/cperl-mode-disable ()
-    (progn ;; "Keybinding: Elscreen"
+    (progn)) ;; "Keybinding: Elscreen"
       ;; (define-key evil-emacs-state-map nil)
       ;; (global-unset-key [])
-      ))
+
 
   (spacemacs/cperl-mode-enable))
 
@@ -31,19 +31,19 @@
     (global-set-key (kbd "C-c f") 'comint-dynamic-complete)
 
     (setq hippie-expand-try-functions-list
-     '(try-expand-line
-       try-expand-dabbrev
-       try-expand-line-all-buffers
-       try-expand-list
-       try-expand-list-all-buffers
-       try-expand-dabbrev-visible
-       try-expand-dabbrev-all-buffers
-       try-expand-dabbrev-from-kill
-       try-complete-file-name
-       try-complete-file-name-partially
-       try-complete-lisp-symbol
-       try-complete-lisp-symbol-partially
-       try-expand-whole-kill))
+          '(try-expand-line
+            try-expand-dabbrev
+            try-expand-line-all-buffers
+            try-expand-list
+            try-expand-list-all-buffers
+            try-expand-dabbrev-visible
+            try-expand-dabbrev-all-buffers
+            try-expand-dabbrev-from-kill
+            try-complete-file-name
+            try-complete-file-name-partially
+            try-complete-lisp-symbol
+            try-complete-lisp-symbol-partially
+            try-expand-whole-kill))
 
 
     ;; Code Browsing
@@ -86,16 +86,16 @@
     ( if (and
           (keymapp 'hs-minor-mode-map)
           (xrequire 'hideshow))
-         (define-key hs-minor-mode-map "\C-c\C-o"
-           (let ((map (lookup-key hs-minor-mode-map "\C-c@")))
-             ;; C-h is help to remind me key binding
-             (define-key map "\C-h" 'describe-prefix-bindings)
-             (define-key map "\C-q" 'hs-toggle-hiding)
-             ;; compatible with outline
-             (define-key map "\C-c" 'hs-hide-block)
-             (define-key map "\C-e" 'hs-show-block)
-             map))
-         )
+        (define-key hs-minor-mode-map "\C-c\C-o"
+          (let ((map (lookup-key hs-minor-mode-map "\C-c@")))
+            ;; C-h is help to remind me key binding
+            (define-key map "\C-h" 'describe-prefix-bindings)
+            (define-key map "\C-q" 'hs-toggle-hiding)
+            ;; compatible with outline
+            (define-key map "\C-c" 'hs-hide-block)
+            (define-key map "\C-e" 'hs-show-block)
+            map)))
+
     ;; Commands
     ;;     * C-c f ffap
     ;;     * C-c i imenu
@@ -110,7 +110,7 @@
 
     ;; The unix way to view documents is to man. Emacs using woman (WithOut
     ;; MAN). You can use woman to view pod of module if there is a
-                                        ; manpage. The problem is no manpages available in Windows and it is too
+    ; manpage. The problem is no manpages available in Windows and it is too
     ;; long to wait woman cache updated. cperl-pod-to-manpage still uses
     ;; external man program to generate documents, and not so pretty as
     ;; woman. PDE provide a new command pde-pod-to-manpage, it using pod2man
@@ -147,25 +147,25 @@
 
     ;; {{ http://www.emacswiki.org/emacs/PerlDevelopEnvironment#toc3
     (deh-require-maybe pde-load
-      (global-set-key "\C-m" 'newline-and-indent)
-      (global-set-key "\C-j" 'newline)
+      ;; (global-set-key "\C-m" 'newline-and-indent)
+      (global-set-key (kbd "RET") 'newline-and-indent)
+      (global-set-key (kbd "C-j") 'newline)
       (global-set-key (kbd "M-'") 'just-one-space)
       (global-set-key (kbd "C-M-=") 'pde-indent-dwim)
       ;; nearest key to dabbrev-expand
       ;; (global-set-key (kbd "M-;") 'hippie-expand)
       ;; (global-set-key (kbd "C-;") 'comment-dwim)
-      (global-set-key "\C-cf" 'comint-dynamic-complete)
-      (global-set-key "\C-cs" 'compile-dwim-compile)
-      (global-set-key "\C-cr" 'compile-dwim-run)
-      (global-set-key "\C-ci" 'imenu)
-      (global-set-key "\C-cv" 'imenu-tree)
-      (global-set-key "\C-cj" 'ffap)
-      (global-set-key "\C-ch" 'help-dwim)
+      (global-set-key (kbd "C-cf") 'comint-dynamic-complete)
+      (global-set-key (kbd "C-cs") 'compile-dwim-compile)
+      (global-set-key (kbd "C-cr") 'compile-dwim-run)
+      (global-set-key (kbd "C-ci") 'imenu)
+      (global-set-key (kbd "C-cv") 'imenu-tree)
+      (global-set-key (kbd "C-cj") 'ffap)
+      (global-set-key (kbd "C-ch") 'help-dwim)
       ;; TODO
       ;; (global-set-key "\C-xan" 'tempo-forward-mark)
       ;; (global-set-key "\C-xap" 'tempo-backward-mark)
       ;; (global-set-key "\C-xam" 'tempo-complete-tag)
-      (global-set-key " " 'tempo-x-space)
-      )
+      (global-set-key " " 'tempo-x-space))))
+
     ;; }}
-    ))
