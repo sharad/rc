@@ -326,6 +326,7 @@ candidates. Candidate is a list of a drive letter(or nil) and a directory"
 (defun jump-to-previous-window (&optional window (current-window))
   ;; BUG TODO Need lots of improvements.
   (when *jump-to-previous-window*
+    ;; (typep (current-group) 'tile-group)
     (when (eq (type-of (current-group)) 'tile-group)
       (let ((frame (window-frame window))
             (group (window-group window)))
@@ -347,7 +348,7 @@ candidates. Candidate is a list of a drive letter(or nil) and a directory"
     (setf *jump-to-previous-window* t)
     (add-hook *destroy-window-hook* #'jump-to-previous-window)))
 
-(defcommand enable-jump-to-previous-window () ()
+(defcommand disable-jump-to-previous-window () ()
   (if (find *destroy-window-hook* #'jump-to-previous-window)
       (setf *jump-to-previous-window* nil)
       (remove-hook *destroy-window-hook* #'jump-to-previous-window)))
