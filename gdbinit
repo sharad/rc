@@ -1,5 +1,9 @@
 # -*- Mode: gdb-script; -*-
 
+# confirm
+
+set confirm off
+
 # set history filename .gdb_history
 set history filename ~/.gdb_history
 set history save
