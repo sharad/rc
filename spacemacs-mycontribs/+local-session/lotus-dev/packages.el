@@ -757,7 +757,7 @@ Add directory to search path for source files using the GDB command, dir."))
        compilation-auto-jump-to-first-error t
        compilation-skip-threshold 2))))  ;; 2 - errors, 1 - warnings
 
-
+;; TODO: solve double dependency issue once for all.
 (defun lotus-dev/init-paths-mapper () ;core-mod
   (use-package paths-mapper
     :defer t
@@ -770,12 +770,15 @@ Add directory to search path for source files using the GDB command, dir."))
     :config
     (progn
       (progn
-        (use-package paths-mapper
+        (use-package compile-paths-mapper
           :defer t
           :config
           (progn
             (progn
-              (paths-mapper-insinuate))))))))
+              (compile-paths-mapper-insinuate)))))
+      (progn
+        (when (fboundp 'compile-paths-mapper-insinuate)
+          (compile-paths-mapper-insinuate))))))
 
 (defun lotus-dev/init-cc-vars ()
   (use-package cc-vars

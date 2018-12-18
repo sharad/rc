@@ -25,10 +25,12 @@
 ;;; Code:
 
 (require 's)                            ;https://github.com/magnars/s.el
+(eval-when-compile
+  '(require 'cl))
 
 (defvar paths-mapper-map nil)
-
-(setq paths-mapper-map nil)
+;; store this in desktop and session
+;; (setq paths-mapper-map nil)
 
 (defun paths-mapper-filter-path (path)
   (when path
@@ -58,7 +60,7 @@
          (sreplacement (s-chop-suffix suffix replacement)))
     (push (cons spath sreplacement) paths-mapper-map)
     (setq paths-mapper-map
-          (sort paths-mapper #'rl-string-len-compare))))
+          (sort paths-mapper-map #'rl-string-len-compare))))
 
 (defun paths-mapper-read-replacement (path &optional again)
   (let ((modpath (read-file-name
@@ -77,53 +79,6 @@
       (progn
         (message "wrong %s read for %s, read again" modpath path)
         (paths-mapper-read-replacement path t)))))
-
-(defun find-missing-file-paths-mapper-params (marker filename directory &rest formats)
-  (let* ((path (if (stringp directory)
-                  (expand-file-name filename directory)
-                 filename))
-         (filtered-path (paths-mapper-filter-path path)))
-    (if (and filtered-path
-             (stringp filtered-path)
-             (file-exists-p filtered-path))
-        (append
-          (list marker
-                (paths-mapper-filter-path filename)
-                (paths-mapper-filter-path directory))
-          formats)
-
-      (progn
-        (paths-mapper-add-replacement
-         path
-         (paths-mapper-read-replacement path))
-        (find-missing-file-paths-mapper-params marker filename directory formats)))))
-
-(defun compilation-find-file-fix-remote-local-path-map (orig-fun &rest args)
-  (let* (;; (marker (nth 0 args))
-         (filename (nth 1 args))
-         (directory (nth 2 args))
-         ;; (formats (nthcdr 3 args))
-         (path (if (stringp directory)
-                 (expand-file-name filename directory)
-                filename)))
-
-    (if (file-exists-p path)
-        (let ((res (apply orig-fun args)))
-           (message "display-buffer returned %S" res)
-           res)
-      (let ((mod-args (apply #'find-missing-file-paths-mapper-params args)))
-        (message "org[%s] mod[%s]" args mod-args)
-        (apply orig-fun mod-args)))))
-
-;;;###autoloads
-(defun paths-mapper-insinuate ()
-  (interactive)
-  (advice-add 'compilation-find-file :around #'compilation-find-file-fix-remote-local-path-map))
-
-;;;###autoloads
-(defun paths-mapper-uninsinuate ()
-  (interactive)
-  (advice-remove 'compilation-find-file #'compilation-find-file-fix-remote-local-path-map))
 
 (provide 'paths-mapper)
 ;;; paths-mapper.el ends here

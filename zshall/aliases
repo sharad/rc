@@ -222,3 +222,11 @@ alias objdump='objdump -d -M att -Sl --no-show-raw-insn'
 
 # avoiding some command
 alias ifconfig='echo use ip addr show'
+
+
+# soffice
+
+alias viewsoffice='soffice --view'
+alias sofficeview='soffice --view'
+alias viewsppt='soffice --view --show'
+alias spptview='soffice --view --show'
