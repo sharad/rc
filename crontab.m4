@@ -1,5 +1,6 @@
 
 include(config.m4)
+changequote(`[', `]')
 
 # m h  dom mon dow   command
 
@@ -12,8 +13,8 @@ MAILTO=$MAILTO
 */ifelse(hostname,lispm,7,3) * * * * DISPLAY=:0 ~/bin/syncimap -a $OFFLINEIMAPACCOUNT > /dev/null 2>&1
 */ifelse(hostname,lispm,2,1) * * * * DISPLAY=:0 ~/bin/monitru > /dev/null 2>&1
 
-ifelse(hostname,lispm,
-
+ifelse(esyscmd(hostname | tr -d '\n'),[lispm],
+[
 ##{{ Morning
 # try waking up at 7.30 to 7.45
 # 00 06 * * * ~/bin/alarm -h .2 -p myfav -r mpc
@@ -80,8 +81,9 @@ ifelse(hostname,lispm,
 
 
 
-
+]
 ,
+[
 00 22 * * * pkill pidgin
 01 22 * * * pkill skype
-)
+])
