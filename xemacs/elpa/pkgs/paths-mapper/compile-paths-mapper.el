@@ -60,12 +60,12 @@
         (message "org[%s] mod[%s]" args mod-args)
         (apply orig-fun mod-args)))))
 
-;;;###autoloads
+;;;###autoload
 (defun compile-paths-mapper-insinuate ()
   (interactive)
   (advice-add 'compilation-find-file :around #'compilation-find-file-fix-paths-mapper-path-map))
 
-;;;###autoloads
+;;;###autoload
 (defun compile-paths-mapper-uninsinuate ()
   (interactive)
   (advice-remove 'compilation-find-file #'compilation-find-file-fix-paths-mapper-path-map))
