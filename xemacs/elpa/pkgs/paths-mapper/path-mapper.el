@@ -115,8 +115,15 @@
         (message "org[%s] mod[%s]" args mod-args)
         (apply orig-fun mod-args)))))
 
-(advice-add    'compilation-find-file :around #'compilation-find-file-fix-remote-local-path-map)
-;; (advice-remove 'compilation-find-file #'compilation-find-file-fix-remote-local-path-map)
+;;;###autoloads
+(defun paths-mapper-insinuate ()
+  (interactive)
+  (advice-add 'compilation-find-file :around #'compilation-find-file-fix-remote-local-path-map))
+
+;;;###autoloads
+(defun paths-mapper-uninsinuate ()
+  (interactive)
+  (advice-remove 'compilation-find-file #'compilation-find-file-fix-remote-local-path-map))
 
 (provide 'paths-mapper)
 ;;; paths-mapper.el ends here

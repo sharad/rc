@@ -68,6 +68,7 @@
     c-eldoc
     tramp
     compile
+    paths-mapper
     (cc-vars :location local)
     disaster
     cc-mode
@@ -749,13 +750,32 @@ Add directory to search path for source files using the GDB command, dir."))
 
 (defun lotus-dev/post-init-compile () ;core-mod
   (use-package compile
-               :defer t
-               :config
-               (progn
-                 (setq
-                  compilation-auto-jump-to-first-error t
-                  compilation-skip-threshold 2))))  ;; 2 - errors, 1 - warnings
+    :defer t
+    :config
+    (progn
+      (setq
+       compilation-auto-jump-to-first-error t
+       compilation-skip-threshold 2))))  ;; 2 - errors, 1 - warnings
 
+
+(defun lotus-dev/init-paths-mapper () ;core-mod
+  (use-package paths-mapper
+    :defer t
+    :config
+    (progn
+      ))
+
+  (use-package compile
+    :defer t
+    :config
+    (progn
+      (progn
+        (use-package paths-mapper
+          :defer t
+          :config
+          (progn
+            (progn
+              (paths-mapper-insinuate))))))))
 
 (defun lotus-dev/init-cc-vars ()
   (use-package cc-vars
