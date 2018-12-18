@@ -1,4 +1,4 @@
-;;; compilation-fix.el ---                           -*- lexical-binding: t; -*-
+;;; paths-mapper.el ---                           -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2018  Sharad
 
@@ -26,11 +26,11 @@
 
 (require 's)                            ;https://github.com/magnars/s.el
 
-(defvar remote-local-map nil)
+(defvar paths-mapper-map nil)
 
-(setq remote-local-map nil)
+(setq paths-mapper-map nil)
 
-(defun remote-local-map-filter-path (path)
+(defun paths-mapper-filter-path (path)
   (when path
     (let* ((matched-paths (mapcar
                            #'(lambda (p)
@@ -41,7 +41,7 @@
                                     (expand-file-name
                                      (s-chop-prefix (concat (car p) "/") path) ;fixit
                                      (cdr p))))))
-                            remote-local-map))
+                           paths-mapper-map))
            (existing-matched-paths (remove-if-not #'file-exists-p (remove nil matched-paths))))
       (message "filering [%s] for %s" existing-matched-paths path)
       (if existing-matched-paths
@@ -51,16 +51,16 @@
 (defun rl-string-len-compare (s1 s2)
   (> (length (car s1)) (length (car s2))))
 
-(defun remote-local-map-add-replacement (path replacement)
+(defun paths-mapper-add-replacement (path replacement)
   ;; remove common suffix
   (let* ((suffix       (s-shared-end path replacement))
          (spath        (s-chop-suffix suffix path))
          (sreplacement (s-chop-suffix suffix replacement)))
-    (push (cons spath sreplacement) remote-local-map)
-    (setq remote-local-map
-          (sort remote-local-map #'rl-string-len-compare))))
+    (push (cons spath sreplacement) paths-mapper-map)
+    (setq paths-mapper-map
+          (sort paths-mapper #'rl-string-len-compare))))
 
-(defun remote-local-map-read-replacement (path &optional again)
+(defun paths-mapper-read-replacement (path &optional again)
   (let ((modpath (read-file-name
                   (format
                    (if again
@@ -76,27 +76,27 @@
         path
       (progn
         (message "wrong %s read for %s, read again" modpath path)
-        (remote-local-map-read-replacement path t)))))
+        (paths-mapper-read-replacement path t)))))
 
-(defun find-missing-file-remote-local-map-params (marker filename directory &rest formats)
+(defun find-missing-file-paths-mapper-params (marker filename directory &rest formats)
   (let* ((path (if (stringp directory)
                   (expand-file-name filename directory)
                  filename))
-         (filtered-path (remote-local-map-filter-path path)))
+         (filtered-path (paths-mapper-filter-path path)))
     (if (and filtered-path
              (stringp filtered-path)
              (file-exists-p filtered-path))
         (append
           (list marker
-                (remote-local-map-filter-path filename)
-                (remote-local-map-filter-path directory))
+                (paths-mapper-filter-path filename)
+                (paths-mapper-filter-path directory))
           formats)
 
       (progn
-        (remote-local-map-add-replacement
+        (paths-mapper-add-replacement
          path
-         (remote-local-map-read-replacement path))
-        (find-missing-file-remote-local-map-params marker filename directory formats)))))
+         (paths-mapper-read-replacement path))
+        (find-missing-file-paths-mapper-params marker filename directory formats)))))
 
 (defun compilation-find-file-fix-remote-local-path-map (orig-fun &rest args)
   (let* (;; (marker (nth 0 args))
@@ -111,12 +111,12 @@
         (let ((res (apply orig-fun args)))
            (message "display-buffer returned %S" res)
            res)
-      (let ((mod-args (apply #'find-missing-file-remote-local-map-params args)))
+      (let ((mod-args (apply #'find-missing-file-paths-mapper-params args)))
         (message "org[%s] mod[%s]" args mod-args)
         (apply orig-fun mod-args)))))
 
 (advice-add    'compilation-find-file :around #'compilation-find-file-fix-remote-local-path-map)
 ;; (advice-remove 'compilation-find-file #'compilation-find-file-fix-remote-local-path-map)
 
-(provide 'compilation-fix)
-;;; compilation-fix.el ends here
+(provide 'paths-mapper)
+;;; paths-mapper.el ends here
