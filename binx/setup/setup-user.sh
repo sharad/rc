@@ -87,6 +87,7 @@ DEB_PKG_WINDOW="smbclient python3-smbc python-smbc"
 DEB_PKG1_NET="network-manager-fortisslvpn openfortivpn python-pyftpdlib python3-pyftpdlib "
 DEB_PKG_DOC="wv"
 DEB_PKG_DOC_PUB="hugo jekyll"
+DEB_PKG_JAVA1="libreoffice-java-common"
 
 PY_PIP_PKG="termdown "
 NODE_PKG="tern "
@@ -435,6 +436,7 @@ function setup_apt_packages()
         DEB_PKG1_NET
         DEB_PKG_DOC
         DEB_PKG_DOC_PUB
+        DEB_PKG_JAVA1
     )
 
     for pkg in ${deb_pkg_lists[*]}
