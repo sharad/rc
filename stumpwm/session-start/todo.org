@@ -2,3 +2,5 @@
 * Stumpwm mode
 
 with C-baqckquote go into command-mode till enter pressed.
+
+* Commands to move all frames of one head as it is to next previous head, subsequently command for exchange all frames between heads
