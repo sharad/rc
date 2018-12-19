@@ -24,6 +24,8 @@
 
 ;;; Code:
 
+(provide 'paths-mapper)
+
 (require 's)                            ;https://github.com/magnars/s.el
 (eval-when-compile
   '(require 'cl))
@@ -80,5 +82,4 @@
         (message "wrong %s read for %s, read again" modpath path)
         (paths-mapper-read-replacement path t)))))
 
-(provide 'paths-mapper)
 ;;; paths-mapper.el ends here

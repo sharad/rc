@@ -24,6 +24,8 @@
 
 ;;; Code:
 
+(provide 'compilation-paths-mapper)
+
 (require 'paths-mapper)
 (require 'compile)
 
@@ -70,6 +72,4 @@
   (interactive)
   (advice-remove 'compilation-find-file #'compilation-find-file-fix-paths-mapper-path-map))
 
-
-(provide 'compilation-paths-mapper)
 ;;; compilation-paths-mapper.el ends here
