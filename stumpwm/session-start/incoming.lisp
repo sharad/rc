@@ -453,7 +453,7 @@
   (defcommand rotate-windows () ()
     (let* ((frames (group-frames (current-group)))
            (win (frame-window (car (last frames)))))
-      (shift-windows-forward frames win))
+      (shift-windows-forward frames win)))
 
   ;; Sounds
   ;; I don't know yet.
@@ -466,14 +466,60 @@
   ;; (defun new-window-sound (w)
   ;;   (run-shell-command "exec mplayer /home/sleeze/.config/stumpwm/sounds/beep.ogg"))
 
-   (defun destroy-window-sound (w)
-     ;(run-shell-command "exec mplayer /home/sleeze/.config/stumpwm/sounds/beep.ogg"))
-     (run-shell-command "exec mplayer /home/sleeze/.config/stumpwm/sounds/beep-7.mp3"))
+  (defun destroy-window-sound (w)
+    ;(run-shell-command "exec mplayer /home/sleeze/.config/stumpwm/sounds/beep.ogg"))
+    (run-shell-command "exec mplayer /home/sleeze/.config/stumpwm/sounds/beep-7.mp3"))
 
-   (defmacro replace-hook (hook fn)
-     `(remove-hook, hook, fn)
-     `(add-hook, hook, fn))
+  (defmacro replace-hook (hook fn)
+    `(remove-hook, hook, fn)
+    `(add-hook, hook, fn))
 
   ;; (replace-hook *new-window-hook* 'new-window-sound)
-   (replace-hook *destroy-window-hook* 'destroy-window-sound)))
-  ;; (add-hook *place-window-hook* 'place-window-sound)
+  (replace-hook *destroy-window-hook* 'destroy-window-sound)
+  (when nil (add-hook *place-window-hook* 'place-window-sound)))
+
+
+
+
+
+
+
+
+
+(when nil                               ;https://gist.github.com/TeMPOraL/4e4e46b7c2dd2b6f3e8a83b91c7e45e1
+
+  (define-key *top-map* (kbd "s-f") "fselect") ; for faster access to select frame by number
+
+;;; This is like fnext, but restricted to current head only.
+  (defun focus-next-frame-on-current-head (group)
+    "Focus next frame, limited to current head."
+    (let ((current-head (group-current-head group)))
+      (focus-frame-after group
+                         (remove-if-not (lambda (frame)
+                                          (eql (frame-head group frame)
+                                               current-head))
+                                        (group-frames group)))))
+
+  (defcommand (fnext-head tile-group) () ()
+    "Like `fnext', but only within current head."
+    (focus-next-frame-on-current-head (current-group)))
+
+  (defun focus-current-frame-on-other-head (group)
+    "Focus first frame on the next head."
+    (let* ((remaining-heads (cdr (member (group-current-head group) (screen-heads (current-screen)))))
+           (other-head (if (null remaining-heads)
+                           (first (screen-heads (current-screen)))
+                           (car remaining-heads))))
+      (focus-frame group (first (remove-if-not (lambda (frame)
+                                                 (eql (frame-head group frame)
+                                                      other-head))
+                                               (group-frames group))))))
+
+  (defcommand (hnext tile-group) () ()
+    "Switch to next head, focusing on first frame there."
+    (focus-current-frame-on-other-head (current-group)))
+
+  (define-key *top-map* (kbd "s-o") "fnext-head")
+  (define-key *top-map* (kbd "s-p") "hnext")
+
+  )
