@@ -48,6 +48,8 @@ flags = [
 # '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/c++/v1',
 # '-isystem',
 # '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include',
+'-I',
+os.path.join('/usr', 'include'),
 ]
 
 
