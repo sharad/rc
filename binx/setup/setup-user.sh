@@ -988,9 +988,11 @@ function confirm()
 SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=unconfirmed
 function setup_add_to_version_control_ask()
 {
-    if [ "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" = "all" -o "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" = "never" ]
+    local response
+
+    if [ "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" != "all" -a "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" != "never" ]
     then
-        read -r -p "${1:-Are you sure? [y(es) Y|A(yes all) n(o) N(ever)]} " response
+        read -r -p "${1:-Are you sure? } [y(es) Y|A(yes all) n(o) N(ever)] " response
         case "$response" in
             y[eE][sS]|y) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=yes;;
             Y[eE][sS]|A[l][l]) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=all;;
@@ -998,6 +1000,13 @@ function setup_add_to_version_control_ask()
             N[e][v][e][r]|N) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=never;;
             *) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=unconfirmed;;
         esac
+    fi
+
+    if [ "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" = "yes" -o "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" = "all" ]
+    then
+        true
+    else
+        false
     fi
 }
 
@@ -1008,7 +1017,10 @@ function setup_add_to_version_control()
     if ! git -C "${base}" ls-files --error-unmatch "${relfile}" >/dev/null 2>&1
     then
         info do   git -C "${base}" add "${relfile}"
-
+        if setup_add_to_version_control_ask "git -C ${base} add ${relfile} ? "
+        then
+            echo running git -C "${base}" add "${relfile}"
+        fi
     fi
 }
 
