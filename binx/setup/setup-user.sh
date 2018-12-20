@@ -971,6 +971,47 @@ function setup_machine_dir()
 
 ###{{{ libs
 # worker
+function confirm()
+{
+    # call with a prompt string or use a default
+    read -r -p "${1:-Are you sure? [y/N]} " response
+    case "$response" in
+        [yY][eE][sS]|[yY])
+            true
+            ;;
+        *)
+            false
+            ;;
+    esac
+}
+
+SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=unconfirmed
+function setup_add_to_version_control_ask()
+{
+    if [ "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" = "all" -o "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" = "never" ]
+    then
+        read -r -p "${1:-Are you sure? [y(es) Y|A(yes all) n(o) N(ever)]} " response
+        case "$response" in
+            y[eE][sS]|y) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=yes;;
+            Y[eE][sS]|A[l][l]) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=all;;
+            n[o]|n) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=no;;
+            N[e][v][e][r]|N) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=never;;
+            *) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=unconfirmed;;
+        esac
+    fi
+}
+
+function setup_add_to_version_control()
+{
+    local base="$1"
+    local relfile=$2
+    if ! git -C "${base}" ls-files --error-unmatch "${relfile}" >/dev/null 2>&1
+    then
+        info do   git -C "${base}" add "${relfile}"
+
+    fi
+}
+
 function setup_make_path_by_position()
 {
     classpath=class/$1
@@ -1652,10 +1693,7 @@ function setup_org_home_portable_public_dirs()
             print '*' >> ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
         fi
 
-        if ! git -C ~/.fa/localdirs ls-files --error-unmatch org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore >/dev/null 2>&1
-        then
-            info do   git -C ~/.fa/localdirs add org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
-        fi
+        setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
 
         running setup_make_relative_link ${homeprotabledir} ${folder}/Public              Public/$folder
         running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish      Public/Publish/$folder
@@ -1691,10 +1729,7 @@ function setup_org_home_portable_dirs()
     # links
     for lnk in org/home.d/portable.d org/home.d/portable.d/Documents org/home.d/portable.d/Private org/home.d/portable.d/Library org/home.d/portable.d/public_html org/home.d/portable.d/Scratches org/home.d/portable.d/Maildir org/home.d/portable.d/Volumes
     do
-        if ! git -C ~/.fa/localdirs ls-files --error-unmatch $lnk >/dev/null 2>&1
-        then
-            info do   git -C ~/.fa/localdirs add $lnk
-        fi
+        setup_add_to_version_control ~/.fa/localdirs $lnk
     done
 
     running setup_org_home_portable_public_dirs
@@ -1719,10 +1754,7 @@ function setup_org_misc_dirs()
     # links
     for lnk in org/misc.d/offlineimap org/misc.d/mailattachments
     do
-        if ! git -C ~/.fa/localdirs ls-files --error-unmatch $lnk >/dev/null 2>&1
-        then
-            info do   git -C ~/.fa/localdirs add $lnk
-        fi
+        setup_add_to_version_control ~/.fa/localdirs $lnk
     done
 
 } # function setup_org_misc_dirs()
@@ -1749,10 +1781,7 @@ function setup_org_rc_dirs()
 
     for lnk in org/rc.d/repos org/rc.d/opt org/rc.d/localdirs org/rc.d/osetup org/rc.d/setup org/rc.d/HOME
     do
-        if ! git -C ~/.fa/localdirs ls-files --error-unmatch $lnk >/dev/null 2>&1
-        then
-           info do   git -C ~/.fa/localdirs add $lnk
-        fi
+        setup_add_to_version_control ~/.fa/localdirs $lnk
     done
 } # function setup_org_rc_dirs()
 
@@ -1789,10 +1818,7 @@ function setup_osetup_org_resource_dirs()
 
     running setup_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
 
-    if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/resource.d >/dev/null 2>&1
-    then
-        info do   git -C ~/.fa/osetup add dirs.d/org/resource.d
-    fi
+    setup_add_to_version_control ~/.fa/osetup dirs.d/org/resource.d
 }
 
 function setup_osetup_org_home_dirs()
@@ -1801,13 +1827,10 @@ function setup_osetup_org_home_dirs()
     local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
 
-    for folder in Desktop Documents Downloads Library Maildir Music Pictures Private Public public_html Scratches Sink Templates tmp Videos Volumes
+    for folder_link in Desktop Documents Downloads Library Maildir Music Pictures Private Public public_html Scratches Sink Templates tmp Videos Volumes
     do
-        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/home.d/portable.d/${folder} osetup/dirs.d/org/home.d/${folder}
-        if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/home.d/${folder} >/dev/null 2>&1
-        then
-            info do   git -C ~/.fa/osetup add dirs.d/org/home.d/${folder}
-        fi
+        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/home.d/portable.d/${folder_link} osetup/dirs.d/org/home.d/${folder_link}
+        setup_add_to_version_control ~/.fa/osetup dirs.d/org/home.d/${folder_link}
     done
 }
 
@@ -1817,13 +1840,10 @@ function setup_osetup_org_misc_dirs()
     local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
 
-    for folder in offlineimap mailattachments
+    for folder_link in offlineimap mailattachments
     do
-        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/misc.d/${folder} osetup/dirs.d/org/misc.d/${folder}
-        if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/misc.d/${folder} >/dev/null 2>&1
-        then
-            info do   git -C ~/.fa/osetup add dirs.d/org/misc.d/${folder}
-        fi
+        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/misc.d/${folder_link} osetup/dirs.d/org/misc.d/${folder_link}
+        setup_add_to_version_control ~/.fa/osetup dirs.d/org/misc.d/${folder_link}
     done
 }
 
@@ -1833,13 +1853,10 @@ function setup_osetup_org_rc_dirs()
     local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
 
-    for folder in HOME localdirs opt osetup repos setup
+    for folder_link in HOME localdirs opt osetup repos setup
     do
-        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/rc.d/${folder} osetup/dirs.d/org/rc.d/${folder}
-        if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/rc.d/${folder} >/dev/null 2>&1
-        then
-            info do   git -C ~/.fa/osetup add dirs.d/org/rc.d/${folder}
-        fi
+        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/rc.d/${folder_link} osetup/dirs.d/org/rc.d/${folder_link}
+        setup_add_to_version_control ~/.fa/osetup dirs.d/org/rc.d/${folder_link}
     done
 }
 
@@ -1885,10 +1902,7 @@ function setup_rc_org_dirs()
 
     running setup_rc_org_home_dirs
 
-    if ! git -C ~/.fa/rc ls-files --error-unmatch .config/dirs.d/org >/dev/null 2>&1
-    then
-        info do   git -C ~/.fa/rc add .config/dirs.d/org
-    fi
+    setup_add_to_version_control ~/.fa/rc .config/dirs.d/org
 }
 
 function setup_dirs()

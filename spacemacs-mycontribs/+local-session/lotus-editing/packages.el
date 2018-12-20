@@ -161,32 +161,63 @@ Each entry is either:
 
 (defun lotus-editing/init-paren ()
   (use-package paren
-      :defer t
-      :config
+    :defer t
+    :config
+    (progn
       (progn
-        ;; Hilight matching parenthesis
-        ;; (unless (featurep 'xemacs) (show-paren-mode 1))
-        (show-paren-mode 1)
-
         ;; http://www.emacswiki.org/emacs/ShowParenMode#toc1
-        (defadvice show-paren-function (after show-matching-paren-offscreen activate)
-          "If the matching paren is offscreen, show the matching line in the
+        (setq
+         blink-matching-paren t
+         ;; blink-matching-paren is a variable defined in `simple.el'.
+         ;; Its value is jump
+
+         ;; Original value was t
+
+
+         ;; Documentation:
+         ;; Non-nil means show matching open-paren when close-paren is inserted.
+         ;; If t, highlight the paren.  If `jump', briefly move cursor to its
+         ;; position.  If `jump-offscreen', move cursor there even if the
+         ;; position is off screen.  With any other non-nil value, the
+         ;; off-screen position of the opening paren will be shown in the
+         ;; echo area.
+
+
+         )
+
+        (progn
+
+          (when nil
+            (progn
+              (progn                  ;NOT REQUIRED
+                ;; Hilight matching parenthesis
+                ;; (unless (featurep 'xemacs) (show-paren-mode 1))
+                (show-paren-mode 1)
+                ;; http://www.emacswiki.org/emacs/ShowParenMode#toc1
+                (defadvice show-paren-function (after show-matching-paren-offscreen activate)
+                  "If the matching paren is offscreen, show the matching line in the
         echo area. Has no effect if the character before point is not of
         the syntax class ')'."
-          (interactive)
-          (let* ((cb (char-before (point)))
-                 (matching-text (and cb
-                                     (char-equal (char-syntax cb) ?\) )
-                                     (blink-matching-open))))
-            (when matching-text (message matching-text)))))))
+                  (interactive)
+                  (let* ((cb (char-before (point)))
+                         (matching-text (and cb
+                                             (char-equal (char-syntax cb) ?\))
+                                             (blink-matching-open))))
+                    (when (and
+                           matching-text
+                           (stringp matching-text))
+                      (message matching-text)))))
+              (progn
+                (when t
+                  (ad-remove-advice 'show-paren-function 'after 'show-matching-paren-offscreen))))))))))
 
 (defun lotus-editing/init-corral ()
   ;; https://github.com/nivekuil/corral
   (use-package corral
-      :defer t
-      :config
-      (progn
-        )))
+    :defer t
+    :config
+    (progn
+      )))
 
 (defun lotus-editing/init-autorevert ()
   (use-package autorevert
