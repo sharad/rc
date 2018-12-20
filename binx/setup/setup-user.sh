@@ -1657,6 +1657,7 @@ function setup_org_resource_dirs()
     local machinedir=${LOCALDIRS_DIR}/org/deps.d/control.d/machine.d/default
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
 
+    # TODO: add support for git add
     running setup_links_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d resource.d
 }
 
@@ -1828,6 +1829,7 @@ function setup_osetup_org_resource_dirs()
     local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
 
+    # TODO: add support for git add
     running setup_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
 
     setup_add_to_version_control ~/.fa/osetup dirs.d/org/resource.d
@@ -1910,6 +1912,7 @@ function setup_rc_org_dirs()
     local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
 
+    # TODO: add support for git add
     running setup_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user osetup/dirs.d/org rc/.config/dirs.d/org
 
     running setup_rc_org_home_dirs
