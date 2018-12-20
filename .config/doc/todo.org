@@ -83,7 +83,7 @@ It can also server as a Great POC how to expand participation from big number of
 
 When this is completed we will mindshare contribution manager
 Will be responsible to find related project' repository and guidelines for code be worked.
-** mindshare contribution manager
+** mindshare contribution manager [high level detail in idea.org]
 ** Support for adding D-O-N-E task
 ** Support for task to have information about who requested, when request, where requested
 
