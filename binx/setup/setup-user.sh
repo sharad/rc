@@ -994,9 +994,9 @@ function setup_add_to_version_control_ask()
     then
         read -r -p "${1:-Are you sure? } [y(es) Y|A(yes all) n(o) N(ever)] " response
         case "$response" in
-            y[eE][sS]|y) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=yes;;
-            Y[eE][sS]|[aA][l][l]) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=all;;
-            n[o]|n) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=no;;
+            y[[eE][sS]?]?|y) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=yes;;
+            Y[[eE][sS]?]?|[aA][ll]?) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=all;;
+            n[o]?|n) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=no;;
             N[e][v][e][r]|N) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=never;;
             *) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=unconfirmed;;
         esac
@@ -1019,7 +1019,7 @@ function setup_add_to_version_control()
         info do   git -C "${base}" add "${relfile}"
         if setup_add_to_version_control_ask "git -C ${base} add ${relfile} ? "
         then
-            running git -C "${base}" add "${relfile}"
+            running git -C "${base}" add -f "${relfile}"
         fi
     fi
 }
