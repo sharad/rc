@@ -92,15 +92,19 @@
                (current (when current (file-truename current)))
                (current
                 (when current
-                  (find current collection
+                  (find current
+                        collection
                         :test
                         '(lambda (f1 f2)
-                           (when (and
-                                  (stringp f1)
-                                  (stringp f2))
-                             (string-equal
-                              (file-truename f1)
-                              (file-truename f2))))))))
+                           (when (and (stringp f1) (stringp f2))
+                             (let ((f2 (file-truename
+                                        (if (file-name-absolute-p f2)
+                                            f2
+                                          (expand-file-name f2
+                                                            (or
+                                                             (vc-root-dir)
+                                                             (magit-toplevel)))))))
+                               (string-equal f1 f2))))))))
           (when current (setf (nth 4 nargs) current))
           (apply orig-fun nargs)))))
 
