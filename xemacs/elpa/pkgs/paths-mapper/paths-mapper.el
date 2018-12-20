@@ -56,30 +56,40 @@
   (> (length (car s1)) (length (car s2))))
 
 (defun paths-mapper-add-replacement (path replacement)
+  (when (and
+         replacement
+         (stringp replacement)
+         (file-exists-p replacement))   ;check
   ;; remove common suffix
-  (let* ((suffix       (s-shared-end path replacement))
-         (spath        (s-chop-suffix suffix path))
-         (sreplacement (s-chop-suffix suffix replacement)))
-    (push (cons spath sreplacement) paths-mapper-map)
-    (setq paths-mapper-map
-          (sort paths-mapper-map #'rl-string-len-compare))))
+    (let* ((suffix       (s-shared-end path replacement))
+           (spath        (s-chop-suffix suffix path))
+           (sreplacement (s-chop-suffix suffix replacement)))
+      (push (cons spath sreplacement) paths-mapper-map)
+      (setq paths-mapper-map
+            (sort paths-mapper-map #'rl-string-len-compare)))))
 
 (defun paths-mapper-read-replacement (path &optional again)
-  (let ((modpath (read-file-name
+  (let ((again (or again 0))
+        (modpath (read-file-name
                   (format
                    (if again
                        "again replacement for %s: "
                        "replacement for %s: ")
                    path)
                   (dirname-of-file path))))
-    (if (and
-         (file-name-directory path)
-         (string-equal
-          (file-name-nondirectory path)
-          (file-name-nondirectory modpath)))
-        path
-      (progn
-        (message "wrong %s read for %s, read again" modpath path)
-        (paths-mapper-read-replacement path t)))))
+    (when (<= again 3)
+      (if (and
+           (file-name-directory path)
+           (string-equal
+            (file-name-nondirectory path)
+            (file-name-nondirectory modpath)))
+          path
+        (progn
+          (message "wrong %s read for %s, read again" modpath path)
+          (paths-mapper-read-replacement path (1+ again)))))))
+
+(defun paths-mapper-read-add-replacement (path)
+  (paths-mapper-add-replacement path (paths-mapper-read-replacement path)))
+
 
 ;;; paths-mapper.el ends here

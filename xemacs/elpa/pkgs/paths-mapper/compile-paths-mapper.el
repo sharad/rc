@@ -43,9 +43,7 @@
                 (paths-mapper-filter-path directory))
           formats)
       (progn
-        (paths-mapper-add-replacement
-         path
-         (paths-mapper-read-replacement path))
+        (paths-mapper-read-add-replacement path)
         (compilation-find-missing-file-paths-mapper-params marker filename directory formats)))))
 
 (defun compilation-find-file-fix-paths-mapper-path-map (orig-fun &rest args)

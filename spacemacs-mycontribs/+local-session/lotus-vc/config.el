@@ -77,5 +77,41 @@
 
 
 
+(progn                                  ;magit prefer current buffer
+
+  (eval-when-compile
+    '(require 'cl))
+
+  (defun magit-completing-read-prefer-current-buffer (orig-fun &rest args)
+    (let ((initial-input (nth 4 args)))
+      (if initial-input
+          (apply orig-fun args)
+        (let* ((nargs args)
+               (collection (nth 1 args))
+               (current (buffer-file-name (current-buffer)))
+               (current (when current (file-truename current)))
+               (current
+                (when current
+                  (find current collection
+                        :test
+                        '(lambda (f1 f2)
+                           (when (and
+                                  (stringp f1)
+                                  (stringp f2))
+                             (string-equal
+                              (file-truename f1)
+                              (file-truename f2))))))))
+          (when current (setf (nth 4 nargs) current))
+          (apply orig-fun nargs)))))
+
+  (defun magit-completing-read-prefer-current-buffer-insinuate ()
+    (interactive)
+    (advice-add 'magit-completing-read :around #'magit-completing-read-prefer-current-buffer))
+
+  (defun magit-completing-read-prefer-current-buffer-uninsinuate ()
+    (interactive)
+    (advice-remove 'magit-completing-read #'magit-completing-read-prefer-current-buffer)))
+
+
 ;; (provide 'config)
 ;;; config.el ends here
