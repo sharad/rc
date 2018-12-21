@@ -105,7 +105,7 @@ function main()
 
     cd ~/
 
-    running setup_apt_packages
+    # running setup_apt_packages
 
     running setup_ecrypt_private
 
@@ -1696,7 +1696,7 @@ function setup_org_resource_dirs()
 
     # TODO: add support for git add
     running setup_links_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d resource.d
-    # running setup_add_to_version_control_links_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d  .. resource.d
+    running setup_add_to_version_control_links_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d  .. org/resource.d
 }
 
 function setup_org_home_portable_local_dirs()
@@ -1869,9 +1869,9 @@ function setup_osetup_org_resource_dirs()
 
     # TODO: add support for git add
     running setup_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
-    # running setup_add_to_version_control_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
+    running setup_add_to_version_control_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup dirs.d/org/resource.d
 
-    setup_add_to_version_control ~/.fa/osetup dirs.d/org/resource.d
+    # setup_add_to_version_control ~/.fa/osetup dirs.d/org/resource.d
 }
 
 function setup_osetup_org_home_dirs()
@@ -1883,7 +1883,7 @@ function setup_osetup_org_home_dirs()
     for folder_link in Desktop Documents Downloads Library Maildir Music Pictures Private Public public_html Scratches Sink Templates tmp Videos Volumes
     do
         running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/home.d/portable.d/${folder_link} osetup/dirs.d/org/home.d/${folder_link}
-        setup_add_to_version_control ~/.fa/osetup dirs.d/org/home.d/${folder_link}
+        # setup_add_to_version_control ~/.fa/osetup dirs.d/org/home.d/${folder_link}
     done
 }
 
@@ -1953,6 +1953,7 @@ function setup_rc_org_dirs()
 
     # TODO: add support for git add
     running setup_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user osetup/dirs.d/org rc/.config/dirs.d/org
+    running setup_add_to_version_control_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user osetup/dirs.d/org rc .config/dirs.d/org
 
     running setup_rc_org_home_dirs
 
