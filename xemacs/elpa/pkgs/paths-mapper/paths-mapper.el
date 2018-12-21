@@ -64,7 +64,7 @@
     (let* ((suffix       (s-shared-end path replacement))
            (spath        (s-chop-suffix suffix path))
            (sreplacement (s-chop-suffix suffix replacement)))
-      (push (cons spath sreplacement) paths-mapper-map)
+      (push (cons spath sreplacement) paths-mapper-map) ;here make case for unreloved path with cdr as nil
       (setq paths-mapper-map
             (sort paths-mapper-map #'rl-string-len-compare)))))
 

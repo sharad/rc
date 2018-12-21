@@ -1649,7 +1649,39 @@ function setup_links_dirs()
         error dir ${basepath}/${linkdir} not exists
     fi
 
-}
+}                               # function setup_links_dirs()
+
+function setup_add_to_version_control_links_dirs() # SHARAD
+{
+    gitbase=$1
+    basepath=$2
+    linkdir=$3
+    targetdir=$4
+
+    debug basepath=$basepath
+    debug linkdir=$linkdir
+    debug targetdir=$targetdir
+
+    if [ -d ${basepath}/${linkdir} ]
+    then
+        cd ${basepath}/${linkdir}
+        # debug SHARAD TEST
+        local links=( $(find -type l | cut -c3- ) )
+        cd - > /dev/null 2>&1
+
+        debug links=${links[*]}
+
+        # TODO? do something here
+        for lnk in ${links[*]}
+        do
+            # debug running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
+            running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
+        done
+    else
+        error dir ${basepath}/${linkdir} not exists
+    fi
+
+}                               # function setup_add_to_version_control_links_dirs()
 
 function setup_org_resource_dirs()
 {
