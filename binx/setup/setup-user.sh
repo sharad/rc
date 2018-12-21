@@ -1653,18 +1653,23 @@ function setup_links_dirs()
 
 function setup_add_to_version_control_links_dirs() # SHARAD
 {
-    gitbase=$1
-    basepath=$2
-    linkdir=$3
+    basepath=$1
+    linkdir=$2
+
+    gitrelbase=$3
     targetdir=$4
+
+    linkbasepath=${basepath}${basepath:+/}${linkdir}
 
     debug basepath=$basepath
     debug linkdir=$linkdir
     debug targetdir=$targetdir
 
-    if [ -d ${basepath}/${linkdir} ]
+
+
+    if [ -d ${linkbasepath} ]
     then
-        cd ${basepath}/${linkdir}
+        cd ${linkbasepath}
         # debug SHARAD TEST
         local links=( $(find -type l | cut -c3- ) )
         cd - > /dev/null 2>&1
@@ -1674,8 +1679,8 @@ function setup_add_to_version_control_links_dirs() # SHARAD
         # TODO? do something here
         for lnk in ${links[*]}
         do
-            # debug running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
-            running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
+            # running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
+            setup_add_to_version_control ${basepath}/${gitrelbase} ${targetdir}/${lnk}
         done
     else
         error dir ${basepath}/${linkdir} not exists
@@ -1691,6 +1696,7 @@ function setup_org_resource_dirs()
 
     # TODO: add support for git add
     running setup_links_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d resource.d
+    # running setup_add_to_version_control_links_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d  .. resource.d
 }
 
 function setup_org_home_portable_local_dirs()
@@ -1863,6 +1869,7 @@ function setup_osetup_org_resource_dirs()
 
     # TODO: add support for git add
     running setup_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
+    # running setup_add_to_version_control_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
 
     setup_add_to_version_control ~/.fa/osetup dirs.d/org/resource.d
 }

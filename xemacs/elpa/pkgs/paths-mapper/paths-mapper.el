@@ -56,7 +56,9 @@
   (> (length (car s1)) (length (car s2))))
 
 (defun paths-mapper-add-replacement (path replacement)
-  (when (and
+  (message "paths-mapper-add-replacement: path=%s replacement=%s"
+           path replacement)
+  (if (and
          replacement
          (stringp replacement)
          (file-exists-p replacement))   ;check
@@ -69,27 +71,32 @@
             (sort paths-mapper-map #'rl-string-len-compare)))))
 
 (defun paths-mapper-read-replacement (path &optional again)
-  (let ((again (or again 0))
-        (modpath (read-file-name
+  (let ((modpath (read-file-name
                   (format
                    (if again
                        "again replacement for %s: "
                        "replacement for %s: ")
                    path)
                   (dirname-of-file path))))
-    (when (<= again 3)
+    (when (<= (or again 0) 3)
       (if (and
-           (file-name-directory path)
+           ;; (file-name-directory path)
            (string-equal
             (file-name-nondirectory path)
             (file-name-nondirectory modpath)))
-          path
+          modpath
         (progn
           (message "wrong %s read for %s, read again" modpath path)
-          (paths-mapper-read-replacement path (1+ again)))))))
+          (paths-mapper-read-replacement path (1+ (or again 0))))))))
 
 (defun paths-mapper-read-add-replacement (path)
-  (paths-mapper-add-replacement path (paths-mapper-read-replacement path)))
+  (let ((replacement-path (paths-mapper-read-replacement path)))
+    (message "paths-mapper-read-add-replacement: replacement-path=%s"
+             replacement-path)
+    (paths-mapper-add-replacement path replacement-path)))
 
+;; test
+;; (paths-mapper-read-add-replacement "/home/spratap/.opt/p/merunetworks.com/rcfun")
+;; (paths-mapper-filter-path "/home/spratap/.opt/p/merunetworks.com/rcfun")
 
 ;;; paths-mapper.el ends here

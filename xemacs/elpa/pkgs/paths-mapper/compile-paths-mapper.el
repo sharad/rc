@@ -44,7 +44,10 @@
           formats)
       (progn
         (paths-mapper-read-add-replacement path)
-        (compilation-find-missing-file-paths-mapper-params marker filename directory formats)))))
+        (if formats
+            (compilation-find-missing-file-paths-mapper-params marker filename directory formats)
+          (compilation-find-missing-file-paths-mapper-params marker filename directory))))))
+
 
 (defun compilation-find-file-fix-paths-mapper-path-map (orig-fun &rest args)
   (let* ((filename (nth 1 args))
