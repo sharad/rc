@@ -1016,10 +1016,16 @@ function setup_add_to_version_control()
     local relfile=$2
     if ! git -C "${base}" ls-files --error-unmatch "${relfile}" >/dev/null 2>&1
     then
-        info do   git -C "${base}" add "${relfile}"
-        if setup_add_to_version_control_ask "git -C ${base} add ${relfile} ? "
+        info do   git -C "${base}" add -f "${relfile}"
+        if [ -d ${base}/${relfile} ]
         then
-            running git -C "${base}" add -f "${relfile}"
+            info in ${base}
+            info ${relfile} is directory so not adding it in git.
+        else
+            if setup_add_to_version_control_ask "git -C ${base} add ${relfile} ? "
+            then
+                running git -C "${base}" add -f "${relfile}"
+            fi
         fi
     fi
 }
@@ -1680,7 +1686,7 @@ function setup_add_to_version_control_links_dirs() # SHARAD
         for lnk in ${links[*]}
         do
             # running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
-            setup_add_to_version_control ${basepath}/${gitrelbase} ${targetdir}/${lnk}
+            running setup_add_to_version_control ${basepath}/${gitrelbase} ${targetdir}/${lnk}
         done
     else
         error dir ${basepath}/${linkdir} not exists
@@ -1725,6 +1731,12 @@ function setup_org_home_portable_public_dirs()
 
 
     running mkdir -p ${homeprotabledir}/Public/Publish/html
+    touch ${homeprotabledir}/Public/.gitignore
+    touch ${homeprotabledir}/Public/Publish/.gitignore
+    touch ${homeprotabledir}/Public/Publish/html/.gitignore
+    setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/.gitignore
+    setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/Publish/.gitignore
+    setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/Public/Publish/html/.gitignore
 
     for folder in local
     do
@@ -1732,24 +1744,55 @@ function setup_org_home_portable_public_dirs()
         running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d ${folder}.d/Public              Public/$folder
         running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d ${folder}.d/Public/Publish      Public/Publish/$folder
         running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d ${folder}.d/Public/Publish/html Public/Publish/html/$folder
+
+        # setup_add_to_version_control
     done
 
     # for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
-    for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
+    for folder in Documents Downloads Library Music Pictures Templates tmp Videos
     do
         running mkdir -p ${homeprotabledir}/${folder}/Public/Publish/html
 
-        if [ ! -e ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore ]
-        then
-            print '*' >> ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
-        fi
-
-        setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
+        rm ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
 
         running setup_make_relative_link ${homeprotabledir} ${folder}/Public              Public/$folder
         running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish      Public/Publish/$folder
         running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish/html Public/Publish/html/$folder
+
+        touch ${homeprotabledir}/${folder}/.gitignore
+        touch ${homeprotabledir}/${folder}/Public/.gitignore
+        touch ${homeprotabledir}/${folder}/Public/Publish/.gitignore
+        touch ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
+
+        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/.gitignore
+        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/Public/.gitignore
+        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/Public/Publish/.gitignore
+        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
+
+
     done
+
+
+    # for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
+    for folder in Documents Library Scratches tmp
+    do
+        running mkdir -p ${homeprotabledir}/${folder}/Public/Publish/html
+
+        rm -f ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
+        touch ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
+
+        # setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
+
+        running setup_make_relative_link ${homeprotabledir} ${folder}/Public              Public/$folder
+        running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish      Public/Publish/$folder
+        running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish/html Public/Publish/html/$folder
+
+
+        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/$folder
+        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/Publish/$folder
+        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/Publish/html/$folder
+    done
+
 }
 
 function setup_org_home_portable_dirs()
@@ -1760,14 +1803,15 @@ function setup_org_home_portable_dirs()
     local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
 
     running mkdir -p ${homeprotabledir}
-    running mkdir -p ${homeprotabledir}/Desktop/Public/Publish/html
-    running mkdir -p ${homeprotabledir}/Downloads/Public/Publish/html
-    running mkdir -p ${homeprotabledir}/Music/Public/Publish/html
-    running mkdir -p ${homeprotabledir}/Pictures/Public/Publish/html
-    running mkdir -p ${homeprotabledir}/Sink/Public/Publish/html
-    running mkdir -p ${homeprotabledir}/Templates/Public/Publish/html
-    running mkdir -p ${homeprotabledir}/Videos/Public/Publish/html
-    running mkdir -p ${homeprotabledir}/tmp/Public/Publish/html
+    # dirs
+    for folder in Desktop Downloads Music Pictures Templates tmp
+    do
+        running mkdir -p ${homeprotabledir}/${folder}/Public/Publish/html
+        touch ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
+        setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
+    done
+
+
 
     running setup_make_relative_link ${USERDIR} doc localdirs/org/home.d/portable.d/Documents
     running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/ private/user/noenc/Private localdirs/org/home.d/portable.d/Private
@@ -1778,7 +1822,8 @@ function setup_org_home_portable_dirs()
     running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/maildata/mail-and-metadata/maildir home.d/portable.d/Maildir
 
     # links
-    for lnk in org/home.d/portable.d org/home.d/portable.d/Documents org/home.d/portable.d/Private org/home.d/portable.d/Library org/home.d/portable.d/public_html org/home.d/portable.d/Scratches org/home.d/portable.d/Maildir org/home.d/portable.d/Volumes
+    # for lnk in org/home.d/portable.d org/home.d/portable.d/Documents org/home.d/portable.d/Private org/home.d/portable.d/Library org/home.d/portable.d/public_html org/home.d/portable.d/Scratches org/home.d/portable.d/Maildir org/home.d/portable.d/Volumes
+    for lnk in org/home.d/portable.d/Documents org/home.d/portable.d/Private org/home.d/portable.d/Library org/home.d/portable.d/public_html org/home.d/portable.d/Scratches org/home.d/portable.d/Maildir org/home.d/portable.d/Volumes
     do
         setup_add_to_version_control ~/.fa/localdirs $lnk
     done
@@ -1942,7 +1987,9 @@ function setup_rc_org_home_dirs()
     local rcorghomedir_rel_path=.config/dirs.d/org/home.d
 
     running setup_make_relative_link ${public_path}/${rcdir_rel_path} _bin ${rcorghomedir_rel_path}/bin
+    setup_add_to_version_control ${rcdirpath} ${rcorghomedir_rel_path}/bin
     running setup_make_relative_link ${public_path} system/system/config/bin user/rc/${rcorghomedir_rel_path}/sbin
+    setup_add_to_version_control ${rcdirpath} ${rcorghomedir_rel_path}/sbin
 }
 
 function setup_rc_org_dirs()
