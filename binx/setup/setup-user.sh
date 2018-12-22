@@ -1017,7 +1017,7 @@ function setup_add_to_version_control()
     if ! git -C "${base}" ls-files --error-unmatch "${relfile}" >/dev/null 2>&1
     then
         info do   git -C "${base}" add -f "${relfile}"
-        if [ -d ${base}/${relfile} ]
+        if [ -d ${base}/${relfile} -a ! -L ${base}/${relfile}  ]
         then
             info in ${base}
             info ${relfile} is directory so not adding it in git.
