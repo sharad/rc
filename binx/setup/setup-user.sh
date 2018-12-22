@@ -450,7 +450,7 @@ function setup_vc_mkdirpath_ensure()
     mkdir -p ${vcbase}/${base}/${path}
     local dirpath=$path
 
-    while [ "$dirpath" != "." ]
+    while [ "$dirpath" != "." -a "x$dirpath" != "x" ]
     do
         running touch ${vcbase}/${base}/${dirpath}/.gitignore
         running setup_add_to_version_control ${vcbase} ${base}/${dirpath}/.gitignore
@@ -1803,9 +1803,21 @@ function setup_org_home_portable_dirs()
     local LOCALDIRS_DIR=${USERDIR}/localdirs
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
     local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
-    local rel_homeprotabledir=org/home.d/portable.d/
+    local rel_homeprotabledir=org/home.d/portable.d
 
-    running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${rel_homeprotabledir}
+    running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} "" ${rel_homeprotabledir}
+
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d portable.d default
+
+    running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/default
+
+    cat <<'EOF' > ${LOCALDIRS_DIR}/org/home.d/README
+portable.d is for required dir trees while
+
+local.d is to rearrange according to space needs
+EOF
+
+    running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/README
 
     # dirs
     for folder in Desktop Downloads Music Pictures Templates tmp
@@ -1817,10 +1829,10 @@ function setup_org_home_portable_dirs()
 
     running setup_make_relative_link ${USERDIR} doc localdirs/${rel_homeprotabledir}/Documents
 
-    running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/ private/user/noenc/Private                                          localdirs/${rel_homeprotabledir}/Private
+    running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/ private/user/noenc/Private localdirs/${rel_homeprotabledir}/Private
 
     running setup_make_relative_link ${LOCALDIRS_DIR}/${rel_homeprotabledir}     Public/Publish/html public_html
-    running setup_make_relative_link ${LOCALDIRS_DIR}                            Documents/Library   Library
+    running setup_make_relative_link ${LOCALDIRS_DIR}/${rel_homeprotabledir}     Documents/Library   Library
 
     running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/control.d/class/data/storage/local/container/scratches.d home.d/portable.d/Scratches
     running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/model.d                                                  home.d/portable.d/Volumes
@@ -1902,10 +1914,16 @@ function setup_manual_dirs()
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR=${USERDIR}/localdirs
 
+    running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} manual.d
+
     # debug SHARAD TEST
     running setup_make_relative_link ${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default/volumes.d/model.d   manual.d/model
     running setup_make_relative_link ${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default/volumes.d/control.d manual.d/control
     running setup_make_relative_link ${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default/volumes.d/view.d    manual.d/view
+
+    setup_add_to_version_control ${LOCALDIRS_DIR} manual.d/model
+    setup_add_to_version_control ${LOCALDIRS_DIR} manual.d/control
+    setup_add_to_version_control ${LOCALDIRS_DIR} manual.d/view
 
 }
 
