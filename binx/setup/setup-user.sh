@@ -312,6 +312,153 @@ function setup_make_relative_link()
     running setup_make_link ${parents_link}${separator:+/}${target} $path/$link
 }
 
+
+function setup_links_dirs()
+{
+    basepath=$1
+    linkdir=$2
+    targetdir=$3
+
+    debug basepath=$basepath
+    debug linkdir=$linkdir
+    debug targetdir=$targetdir
+
+    if [ -d ${basepath}/${linkdir} ]
+    then
+        cd ${basepath}/${linkdir}
+        # debug SHARAD TEST
+        local links=( $(find -type l | cut -c3- ) )
+        cd - > /dev/null 2>&1
+
+        debug links=${links[*]}
+
+        # TODO? do something here
+        for lnk in ${links[*]}
+        do
+            # debug running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
+            running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
+        done
+    else
+        error dir ${basepath}/${linkdir} not exists
+    fi
+
+}                               # function setup_links_dirs()
+
+# worker
+function confirm()
+{
+    # call with a prompt string or use a default
+    read -r -p "${1:-Are you sure? [y/N]} " response
+    case "$response" in
+        [yY][eE][sS]|[yY])
+            true
+            ;;
+        *)
+            false
+            ;;
+    esac
+}
+
+SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=unconfirmed
+function setup_add_to_version_control_ask()
+{
+    local response
+
+    if [ "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" != "all" -a "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" != "never" ]
+    then
+        read -r -p "${1:-Are you sure? } [y(es) Y|A(yes all) n(o) N(ever)] " response
+        case "$response" in
+            y[[eE][sS]?]?|y) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=yes;;
+            Y[[eE][sS]?]?|[aA][ll]?) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=all;;
+            n[o]?|n) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=no;;
+            N[e][v][e][r]|N) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=never;;
+            *) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=unconfirmed;;
+        esac
+    fi
+
+    if [ "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" = "yes" -o "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" = "all" ]
+    then
+        true
+    else
+        false
+    fi
+}
+
+function setup_add_to_version_control()
+{
+    local base="$1"
+    local relfile=$2
+    if ! git -C "${base}" ls-files --error-unmatch "${relfile}" >/dev/null 2>&1
+    then
+        info do   git -C "${base}" add -f "${relfile}"
+        if [ -d ${base}/${relfile} -a ! -L ${base}/${relfile}  ]
+        then
+            info in ${base}
+            info ${relfile} is directory so not adding it in git.
+        else
+            if setup_add_to_version_control_ask "git -C ${base} add ${relfile} ? "
+            then
+                running git -C "${base}" add -f "${relfile}"
+            fi
+        fi
+    fi
+}
+
+function setup_add_to_version_control_links_dirs() # SHARAD
+{
+    basepath=$1
+    linkdir=$2
+
+    gitrelbase=$3
+    targetdir=$4
+
+    linkbasepath=${basepath}${basepath:+/}${linkdir}
+
+    debug basepath=$basepath
+    debug linkdir=$linkdir
+    debug targetdir=$targetdir
+
+
+
+    if [ -d ${linkbasepath} ]
+    then
+        cd ${linkbasepath}
+        # debug SHARAD TEST
+        local links=( $(find -type l | cut -c3- ) )
+        cd - > /dev/null 2>&1
+
+        debug links=${links[*]}
+
+        # TODO? do something here
+        for lnk in ${links[*]}
+        do
+            # running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
+            running setup_add_to_version_control ${basepath}/${gitrelbase} ${targetdir}/${lnk}
+        done
+    else
+        error dir ${basepath}/${linkdir} not exists
+    fi
+
+}                               # function setup_add_to_version_control_links_dirs()
+
+function setup_vc_mkdirpath_ensure()
+{
+    local vcbase="$1"
+    local base="$2"
+    local path="$3"
+
+    mkdir -p ${vcbase}/${base}/${path}
+    local dirpath=$path
+
+    while [ "$dirpath" != "." ]
+    do
+        running touch ${vcbase}/${base}/${dirpath}/.gitignore
+        running setup_add_to_version_control ${vcbase} ${base}/${dirpath}/.gitignore
+        dirpath="$(dirname $dirpath)"
+    done
+
+
+}
 function set_keyboard()
 {
     if [ ! -f $TMPDIR/keymap ]
@@ -970,66 +1117,7 @@ function setup_machine_dir()
 }
 
 ###{{{ libs
-# worker
-function confirm()
-{
-    # call with a prompt string or use a default
-    read -r -p "${1:-Are you sure? [y/N]} " response
-    case "$response" in
-        [yY][eE][sS]|[yY])
-            true
-            ;;
-        *)
-            false
-            ;;
-    esac
-}
-
-SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=unconfirmed
-function setup_add_to_version_control_ask()
-{
-    local response
-
-    if [ "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" != "all" -a "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" != "never" ]
-    then
-        read -r -p "${1:-Are you sure? } [y(es) Y|A(yes all) n(o) N(ever)] " response
-        case "$response" in
-            y[[eE][sS]?]?|y) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=yes;;
-            Y[[eE][sS]?]?|[aA][ll]?) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=all;;
-            n[o]?|n) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=no;;
-            N[e][v][e][r]|N) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=never;;
-            *) SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE=unconfirmed;;
-        esac
-    fi
-
-    if [ "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" = "yes" -o "${SETUP_ADD_TO_VERSION_CONTROL_ASK_RESPONSE}" = "all" ]
-    then
-        true
-    else
-        false
-    fi
-}
-
-function setup_add_to_version_control()
-{
-    local base="$1"
-    local relfile=$2
-    if ! git -C "${base}" ls-files --error-unmatch "${relfile}" >/dev/null 2>&1
-    then
-        info do   git -C "${base}" add -f "${relfile}"
-        if [ -d ${base}/${relfile} -a ! -L ${base}/${relfile}  ]
-        then
-            info in ${base}
-            info ${relfile} is directory so not adding it in git.
-        else
-            if setup_add_to_version_control_ask "git -C ${base} add ${relfile} ? "
-            then
-                running git -C "${base}" add -f "${relfile}"
-            fi
-        fi
-    fi
-}
-
+## workers
 function setup_make_path_by_position()
 {
     classpath=class/$1
@@ -1626,74 +1714,6 @@ function setup_deps_dirs()
     done
 }
 
-function setup_links_dirs()
-{
-    basepath=$1
-    linkdir=$2
-    targetdir=$3
-
-    debug basepath=$basepath
-    debug linkdir=$linkdir
-    debug targetdir=$targetdir
-
-    if [ -d ${basepath}/${linkdir} ]
-    then
-        cd ${basepath}/${linkdir}
-        # debug SHARAD TEST
-        local links=( $(find -type l | cut -c3- ) )
-        cd - > /dev/null 2>&1
-
-        debug links=${links[*]}
-
-        # TODO? do something here
-        for lnk in ${links[*]}
-        do
-            # debug running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
-            running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
-        done
-    else
-        error dir ${basepath}/${linkdir} not exists
-    fi
-
-}                               # function setup_links_dirs()
-
-function setup_add_to_version_control_links_dirs() # SHARAD
-{
-    basepath=$1
-    linkdir=$2
-
-    gitrelbase=$3
-    targetdir=$4
-
-    linkbasepath=${basepath}${basepath:+/}${linkdir}
-
-    debug basepath=$basepath
-    debug linkdir=$linkdir
-    debug targetdir=$targetdir
-
-
-
-    if [ -d ${linkbasepath} ]
-    then
-        cd ${linkbasepath}
-        # debug SHARAD TEST
-        local links=( $(find -type l | cut -c3- ) )
-        cd - > /dev/null 2>&1
-
-        debug links=${links[*]}
-
-        # TODO? do something here
-        for lnk in ${links[*]}
-        do
-            # running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
-            running setup_add_to_version_control ${basepath}/${gitrelbase} ${targetdir}/${lnk}
-        done
-    else
-        error dir ${basepath}/${linkdir} not exists
-    fi
-
-}                               # function setup_add_to_version_control_links_dirs()
-
 function setup_org_resource_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
@@ -1711,13 +1731,14 @@ function setup_org_home_portable_local_dirs()
     local LOCALDIRS_DIR=${USERDIR}/localdirs
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
     local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
+    local relhomeprotabledir=org/home.d/portable.d
 
-    running mkdir -p ${LOCALDIRS_DIR}/org/home.d/${folder}.d
+    running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} local.d
 
     # for folder in Desktop Documents Downloads Library Music Pictures Scratches Templates tmp Videos
     for folder in Desktop Documents Downloads Library Music Pictures Templates tmp Videos
     do
-        running mkdir -p ${LOCALDIRS_DIR}/org/home.d/local.d/${folder}
+        running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir}/local.d ${folder}
         running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d local.d/${folder} portable.d/${folder}/local
     done
 }
@@ -1728,25 +1749,16 @@ function setup_org_home_portable_public_dirs()
     local LOCALDIRS_DIR=${USERDIR}/localdirs
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
     local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
+    local relhomeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
 
-
-    running mkdir -p ${homeprotabledir}/Public/Publish/html
-    touch ${homeprotabledir}/.gitignore
-    touch ${homeprotabledir}/Public/.gitignore
-    touch ${homeprotabledir}/Public/Publish/.gitignore
-    touch ${homeprotabledir}/Public/Publish/html/.gitignore
-
-    setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/.gitignore
-    setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/.gitignore
-    setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/Publish/.gitignore
-    setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/Public/Publish/html/.gitignore
+    running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} Public/Publish/html
 
     for folder in local
     do
-        running mkdir -p ${LOCALDIRS_DIR}/org/home.d/${folder}.d/Public/Publish/html
-        running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d ${folder}.d/Public              Public/$folder
-        running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d ${folder}.d/Public/Publish      Public/Publish/$folder
-        running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d ${folder}.d/Public/Publish/html Public/Publish/html/$folder
+        running mkdir -p ${LOCALDIRS_DIR}/org/home.d/portable.d/${folder}.d/Public/Publish/html
+        running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d/portable.d/ ${folder}.d/Public              Public/$folder
+        running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d/portable.d/ ${folder}.d/Public/Publish      Public/Publish/$folder
+        running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d/portable.d/ ${folder}.d/Public/Publish/html Public/Publish/html/$folder
 
         # setup_add_to_version_control
     done
@@ -1754,23 +1766,12 @@ function setup_org_home_portable_public_dirs()
     # for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
     for folder in Documents Downloads Library Music Pictures Templates tmp Videos
     do
-        running mkdir -p ${homeprotabledir}/${folder}/Public/Publish/html
+        running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} ${folder}/Public/Publish/html
 
-        rm ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
+        running setup_make_relative_link ${homeprotabledir} ${folder}/Public              Public/${folder}
+        running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish      Public/Publish/${folder}
+        running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish/html Public/Publish/html/${folder}
 
-        running setup_make_relative_link ${homeprotabledir} ${folder}/Public              Public/$folder
-        running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish      Public/Publish/$folder
-        running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish/html Public/Publish/html/$folder
-
-        touch ${homeprotabledir}/${folder}/.gitignore
-        touch ${homeprotabledir}/${folder}/Public/.gitignore
-        touch ${homeprotabledir}/${folder}/Public/Publish/.gitignore
-        touch ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
-
-        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/.gitignore
-        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/Public/.gitignore
-        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/Public/Publish/.gitignore
-        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
 
         running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/$folder
         running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/Publish/$folder
@@ -1782,12 +1783,7 @@ function setup_org_home_portable_public_dirs()
     # for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
     for folder in Documents Library Scratches
     do
-        running mkdir -p ${homeprotabledir}/${folder}/Public/Publish/html
-
-        rm -f ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
-        touch ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
-
-        # setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
+        running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} ${folder}/Public/Publish/html
 
         running setup_make_relative_link ${homeprotabledir} ${folder}/Public              Public/$folder
         running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish      Public/Publish/$folder
@@ -1809,13 +1805,12 @@ function setup_org_home_portable_dirs()
     local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
     local rel_homeprotabledir=org/home.d/portable.d/
 
-    running mkdir -p ${homeprotabledir}
+    running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${rel_homeprotabledir}
+
     # dirs
     for folder in Desktop Downloads Music Pictures Templates tmp
     do
-        running mkdir -p ${homeprotabledir}/${folder}/Public/Publish/html
-        touch            ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
-        setup_add_to_version_control ~/.fa/localdirs ${rel_homeprotabledir}/${folder}/Public/Publish/html/.gitignore
+        running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${rel_homeprotabledir} ${folder}/Public/Publish/html
     done
 
 
@@ -1825,7 +1820,7 @@ function setup_org_home_portable_dirs()
     running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/ private/user/noenc/Private                                          localdirs/${rel_homeprotabledir}/Private
 
     running setup_make_relative_link ${LOCALDIRS_DIR}/${rel_homeprotabledir}     Public/Publish/html public_html
-    running setup_make_relative_link ${LOCALDIRS_DIR}                            Documents/Library   ${rel_homeprotabledir}/Library
+    running setup_make_relative_link ${LOCALDIRS_DIR}                            Documents/Library   Library
 
     running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/control.d/class/data/storage/local/container/scratches.d home.d/portable.d/Scratches
     running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/model.d                                                  home.d/portable.d/Volumes
@@ -1852,7 +1847,7 @@ function setup_org_misc_dirs()
     # lrwxrwxrwx 1 s s 72 Dec  4 03:37 offlineimap -> ../../resource.d/view.d/maildata/mail-and-metadata/offlineimap
     :
 
-    running mkdir -p ${LOCALDIRS_DIR}/org/misc.d
+    running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} org misc.d
 
     running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/maildata/mail-and-metadata/offlineimap misc.d/offlineimap
     running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/preserved/mailattachments              misc.d/mailattachments
@@ -1872,7 +1867,7 @@ function setup_org_rc_dirs()
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
     local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
 
-    running mkdir -p ${LOCALDIRS_DIR}/org/rc.d
+    running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} org/rc.d
 
     running setup_make_relative_link ${LOCALDIRS_DIR}/org deps.d/view.d/home rc.d/HOME
 
