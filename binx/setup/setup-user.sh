@@ -1731,9 +1731,12 @@ function setup_org_home_portable_public_dirs()
 
 
     running mkdir -p ${homeprotabledir}/Public/Publish/html
+    touch ${homeprotabledir}/.gitignore
     touch ${homeprotabledir}/Public/.gitignore
     touch ${homeprotabledir}/Public/Publish/.gitignore
     touch ${homeprotabledir}/Public/Publish/html/.gitignore
+
+    setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/.gitignore
     setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/.gitignore
     setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/Publish/.gitignore
     setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/Public/Publish/html/.gitignore
@@ -1769,12 +1772,15 @@ function setup_org_home_portable_public_dirs()
         running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/Public/Publish/.gitignore
         running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
 
+        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/$folder
+        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/Publish/$folder
+        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/Publish/html/$folder
 
     done
 
 
     # for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
-    for folder in Documents Library Scratches tmp
+    for folder in Documents Library Scratches
     do
         running mkdir -p ${homeprotabledir}/${folder}/Public/Publish/html
 
@@ -1801,25 +1807,29 @@ function setup_org_home_portable_dirs()
     local LOCALDIRS_DIR=${USERDIR}/localdirs
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
     local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
+    local rel_homeprotabledir=org/home.d/portable.d/
 
     running mkdir -p ${homeprotabledir}
     # dirs
     for folder in Desktop Downloads Music Pictures Templates tmp
     do
         running mkdir -p ${homeprotabledir}/${folder}/Public/Publish/html
-        touch ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
-        setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
+        touch            ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
+        setup_add_to_version_control ~/.fa/localdirs ${rel_homeprotabledir}/${folder}/Public/Publish/html/.gitignore
     done
 
 
 
-    running setup_make_relative_link ${USERDIR} doc localdirs/org/home.d/portable.d/Documents
-    running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/ private/user/noenc/Private localdirs/org/home.d/portable.d/Private
-    running setup_make_relative_link ${LOCALDIRS_DIR} Documents/Library  Library
-    running setup_make_relative_link ${LOCALDIRS_DIR} Public/Publish/html public_html
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/control.d/class/data/storage/local/container/scratches.d home.d/portable.d/Scratches
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/model.d home.d/portable.d/Volumes
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/maildata/mail-and-metadata/maildir home.d/portable.d/Maildir
+    running setup_make_relative_link ${USERDIR} doc localdirs/${rel_homeprotabledir}/Documents
+
+    running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/ private/user/noenc/Private                                          localdirs/${rel_homeprotabledir}/Private
+
+    running setup_make_relative_link ${LOCALDIRS_DIR}/${rel_homeprotabledir}     Public/Publish/html public_html
+    running setup_make_relative_link ${LOCALDIRS_DIR}                            Documents/Library   ${rel_homeprotabledir}/Library
+
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/control.d/class/data/storage/local/container/scratches.d home.d/portable.d/Scratches
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/model.d                                                  home.d/portable.d/Volumes
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/view.d/maildata/mail-and-metadata/maildir                home.d/portable.d/Maildir
 
     # links
     # for lnk in org/home.d/portable.d org/home.d/portable.d/Documents org/home.d/portable.d/Private org/home.d/portable.d/Library org/home.d/portable.d/public_html org/home.d/portable.d/Scratches org/home.d/portable.d/Maildir org/home.d/portable.d/Volumes
