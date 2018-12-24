@@ -325,36 +325,44 @@ candidates. Candidate is a list of a drive letter(or nil) and a directory"
 
 (defun jump-to-previous-window (&optional window (current-window))
   ;; BUG TODO Need lots of improvements.
-  (when *jump-to-previous-window*
-    ;; (typep (current-group) 'tile-group)
-    (when (eq (type-of (current-group)) 'tile-group)
-      (let ((frame (window-frame window))
-            (group (window-group window)))
-        ;; (message "fm win == win fw ~a cw ~a w ~a" (frame-window frame) (current-window) window)
-        ;; (message "if (group-current-window group) ~a   (focus-pre-w) ~a  ow ~a"
-        ;;          (group-current-window group)
-        ;;          (focus-prev-window group)
-        ;;          (other-window group))
-        (when (eq (tile-group-current-frame group) frame) ;only for current frame window
-          (let ((group (current-group)))
-            (unless (group-current-window group) ;unless prev window present
-              ;; (focus-prev-window group)
-              (other-window group))))))))
+  (if window
+      (when *jump-to-previous-window*
+        ;; (typep (current-group) 'tile-group)
+        (when (typep (current-group) 'tile-group)
+          (let ((frame (window-frame window))
+                (group (window-group window)))
+            ;; (message "fm win == win fw ~a cw ~a w ~a" (frame-window frame) (current-window) window)
+            ;; (message "if (group-current-window group) ~a   (focus-pre-w) ~a  ow ~a"
+            ;;          (group-current-window group)
+            ;;          (focus-prev-window group)
+            ;;          (other-window group))
+            (if (and frame group)
+                (when (eq (tile-group-current-frame group) frame) ;only for current frame window
+                  (let ((group (current-group)))
+                    (unless (group-current-window group) ;unless prev window present
+                      (handler-case
+                          ;; TODO: debug further where errors happened in function OTHER-WINDOW
+                          (other-window group)
+                        (xlib:window-error ()
+                          (message
+                           "jump-to-previous-window: XLIB:WINDOW-ERROR occurred in (other-window group[~a])." group))))))
+                (message "frame or group or both are null")))))
+      (message "window is null")))
 
 (add-hook *destroy-window-hook* #'jump-to-previous-window)
 
 (defcommand enable-jump-to-previous-window () ()
-  (unless (find *destroy-window-hook* #'jump-to-previous-window)
+  (unless (find #'jump-to-previous-window *destroy-window-hook*)
     (setf *jump-to-previous-window* t)
     (add-hook *destroy-window-hook* #'jump-to-previous-window)))
 
 (defcommand disable-jump-to-previous-window () ()
-  (if (find *destroy-window-hook* #'jump-to-previous-window)
-      (setf *jump-to-previous-window* nil)
-      (remove-hook *destroy-window-hook* #'jump-to-previous-window)))
+  (when (find #'jump-to-previous-window *destroy-window-hook*)
+    (setf *jump-to-previous-window* nil)
+    (remove-hook *destroy-window-hook* #'jump-to-previous-window)))
 
 (defcommand toggle-jump-to-previous-window () ()
-  (if (find *destroy-window-hook* #'jump-to-previous-window)
+  (if (find #'jump-to-previous-window *destroy-window-hook*)
       (progn
         (setf *jump-to-previous-window* nil)
         (remove-hook *destroy-window-hook* #'jump-to-previous-window))
