@@ -1,4 +1,4 @@
-;;; org-activity-log-note.el --- Emacs Activity logger, analyzer and reporter  -*- lexical-binding: t; -*-
+;;; org-capture-note.el --- Emacs Activity logger, analyzer and reporter  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016  sharad
 
@@ -28,26 +28,20 @@
 ;; `activity-mode'. If you wish to activate it globally, use
 ;; `global-activity-mode'.
 
-;; Set variable `activity-api-key' to your API key. Point
-;; `activity-cli-path' to the absolute path of the CLI script
-;; (activity-cli.py).
-
 ;; See http://nullprogram.com/blog/2013/04/07/ for help
 ;; add example code directly here for quick reference.
 
 ;;; Code:
 
+(provide 'org-capture-note)
 
 (require 'org-capture+)
-
 (require 'activity-base)
-(require 'org-activity-note)
-
-(provide 'org-activity-log-note)
-
 
 
-(defextend@ @dest-class :gen-org-capture-dest (marker)
+(defextend@ @dest-class :gen-org-capture-dest ()
+  "Capture Dest class"
+
   (def@ @@ :dispatch (marker)
     (@:init)
     (setf @:marker marker))
@@ -61,7 +55,7 @@
      ((symbolp @:marker)
       (let ((m (symbol-value @:marker))
             (if (markerp m) m))))
-     (t )))
+     (t nil)))
 
   (def@ @@ :get-marker ()
     (cond
@@ -82,9 +76,39 @@
   (def@ @@ :receive (fmt &rest args)
     ;; TODO
     ;; add necessary code for interactive note.
-    (org-capture+ @:type @:target @:template @:capture-plist))
+    (org-capture+ @:type @:target @:template @:capture-plist)))
 
-  (@:dispatch marker))
+(defvar @org-capture-dest (@! @dest-class :gen-org-capture-dest))
+
+(setf @org-capture-immediate-dest
+ (@extend-object @org-capture-dest "Non-Interactive capture"
+  (push
+   (list :immediate-finish t)
+   @:capture-plist)
+
+  (def@ @@ :receive (fmt &rest args)
+    ;; TODO
+    ;; add necessary code for interactive note.
+    (org-capture+ @:type @:target @:template @:capture-plist))))
+
+(setf @org-capture-edit-dest
+  (@extend-object @org-capture-dest "Interactive capture"
+    "Interactive capture"
+    (def@ @@ :receive (fmt &rest args)
+      ;; TODO
+      ;; add necessary code for interactive note.
+      (org-capture+ @:type @:target @:template @:capture-plist))))
+
+(setf @org-capture-edit-entry-dest
+      (@extend-object @org-capture-dest "Interactive capture"
+        "Interactive capture"
+
+        (setf @:type 'entry)
+
+        (def@ @@ :receive (fmt &rest args)
+          ;; TODO
+          ;; add necessary code for interactive note.
+          (org-capture+ @:type @:target @:template @:capture-plist))))
 
 
 
@@ -94,6 +118,7 @@
    (@! @dest-class :gen-org-capture-dest "msg" marker)
    @:dests))
 
+
 (defvar @org-clock-capture
   (@! @note-class :gen-org-capture-note
       "org-clock-log-note"
@@ -106,4 +131,4 @@
 
 ;; (@! @org-clock-note :send "Hello")
 
-;;; org-activity-log-note.el ends here
+;;; org-capture-note.el ends here

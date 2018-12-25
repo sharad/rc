@@ -60,6 +60,7 @@
 
      drived-obj))
 (put '@extend-object 'lisp-indent-function 2)
+(get '@extend-object 'lisp-indent-function)
 
 (defmacro defextend@ (object gen-method params &rest body )
   `(progn
@@ -71,23 +72,24 @@
          ,@(if (stringp (car body)) (cdr body) body)))))
 (put 'defextend@ 'lisp-indent-function 3)
 
-(font-lock-add-keywords 'emacs-lisp-mode
-                        '(("(\\<\\(def@\\) +\\([^ ()]+\\)"
-                           (1 'font-lock-keyword-face)
-                           (2 'font-lock-function-name-face))))
+(progn
+  (font-lock-add-keywords 'emacs-lisp-mode
+                          '(("(\\<\\(def@\\) +\\([^ ()]+\\)"
+                             (1 'font-lock-keyword-face)
+                             (2 'font-lock-function-name-face))))
 
-(font-lock-add-keywords 'emacs-lisp-mode
-                        '(("\\(@\\^?:[^ ()]+\\)\\>"
-                           (1 'font-lock-builtin-face))))
+  (font-lock-add-keywords 'emacs-lisp-mode
+                          '(("\\(@\\^?:[^ ()]+\\)\\>"
+                             (1 'font-lock-builtin-face))))
 
-(font-lock-add-keywords 'emacs-lisp-mode
-                        '(("(\\<\\(defextend@\\) +\\([^ ()]+\\)"
-                           (1 'font-lock-keyword-face)
-                           (2 'font-lock-function-name-face))))
+  (font-lock-add-keywords 'emacs-lisp-mode
+                          '(("(\\<\\(defextend@\\) +\\([^ ()]+\\)"
+                             (1 'font-lock-keyword-face)
+                             (2 'font-lock-function-name-face))))
 
-(font-lock-add-keywords 'emacs-lisp-mode
-                        '(("\\(@extend-object\\)\\>"
-                           (1 'font-lock-builtin-face))))
+  (font-lock-add-keywords 'emacs-lisp-mode
+                          '(("\\(@extend-object\\)\\>"
+                             (1 'font-lock-builtin-face)))))
 
 (progn
   (string-match "(\\<\\(def@\\)\\> +\\([^ ()]+\\)" "(def@ x")
