@@ -37,7 +37,11 @@
 
 ;;; Code:
 
+
+(require 'org-capture+)
+
 (require 'activity-base)
+(require 'org-activity-note)
 
 (provide 'org-activity-log-note)
 
@@ -87,7 +91,7 @@
 (defextend@ @note-class :gen-org-capture-note (marker)
   "Generator for org note message"
   (push
-   (@! @dest-class :gen-org-dest "msg" marker)
+   (@! @dest-class :gen-org-capture-dest "msg" marker)
    @:dests))
 
 (defvar @org-clock-capture

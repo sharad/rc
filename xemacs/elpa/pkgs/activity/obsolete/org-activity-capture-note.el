@@ -60,7 +60,7 @@
       ((symbolp @:marker)
        (let ((m (symbol-value @:marker))
              (if (markerp m) m))))
-      (t )))
+      (t)))
 
   (def@ @@ :get-marker ()
     (cond
@@ -87,7 +87,7 @@
        'entry
        '(function org-goto-refile)
        "* TODO %? %^g\n %i\n [%a]\n"
-       :empty-lines 1)
+       :empty-lines 1)))
 
       ;; (move-marker org-log-note-return-to (point))
       ;; (org-clock-lotus-with-current-clock ;change it to consider marker marker
@@ -96,7 +96,7 @@
       ;;                                        (concat
       ;;                                         "# Task: " (org-get-heading t) "\n\n"
       ;;                                         (apply #'format fmt args))))
-      ))
+
 
   (@:dispatch marker))
 
@@ -105,7 +105,8 @@
 (defextend@ @note-class :gen-org-log-note (marker)
   "Generator for org note message"
   (push
-   (@! @dest-class :gen-org-dest "msg" marker)
+   ;; (@! @dest-class :gen-org-dest "msg" marker)
+   (@! @dest-class :gen-org-log-dest "msg" marker)
    @:dests))
 
 (defvar @org-clock-lognote
