@@ -81,7 +81,7 @@
 (defvar @org-capture-dest (@! @dest-class :gen-org-capture-dest))
 
 (setf @org-capture-immediate-dest
- (@extend-object @org-capture-dest "Non-Interactive capture"
+ (@drive-object @org-capture-dest "Non-Interactive capture"
   (push
    (list :immediate-finish t)
    @:capture-plist)
@@ -92,7 +92,7 @@
     (org-capture+ @:type @:target @:template @:capture-plist))))
 
 (setf @org-capture-edit-dest
-  (@extend-object @org-capture-dest "Interactive capture"
+  (@drive-object @org-capture-dest "Interactive capture"
     "Interactive capture"
     (def@ @@ :receive (fmt &rest args)
       ;; TODO
@@ -100,7 +100,7 @@
       (org-capture+ @:type @:target @:template @:capture-plist))))
 
 (setf @org-capture-edit-entry-dest
-      (@extend-object @org-capture-dest "Interactive capture"
+      (@drive-object @org-capture-dest "Interactive capture"
         "Interactive capture"
 
         (setf @:type 'entry)

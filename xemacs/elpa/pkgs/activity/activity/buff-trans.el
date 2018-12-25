@@ -228,7 +228,7 @@
     t))
 
 (setf @defautl-buffer-transition-with-log-note-in-org-current-clock
-  (@extend-object @transition-class "default buffer transition"
+  (@drive-object @transition-class "default buffer transition"
     (def@ @@ :dispatch (prev curr time-spent)
       (@! @org-clock-note :send "Changed to buffer %s from %s" curr prev))))
 

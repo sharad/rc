@@ -48,12 +48,12 @@
 
 
 
-(defmacro @extend-object (object &rest body)
+(defmacro @drive-object (object &rest body)
   `(with-@@ object
             ,@(if (stringp (car body))
                   `((setf @:doc ,(car body))))
             ,@(if (stringp (car body)) (cdr body) body)))
-(put '@extend-object 'lisp-indent-function 1)
+(put '@drive-object 'lisp-indent-function 1)
 
 (defmacro @drive-object (object name &rest body)
   `(let ((drived-obj
@@ -95,6 +95,10 @@
 
   (font-lock-add-keywords 'emacs-lisp-mode
                           '(("\\(@drive-object\\)\\>"
+                             (1 'font-lock-builtin-face))))
+
+  (font-lock-add-keywords 'emacs-lisp-mode
+                          '(("\\(@extend-object\\)\\>"
                              (1 'font-lock-builtin-face)))))
 
 (progn
