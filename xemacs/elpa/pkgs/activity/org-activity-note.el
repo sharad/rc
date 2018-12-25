@@ -43,7 +43,7 @@
 
 
 
-(defsubclass-gen@ @dest-class :gen-org-dest (marker)
+(defextend@ @dest-class :gen-org-dest (marker)
   (def@ @@ :dispatch (marker)
     (@:init)
     (setf @:marker marker))
@@ -82,14 +82,14 @@
 
 
 
-(defsubclass-gen@ @note-class :gen-org-note (marker)
+(defextend@ @note-class :gen-org-note (marker)
   "Generator for org note message"
   (push
    (@! @dest-class :gen-org-dest "msg" marker)
    @:dests))
 
 
-(defsubclass-gen@ @note-class :gen-dual-org-note (marker1 marker2)
+(defextend@ @note-class :gen-dual-org-note (marker1 marker2)
   "Generator for dual org note message"
 
   (def@ @@ :dispatch (marker1 marker2)

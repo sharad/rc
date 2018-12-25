@@ -43,7 +43,7 @@
 
 (provide 'buff-trans)
 
-(defsubclass-gen@ @transition-class :gen-buffer-trans (default)
+(defextend@ @transition-class :gen-buffer-trans (default)
 
   (def@ @@ :initialize ()
     (setf @:mode-transition nil)
@@ -61,7 +61,7 @@
                         @:transition)))
       (@! transition :dispatch prev curr time-spent))))
 
-(defsubclass-gen@ @transition-span-dectector-class :gen-buffer-trans-span-detector (transition)
+(defextend@ @transition-span-dectector-class :gen-buffer-trans-span-detector (transition)
   "Deted"
 
   (def@ @@ :ptrace (&optional msg)
@@ -228,7 +228,7 @@
     t))
 
 (setf @defautl-buffer-transition-with-log-note-in-org-current-clock
-  (defsubobj@ @transition-class "default buffer transition"
+  (@extend-object @transition-class "default buffer transition"
     (def@ @@ :dispatch (prev curr time-spent)
       (@! @org-clock-note :send "Changed to buffer %s from %s" curr prev))))
 

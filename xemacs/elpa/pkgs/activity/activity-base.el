@@ -48,10 +48,10 @@
 
 
 
-(defmacro defsubobj@ (object name &rest body)
+(defmacro @extend-object (object name &rest body)
   `(let ((drived-obj
-           (@extend ,object
-                    :name ,name)))
+          (@extend ,object
+                   :name ,name)))
 
      (with-@@ drived-obj
        ,@(if (stringp (car body))
@@ -59,66 +59,93 @@
        ,@(if (stringp (car body)) (cdr body) body))
 
      drived-obj))
-(put 'defsubobj@ 'lisp-indent-function 2)
+(put '@extend-object 'lisp-indent-function 2)
 
-(defmacro defsubclass-gen@ (object gen-method params &rest body )
+(defmacro defextend@ (object gen-method params &rest body )
   `(progn
      (def@ ,object ,gen-method (name ,@params)
        ,@(if (stringp (car body))
              (list (car body)) ())
 
-       (defsubobj@ ,object name
+       (@extend-object ,object name
          ,@(if (stringp (car body)) (cdr body) body)))))
-(put 'defsubclass-gen@ 'lisp-indent-function 3)
+(put 'defextend@ 'lisp-indent-function 3)
+
+(font-lock-add-keywords 'emacs-lisp-mode
+                        '(("(\\<\\(def@\\) +\\([^ ()]+\\)"
+                           (1 'font-lock-keyword-face)
+                           (2 'font-lock-function-name-face))))
+
+(font-lock-add-keywords 'emacs-lisp-mode
+                        '(("\\(@\\^?:[^ ()]+\\)\\>"
+                           (1 'font-lock-builtin-face))))
+
+(font-lock-add-keywords 'emacs-lisp-mode
+                        '(("(\\<\\(defextend@\\) +\\([^ ()]+\\)"
+                           (1 'font-lock-keyword-face)
+                           (2 'font-lock-function-name-face))))
+
+(font-lock-add-keywords 'emacs-lisp-mode
+                        '(("\\(@extend-object\\)\\>"
+                           (1 'font-lock-builtin-face))))
+
+(progn
+  (string-match "(\\<\\(def@\\)\\> +\\([^ ()]+\\)" "(def@ x")
+
+  (string-match "(\\<\\(def@\\) +\\([^ ()]+\\)" "(def@ x")
+
+  (string-match "\\<\\(@\\^?:[^ ()]+\\)\\>" "@:aa")
+
+  (string-match "\\(@\\^?:[^ ()]+\\)\\>" "@:aa"))
 
 
 (setf @activity-base
-  (defsubobj@ @ "activity-base"
-    "Activity Base"
+      (@extend-object @ "activity-base"
+                        "Activity Base"
 
-    (def@ @@ :keyp (key)
-      (memq key (@:keys)))
+                        (def@ @@ :keyp (key)
+                          (memq key (@:keys)))
 
-    (def@ @@ :finalize ()
-      ())
+                        (def@ @@ :finalize ()
+                          ())
 
-    (def@ @@ :init ()
-      (@^:init)
-      (message "@activity-base :init")
-      (setf @:_occuredon (current-time)))
+                        (def@ @@ :init ()
+                          (@^:init)
+                          (message "@activity-base :init")
+                          (setf @:_occuredon (current-time)))
 
-    (def@ @@ :occuredon ()
-      (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))
+                        (def@ @@ :occuredon ()
+                          (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))
 
-    (def@ @@ :dispatch ()
-      (@:init))
+                        (def@ @@ :dispatch ()
+                          (@:init))
 
-    (@:dispatch)))
+                        (@:dispatch)))
 
 
 
 (setf @dest-class
-      (defsubobj@ @activity-base "dest-base-class"
+      (@extend-object @activity-base "dest-base-class"
           "Destination Base Class"
 
-          (defsubclass-gen@ @@ :gen-builder ()
+          (defextend@ @@ :gen-builder ()
             (def@ @@ :receive (fmt &rest args)
               (apply #'format
                      fmt args)))
 
-          (defsubclass-gen@ @@ :gen-msg ()
+          (defextend@ @@ :gen-msg ()
             (def@ @@ :receive (fmt &rest args)
               (apply #'message
                      fmt args)))
 
-          (defsubclass-gen@ @@ :gen-warning ()
+          (defextend@ @@ :gen-warning ()
             (def@ @@ :receive (fmt &rest args)
               (apply #'lwarn
                      'activity
                      'warning
                      fmt args)))
 
-          (defsubclass-gen@ @@ :gen-error ()
+          (defextend@ @@ :gen-error ()
             (def@ @@ :receive (fmt &rest args)
               (apply #'lwarn
                      'activity
@@ -133,7 +160,7 @@
 
 
 (setf @note-class
-      (defsubobj@ @activity-base "note-base-class"
+      (@extend-object @activity-base "note-base-class"
         "Note Base Class"
 
         (setf @:dests '())
@@ -161,25 +188,25 @@
                    (boundp '@:dests)
                    (consp @:dests))))
 
-        ;; (defsubclass-gen@ @@ :gen-format-msg ()
+        ;; (defextend@ @@ :gen-format-msg ()
         ;;                      "Generator for format message note"
         ;;   (push
         ;;    (@! @dest-class :gen-msg "msg")
         ;;    @:dests))
 
-        ;; (defsubclass-gen@ @@ :gen-org-log-note ()
+        ;; (defextend@ @@ :gen-org-log-note ()
         ;;                      "Generator for org log note"
         ;;   (push
         ;;    (@! @dest-class :gen-msg "msg")
         ;;    @:dests))
 
-        ;; (defsubclass-gen@ @@ :gen-org-dual-log-note ()
+        ;; (defextend@ @@ :gen-org-dual-log-note ()
         ;;                      "Generator for dual org log note"
         ;;   (push
         ;;    (@! @dest-class :gen-msg "msg")
         ;;    @:dests))
 
-        ;; (defsubclass-gen@ @@ :gen-org-intreactive-log-note ()
+        ;; (defextend@ @@ :gen-org-intreactive-log-note ()
         ;;                      "Generator for Interactive org log note"
         ;;   (push
         ;;    (@! @dest-class :gen-msg "msg")
@@ -194,7 +221,7 @@
 (progn
   ;; activity
   (setf @activity-class
-        (defsubobj@ @activity-base "activity class"
+        (@extend-object @activity-base "activity class"
           "Activity class"
           (def@ @@ :init ()
             (@^:init)
@@ -202,13 +229,13 @@
             (setf @:occuredon (current-time)))))
 
   (setf @event-class
-        (defsubobj@ @activity-class "event class"
+        (@extend-object @activity-class "event class"
           "Event class"
           (def@ @@ :note ()
             )))
 
   (setf @transition-class
-        (defsubobj@ @event-class "transition class"
+        (@extend-object @event-class "transition class"
           "Transition class"
           (def@ @@ :note ()
             ))))
@@ -218,25 +245,25 @@
 (progn
   ;; detectors
   (setf @activity-dectector-class
-        (defsubobj@ @activity-base "activity detector class"
+        (@extend-object @activity-base "activity detector class"
           "Activity detector class"
           (def@ @@ :note ()
             )))
 
   (setf @event-dectector-class
-        (defsubobj@ @activity-dectector-class "event detector class"
+        (@extend-object @activity-dectector-class "event detector class"
           "Event detector class"
           (def@ @@ :note ()
             )))
 
   (setf @transition-dectector-class
-        (defsubobj@ @event-dectector-class "transition detector class"
+        (@extend-object @event-dectector-class "transition detector class"
           "Transition detector class"
           (def@ @@ :note ()
             )))
 
   (setf @event-span-dectector-class       ;TODO START
-        (defsubobj@ @event-dectector-class "duration detector class"
+        (@extend-object @event-dectector-class "duration detector class"
           "Duration detector class"
           (def@ @@ :note ()
             )
@@ -249,7 +276,7 @@
             )))
 
   (setf @transition-span-dectector-class       ;TODO START
-        (defsubobj@ @transition-dectector-class "duration detector class"
+        (@extend-object @transition-dectector-class "duration detector class"
           "Duration detector class"
           (def@ @@ :note ()
             )
@@ -265,13 +292,13 @@
 
 
 (setf @postpone-event-class
-      (defsubobj@ @activity-base "activity detector class"
+      (@extend-object @activity-base "activity detector class"
         "Activity detector class"
         (def@ @@ :note ()
           )))
 
 (setf @save-event-class
-      (defsubobj@ @activity-base "activity detector class"
+      (@extend-object @activity-base "activity detector class"
         "Activity detector class"
         (def@ @@ :note ()
           )))
@@ -281,13 +308,13 @@
       ;; and measure time
       ;; collect in list
       ;; provide list return-reset functions
-      (defsubobj@ @activity-base "activity detector class"
+      (@extend-object @activity-base "activity detector class"
         "Activity detector class"
         (def@ @@ :note ()
           )))
 
 (setf @activity
-      (defsubobj@ @activity-base "activity"
+      (@extend-object @activity-base "activity"
         "Activity class"
         (def@ @@ :init ()
           (@^:init)

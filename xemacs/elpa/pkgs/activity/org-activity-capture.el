@@ -43,7 +43,7 @@
 
 
 
-(defsubclass-gen@ @dest-class :gen-org-capture-dest (marker)
+(defextend@ @dest-class :gen-org-capture-dest (marker)
   (def@ @@ :dispatch (marker)
     (@:init)
     (setf @:marker marker))
@@ -84,7 +84,7 @@
 
 
 
-(defsubclass-gen@ @note-class :gen-org-capture-note (marker)
+(defextend@ @note-class :gen-org-capture-note (marker)
   "Generator for org note message"
   (push
    (@! @dest-class :gen-org-dest "msg" marker)
