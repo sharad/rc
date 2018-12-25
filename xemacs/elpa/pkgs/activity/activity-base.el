@@ -47,12 +47,22 @@
   :prefix "activity-")
 
 
+(defvar activity-subdirs
+  (mapcar
+   #'(lambda (dir)
+       (expand-file-name dir (file-name-directory load-file-name)))
+   '("node-dest" "activity")))
 
-(defmacro @drive-object (object &rest body)
-  `(with-@@ object
-            ,@(if (stringp (car body))
-                  `((setf @:doc ,(car body))))
-            ,@(if (stringp (car body)) (cdr body) body)))
+(defun activity-add-subdirs-load-path ()
+  (dolist (dir activity-subdirs)
+    (add-to-list 'load-path dir)))
+
+(activity-add-subdirs-load-path)
+(defmacro @drive-object (object &rest body)
+                                                                                                                                                                                                                                                                                 `(with-@@ object
+                                                                                                                                                                                                                                                                                    ,@(if (stringp (car body))
+                                                                                                                                                                                                                                                                                          `((setf @:doc ,(car body))))
+                                                                                                                                                                                                                                                                                    ,@(if (stringp (car body)) (cdr body) body)))
 (put '@drive-object 'lisp-indent-function 1)
 
 (defmacro @drive-object (object name &rest body)
