@@ -139,6 +139,7 @@
         (setf @:dests '())
 
         (def@ @@ :send (fmt &rest args)
+          "Node send method"
           (if (and
                ;; (memq :dests (@:keys))
                @:dests
@@ -160,29 +161,29 @@
                    (boundp '@:dests)
                    (consp @:dests))))
 
-        (defsubclass-gen@ @@ :gen-format-msg ()
-                             "Generator for format message note"
-          (push
-           (@! @dest-class :gen-msg "msg")
-           @:dests))
+        ;; (defsubclass-gen@ @@ :gen-format-msg ()
+        ;;                      "Generator for format message note"
+        ;;   (push
+        ;;    (@! @dest-class :gen-msg "msg")
+        ;;    @:dests))
 
-        (defsubclass-gen@ @@ :gen-org-log-note ()
-                             "Generator for org log note"
-          (push
-           (@! @dest-class :gen-msg "msg")
-           @:dests))
+        ;; (defsubclass-gen@ @@ :gen-org-log-note ()
+        ;;                      "Generator for org log note"
+        ;;   (push
+        ;;    (@! @dest-class :gen-msg "msg")
+        ;;    @:dests))
 
-        (defsubclass-gen@ @@ :gen-org-dual-log-note ()
-                             "Generator for dual org log note"
-          (push
-           (@! @dest-class :gen-msg "msg")
-           @:dests))
+        ;; (defsubclass-gen@ @@ :gen-org-dual-log-note ()
+        ;;                      "Generator for dual org log note"
+        ;;   (push
+        ;;    (@! @dest-class :gen-msg "msg")
+        ;;    @:dests))
 
-        (defsubclass-gen@ @@ :gen-org-intreactive-log-note ()
-                             "Generator for Interactive org log note"
-          (push
-           (@! @dest-class :gen-msg "msg")
-           @:dests))
+        ;; (defsubclass-gen@ @@ :gen-org-intreactive-log-note ()
+        ;;                      "Generator for Interactive org log note"
+        ;;   (push
+        ;;    (@! @dest-class :gen-msg "msg")
+        ;;    @:dests))
 
         (def@ @@ :dispatch ()
           (@:init))
