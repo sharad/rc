@@ -39,7 +39,7 @@
 (require 'activity-base)
 
 
-(defextend@ @dest-class :gen-org-capture-dest ()
+(defobjgen@ @dest-class :gen-org-capture-dest ()
   "Capture Dest class"
 
   (def@ @@ :dispatch (marker)
@@ -112,7 +112,7 @@
 
 
 
-(defextend@ @note-class :gen-org-capture-note (marker)
+(defobjgen@ @note-class :gen-org-capture-note (marker)
   "Generator for org note message"
   (push
    (@! @dest-class :gen-org-capture-dest "msg" marker)

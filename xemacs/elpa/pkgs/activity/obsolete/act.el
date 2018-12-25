@@ -53,7 +53,7 @@
 (def@ @act-base :finalize ()
       ())
 
-(defmacro @extend-object (object name params &rest body)
+(defmacro @drive-object (object name params &rest body)
   `(let ((drived-obj
           (@extend ,object
                    :name (concat (@ ,object :name) " > " ,name))))
@@ -64,15 +64,15 @@
        ,@(if (stringp (car body)) (cdr body) body))
 
      drived-obj))
-(put '@extend-object 'lisp-indent-function 3)
+(put '@drive-object 'lisp-indent-function 3)
 
-(defmacro defextend@ (object gen-method params &rest body )
+(defmacro defobjgen@ (object gen-method params &rest body )
   `(progn
      (def@ ,object ,gen-method (name ,@params)
            ,@(if (stringp (car body)) (list (car body)) ())
-           (@extend-object ,object name ,params
+           (@drive-object ,object name ,params
              ,@(if (stringp (car body)) (cdr body) body)))))
-(put 'defextend@ 'lisp-indent-function 3)
+(put 'defobjgen@ 'lisp-indent-function 3)
 
 
 
@@ -87,24 +87,24 @@
         (@extend @act-base
                  :name "dest class"))
 
-  (defextend@ @dest-class :gen-builder ()
+  (defobjgen@ @dest-class :gen-builder ()
     (def@ @@ :receive (fmt &rest args)
       (apply #'format
              fmt args)))
 
-  (defextend@ @dest-class :gen-msg ()
+  (defobjgen@ @dest-class :gen-msg ()
     (def@ @@ :receive (fmt &rest args)
       (apply #'message
              fmt args)))
 
-  (defextend@ @dest-class :gen-warning ()
+  (defobjgen@ @dest-class :gen-warning ()
     (def@ @@ :receive (fmt &rest args)
       (apply #'lwarn
              'activity
              'warning
              fmt args)))
 
-  (defextend@ @dest-class :gen-error ()
+  (defobjgen@ @dest-class :gen-error ()
     (def@ @@ :receive (fmt &rest args)
       (apply #'lwarn
              'activity
@@ -136,28 +136,28 @@
                  (boundp '@:dests)
                  (consp @:dests))))
 
-  (defextend@ @note-class :gen-format-msg ()
+  (defobjgen@ @note-class :gen-format-msg ()
     "Generator for format message note"
     (push
      (@! @dest-class :gen-msg "msg")
      @:dests)
     )
 
-  (defextend@ @note-class :gen-org-log-note ()
+  (defobjgen@ @note-class :gen-org-log-note ()
     "Generator for org log note"
     (push
      (@! @dest-class :gen-msg "msg")
      @:dests)
     )
 
-  (defextend@ @note-class :gen-org-dual-log-note ()
+  (defobjgen@ @note-class :gen-org-dual-log-note ()
     "Generator for dual org log note"
     (push
      (@! @dest-class :gen-msg "msg")
      @:dests)
     )
 
-  (defextend@ @note-class :gen-org-intreactive-log-note ()
+  (defobjgen@ @note-class :gen-org-intreactive-log-note ()
     "Generator for Interactive org log note"
     (push
      (@! @dest-class :gen-msg "msg")
@@ -167,20 +167,20 @@
 (progn
   ;; activity
   (setf @activity-class
-        (@extend-object @act-base "activity class" ()
+        (@drive-object @act-base "activity class" ()
           "Activity class"
           (def@ @@ :init ()
             (@^:init)
             (setf @:occuredon (current-time)))))
 
   (setf @event-class
-        (@extend-object @activity-class "event class" ()
+        (@drive-object @activity-class "event class" ()
           "Event class"
           (def@ @@ :note ()
             )))
 
   (setf @transition-class
-        (@extend-object @event-class "transition class" ()
+        (@drive-object @event-class "transition class" ()
           "Transition class"
           (def@ @@ :note ()
             ))))
@@ -188,19 +188,19 @@
 (progn
   ;; detectors
   (setf @activity-dectector-class
-        (@extend-object @act-base "activity detector class" ()
+        (@drive-object @act-base "activity detector class" ()
           "Activity detector class"
           (def@ @@ :note ()
             )))
 
   (setf @event-dectector-class
-        (@extend-object @activity-dectector-class "event detector class" ()
+        (@drive-object @activity-dectector-class "event detector class" ()
           "Event detector class"
           (def@ @@ :note ()
             )))
 
   (setf @transition-dectector-class
-        (@extend-object @event-dectector-class "transition detector class" ()
+        (@drive-object @event-dectector-class "transition detector class" ()
           "Transition detector class"
           (def@ @@ :note ()
             ))))
@@ -208,7 +208,7 @@
 
 (progn
   (setf @test-base
-        (@extend-object @ "test-base"
+        (@drive-object @ "test-base"
           "test base"
           (def@ @@ :init ()
             (message "@test-base :init start")
@@ -223,7 +223,7 @@
           (@:dispatch)))
 
   (setf @test-base1
-        (@extend-object @test-base "test base1"
+        (@drive-object @test-base "test base1"
           "test base1"
           (def@ @@ :init ()
             (message "@test-base1 :init start")
@@ -401,7 +401,7 @@
 
 (progn
   (setf @test-base
-        (@extend-object @ "test-base"
+        (@drive-object @ "test-base"
             "test base"
 
           (def@ @@ :init ()
@@ -417,7 +417,7 @@
           (@:dispatch)))
 
   (setf @test-base1
-        (@extend-object @test-base "test base1"
+        (@drive-object @test-base "test base1"
           "test base1"
 
           (def@ @@ :init ()
@@ -476,7 +476,7 @@
 
 
 (macroexpand-all
- '(@extend-object @ "test-base"
+ '(@drive-object @ "test-base"
    "test base"
 
    (def@ @@ :init ()
@@ -488,7 +488,7 @@
 
 
 (macroexpand-all
- '(@extend-object @ "test base1"
+ '(@drive-object @ "test base1"
    (def@ @@ :init ()
      (@^:init))
    (@:init)))
@@ -513,7 +513,7 @@
   test)
 
 (macroexpand-1
- '(@extend-object @ "test base1"
+ '(@drive-object @ "test base1"
    (def@ @@ :init ()
      (@^:init))
    (@:init)))
@@ -656,7 +656,7 @@
 
 
 (macroexpand-1
- '(@extend-object @test-base "test base1"
+ '(@drive-object @test-base "test base1"
    "test base1"
    (def@ @@ :init ()
      (message "@test-base1 :init start")

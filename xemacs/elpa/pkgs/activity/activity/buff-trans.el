@@ -43,7 +43,7 @@
 
 (provide 'buff-trans)
 
-(defextend@ @transition-class :gen-buffer-trans (default)
+(defobjgen@ @transition-class :gen-buffer-trans (default)
 
   (def@ @@ :initialize ()
     (setf @:mode-transition nil)
@@ -61,7 +61,7 @@
                         @:transition)))
       (@! transition :dispatch prev curr time-spent))))
 
-(defextend@ @transition-span-dectector-class :gen-buffer-trans-span-detector (transition)
+(defobjgen@ @transition-span-dectector-class :gen-buffer-trans-span-detector (transition)
   "Deted"
 
   (def@ @@ :ptrace (&optional msg)

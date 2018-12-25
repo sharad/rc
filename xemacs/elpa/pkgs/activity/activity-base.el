@@ -48,29 +48,35 @@
 
 
 
-(defmacro @extend-object (object name &rest body)
+(defmacro @extend-object (object &rest body)
+  `(with-@@ object
+            ,@(if (stringp (car body))
+                  `((setf @:doc ,(car body))))
+            ,@(if (stringp (car body)) (cdr body) body)))
+(put '@extend-object 'lisp-indent-function 1)
+
+(defmacro @drive-object (object name &rest body)
   `(let ((drived-obj
           (@extend ,object
                    :name ,name)))
 
      (with-@@ drived-obj
-       ,@(if (stringp (car body))
-             `((setf @:doc ,(car body))))
-       ,@(if (stringp (car body)) (cdr body) body))
+              ,@(if (stringp (car body))
+                    `((setf @:doc ,(car body))))
+              ,@(if (stringp (car body)) (cdr body) body))
 
      drived-obj))
-(put '@extend-object 'lisp-indent-function 2)
-(get '@extend-object 'lisp-indent-function)
+(put '@drive-object 'lisp-indent-function 2)
 
-(defmacro defextend@ (object gen-method params &rest body )
+(defmacro defobjgen@ (object gen-method params &rest body )
   `(progn
      (def@ ,object ,gen-method (name ,@params)
        ,@(if (stringp (car body))
              (list (car body)) ())
 
-       (@extend-object ,object name
+       (@drive-object ,object name
          ,@(if (stringp (car body)) (cdr body) body)))))
-(put 'defextend@ 'lisp-indent-function 3)
+(put 'defobjgen@ 'lisp-indent-function 3)
 
 (progn
   (font-lock-add-keywords 'emacs-lisp-mode
@@ -83,12 +89,12 @@
                              (1 'font-lock-builtin-face))))
 
   (font-lock-add-keywords 'emacs-lisp-mode
-                          '(("(\\<\\(defextend@\\) +\\([^ ()]+\\)"
+                          '(("(\\<\\(defobjgen@\\) +\\([^ ()]+\\)"
                              (1 'font-lock-keyword-face)
                              (2 'font-lock-function-name-face))))
 
   (font-lock-add-keywords 'emacs-lisp-mode
-                          '(("\\(@extend-object\\)\\>"
+                          '(("\\(@drive-object\\)\\>"
                              (1 'font-lock-builtin-face)))))
 
 (progn
@@ -102,67 +108,67 @@
 
 
 (setf @activity-base
-      (@extend-object @ "activity-base"
-                        "Activity Base"
+      (@drive-object @ "activity-base"
+          "Activity Base"
 
-                        (def@ @@ :keyp (key)
-                          (memq key (@:keys)))
+        (def@ @@ :keyp (key)
+          (memq key (@:keys)))
 
-                        (def@ @@ :finalize ()
-                          ())
+        (def@ @@ :finalize ()
+          ())
 
-                        (def@ @@ :init ()
-                          (@^:init)
-                          (message "@activity-base :init")
-                          (setf @:_occuredon (current-time)))
+        (def@ @@ :init ()
+          (@^:init)
+          (message "@activity-base :init")
+          (setf @:_occuredon (current-time)))
 
-                        (def@ @@ :occuredon ()
-                          (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))
+        (def@ @@ :occuredon ()
+          (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))
 
-                        (def@ @@ :dispatch ()
-                          (@:init))
+        (def@ @@ :dispatch ()
+          (@:init))
 
-                        (@:dispatch)))
+        (@:dispatch)))
 
 
 
 (setf @dest-class
-      (@extend-object @activity-base "dest-base-class"
-          "Destination Base Class"
+      (@drive-object @activity-base "dest-base-class"
+        "Destination Base Class"
 
-          (defextend@ @@ :gen-builder ()
-            (def@ @@ :receive (fmt &rest args)
-              (apply #'format
-                     fmt args)))
+        (defobjgen@ @@ :gen-builder ()
+          (def@ @@ :receive (fmt &rest args)
+            (apply #'format
+                   fmt args)))
 
-          (defextend@ @@ :gen-msg ()
-            (def@ @@ :receive (fmt &rest args)
-              (apply #'message
-                     fmt args)))
+        (defobjgen@ @@ :gen-msg ()
+          (def@ @@ :receive (fmt &rest args)
+            (apply #'message
+                   fmt args)))
 
-          (defextend@ @@ :gen-warning ()
-            (def@ @@ :receive (fmt &rest args)
-              (apply #'lwarn
-                     'activity
-                     'warning
-                     fmt args)))
+        (defobjgen@ @@ :gen-warning ()
+          (def@ @@ :receive (fmt &rest args)
+            (apply #'lwarn
+                   'activity
+                   'warning
+                   fmt args)))
 
-          (defextend@ @@ :gen-error ()
-            (def@ @@ :receive (fmt &rest args)
-              (apply #'lwarn
-                     'activity
-                     'error
-                     fmt args)))
+        (defobjgen@ @@ :gen-error ()
+          (def@ @@ :receive (fmt &rest args)
+            (apply #'lwarn
+                   'activity
+                   'error
+                   fmt args)))
 
-          (def@ @@ :dispatch ()
-            (@:init))
+        (def@ @@ :dispatch ()
+          (@:init))
 
-          (@:dispatch)))
+        (@:dispatch)))
 
 
 
 (setf @note-class
-      (@extend-object @activity-base "note-base-class"
+      (@drive-object @activity-base "note-base-class"
         "Note Base Class"
 
         (setf @:dests '())
@@ -190,25 +196,25 @@
                    (boundp '@:dests)
                    (consp @:dests))))
 
-        ;; (defextend@ @@ :gen-format-msg ()
+        ;; (defobjgen@ @@ :gen-format-msg ()
         ;;                      "Generator for format message note"
         ;;   (push
         ;;    (@! @dest-class :gen-msg "msg")
         ;;    @:dests))
 
-        ;; (defextend@ @@ :gen-org-log-note ()
+        ;; (defobjgen@ @@ :gen-org-log-note ()
         ;;                      "Generator for org log note"
         ;;   (push
         ;;    (@! @dest-class :gen-msg "msg")
         ;;    @:dests))
 
-        ;; (defextend@ @@ :gen-org-dual-log-note ()
+        ;; (defobjgen@ @@ :gen-org-dual-log-note ()
         ;;                      "Generator for dual org log note"
         ;;   (push
         ;;    (@! @dest-class :gen-msg "msg")
         ;;    @:dests))
 
-        ;; (defextend@ @@ :gen-org-intreactive-log-note ()
+        ;; (defobjgen@ @@ :gen-org-intreactive-log-note ()
         ;;                      "Generator for Interactive org log note"
         ;;   (push
         ;;    (@! @dest-class :gen-msg "msg")
@@ -223,7 +229,7 @@
 (progn
   ;; activity
   (setf @activity-class
-        (@extend-object @activity-base "activity class"
+        (@drive-object @activity-base "activity class"
           "Activity class"
           (def@ @@ :init ()
             (@^:init)
@@ -231,13 +237,13 @@
             (setf @:occuredon (current-time)))))
 
   (setf @event-class
-        (@extend-object @activity-class "event class"
+        (@drive-object @activity-class "event class"
           "Event class"
           (def@ @@ :note ()
             )))
 
   (setf @transition-class
-        (@extend-object @event-class "transition class"
+        (@drive-object @event-class "transition class"
           "Transition class"
           (def@ @@ :note ()
             ))))
@@ -247,25 +253,25 @@
 (progn
   ;; detectors
   (setf @activity-dectector-class
-        (@extend-object @activity-base "activity detector class"
+        (@drive-object @activity-base "activity detector class"
           "Activity detector class"
           (def@ @@ :note ()
             )))
 
   (setf @event-dectector-class
-        (@extend-object @activity-dectector-class "event detector class"
+        (@drive-object @activity-dectector-class "event detector class"
           "Event detector class"
           (def@ @@ :note ()
             )))
 
   (setf @transition-dectector-class
-        (@extend-object @event-dectector-class "transition detector class"
+        (@drive-object @event-dectector-class "transition detector class"
           "Transition detector class"
           (def@ @@ :note ()
             )))
 
   (setf @event-span-dectector-class       ;TODO START
-        (@extend-object @event-dectector-class "duration detector class"
+        (@drive-object @event-dectector-class "duration detector class"
           "Duration detector class"
           (def@ @@ :note ()
             )
@@ -278,7 +284,7 @@
             )))
 
   (setf @transition-span-dectector-class       ;TODO START
-        (@extend-object @transition-dectector-class "duration detector class"
+        (@drive-object @transition-dectector-class "duration detector class"
           "Duration detector class"
           (def@ @@ :note ()
             )
@@ -294,13 +300,13 @@
 
 
 (setf @postpone-event-class
-      (@extend-object @activity-base "activity detector class"
+      (@drive-object @activity-base "activity detector class"
         "Activity detector class"
         (def@ @@ :note ()
           )))
 
 (setf @save-event-class
-      (@extend-object @activity-base "activity detector class"
+      (@drive-object @activity-base "activity detector class"
         "Activity detector class"
         (def@ @@ :note ()
           )))
@@ -310,13 +316,13 @@
       ;; and measure time
       ;; collect in list
       ;; provide list return-reset functions
-      (@extend-object @activity-base "activity detector class"
+      (@drive-object @activity-base "activity detector class"
         "Activity detector class"
         (def@ @@ :note ()
           )))
 
 (setf @activity
-      (@extend-object @activity-base "activity"
+      (@drive-object @activity-base "activity"
         "Activity class"
         (def@ @@ :init ()
           (@^:init)

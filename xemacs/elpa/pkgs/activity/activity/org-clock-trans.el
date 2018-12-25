@@ -47,7 +47,7 @@
 (setf @org-clock-trans-class
       (@extend-object @transition-class "org-clock-trans"))
 
-(defextend@ @org-clock-trans-class :gen-org-clock-trans (marker1 marker2)
+(defobjgen@ @org-clock-trans-class :gen-org-clock-trans (marker1 marker2)
   "Org clock transition class"
 
   (def@ @@ :marker-heading (marker)
@@ -69,7 +69,7 @@
 
 
 
-(defextend@ @transition-dectector-class :gen-org-clock-trans (prev next)
+(defobjgen@ @transition-dectector-class :gen-org-clock-trans (prev next)
 
   (def@ @@ :make-event (prev next)
     "Make buffer change event."

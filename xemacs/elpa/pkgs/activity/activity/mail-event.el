@@ -60,7 +60,7 @@
      (plist-get plist k))
    keys))
 
-(defextend@ @event-dectector-class :gen-mail-read-event-detector ()
+(defobjgen@ @event-dectector-class :gen-mail-read-event-detector ()
 
   (def@ @@ :make-message ()
     (let* ((msgid (message-fetch-field "Message-ID"))
@@ -113,7 +113,7 @@
   (@:dispatch))
 
 
-(defextend@ @event-dectector-class :gen-mail-send-event-detector ()
+(defobjgen@ @event-dectector-class :gen-mail-send-event-detector ()
   (def@ @@ :make-message ()
     (let* ((msgid (message-fetch-field "Message-ID"))
            (subject (message-fetch-field "Subject"))
