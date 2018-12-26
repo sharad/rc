@@ -939,10 +939,10 @@ Also returns nil if pid is nil."
 
             (unless (file-exists-p default-local-file)
               (ignore-errors
-               (message
-                "desktop file %s do not exists, trying to check it out."
-                file default-local-file)
-               (vc-checkout-file default-local-file)))
+                (message
+                 "desktop file %s do not exists, trying to check it out."
+                 file default-local-file)
+                (vc-checkout-file default-local-file)))
 
             (expand-file-name
              (with-timeout (20
@@ -963,7 +963,7 @@ Also returns nil if pid is nil."
                                   ;; (concat "^" desktop-dir "/" default-file "-")
                                   (file-truename f)))))
              desktop-dir))
-          (error "desktop directory %s don't exists." desktop-dir))))
+        (error "desktop directory %s don't exists." desktop-dir))))
 
   ;; (find-desktop-file "select desktop: " "~/tmp/" desktop-base-file-name)
 
@@ -971,8 +971,8 @@ Also returns nil if pid is nil."
     (interactive)
     (if *desktop-save-filename*
         *desktop-save-filename*
-        (setq *desktop-save-filename*
-              (find-desktop-file "select desktop: " desktop-dirname desktop-base-file-name))))
+      (setq *desktop-save-filename*
+            (find-desktop-file "select desktop: " desktop-dirname desktop-base-file-name))))
 
   (defun switch-desktop-file ()
     ;; save desktop
@@ -1024,27 +1024,27 @@ Also returns nil if pid is nil."
         (if
 
 
-         ;; // sharad
-         ;; (unless (ignore-errors
-         ;;           (save-window-excursion
-         ;;             (apply 'desktop-create-buffer desktop-buffer-args)))
-         ;;   (message "Desktop lazily opening Failed."))
+            ;; // sharad
+            ;; (unless (ignore-errors
+            ;;           (save-window-excursion
+            ;;             (apply 'desktop-create-buffer desktop-buffer-args)))
+            ;;   (message "Desktop lazily opening Failed."))
 
-         ;; ?? how to ignore error generated here
+            ;; ?? how to ignore error generated here
 
-         (desktop-read (dirname-of-file desktop-save-filename))
+            (desktop-read (dirname-of-file desktop-save-filename))
 
-         (setq *desktop-vc-read-inprogress* nil)
-         (message "desktop read failed."))
+            (setq *desktop-vc-read-inprogress* nil)
+          (message "desktop read failed."))
         (funcall sessions-unified-utils-notify "desktop-vc-read" "finished."))))
 
   ;; remove desktop after it's been read
   (add-hook 'desktop-after-read-hook
             '(lambda ()
-              ;; desktop-remove clears desktop-dirname
-              (setq desktop-dirname-tmp desktop-dirname)
-              (desktop-vc-remove)
-              (setq desktop-dirname desktop-dirname-tmp)))
+               ;; desktop-remove clears desktop-dirname
+               (setq desktop-dirname-tmp desktop-dirname)
+               (desktop-vc-remove)
+               (setq desktop-dirname desktop-dirname-tmp)))
 
   (defvar *my-desktop-save-max-error-count* 6 "")
   (defvar *my-desktop-save-error-count* 0 "")
@@ -1062,13 +1062,13 @@ Also returns nil if pid is nil."
                         (emacs-pid) owner)))
             (if *desktop-save-filename*
                 (desktop-vc-save *desktop-save-filename*)
-                (error "my-desktop-save: *desktop-save-filename* is nil, run M-x desktop-get-desktop-save-filename"))
-            ;; (desktop-save-in-desktop-dir)
-            (progn
-              (lotus-disable-session-saving)
-              ;; (remove-hook 'auto-save-hook 'save-all-sessions-auto-save)
-              (error "You %d are not the desktop owner %d. removed save-all-sessions-auto-save from auto-save-hook and kill-emacs-hook by calling M-x lotus-disable-session-saving"
-                     (emacs-pid) owner))))))
+              (error "my-desktop-save: *desktop-save-filename* is nil, run M-x desktop-get-desktop-save-filename"))
+          ;; (desktop-save-in-desktop-dir)
+          (progn
+            (lotus-disable-session-saving)
+            ;; (remove-hook 'auto-save-hook 'save-all-sessions-auto-save)
+            (error "You %d are not the desktop owner %d. removed save-all-sessions-auto-save from auto-save-hook and kill-emacs-hook by calling M-x lotus-disable-session-saving"
+                   (emacs-pid) owner))))))
 
   (defcustom save-all-sessions-auto-save-idle-time-interval 7
     "save all sessions auto save idle time interval"
@@ -1118,28 +1118,28 @@ to restore in case of sudden emacs crash."
                                 (when *session-unified-desktop-enabled* (my-desktop-save))
                                 (funcall sessions-unified-utils-notify "save-all-sessions-auto-save" "Saved frame desktop and session.")
                                 (message nil))
-                              (condition-case e
-                                              (progn
-                                                (save-all-frames-session)
-                                                (session-vc-save-session)
-                                                (when *session-unified-desktop-enabled* (my-desktop-save))
-                                                (funcall sessions-unified-utils-notify "save-all-sessions-auto-save" "Saved frame desktop and session.")
-                                                (message nil))
-                                              ('error
-                                               (progn
-                                                 ;; make after 2 errors.
-                                                 (funcall sessions-unified-utils-notify "save-all-sessions-auto-save" "Error: %s" e)
-                                                 (1+ *my-desktop-save-error-count* )
-                                                 (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
-                                                   (setq *my-desktop-save-error-count* 0)
-                                                   (funcall sessions-unified-utils-notify "save-all-sessions-auto-save" "Error %s" e)
-                                                   (lotus-disable-session-saving))))))
+                            (condition-case e
+                                (progn
+                                  (save-all-frames-session)
+                                  (session-vc-save-session)
+                                  (when *session-unified-desktop-enabled* (my-desktop-save))
+                                  (funcall sessions-unified-utils-notify "save-all-sessions-auto-save" "Saved frame desktop and session.")
+                                  (message nil))
+                              ('error
+                               (progn
+                                 ;; make after 2 errors.
+                                 (funcall sessions-unified-utils-notify "save-all-sessions-auto-save" "Error: %s" e)
+                                 (1+ *my-desktop-save-error-count* )
+                                 (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
+                                   (setq *my-desktop-save-error-count* 0)
+                                   (funcall sessions-unified-utils-notify "save-all-sessions-auto-save" "Error %s" e)
+                                   (lotus-disable-session-saving))))))
                         (run-hooks 'session-unified-save-all-sessions-after-hook)))
-                    (setq save-all-sessions-auto-save-idle-time-interval-dynamic
-                          (1- save-all-sessions-auto-save-idle-time-interval-dynamic))))
+                  (setq save-all-sessions-auto-save-idle-time-interval-dynamic
+                        (1- save-all-sessions-auto-save-idle-time-interval-dynamic))))
 
-            (setq save-all-sessions-auto-save-time (current-time)
-                  save-all-sessions-auto-save-idle-time-interval-dynamic save-all-sessions-auto-save-idle-time-interval)))))
+          (setq save-all-sessions-auto-save-time (current-time)
+                save-all-sessions-auto-save-idle-time-interval-dynamic save-all-sessions-auto-save-idle-time-interval)))))
 
   (defun lotus-desktop-saved-session ()
     "check file exists."
@@ -1155,11 +1155,11 @@ to restore in case of sudden emacs crash."
           (if (lotus-desktop-saved-session)
               (if (y-or-n-p "Overwrite existing desktop (might be it was not restore properly at startup)? ")
                   (desktop-vc-save *desktop-save-filename*)
-                  (message "Session not saved."))
-              (desktop-vc-save *desktop-save-filename*)))
-        (message
-         "*session-unified-desktop-enabled*: %s"
-         *session-unified-desktop-enabled*)))
+                (message "Session not saved."))
+            (desktop-vc-save *desktop-save-filename*)))
+      (message
+       "*session-unified-desktop-enabled*: %s"
+       *session-unified-desktop-enabled*)))
 
   (defun lotus-disable-session-saving-immediately ()
     (interactive)
@@ -1171,7 +1171,7 @@ to restore in case of sudden emacs crash."
   (defun lotus-enable-session-saving-immediately ()
     (interactive)
     (add-hook 'auto-save-hook 'save-all-sessions-auto-save)
-    (add-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
+    (add-hook 'kill-emacs-hook #'(lambda () (save-all-sessions-auto-save t)))
     (funcall sessions-unified-utils-notify "lotus-enable-session-saving" "Added save-all-sessions-auto-save to auto-save-hook and kill-emacs-hook"))
 
   (defun lotus-enable-session-saving ()
@@ -1180,13 +1180,13 @@ to restore in case of sudden emacs crash."
     ;;      (null (lotus-desktop-saved-session)))
     (if (eq desktop-restore-eager t)
         (lotus-enable-session-saving-immediately)
-        (progn
-          (ad-enable-advice 'desktop-idle-create-buffers 'after 'desktop-idle-complete-actions)
-          (ad-update 'desktop-idle-create-buffers)
-          (ad-activate 'desktop-idle-create-buffers)))
+      (progn
+        (ad-enable-advice 'desktop-idle-create-buffers 'after 'desktop-idle-complete-actions)
+        (ad-update 'desktop-idle-create-buffers)
+        (ad-activate 'desktop-idle-create-buffers)))
     (if (lotus-desktop-saved-session)
         (message "desktop file exists.")
-        (message "desktop file do not exists.")))
+      (message "desktop file do not exists.")))
 
   (defun lotus-disable-session-saving ()
     (lotus-disable-session-saving-immediately)
@@ -1202,13 +1202,13 @@ to restore in case of sudden emacs crash."
          "%s, %s"
          (if (member 'save-all-sessions-auto-save auto-save-hook)
              "Yes save-all-sessions-auto-save is present in auto-save-hook"
-             "No save-all-sessions-auto-save is present in auto-save-hook")
+           "No save-all-sessions-auto-save is present in auto-save-hook")
          (if (member '(lambda () (save-all-sessions-auto-save t)) kill-emacs-hook)
              "Yes save-all-sessions-auto-save is present in kill-emacs-hook"
-             "No save-all-sessions-auto-save is present in kill-emacs-hook"))
-        (and
-         (member 'save-all-sessions-auto-save auto-save-hook)
-         (member '(lambda () (save-all-sessions-auto-save t)) kill-emacs-hook))))
+           "No save-all-sessions-auto-save is present in kill-emacs-hook"))
+      (and
+       (member 'save-all-sessions-auto-save auto-save-hook)
+       (member '(lambda () (save-all-sessions-auto-save t)) kill-emacs-hook))))
 
   (when nil
     (defvar lotus-enable-desktop-restore-interrupting-feature-hook nil
@@ -1221,24 +1221,24 @@ If there are no buffers left to create, kill the timer."
     (let ((tags-add-tables nil))
       (let ((repeat 1))
         (while (and repeat desktop-buffer-args-list)
-               (unless (ignore-errors
-                        (save-window-excursion
-                         (desktop-lazy-create-buffer)))
-                 (message "Desktop lazily opening Failed."))
-               (setq repeat (sit-for 0.2))
-               (unless desktop-buffer-args-list
-                 (cancel-timer desktop-lazy-timer)
-                 (setq desktop-lazy-timer nil)
-                 (message "Lazy desktop load complete")
-                 (sit-for 3)
-                 (message ""))))))
+          (unless (ignore-errors
+                    (save-window-excursion
+                      (desktop-lazy-create-buffer)))
+            (message "Desktop lazily opening Failed."))
+          (setq repeat (sit-for 0.2))
+          (unless desktop-buffer-args-list
+            (cancel-timer desktop-lazy-timer)
+            (setq desktop-lazy-timer nil)
+            (message "Lazy desktop load complete")
+            (sit-for 3)
+            (message nil))))))
 
   (defadvice desktop-idle-create-buffers (after desktop-idle-complete-actions)
     "This advice will finally run lotus-enable-desktop-restore-interrupting-feature-hook
 when all buffer were creaed idly."
     (unless desktop-buffer-args-list
       (funcall sessions-unified-utils-notify "desktop-idle-complete-actions"
-               "Enable session saving")
+               "Enabled session saving")
       (lotus-enable-session-saving-immediately)
       (progn
         (ad-disable-advice 'desktop-idle-create-buffers 'after 'desktop-idle-complete-actions)
@@ -1267,7 +1267,7 @@ when all buffer were creaed idly."
                     (flymake-run-in-place nil)
                     (show-error (called-interactively-p 'interactive))
                     (*constructed-name-desktop-save-filename*
-                      (concat "^" (getenv "HOME") "/.emacs.d/.cache/autoconfig/desktop/emacs-desktop-" server-name)))
+                     (concat "^" (getenv "HOME") "/.emacs.d/.cache/autoconfig/desktop/emacs-desktop-" server-name)))
                 (setq debug-on-error t)
                 (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "entering lotus-desktop-session-restore")
 
@@ -1280,71 +1280,71 @@ when all buffer were creaed idly."
                                             *constructed-name-desktop-save-filename*
                                             *desktop-save-filename*))
                           (message "continuing..")
-                          (error "desktop file %s is not correct" *desktop-save-filename*)))
+                        (error "desktop file %s is not correct" *desktop-save-filename*)))
 
-                    (progn
-                      (unless (lotus-desktop-saved-session)
-                        (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "%s not found so trying to checkout it." *desktop-save-filename*)
-                        (vc-checkout-file *desktop-save-filename*))
+                  (progn
+                    (unless (lotus-desktop-saved-session)
+                      (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "%s not found so trying to checkout it." *desktop-save-filename*)
+                      (vc-checkout-file *desktop-save-filename*))
 
-                      (if (lotus-desktop-saved-session)
-                          (progn
-                            (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "lotus-desktop-session-restore")
-                            (progn            ;remove P4
-                              (setq vc-handled-backends (remove 'P4 vc-handled-backends))
-                              (add-hook 'lotus-enable-desktop-restore-interrupting-feature-hook
-                                        '(lambda ()
-                                          (add-to-list 'vc-handled-backends 'P4))))
-                            (if show-error
+                    (if (lotus-desktop-saved-session)
+                        (progn
+                          (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "lotus-desktop-session-restore")
+                          (progn            ;remove P4
+                            (setq vc-handled-backends (remove 'P4 vc-handled-backends))
+                            (add-hook 'lotus-enable-desktop-restore-interrupting-feature-hook
+                                      '(lambda ()
+                                         (add-to-list 'vc-handled-backends 'P4))))
+                          (if show-error
 
-                                (if (desktop-vc-read *desktop-save-filename*)
+                              (if (desktop-vc-read *desktop-save-filename*)
+                                  (progn
+                                    (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop loaded successfully :)")
+                                    (lotus-enable-session-saving)
+                                    (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "Do you want to set session of frame? ")
+                                    (when (y-or-n-p-with-timeout
+                                           "Do you want to set session of frame? "
+                                           10 t)
+                                      (let ((*frame-session-restore* t))
+                                        (frame-session-restore (selected-frame)))))
+                                (progn
+                                  (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop loading failed :(")
+                                  (run-at-time "1 sec" nil '(lambda () (insert "lotus-desktop-session-restore")))
+                                  (execute-extended-command nil)
+                                  nil))
+
+                            (condition-case e
+                                (if (let ((desktop-restore-in-progress t))
+                                      (desktop-vc-read *desktop-save-filename*))
                                     (progn
                                       (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop loaded successfully :)")
-                                      (lotus-enable-session-saving)
-                                      (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "Do you want to set session of frame? ")
-                                      (when (y-or-n-p-with-timeout
-                                             "Do you want to set session of frame? "
-                                             10 t)
-                                        (let ((*frame-session-restore* t))
-                                          (frame-session-restore (selected-frame)))))
-                                    (progn
-                                      (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop loading failed :(")
-                                      (run-at-time "1 sec" nil '(lambda () (insert "lotus-desktop-session-restore")))
-                                      (execute-extended-command nil)
-                                      nil))
-
-                                (condition-case e
-                                                (if (let ((desktop-restore-in-progress t))
-                                                      (desktop-vc-read *desktop-save-filename*))
-                                                    (progn
-                                                      (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop loaded successfully :)")
-                                                      (lotus-enable-session-saving))
-                                                    (progn
-                                                      (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop loading failed :(")
-                                                      nil))
-                                                ('error
-                                                 (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
-                                                 (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "Error in desktop-read: %s try it again by running M-x lotus-desktop-session-restore" e)
-                                                 (run-at-time "1 sec" nil '(lambda () (insert "lotus-desktop-session-restore")))
-                                                 (condition-case e
-                                                                 (execute-extended-command nil)
-                                                                 ('error (message "M-x lotus-desktop-session-restore %s" e))))))
-                            t)
-                          (when (y-or-n-p
-                                 (funcall sessions-unified-utils-notify "lotus-desktop-session-restore"
-                                          "No desktop found. or you can check out old %s from VCS.\nShould I enable session saving in auto save, at kill-emacs ?"
-                                          *desktop-save-filename*))
-                            (lotus-enable-session-saving)))
-                      (let ((enable-recursive-minibuffers t))
-                        (when t ;(y-or-n-p-with-timeout "Do you want to set session of frame? " 7 t)
-                          (frame-session-restore (selected-frame) t)))
-                      (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "leaving lotus-desktop-session-restore"))))
-              (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop-get-desktop-save-filename failed")))
-        (progn
-          (lotus-enable-session-saving-immediately)
-          (run-each-hooks 'lotus-enable-desktop-restore-interrupting-feature-hook)
-          (message
-           "*session-unified-desktop-enabled* %s" *session-unified-desktop-enabled*))))
+                                      (lotus-enable-session-saving))
+                                  (progn
+                                    (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop loading failed :(")
+                                    nil))
+                              ('error
+                               (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
+                               (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "Error in desktop-read: %s try it again by running M-x lotus-desktop-session-restore" e)
+                               (run-at-time "1 sec" nil '(lambda () (insert "lotus-desktop-session-restore")))
+                               (condition-case e
+                                   (execute-extended-command nil)
+                                 ('error (message "M-x lotus-desktop-session-restore %s" e))))))
+                          t)
+                      (when (y-or-n-p
+                             (funcall sessions-unified-utils-notify "lotus-desktop-session-restore"
+                                      "No desktop found. or you can check out old %s from VCS.\nShould I enable session saving in auto save, at kill-emacs ?"
+                                      *desktop-save-filename*))
+                        (lotus-enable-session-saving)))
+                    (let ((enable-recursive-minibuffers t))
+                      (when t ;(y-or-n-p-with-timeout "Do you want to set session of frame? " 7 t)
+                        (frame-session-restore (selected-frame) t)))
+                    (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "leaving lotus-desktop-session-restore"))))
+            (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop-get-desktop-save-filename failed")))
+      (progn
+        (lotus-enable-session-saving-immediately)
+        (run-each-hooks 'lotus-enable-desktop-restore-interrupting-feature-hook)
+        (message
+         "*session-unified-desktop-enabled* %s" *session-unified-desktop-enabled*))))
 
   ;; (add-hook 'session-before-save-hook
   ;;           'my-desktop-save)
@@ -1365,7 +1365,7 @@ when all buffer were creaed idly."
     (add-hook ;; 'after-init-hook
      'lotus-enable-startup-interrupting-feature-hook
      '(lambda ()
-       (run-at-time-or-now 7 'lotus-desktop-session-restore))))
+        (run-at-time-or-now 7 'lotus-desktop-session-restore))))
 
   ;; Then type ‘M-x session-save’, or ‘M-x session-restore’ whenever you want to save or restore a desktop. Restored desktops are deleted from disk.
 
@@ -1395,7 +1395,7 @@ It returns t if a desktop file was loaded, nil otherwise."
                  (while (and dirs
                              (not (file-exists-p
                                    (desktop-full-file-name (car dirs)))))
-                        (setq dirs (cdr dirs)))
+                   (setq dirs (cdr dirs)))
                  (and dirs (car dirs)))
                ;; If not found and `desktop-path' is non-nil, use its first element.
                (and desktop-path (car desktop-path))
@@ -1421,55 +1421,55 @@ It returns t if a desktop file was loaded, nil otherwise."
                   (run-hooks 'desktop-not-loaded-hook)
                   (unless desktop-dirname
                     (message "Desktop file in use; not loaded.")))
-                (desktop-lazy-abort)
-                ;; Evaluate desktop buffer and remember when it was modified.
-                (load (desktop-full-file-name) t t t)
-                (setq desktop-file-modtime (nth 5 (file-attributes (desktop-full-file-name))))
-                ;; If it wasn't already, mark it as in-use, to bother other
-                ;; desktop instances.
-                (unless owner
-                  (condition-case nil
-                                  (desktop-claim-lock)
-                                  (file-error (message "Couldn't record use of desktop file")
-                                              (sit-for 1))))
+              (desktop-lazy-abort)
+              ;; Evaluate desktop buffer and remember when it was modified.
+              (load (desktop-full-file-name) t t t)
+              (setq desktop-file-modtime (nth 5 (file-attributes (desktop-full-file-name))))
+              ;; If it wasn't already, mark it as in-use, to bother other
+              ;; desktop instances.
+              (unless owner
+                (condition-case nil
+                    (desktop-claim-lock)
+                  (file-error (message "Couldn't record use of desktop file")
+                              (sit-for 1))))
 
-                ;; `desktop-create-buffer' puts buffers at end of the buffer list.
-                ;; We want buffers existing prior to evaluating the desktop (and
-                ;; not reused) to be placed at the end of the buffer list, so we
-                ;; move them here.
-                (mapc 'bury-buffer
-                      (nreverse (cdr (memq desktop-first-buffer (nreverse (buffer-list))))))
-                (switch-to-buffer (car (buffer-list)))
-                (run-hooks 'desktop-delay-hook)
-                (setq desktop-delay-hook nil)
-                (run-hooks 'desktop-after-read-hook)
-                (message "Desktop: %d buffer%s restored%s%s."
-                         desktop-buffer-ok-count
-                         (if (= 1 desktop-buffer-ok-count) "" "s")
-                         (if (< 0 desktop-buffer-fail-count)
-                             (format ", %d failed to restore" desktop-buffer-fail-count)
-                             "")
-                         (if desktop-buffer-args-list
-                             (format ", %d to restore lazily"
-                                     (length desktop-buffer-args-list))
-                             ""))
-                t))
-          ;; No desktop file found.
-          (desktop-clear)
-          (let ((default-directory desktop-dirname))
-            (run-hooks 'desktop-no-desktop-file-hook))
-          (message "No desktop file.")
-          nil)))
+              ;; `desktop-create-buffer' puts buffers at end of the buffer list.
+              ;; We want buffers existing prior to evaluating the desktop (and
+              ;; not reused) to be placed at the end of the buffer list, so we
+              ;; move them here.
+              (mapc 'bury-buffer
+                    (nreverse (cdr (memq desktop-first-buffer (nreverse (buffer-list))))))
+              (switch-to-buffer (car (buffer-list)))
+              (run-hooks 'desktop-delay-hook)
+              (setq desktop-delay-hook nil)
+              (run-hooks 'desktop-after-read-hook)
+              (message "Desktop: %d buffer%s restored%s%s."
+                       desktop-buffer-ok-count
+                       (if (= 1 desktop-buffer-ok-count) "" "s")
+                       (if (< 0 desktop-buffer-fail-count)
+                           (format ", %d failed to restore" desktop-buffer-fail-count)
+                         "")
+                       (if desktop-buffer-args-list
+                           (format ", %d to restore lazily"
+                                   (length desktop-buffer-args-list))
+                         ""))
+              t))
+        ;; No desktop file found.
+        (desktop-clear)
+        (let ((default-directory desktop-dirname))
+          (run-hooks 'desktop-no-desktop-file-hook))
+        (message "No desktop file.")
+        nil)))
 
 
   (progn ;; "desktop-settings"
 
     (defmacro desktop-get-readonly-proof-mode (modefn)
       `'(lambda (desktop-buffer-locals)
-         (unless (or desktop-buffer-read-only buffer-read-only)
-           (condition-case e
-                           (,modefn 1)
-                           ('error (message "%s: %s" ,modefn e))))))))
+          (unless (or desktop-buffer-read-only buffer-read-only)
+            (condition-case e
+                (,modefn 1)
+              ('error (message "%s: %s" ,modefn e))))))))
 
 
 ;;For Session

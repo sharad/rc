@@ -34,6 +34,9 @@
 ;; store this in desktop and session
 ;; (setq paths-mapper-map nil)
 
+(add-to-list 'desktop-locals-to-save 'paths-mapper-map)
+(add-to-list 'session-locals-include 'paths-mapper-map)
+
 (defun paths-mapper-filter-path (path)
   (when path
     (let* ((matched-paths (mapcar
