@@ -77,46 +77,46 @@
 
 
 (when nil
-(progn
-  ;; (emacs-panel-x-property-u32r "_NET_SUPPORTING_WM_CHECK" 0)
-  ;; (x-window-property "_NET_SUPPORTING_WM_CHECK" nil "AnyPropertyType" 0 nil nil)
-  ;; (x-window-property PROP &optional FRAME TYPE SOURCE DELETE-P VECTOR-RET-P)
-  ;; (x-window-property "_NET_SUPPORTING_WM_CHECK" (selected-frame) "AnyPropertyType" 0 nil nil)
-  ;; (x-window-property "_NET_SUPPORTING_WM_CHECK" (selected-frame) "AnyPropertyType" 0 nil nil)
+  (progn
+    ;; (emacs-panel-x-property-u32r "_NET_SUPPORTING_WM_CHECK" 0)
+    ;; (x-window-property "_NET_SUPPORTING_WM_CHECK" nil "AnyPropertyType" 0 nil nil)
+    ;; (x-window-property PROP &optional FRAME TYPE SOURCE DELETE-P VECTOR-RET-P)
+    ;; (x-window-property "_NET_SUPPORTING_WM_CHECK" (selected-frame) "AnyPropertyType" 0 nil nil)
+    ;; (x-window-property "_NET_SUPPORTING_WM_CHECK" (selected-frame) "AnyPropertyType" 0 nil nil)
 
-  ;; (bindat-unpack '((:v u32r)) "0x194")
+    ;; (bindat-unpack '((:v u32r)) "0x194")
 
-  (emacs-panel-wm-hints)
+    (emacs-panel-wm-hints)
 
-  ;; (x-window-property "_NET_SUPPORTING_WM_CHECK" nil "AnyPropertyType" 0 nil nil)
+    ;; (x-window-property "_NET_SUPPORTING_WM_CHECK" nil "AnyPropertyType" 0 nil nil)
 
-  (cdr-safe (assq :v (bindat-unpack '((:v u32r)) "x194")))
+    (cdr-safe (assq :v (bindat-unpack '((:v u32r)) "x194")))
 
-  (emacs-panel-x-property "_NET_WM_NAME" 404)
+    (emacs-panel-x-property "_NET_WM_NAME" 404)
 
-  (emacs-panel-x-property-nullsepstringarray "_NET_DESKTOP_NAMES" 0)
+    (emacs-panel-x-property-nullsepstringarray "_NET_DESKTOP_NAMES" 0)
 
-  (string-to-number (frame-parameter nil 'outer-window-id))
+    (string-to-number (frame-parameter nil 'outer-window-id))
 
-  8388680
+    8388680
 
-  (emacs-panel-x-property-u32r "_NET_ACTIVE_WINDOW" 0)
+    (emacs-panel-x-property-u32r "_NET_ACTIVE_WINDOW" 0)
 
-  (emacs-panel-x-property-u64r "_NET_NUMBER_OF_DESKTOPS" 0)
+    (emacs-panel-x-property-u64r "_NET_NUMBER_OF_DESKTOPS" 0)
 
-  (x-window-property "_NET_ACTIVE_WINDOW" nil "AnyPropertyType" 0 nil t)
+    (x-window-property "_NET_ACTIVE_WINDOW" nil "AnyPropertyType" 0 nil t)
 
-  (x-window-property "_NET_WM_NAME" nil "AnyPropertyType" 0 nil t)
+    (x-window-property "_NET_WM_NAME" nil "AnyPropertyType" 0 nil t)
 
-  (x-window-property "_NET_SUPPORTING_WM_CHECK" nil "AnyPropertyType" 0 nil t)
+    (x-window-property "_NET_SUPPORTING_WM_CHECK" nil "AnyPropertyType" 0 nil t)
 
 
-  (x-window-property "_NET_SUPPORTING_WM_CHECK" nil "AnyPropertyType" 0 nil t)
+    (x-window-property "_NET_SUPPORTING_WM_CHECK" nil "AnyPropertyType" 0 nil t)
 
-  (assq :v (bindat-unpack '((:v byte)) ""))
+    (assq :v (bindat-unpack '((:v byte)) ""))
 
-  (assq :v (bindat-unpack '((:v byte)) "H"))
-  ))
+    (assq :v (bindat-unpack '((:v byte)) "H"))
+    ))
 
 (provide 'emacs-panel)
 ;;; emacs-panel.el ends here
