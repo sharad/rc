@@ -73,25 +73,29 @@
      (t
       (error "can not find marker %s" @:marker))))
 
-  (def@ @@ :receive (fmt &rest args)
+  (def@ @@ :receive (type target template &rest capture-plist)
     ;; TODO
     ;; add necessary code for interactive note.
-    (org-capture+ @:type @:target @:template @:capture-plist)))
+    (org-capture+
+     (or type @:type)
+     (or target @:target)
+     (or template @:template)
+     (append capture-plist @:capture-plist))))
 
 (defvar @org-capture-dest (@! @dest-class :gen-org-capture-dest))
 
-(setf @org-capture-immediate-dest
- (@drive-object @org-capture-dest "Non-Interactive capture"
-  (push
-   (list :immediate-finish t)
-   @:capture-plist)
+(defvar @org-capture-immediate-dest
+  (@drive-object @org-capture-dest "Non-Interactive capture"
+    (push
+     (list :immediate-finish t)
+     @:capture-plist)
 
-  (def@ @@ :receive (fmt &rest args)
-    ;; TODO
-    ;; add necessary code for interactive note.
-    (org-capture+ @:type @:target @:template @:capture-plist))))
+    (def@ @@ :receive (fmt &rest args)
+      ;; TODO
+      ;; add necessary code for interactive note.
+      (org-capture+ @:type @:target @:template @:capture-plist))))
 
-(setf @org-capture-edit-dest
+(defvar @org-capture-edit-dest
   (@drive-object @org-capture-dest "Interactive capture"
     "Interactive capture"
     (def@ @@ :receive (fmt &rest args)
@@ -99,11 +103,11 @@
       ;; add necessary code for interactive note.
       (org-capture+ @:type @:target @:template @:capture-plist))))
 
-(setf @org-capture-edit-entry-dest
+(defvar @org-capture-edit-entry-dest
       (@drive-object @org-capture-dest "Interactive capture"
         "Interactive capture"
 
-        (setf @:type 'entry)
+        (defvar @:type 'entry)
 
         (def@ @@ :receive (fmt &rest args)
           ;; TODO

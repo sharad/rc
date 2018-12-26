@@ -58,12 +58,14 @@
     (add-to-list 'load-path dir)))
 
 (activity-add-subdirs-load-path)
-(defmacro @drive-object (object &rest body)
-                                                                                                                                                                                                                                                                                 `(with-@@ object
-                                                                                                                                                                                                                                                                                    ,@(if (stringp (car body))
-                                                                                                                                                                                                                                                                                          `((setf @:doc ,(car body))))
-                                                                                                                                                                                                                                                                                    ,@(if (stringp (car body)) (cdr body) body)))
-(put '@drive-object 'lisp-indent-function 1)
+
+
+(defmacro @extend-object (object &rest body)
+  `(with-@@ object
+     ,@(if (stringp (car body))
+           `((setf @:doc ,(car body))))
+     ,@(if (stringp (car body)) (cdr body) body)))
+(put '@extend-object 'lisp-indent-function 1)
 
 (defmacro @drive-object (object name &rest body)
   `(let ((drived-obj

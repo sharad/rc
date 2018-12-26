@@ -71,7 +71,7 @@ DEB_DEV_PKG1="python-pip python3-pip silversearcher-ag silversearcher-ag-el glob
 DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject adcli partclone gpodder parallel libpam-fprintd fprint-demo"
 # https://www.cyberciti.biz/faq/removing-password-from-pdf-on-linux/
 DEB_PKG_DEV="valgrind libxml2-dev gjs seed-webkit2 xpdf-utils ghostscript pdftk qpdf"
-DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools redshift daemontools god circus software-properties-common at hibernate ps-watcher daemonfs daemonize daemon slop scrot"
+DEB_PKG_SYSTEM="cpuid inxi x11-xserver-utils autorandr arandr bluez bluez-tools redshift daemontools god circus software-properties-common at hibernate ps-watcher daemonfs daemonize daemon slop scrot"
 DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer-accountd prayer"
 DEB_SYS_PKG1="duc baobab agedu tpb daemontools sysstat isag dos2unix powermanagement-interface grub2-splashimages grub2-themes-ubuntu-mate offlineimap libsecret-tools"
 # https://linuxconfig.org/fetch-stock-quotes-with-perl-finance-quote-module
