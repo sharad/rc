@@ -13,7 +13,11 @@ import cgi
 # Utility to read email from Gmail Using Python
 #
 # ------------------------------------------------
+
 def main(argv):
+
+
+def page():
 	print("Content-type: text/html\r\n\r\n")
 	print("<html><body>")
 	print("<h1> Hello Program! </h1>")

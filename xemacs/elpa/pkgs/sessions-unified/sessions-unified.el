@@ -926,7 +926,7 @@ Also returns nil if pid is nil."
 
   ;; (when (or (not *emacs-in-init*) (not reloading-libraries))
   (when (or *emacs-in-init* reloading-libraries)
-                                        ;setting to nil so it will be asked from user.
+    ;setting to nil so it will be asked from user.
     (setq *desktop-save-filename* nil))
 
   ;; might be the reason for Terminal 0 is locked.
@@ -1066,7 +1066,7 @@ Also returns nil if pid is nil."
           ;; (desktop-save-in-desktop-dir)
           (progn
             (lotus-disable-session-saving)
-            ;; (remove-hook 'auto-save-hook 'save-all-sessions-auto-save)
+            ;; (remove-hook 'auto-save-hook #'save-all-sessions-auto-save)
             (error "You %d are not the desktop owner %d. removed save-all-sessions-auto-save from auto-save-hook and kill-emacs-hook by calling M-x lotus-disable-session-saving"
                    (emacs-pid) owner))))))
 
@@ -1141,12 +1141,14 @@ to restore in case of sudden emacs crash."
           (setq save-all-sessions-auto-save-time (current-time)
                 save-all-sessions-auto-save-idle-time-interval-dynamic save-all-sessions-auto-save-idle-time-interval)))))
 
+  (defun save-all-sessions-auto-save-immediately () (save-all-sessions-auto-save t))
+
   (defun lotus-desktop-saved-session ()
     "check file exists."
     (file-exists-p *desktop-save-filename*))
 
   ;; use session-save to save the desktop manually
-;;;###autoload
+  ;;;###autoload
   (defun lotus-desktop-session-save ()
     "Save an emacs session."
     (interactive)
@@ -1163,15 +1165,15 @@ to restore in case of sudden emacs crash."
 
   (defun lotus-disable-session-saving-immediately ()
     (interactive)
-    (remove-hook 'auto-save-hook 'save-all-sessions-auto-save)
-    (remove-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
+    (remove-hook 'auto-save-hook #'save-all-sessions-auto-save)
+    (remove-hook 'kill-emacs-hook #'save-all-sessions-auto-save-immediately)
     (funcall sessions-unified-utils-notify "lotus-disable-session-saving"  "Removed save-all-sessions-auto-save from auto-save-hook and kill-emacs-hook"))
 
 
   (defun lotus-enable-session-saving-immediately ()
     (interactive)
-    (add-hook 'auto-save-hook 'save-all-sessions-auto-save)
-    (add-hook 'kill-emacs-hook #'(lambda () (save-all-sessions-auto-save t)))
+    (add-hook 'auto-save-hook #'save-all-sessions-auto-save)
+    (add-hook 'kill-emacs-hook #'save-all-sessions-auto-save-immediately)
     (funcall sessions-unified-utils-notify "lotus-enable-session-saving" "Added save-all-sessions-auto-save to auto-save-hook and kill-emacs-hook"))
 
   (defun lotus-enable-session-saving ()
@@ -1200,15 +1202,15 @@ to restore in case of sudden emacs crash."
     (if (called-interactively-p 'interactive)
         (message
          "%s, %s"
-         (if (member 'save-all-sessions-auto-save auto-save-hook)
+         (if (member #'save-all-sessions-auto-save auto-save-hook)
              "Yes save-all-sessions-auto-save is present in auto-save-hook"
            "No save-all-sessions-auto-save is present in auto-save-hook")
-         (if (member '(lambda () (save-all-sessions-auto-save t)) kill-emacs-hook)
+         (if (member #'save-all-sessions-auto-save-immediately kill-emacs-hook)
              "Yes save-all-sessions-auto-save is present in kill-emacs-hook"
            "No save-all-sessions-auto-save is present in kill-emacs-hook"))
       (and
-       (member 'save-all-sessions-auto-save auto-save-hook)
-       (member '(lambda () (save-all-sessions-auto-save t)) kill-emacs-hook))))
+       (member #'save-all-sessions-auto-save auto-save-hook)
+       (member #'save-all-sessions-auto-save-immediately kill-emacs-hook))))
 
   (when nil
     (defvar lotus-enable-desktop-restore-interrupting-feature-hook nil
@@ -1251,7 +1253,7 @@ when all buffer were creaed idly."
 
   ;; (debug)
 
-;;;###autoload
+  ;;;###autoload
   (defun lotus-desktop-session-restore ()
     "Restore a saved emacs session."
     (interactive)
@@ -1373,7 +1375,7 @@ when all buffer were creaed idly."
 
 
   ;; ----------------------------------------------------------------------------
-;;;###autoload
+  ;;;###autoload
   (defun desktop-read-alternate (&optional dirname)
     "Read and process the desktop file in directory DIRNAME.
 Look for a desktop file in DIRNAME, or if DIRNAME is omitted, look in
