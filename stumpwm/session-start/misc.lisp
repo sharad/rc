@@ -25,16 +25,21 @@
   (concat *home-dir* "/bin/bingwallpaper 2>&1 > /dev/null")
   "bing wallpaper command")
 
-(defun get-root-height ()
+(defun get-screen-height (screen)
   (xlib:drawable-height (screen-root (current-screen))))
 
-(defun get-root-width ()
+(defun get-screen-width (screen)
   (xlib:drawable-width (screen-root (current-screen))))
 
-(defun get-root-display-size ()
+(defun get-screen-display-size (&optional (screen (current-screen)) )
   (format nil "~dx~d"
-          (get-root-width)
-          (get-root-height)))
+          (get-screen-width screen)
+          (get-screen-height screen)))
+
+(defun head-display-size (&optional (head (current-head)))
+  (format nil "~dx~d"
+          (head-width head)
+          (head-height head)))
 
 (defun select-random-wallpaper-image-path ()
   "Select a random image"
@@ -66,9 +71,22 @@
 ;;{{ Pointer
 (defcommand show-pointer () ()
   "Show pointer"
-  (warp-pointer (current-screen)
-                (/ (get-root-width) 2)
-                (/ (get-root-height) 2)))
+  (let ((head (current-head)))
+    (let ((y (head-y head))
+          (height (head-height head))
+          (x (head-x head))
+          (width (head-width head)))
+      (let ((pointer-y (+ x (/ width 2)))
+            (pointer-x (+ y (/ height 2))))
+        (message (concat
+                  "x[~a] + width[~a] / 2 = ~a"
+                  "~%"
+                  "y[~a] + height[~a] / 2 = ~a")
+                 x width pointer-y
+                 y height pointer-x)
+        (warp-pointer (current-screen)
+                      pointer-y
+                      pointer-x)))))
 ;;}}
 
 ;; Default layout
