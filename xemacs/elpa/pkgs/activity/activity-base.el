@@ -170,10 +170,13 @@
 
 ;;;###autoload
 (defun activate-activity ()
+  (interactive)
+  (activity-add-subdirs-load-path)
   (@! @activities :activate))
 
 ;;;###autoload
 (defun deactivate-activity ()
+  (interactive)
   (@! @activities :deactivate))
 
 
