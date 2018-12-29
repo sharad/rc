@@ -37,10 +37,9 @@
 
 ;;; Code:
 
-(require 'org-capture-note)
-
 (provide 'mail-event)
 
+(require 'org-capture-note)
 
 ;; https://emacs.stackexchange.com/questions/101/how-can-i-create-an-org-link-for-each-email-sent-by-mu4e
 ;; http://kitchingroup.cheme.cmu.edu/blog/2014/06/08/Better-integration-of-org-mode-and-email/
@@ -164,18 +163,43 @@
   (@:dispatch))
 
 
+(defun activity-mail-event-activate-internal ()
+  (lambda ()
+     (setf @mail-read-event-detector-instance
+           (@! @event-dectector-class :gen-mail-read-event-detector "gnus read mail event"))
+
+     (setf @mail-send-event-detector-instance
+           (@! @event-dectector-class :gen-mail-send-event-detector "gnus send mail event"))
+
+     (add-hook
+      'gnus-article-prepare-hook
+      #'(lambda ()
+          (@! @mail-read-event-detector-instance :make-event-gnus)))))
+
+(defun activity-mail-event-dactivate-internal ()
+  (lambda ()
+    (setf @mail-read-event-detector-instance
+          (@! @event-dectector-class :gen-mail-read-event-detector "gnus read mail event"))
+
+    (setf @mail-send-event-detector-instance
+          (@! @event-dectector-class :gen-mail-send-event-detector "gnus send mail event"))
+
+    (remove-hook
+     'gnus-article-prepare-hook
+     #'(lambda ()
+         (@! @mail-read-event-detector-instance :make-event-gnus)))))
+
 ;; load it
-(@! @activities :insinuate-add
-    (lambda ()
-      (setf @mail-read-event-detector-instance
-            (@! @event-dectector-class :gen-mail-read-event-detector "gnus read mail event"))
+;;;###autoload
+(defun activity-mail-event-activate ()
+  (@! @activities :insinuate-add #'activity-mail-event-activate-internal))
 
-      (setf @mail-send-event-detector-instance
-            (@! @event-dectector-class :gen-mail-send-event-detector "gnus send mail event"))
+;;;###autoload
+(defun activity-mail-event-deactivate ()
+  (@! @activities :insinuate-remove #'activity-mail-event-deactivate-internal))
 
-      (add-hook
-       'gnus-article-prepare-hook
-       #'(lambda ()
-           (@! @mail-read-event-detector-instance :make-event-gnus)))))
+helm-last-buffer
+
+helm-buffers
 
 ;;; mail-event.el ends here

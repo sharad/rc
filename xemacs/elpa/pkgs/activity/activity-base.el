@@ -51,12 +51,14 @@
   (mapcar
    #'(lambda (dir)
        (expand-file-name dir (file-name-directory load-file-name)))
-   '("node-dest" "activity")))
+   '("node-dest" "activities")))
 
+;;;###autoload
 (defun activity-add-subdirs-load-path ()
   (dolist (dir activity-subdirs)
     (add-to-list 'load-path dir)))
 
+;;;###autoload
 (activity-add-subdirs-load-path)
 
 
@@ -167,11 +169,11 @@
                        (push fun @:insinuate))))
 
 ;;;###autoload
-(defun activate ()
+(defun activate-activity ()
   (@! @activities :activate))
 
 ;;;###autoload
-(defun deactivate ()
+(defun deactivate-activity ()
   (@! @activities :deactivate))
 
 
