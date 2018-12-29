@@ -31,7 +31,7 @@
 (defun get-screen-width (screen)
   (xlib:drawable-width (screen-root (current-screen))))
 
-(defun get-screen-display-size (&optional (screen (current-screen)) )
+(defun get-screen-root-display-size (&optional (screen (current-screen)) )
   (format nil "~dx~d"
           (get-screen-width screen)
           (get-screen-height screen)))
@@ -50,7 +50,7 @@
 
 (defun setup-wallpaper-image (image-path)
   (run-shell-command
-   (format nil wallpaper-image-command (get-root-display-size) image-path)))
+   (format nil wallpaper-image-command (get-screen-root-display-size (current-screen)) image-path)))
 
 (defun setup-random-wallpaper-image ()
   (let ((image-path (select-random-wallpaper-image-path)))

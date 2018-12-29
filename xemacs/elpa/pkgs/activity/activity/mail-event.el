@@ -37,7 +37,7 @@
 
 ;;; Code:
 
-(require 'org-activity-note)
+(require 'org-capture-note)
 
 (provide 'mail-event)
 
@@ -63,32 +63,35 @@
 (defobjgen@ @event-dectector-class :gen-mail-read-event-detector ()
 
   (def@ @@ :make-message ()
-    (let* ((msgid (message-fetch-field "Message-ID"))
-           (subject (message-fetch-field "Subject"))
-           (from (message-fetch-field "From"))
-           (to (message-fetch-field "To"))
+    (let* ((msgid (message-fetch-field "Message-ID" t))
+           (subject (message-fetch-field "Subject" t))
+           (from (message-fetch-field "From" t))
+           (to (message-fetch-field "To" t))
            (link (concat "mu4e:msgid:" (activity~wipe-brackets msgid))))
       (list
-       :subject
-       subject
-       :from
-       from
-       :to
-       to)))
+       :subject subject
+       :from from
+       :to to)))
 
   (def@ @@ :make-event ()
     "Make mail read event."
     (let ((note (@! @:note :new)))
       (message "Helloooo")
       (message "Helloo %s" (@:make-message))
-      (apply
+      (funcall
        (@ note :send)
        note
-       "Reading mail %s from %s to %s"
-       ;;TODO arrange for plist
-       (lotus-plist-get-members
-        (@:make-message)
-        '(:subject :from :to)))))
+       '(clock)
+       (apply
+        #'format
+        (string-join
+         '("* Reading mail subject: %s"
+           "from: %s"
+           "to: %s")
+         "\n")
+        (lotus-plist-get-members
+         (@:make-message)
+         '(:subject :from :to))))))
 
   (def@ @@ :make-event-gnus ()
     (when (and
@@ -96,29 +99,29 @@
            (get-buffer gnus-article-buffer))
       (with-current-buffer (get-buffer gnus-article-buffer)
         (let ((subject
-               (message-fetch-field "Subject")))
+               (message-fetch-field "Subject" t)))
           (message "checking: %s" subject)
           (@:make-event)))))
 
   (def@ @@ :dispatch ()
     "setting note class"
-    (setf @:note @org-clock-note)
-    ;; gnus-Article-prepare-hook
-    ;; gnus-Select-article-hook
-    (add-hook
-     'gnus-article-prepare-hook
-     (lambda ()
-       (@! @@ :make-event-gnus))))
+    (setf @:note @org-capture-edit-entry-dest-note))
+  ;; gnus-Article-prepare-hook
+  ;; gnus-Select-article-hook
+  ;; (add-hook
+  ;;  'gnus-article-prepare-hook
+  ;;  (lambda () (@! @@ :make-event-gnus)))
+
 
   (@:dispatch))
 
 
 (defobjgen@ @event-dectector-class :gen-mail-send-event-detector ()
   (def@ @@ :make-message ()
-    (let* ((msgid (message-fetch-field "Message-ID"))
-           (subject (message-fetch-field "Subject"))
-           (from (message-fetch-field "From"))
-           (to (message-fetch-field "To"))
+    (let* ((msgid (message-fetch-field "Message-ID" t))
+           (subject (message-fetch-field "Subject" t))
+           (from (message-fetch-field "From" t))
+           (to (message-fetch-field "To" t))
            (link (concat "mu4e:msgid:" (activity~wipe-brackets msgid))))
       (list
        :subject
@@ -133,11 +136,16 @@
     (let ((note (@! @:note :new)))
       (apply (@ note :send)
              note
-             "Sent mail %s to %s"
-             ;;TODO arrange for plist
-             (lotus-plist-get-members
-              (@:make-message)
-              '(:subject :to)))))
+             '(clock)
+             (apply
+              #'format
+              (string-join
+               '("* Sent mail subject: %s"
+                 "to: %s")
+               "\n")
+              (lotus-plist-get-members
+               (@:make-message)
+               '(:subject :to))))))
 
   (def@ @@ :make-event-gnus ()
     (when (and
@@ -145,34 +153,29 @@
            (get-buffer gnus-message-buffer))
       (with-current-buffer (get-buffer gnus-message-buffer)
         (let ((subject
-               (message-fetch-field "Subject")))
+               (message-fetch-field "Subject" t)))
           (message "sending mail: %s" subject)
           (@:make-event)))))
 
   (def@ @@ :dispatch ()
     "setting note class"
-    (setf @:note @org-clock-note)
-    (add-hook
-     'message-mode-hook
-     (lambda ()
-      (message-add-action
-       (lambda ()
-         (@! @@ :make-event-gnus))
-       'send))))
+    (setf @:note @org-capture-edit-entry-dest-note))
 
   (@:dispatch))
 
 
-(when nil
-  (setf @mail-read-event-detector-instance
-        (@! @event-dectector-class :gen-mail-read-event-detector "gnus read mail event"))
+;; load it
+(@! @activities :insinuate-add
+    (lambda ()
+      (setf @mail-read-event-detector-instance
+            (@! @event-dectector-class :gen-mail-read-event-detector "gnus read mail event"))
 
-  (setf @mail-send-event-detector-instance
-        (@! @event-dectector-class :gen-mail-send-event-detector "gnus send mail event"))
+      (setf @mail-send-event-detector-instance
+            (@! @event-dectector-class :gen-mail-send-event-detector "gnus send mail event"))
 
-  )
-
-
-
+      (add-hook
+       'gnus-article-prepare-hook
+       #'(lambda ()
+           (@! @mail-read-event-detector-instance :make-event-gnus)))))
 
 ;;; mail-event.el ends here

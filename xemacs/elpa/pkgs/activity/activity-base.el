@@ -58,6 +58,7 @@
     (add-to-list 'load-path dir)))
 
 (activity-add-subdirs-load-path)
+
 
 
 (defmacro @extend-object (object &rest body)
@@ -125,121 +126,148 @@
 
 (setf @activity-base
       (@drive-object @ "activity-base"
-          "Activity Base"
+                       "Activity Base"
 
-        (def@ @@ :keyp (key)
-          (memq key (@:keys)))
+                       (setf @:activation-list nil)
 
-        (def@ @@ :finalize ()
-          ())
+                       (def@ @@ :keyp (key)
+                         (memq key (@:keys)))
 
-        (def@ @@ :init ()
-          (@^:init)
-          (message "@activity-base :init")
-          (setf @:_occuredon (current-time)))
+                       (def@ @@ :finalize ()
+                         ())
 
-        (def@ @@ :occuredon ()
-          (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))
+                       (def@ @@ :init ()
+                         (@^:init)
+                         (message "@activity-base :init")
+                         (setf @:_occuredon (current-time)))
 
-        (def@ @@ :dispatch ()
-          (@:init))
+                       (def@ @@ :occuredon ()
+                         (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))
 
-        (@:dispatch)))
+                       (def@ @@ :dispatch ()
+                         (@:init))
+
+                       (@:dispatch)))
+
+
+(setf @activities
+      (@drive-object @activity-base "activities"
+                     (setf @:insinuate nil
+                           @:uninsinuate nil)
+
+                     (def@ @@ :activate ()
+                       (dolist (act @:insinuate)
+                         (funcall act)))
+
+                     (def@ @@ :deactivate ()
+                       (dolist (act @:uninsinuate)
+                         (funcall act)))
+
+                     (def@ @@ :insinuate-add (fun)
+                       (push fun @:insinuate))))
+
+;;;###autoload
+(defun activate ()
+  (@! @activities :activate))
+
+;;;###autoload
+(defun deactivate ()
+  (@! @activities :deactivate))
 
 
 
 (setf @dest-class
       (@drive-object @activity-base "dest-base-class"
-        "Destination Base Class"
+                     "Destination Base Class"
 
-        (defobjgen@ @@ :gen-builder ()
-          (def@ @@ :receive (fmt &rest args)
-            (apply #'format
-                   fmt args)))
+                     (defobjgen@ @@ :gen-builder ()
+                                    (def@ @@ :receive (fmt &rest args)
+                                      (apply #'format
+                                             fmt args)))
 
-        (defobjgen@ @@ :gen-msg ()
-          (def@ @@ :receive (fmt &rest args)
-            (apply #'message
-                   fmt args)))
+                     (defobjgen@ @@ :gen-msg ()
+                                    (def@ @@ :receive (fmt &rest args)
+                                      (apply #'message
+                                             fmt args)))
 
-        (defobjgen@ @@ :gen-warning ()
-          (def@ @@ :receive (fmt &rest args)
-            (apply #'lwarn
-                   'activity
-                   'warning
-                   fmt args)))
+                     (defobjgen@ @@ :gen-warning ()
+                                    (def@ @@ :receive (fmt &rest args)
+                                      (apply #'lwarn
+                                             'activity
+                                             'warning
+                                             fmt args)))
 
-        (defobjgen@ @@ :gen-error ()
-          (def@ @@ :receive (fmt &rest args)
-            (apply #'lwarn
-                   'activity
-                   'error
-                   fmt args)))
+                     (defobjgen@ @@ :gen-error ()
+                                    (def@ @@ :receive (fmt &rest args)
+                                      (apply #'lwarn
+                                             'activity
+                                             'error
+                                             fmt args)))
 
-        (def@ @@ :dispatch ()
-          (@:init))
+                     (def@ @@ :dispatch ()
+                       (@:init))
 
-        (@:dispatch)))
+                     (@:dispatch)))
 
 
 
 (setf @note-class
       (@drive-object @activity-base "note-base-class"
-        "Note Base Class"
+                     "Note Base Class"
 
-        (setf @:dests '())
+                     (setf @:dests '())
 
-        (def@ @@ :send (fmt &rest args)
-          "Node send method"
-          (if (and
-               ;; (memq :dests (@:keys))
-               @:dests
-               (consp @:dests))
-              (dolist (dest @:dests)
-                (if dest
-                    (if (@! dest :keyp :receive)
-                        ;; (@! dest :receive fmt args)
-                        (apply (@ dest :receive) dest fmt args)
-                      (message
-                       "for %s dest %s [%s] not has :receive method, not sending msg."
-                       @:name
-                       (@ dest :name)
-                       (@! dest :keys)))
-                  (message "dest is nil")))
-            (error "%s has No @:dests %d boundp(%s) consp(%s) present."
-                   @:name
-                   (length @:dests)
-                   (boundp '@:dests)
-                   (consp @:dests))))
+                     (def@ @@ :send (&rest args)
+                       "Node send method"
+                       (if (and
+                            ;; (memq :dests (@:keys))
+                            @:dests
+                            (consp @:dests))
+                           (dolist (dest @:dests)
+                             (if dest
+                                 (if (@! dest :keyp :receive)
+                                     ;; (@! dest :receive fmt args)
+                                     (apply (@ dest :receive) dest args)
+                                   (message
+                                    "for %s dest %s [%s] not has :receive method, not sending msg."
+                                    @:name
+                                    (@ dest :name)
+                                    (@! dest :keys)))
+                               (message "dest is nil")))
+                         (error "%s has No @:dests %d boundp(%s) consp(%s) present."
+                                @:name
+                                (length @:dests)
+                                (boundp '@:dests)
+                                (consp @:dests))))
 
-        ;; (defobjgen@ @@ :gen-format-msg ()
-        ;;                      "Generator for format message note"
-        ;;   (push
-        ;;    (@! @dest-class :gen-msg "msg")
-        ;;    @:dests))
+                     ;; (defobjgen@ @@ :gen-format-msg ()
+                     ;;                      "Generator for format message note"
+                     ;;   (push
+                     ;;    (@! @dest-class :gen-msg "msg")
+                     ;;    @:dests))
 
-        ;; (defobjgen@ @@ :gen-org-log-note ()
-        ;;                      "Generator for org log note"
-        ;;   (push
-        ;;    (@! @dest-class :gen-msg "msg")
-        ;;    @:dests))
+                     ;; (defobjgen@ @@ :gen-org-log-note ()
+                     ;;                      "Generator for org log note"
+                     ;;   (push
+                     ;;    (@! @dest-class :gen-msg "msg")
+                     ;;    @:dests))
 
-        ;; (defobjgen@ @@ :gen-org-dual-log-note ()
-        ;;                      "Generator for dual org log note"
-        ;;   (push
-        ;;    (@! @dest-class :gen-msg "msg")
-        ;;    @:dests))
+                     ;; (defobjgen@ @@ :gen-org-dual-log-note ()
+                     ;;                      "Generator for dual org log note"
+                     ;;   (push
+                     ;;    (@! @dest-class :gen-msg "msg")
+                     ;;    @:dests))
 
-        ;; (defobjgen@ @@ :gen-org-intreactive-log-note ()
-        ;;                      "Generator for Interactive org log note"
-        ;;   (push
-        ;;    (@! @dest-class :gen-msg "msg")
-        ;;    @:dests))
+                     ;; (defobjgen@ @@ :gen-org-intreactive-log-note ()
+                     ;;                      "Generator for Interactive org log note"
+                     ;;   (push
+                     ;;    (@! @dest-class :gen-msg "msg")
+                     ;;    @:dests))
 
-        (def@ @@ :dispatch ()
-          (@:init))
+                     (def@ @@ :dispatch ()
+                       (@:init))
 
-        (@:dispatch)))
+                     (@:dispatch)))
 
 
 (progn

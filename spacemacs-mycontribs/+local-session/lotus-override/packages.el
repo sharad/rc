@@ -37,6 +37,7 @@
 (defconst lotus-override-packages
   '(
     (lsdb    :location local)
+    helm
     )
   "The list of Lisp packages required by the lotus-override layer.
 
@@ -67,13 +68,40 @@ Each entry is either:
 
 (defun lotus-override/init-lsdb ()
   (use-package lsdb
-               :defer t
-               :config
-               (progn
-                 (progn
-                   (defun lsdb-gnus-update-record ()
-                     (with-current-buffer (with-current-buffer (or gnus-article-current-summary (current-buffer))
-                                            gnus-original-article-buffer)
-                       (lsdb-update-records-and-display)))))))
+    :defer t
+    :config
+    (progn
+      (progn
+        (defun lsdb-gnus-update-record ()
+          (with-current-buffer (with-current-buffer (or gnus-article-current-summary (current-buffer))
+                                 gnus-original-article-buffer)
+            (lsdb-update-records-and-display)))))))
 
-;;; packages.el ends here
+
+
+
+
+(defun lotus-override/post-init-helm ()
+  (use-package helm
+    :defer t
+    :config
+    (progn
+      (progn
+        ;; Error
+        ;; "Selecting deleted buffer"
+        ;; is coming from set-buffer
+        ;; in (helm-resume)
+        ;; (helm-resume-select-buffer)
+        ;; helm-last-buffer
+        ;; (helm-resume (nth arg helm-buffers))
+        ;; (helm-resume-p resume)
+        ;; basically we need to clean up helm-buffers from deleted buffers
+        ;; so advice helm-resume to clean up.
+
+        ;;or basically in case of this error
+        ;; helm should not call helm-resume by default.
+
+        ;;other similar issue https://github.com/syl20bnr/spacemacs/issues/6945
+        ;;but not with helm
+
+        (message "Fix error \"Selecting deleted buffer\"")))))

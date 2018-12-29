@@ -42,6 +42,12 @@
 (defobjgen@ @dest-class :gen-org-capture-dest ()
   "Capture Dest class"
 
+  (setf
+   @:type nil
+   @:target nil
+   @:template nil
+   @:capture-plist nil)
+
   (def@ @@ :dispatch (marker)
     (@:init)
     (setf @:marker marker))
@@ -76,61 +82,83 @@
   (def@ @@ :receive (type target template &rest capture-plist)
     ;; TODO
     ;; add necessary code for interactive note.
+    (message "Test %s %s %s %s" type target template capture-plist)
     (org-capture+
      (or type @:type)
      (or target @:target)
      (or template @:template)
      (append capture-plist @:capture-plist))))
 
-(defvar @org-capture-dest (@! @dest-class :gen-org-capture-dest))
+(setf @org-capture-dest (@! @dest-class :gen-org-capture-dest "org-capture-dest"))
 
-(defvar @org-capture-immediate-dest
+(setf @org-capture-immediate-dest
   (@drive-object @org-capture-dest "Non-Interactive capture"
-    (push
-     (list :immediate-finish t)
-     @:capture-plist)
 
-    (def@ @@ :receive (fmt &rest args)
-      ;; TODO
-      ;; add necessary code for interactive note.
-      (org-capture+ @:type @:target @:template @:capture-plist))))
+                 (push
+                  (list
+                   :immediate-finish t)
+                  @:capture-plist)))
 
-(defvar @org-capture-edit-dest
+(setf @org-capture-edit-dest
   (@drive-object @org-capture-dest "Interactive capture"
-    "Interactive capture"
-    (def@ @@ :receive (fmt &rest args)
-      ;; TODO
-      ;; add necessary code for interactive note.
-      (org-capture+ @:type @:target @:template @:capture-plist))))
+                 "Interactive capture"
+                 (push
+                  (list
+                   :immediate-finish nil)
+                  @:capture-plist)))
 
-(defvar @org-capture-edit-entry-dest
-      (@drive-object @org-capture-dest "Interactive capture"
-        "Interactive capture"
 
-        (defvar @:type 'entry)
+(defobjgen@ @org-capture-edit-dest :gen-capture-edit-dest-with-type (value)
+  (setf (@ @@ :type) value)
+  (def@ @@ :receive (target template &rest capture-plist)
+    (@^:receive @:type target template capture-plist)
+    (message "%s %s" target template)))
 
-        (def@ @@ :receive (fmt &rest args)
-          ;; TODO
-          ;; add necessary code for interactive note.
-          (org-capture+ @:type @:target @:template @:capture-plist))))
+
+(setf
+ @org-capture-edit-entry-dest
+ (@! @org-capture-edit-dest :gen-capture-edit-dest-with-type "org-capture-edit-entry-dest" 'entry))
+
+
+
+;; (@! @org-capture-edit-entry-dest :receive '(clock) "* Hello")
+
+
 
 
 
-(defobjgen@ @note-class :gen-org-capture-note (marker)
+(defobjgen@ @note-class :gen-org-capture-edit-entry-dest-note ()
   "Generator for org note message"
   (push
-   (@! @dest-class :gen-org-capture-dest "msg" marker)
+   @org-capture-edit-entry-dest
    @:dests))
 
+
+(setf
+ @org-capture-edit-entry-dest-note
+ (@! @note-class :gen-org-capture-edit-entry-dest-note "org-capture-edit-entry-dest-note"))
+
+;; (@! @org-capture-edit-entry-dest-note :send '(clock) "* Hello")
+
+
+(progn
+  (defun testrec (fmt &rest args)
+    (apply #'message fmt args))
+
+  (defun testargs (&rest args)
+   (apply #'testrec args))
+
+  (testargs "%s" 1))
+
 
-(defvar @org-clock-capture
-  (@! @note-class :gen-org-capture-note
-      "org-clock-log-note"
-      #'(lambda ()
-          (or
-           org-clock-hd-marker
-           org-clock-marker)))
-  "Org clock activity node")
+;; (defvar @org-clock-capture
+;;   (@! @note-class :gen-org-capture-note
+;;       "org-clock-log-note"
+;;       #'(lambda ()
+;;           (or
+;;            org-clock-hd-marker
+;;            org-clock-marker)))
+;;   "Org clock activity node")
 
 
 ;; (@! @org-clock-note :send "Hello")
