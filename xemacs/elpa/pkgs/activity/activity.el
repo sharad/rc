@@ -130,9 +130,7 @@
   (interactive
    (list
     (completing-read "activity: "
-                     (mapcar
-                      #'(lambda (c) (car c))
-                      (@ @activity :insinuate)))))
+                     (mapcar #'car (@ @activity :insinuate)))))
   ;; (activity-add-subdirs-load-path)
   (@! @activity :activate key))
 
@@ -141,9 +139,7 @@
   (interactive
    (list
     (completing-read "activity: "
-                     (mapcar
-                      #'(lambda (c) (car c))
-                      (@ @activity :uninsinuate)))))
+                     (mapcar #'car (@ @activity :uninsinuate)))))
   ;; (activity-add-subdirs-load-path)
   (@! @activity :activate key))
 
@@ -151,22 +147,18 @@
 (defun activity-activate-all ()
   (interactive)
   ;; (activity-add-subdirs-load-path)
-  (@! @activity :activate))
+  (@! @activity :activate-all))
 
 ;;;###autoload
 (defun activity-deactivate-all ()
   (interactive)
-  (@! @activity :deactivate))
+  (@! @activity :deactivate-all))
 
 
 
-(require 'buff-trans)
-;; change-activity
-;; clock-activity
-(require 'mail-event)
-;; {require 'org-activity-log-note}
-;; (require 'org-activity-note)
-(require 'org-clock-trans)
+;; (require 'buff-trans)
+;; (require 'mail-event)
+;; (require 'org-clock-trans)
 
 
 
