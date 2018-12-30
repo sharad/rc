@@ -48,6 +48,7 @@
     org-clock-daysummary
     org-clock-table-misc-lotus
     occ
+    activity
     org-clock-resolve-advanced
     timesheet
     wakatime-mode
@@ -498,32 +499,38 @@ Each entry is either:
              'lotus-config-start-occ-insinuate-with-session-unified
              nil))))))
 
+(defun lotus-orgclocktask/init-activity ()
+  (use-package activity
+    :defer t
+    :config
+    (progn)))
+
 (defun lotus-orgclocktask/init-org-clock-resolve-advanced ()
   (use-package org-clock-resolve-advanced
-      :defer t
-      :config
+    :defer t
+    :config
+    (progn
       (progn
-        (progn
-          )
-        (progn
-          )))
+        )
+      (progn
+        )))
 
   (use-package startup-hooks
-      :defer t
-      :config
+    :defer t
+    :config
+    (progn
       (progn
-        (progn
-          (if (functionp 'org-clock-resolve-advanced-insinuate)
-              (org-clock-resolve-advanced-insinuate)
-              (warn "function org-clock-resolve-advanced-insinuate not available."))))))
+        (if (functionp 'org-clock-resolve-advanced-insinuate)
+            (org-clock-resolve-advanced-insinuate)
+          (warn "function org-clock-resolve-advanced-insinuate not available."))))))
 
 (defun lotus-orgclocktask/init-timesheet ()
   ;; https://github.com/tmarble/timesheet.el
   (use-package timesheet
-      :defer t
-      :config
-      (progn
-        )))
+    :defer t
+    :config
+    (progn
+      )))
 
 (defun lotus-orgclocktask/post-init-wakatime-mode ()
   ;; https://github.com/tmarble/timesheet.el

@@ -45,34 +45,34 @@
   :group 'convenience
   :prefix "activity-")
 
-;;;###autoload
-(defvar activity-subdirs
-  (mapcar
-   #'(lambda (dir)
-       (expand-file-name dir (file-name-directory load-file-name)))
-   '("node-dest" "activities")))
+;; ;;;###autoload
+;; (defvar activity-subdirs
+;;   (mapcar
+;;    #'(lambda (dir)
+;;        (expand-file-name dir (file-name-directory load-file-name)))
+;;    '("node-dest" "activities")))
 
-;;;###autoload
-(do-list (dir (mapcar
-               #'(lambda (dir)
-                   (expand-file-name dir (file-name-directory load-file-name)))
-               '("node-dest" "activities")))
-         (message "adding %s to load path" dir)
-         (add-to-list 'load-path dir))
+;; ;;;###autoload
+;; (dolist (dir (mapcar
+;;               #'(lambda (dir)
+;;                   (expand-file-name dir (file-name-directory load-file-name)))
+;;               '("node-dest" "activities")))
+;;   (message "adding %s to load path" dir)
+;;   (add-to-list 'load-path dir))
 
-;;;###autoload
-(eval-when-compile
-  '(do-list (dir (mapcar
-                  #'(lambda (dir)
-                      (expand-file-name dir (file-name-directory load-file-name)))
-                  '("node-dest" "activities")))
-            (message "adding %s to load path" dir)
-            (add-to-list 'load-path dir)))
+;; ;;;###autoload
+;; (eval-when-compile
+;;   '(dolist (dir (mapcar
+;;                  #'(lambda (dir)
+;;                      (expand-file-name dir (file-name-directory load-file-name)))
+;;                  '("node-dest" "activities")))
+;;      (message "adding %s to load path" dir)
+;;      (add-to-list 'load-path dir)))
 
-;;;###autoload
-(defun activity-add-subdirs-load-path ()
-  (dolist (dir activity-subdirs)
-    (add-to-list 'load-path dir)))
+;; ;;;###autoload
+;; (defun activity-add-subdirs-load-path ()
+;;   (dolist (dir activity-subdirs)
+;;     (add-to-list 'load-path dir)))
 
 
 ;;;###autoload
@@ -85,6 +85,81 @@
 (require '@)
 
 (require 'activity-base)
+
+
+
+(setf @activity
+      (@drive-object @activity-base "activities"
+                     "Activity class"
+
+                     (def@ @@ :init ()
+                       (@^:init)
+                       (message "@activity-class :init")
+                       (setf @:occuredon (current-time)))
+
+                     (setf @:insinuate nil
+                           @:uninsinuate nil)
+
+                     (def@ @@ :activate (key)
+                       (let ((c (assoc key @:insinuate)))
+                         (when c
+                           (funcall (cdr c)))))
+
+                     (def@ @@ :deactivate (key)
+                       (let ((c (assoc key @:uninsinuate)))
+                         (when c
+                           (funcall (cdr c)))))
+
+
+                     (def@ @@ :activate-all ()
+                       (dolist (act @:insinuate)
+                         (funcall (cdr act))))
+
+                     (def@ @@ :deactivate-all ()
+                       (dolist (act @:uninsinuate)
+                         (funcall (cdr act))))
+
+                     (def@ @@ :add (key active deactive)
+                       (push (cons key active) @:insinuate)
+                       (push (cons key deactive) @:uninsinuate))))
+
+;; (funcall (cdr (assoc "mail-event" (@ @activity :insinuate))))
+
+;;;###autoload
+(defun activity-activate (key)
+  (interactive
+   (list
+    (completing-read "activity: "
+                     (mapcar
+                      #'(lambda (c) (car c))
+                      (@ @activity :insinuate)))))
+  ;; (activity-add-subdirs-load-path)
+  (@! @activity :activate key))
+
+;;;###autoload
+(defun activity-deactivate (key)
+  (interactive
+   (list
+    (completing-read "activity: "
+                     (mapcar
+                      #'(lambda (c) (car c))
+                      (@ @activity :uninsinuate)))))
+  ;; (activity-add-subdirs-load-path)
+  (@! @activity :activate key))
+
+;;;###autoload
+(defun activity-activate-all ()
+  (interactive)
+  ;; (activity-add-subdirs-load-path)
+  (@! @activity :activate))
+
+;;;###autoload
+(defun activity-deactivate-all ()
+  (interactive)
+  (@! @activity :deactivate))
+
+
+
 (require 'buff-trans)
 ;; change-activity
 ;; clock-activity

@@ -162,8 +162,8 @@
 
   (@:dispatch))
 
-
-(defun activity-mail-event-activate-internal ()
+;;;###autoload
+(defun activity-mail-event-activate ()
   (setf @mail-read-event-detector-instance
         (@! @event-dectector-class :gen-mail-read-event-detector "gnus read mail event"))
 
@@ -175,21 +175,19 @@
    #'(lambda ()
        (@! @mail-read-event-detector-instance :make-event-gnus))))
 
-
-(defun activity-mail-event-dactivate-internal ()
+;;;###autoloda
+(defun activity-mail-event-dactivate ()
   (remove-hook
    'gnus-article-prepare-hook
    #'(lambda ()
        (@! @mail-read-event-detector-instance :make-event-gnus))))
 
-
-;; load it
 ;;;###autoload
-(defun activity-mail-event-activate ()
-  (@! @activities :insinuate-add #'activity-mail-event-activate-internal))
+(defun activity-mail-event-register ()
+  (interactive)
+  (@! @activity :add "mail-event" #'activity-mail-event-activate #'activity-mail-event-deactivate))
 
 ;;;###autoload
-(defun activity-mail-event-deactivate ()
-  (@! @activities :uninsinuate-add #'activity-mail-event-deactivate-internal))
+(activity-mail-event-register)
 
 ;;; mail-event.el ends here

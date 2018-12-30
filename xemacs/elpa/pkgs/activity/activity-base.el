@@ -96,15 +96,6 @@
                           '(("\\(@extend-object\\)\\>"
                              (1 'font-lock-builtin-face)))))
 
-(progn
-  (string-match "(\\<\\(def@\\)\\> +\\([^ ()]+\\)" "(def@ x")
-
-  (string-match "(\\<\\(def@\\) +\\([^ ()]+\\)" "(def@ x")
-
-  (string-match "\\<\\(@\\^?:[^ ()]+\\)\\>" "@:aa")
-
-  (string-match "\\(@\\^?:[^ ()]+\\)\\>" "@:aa"))
-
 
 (setf @activity-base
       (@drive-object @ "activity-base"
@@ -132,37 +123,7 @@
                        (@:dispatch)))
 
 
-(setf @activities
-      (@drive-object @activity-base "activities"
-                     (setf @:insinuate nil
-                           @:uninsinuate nil)
 
-                     (def@ @@ :activate ()
-                       (dolist (act @:insinuate)
-                         (funcall act)))
-
-                     (def@ @@ :deactivate ()
-                       (dolist (act @:uninsinuate)
-                         (funcall act)))
-
-                     (def@ @@ :insinuate-add (fun)
-                       (push fun @:insinuate))
-
-                     (def@ @@ :uninsinuate-add (fun)
-                       (push fun @:insinuate))))
-
-;;;###autoload
-(defun activate-activity ()
-  (interactive)
-  (activity-add-subdirs-load-path)
-  (@! @activities :activate))
-
-;;;###autoload
-(defun deactivate-activity ()
-  (interactive)
-  (@! @activities :deactivate))
-
-
 
 (setf @dest-class
       (@drive-object @activity-base "dest-base-class"
@@ -349,29 +310,9 @@
       ;; collect in list
       ;; provide list return-reset functions
       (@drive-object @activity-base "activity detector class"
-        "Activity detector class"
-        (def@ @@ :note ()
-          )))
-
-(setf @activity
-      (@drive-object @activity-base "activity"
-        "Activity class"
-        (def@ @@ :init ()
-          (@^:init)
-          (message "@activity-class :init")
-          (setf @:occuredon (current-time)))
-
-        (def@ @@ :start ()
-          )
-
-        (def@ @@ :stop ()
-          )
-
-        (def@ @@ :hook-register ()
-          )))
-
-
-
+                     "Activity detector class"
+                     (def@ @@ :note ()
+                       )))
 
 ;;; act.el ends here
 
@@ -400,5 +341,13 @@
 ;; ** First complete working model, somehow
 ;; ** Things should be definable outside of this library based on framework provided here.
 
+(when nil
+  (progn
+    (string-match "(\\<\\(def@\\)\\> +\\([^ ()]+\\)" "(def@ x")
 
+    (string-match "(\\<\\(def@\\) +\\([^ ()]+\\)" "(def@ x")
+
+    (string-match "\\<\\(@\\^?:[^ ()]+\\)\\>" "@:aa")
+
+    (string-match "\\(@\\^?:[^ ()]+\\)\\>" "@:aa")))
 ;;; activity-base.el ends here
