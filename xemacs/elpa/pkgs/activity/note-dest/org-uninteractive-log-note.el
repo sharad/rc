@@ -39,11 +39,11 @@
 
 ;; (require 'activity-base)
 
-(provide 'org-activity-note)
+(provide 'org-uninteractive-log-note)
 
 
 
-(defobjgen@ @dest-class :gen-org-dest (marker)
+(defobjgen@ @dest-class :gen-org-uninteractive-log-dest (marker)
   (def@ @@ :dispatch (marker)
     (@:init)
     (setf @:marker marker))
@@ -82,19 +82,19 @@
 
 
 
-(defobjgen@ @note-class :gen-org-note (marker)
+(defobjgen@ @note-class :gen-org-uninteractive-log-note (marker)
   "Generator for org note message"
   (push
-   (@! @dest-class :gen-org-dest "msg" marker)
+   (@! @dest-class :gen-org-uninteractive-log-dest "msg" marker)
    @:dests))
 
 
-(defobjgen@ @note-class :gen-dual-org-note (marker1 marker2)
+(defobjgen@ @note-class :gen-dual-org-uninteractive-log-note (marker1 marker2)
   "Generator for dual org note message"
 
   (def@ @@ :dispatch (marker1 marker2)
-    (setf @:dest1 (@! @dest-class :gen-org-dest "org note dest1" marker1))
-    (setf @:dest2 (@! @dest-class :gen-org-dest "org note dest2" marker2)))
+    (setf @:dest1 (@! @dest-class :gen-org-uninteractive-log-dest "org note dest1" marker1))
+    (setf @:dest2 (@! @dest-class :gen-org-uninteractive-log-dest "org note dest2" marker2)))
 
   (def@ @@ :send1 (fmt &rest args)
     (apply (@ @:dest1 :receive) fmt args))
@@ -105,8 +105,8 @@
   (@:dispatch marker1 marker2))
 
 
-(defvar @org-clock-note
-  (@! @note-class :gen-org-note
+(defvar @org-clock-uninteractive-log-note
+  (@! @note-class :gen-org-uninteractive-log-note
       "org-clock-note"
       #'(lambda ()
           (or
@@ -116,41 +116,41 @@
 
 (when nil
 
-  (setf @org-clock-note
-        (@! @note-class :gen-org-note
+  (setf @org-uninteractive-log-note
+        (@! @note-class :gen-org-uninteractive-log-note
             "org-clock-note"
             #'(lambda ()
                 (or
                  org-clock-hd-marker
                  org-clock-marker))))
 
-  (setf @org-clock-note
-        (@! @note-class :gen-org-note
+  (setf @org-uninteractive-log-note
+        (@! @note-class :gen-org-uninteractive-log-note
             "org-clock-note"
             #'(lambda ()
                 (or
                  org-clock-hd-marker
                  org-clock-marker))))
 
-  (length (@ @org-clock-note :dests))
+  (length (@ @org-uninteractive-log-note :dests))
 
-  (memq :dests (@! @org-clock-note :keys))
+  (memq :dests (@! @org-uninteractive-log-note :keys))
 
-  (consp (@ @org-clock-note :dests))
+  (consp (@ @org-uninteractive-log-note :dests))
 
-  (@ @org-clock-note :name)
+  (@ @org-uninteractive-log-note :name)
 
-  (@! @org-clock-note :send "Hello1")
+  (@! @org-uninteractive-log-note :send "Hello1")
 
-  (@! (@! @org-clock-note :new) :send "Test")
+  (@! (@! @org-uninteractive-log-note :new) :send "Test")
 
-  (@! @org-clock-note :keys)
-  (@! (@! @org-clock-note :new) :keys)
+  (@! @org-uninteractive-log-note :keys)
+  (@! (@! @org-uninteractive-log-note :new) :keys)
 
-  (@ (@! @org-clock-note :new) :dests)
+  (@ (@! @org-uninteractive-log-note :new) :dests)
 
   (@!
-   (@! @dest-class :gen-org-dest "msg"
+   (@! @dest-class :gen-org-uninteractive-log-dest "msg"
        #'(lambda ()
            (or
             org-clock-hd-marker

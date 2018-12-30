@@ -38,7 +38,7 @@
 ;;; Code:
 
 (require 'activity-base)
-(require 'org-activity-note)
+(require 'org-uninteractive-log-note)
 
 (provide 'org-clock-trans)
 
@@ -63,7 +63,7 @@
   (def@ @@ :dispatch (marker1 marker2)
     (@:init)
     (setf @:note
-          (@! @note-class :gen-dual-org-note marker1 marker2)))
+          (@! @note-class :gen-dual-org-uninteractive-log-note marker1 marker2)))
 
   (@:dispatch marker1 marker2))
 

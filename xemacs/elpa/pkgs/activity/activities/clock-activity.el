@@ -34,8 +34,10 @@
 
 ;;; Code:
 
+(provide 'clock-activity)
 
-(require 'activity)
+
+(require 'activity-base)
 
 (defclass clocking-activity (buffer-activity)
   (())
@@ -59,6 +61,4 @@
 
 
 
-
-(provide 'clock-activity)
 ;;; clock-activity.el ends here

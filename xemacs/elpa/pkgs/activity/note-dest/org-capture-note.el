@@ -89,7 +89,8 @@
      (or template @:template)
      (append capture-plist @:capture-plist))))
 
-(setf @org-capture-dest (@! @dest-class :gen-org-capture-dest "org-capture-dest"))
+(setf @org-capture-dest
+      (@! @dest-class :gen-org-capture-dest "org-capture-dest"))
 
 (setf @org-capture-immediate-dest
   (@drive-object @org-capture-dest "Non-Interactive capture"
@@ -123,8 +124,6 @@
 
 ;; (@! @org-capture-edit-entry-dest :receive '(clock) "* Hello")
 
-
-
 
 
 (defobjgen@ @note-class :gen-org-capture-edit-entry-dest-note ()
@@ -139,28 +138,5 @@
  (@! @note-class :gen-org-capture-edit-entry-dest-note "org-capture-edit-entry-dest-note"))
 
 ;; (@! @org-capture-edit-entry-dest-note :send '(clock) "* Hello")
-
-
-(progn
-  (defun testrec (fmt &rest args)
-    (apply #'message fmt args))
-
-  (defun testargs (&rest args)
-   (apply #'testrec args))
-
-  (testargs "%s" 1))
-
-
-;; (defvar @org-clock-capture
-;;   (@! @note-class :gen-org-capture-note
-;;       "org-clock-log-note"
-;;       #'(lambda ()
-;;           (or
-;;            org-clock-hd-marker
-;;            org-clock-marker)))
-;;   "Org clock activity node")
-
-
-;; (@! @org-clock-note :send "Hello")
 
 ;;; org-capture-note.el ends here

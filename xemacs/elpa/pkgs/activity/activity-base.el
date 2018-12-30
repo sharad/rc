@@ -47,6 +47,7 @@
   :prefix "activity-")
 
 
+;;;###autoload
 (defvar activity-subdirs
   (mapcar
    #'(lambda (dir)
@@ -54,13 +55,22 @@
    '("node-dest" "activities")))
 
 ;;;###autoload
+(mapcar
+ #'(lambda (dir)
+     (expand-file-name dir (file-name-directory load-file-name)))
+ '("node-dest" "activities"))
+
+;;;###autoload
 (defun activity-add-subdirs-load-path ()
   (dolist (dir activity-subdirs)
     (add-to-list 'load-path dir)))
 
-;;;###autoload
-(activity-add-subdirs-load-path)
 
+;;;###autoload
+(autoload 'activity-mail-event-activate "mail-event" "\
+
+
+\(fn)" nil nil)
 
 
 (defmacro @extend-object (object &rest body)
@@ -166,6 +176,9 @@
                          (funcall act)))
 
                      (def@ @@ :insinuate-add (fun)
+                       (push fun @:insinuate))
+
+                     (def@ @@ :uninsinuate-add (fun)
                        (push fun @:insinuate))))
 
 ;;;###autoload

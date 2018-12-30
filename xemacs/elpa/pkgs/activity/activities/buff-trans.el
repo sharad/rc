@@ -39,7 +39,8 @@
 
 (require 'activity-base)
 (require 'switch-buffer-functions)
-(require 'org-activity-note)
+(require 'org-uninteractive-log-note)
+
 
 (provide 'buff-trans)
 
@@ -230,7 +231,7 @@
 (setf @defautl-buffer-transition-with-log-note-in-org-current-clock
   (@drive-object @transition-class "default buffer transition"
     (def@ @@ :dispatch (prev curr time-spent)
-      (@! @org-clock-note :send "Changed to buffer %s from %s" curr prev))))
+      (@! @org-clock-uninteractive-log-note :send "Changed to buffer %s from %s" curr prev))))
 
 (setf @buffer-transition (@! @transition-class
                                :gen-buffer-trans
@@ -250,7 +251,7 @@
 
 
 ;; (@! @buffer-transition-span-detector :initialize)
-;; (@! @org-clock-note :send "Changed to buffer %s from %s" 1 1)
+;; (@! @org-clock-uninteractive-log-note :send "Changed to buffer %s from %s" 1 1)
 ;; (@! @buffer-transition :dispatch  "Changed to buffer %s from %s" (get-buffer "*scratch*") (current-buffer))
 
 (when nil

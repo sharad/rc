@@ -190,6 +190,6 @@
 
 ;;;###autoload
 (defun activity-mail-event-deactivate ()
-  (@! @activities :insinuate-remove #'activity-mail-event-deactivate-internal))
+  (@! @activities :uninsinuate-add #'activity-mail-event-deactivate-internal))
 
 ;;; mail-event.el ends here
