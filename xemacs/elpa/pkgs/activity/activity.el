@@ -154,6 +154,11 @@
   (interactive)
   (@! @activity :deactivate-all))
 
+;;;###autoload
+(defun activity-register (key active deactive)
+  (interactive)
+  (@! @activity :add key active deactive))
+
 
 
 ;; (require 'buff-trans)
