@@ -37,6 +37,51 @@
 
 ;;; Code:
 
+(provide 'activity)
+
+
+(defgroup activity nil
+  "Customizations for Activity"
+  :group 'convenience
+  :prefix "activity-")
+
+;;;###autoload
+(defvar activity-subdirs
+  (mapcar
+   #'(lambda (dir)
+       (expand-file-name dir (file-name-directory load-file-name)))
+   '("node-dest" "activities")))
+
+;;;###autoload
+(do-list (dir (mapcar
+               #'(lambda (dir)
+                   (expand-file-name dir (file-name-directory load-file-name)))
+               '("node-dest" "activities")))
+         (message "adding %s to load path" dir)
+         (add-to-list 'load-path dir))
+
+;;;###autoload
+(eval-when-compile
+  '(do-list (dir (mapcar
+                  #'(lambda (dir)
+                      (expand-file-name dir (file-name-directory load-file-name)))
+                  '("node-dest" "activities")))
+            (message "adding %s to load path" dir)
+            (add-to-list 'load-path dir)))
+
+;;;###autoload
+(defun activity-add-subdirs-load-path ()
+  (dolist (dir activity-subdirs)
+    (add-to-list 'load-path dir)))
+
+
+;;;###autoload
+(autoload 'activity-mail-event-activate "mail-event" "\
+
+
+\(fn)" nil nil)
+
+
 (require '@)
 
 (require 'activity-base)
@@ -47,11 +92,6 @@
 ;; {require 'org-activity-log-note}
 ;; (require 'org-activity-note)
 (require 'org-clock-trans)
-
-(provide 'activity)
-
-
-
 
 
 

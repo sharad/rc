@@ -35,7 +35,7 @@
 ;;; Code:
 
 
-(require 'activity)
+(require 'activity-base)
 
 (defclass change-activity (buffer-activity)
   ((buffer :initarg :buffer

@@ -243,11 +243,12 @@
                                              "buffer transition span detector"
                                              @buffer-transition))
 
-(activity-register
- #'(lambda ()
-     (@! @buffer-transition-span-detector :initialize)))
+(when nil
+ (activity-register
+  #'(lambda ()
+      (@! @buffer-transition-span-detector :initialize)))
 
-(@! @buffer-transition-span-detector :uninitialize)
+ (@! @buffer-transition-span-detector :uninitialize))
 
 
 ;; (@! @buffer-transition-span-detector :initialize)

@@ -41,36 +41,6 @@
 
 (provide 'activity-base)
 
-(defgroup activity nil
-  "Customizations for Activity"
-  :group 'convenience
-  :prefix "activity-")
-
-
-;;;###autoload
-(defvar activity-subdirs
-  (mapcar
-   #'(lambda (dir)
-       (expand-file-name dir (file-name-directory load-file-name)))
-   '("node-dest" "activities")))
-
-;;;###autoload
-(mapcar
- #'(lambda (dir)
-     (expand-file-name dir (file-name-directory load-file-name)))
- '("node-dest" "activities"))
-
-;;;###autoload
-(defun activity-add-subdirs-load-path ()
-  (dolist (dir activity-subdirs)
-    (add-to-list 'load-path dir)))
-
-
-;;;###autoload
-(autoload 'activity-mail-event-activate "mail-event" "\
-
-
-\(fn)" nil nil)
 
 
 (defmacro @extend-object (object &rest body)
