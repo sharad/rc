@@ -220,8 +220,8 @@ Each entry is either:
   (use-package planner-interface
       :defer t
       :config
-      (progn
-        )))
+      (progn)))
+
 
 (defun lotus-schedule/init-midnight ()
   (use-package midnight
@@ -233,40 +233,57 @@ Each entry is either:
         (midnight-delay-set 'midnight-delay "4:30am"))
 
       (progn
+
+        (setq
+         lotus-clean-buffer-list-kill-never-buffer-names '(
+                                                           ;; "\\`\\*tramp/.*\\*\\`"
+                                                           ;; "\\`\\*ftp .*\\*\\`"
+                                                           "*eshell*"
+                                                           "*ielm*"
+                                                           "*mail*"
+                                                           "*w3m*"
+                                                           "*w3m-cache*"
+                                                           "Unnamed.org"
+                                                           """\\`*.org\\'")      ;all org files TODO only required.
+
+         lotus-clean-buffer-list-kill-buffer-names '("*buffer-selection*"
+                                                     "*Finder*"
+                                                     "*Finder Category*"
+                                                     "*Finder-package*"
+                                                     "*RE-Builder*"
+                                                     "*vc-change-log*")
+
+         lotus-clean-buffer-list-kill-regexps '("\\`\\*Customize .*\\*\\'"
+                                                "\\`\\*\\(Wo\\)?Man .*\\*\\'")))
+
+      (progn
         ;;https://www.emacswiki.org/emacs/CleanBufferList
         (setq
          clean-buffer-list-delay-general 1       ;day
          clean-buffer-list-delay-special (* 3 60 60)) ;hour min sec
 
-        (dolist (el
-                 '("*buffer-selection*"
-                   "*Finder*"
-                   "*Finder Category*"
-                   "*Finder-package*"
-                   "*RE-Builder*"
-                   "*vc-change-log*"))
+        (dolist (el lotus-clean-buffer-list-kill-buffer-names)
           (add-to-list 'clean-buffer-list-kill-buffer-names el))
 
-        (dolist (el
-                 '("\\`\\*Customize .*\\*\\'"
-                   "\\`\\*\\(Wo\\)?Man .*\\*\\'"
-                   """\\`*.org\\'"      ;all org files TODO only required.
-                   ))
+        (dolist (el lotus-clean-buffer-list-kill-regexps)
+          ;; """\\`*.org\\'"      ;all org files TODO only required.
+
           (add-to-list 'clean-buffer-list-kill-regexps el))
 
-        (dolist (el
-                 '("*eshell*"
-                   "*ielm*"
-                   "*mail*"
-                   "*w3m*"
-                   "*w3m-cache*"))
-          (add-to-list 'clean-buffer-list-kill-never-buffer-names el))
+        (dolist (el lotus-clean-buffer-list-kill-never-buffer-names)
+          (add-to-list 'clean-buffer-list-kill-never-buffer-names el)))
+
+
+      (progn                            ;testing
 
         (when nil
-          (dolist (el
-                   '("\\`\\*tramp/.*\\*\\`"
-                     "\\`\\*ftp .*\\*\\`"))
-            (add-to-list 'clean-buffer-list-kill-never-regexps el))))
+          (assoc-default
+           "Unnamed.org" clean-buffer-list-kill-regexps
+           (lambda (re str)
+             (if (functionp re)
+                 (funcall re str) (string-match re str)))
+           clean-buffer-list-delay-special))
+        )
 
       (progn
         (use-package "planner"
@@ -333,8 +350,8 @@ Each entry is either:
                          (message "sharad22-Midnight: running calendar and planner"))))
                  (error
                   (progn
-                    (message "XXXPl Error: %s" perr)
-                    )))))))))))
+                    (message "XXXPl Error: %s" perr))))))))))))
+
 
 (defun lotus-schedule/init-calfw ()
   ;; https://github.com/kiwanami/emacs-calfw

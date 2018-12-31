@@ -96,8 +96,9 @@
         (error "No marker %s returned" marker))
       (with-current-buffer (marker-buffer marker)
         (goto-char marker)
-        (org-entry-put nil "Effort" "10"))
-     (cons subtask marker))))
+        (let ((inhibit-modification-hooks t))
+          (org-entry-put nil "Effort" "10")))
+      (cons subtask marker))))
 
 (when nil
   (progn
