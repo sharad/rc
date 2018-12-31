@@ -20,16 +20,6 @@
 
 ;;; Commentary:
 
-;; function frame-session-restore-hook-func
-;; (add-hook 'lotus-enable-startup-interrupting-feature-hook
-;;           'frame-session-restore-hook-func
-;;           t)
-
-;; (add-hook ;; 'after-init-hook
-;;  'lotus-enable-startup-interrupting-feature-hook
-;;  '(lambda ()
-;;    (run-at-time-or-now 7 'lotus-desktop-session-restore)))
-
 ;;; Code:
 
 

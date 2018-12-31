@@ -289,7 +289,19 @@ With prefix arg C-u, copy region instad of killing it."
 
 (defun org-insert-subheading-at-point (subheading)
   "return point"
-  (let ((buffer-read-only nil)
+  (let ((inhibit-modification-hooks t)
+        ;; Debugger entered--Lisp error: (error "Invalid search bound (wrong side of point)")
+        ;; re-search-forward(":[a-z0-9\\+_-]+?:" 128068 t)
+        ;; emoji-cheat-sheet-plus--display-region(128714 128068)
+        ;; emoji-cheat-sheet-plus--changed-hook(128068 128068 4)
+        ;; org-move-subtree-down()
+        ;; org-insert-heading-after-current()
+        ;; org-insert-subheading-at-point("Unnamed task 557")
+        ;; org-insert-subheadline-to-headline("Unnamed task 557" "Unnamed tasks" t)
+        ;; org-insert-subheadline-to-file-headline("Unnamed task 557" "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/Unnamed.org" "Unnamed tasks" t)
+        ;; lotus-org-create-unnamed-task()
+        ;; occ-maybe-create-unnamed-tsk()
+        (buffer-read-only nil)
         (subheading (cond
                       ((stringp subheading) subheading)
                       ((functionp subheading) (funcall subheading))
@@ -310,7 +322,19 @@ With prefix arg C-u, copy region instad of killing it."
       (point))))
 
 (defun org-insert-grandsubheading-at-point (subheading)
-  (let ((buffer-read-only nil)
+  (let ((inhibit-modification-hooks t)
+        ;; Debugger entered--Lisp error: (error "Invalid search bound (wrong side of point)")
+        ;; re-search-forward(":[a-z0-9\\+_-]+?:" 128068 t)
+        ;; emoji-cheat-sheet-plus--display-region(128714 128068)
+        ;; emoji-cheat-sheet-plus--changed-hook(128068 128068 4)
+        ;; org-move-subtree-down()
+        ;; org-insert-heading-after-current()
+        ;; org-insert-subheading-at-point("Unnamed task 557")
+        ;; org-insert-subheadline-to-headline("Unnamed task 557" "Unnamed tasks" t)
+        ;; org-insert-subheadline-to-file-headline("Unnamed task 557" "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/Unnamed.org" "Unnamed tasks" t)
+        ;; lotus-org-create-unnamed-task()
+        ;; occ-maybe-create-unnamed-tsk()
+        (buffer-read-only nil)
         (subheading (cond
                       ((stringp subheading) subheading)
                       ((functionp subheading) (funcall subheading))
@@ -386,19 +410,7 @@ With prefix arg C-u, copy region instad of killing it."
 
 (defun org-insert-subheadline-to-file-headline (text file heading &optional create)
   "Create subheading with text in heading, return marker."
-  (let ((inhibit-modification-hooks t)
-        ;; Debugger entered--Lisp error: (error "Invalid search bound (wrong side of point)")
-        ;; re-search-forward(":[a-z0-9\\+_-]+?:" 128068 t)
-        ;; emoji-cheat-sheet-plus--display-region(128714 128068)
-        ;; emoji-cheat-sheet-plus--changed-hook(128068 128068 4)
-        ;; org-move-subtree-down()
-        ;; org-insert-heading-after-current()
-        ;; org-insert-subheading-at-point("Unnamed task 557")
-        ;; org-insert-subheadline-to-headline("Unnamed task 557" "Unnamed tasks" t)
-        ;; org-insert-subheadline-to-file-headline("Unnamed task 557" "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/Unnamed.org" "Unnamed tasks" t)
-        ;; lotus-org-create-unnamed-task()
-        ;; occ-maybe-create-unnamed-tsk()
-        (buff (find-file-noselect file)))
+  (let ((buff (find-file-noselect file)))
     (if buff
         (with-current-buffer buff
           (org-insert-subheadline-to-headline text heading create))

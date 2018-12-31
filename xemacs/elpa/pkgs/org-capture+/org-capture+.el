@@ -356,7 +356,6 @@ Store them in the capture property list."
                 (cond
                  ((markerp hd-marker) hd-marker)
                  ((symbolp hd-marker) (symbol-value hd-marker))
-                 ((fboundp hd-marker) (funcall hd-marker))
                  (t (error "value %s is not marker" hd-marker)))))
            (message "hd-marker %s" hd-marker)
            (if (and
@@ -386,7 +385,7 @@ Store them in the capture property list."
 ;; new capture
 
 ;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*new%20capture][new capture:1]]
-(defun org-capture-plus-internal (type target template &rest plist)
+(defun org-capture-plus (type target template &rest plist)
   "Capture something.
 \\<org-capture-mode-map>
 This will let you select a template from `org-capture-templates', and
@@ -429,7 +428,7 @@ of the day at point (if any) or the current HH:MM time."
          (annotation (if (and (boundp 'org-capture-link-is-already-stored)
                               org-capture-link-is-already-stored)
                          (plist-get org-store-link-plist :annotation)
-                       (ignore-errors (org-store-link nil))))
+                         (ignore-errors (org-store-link nil))))
          ;; (template (or org-capture-entry (org-capture-select-template keys)))
          (template (or org-capture-entry template))
          initial)
@@ -458,10 +457,10 @@ of the day at point (if any) or the current HH:MM time."
         ;; The template may be empty or omitted for special types.
         ;; Here we insert the default templates for such cases.
         (cond
-         ((eq type 'item) (setq txt "- %?"))
-         ((eq type 'checkitem) (setq txt "- [ ] %?"))
-         ((eq type 'table-line) (setq txt "| %? |"))
-         ((member type '(nil entry)) (setq txt "* %?\n  %a"))))
+          ((eq type 'item) (setq txt "- %?"))
+          ((eq type 'checkitem) (setq txt "- [ ] %?"))
+          ((eq type 'table-line) (setq txt "| %? |"))
+          ((member type '(nil entry)) (setq txt "* %?\n  %a"))))
       (org-capture-put :template txt :type type))
 
     (org-capture-get-template)
@@ -496,56 +495,32 @@ of the day at point (if any) or the current HH:MM time."
          (eq 'immdediate (car (org-capture-get :target)))) ;; (equal goto 0)
         ;;insert at point
         (org-capture-insert-template-here)
-      (condition-case error
-          (org-capture-place-template
-           (eq (car (org-capture-get :target)) 'function))
-        ((error quit)
-         (if (and (buffer-base-buffer (current-buffer))
-                  (string-prefix-p "CAPTURE-" (buffer-name)))
-             (kill-buffer (current-buffer)))
-         (set-window-configuration (org-capture-get :return-to-wconf))
-         (error "Capture template `%s': %s"
-                (org-capture-get :key)
-                (nth 1 error))))
-      (if (and (derived-mode-p 'org-mode)
-               (org-capture-get :clock-in))
-          (condition-case nil
-              (progn
-                (if (org-clock-is-active)
-                    (org-capture-put :interrupted-clock
-                                     (copy-marker org-clock-marker)))
-                (org-clock-in)
-                (setq-local org-capture-clock-was-started t))
-            (error
-             "Could not start the clock in this capture buffer")))
-      (if (org-capture-get :immediate-finish)
-          (org-capture-finalize)))))
+        (condition-case error
+            (org-capture-place-template
+             (eq (car (org-capture-get :target)) 'function))
+          ((error quit)
+           (if (and (buffer-base-buffer (current-buffer))
+                    (string-prefix-p "CAPTURE-" (buffer-name)))
+               (kill-buffer (current-buffer)))
+           (set-window-configuration (org-capture-get :return-to-wconf))
+           (error "Capture template `%s': %s"
+                  (org-capture-get :key)
+                  (nth 1 error))))
+        (if (and (derived-mode-p 'org-mode)
+                 (org-capture-get :clock-in))
+            (condition-case nil
+                (progn
+                  (if (org-clock-is-active)
+                      (org-capture-put :interrupted-clock
+                                       (copy-marker org-clock-marker)))
+                  (org-clock-in)
+                  (setq-local org-capture-clock-was-started t))
+              (error
+               "Could not start the clock in this capture buffer")))
+        (if (org-capture-get :immediate-finish)
+            (org-capture-finalize)))))
 
-'((file ,path)
-  (id ,id)
-  (file+headline ,path ,headline)
-  (file+olp ,path . ,outline-path)
-  (file+regexp ,path ,regexp)
-  (file+olp+datetree ,path . ,outline-path)
-  (file+function ,path ,function)
-  (clock)
-  (marker ,hd-marker))
-
-(defun org-capture-plus-collect-input ()
-  (let ((type
-         (intern (completing-read "Type: " '(entry note)))))
-    (let ((target-car
-           (intern
-            (completing-read "Traget Type: "
-                             `()))))))
-  )
-
-(defun org-capture-plus (type target template &rest plist)
-  (interactive
-   (org-capture-plus-collect-input))
-  (org-capture-plus-internal type target template plist))
-
-(defalias 'org-capture+ 'org-capture-plus-internal)
+(defalias 'org-capture+ 'org-capture-plus)
 ;; new capture:1 ends here
 
 ;; Application

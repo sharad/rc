@@ -20,6 +20,27 @@
 
 ;;; Commentary:
 
+
+
+
+;; set session-mgr-utils-notify
+;; run frame-session-restore-hook-func
+;; run lotus-desktop-session-restore
+;; in some startup-hook
+
+
+;; (defun lotus-desktop-session-config (funn-notify)
+;;   (progn
+;;     (setq session-mgr-utils-notify funn-notify)
+;;     (add-hook
+;;      'lotus-enable-startup-interrupting-feature-hook
+;;      'frame-session-restore-hook-func
+;;      t)
+;;     (add-hook ;; 'after-init-hook
+;;      'lotus-enable-startup-interrupting-feature-hook
+;;      '(lambda ()
+;;         (run-at-time-or-now 7 'lotus-desktop-session-restore)))))
+
 ;; function frame-session-restore-hook-func
 ;; (add-hook 'lotus-enable-startup-interrupting-feature-hook
 ;;           'frame-session-restore-hook-func
@@ -678,7 +699,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
                               desktop-name
                               (member desktop-name (mapcar 'car *frames-elscreen-session*)))
                          desktop-name
-                         (fmsession-read-location desktop-name))))
+                       (fmsession-read-location desktop-name))))
       (if xwin-enabled
           (unless wm-hints
             (message "Some error in wm-hints")))
@@ -705,20 +726,23 @@ return a new alist whose car is the new pair and cdr is ALIST."
                  (functionp '*frame-session-restore-screen-display-function*))
             (funcall *frame-session-restore-screen-display-function*))
           nframe)
-        (progn
-          (funcall sessions-unified-utils-notify
-           "frame-session-restore"
-           "not restoring screen session.")
-          (if *desktop-vc-read-inprogress*
-              (funcall sessions-unified-utils-notify
-               "frame-session-restore"
-               "as desktop restore is in progress *desktop-vc-read-inprogress* %s"
-               *desktop-vc-read-inprogress*))
-          (if (null *frame-session-restore*)
-              (funcall sessions-unified-utils-notify
-               "frame-session-restore"
-               "as another frame session restore in progress *frame-session-restore* %s"
-               *frame-session-restore*)))))
+      (progn
+        (funcall sessions-unified-utils-notify
+                 "frame-session-restore"
+                 "not restoring screen session.")
+        (if *desktop-vc-read-inprogress*
+            (funcall sessions-unified-utils-notify
+                     "frame-session-restore"
+                     "as desktop restore is in progress *desktop-vc-read-inprogress* %s"
+                     *desktop-vc-read-inprogress*))
+        (if (null *frame-session-restore*)
+            (funcall sessions-unified-utils-notify
+                     "frame-session-restore"
+                     "as another frame session restore in progress *frame-session-restore* %s"
+                     *frame-session-restore*)))))
+
+  (defun frame-session-restore-force (nframe)
+    (frame-session-restore nframe t))
 
   (defun frame-session-apply (nframe)
     "Apply existing frame session to NFRAME."
@@ -761,12 +785,19 @@ return a new alist whose car is the new pair and cdr is ALIST."
   (defun frame-session-restore-hook-func ()
     "Add to hook"
     ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
-    (add-hook
-     'after-make-frame-functions
-     '(lambda (nframe)
-       (frame-session-restore nframe t))
-     t)
-    (add-hook 'delete-frame-functions 'frame-session-save))
+    (add-hook 'after-make-frame-functions
+              #'frame-session-restore-force
+              t)
+    (add-hook 'delete-frame-functions
+              #'frame-session-save))
+
+  (defun frame-session-restore-unhook-func ()
+    "Add to hook"
+    ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
+    (remove-hook 'after-make-frame-functions
+                 #'frame-session-restore-force)
+    (remove-hook 'delete-frame-functions
+                 #'frame-session-save))
 
   (testing
    (frame-parameter (selected-frame) 'frame-spec-id)
@@ -926,7 +957,7 @@ Also returns nil if pid is nil."
 
   ;; (when (or (not *emacs-in-init*) (not reloading-libraries))
   (when (or *emacs-in-init* reloading-libraries)
-    ;setting to nil so it will be asked from user.
+                                        ;setting to nil so it will be asked from user.
     (setq *desktop-save-filename* nil))
 
   ;; might be the reason for Terminal 0 is locked.
@@ -975,10 +1006,10 @@ Also returns nil if pid is nil."
             (find-desktop-file "select desktop: " desktop-dirname desktop-base-file-name))))
 
   (defun switch-desktop-file ())
-    ;; save desktop
-    ;; kill all file buffer
-    ;; change name of desktop file
-    ;; restore desktop file
+  ;; save desktop
+  ;; kill all file buffer
+  ;; change name of desktop file
+  ;; restore desktop file
 
 
 
@@ -1007,7 +1038,7 @@ Also returns nil if pid is nil."
       (if (file-exists-p desktop-save-filename)
           (put-file-in-rcs desktop-save-filename))
       (setq desktop-file-modtime (nth 5 (file-attributes desktop-save-filename)))))
-                                                         ;; (desktop-full-file-name)
+  ;; (desktop-full-file-name)
 
   ;; NOTE:
   ;; (setq desktop-restore-eager 2)
@@ -1040,11 +1071,11 @@ Also returns nil if pid is nil."
 
   ;; remove desktop after it's been read
   (add-hook 'desktop-after-read-hook
-            '(lambda ()
-               ;; desktop-remove clears desktop-dirname
-               (setq desktop-dirname-tmp desktop-dirname)
-               (desktop-vc-remove)
-               (setq desktop-dirname desktop-dirname-tmp)))
+            #'(lambda ()
+                ;; desktop-remove clears desktop-dirname
+                (setq desktop-dirname-tmp desktop-dirname)
+                (desktop-vc-remove)
+                (setq desktop-dirname desktop-dirname-tmp)))
 
   (defvar *my-desktop-save-max-error-count* 6 "")
   (defvar *my-desktop-save-error-count* 0 "")
@@ -1086,7 +1117,7 @@ to restore in case of sudden emacs crash."
     (interactive "P")
     (let ((idle-time (or (current-idle-time) '(0 0 0)))
           (time-format "%a %H:%M:%S"))
-          ;; (time-since-save-all-sessions-auto-save-time (float-time (time-since save-all-sessions-auto-save-time)))
+      ;; (time-since-save-all-sessions-auto-save-time (float-time (time-since save-all-sessions-auto-save-time)))
 
       (let ((time-since-last-save (float-time (time-since save-all-sessions-auto-save-time))))
         (if (or force
@@ -1133,6 +1164,7 @@ to restore in case of sudden emacs crash."
                                  (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
                                    (setq *my-desktop-save-error-count* 0)
                                    (funcall sessions-unified-utils-notify "save-all-sessions-auto-save" "Error %s" e)
+
                                    (lotus-disable-session-saving))))))
                         (run-hooks 'session-unified-save-all-sessions-after-hook)))
                   (setq save-all-sessions-auto-save-idle-time-interval-dynamic
@@ -1168,13 +1200,14 @@ to restore in case of sudden emacs crash."
     (interactive)
     (remove-hook 'auto-save-hook #'save-all-sessions-auto-save)
     (remove-hook 'kill-emacs-hook #'save-all-sessions-auto-save-immediately)
+    (frame-session-restore-unhook-func)
     (funcall sessions-unified-utils-notify "lotus-disable-session-saving"  "Removed save-all-sessions-auto-save from auto-save-hook and kill-emacs-hook"))
-
 
   (defun lotus-enable-session-saving-immediately ()
     (interactive)
     (add-hook 'auto-save-hook #'save-all-sessions-auto-save)
     (add-hook 'kill-emacs-hook #'save-all-sessions-auto-save-immediately)
+    (frame-session-restore-hook-func)
     (funcall sessions-unified-utils-notify "lotus-enable-session-saving" "Added save-all-sessions-auto-save to auto-save-hook and kill-emacs-hook"))
 
   (defun lotus-enable-session-saving ()
@@ -1198,20 +1231,32 @@ to restore in case of sudden emacs crash."
       (ad-update 'desktop-idle-create-buffers)
       (ad-activate 'desktop-idle-create-buffers)))
 
+  (defun lotus-show-hook-member (fn hook)
+    (format
+     (if (or
+          (member fn (symbol-value hook))
+          (member (symbol-function fn) (symbol-value hook)))
+         "Yes %s is present in %s"
+       "No %s is present in %s")
+     fn hook))
+
   (defun lotus-check-session-saving ()
     (interactive)
     (if (called-interactively-p 'interactive)
         (message
-         "%s, %s"
-         (if (member #'save-all-sessions-auto-save auto-save-hook)
-             "Yes save-all-sessions-auto-save is present in auto-save-hook"
-           "No save-all-sessions-auto-save is present in auto-save-hook")
-         (if (member #'save-all-sessions-auto-save-immediately kill-emacs-hook)
-             "Yes save-all-sessions-auto-save is present in kill-emacs-hook"
-           "No save-all-sessions-auto-save is present in kill-emacs-hook"))
+         "%s, %s, %s, %s"
+         (lotus-show-hook-member 'save-all-sessions-auto-save 'auto-save-hook)
+         (lotus-show-hook-member 'save-all-sessions-auto-save-immediately 'kill-emacs-hook)
+         (lotus-show-hook-member 'frame-session-restore-force 'after-make-frame-functions )
+         (lotus-show-hook-member 'frame-session-save 'delete-frame-functions))
       (and
        (member #'save-all-sessions-auto-save auto-save-hook)
-       (member #'save-all-sessions-auto-save-immediately kill-emacs-hook))))
+       (member #'save-all-sessions-auto-save-immediately kill-emacs-hook)
+       (member #'frame-session-restore-force after-make-frame-functions)
+       (member #'frame-session-save delete-frame-functions))))
+
+  ;; (member 'save-all-sessions-auto-save-immediately
+  ;;         (symbol-value 'kill-emacs-hook))
 
   (when nil
     (defvar lotus-enable-desktop-restore-interrupting-feature-hook nil
@@ -1274,6 +1319,7 @@ when all buffer were creaed idly."
                 (setq debug-on-error t)
                 (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "entering lotus-desktop-session-restore")
 
+
                 (if (not (string-match *constructed-name-desktop-save-filename* *desktop-save-filename*))
                     (progn
                       (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s"
@@ -1296,8 +1342,8 @@ when all buffer were creaed idly."
                           (progn            ;remove P4
                             (setq vc-handled-backends (remove 'P4 vc-handled-backends))
                             (add-hook 'lotus-enable-desktop-restore-interrupting-feature-hook
-                                      '(lambda ()
-                                         (add-to-list 'vc-handled-backends 'P4))))
+                                      #'(lambda ()
+                                          (add-to-list 'vc-handled-backends 'P4))))
                           (if show-error
 
                               (if (desktop-vc-read *desktop-save-filename*)
@@ -1340,8 +1386,8 @@ when all buffer were creaed idly."
                         (lotus-enable-session-saving)))
                     (let ((enable-recursive-minibuffers t))
                       (when t ; (y-or-n-p-with-timeout "Do you wato set session of frame? " 7 t) ;t
-                            (let ((*frame-session-restore* t))
-                              (frame-session-restore (selected-frame) t))))
+                        (let ((*frame-session-restore* t))
+                          (frame-session-restore (selected-frame) t))))
                     (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "leaving lotus-desktop-session-restore"))))
             (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop-get-desktop-save-filename failed")))
       (progn
@@ -1504,24 +1550,25 @@ It returns t if a desktop file was loaded, nil otherwise."
       (vc-checkout-file session-save-file))
 
     (or session-successful-p
-	(setq session-successful-p
-	      (and session-save-file
-		   (condition-case nil
-		       (progn
-			 ;; load might fail with coding-system = emacs-mule
-			 (load session-save-file t nil t)
-			 (run-hooks 'session-after-load-save-file-hook)
-			 t)
+        (setq session-successful-p
+              (and session-save-file
+                   (condition-case nil
+                       (progn
+                         ;; load might fail with coding-system = emacs-mule
+                         (load session-save-file t nil t)
+                         (run-hooks 'session-after-load-save-file-hook)
+                         t)
                      (error nil))))))
 
 
 
-  (add-hook 'after-init-hook '(lambda ()
-                               (setq session-initialize t)
-                               (session-initialize)
-                               (remove-hook 'kill-emacs-hook
-                                ;; done in save-all-sessions-auto-save
-                                'session-save-session)))
+  (add-hook 'after-init-hook
+            #'(lambda ()
+                (setq session-initialize t)
+                (session-initialize)
+                (remove-hook 'kill-emacs-hook
+                             ;; done in save-all-sessions-auto-save
+                             'session-save-session)))
   ;; (add-hook 'kill-emacs-hook 'session-vc-save-session)
 
 
@@ -1549,10 +1596,10 @@ It returns t if a desktop file was loaded, nil otherwise."
                (outline-invisible-p))
       (if (eq major-mode 'org-mode)
           (org-reveal)
-          (show-subtree))))
+        (show-subtree))))
 
   (add-hook 'session-after-jump-to-last-change-hook
-            'le::maybe-reveal)
+            #'le::maybe-reveal)
   ;;}}
   ;;  (session-initialize))
   ;; Something like this is recommended to get emacs to shut-up
@@ -1560,15 +1607,27 @@ It returns t if a desktop file was loaded, nil otherwise."
   ;; happen on *every* desktop-save triggered by the auto-save-hook:
   (prefer-coding-system 'utf-8)
 
-
-
-
   (add-hook 'delete-frame-functions
-            '(lambda (frame)
-              (if (and
-                   (< (length (frame-list)) 3)
-                   (functionp 'session-save-sessoin))
-                  (session-save-sessoin)))))
+            #'(lambda (frame)
+                (if (and
+                     (< (length (frame-list)) 3)
+                     (functionp 'session-save-sessoin))
+                    (session-save-sessoin)))))
+
+;; ;;;###autoload
+;; (defun lotus-desktop-session-config (funn-notify)
+;;   (progn
+;;     (setq session-mgr-utils-notify funn-notify)
+;;     (add-hook
+;;      'lotus-enable-startup-interrupting-feature-hook
+;;      'frame-session-restore-hook-func
+;;      t)
+;;     (add-hook ;; 'after-init-hook
+;;      'lotus-enable-startup-interrupting-feature-hook
+;;      '(lambda ()
+;;         (run-at-time-or-now 7 'lotus-desktop-session-restore)))))
+
+;; (toggle-debug-on-error)
 
 (require 'savehist-20+)
 
@@ -1628,7 +1687,8 @@ It returns t if a desktop file was loaded, nil otherwise."
           (print tap)
           (write-region (point-min) (point-max) my-tapestry-file)))))
 
-  (add-hook 'kill-emacs-hook 'save-my-tapestry))
+  (add-hook 'kill-emacs-hook
+            #'save-my-tapestry))
 
 
 (progn ;; "emacs session management"
