@@ -268,6 +268,8 @@
                    (@! @buffer-transition-span-detector :run-detect-buffer-chg prev curr))))
 
 ;;;###autoload
-(activity-register "buff-trans" #'activity-buff-trans-event-activate #'activity-buff-trans-event-deactivate)
+(activity-register
+ "buff-trans"
+ #'activity-buff-trans-event-activate #'activity-buff-trans-event-deactivate)
 
 ;;; buff-trans.el ends here

@@ -772,8 +772,8 @@ return a new alist whose car is the new pair and cdr is ALIST."
    (frame-parameter (selected-frame) 'frame-spec-id)
    after-make-frame-functions
    delete-frame-functions
-   *lotus-after-init-hook*
-   ))
+   *lotus-after-init-hook*))
+
   ;;}}
 
 (with-eval-after-load "desktop"
@@ -974,12 +974,12 @@ Also returns nil if pid is nil."
       (setq *desktop-save-filename*
             (find-desktop-file "select desktop: " desktop-dirname desktop-base-file-name))))
 
-  (defun switch-desktop-file ()
+  (defun switch-desktop-file ())
     ;; save desktop
     ;; kill all file buffer
     ;; change name of desktop file
     ;; restore desktop file
-    )
+
 
 
   (defun desktop-vc-remove (&optional desktop-save-filename)
@@ -1006,9 +1006,9 @@ Also returns nil if pid is nil."
       (desktop-save (dirname-of-file desktop-save-filename))
       (if (file-exists-p desktop-save-filename)
           (put-file-in-rcs desktop-save-filename))
-      (setq desktop-file-modtime (nth 5 (file-attributes desktop-save-filename
+      (setq desktop-file-modtime (nth 5 (file-attributes desktop-save-filename)))))
                                                          ;; (desktop-full-file-name)
-                                                         )))))
+
   ;; NOTE:
   ;; (setq desktop-restore-eager 2)
   (setq desktop-restore-eager 0) ;; for avoiding error from read only buffer when applying pabber-expand-mode
@@ -1085,9 +1085,9 @@ Also returns nil if pid is nil."
 to restore in case of sudden emacs crash."
     (interactive "P")
     (let ((idle-time (or (current-idle-time) '(0 0 0)))
-          (time-format "%a %H:%M:%S")
+          (time-format "%a %H:%M:%S"))
           ;; (time-since-save-all-sessions-auto-save-time (float-time (time-since save-all-sessions-auto-save-time)))
-          )
+
       (let ((time-since-last-save (float-time (time-since save-all-sessions-auto-save-time))))
         (if (or force
                 (> time-since-last-save (float-time idle-time)))
@@ -1129,7 +1129,7 @@ to restore in case of sudden emacs crash."
                                (progn
                                  ;; make after 2 errors.
                                  (funcall sessions-unified-utils-notify "save-all-sessions-auto-save" "Error: %s" e)
-                                 (1+ *my-desktop-save-error-count* )
+                                 (1+ *my-desktop-save-error-count*)
                                  (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
                                    (setq *my-desktop-save-error-count* 0)
                                    (funcall sessions-unified-utils-notify "save-all-sessions-auto-save" "Error %s" e)
@@ -1161,6 +1161,7 @@ to restore in case of sudden emacs crash."
             (desktop-vc-save *desktop-save-filename*)))
       (message
        "*session-unified-desktop-enabled*: %s"
+
        *session-unified-desktop-enabled*)))
 
   (defun lotus-disable-session-saving-immediately ()
@@ -1214,8 +1215,8 @@ to restore in case of sudden emacs crash."
 
   (when nil
     (defvar lotus-enable-desktop-restore-interrupting-feature-hook nil
-      "feature that were disabled for proper restoring of desktop will get re-enabled here.")
-    )
+      "feature that were disabled for proper restoring of desktop will get re-enabled here."))
+
 
   (defun desktop-idle-create-buffers ()
     "Create buffers until the user does something, then stop.
@@ -1263,8 +1264,8 @@ when all buffer were creaed idly."
           ;; will set *desktop-save-filename*
           (if (desktop-get-desktop-save-filename)
               (let ((desktop-restore-frames nil)
-                    (enable-local-eval t                ;query
-                                       )
+                    (enable-local-eval t)                ;query
+
                     (enable-recursive-minibuffers t)
                     (flymake-run-in-place nil)
                     (show-error (called-interactively-p 'interactive))
@@ -1338,8 +1339,9 @@ when all buffer were creaed idly."
                                       *desktop-save-filename*))
                         (lotus-enable-session-saving)))
                     (let ((enable-recursive-minibuffers t))
-                      (when t ;(y-or-n-p-with-timeout "Do you want to set session of frame? " 7 t)
-                        (frame-session-restore (selected-frame) t)))
+                      (when t ; (y-or-n-p-with-timeout "Do you wato set session of frame? " 7 t) ;t
+                            (let ((*frame-session-restore* t))
+                              (frame-session-restore (selected-frame) t))))
                     (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "leaving lotus-desktop-session-restore"))))
             (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop-get-desktop-save-filename failed")))
       (progn

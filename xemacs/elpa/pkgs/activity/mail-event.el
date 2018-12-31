@@ -183,6 +183,8 @@
        (@! @mail-read-event-detector-instance :make-event-gnus))))
 
 ;;;###autoload
-(activity-register "mail-event" #'activity-mail-event-activate #'activity-mail-event-deactivate)
+(activity-register
+ "mail-event"
+ #'activity-mail-event-activate #'activity-mail-event-deactivate)
 
 ;;; mail-event.el ends here

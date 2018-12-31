@@ -503,7 +503,10 @@ Each entry is either:
   (use-package activity
     :defer t
     :config
-    (progn)))
+    (progn))
+
+
+  (activity-activate-all))
 
 (defun lotus-orgclocktask/init-org-clock-resolve-advanced ()
   (use-package org-clock-resolve-advanced
