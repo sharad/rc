@@ -105,7 +105,7 @@ function main()
 
     cd ~/
 
-    # running setup_apt_packages
+    running setup_apt_packages
 
     running setup_ecrypt_private
 
@@ -999,7 +999,9 @@ function setup_advertisement_blocking()
     # TODO: https://github.com/StevenBlack/hosts.git
     # pip3 install --user -r requirements.txt
     # python3 updateHostsFile.py  --extensions fakenews gambling porn social
+    :
 }
+
 function setup_paradise()
 {
     curhomedir="$(getent passwd $USER | cut -d: -f6)"
