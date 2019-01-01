@@ -1730,6 +1730,32 @@ function setup_org_resource_dirs()
     local machinedir=${LOCALDIRS_DIR}/org/deps.d/control.d/machine.d/default
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
 
+
+
+	  # home/
+	  # org/deps.d/
+	  # org/home.d/local.d/
+	  # org/home.d/portable.d/Desktop/local
+	  # org/home.d/portable.d/Library-BACKUP
+	  # org/home.d/portable.d/Music/local
+	  # org/home.d/portable.d/Pictures/local
+	  # org/home.d/portable.d/Public/Publish/html/.htaccess
+	  # org/home.d/portable.d/Public/Publish/html/index.html
+	  # org/home.d/portable.d/Public/Publish/html/local
+	  # org/home.d/portable.d/Public/Publish/local
+	  # org/home.d/portable.d/Public/local
+	  # org/home.d/portable.d/Public/local-BACKUP
+	  # org/home.d/portable.d/README
+	  # org/home.d/portable.d/Scratches-OLD/
+	  # org/home.d/portable.d/TODO
+	  # org/home.d/portable.d/Templates/local
+	  # org/home.d/portable.d/Videos/local
+	  # org/home.d/portable.d/public_html-BACKUP
+
+    # org/resource.d/control.d/class/data/storage/local/container/scratches.d/Public/
+	  # org/resource.d/control.d/class/data/storage/local/container/scratches.d/local
+
+
     # TODO: add support for git add
     running setup_links_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d resource.d
     running setup_add_to_version_control_links_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d  .. org/resource.d
