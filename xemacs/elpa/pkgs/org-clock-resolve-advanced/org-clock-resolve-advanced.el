@@ -240,9 +240,7 @@
     (let ((debug-prompt t)
           (default (org-rl-get-time-gap prev next)))
 
-
-
-      ;;; 
+      ;;;
 
       (assert (> default 0))
 
@@ -281,10 +279,10 @@
                      (format "[%s] how many minutes? [%d] " opt default))
                    default)))))
 
-             ;; (barely-started-p (< (- (float-time last-valid)
-             ;;                         (float-time (cdr clock))) 45))
-             ;; (start-over-p (and subtractp barely-started-p))
-             
+        ;; (barely-started-p (< (- (float-time last-valid)
+        ;;                         (float-time (cdr clock))) 45))
+        ;; (start-over-p (and subtractp barely-started-p))
+
         ;; cancel prev and add to time
         (let ((default (org-rl-get-time-gap prev next))) ;get default time again
 
@@ -311,8 +309,8 @@
                          nil
                          nil
                          (org-rl-clock-start-time prev))))))
-              ;; set org-clock-leftover-time here
-              
+             ;; set org-clock-leftover-time here
+
 
              ((eq opt 'cancel-next-p)
               ;; cancel next clock
@@ -340,9 +338,9 @@
                                 (org-rl-clock-marker prev) updated-time (org-rl-clock-start-time next)))
                     (org-rl-clock-clock-in-out next)))))
 
-              ;; set org-clock-leftover-time here
+             ;; set org-clock-leftover-time here
 
-              
+
 
              ((eq opt 'include-in-next)
               (when (and             ;clock out if prev is open clock and next is specifying idle time.

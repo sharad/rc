@@ -109,10 +109,6 @@ also `with-temp-buffer'."
             (write-file debug-file))
           (apply orig-fun args))))))
 
-
-
-
-
 ;;; Emacs code present in ~/debian/build-src
 ;; just use gdb with break buffer.c:2123
 ;; and find out who is culprit.
