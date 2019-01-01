@@ -218,7 +218,7 @@
         marker)))
 
 (defun org-resolve-time-debug-prompt (prev next &optional prompt stop)
-  (let* (;;(base 120)
+  (let* ( ;;(base 120) ;; TODO: why it was 120 ?
          (base 61)
          (_debug (format "prev[%s %d %d] next[%s %d %d]"
                          ;; (org-rl-clock-marker prev)
@@ -243,10 +243,14 @@
        (org-rl-clock-stop-time prev)
        (if (eq (org-rl-clock-marker next) 'imaginary)
            (org-rl-clock-stop-time next)
-           (error "Can not get start time."))))))
+         (error "Can not get start time."))))))
    60))
 
+
+;; NOTE: Remember here the concept of Positive and Negative and Full time.
+;; Read time which could be positive or negative or full
 (defun org-resolve-time (prev next &optional force close-p)
+  "Read time which could be positive or negative or full"
   ;; BUG how to handle current time == 'now
   ;; BUG how to handle when prev == next
   "Resolve clock time"
@@ -407,6 +411,12 @@
               ;; update timelength
               ;; (if debug-prompt (org-resolve-time-debug-prompt prev next t "include-in-other"))
 
+
+              ;; TODO: check what sustract is doing here
+
+              (if (eq opt 'subtract)    ;is it correct.
+                  (assert (< timelen 0)))
+
               (let ((other-marker
                      (if (eq opt 'include-in-other)
                          (org-rl-select-other-clock)
@@ -424,8 +434,10 @@
                                 (org-rl-clock-start-time-set next other-start-time)
                               other-clock))
                       (when other-marker
+                        ;; TODO: see if this is working
                         (org-rl-clock-clock-in-out other-clock)))
 
+                  ;; should 'substract always should not get negative time.
                   (let* ((other-stop-time
                           (time-subtract (org-rl-clock-stop-time prev) timelensec-time))
                          (other-clock
@@ -447,7 +459,7 @@
           (when (and (zerop default) close-p)
             (org-clock-out))
           (let ((timegap (org-rl-get-time-gap prev next)))
-            (when (> timegap 0)
+            (when (> timegap 0)         ;this solved the assert
               (org-resolve-time prev next close-p))))))))
 
 ;;;###autoload
