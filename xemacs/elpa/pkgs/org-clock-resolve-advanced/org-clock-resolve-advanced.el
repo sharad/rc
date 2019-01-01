@@ -137,6 +137,10 @@
   ;;(org-rl-clock-marker clock)
   (org-get-heading-from-clock clock))
 
+(defun org-rl-clock-name-bracket (clock)
+  ;;(org-rl-clock-marker clock)
+  (concat "<" (org-get-heading-from-clock clock) ">"))
+
 
 (defun org-rl-clock-start-time-set (clock time)
   (setf (cadr clock) (time-get-rl-time time))
@@ -218,11 +222,11 @@
          (base 61)
          (_debug (format "prev[%s %d %d] next[%s %d %d]"
                          ;; (org-rl-clock-marker prev)
-                         (org-rl-clock-name prev)
+                         (org-rl-clock-name-bracket prev)
                          (if (org-rl-clock-start-time prev) (% (/ (floor (float-time (org-rl-clock-start-time prev))) 60) base) 0)
                          (if (org-rl-clock-stop-time prev)  (% (/ (floor (float-time (org-rl-clock-stop-time prev))) 60) base) 0)
                          ;; (org-rl-clock-marker next)
-                         (org-rl-clock-name next)
+                         (org-rl-clock-name-bracket next)
                          (if (org-rl-clock-start-time next) (% (/ (floor (float-time (org-rl-clock-start-time next))) 60) base) 0)
                          (if (org-rl-clock-stop-time next)  (% (/ (floor (float-time (org-rl-clock-stop-time next))) 60) base) 0)))
          (debug (if prompt (concat prompt " " _debug) _debug)))
@@ -258,6 +262,10 @@
           (default (org-rl-get-time-gap prev next)))
 
       ;;;
+
+      ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 10 5] with default 5
+      ;; Warning (org-rl-clock): You have selected opt subtract and timelen 9
+      ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 5 5] with default 0
 
       (lwarn 'org-rl-clock :warning "going to run %s with default %d" (org-resolve-time-debug-prompt prev next) default)
 
@@ -438,7 +446,9 @@
         (unless (eq opt 'done)
           (when (and (zerop default) close-p)
             (org-clock-out))
-          (org-resolve-time prev next close-p))))))
+          (let ((timegap (org-rl-get-time-gap prev next)))
+            (when (> timegap 0)
+              (org-resolve-time prev next close-p))))))))
 
 ;;;###autoload
 
