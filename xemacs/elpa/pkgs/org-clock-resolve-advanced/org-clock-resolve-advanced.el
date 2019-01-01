@@ -39,6 +39,12 @@
 
 (provide 'org-clock-resolve-advanced)
 
+
+(defun org-clock-idle-time-set (mins)
+  (interactive
+   (list (read-number "org-clock-idle-time: ")))
+  (setq org-clock-idle-time mins))
+
 (defun org-clock-steel-time ()
   )
 
@@ -124,6 +130,11 @@
 (defun org-rl-clock-marker (clock)
   (nth 0 clock))
 
+(defun org-rl-clock-name (clock)
+  ;;(org-rl-clock-marker clock)
+  (org-get-heading-from-clock clock))
+
+
 (defun org-rl-clock-start-time-set (clock time)
   (setf (cadr clock) (time-get-rl-time time))
   clock)
@@ -199,13 +210,16 @@
         (set-marker marker loc)
         marker)))
 
-(defun org-resolve-time-debug (prev next &optional prompt stop)
-  (let* ((base 120)
+(defun org-resolve-time-debug-prompt (prev next &optional prompt stop)
+  (let* (;;(base 120)
+         (base 61)
          (_debug (format "prev[%s %d %d] next[%s %d %d]"
-                         (org-rl-clock-marker prev)
+                         ;; (org-rl-clock-marker prev)
+                         (org-rl-clock-name prev)
                          (if (org-rl-clock-start-time prev) (% (/ (floor (float-time (org-rl-clock-start-time prev))) 60) base) 0)
                          (if (org-rl-clock-stop-time prev)  (% (/ (floor (float-time (org-rl-clock-stop-time prev))) 60) base) 0)
-                         (org-rl-clock-marker next)
+                         ;; (org-rl-clock-marker next)
+                         (org-rl-clock-name next)
                          (if (org-rl-clock-start-time next) (% (/ (floor (float-time (org-rl-clock-start-time next))) 60) base) 0)
                          (if (org-rl-clock-stop-time next)  (% (/ (floor (float-time (org-rl-clock-stop-time next))) 60) base) 0)))
          (debug (if prompt (concat prompt " " _debug) _debug)))
@@ -242,6 +256,8 @@
 
       ;;;
 
+      (lwarn 'org-rl-clock :warning "going to run %s with default %d" (org-resolve-time-debug-prompt prev next) default)
+
       (assert (> default 0))
 
       (let* ((options
@@ -261,7 +277,7 @@
                (assoc
                 (completing-read
                  (if debug-prompt
-                     (format "%s Select option [%d]: " (org-resolve-time-debug prev next) default)
+                     (format "%s Select option [%d]: " (org-resolve-time-debug-prompt prev next) default)
                    (format "Select option [%d]: " default))
                  options)
                 options)))
@@ -275,7 +291,7 @@
                     default
                   (read-number
                    (if debug-prompt
-                       (format "%s [%s] how many minutes? [%d] " (org-resolve-time-debug prev next) opt default)
+                       (format "%s [%s] how many minutes? [%d] " (org-resolve-time-debug-prompt prev next) opt default)
                      (format "[%s] how many minutes? [%d] " opt default))
                    default)))))
 
@@ -284,6 +300,9 @@
         ;; (start-over-p (and subtractp barely-started-p))
 
         ;; cancel prev and add to time
+
+        (lwarn 'org-rl-clock :warning "You have selected opt %s and timelen %d" opt timelen)
+
         (let ((default (org-rl-get-time-gap prev next))) ;get default time again
 
           (when (> (abs timelen) default)
@@ -375,7 +394,7 @@
               ;; select other clock
               ;; include timelen in other
               ;; update timelength
-              ;; (if debug-prompt (org-resolve-time-debug prev next t "include-in-other"))
+              ;; (if debug-prompt (org-resolve-time-debug-prompt prev next t "include-in-other"))
 
               (let ((other-marker
                      (if (eq opt 'include-in-other)
