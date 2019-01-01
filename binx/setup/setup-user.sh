@@ -454,8 +454,8 @@ function setup_vc_mkdirpath_ensure()
 
     while [ "$dirpath" != "." -a "x$dirpath" != "x" ]
     do
-        running touch ${vcbase}/${base}/${dirpath}/.gitignore
-        running setup_add_to_version_control ${vcbase} ${base}/${dirpath}/.gitignore
+        running touch ${vcbase}/${base}${base:+/}${dirpath}/.gitignore
+        running setup_add_to_version_control ${vcbase} ${base}${base:+/}${dirpath}/.gitignore
         dirpath="$(dirname $dirpath)"
     done
 
@@ -476,9 +476,9 @@ function setup_apt_repo()
     if [ -r /etc/os-release ]
     then
         . /etc/os-release
-        if [ ubuntu = $ID ]
+        if [ ubuntu = "$ID" ]
         then
-            read _ UBUNTU_VERSIO``N_NAME <<< "$VERSION"
+            UBUNTU_VERSION_NAME="$VERSION"
             info "Running Ubuntu $UBUNTU_VERSION_NAME"
         else
             warn "Not running an Ubuntu distribution. ID=$ID, VERSION=$VERSION" >&2
@@ -590,7 +590,7 @@ function setup_apt_packages()
 
     for pkg in ${deb_pkg_lists[*]}
     do
-        echo Intalling pkg list = $pkg
+        eval echo Intalling pkg list '\$'$pkg='\(' \$$pkg[*] '\)'
         if ! eval sudo apt -y install \$$pkg
         then
             for p in $(eval print \$$pkg)
