@@ -42,7 +42,10 @@
 
 (defun org-clock-idle-time-set (mins)
   (interactive
-   (list (read-number "org-clock-idle-time: ")))
+   (list (read-number "org-clock-idle-time: "
+                      (if (numberp org-clock-idle-time)
+                          org-clock-idle-time
+                        5))))
   (setq org-clock-idle-time mins))
 
 (defun org-clock-steel-time ()
