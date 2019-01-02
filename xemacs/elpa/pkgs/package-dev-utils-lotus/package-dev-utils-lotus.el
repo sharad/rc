@@ -520,33 +520,26 @@ will be deleted."
    'yasnippet-classic-snippets
    package-archive-contents))
 
-(when nil
+(defun package-resolve-org-plus-contrib-upgrade ()
+  (interactive)
+  (let ((pkgs '(ox-pandoc
+                orgit
+                org-present
+                org-category-capture
+                org-projectile
+                org-brain
+                ob-elixir
+                ob-async
+                elfeed-org
+                org-password-manager
+                org-plus-contrib)))
 
-  (dolist (p '(ox-pandoc
-               orgit
-               org-present
-               org-category-capture
-               org-projectile
-               org-brain
-               ob-elixir
-               ob-async
-               elfeed-org
-               org-password-manager
-               ))
-    (lotus-package-delete p))
+    (dolist (p pkgs)
+      (lotus-package-delete p))
 
-  (dolist (p '(ox-pandoc
-               orgit
-               org-present
-               org-category-capture
-               org-projectile
-               org-brain
-               ob-elixir
-               ob-async
-               elfeed-org
-               org-password-manager))
-    (package-install p))
-  )
+    (dolist (p (reverse pkgs))
+      (package-install p))))
+
 
 (provide 'package-dev-utils-lotus)
 ;;; package-dev-utils-lotus.el ends here
