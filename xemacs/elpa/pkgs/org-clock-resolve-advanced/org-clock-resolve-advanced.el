@@ -23,7 +23,10 @@
 
 ;;; Code:
 
-(require 'org)
+
+(provide 'org-clock-resolve-advanced)
+
+(require 'org)
 (require 'org-timer)
 (require 'org-clock)
 (require 'timer-utils-lotus)
@@ -36,10 +39,7 @@
 (eval-when-compile
   (require 'lotus-misc-utils))
 
-
-(provide 'org-clock-resolve-advanced)
-
-
+
 (defun org-clock-idle-time-set (mins)
   (interactive
    (list (read-number "org-clock-idle-time: "
@@ -65,8 +65,9 @@
         (org-get-heading t))
       "imaginary"))
 
-(setq org-resolve-opts-common
-      '(("Done" . done)))
+(setq
+ org-resolve-opts-common
+ '(("Done" . done)))
 
 (defun org-resolve-opts-common (clock)
   (list (cons "Done" 'done)))
@@ -246,7 +247,7 @@
          (error "Can not get start time."))))))
    60))
 
-
+
 ;; NOTE: Remember here the concept of Positive and Negative and Full time.
 ;; Read time which could be positive or negative or full
 (defun org-resolve-time (prev next &optional force close-p)
@@ -463,7 +464,6 @@
               (org-resolve-time prev next close-p))))))))
 
 ;;;###autoload
-
 (defvar org-clock-last-user-idle-seconds nil )
 
 (defun org-rl-resolve-clocks-if-idle ()
@@ -537,10 +537,11 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
             (let ((dangling (or (not (org-clock-is-active))
                                 (/= (car clock) org-clock-marker))))
               (when (or (not only-dangling-p) dangling)
-                  (org-resolve-time
-                   (make-rl-clock (car clock) (cdr clock) nil)
-                   (make-rl-clock 'imaginary 'now (cdr clock)))))))))))
+                (org-resolve-time
+                 (make-rl-clock (car clock) (cdr clock) nil)
+                 (make-rl-clock 'imaginary 'now (cdr clock)))))))))))
 
+;;;###autoload
 (defalias 'org-resolve-clocks 'org-rl-resolve-clocks)
 
 ;;;###autoload
@@ -557,23 +558,12 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
             #'org-rl-clock-set-correct-idle-timer)
   (defalias 'org-resolve-clocks 'org-rl-resolve-clocks))
 
+;;;###autoload
 (defun org-clock-resolve-advanced-uninsinuate ()
   (remove-hook 'org-clock-in-hook
                #'org-rl-clock-set-correct-idle-timer))
 
-(when nil                               ;testing
-  (let ((currtime (current-time)))
-    (org-resolve-time
-     (list
-      org-clock-marker
-      org-clock-start-time
-      nil)
-     (list
-      'imaginary
-      'now
-      (time-subtract currtime (seconds-to-time (* 8 60)))))))
-
-
+
 (defun test-org-rl-resolve-clocks-if-idle (idle-sec)
   "Resolve all currently open Org clocks.
 This is performed after `org-clock-idle-time' minutes, to check
@@ -593,15 +583,24 @@ so long."
           (org-resolve-time
            (make-rl-clock org-clock-marker org-clock-start-time nil)
            (make-rl-clock 'imaginary 'now org-clock-user-idle-start))
-          (when nil
-            (message "Idle time now sec[%d] min[%d]"
-                     org-clock-user-idle-seconds
-                     (/ org-clock-user-idle-seconds 60)))))))
+        (when nil
+          (message "Idle time now sec[%d] min[%d]"
+                   org-clock-user-idle-seconds
+                   (/ org-clock-user-idle-seconds 60)))))))
 
-
+(when nil                               ;testing
+  (let ((currtime (current-time)))
+    (org-resolve-time
+     (list
+      org-clock-marker
+      org-clock-start-time
+      nil)
+     (list
+      'imaginary
+      'now
+      (time-subtract currtime (seconds-to-time (* 8 60)))))))
 
 (when nil
-  (test-org-rl-resolve-clocks-if-idle 310)
-  )
+  (test-org-rl-resolve-clocks-if-idle 310))
 
 ;;; org-clock-utils-lotus.el ends here

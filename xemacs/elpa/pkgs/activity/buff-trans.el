@@ -37,14 +37,14 @@
 
 ;;; Code:
 
+(provide 'buff-trans)
+
+
 (require 'activity-base)
 (require 'switch-buffer-functions)
 (require 'org-uninteractive-log-note)
 
-
-(provide 'buff-trans)
-
-(defobjgen@ @transition-class :gen-buffer-trans (default)
+(defobjgen@ @transition-class :gen-buffer-trans (default)
 
   (def@ @@ :initialize ()
     (setf @:mode-transition nil)
@@ -62,6 +62,7 @@
                         @:transition)))
       (@! transition :dispatch prev curr time-spent))))
 
+
 (defobjgen@ @transition-span-dectector-class :gen-buffer-trans-span-detector (transition)
   "Deted"
 
@@ -125,12 +126,14 @@
         (push idle-time @:idle-times))))
 
   (def@ @@ :cancel-detect-buffer-chg-use ()
-    (progn
-      (when @:timer
-        (cancel-timer @:timer)
-        (setf @:timer nil))
-      (setf @:idle-times nil)
-      (setf @:time-start (current-time))))
+    (when @:timer
+      (cancel-timer @:timer)
+      (setf
+       @:timer nil))
+    (setf
+     @:idle-times nil
+     @:time-start (current-time)))
+
 
   (def@ @@ :detect-buffer-chg-use (prev curr)
     (let* ((cumulatibe-idle-time (reduce #'+ @:idle-times))
@@ -213,10 +216,10 @@
     ;; (let ((trans-event (or trans-event))))
     (setf @:transition transition)
     (setf @:debug-switch-buf nil)
-    (setf @:timer-gap 10)
-    (setf @:time-threshold-gap @:timer-gap)
+    (setf @:time-threshold-gap 45)      ;; for production
+    ;; (setf @:time-threshold-gap 10) ;; -- for debug
+    (setf @:timer-gap @:time-threshold-gap)
     (setf @:idle-thresh-hold 5)
-
     (setf @:time-start (current-time))
     (setf @:timer nil)
     (setf @:idle-times nil)
@@ -232,12 +235,13 @@
 
   (@:initialize))
 
+
 (setf @defautl-buffer-transition-with-log-note-in-org-current-clock
   (@drive-object @transition-class "default buffer transition"
     (def@ @@ :dispatch (prev curr time-spent)
       (@! @org-clock-uninteractive-log-note :send "Changed to buffer %s from %s" curr prev))))
 
-
+
 (progn
   (setf @buffer-transition
         (@! @transition-class
@@ -269,10 +273,10 @@
     (remove-hook 'post-command-hook #'buffer-transition-span-detector-add-idle-timer-hook)
     (remove-hook 'switch-buffer-functions #'#'buffer-transition-span-detector-run-detect-buffer-chg)))
 
+
 ;;;###autoload
 (defun activity-buff-trans-event-activate ()
   (buffer-transition-span-detector-enable-detect-buffer-chg-use))
-
 
 ;;;###autoload
 (defun activity-buff-trans-event-deactivate ()
@@ -285,35 +289,17 @@
  #'activity-buff-trans-event-activate #'activity-buff-trans-event-deactivate)
 
 
-;; https://stackoverflow.com/questions/32878675/using-elisp-local-variables-instead-of-global-variables-to-add-a-function-into-a
-
+
 (when nil
- (progn
+  ;; https://stackoverflow.com/questions/32878675/using-elisp-local-variables-instead-of-global-variables-to-add-a-function-into-a
+  (progn
 
-   (nth  (default-value 'post-command-hook))
+    (nth 11  (default-value 'post-command-hook))
 
-   (setq-default post-command-hook
-              '(global-font-lock-mode-check-buffers mmm-check-changed-buffers
-                                                    global-magit-file-mode-check-buffers
-                                                    global-spacemacs-leader-override-mode-check-buffers
-                                                    global-undo-tree-mode-check-buffers evil-mode-check-buffers
-                                                    global-edit-server-edit-mode-check-buffers global-anzu-mode-check-buffers
-                                                    global-page-break-lines-mode-check-buffers
-                                                    projectile-rails-global-mode-check-buffers elscreen-run-screen-update-hook
-                                                    yas-global-mode-check-buffers magit-auto-revert-mode-check-buffers
-                                                    show-smartparens-global-mode-check-buffers global-flycheck-mode-check-buffers
-                                                    global-auto-complete-mode-check-buffers sp--post-command-hook-handler
-                                                    winner-save-old-configurations flycheck-pos-tip-hide-messages
-                                                    clean-aindent--check-last-point
-                                                    evil-repeat-post-hook hcz-set-cursor-color-according-to-mode
-                                                    switch-buffer-functions-run eldoc-schedule-timer
-                                                    mode-local-post-major-mode-change))
+    (setq-default post-command-hook '())
 
-   (setq-default switch-buffer-functions nil)))
+    (setq-default switch-buffer-functions nil)))
 
-
-
-
-
+
 
 ;;; buff-trans.el ends here
