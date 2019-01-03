@@ -75,6 +75,7 @@
 ;;     (add-to-list 'load-path dir)))
 
 
+
 ;;;###autoload
 (autoload 'activity-mail-event-activate "mail-event" "\
 
@@ -83,7 +84,6 @@
 
 
 (require '@)
-
 (require 'activity-base)
 
 

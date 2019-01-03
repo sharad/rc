@@ -210,6 +210,7 @@
         (org-rl-clock-marker clock)
         (org-rl-clock-start-time clock)))))
 
+
 (defun org-rl-select-other-clock (&optional target)
   (interactive)
   (org-with-refile
@@ -218,7 +219,7 @@
         (set-marker marker loc)
         marker)))
 
-(defun org-resolve-time-debug-prompt (prev next &optional prompt stop)
+(defun org-resolve-time-debug-prompt (prev next &optional prompt stop)
   (let* ( ;;(base 120) ;; TODO: why it was 120 ?
          (base 61)
          (_debug (format "prev[%s %d %d] next[%s %d %d]"
