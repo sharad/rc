@@ -840,18 +840,18 @@ variable."
 
 (defun lotus-necessary-functionality-once-add-to-spacemacs-later ()
   (progn
-    (add-hook 'message-mode-hook 'turn-on-orgstruct)
-    (add-hook 'message-mode-hook 'turn-on-orgstruct++))
-
+    (if (fboundp 'turn-on-orgstruct)
+        (add-hook 'message-mode-hook #'turn-on-orgstruct)
+      (lwarn 'error 'spacemacs "turn-on-orgstruct is not available for message-mode-hook"))
+    (if (fboundp 'turn-on-orgstruct++)
+        (add-hook 'message-mode-hook #'turn-on-orgstruct++)
+      (lwarn 'error 'spacemacs "turn-on-orgstruct++ is not available for message-mode-hook")))
   (progn
     ;; https://www.emacswiki.org/emacs/OutlineMinorMode
     ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
     ;; http://www.modernemacs.com/post/outline-ivy/
     ;; https://orgmode.org/worg/org-tutorials/org-outside-org.html
     ))
-
-
-
 
 
 (progn                                  ;debug testing code

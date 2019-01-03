@@ -28,8 +28,12 @@
   (progn
 
     (progn
-      (add-hook 'message-mode-hook 'turn-on-orgstruct)
-      (add-hook 'message-mode-hook 'turn-on-orgstruct++))
+      (if (fboundp 'turn-on-orgstruct)
+          (add-hook 'message-mode-hook #'turn-on-orgstruct)
+        (lwarn 'error 'spacemacs "turn-on-orgstruct is not available for message-mode-hook"))
+      (if (fboundp 'turn-on-orgstruct++)
+          (add-hook 'message-mode-hook #'turn-on-orgstruct++)
+        (lwarn 'error 'spacemacs "turn-on-orgstruct++ is not available for message-mode-hook")))
 
     (progn
       (when (fboundp 'spaceline-toggle-org-clock-on)
@@ -82,12 +86,12 @@
         "Return content in <title> tag."
         (let (x1 x2 (download-buffer (url-retrieve-synchronously url)))
           (save-excursion
-           (set-buffer download-buffer)
-           (beginning-of-buffer)
-           (setq x1 (search-forward "<title>"))
-           (search-forward "</title>")
-           (setq x2 (search-backward "<"))
-           (mm-url-decode-entities-string (buffer-substring-no-properties x1 x2))))))
+            (set-buffer download-buffer)
+            (beginning-of-buffer)
+            (setq x1 (search-forward "<title>"))
+            (search-forward "</title>")
+            (setq x2 (search-backward "<"))
+            (mm-url-decode-entities-string (buffer-substring-no-properties x1 x2))))))
 
     (progn ;; "beautification"
       (deh-require-maybe (and
@@ -97,15 +101,15 @@
 
 
       (ignore-errors
-       (require 'org-beautify-theme nil)))
+        (require 'org-beautify-theme nil)))
 
     (progn ;; "babel"
       ;; http://draketo.de/book/export/html/41
-                                        ; And add babel inline code execution
-                                        ; babel, for executing code in org-mode.
+      ; And add babel inline code execution
+      ; babel, for executing code in org-mode.
       (org-babel-do-load-languages
        'org-babel-load-languages
-                                        ; load all language marked with (lang . t).
+       ; load all language marked with (lang . t).
        '((C . t)
          ;; (R . t)
          (asymptote)
@@ -189,19 +193,19 @@
                 (lambda ()
                   ;;(dolist (f org-template-files-revert)
                   (while org-template-files-revert
-                         (let ((f (pop org-template-files-revert)))
-                           (if (find-buffer-visiting f)
-                               (with-current-buffer (find-buffer-visiting f)
-                                 (setq buffer-read-only t
-                                       view-read-only t
-                                       view-mode t)))))))
+                    (let ((f (pop org-template-files-revert)))
+                      (if (find-buffer-visiting f)
+                          (with-current-buffer (find-buffer-visiting f)
+                            (setq buffer-read-only t
+                                  view-read-only t
+                                  view-mode t)))))))
 
       (defun org-template-set-file-writable (xfile)
         (if (consp xfile)
             (error "xfile %s not file" xfile))
         (let* ((buf
-                 (or (find-buffer-visiting xfile)
-                     (find-file-noselect xfile))))
+                (or (find-buffer-visiting xfile)
+                    (find-file-noselect xfile))))
           (with-current-buffer buf
             (when buffer-read-only
               (setq

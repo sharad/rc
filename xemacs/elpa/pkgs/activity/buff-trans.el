@@ -228,7 +228,9 @@
 
   (def@ @@ :uninitialize ()
     (@:disable-detect-buffer-chg-use)
-    t))
+    t)
+
+  (@:initialize))
 
 (setf @defautl-buffer-transition-with-log-note-in-org-current-clock
   (@drive-object @transition-class "default buffer transition"
