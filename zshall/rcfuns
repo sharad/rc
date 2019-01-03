@@ -523,7 +523,21 @@ function mvhash () {
     fi
 }
 
-## hashing ##
+function running()
+{
+    echo running "$@"
+    local _cmd=$1
+    shift
+    if [ ! $noaction ]
+    then
+        $_cmd "$@"
+    fi
+}
+
+
+#}}
+
+#{{ ## hashing ##
 
 ## images
 if whence -c w3m >& /dev/null && [ -x /usr/lib/w3m/w3mimgdisplay ] ; then

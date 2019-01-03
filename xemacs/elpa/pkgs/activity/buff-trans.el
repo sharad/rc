@@ -197,15 +197,17 @@
           (when @:debug-switch-buf (message "cancel timer"))
           (@:cancel-detect-buffer-chg-use))))
 
-  (def@ @@ :enable-detect-buffer-chg-use ()
-    (@:cancel-detect-buffer-chg-use)
-    (add-hook 'post-command-hook #'(lambda () (@:add-idle-timer-hook)))
-    (add-hook 'switch-buffer-functions #'(lambda (prev curr) (@:run-detect-buffer-chg prev curr))))
+  ;; (def@ @@ :enable-detect-buffer-chg-use ()
+  ;;   (@:cancel-detect-buffer-chg-use)
+  ;;   (add-hook 'post-command-hook #'(lambda () (@:add-idle-timer-hook)))
+  ;;   (add-hook 'switch-buffer-functions #'(lambda (prev curr) (@:run-detect-buffer-chg prev curr))))
 
-  (def@ @@ :disable-detect-buffer-chg-use ()
-    (@:cancel-detect-buffer-chg-use)
-    (remove-hook 'post-command-hook #'(lambda () (@:add-idle-timer-hook)))
-    (remove-hook 'switch-buffer-functions #'(lambda (prev curr) (@:run-detect-buffer-chg prev curr))))
+
+  ;; (def@ @@ :disable-detect-buffer-chg-use ()
+  ;;   (@:cancel-detect-buffer-chg-use)
+  ;;   (remove-hook 'post-command-hook #'(lambda () (@:add-idle-timer-hook)))
+  ;;   (remove-hook 'switch-buffer-functions #'(lambda (prev curr) (@:run-detect-buffer-chg prev curr))))
+
 
   (def@ @@ :initialize ()
     ;; (let ((trans-event (or trans-event))))
@@ -220,7 +222,7 @@
     (setf @:idle-times nil)
     (setf @:currbuf-detect-buffer-chg-use (current-buffer))
     (setf @:currbuf-run-detect-buffer-chg (current-buffer))
-    (@:enable-detect-buffer-chg-use)
+    ;; (@:enable-detect-buffer-chg-use)
     (@:buffer-chg-print-info "run-detect-buffer-chg1")
     t)
 
@@ -233,43 +235,83 @@
     (def@ @@ :dispatch (prev curr time-spent)
       (@! @org-clock-uninteractive-log-note :send "Changed to buffer %s from %s" curr prev))))
 
-(setf
- @buffer-transition
- (@! @transition-class
-     :gen-buffer-trans
-     "buffer transition"
-     @defautl-buffer-transition-with-log-note-in-org-current-clock))
 
-(setf @buffer-transition-span-detector
-      (@! @transition-span-dectector-class
-          :gen-buffer-trans-span-detector
-          "buffer transition span detector"
-          @buffer-transition))
+(progn
+  (setf @buffer-transition
+        (@! @transition-class
+            :gen-buffer-trans
+            "buffer transition"
+            @defautl-buffer-transition-with-log-note-in-org-current-clock))
+
+  (setf @buffer-transition-span-detector
+        (@! @transition-span-dectector-class
+            :gen-buffer-trans-span-detector
+            "buffer transition span detector"
+            @buffer-transition))
+
+  (defun buffer-transition-span-detector-add-idle-timer-hook ()
+    (@! @buffer-transition-span-detector :add-idle-timer-hook))
+
+  (defun buffer-transition-span-detector-run-detect-buffer-chg (prev curr)
+    (@! @buffer-transition-span-detector :run-detect-buffer-chg prev curr))
+
+  (defun buffer-transition-span-detector-enable-detect-buffer-chg-use ()
+    (@! @buffer-transition-span-detector :cancel-detect-buffer-chg-use)
+    (@! @buffer-transition-span-detector :initialize)
+    (add-hook 'post-command-hook #'buffer-transition-span-detector-add-idle-timer-hook)
+    (add-hook 'switch-buffer-functions #'buffer-transition-span-detector-run-detect-buffer-chg))
+
+
+  (defun buffer-transition-span-detector-disable-detect-buffer-chg-use ()
+    (@! @buffer-transition-span-detector :cancel-detect-buffer-chg-use)
+    (remove-hook 'post-command-hook #'buffer-transition-span-detector-add-idle-timer-hook)
+    (remove-hook 'switch-buffer-functions #'#'buffer-transition-span-detector-run-detect-buffer-chg)))
 
 ;;;###autoload
 (defun activity-buff-trans-event-activate ()
-  (@! @buffer-transition-span-detector :initialize)
-  (@! @buffer-transition-span-detector :cancel-detect-buffer-chg-use)
-  (add-hook 'post-command-hook
-            #'(lambda ()
-                (@! @buffer-transition-span-detector :add-idle-timer-hook)))
-  (add-hook 'switch-buffer-functions
-            #'(lambda (prev curr)
-                (@! @buffer-transition-span-detector :run-detect-buffer-chg prev curr))))
+  (buffer-transition-span-detector-enable-detect-buffer-chg-use))
+
 
 ;;;###autoload
 (defun activity-buff-trans-event-deactivate ()
-  (@! @buffer-transition-span-detector :cancel-detect-buffer-chg-use)
-  (remove-hook 'post-command-hook
-               #'(lambda ()
-                   (@! @buffer-transition-span-detector :add-idle-timer-hook)))
-  (remove-hook 'switch-buffer-functions
-               #'(lambda (prev curr)
-                   (@! @buffer-transition-span-detector :run-detect-buffer-chg prev curr))))
+  (buffer-transition-span-detector-disable-detect-buffer-chg-use))
+
 
 ;;;###autoload
 (activity-register
  "buff-trans"
  #'activity-buff-trans-event-activate #'activity-buff-trans-event-deactivate)
+
+
+;; https://stackoverflow.com/questions/32878675/using-elisp-local-variables-instead-of-global-variables-to-add-a-function-into-a
+
+(when nil
+ (progn
+
+   (nth  (default-value 'post-command-hook))
+
+   (setq-default post-command-hook
+              '(global-font-lock-mode-check-buffers mmm-check-changed-buffers
+                                                    global-magit-file-mode-check-buffers
+                                                    global-spacemacs-leader-override-mode-check-buffers
+                                                    global-undo-tree-mode-check-buffers evil-mode-check-buffers
+                                                    global-edit-server-edit-mode-check-buffers global-anzu-mode-check-buffers
+                                                    global-page-break-lines-mode-check-buffers
+                                                    projectile-rails-global-mode-check-buffers elscreen-run-screen-update-hook
+                                                    yas-global-mode-check-buffers magit-auto-revert-mode-check-buffers
+                                                    show-smartparens-global-mode-check-buffers global-flycheck-mode-check-buffers
+                                                    global-auto-complete-mode-check-buffers sp--post-command-hook-handler
+                                                    winner-save-old-configurations flycheck-pos-tip-hide-messages
+                                                    clean-aindent--check-last-point
+                                                    evil-repeat-post-hook hcz-set-cursor-color-according-to-mode
+                                                    switch-buffer-functions-run eldoc-schedule-timer
+                                                    mode-local-post-major-mode-change))
+
+   (setq-default switch-buffer-functions nil)))
+
+
+
+
+
 
 ;;; buff-trans.el ends here
