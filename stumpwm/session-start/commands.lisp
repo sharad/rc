@@ -198,11 +198,14 @@
 (defcommand display-all-windows () ()
             (message "~a" (all-windows)))
 
-(defcommand display-current-frame () ()
-     (notify (tile-group-frame-tree (screen-current-group (current-screen)))))
+(defcommand display-current-frames () ()
+  (notify (tile-group-frame-tree (screen-current-group (current-screen)))))
+
+(defcommand display-current-frame-tree () ()
+  (notify (tile-group-frame-tree (screen-current-group (current-screen)))))
 
 (defcommand display-frame-preferences () ()
-   (notify *window-placement-rules*))
+  (notify *window-placement-rules*))
 
 ;; Misc commands --------------------------------------------------------------
 
