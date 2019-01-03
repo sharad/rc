@@ -97,33 +97,50 @@
                        (message "@activity-class :init")
                        (setf @:occuredon (current-time)))
 
-                     (setf @:insinuate nil
-                           @:uninsinuate nil)
+                     (setf
+                      @:active      nil
+                      @:insinuate   nil
+                      @:uninsinuate nil)
+
+                     (def@ @@ :reset ()
+                       (@::deactivate-all)
+                       (setf
+                        @:active      nil
+                        @:insinuate   nil
+                        @:uninsinuate nil))
 
                      (def@ @@ :activate (key)
                        (let ((c (assoc key @:insinuate)))
                          (when c
-                           (funcall (cdr c)))))
+                           (progn
+                             (push key @:active)
+                             (funcall (cdr c))))))
 
                      (def@ @@ :deactivate (key)
                        (let ((c (assoc key @:uninsinuate)))
                          (when c
+                           (remove key @:active)
                            (funcall (cdr c)))))
 
 
                      (def@ @@ :activate-all ()
                        (dolist (act @:insinuate)
-                         (funcall (cdr act))))
+                         (@:activate (car act))))
 
                      (def@ @@ :deactivate-all ()
                        (dolist (act @:uninsinuate)
-                         (funcall (cdr act))))
+                         (@:deactivate (car act))))
 
                      (def@ @@ :add (key active deactive)
                        (push (cons key active) @:insinuate)
                        (push (cons key deactive) @:uninsinuate))))
 
 ;; (funcall (cdr (assoc "mail-event" (@ @activity :insinuate))))
+
+;;;###autoload
+(defun activity-reset (key)
+  (interactive)
+  (@! @activity :reset))
 
 ;;;###autoload
 (defun activity-activate (key)
