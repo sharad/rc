@@ -28,6 +28,7 @@
 
 (defvar reloading-libraries nil "used in session-conf.el")
 
+(require 'pp)
 
 (defun package-dir-add-to-loadpath (package-dir &optional recursive)
   (when (file-directory-p package-dir)
@@ -188,26 +189,26 @@
    local)
   (ignore-errors
     (lotus-message-notify "add-to-hook" "add-to-hook: adding %s to %s"
-                          (with-output-to-string (pp fn))
+                          (pp-to-string fn)
                           hook)))
 
 (defun run-each-hooks (hook)
   (dolist (f (symbol-value hook))
     (condition-case e
         (progn
-          (lotus-message-notify "run-each-hooks" "%s: running %s" hook (with-output-to-string (pp f)))
+          (lotus-message-notify "run-each-hooks" "%s: running %s" hook (pp-to-string f))
           (funcall f))
       (error
-       (lotus-message-notify "run-each-hooks" "Error: function %s error %s" (with-output-to-string (pp f)) e)))))
+       (lotus-message-notify "run-each-hooks" "Error: function %s error %s" (pp-to-string f) e)))))
 
 (defun run-each-debug-hooks (hook)
   (dolist (f (symbol-value hook))
     (condition-case e
         (progn
-          (lotus-message-notify "run-each-hooks" "%s: running %s" hook (with-output-to-string (pp f)))
+          (lotus-message-notify "run-each-hooks" "%s: running %s" hook (pp-to-string f))
           (funcall f))
       (error
-       (lotus-message-notify "run-each-hooks" "Error: function %s error %s" (with-output-to-string (pp f)) e)))))
+       (lotus-message-notify "run-each-hooks" "Error: function %s error %s" (pp-to-string f) e)))))
 
 
 
