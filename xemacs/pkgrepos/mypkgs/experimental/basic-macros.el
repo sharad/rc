@@ -29,12 +29,13 @@
 
 
 ;; http://stackoverflow.com/questions/4283899/lisp-macro-set-or-nconc-not-able-to-get-working
+;;;###autoload
 (defmacro set-or-nconc (var &rest args)
   `(if (and (boundp ',var) (not (null ,var)))
        (nconc ,var ,@args)
      (setq ,var ,@args)))
 
-
+;;;###autoload
 (defmacro set-assoc (key val alist)
   `(progn
      (when (null (assoc ,key ,alist))
@@ -43,22 +44,27 @@
 ;;{{{ start: http://emacs-fu.blogspot.com/2008/12/using-packages-functions-only-if-they.html
 
 
+;;;###autoload
 (defmacro require-maybe (feature &optional file)
   "*Try to require FEATURE, but don't signal an error if `require' fails."
   `(require ,feature ,file 'noerror))
+;;;###autoload
 (defmacro when-available (func foo)
   "*Do something if FUNCTION is available."
   `(when (fboundp ,func) ,foo))
 ;;;}}}
 
 (eval-when-compile
- (defmacro GNUEmacs (&rest x)
-  `(if (string-match "GNU Emacs 20" (version)) x))
+  ;;;###autoload
+  (defmacro GNUEmacs (&rest x)
+    `(if (string-match "GNU Emacs 20" (version)) x))
 
-(defmacro XEmacs (&rest x)
-  (list 'if (string-match "XEmacs 20" (version)) (cons 'progn x)))
-(defmacro Xlaunch (&rest x)
-  (list 'if (eq window-system 'x)(cons 'progn x))))
+  ;;;###autoload
+  (defmacro XEmacs (&rest x)
+    (list 'if (string-match "XEmacs 20" (version)) (cons 'progn x)))
+  ;;;###autoload
+  (defmacro Xlaunch (&rest x)
+    (list 'if (eq window-system 'x)(cons 'progn x))))
 
 
 ;;{{{ http://www.emacswiki.org/emacs/dot-emacs-helper.el
@@ -70,6 +76,7 @@
 
 
 ;;   (unless (require 'dot-emacs-helper nil t)
+;;;;;###autoload
 ;;     (defmacro deh-require-maybe (feature &rest forms)
 ;;       (declare (indent 1))
 ;;       `(progn
@@ -210,6 +217,7 @@
 ;;}}}
 
 
+;;;;;###autoload
 ;; (defmacro with-report-error (msg &rest body)
 ;;   (declare (debug t) (indent 0))
 ;;   ;;(unwind-protect BODYFORM UNWINDFORMS...)
@@ -282,6 +290,7 @@
 
 
 
+;;;;;###autoload
 ;; (defmacro with-lock (lock lock-body block-repeat-interval block-maxtime)
 ;;   `(if
 ;;     (progn

@@ -23,13 +23,9 @@
 
 ;;; Code:
 
-
-
-
-
 (provide 'occ-obj-common)
-
 
+
 ;; TODO org-base-buffer
 
 ;; https://stackoverflow.com/questions/12262220/add-created-date-property-to-todos-in-org-mode
@@ -39,7 +35,8 @@
 (defvar occ-verbose 0)
 
 (defun occ-debug (level &rest args)
-  (apply #'format args))
+  (when (car args)
+    (apply #'format args)))
 
 (defun sym2key (sym)
   (if (keywordp sym)

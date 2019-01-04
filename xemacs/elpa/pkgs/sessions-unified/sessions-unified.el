@@ -695,11 +695,22 @@ return a new alist whose car is the new pair and cdr is ALIST."
                              (nth
                               (cadr (assoc 'current-desktop wm-hints))
                               (cdr (assoc 'desktop-names wm-hints)))))
-           (location (if (and not-ask
-                              desktop-name
-                              (member desktop-name (mapcar 'car *frames-elscreen-session*)))
-                         desktop-name
-                       (fmsession-read-location desktop-name))))
+           (location (if (and
+                          not-ask
+                          desktop-name
+                          (member desktop-name
+                                  (mapcar #'car *frames-elscreen-session*)))
+                         (progn
+                           (message
+                            "frame-session-set-this-location: NO need to call interactive (fmsession-read-location desktop-name=%s)"
+                            desktop-name)
+                           desktop-name)
+                       (progn
+                         (message
+                          "frame-session-set-this-location: NEED to call interactive (fmsession-read-location desktop-name=%s)"
+                          desktop-name)
+                         ;; BUG: causing first emacsclient frame to be jammed which require pkill -USR2 emacs
+                         (fmsession-read-location desktop-name)))))
       (if xwin-enabled
           (unless wm-hints
             (message "Some error in wm-hints")))
@@ -1348,16 +1359,16 @@ when all buffer were creaed idly."
 
                               (if (desktop-vc-read *desktop-save-filename*)
                                   (progn
-                                    (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop loaded successfully :)")
+                                    (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop loaded successfully :) [show-error=%s]" show-error)
                                     (lotus-enable-session-saving)
-                                    (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "Do you want to set session of frame? ")
+                                    (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "Do you want to set session of frame? [show-error=%s]" show-error)
                                     (when (y-or-n-p-with-timeout
-                                           "Do you want to set session of frame? "
+                                           (format "[show-error=%s] Do you want to set session of frame? " show-error)
                                            10 t)
                                       (let ((*frame-session-restore* t))
                                         (frame-session-restore (selected-frame)))))
                                 (progn
-                                  (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop loading failed :(")
+                                  (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop loading failed :( [show-error=%s]" show-error)
                                   (run-at-time "1 sec" nil '(lambda () (insert "lotus-desktop-session-restore")))
                                   (execute-extended-command nil)
                                   nil))
@@ -1366,10 +1377,10 @@ when all buffer were creaed idly."
                                 (if (let ((desktop-restore-in-progress t))
                                       (desktop-vc-read *desktop-save-filename*))
                                     (progn
-                                      (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop loaded successfully :)")
+                                      (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop loaded successfully :) [show-error=%s]" show-error)
                                       (lotus-enable-session-saving))
                                   (progn
-                                    (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop loading failed :(")
+                                    (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop loading failed :( [show-error=%s]" show-error)
                                     nil))
                               ('error
                                (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
@@ -1389,6 +1400,7 @@ when all buffer were creaed idly."
                         (let ((*frame-session-restore* t))
                           (frame-session-restore (selected-frame) t))))
                     (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "leaving lotus-desktop-session-restore"))))
+
             (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop-get-desktop-save-filename failed")))
       (progn
         (lotus-enable-session-saving-immediately)

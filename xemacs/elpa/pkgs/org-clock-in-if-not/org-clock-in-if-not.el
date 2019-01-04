@@ -36,33 +36,45 @@
 ;;;###autoload
 (defun org-clock-in-if-not ()
   (interactive)
+  (message "%s: org-clock-in-if-not: begin" (time-stamp-string))
   (lotus-with-no-active-minibuffer
       (unless (or
                org-donot-try-to-clock-in
                (org-clock-is-active))
         ;; (org-clock-goto t)
+        (message "%s: org-clock-in-if-not: really calling" (time-stamp-string))
         (if org-clock-history
             (let (buffer-read-only)
               (org-clock-in '(4)))
             ;; with-current-buffer should be some real file
-            (org-clock-in-refile nil)))))
+          (org-clock-in-refile nil))))
+  (message "%s: org-clock-in-if-not: finished" (time-stamp-string)))
 
 (defvar org-clock-in-if-not-at-time-timer nil)
 
 ;;;###autoload
 (defun org-clock-in-if-not-at-time (delay)
-  (setq org-clock-in-if-not-at-time-timer
-        (run-at-time-or-now delay
-                            #'(lambda ()
-                                (if (any-frame-opened-p)
-                                    (org-clock-in-if-not))))))
+  (prog1
+      (setq org-clock-in-if-not-at-time-timer
+            (run-at-time-or-now delay
+                                #'(lambda ()
+                                    (if (any-frame-opened-p)
+                                        (org-clock-in-if-not)))))
+    (message "%s: org-clock-in-if-not-at-time: begin timer=%s after %d secs"
+             (time-stamp-string)
+             org-clock-in-if-not-at-time-timer
+             delay)))
 
 ;;;###autoload
 (defun org-clock-in-if-not-at-time-delay ()
+  (message "%s: org-clock-in-if-not-at-time-delay: begin after %d secs"
+           (time-stamp-string)
+           org-clock-in-if-not-delay)
   (org-clock-in-if-not-at-time org-clock-in-if-not-delay))
 
 ;;;###autoload
 (defun org-clock-in-if-not-at-time-delay-fn ()
+  (message "%s: org-clock-in-if-not-at-time-delay-fn begin")
   (org-clock-in-if-not-at-time-delay))
 
 (defun org-clock-out-if-active ()

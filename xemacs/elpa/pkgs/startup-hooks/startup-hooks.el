@@ -25,6 +25,10 @@
 
 ;;; Code:
 
+
+(provide 'startup-hooks)
+
+
 ;;{{ Run after init
 
 (defvar *lotus-after-init-hook* nil "lotus-after-init-hook")
@@ -67,6 +71,8 @@
 (defvar lotus-enable-login-session-begin-debug-on-quit    t)
 (defvar lotus-enable-login-session-finish-debug-on-quit   t)
 
+
+(require 'time-stamp)
 
 (require 'basic-utils)
 (require 'basic-macros)
@@ -233,6 +239,9 @@ startup in daemon mode."
   startup. Feature that were disabled for proper startup of emacs
   will get re-enabled here."
   (interactive)
+  (message "%s: add-to-enable-startup-interrupting-feature-hook: \n%s"
+           (time-stamp-string)
+           (pp-to-string fn))
   (add-to-hook
    'lotus-enable-startup-interrupting-feature-hook
    fn
@@ -245,6 +254,9 @@ startup in daemon mode."
   startup. Feature that were disabled for proper startup of emacs
   will get re-enabled here."
   (interactive)
+  (message "%s: remove-from-enable-startup-interrupting-feature-hook: \n%s"
+           (time-stamp-string)
+           (pp-to-string fn))
   (remove-hook
    'lotus-enable-startup-interrupting-feature-hook
    fn
@@ -256,6 +268,9 @@ startup in daemon mode."
   startup. Feature that were disabled for proper startup of emacs
   will get re-enabled here."
   (interactive)
+  (message "%s: add-to-disable-startup-interrupting-feature-hook: \n%s"
+           (time-stamp-string)
+           (pp-to-string fn))
   (add-to-hook
    'lotus-disable-startup-interrupting-feature-hook
    fn
@@ -265,6 +280,9 @@ startup in daemon mode."
 ;;;###autoload
 (defun remove-from-disable-startup-interrupting-feature-hook (fn &optional local)
   (interactive)
+  (message "%s: remove-from-disable-startup-interrupting-feature-hook: \n%s"
+           (time-stamp-string)
+           (pp-to-string fn))
   (remove-hook
    'lotus-disable-startup-interrupting-feature-hook
    fn
@@ -384,6 +402,9 @@ startup in daemon mode."
     login it is for no frame or 1 or more frame hook basiclly
     used accross login where emacs daemon outlive."
   (interactive)
+  (message "%s: add-to-enable-login-session-interrupting-feature-hook: \n%s"
+           (time-stamp-string)
+           (pp-to-string fn))
   (add-to-hook
    'lotus-enable-login-session-interrupting-feature-hook
    fn
@@ -396,6 +417,9 @@ startup in daemon mode."
     login it is for no frame or 1 or more frame hook basiclly
     used accross login where emacs daemon outlive."
   (interactive)
+  (message "%s: remove-from-enable-login-session-interrupting-feature-hook: \n%s"
+           (time-stamp-string)
+           (pp-to-string fn))
   (remove-hook
    'lotus-enable-login-session-interrupting-feature-hook
    fn
@@ -406,6 +430,9 @@ startup in daemon mode."
     login it is for no frame or 1 or more frame hook basiclly
     used accross login where emacs daemon outlive."
   (interactive)
+  (message "%s: add-to-disable-login-session-interrupting-feature-hook: \n%s"
+           (time-stamp-string)
+           (pp-to-string fn))
   (add-to-hook
    'lotus-disable-login-session-interrupting-feature-hook
    fn
@@ -433,5 +460,4 @@ startup in daemon mode."
 
 (defalias 'make-local-hook 'ignore)
 
-(provide 'startup-hooks)
 ;;; startup-hooks.el ends here

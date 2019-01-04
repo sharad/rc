@@ -204,7 +204,8 @@
    append
    local)
   (ignore-errors
-    (lotus-message-notify "add-to-hook" "add-to-hook: adding %s to %s"
+    (lotus-message-notify "add-to-hook" "in hook %s adding\n\t function:\n%s"
+                          hook
                           (pp-to-string fn)
                           hook)))
 
@@ -213,20 +214,20 @@
   (dolist (f (symbol-value hook))
     (condition-case e
         (progn
-          (lotus-message-notify "run-each-hooks" "%s: running %s" hook (pp-to-string f))
+          (lotus-message-notify "run-each-hooks" "%s: running function:\n%s" hook (pp-to-string f))
           (funcall f))
       (error
-       (lotus-message-notify "run-each-hooks" "Error: function %s error %s" (pp-to-string f) e)))))
+       (lotus-message-notify "run-each-hooks" "Error: function:\n%s error %s" (pp-to-string f) e)))))
 
 ;;;###autoload
 (defun run-each-debug-hooks (hook)
   (dolist (f (symbol-value hook))
     (condition-case e
         (progn
-          (lotus-message-notify "run-each-hooks" "%s: running %s" hook (pp-to-string f))
+          (lotus-message-notify "run-each-hooks" "%s: running function:\n%s" hook (pp-to-string f))
           (funcall f))
       (error
-       (lotus-message-notify "run-each-hooks" "Error: function %s error %s" (pp-to-string f) e)))))
+       (lotus-message-notify "run-each-hooks" "Error: function:\n%s error %s" (pp-to-string f) e)))))
 
 (when nil
   (defun toignore ()
