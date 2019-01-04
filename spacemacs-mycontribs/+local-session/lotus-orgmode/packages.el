@@ -57,7 +57,16 @@
     navi-mode
     org-password-manager
     org-parser
-    )
+    ;; new
+    org-context
+    org-dashboard
+    org-email
+    org-mobile-sync
+    org-mru-clock
+    org-noter
+    org-repo-todo
+    org-snooze)
+
   "The list of Lisp packages required by the lotus-orgmode layer.
 
 Each entry is either:

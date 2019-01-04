@@ -24,9 +24,9 @@
 
 ;;; Code:
 
-(require 'init-config "~/.xemacs/init-config.el")
-(require 'org-table)
-(require 'org-clock)
+;; (require 'init-config "~/.xemacs/init-config.el")
+;; (require 'org-table)
+;; (require 'org-clock)
 
 
 
@@ -35,5 +35,5 @@
 
 
 
-(provide 'orgclocktask-config)
+;; (provide 'orgclocktask-config)
 ;;; orgclocktask-config.el ends here

@@ -833,7 +833,7 @@
 
 
 (define-minor-mode office-mode
-    "Prepare for working with collarative office project. This
+  "Prepare for working with collarative office project. This
 is the mode to be enabled when I am working in some files on
 which other peoples are also working."
   :initial-value nil
@@ -853,7 +853,9 @@ which other peoples are also working."
             (run-with-timer
              7 nil
              #'(lambda (buff)
-                 (when (bufferp buff)
+                 (when (and
+                        (bufferp buff)
+                        (buffer-live-p buff))
                    (with-current-buffer buff
                      (forgive/them))))
              (current-buffer))

@@ -54,7 +54,11 @@
     wakatime-mode
     task-manager
     startup-hooks
-    counsel-org-clock)
+    counsel-org-clock
+    ;; new
+    org-clock-split
+    )
+
   "The list of Lisp packages required by the lotus-orgclocktask layer.
 
 Each entry is either:

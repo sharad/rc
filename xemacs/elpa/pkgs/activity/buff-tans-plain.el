@@ -1,4 +1,5 @@
 
+(when nil)
 
 (let* ((debug-switch-buf t)
        (timer-gap 10)
@@ -156,6 +157,6 @@
     (remove-hook 'post-command-hook #'add-idle-timer-hook)
     (remove-hook 'switch-buffer-functions #'run-detect-buffer-chg))
 
-  (enable-detect-buffer-chg-use))
+  (enable-detect-buffer-chg-use)
 
-(disable-detect-buffer-chg-use)
+  (disable-detect-buffer-chg-use))

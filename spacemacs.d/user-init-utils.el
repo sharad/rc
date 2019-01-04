@@ -839,13 +839,31 @@ variable."
 
 
 (defun lotus-necessary-functionality-once-add-to-spacemacs-later ()
-  (progn
-    (if (fboundp 'turn-on-orgstruct)
-        (add-hook 'message-mode-hook #'turn-on-orgstruct)
-      (lwarn 'error 'spacemacs "turn-on-orgstruct is not available for message-mode-hook"))
-    (if (fboundp 'turn-on-orgstruct++)
-        (add-hook 'message-mode-hook #'turn-on-orgstruct++)
-      (lwarn 'error 'spacemacs "turn-on-orgstruct++ is not available for message-mode-hook")))
+
+  (when nil
+    ;; from ~/.emacs.d/elpa/org-plus-contrib-20181230/etc/ORG-NEWS
+    ;; * Version 9.2
+    ;; ** Incompatible changes
+    ;; *** Removal of OrgStruct mode mode and radio lists
+
+    ;; OrgStruct minor mode and radio lists mechanism (~org-list-send-list~
+    ;;                                                 and ~org-list-radio-lists-templates~) are removed from the code base.
+
+    ;; Note that only radio /lists/ have been removed, not radio tables.
+
+    ;; If you want to manipulate lists like in Org in other modes, we suggest
+    ;; to use orgalist.el, which you can install from GNU ELPA.
+
+    ;; If you want to use Org folding outside of Org buffers, you can have a
+    ;; look at the outshine package in the MELPA repository.
+    (progn
+      (if (fboundp 'turn-on-orgstruct)
+          (add-hook 'message-mode-hook #'turn-on-orgstruct)
+        (lwarn 'error 'spacemacs "turn-on-orgstruct is not available for message-mode-hook"))
+      (if (fboundp 'turn-on-orgstruct++)
+          (add-hook 'message-mode-hook #'turn-on-orgstruct++)
+        (lwarn 'error 'spacemacs "turn-on-orgstruct++ is not available for message-mode-hook"))))
+
   (progn
     ;; https://www.emacswiki.org/emacs/OutlineMinorMode
     ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6

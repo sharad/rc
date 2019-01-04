@@ -439,6 +439,7 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
 ;; check about
 ;; package-compute-transaction
 
+;;;###autoload
 (defun lotus-package-delete (pkg)
   (interactive
    (progn
@@ -466,7 +467,6 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
             (package-delete pkg-desc t)
           (message "package %s is not installed" pkg))
       (message "No such package %s" pkg))))
-
 
 ;;;###autoload
 (defun lotus-package-autoremove ()
@@ -520,8 +520,10 @@ will be deleted."
    'yasnippet-classic-snippets
    package-archive-contents))
 
+;;;###autoload
 (defun package-resolve-org-plus-contrib-upgrade ()
   (interactive)
+  (message "started package-resolve-org-plus-contrib-upgrade")
   (let ((pkgs '(ox-pandoc
                 orgit
                 org-present
@@ -538,7 +540,8 @@ will be deleted."
       (lotus-package-delete p))
 
     (dolist (p (reverse pkgs))
-      (package-install p))))
+      (package-install p)))
+  (message "finished package-resolve-org-plus-contrib-upgrade"))
 
 
 (provide 'package-dev-utils-lotus)

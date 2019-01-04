@@ -167,6 +167,7 @@
       ((900  2966 237 781) (:height 71 :width normal :machine "think530-spratap"))
       ((900  2966 238 784) (:height 72 :width normal :machine "think530-spratap"))
       ((900  2966 237 781) (:height 72 :width normal :machine "think530-spratap"))
+      ((1080 3286 285 867) (:height 68 :width normal :machine "latitude5480-spratap"))
       ((1080 3286 285 869) (:height 71 :width normal :machine "latitude5480-spratap"))
       )
     "Enter here all machine details of
