@@ -300,13 +300,27 @@
 ;; move out
 ;; Misc Macros Ends
 
-(defmacro lotus-with-no-active-minibuffer (minibuffer-body &rest body)
+(defmacro lotus-with-no-active-minibuffer (&rest body)
   ;;could schedule in little further.
-  `(if (active-minibuffer-window)
-       ,minibuffer-body
-       (progn
-         ,@body)))
-(put 'lotus-with-no-active-minibuffer 'lisp-indent-function 1)
+  `(unless (active-minibuffer-window)
+     (progn
+       ,@body)))
+(put 'lotus-with-no-active-minibuffer 'lisp-indent-function 0)
+
+(defmacro lotus-with-no-active-minibuffer-if (minibuffer-body &rest body)
+  ;;could schedule in little further.
+  (if (active-minibuffer-window)
+      ,minibuffer-body
+    (progn
+      ,@body)))
+(put 'lotus-with-no-active-minibuffer-if 'lisp-indent-function 1)
+
+
+
+;; (if (active-minibuffer-window)
+;;     ,minibuffer-body
+;;   (progn
+;;     ,@body))
 
 (defmacro lotus-with-override-minibuffer (&rest body)
   `(progn

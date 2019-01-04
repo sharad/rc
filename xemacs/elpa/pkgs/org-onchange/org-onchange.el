@@ -185,32 +185,32 @@
 
    (if (memq org-log-note-how '(time state))
        (let (current-prefix-arg) (org-store-log-note))
-       (let ((org-inhibit-startup t)) (org-mode))
-       (insert (format "# Insert note for %s.
+     (let ((org-inhibit-startup t)) (org-mode))
+     (insert (format "# Insert note for %s.
   # Finish with C-c C-c, or cancel with C-c C-k.\n\n"
-                       (cond
-                         ((eq org-log-note-purpose 'clock-out) "stopped clock")
-                         ((eq org-log-note-purpose 'done)  "closed todo item")
-                         ((eq org-log-note-purpose 'state)
-                          (format "state change from \"%s\" to \"%s\""
-                                  (or org-log-note-previous-state "")
-                                  (or org-log-note-state "")))
-                         ((eq org-log-note-purpose 'reschedule)
-                          "rescheduling")
-                         ((eq org-log-note-purpose 'delschedule)
-                          "no longer scheduled")
-                         ((eq org-log-note-purpose 'redeadline)
-                          "changing deadline")
-                         ((eq org-log-note-purpose 'deldeadline)
-                          "removing deadline")
-                         ((eq org-log-note-purpose 'refile)
-                          "refiling")
-                         ((eq org-log-note-purpose 'note)
-                          "this entry")
-                         (t (error "This should not happen")))))
-       (when org-log-note-extra (insert org-log-note-extra))
-       (setq-local org-finish-function 'org-store-log-note)
-       (run-hooks 'org-log-buffer-setup-hook)))
+                     (cond
+                      ((eq org-log-note-purpose 'clock-out) "stopped clock")
+                      ((eq org-log-note-purpose 'done)  "closed todo item")
+                      ((eq org-log-note-purpose 'state)
+                       (format "state change from \"%s\" to \"%s\""
+                               (or org-log-note-previous-state "")
+                               (or org-log-note-state "")))
+                      ((eq org-log-note-purpose 'reschedule)
+                       "rescheduling")
+                      ((eq org-log-note-purpose 'delschedule)
+                       "no longer scheduled")
+                      ((eq org-log-note-purpose 'redeadline)
+                       "changing deadline")
+                      ((eq org-log-note-purpose 'deldeadline)
+                       "removing deadline")
+                      ((eq org-log-note-purpose 'refile)
+                       "refiling")
+                      ((eq org-log-note-purpose 'note)
+                       "this entry")
+                      (t (error "This should not happen")))))
+     (when org-log-note-extra (insert org-log-note-extra))
+     (setq-local org-finish-function 'org-store-log-note)
+     (run-hooks 'org-log-buffer-setup-hook)))
 
 
   (defun org-add-log-note-with-timed-new-win (win-timeout &optional _purpose)
@@ -220,23 +220,23 @@
     ;; (delete-other-windows)
 
     ;; (move-marker org-log-note-return-to (point))
-    (lotus-with-no-active-minibuffer
-        (progn                            ;could schedule in little further.
-          (message "add-log-note-background: minibuffer already active quitting")
-          (message nil))
-      (let ((win-timeout (or win-timeout 7))
-            (cleanupfn-local nil))
-        (setq org-log-note-window-configuration (current-window-configuration))
-        (lotus-with-timed-new-win
-            win-timeout timer cleanupfn-newwin cleanupfn-local win
-            (condition-case err
-                (let ((target-buffer (get-buffer-create "*Org Note*")))
-                  (org-add-log-note-buffer target-buffer))
-              ((quit)
-               (progn
-                 (funcall cleanupfn-newwin win cleanupfn-local)
-                 (if timer (cancel-timer timer))
-                 (signal (car err) (cdr err)))))))))
+    (lotus-with-no-active-minibuffer-if
+     (progn                        ;could schedule in little further.
+       (message "add-log-note-background: minibuffer already active quitting")
+       (message nil))
+     (let ((win-timeout (or win-timeout 7))
+           (cleanupfn-local nil))
+       (setq org-log-note-window-configuration (current-window-configuration))
+       (lotus-with-timed-new-win
+           win-timeout timer cleanupfn-newwin cleanupfn-local win
+           (condition-case err
+               (let ((target-buffer (get-buffer-create "*Org Note*")))
+                 (org-add-log-note-buffer target-buffer))
+             ((quit)
+              (progn
+                (funcall cleanupfn-newwin win cleanupfn-local)
+                (if timer (cancel-timer timer))
+                (signal (car err) (cdr err)))))))))
 
   (defun org-add-log-setup-with-timed-new-win (win-timeout &optional purpose state prev-state how extra)
     "Set up the post command hook to take a note.
@@ -263,8 +263,8 @@
         (move-marker org-log-note-return-to (point))
         (org-clock-lotus-with-current-clock
             (org-add-log-setup-with-timed-new-win win-timeout
-            'note nil nil nil
-            (concat "# Task: " (org-get-heading t) "\n\n"))))))
+                                                  'note nil nil nil
+                                                  (concat "# Task: " (org-get-heading t) "\n\n"))))))
 
   ;; (defun org-clock-lotus-log-note-current-clock-with-timed-new-win (&optional fail-quietly)
   ;;   (interactive)

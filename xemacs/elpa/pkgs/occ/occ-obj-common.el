@@ -37,7 +37,6 @@
 (defun occ-debug (level &rest args)
   (when (car args)
     (apply #'format args)))
-
 (defun sym2key (sym)
   (if (keywordp sym)
       sym

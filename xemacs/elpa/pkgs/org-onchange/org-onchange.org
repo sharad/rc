@@ -400,7 +400,7 @@ add note but in this case it is not shown so background word is used.
     ;; (delete-other-windows)
 
     ;; (move-marker org-log-note-return-to (point))
-    (lotus-with-no-active-minibuffer
+    (lotus-with-no-active-minibuffer-if
         (progn                            ;could schedule in little further.
           (message "add-log-note-background: minibuffer already active quitting")
           (message nil))

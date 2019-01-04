@@ -130,87 +130,87 @@
 
   (interactive '(nil 7))
 
-  (lotus-with-no-active-minibuffer
-      (progn
-        (message "add-context-to-org-heading: minibuffer already active quitting")
-        (message nil))
-    (lexical-let* ((timeout (or timeout 7))
-                   (context (or context (org-context-clock-build-context)))
-                   (buff (plist-get context :buffer)))
-      (if (and
-           (eq (current-buffer) buff)
-           (buffer-live-p buff)
-           (not
-            (eq buff
-                (get-buffer "*helm-mode-org-context-clock-add-context-to-org-heading*"))))
+  (lotus-with-no-active-minibuffer-if
+   (progn
+     (message "add-context-to-org-heading: minibuffer already active quitting")
+     (message nil))
+   (lexical-let* ((timeout (or timeout 7))
+                  (context (or context (org-context-clock-build-context)))
+                  (buff (plist-get context :buffer)))
+     (if (and
+          (eq (current-buffer) buff)
+          (buffer-live-p buff)
+          (not
+           (eq buff
+               (get-buffer "*helm-mode-org-context-clock-add-context-to-org-heading*"))))
 
-          (org-with-file-loc-timed-refile
-              file pos
-              timeout '((org-context-clock-task-update-files :maxlevel . 4))
+         (org-with-file-loc-timed-refile
+             file pos
+             timeout '((org-context-clock-task-update-files :maxlevel . 4))
 
-              (lexical-let* ((marker (make-marker))
-                             (local-cleanup
-                              #'(lambda ()
-                                  (save-excursion ;what to do here
-                                    (org-flag-proprty-drawer-at-marker marker t))
-                                  (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and org-context-clock-select-propetry
-                                    (abort-recursive-edit)))))
+             (lexical-let* ((marker (make-marker))
+                            (local-cleanup
+                             #'(lambda ()
+                                 (save-excursion ;what to do here
+                                   (org-flag-proprty-drawer-at-marker marker t))
+                                 (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and org-context-clock-select-propetry
+                                   (abort-recursive-edit)))))
 
-                (set-marker marker (point))
-                ;; (message "1 marker %s" marker)
+               (set-marker marker (point))
+               ;; (message "1 marker %s" marker)
 
-                (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
-                    timeout timer cleanup local-cleanup win
+               (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
+                   timeout timer cleanup local-cleanup win
 
-                    (let ((target-buffer (find-file-noselect file)))
+                   (let ((target-buffer (find-file-noselect file)))
 
-                      (when target-buffer
-                        (switch-to-buffer target-buffer)
-                        (goto-char pos)
-                        (set-marker marker (point)))
-                      ;; (message "2 marker %s" marker)
+                     (when target-buffer
+                       (switch-to-buffer target-buffer)
+                       (goto-char pos)
+                       (set-marker marker (point)))
+                     ;; (message "2 marker %s" marker)
 
-                      (message "called add-context-to-org-heading %s" (current-buffer))
-                      (progn
-                        (condition-case err
-                            (let ((buffer-read-only nil))
-                              (message "timer started for win %s" win)
+                     (message "called add-context-to-org-heading %s" (current-buffer))
+                     (progn
+                       (condition-case err
+                           (let ((buffer-read-only nil))
+                             (message "timer started for win %s" win)
 
-                              ;; show proptery drawer
-                              (org-flag-proprty-drawer-at-marker marker nil)
+                             ;; show proptery drawer
+                             (org-flag-proprty-drawer-at-marker marker nil)
 
-                              ;; try to read values of properties.
-                              (let ((prop nil))
-                                (while (not
-                                        (member
-                                         (setq prop (org-context-clock-select-propetry context))
-                                         '(edit done)))
-                                  (when (org-context-clock-set-property prop nil context)
-                                    (org-context-clock-task-update-tasks t)))
-                                (cond
-                                  ((eql 'done prop)
-                                   (funcall cleanup win local-cleanup)
-                                   (when timer (cancel-timer timer)))
-                                  ((eql 'edit prop)
-                                   ;; (funcall cleanup win local-cleanup)
-                                   (message "debug editing")
-                                   (when timer (cancel-timer timer))
-                                   (when (and win (windowp win) (window-valid-p win))
-                                     (select-window win 'norecord)))
-                                  (t
-                                   (funcall cleanup win local-cleanup)
-                                   (when timer (cancel-timer timer))))))
-                          ((quit)
-                           (progn
-                             (funcall cleanup win local-cleanup)
-                             (if timer (cancel-timer timer))
-                             (signal (car err) (cdr err))))))))))
-          (progn
-            (org-context-clock-message 6 "not running add-context-to-org-heading 1 %s, 2 %s 3 %s"
-                                       (eq (current-buffer) buff)
-                                       (buffer-live-p buff)
-                                       (eq buff
-                                           (get-buffer "*helm-mode-org-context-clock-add-context-to-org-heading*"))))))))
+                             ;; try to read values of properties.
+                             (let ((prop nil))
+                               (while (not
+                                       (member
+                                        (setq prop (org-context-clock-select-propetry context))
+                                        '(edit done)))
+                                 (when (org-context-clock-set-property prop nil context)
+                                   (org-context-clock-task-update-tasks t)))
+                               (cond
+                                ((eql 'done prop)
+                                 (funcall cleanup win local-cleanup)
+                                 (when timer (cancel-timer timer)))
+                                ((eql 'edit prop)
+                                 ;; (funcall cleanup win local-cleanup)
+                                 (message "debug editing")
+                                 (when timer (cancel-timer timer))
+                                 (when (and win (windowp win) (window-valid-p win))
+                                   (select-window win 'norecord)))
+                                (t
+                                 (funcall cleanup win local-cleanup)
+                                 (when timer (cancel-timer timer))))))
+                         ((quit)
+                          (progn
+                            (funcall cleanup win local-cleanup)
+                            (if timer (cancel-timer timer))
+                            (signal (car err) (cdr err))))))))))
+       (progn
+         (org-context-clock-message 6 "not running add-context-to-org-heading 1 %s, 2 %s 3 %s"
+                                    (eq (current-buffer) buff)
+                                    (buffer-live-p buff)
+                                    (eq buff
+                                        (get-buffer "*helm-mode-org-context-clock-add-context-to-org-heading*"))))))))
 
 ;;;###autoload
 (defun org-context-clock-add-context-to-org-heading-when-idle (context timeout)
