@@ -1,4 +1,4 @@
-;;; timer-utils-lotus.el --- copy config
+;;; timer-utils-lotus.el --- copy config  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -44,52 +44,43 @@
 (defun run-with-nonobtrusive-aware-idle-timers (longdelay repeat shortdelay repeat-after-idle fn arg &optional cancel)
   "Run a function after idle time of REPEAT + SHORTDELAY, and repeat running on every SHORTDELAY till emacs is idle if REPEAT-AFTER-IDLE is non nil.
 Benefit with this timer is that it will very much ensure before running that user is not typing in emacs."
-  (lexical-let* ((longdelay longdelay)
-                 (repeat repeat)
-                 (repeat-after-idle repeat-after-idle)
-                 (shortdelay shortdelay)
-                 (timer nil)
-                 (subtimer nil))
+  (let* ((longdelay longdelay)
+         (repeat repeat)
+         (repeat-after-idle repeat-after-idle)
+         (shortdelay shortdelay)
+         (timer nil)
+         (subtimer nil)
+         (cancel cancel))
     (setq timer
           (run-with-idle-timer longdelay repeat
                                #'(lambda (func-arg)
                                    (unless subtimer
                                      (debug-message "shortdelay %s running timer" shortdelay)
                                      (setq subtimer
-                                           (run-with-nonobtrusive-timers shortdelay (if repeat-after-idle shortdelay nil) 4
-                                                                         (lambda (func-arg1)
-                                                                           (progn
-                                                                             (debug-message "shortdelay %s running fun" shortdelay)
-                                                                             (if (funcall (car func-arg1) (cdr func-arg1))
-
-                                                                                 ;; (when subtimer
-                                                                                 ;;   (cancel-timer subtimer)
-                                                                                 ;;   (setq subtimer nil))
-
-                                                                                 (when (and cancel timer)
-                                                                                   (cancel-timer timer)
-                                                                                   (setq timer nil)))
-
-                                                                             (when subtimer
-                                                                               (cancel-timer subtimer)
-                                                                               (setq subtimer nil))
-
-                                                                             ;; (when subtimer
-                                                                             ;;   (cancel-timer subtimer)
-                                                                             ;;   (setq subtimer nil))
-
-                                                                             ))
+                                           (run-with-nonobtrusive-timers shortdelay
+                                                                         (if repeat-after-idle shortdelay nil)
+                                                                         4
+                                                                         #'(lambda (func-arg1)
+                                                                             (progn
+                                                                               (debug-message "shortdelay %s running fun" shortdelay)
+                                                                               (if (funcall (car func-arg1) (cdr func-arg1))
+                                                                                   (when (and cancel timer)
+                                                                                     (cancel-timer timer)
+                                                                                     (setq timer nil)))
+                                                                               (when subtimer
+                                                                                 (cancel-timer subtimer)
+                                                                                 (setq subtimer nil))))
                                                                          func-arg))))
                                (cons fn arg)))))
 
 ;;;###autoload
 (defun run-with-nonobtrusive-timers (idledelay repeat useridlesec fn1 arg1)
   "Run FN with ARG only when user is not typing."
-  (lexical-let* ((idledelay idledelay)
-                 (repeat repeat)
-                 (useridlesec useridlesec)
-                 (useridlesec-moving useridlesec)
-                 (timer nil))
+  (let* ((idledelay idledelay)
+         (repeat repeat)
+         (useridlesec useridlesec)
+         (useridlesec-moving useridlesec)
+         (timer nil))
     (setq timer
           (run-with-idle-timer
            idledelay
@@ -115,21 +106,23 @@ Benefit with this timer is that it will very much ensure before running that use
 
 
 (defun run-with-idle-timer-nonobtrusive (sec repeat sitfor stepsec fn &optional arg)
-  (lexical-let* ((sitfor sitfor)
-                 (sec sec)
-                 (idle-timer nil)
-                 (idle-timer
-                  (run-with-idle-timer sec nil
-                                       #'(lambda (fnarg)
-                                           (let ((current-idle-sec (float-time (or (current-idle-time) '(0 0 0)))))
-                                             (if (>= current-idle-sec (+ sec sitfor))
-                                                 (progn
-                                                   (unless repeat
-                                                     (cancel-timer idle-timer))
-                                                   (funcall (car fnarg) (cdr fnarg)))
-                                                 (setq idle-timer nil))))
-                                       (cons fn arg))))
-    ))
+  (let* ((sitfor sitfor)
+         (sec sec)
+         idle-timer)
+    (setq idle-timer
+          (run-with-idle-timer sec nil
+                               #'(lambda (fnarg)
+                                   (let ((current-idle-sec (float-time (or (current-idle-time) '(0 0 0)))))
+                                     (if (>= current-idle-sec (+ sec sitfor))
+                                         (progn
+                                           (unless repeat
+                                             (cancel-timer idle-timer))
+                                           (funcall (car fnarg) (cdr fnarg)))
+                                       (setq idle-timer nil))))
+                               (cons fn arg)))
+    (message "started time idle-timer=%s, utiliz stepsec=%s later"
+             idle-timer
+             stepsec)))
 
 
 (defun run-with-idle-timer-nonobtrusive-simple (sec repeat fn &optional arg)
