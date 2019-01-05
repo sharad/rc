@@ -24,6 +24,8 @@
 
 ;;; Code:
 
+(provide 'org-misc-utils-lotus)
+
 ;; ORG here is issue of naming heading vs headline
 
 (eval-when-compile
@@ -880,5 +882,4 @@ With prefix arg C-u, copy region instad of killing it."
             (show-entry))                 ; display invisible text
           (run-hooks 'org-agenda-after-show-hook))))))
 
-(provide 'org-misc-utils-lotus)
 ;;; org-misc-utils-lotus.el ends here
