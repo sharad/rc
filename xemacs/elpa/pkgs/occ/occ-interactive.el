@@ -353,11 +353,19 @@
 (defun occ-files-not-in-org-mode ()
   (interactive)
   (let ((files
-          (remove-if
-           #'(lambda (f)
-               (with-current-buffer (find-file-noselect f)
-                 (eq major-mode 'org-mode)))
-           (occ-included-files))))
+         (remove-if
+          #'(lambda (f)
+              (with-current-buffer (find-file-noselect f)
+                (eq major-mode 'org-mode)))
+          (occ-included-files))))
     (message "files not in org-mode %s" files)))
+
+
+
+;; TODO
+;; check about org-clock-save-markers-for-cut-and-paste
+;;
+
+
 
 ;;; occ-interactive.el ends here

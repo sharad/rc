@@ -309,18 +309,11 @@
 
 (defmacro lotus-with-no-active-minibuffer-if (minibuffer-body &rest body)
   ;;could schedule in little further.
-  (if (active-minibuffer-window)
-      ,minibuffer-body
-    (progn
-      ,@body)))
+  `(if (active-minibuffer-window)
+       ,minibuffer-body
+     (progn
+       ,@body)))
 (put 'lotus-with-no-active-minibuffer-if 'lisp-indent-function 1)
-
-
-
-;; (if (active-minibuffer-window)
-;;     ,minibuffer-body
-;;   (progn
-;;     ,@body))
 
 (defmacro lotus-with-override-minibuffer (&rest body)
   `(progn
