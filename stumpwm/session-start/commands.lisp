@@ -11,9 +11,9 @@
 (defun msg-notify (fmt args)
   (let ((*executing-stumpwm-command* nil)
         (*message-window-gravity* :center))
-    (message-no-timeout fmt args)))
+    (stumpwm:message-no-timeout fmt args)))
 
-(defcommand notify (msg) ((:rest "Notify: "))
+(stumpwm:defcommand notify (msg) ((:rest "Notify: "))
   (msg-notify "~a" msg))
 ;;}}}
 
@@ -21,30 +21,31 @@
 
 ;; #+pb (fboundp 'stumpwm::run-cli-command)
 
-(defcommand fnext () ()
-  (focus-next-frame (current-group)))
-(defcommand fprev () ()
-  (focus-prev-frame (current-group)))
+(stumpwm:defcommand fnext () ()
+  (stumpwm:focus-next-frame (stumpwm:current-group)))
+(stumpwm:defcommand fprev () ()
+  (stumpwm:focus-prev-frame (stumpwm:current-group)))
 
 ;; Aquasole
 ;; OSD text
-(defcommand osd-echo () ()
-  (let* ((screen (current-screen))
+(stumpwm:defcommand osd-echo () ()
+  (let* ((screen (stumpwm:current-screen))
          (w (window-xwin (screen-focus screen))))
-    (echo-in-window w (screen-font screen)
-                    (screen-fg-color screen)
-                    (screen-bg-color screen)
-                    "Test de l'osd"))
-    (xlib:display-finish-output *display*))
+    (stumpwm:echo-in-window w
+                            (stumpwm:screen-font screen)
+                            (stumpwm:screen-fg-color screen)
+                            (stumpwm:screen-bg-color screen)
+                            "Test de l'osd"))
+  (xlib:display-finish-output *display*))
 
-(defcommand hsbalance-frames () ()
+(stumpwm:defcommand hsbalance-frames () ()
             "sdfdsf"
             (only)
             (dotimes (c (1- (length (group-windows (current-group))))
                       (balance-frames))
               (hsplit)))
 
-(defcommand vsbalance-frames () ()
+(stumpwm:defcommand vsbalance-frames () ()
             "sdfdsf"
             (only)
             (dotimes (c (1- (length (group-windows (current-group))))
@@ -52,7 +53,7 @@
               (vsplit)))
 
 ;; menu test
-(defcommand test-menu () ()
+(stumpwm:defcommand test-menu () ()
    (select-from-menu (current-screen)
                      '("a b qsdfùksdfqsdf sf"
                        "qsdf qsdf grfghd dwxfg"
@@ -77,7 +78,7 @@
 
 (let (video-pid
       filename)
-  (defcommand grab-desktop-info () ()
+  (stumpwm:defcommand grab-desktop-info () ()
     "Get video grabbing process pid"
     (let* ((pid (if (and video-pid (sb-ext:process-alive-p video-pid))
                     (process-pid video-pid)))
@@ -88,12 +89,12 @@
           (message "Desktop grabbing process working with pid: ~a.~@[~&Outputting in ~a~]" pid file)
           (message "No desktop grabbing is going on in my knowledge.~@[~&But previous recording could be found in ~a~]" file))))
 
-  (defcommand grab-desktop () ();(&optional filearg) ((:rest "Filename: "))
+  (stumpwm:defcommand grab-desktop () ();(&optional filearg) ((:rest "Filename: "))
       (if (and video-pid (sb-ext:process-alive-p video-pid))
           (grab-desktop-stop)
           (grab-desktop-start (read-one-line (current-screen) "Filename: " :initial-input "/tmp/out.flv"))))
 
-  (defcommand grab-desktop-start (&optional filearg) ((:rest "Filename: "))
+  (stumpwm:defcommand grab-desktop-start (&optional filearg) ((:rest "Filename: "))
     (if (and video-pid (sb-ext:process-alive-p video-pid))
         (message
          "Already desktop grabber is running with pid: ~a~&outputting into ~a"
@@ -119,7 +120,7 @@
 
   ;;(message-no-timeout capture-cmd))))
 
-  (defcommand grab-desktop-stop () ()
+  (stumpwm:defcommand grab-desktop-stop () ()
     ; shuld offer to play the last recordind, control it by user variable.
     (if (and video-pid
              (sb-ext:process-alive-p video-pid))
@@ -133,7 +134,7 @@
             (setf video-pid nil)))
         (message "No desktop grabbing happenning to stop.")))
 
-  (defcommand grab-desktop-play () ()
+  (stumpwm:defcommand grab-desktop-play () ()
     "Play video in last file"           ;I think it may be better to
                                         ;disable video playing while
                                         ;video grabbing is on.
@@ -143,7 +144,7 @@
           (message "No output file present to play.")
           (setf filename nil))))
 
-  (defcommand grab-desktop-reset-pid () ()
+  (stumpwm:defcommand grab-desktop-reset-pid () ()
     "Only for debugging purpose, when we are not able to reset video pid"
     (setf video-pid nil))
 
@@ -162,7 +163,7 @@
                       ("Science & Technology" "Tech")
                       ("Sports" "Sports")
                       ("Travel & Events" "Travel"))))
-    (defcommand grab-desktop-post () ()
+    (stumpwm:defcommand grab-desktop-post () ()
       "Post video to YouTube hosting site."
       (if (and filename (probe-file filename))
           (run-shell-command
@@ -180,31 +181,31 @@
 
                                  ;;"ffmpeg -f x11grab -s " width "x" hight " -r 24 -i " (getenv "DISPLAY") ".0 -sameq " filename)))
 
-(defcommand display-groups () ()
+(stumpwm:defcommand display-groups () ()
   (message "~a" (screen-groups (current-screen))))
 
-(defcommand display-urgent-windows () ()
+(stumpwm:defcommand display-urgent-windows () ()
   (message "~a" (screen-urgent-windows (current-screen))))
 
-(defcommand display-screen-info () ()
+(stumpwm:defcommand display-screen-info () ()
   (notify (current-screen)))
 
-(defcommand display-screens-info () ()
+(stumpwm:defcommand display-screens-info () ()
   (notify (sort-screens)))
 
-(defcommand display-head-info () ()
+(stumpwm:defcommand display-head-info () ()
   (notify (current-head)))
 
-(defcommand display-all-windows () ()
+(stumpwm:defcommand display-all-windows () ()
             (message "~a" (all-windows)))
 
-(defcommand display-current-frames () ()
+(stumpwm:defcommand display-current-frames () ()
   (notify (tile-group-frame-tree (screen-current-group (current-screen)))))
 
-(defcommand display-current-frame-tree () ()
+(stumpwm:defcommand display-current-frame-tree () ()
   (notify (tile-group-frame-tree (screen-current-group (current-screen)))))
 
-(defcommand display-frame-preferences () ()
+(stumpwm:defcommand display-frame-preferences () ()
   (notify *window-placement-rules*))
 
 ;; Misc commands --------------------------------------------------------------
@@ -216,15 +217,15 @@
 ;;   ;; #+(and clisp linux) (linux:|chdir| (namestring (truename path)))
 ;;   ;; #+(and sbcl sb-posix) (sb-posix:|chdir| (namestring (truename path))))
 
-;; (defcommand cd (path) ((:rest "Dir: "))
+;; (stumpwm:defcommand cd (path) ((:rest "Dir: "))
 ;;             (change-dir path))
   ;; #+(and clisp linux) (linux:|chdir| (namestring (truename path)))
   ;; #+(and sbcl sb-posix) (sb-posix:|chdir| (namestring (truename path))))
 
-(defcommand cd (path) ((:rest "Dir: "))
+(stumpwm:defcommand cd (path) ((:rest "Dir: "))
   (change-dir path))
 
-(defcommand pwd () ()
+(stumpwm:defcommand pwd () ()
   (get-current-directory))
 
 (defun emacs-server-running-p ()
@@ -233,7 +234,7 @@
       (probe-file (concat "/tmp/" (getenv "UID") "/server"))))
 
 
-;; (defcommand emacsclient () ()
+;; (stumpwm:defcommand emacsclient () ()
 ;;   (run-or-raise
 ;;    (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "DISPLAY") "/emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general")))
 ;;    '(:class "Emacs")))
@@ -256,14 +257,14 @@
 
 #-pa
 (progn
-  (defcommand editor () ()
+  (stumpwm:defcommand editor () ()
               ;;(if (wait-for-nwprogram "emacsclient")
               (run-wcli-command
                (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general")) " -e '(setq spec-id \"main\")")
                ;; '(:class "Emacs")
                ))
 
-  (defcommand xeditor () ()
+  (stumpwm:defcommand xeditor () ()
               (run-wcli-command
                (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general"))
                        " -e "
@@ -274,7 +275,7 @@
                ;; '(:class "Emacs")
                ))
 
-  (defcommand emacsclient () ()
+  (stumpwm:defcommand emacsclient () ()
               (run-wcli-command
                (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general"))
                        " -e "
@@ -285,29 +286,29 @@
                ;; '(:class "Emacs")
                ))
 
-  (defcommand mail-reader () ()
+  (stumpwm:defcommand mail-reader () ()
               (run-wcli-command
                (concat "emacsclient -n -f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general") " -e (make-mail-chat-frame)"))))
 
-  (defcommand new-mail () ()
+  (stumpwm:defcommand new-mail () ()
               (if (wait-for-program "emacsclient")
                   (run-wcli-command
                    (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general") " -e '(gnus-group-mail)'"))))))
 
-(defcommand gnus () ()
+(stumpwm:defcommand gnus () ()
   (if (wait-for-nwprogram "emacsclient")
       (run-wcli-command
        (concat "emacsclient -d " (getenv "DISPLAY")  "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general") " -e '(gnus)'"))
        '(:class "EmacsGNU"))))
 
 
-;; (defcommand mail-reader () ()
+;; (stumpwm:defcommand mail-reader () ()
 ;;   (if (wait-for-program "emacsclient")
 ;;   (run-wcli-command
 ;;    (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general") " -e '(gnus)'")))))
 
 
-(defcommand gnusclient () ()
+(stumpwm:defcommand gnusclient () ()
   (if (wait-for-program "emacsclient")
   (run-or-pull
    (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general")) " -e '(gnus)'")
@@ -315,7 +316,7 @@
 
 ;; run-wcli-command
 
-(defcommand gnusclient () ()
+(stumpwm:defcommand gnusclient () ()
   (if (wait-for-program "emacsclient")
   (run-wcli-command
    (concat "emacsclient -d " (getenv "DISPLAY") " -f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general")) " -e '(gnus)'"))))
@@ -338,31 +339,31 @@
 ;; manager.lisp:68:(defun set-wm-class (window resource-name resource-class)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defcommand gnome-quit () ()
+(stumpwm:defcommand gnome-quit () ()
   (run-shell-command "gconftool-2 --type boolean --set /apps/nautilus/preferences/show_desktop true")
   (run-wcli-command
    (concat "gnome-session-save --gui --logout-dialog")))
 
 ;; no use.
-;; (defcommand emacsclient-cli () ()
+;; (stumpwm:defcommand emacsclient-cli () ()
 ;;   (run-wcli-command
 ;;    (concat "emacsclient -d " (getenv "DISPLAY") " -c ")))
 
 
-;; (defcommand manuscrit () ()
+;; (stumpwm:defcommand manuscrit () ()
 ;;    (run-shell-command "gv /home/m0rg/these/manuscrit/these.ps"))
 
-(defcommand mutt () ()
+(stumpwm:defcommand mutt () ()
    (run-or-raise
     "xterm -title mutt -e mutt -y"
     '(:title "mutt")))
 
-(defcommand ebib () ()
+(stumpwm:defcommand ebib () ()
   (run-or-raise
    "xterm -title ebib -e emacs -nw -f ebib"
     '(:title "ebib")))
 
-;; (defcommand ebib () ()
+;; (stumpwm:defcommand ebib () ()
 ;;   (run-or-raise-cli
 ;;    (if (emacs-server-running-p)
 ;;        "emacsclient -d ${DISPLAY} -e \"(open-ebib-in-new-frame)\""
@@ -370,142 +371,142 @@
 ;;                                      (ebib))\"")
 ;;     '(:title "ebib")))
 
-(defcommand firefox () ()
+(stumpwm:defcommand firefox () ()
    (run-wcli-command
     (concat "firefox -P " (getenv "XBPROFILE"))))
 
-(defcommand firefox-tor () ()
+(stumpwm:defcommand firefox-tor () ()
    (run-wcli-command
     (concat "firefox -P tor")))
 
-(defcommand xbrowser () ()
+(stumpwm:defcommand xbrowser () ()
             (run-wcli-command
              (concat
               (or (getenv "XBROWSER")
                   (concat
                    (getenv "HOME") "/bin/conkeror-redirected" " -P " (getenv "XBPROFILE"))))))
 
-(defcommand xbrowser-tor () ()
+(stumpwm:defcommand xbrowser-tor () ()
             (run-wcli-command "conkeror -P tor"))
 
-(defcommand seamonkey () ()
+(stumpwm:defcommand seamonkey () ()
    (run-wcli-command
     (concat "seamonkey -P " (getenv "XBPROFILE"))))
 
-(defcommand mozilla () ()
+(stumpwm:defcommand mozilla () ()
    (run-wcli-command
     (concat "mozilla -P " (getenv "XBPROFILE"))))
 
-(defcommand conkeror () ()
+(stumpwm:defcommand conkeror () ()
    (run-wcli-command
     (concat "firefox -P " (getenv "XBPROFILE"))))
 
-(defcommand virt-manager () ()
+(stumpwm:defcommand virt-manager () ()
             "virt-manager"
   (run-wcli-command "virt-manager"))
 
-(defcommand w3m () ()
+(stumpwm:defcommand w3m () ()
    (run-or-raise
     "xterm -title w3m -tn xterm -e w3m -cookie -config /home/m0rg/.w3m/config -N http://www.google.fr"
     '(:title "w3m")))
 
-;; (defcommand xbrowser () ()
+;; (stumpwm:defcommand xbrowser () ()
 ;;    (run-or-raise
 ;;     (getenv "XBROWSER")
 ;;     '(:class "Mozilla")))
 
-(defcommand slrn () ()
+(stumpwm:defcommand slrn () ()
    (run-or-raise
     "xterm -title slrn -e slrn -f /home/m0rg/.newsrc"
     '(:title "slrn")))
 
-(defcommand cmus () ()
+(stumpwm:defcommand cmus () ()
    (run-or-raise
     "xterm -title cmus -e cmus"
     '(:title "cmus 2.2.0")))
 
-(defcommand ssh-to-intranet () ()
+(stumpwm:defcommand ssh-to-intranet () ()
    (run-or-raise
     "xterm -title Intranet -e ssh $INTRANETSERVER"
     '(:title "Intranet")))
 
-(defcommand inkscape () ()
+(stumpwm:defcommand inkscape () ()
    (run-or-raise
     "inkscape"
     '(:class "Inkscape")))
 
-(defcommand gimp () ()
+(stumpwm:defcommand gimp () ()
    (run-or-raise
     "gimp"
     '(:class "Gimp")))
 
 ;;fectchmail
-(defcommand fetchmail () ()
+(stumpwm:defcommand fetchmail () ()
   (run-shell-command "fetchmail -d0")
   (message "Checking mails..."))
-(defcommand fetchmail-daemon () ()
+(stumpwm:defcommand fetchmail-daemon () ()
   (run-shell-command "fetchmail"))
-(defcommand fetchmail-kill-daemon () ()
+(stumpwm:defcommand fetchmail-kill-daemon () ()
   (run-shell-command "fetchmail -q"))
 
 ;;unison synchronization
-(defcommand unison-synchronization (host) ((:rest "Synchro host: "))
+(stumpwm:defcommand unison-synchronization (host) ((:rest "Synchro host: "))
    (run-shell-command (concat *home-dir*
                               "/bin/synchro "
                               host)))
 
-(defcommand paste () ()
+(stumpwm:defcommand paste () ()
             (let ((text (get-x-selection 1)))
               (and text (window-send-string text))))
 
 
 ;;screenshot-to-website
-(defcommand screenshot-to-website (filename) ((:rest "Filename: "))
+(stumpwm:defcommand screenshot-to-website (filename) ((:rest "Filename: "))
   (run-shell-command
    (format nil
            "import -window root /home/s/hell/code/html/patzy/screenshots/~a"
            filename)))
 
 ;;screenshot-to-file
-(defcommand screenshot-to-file (filename) ((:rest "Filename: "))
+(stumpwm:defcommand screenshot-to-file (filename) ((:rest "Filename: "))
   (run-shell-command
    (format nil "import -window root ~a" filename)))
 
-(defcommand restore-group-dump (filename) ((:rest "Dump name: "))
+(stumpwm:defcommand restore-group-dump (filename) ((:rest "Dump name: "))
  (let ((group (add-group (current-screen) filename)))
    (switch-to-group group)
    (restore-from-file (data-dir-file filename))))
 
-(defcommand save-group-dump (filename) ((:rest "Dump name: "))
+(stumpwm:defcommand save-group-dump (filename) ((:rest "Dump name: "))
  (dump-group-to-file (data-dir-file filename)))
 
 ;;Termsn
 ;; (dolist '(term (xterm urxvt mrxvt))
-;;         (defcommand term (&optional title) ((:rest "title: "))
+;;         (stumpwm:defcommand term (&optional title) ((:rest "title: "))
 ;;                     (run-wcli-command (concatenate 'string (symbole-name term)
 ;;                                                   (if title (format nil " -T ~a" title))))))
 
 ;;(run-shell-command "xterm"))
 
-;; (defcommand xterm () ()
+;; (stumpwm:defcommand xterm () ()
 ;;             (run-wcli-command "xterm"))
 
 ;;Termsn
 ;;Termsn
-(defcommand xterm (&optional title) ((:rest "title: "))
+(stumpwm:defcommand xterm (&optional title) ((:rest "title: "))
             (run-wcli-command (concatenate 'string "xterm"
                                           (if title (format nil " -T ~a" title)))))
 
 ;; ;;Termsn *emacs-planner-tasks*
-;; (defcommand urxvt (&optional title) ((:rest "title: "))
+;; (stumpwm:defcommand urxvt (&optional title) ((:rest "title: "))
 ;;             (run-wcli-command (concatenate 'string "urxvtc"
 ;;                                           (if title (format nil " -T ~a" title)))))
-(defcommand urxvt () ()
+(stumpwm:defcommand urxvt () ()
   (run-wcli-command (concatenate 'string "urxvt" ;; "urxvtc"
                                  (format nil " -T ~a"
                                          (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
 
-(defcommand urxvt () ()
+(stumpwm:defcommand urxvt () ()
   (run-wcli-command (concatenate 'string "urxvt" ;; "urxvtc"
                                  ;; (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
                                  ;;   (if (probe-file paradise)
@@ -518,7 +519,7 @@
                                                " "))
                                          (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
 
-(defcommand xterm () ()
+(stumpwm:defcommand xterm () ()
   (run-wcli-command (concatenate 'string "xterm"
                                  (format nil " -T ~a"
                                          (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
@@ -536,17 +537,17 @@
 ;;                                                  " "))
 ;;                                            (substitute #\_ #\Space (group-name (current-group)))))))
 
-(defcommand mrxvt (&optional title) ((:rest "title: "))
+(stumpwm:defcommand mrxvt (&optional title) ((:rest "title: "))
             (run-wcli-command (concatenate 'string "mrxvt"
                                           (if title (format nil " -title ~a" title)))))
 
-(defcommand xscreen () ()
+(stumpwm:defcommand xscreen () ()
   (run-wcli-command "xterm -e screen"))
 ;;  (run-shell-command "xterm -e screen"))
 
 
 ;;Google calendar
-(defcommand gcal-week () ()
+(stumpwm:defcommand gcal-week () ()
   (message "~a"
            (run-shell-command (concat "gcalcli calw 1  |"
                                       " sed 's/\\[0;3\\([0-7]\\)"
@@ -556,7 +557,7 @@
                                       *stumpish*
                                       " -e notify")
                               nil)))
-(defcommand gcal-month () ()
+(stumpwm:defcommand gcal-month () ()
   (message "~a"
            (run-shell-command (concat "gcalcli calm  |"
                                       " sed 's/\\[0;3\\([0-7]\\)"
@@ -568,7 +569,7 @@
                               nil)))
 
 
-(defcommand gcal-search (search-string) ((:rest "Search gcal: "))
+(stumpwm:defcommand gcal-search (search-string) ((:rest "Search gcal: "))
   (message "~a"
            (run-shell-command (concat "gcalcli "
                                       "--ignore-started --details search \""
@@ -583,32 +584,32 @@
                                       " -e notify")
                               nil)))
 
-(defcommand gcal-add-event (evt) ((:rest "Event:"))
+(stumpwm:defcommand gcal-add-event (evt) ((:rest "Event:"))
   (run-shell-command (format nil (concat "gcalcli quick '~a'~%")
                              evt))
   (message "Added event: ~a" evt))
 
 
 ;; cmus-remote control
-(defcommand cmus-play () ()
+(stumpwm:defcommand cmus-play () ()
   (run-shell-command "cmus-remote -p"))
-(defcommand cmus-stop () ()
+(stumpwm:defcommand cmus-stop () ()
   (run-shell-command "cmus-remote -s"))
-(defcommand cmus-next () ()
+(stumpwm:defcommand cmus-next () ()
   (run-shell-command "cmus-remote -n"))
-(defcommand cmus-prev () ()
+(stumpwm:defcommand cmus-prev () ()
   (run-shell-command "cmus-remote -r"))
 
 
-(defcommand restart-conky () ()
+(stumpwm:defcommand restart-conky () ()
    (run-shell-command
     "killall conky ; conky -d -c ~/.conkyrc/main/conkyrc 2>&1 >/dev/null"))
 
-(defcommand conky () ()
+(stumpwm:defcommand conky () ()
    (run-shell-command
     "conky -d -c ~/.conkyrc/main/conkyrc"))
 
-(defcommand toggle-touchpad () ()
+(stumpwm:defcommand toggle-touchpad () ()
   "Toggle the laptop touchpad on/off.
    Need to have set 'Option SHMConfig' for Synaptics Touchpad
    device in xorg.conf."
@@ -620,7 +621,7 @@
         (run-shell-command "synclient TouchpadOff=1")
         (banish-pointer)))))
 
-(defcommand refocus-conkeror () ()
+(stumpwm:defcommand refocus-conkeror () ()
   ;; from: http://bc.tech.coop/ubuntu-config/.stumpwmrc
   "Re-focus the conkeror buffer.
    Useful when you want to escape Flash without a mouse."
@@ -631,19 +632,19 @@
 
 (define-key *root-map* (kbd "X") "refocus-conkeror")
 
-(defcommand sys-halt () ()
+(stumpwm:defcommand sys-halt () ()
   (run-shell-command "poweroff"))
 
-(defcommand sys-suspend () ()
+(stumpwm:defcommand sys-suspend () ()
   (run-shell-command "pmi action suspend"))
 
-(defcommand sys-hibernate () ()
+(stumpwm:defcommand sys-hibernate () ()
   (run-shell-command "pmi action hibernate"))
 
-(defcommand sys-reboot () ()
+(stumpwm:defcommand sys-reboot () ()
   (run-shell-command "reb00t"))
 
-(defcommand start-wm-components () ()
+(stumpwm:defcommand start-wm-components () ()
  (message "started start-wm-components")
  (prog1
      (run-shell-command
@@ -653,7 +654,7 @@
    (message "done start-wm-components")))
 
 
-(defcommand start-wm-test-components () ()
+(stumpwm:defcommand start-wm-test-components () ()
   (message "started start-wm-test-components")
   (prog1
       (run-shell-command
@@ -662,7 +663,7 @@
         "/tmp/test.sh"))
     (message "done start-wm-test-components")))
 
-(defcommand bye () ()
+(stumpwm:defcommand bye () ()
 #+pa
   (in.net.sharad.pa-backend-emacs-planner::emacs-eval-nooutput "(close-all-frames)")
   (sleep 1)
@@ -672,18 +673,18 @@
     "/.rsetup/wmlogout/run"))
   (quit))
 
-(defcommand bye-with-cleanup () ()
+(stumpwm:defcommand bye-with-cleanup () ()
             (bye))
 
-(defcommand bye-with-confirmation () ()
+(stumpwm:defcommand bye-with-confirmation () ()
             (let ((*message-window-gravity* :center))
               (fclear)
               (if (y-or-n-p "^5^BLogout from stumpwm:^b ^2")
                   (bye-with-cleanup)
                   (pull-hidden-other))))
 
-(defcommand display-top-map () ()
-    (display-bindings-for-keymaps  nil *top-map*))
+(stumpwm:defcommand display-top-map () ()
+  (display-bindings-for-keymaps  nil *top-map*))
 
 (defun xwin-kill (window)
   "Kill the client associated with window."
@@ -711,13 +712,13 @@
  (use-package 'cl-cont))
 )
 
-(defcommand gnext-nonempty () ()
+(stumpwm:defcommand gnext-nonempty () ()
             )
 
-(defcommand gprev-nonempty () ()
+(stumpwm:defcommand gprev-nonempty () ()
             )
 
-(defcommand env (&optional (var t)) ((:string "env var: "))
+(stumpwm:defcommand env (&optional (var t)) ((:string "env var: "))
   (if (eq var t)
       (message "all env")
       (let* ((var (format nil "~a" var))
