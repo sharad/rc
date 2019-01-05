@@ -341,6 +341,7 @@
 
       (occ-run-with-global-tsk-collection
        #'(lambda ()
+           (message "occ-run-with-global-tsk-collection")
            (setq org-agenda-files (occ-included-files))))
 
       (progn
@@ -348,6 +349,7 @@
          #'(lambda ()
              (occ-run-with-global-tsk-collection
               #'(lambda ()
+                  (message "add-to-task-current-party-change-hook -> occ-run-with-global-tsk-collection")
                   (setq org-agenda-files (occ-included-files))))))))))
 
 (defun add-to-org-agenda-custom-commands (&rest specs)
