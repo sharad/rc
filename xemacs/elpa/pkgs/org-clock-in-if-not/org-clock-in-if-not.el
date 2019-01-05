@@ -24,6 +24,9 @@
 
 ;;; Code:
 
+(provide 'org-clock-in-if-not)
+
+
 ;; org-refile-targets is set in org-misc-utils-lotus package
 ;;;###autoload
 (defun org-clock-in-refile (refile-targets)
@@ -90,6 +93,4 @@
        (let (org-log-note-clock-out)
          (if (org-clock-is-active)
              (org-clock-out))))))
-
-(provide 'org-clock-in-if-not)
 ;;; org-clock-in-if-not.el ends here

@@ -74,14 +74,6 @@
 ;;   (dolist (dir activity-subdirs)
 ;;     (add-to-list 'load-path dir)))
 
-
-
-;;;###autoload
-(autoload 'activity-mail-event-activate "mail-event" "\
-
-
-\(fn)" nil nil)
-
 
 (require '@)
 (require 'activity-base)
@@ -103,7 +95,7 @@
                       @:uninsinuate nil)
 
                      (def@ @@ :reset ()
-                       (@::deactivate-all)
+                       (@:deactivate-all)
                        (setf
                         @:active      nil
                         @:insinuate   nil
@@ -111,16 +103,20 @@
 
                      (def@ @@ :activate (key)
                        (let ((c (assoc key @:insinuate)))
-                         (when c
-                           (progn
-                             (push key @:active)
-                             (funcall (cdr c))))))
+                         (if (member key @:active)
+                             (lwarn 'activity "key %s already active" key)
+                           (when c
+                             (progn
+                               (push key @:active)
+                               (funcall (cdr c)))))))
 
                      (def@ @@ :deactivate (key)
                        (let ((c (assoc key @:uninsinuate)))
-                         (when c
-                           (remove key @:active)
-                           (funcall (cdr c)))))
+                         (if (member key @:active)
+                             (lwarn 'activity "key %s not active" key)
+                           (when c
+                             (remove key @:active)
+                             (funcall (cdr c))))))
 
 
                      (def@ @@ :activate-all ()
@@ -133,12 +129,22 @@
 
                      (def@ @@ :add (key active deactive)
                        (push (cons key active) @:insinuate)
-                       (push (cons key deactive) @:uninsinuate))))
+                       (push (cons key deactive) @:uninsinuate))
 
-;; (funcall (cdr (assoc "mail-event" (@ @activity :insinuate))))
+
+                     (def@ @@ :inspect ()
+                       (message
+                        "active: [%s], insinuate: [%s], uninsinuate: [%s]"
+                        @:active
+                        @:insinuate
+                        @:uninsinuate))))
+
+(defun activity-inspect ()
+  (interactive)
+  (@! @activity :inspect))
 
 ;;;###autoload
-(defun activity-reset (key)
+(defun activity-reset ()
   (interactive)
   (@! @activity :reset))
 
@@ -175,6 +181,11 @@
 (defun activity-register (key active deactive)
   (interactive)
   (@! @activity :add key active deactive))
+
+
+(when nil
+  (activity-inspect)
+  )
 
 
 

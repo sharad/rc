@@ -179,7 +179,7 @@
    #'mail-event-run-action))
 
 ;;;###autoloda
-(defun activity-mail-event-dactivate ()
+(defun activity-mail-event-deactivate ()
   (remove-hook
    'gnus-article-prepare-hook
    #'mail-event-run-action))
