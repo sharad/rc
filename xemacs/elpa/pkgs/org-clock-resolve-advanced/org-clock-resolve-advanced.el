@@ -40,6 +40,10 @@
   (require 'lotus-misc-utils))
 
 
+(defun org-rl-debug (level &rest args)
+  (apply #'lwarn 'org-rl-clock :warning args))
+
+
 (defun org-clock-idle-time-set (mins)
   (interactive
    (list (read-number "org-clock-idle-time: "
@@ -298,6 +302,7 @@
            (org-rl-clock-stop-time prev)
            nil))))
 (defun org-resolve-clock-opt-include-in-prev (prev next timelen-sec)
+  (org-rl-debug :warning "begin %s" org-resolve-clock-opt-include-in-prev)
   ;; include timelen in prev
   ;; update timelength
   (let ((updated-time (time-add
@@ -312,6 +317,8 @@
                     (org-rl-clock-marker prev) updated-time (org-rl-clock-start-time next)))
         (org-rl-clock-clock-in-out next)))))
 (defun org-resolve-clock-opt-include-in-next (prev next timelen-sec)
+  (org-rl-debug :warning "begin %s" org-resolve-clock-opt-include-in-next)
+
   (when (and             ;clock out if prev is open clock and next is specifying idle time.
          (null (org-rl-clock-stop-time prev))
          (org-rl-clock-stop-time next))
@@ -344,6 +351,8 @@
   ;; (if debug-prompt (org-resolve-clock-time-debug-prompt prev next t "include-in-other"))
 
   ;; TODO: check what sustract is doing here
+
+  (org-rl-debug :warning "begin %s" org-resolve-clock-opt-include-in-other)
 
   (if (eq opt 'subtract)    ;is it correct.
       (assert (< timelen 0)))
@@ -445,7 +454,7 @@
       ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 10 5] with default 5
       ;; Warning (org-rl-clock): You have selected opt subtract and timelen 9
       ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 5 5] with default 0
-      (lwarn 'org-rl-clock :warning "going to run %s with default %d" (org-resolve-clock-time-debug-prompt prev next) default)
+      (org-rl-debug :warning "going to run %s with default %d" (org-resolve-clock-time-debug-prompt prev next) default)
       ;; (assert (> default 0))
       (when (> default 0)
         (let* ((options (org-resolve-clock-build-options prev next))
@@ -464,7 +473,7 @@
           ;;                         (float-time (cdr clock))) 45))
           ;; (start-over-p (and subtractp barely-started-p))
           ;; cancel prev and add to time
-          (lwarn 'org-rl-clock :warning "You have selected opt %s and timelen %d" opt timelen)
+          (org-rl-debug :warning "You have selected opt %s and timelen %d" opt timelen)
           (let ((default (org-rl-get-time-gap prev next))) ;get default time again
             (if (> (abs timelen) default)
                 (progn
