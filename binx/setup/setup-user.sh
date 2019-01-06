@@ -661,7 +661,7 @@ function setup_apt_packages()
 
     for pkg in ${deb_pkg_lists[*]}
     do
-        eval echo Intalling pkg list '\$'$pkg='\(' \$$pkg[*] '\)'
+        eval echo Intalling pkg list '\$'$pkg='\(' \${$pkg[*]} '\)'
         if ! eval sudo apt -y install \$$pkg
         then
             for p in $(eval print \$$pkg)
