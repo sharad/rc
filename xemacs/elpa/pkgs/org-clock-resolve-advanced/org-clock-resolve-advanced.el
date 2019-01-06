@@ -393,7 +393,7 @@
         (when other-marker (org-rl-clock-clock-in-out other-clock))))))
 
 
-(defun org-resolve-clock-time-process-option (next prev opt timelen &optional close-p)
+(defun org-resolve-clock-time-process-option (next prev opt timelen maxtimelen &optional close-p)
   (let ((timelensec-time (seconds-to-time (* timelen 60))))
     (cond
      ((eq opt 'jump-prev-p)
@@ -427,7 +427,7 @@
      (t (error "Error"))))
 
   (unless (eq opt 'done)
-    (when (and (zerop default) close-p)
+    (when (and (zerop maxtimelen) close-p)
       (org-clock-out))
     (let ((timegap (org-rl-get-time-gap prev next)))
       (when (> timegap 0)         ;this solved the assert
@@ -479,7 +479,7 @@
                 (progn
                   (message "Error given time %d can not be greater than %d" timelen default)
                   (org-resolve-clock-time prev next force close-p))
-              (org-resolve-clock-time-process-option next prev opt timelen close-p))))))))
+              (org-resolve-clock-time-process-option next prev opt timelen default close-p))))))))
 
 ;;;###autoload
 (defvar org-clock-last-user-idle-seconds nil)
