@@ -105,7 +105,7 @@ function main()
 
     cd ~/
 
-    running setup_apt_packages
+    # running setup_apt_packages
 
     running setup_ecrypt_private
 
@@ -436,7 +436,7 @@ function setup_add_to_version_control()
     fi
 }
 
-function setup_add_to_version_control_recursive_links_container_dirs() # SHARAD
+function setup_add_to_version_control_recursive_links_container_dirs() # NOT REQUIRED
 {
     basepath=$1
     linktopdir=$2
@@ -466,9 +466,9 @@ function setup_add_to_version_control_recursive_links_container_dirs() # SHARAD
         for lnkdir in ${linkdirs[*]}
         do
             # running setup_make_relative_link ${basepath} ${linktopdir}/${lnkdir} ${targetdir}/${lnkdir}
-            git -C ${basepath}/${gitrelbase} rm ${targetdir}/${lnkdir}/*
-            rm -f ${basepath}/${gitrelbase}/${targetdir}/${lnkdir}/*
-            echo '*' > ${basepath}/${gitrelbase}/${targetdir}/${lnkdir}/.gitignore
+            # git -C ${basepath}/${gitrelbase} rm ${targetdir}/${lnkdir}/*
+            # rm -f ${basepath}/${gitrelbase}/${targetdir}/${lnkdir}/*
+            # echo '*' > ${basepath}/${gitrelbase}/${targetdir}/${lnkdir}/.gitignore
             running setup_add_to_version_control ${basepath}/${gitrelbase} ${targetdir}/${lnkdir}/.gitignore
         done
     else
@@ -1831,9 +1831,13 @@ function setup_org_resource_dirs()
 
 
     # TODO: add support for git add
-    running setup_recursive_links ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d resource.d
-    # running setup_add_to_version_control_recursive_links ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d  .. org/resource.d
-    running setup_add_to_version_control_recursive_links_container_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d  .. org/resource.d
+    # running setup_recursive_links ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d resource.d
+    # running setup_recursive_links_container_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d resource.d
+    running setup_recursive_links_container_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d/model.d resource.d/model.d
+    running setup_recursive_links_container_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d/control.d resource.d/control.d
+    running setup_recursive_links_container_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d/view.d resource.d/view.d
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org   deps.d/control.d/machine.d/default/volumes.d/view.d resource.d/view.d
+    running setup_add_to_version_control_recursive_links ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d  .. org/resource.d
 }
 
 function setup_org_home_portable_local_dirs()
@@ -2048,10 +2052,8 @@ function setup_osetup_org_resource_dirs()
 
     # TODO: add support for git add
     running setup_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
-    # running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup dirs.d/org/resource.d
-    running setup_add_to_version_control_recursive_links_container_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup dirs.d/org/resource.d
-
-    # setup_add_to_version_control ~/.fa/osetup dirs.d/org/resource.d
+    # running setup_recursive_links_container_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
+    running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup dirs.d/org/resource.d
 }
 
 function setup_osetup_org_home_dirs()
