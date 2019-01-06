@@ -122,3 +122,6 @@ use xprop
 with C-baqckquote go into command till enter pressed.
 
 * Context job schedular based on Wifi SSID or timerange run task
+**  time, time range, place, wifi ssid and idleness etc based persistent actions
+Here detail could kept in yaml like ansible for advanced users
+and it could learn in daemon mode pattern of action over the time.
