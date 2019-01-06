@@ -120,3 +120,5 @@ starts playing.
 use xprop
 ** stumpwm command mode improvement
 with C-baqckquote go into command till enter pressed.
+
+* Context job schedular based on Wifi SSID or timerange run task
