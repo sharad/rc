@@ -473,7 +473,7 @@
               (org-resolve-clock-time-process-option next prev opt timelen close-p))))))))
 
 ;;;###autoload
-(defvar org-clock-last-user-idle-seconds nil )
+(defvar org-clock-last-user-idle-seconds nil)
 
 (defun org-rl-resolve-clocks-if-idle ()
   "Resolve all currently open Org clocks.

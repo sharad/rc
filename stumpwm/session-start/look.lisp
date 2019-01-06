@@ -23,8 +23,8 @@
  stumpwm:*frame-indicator-text* " Current frame "
  stumpwm:*message-window-gravity* :top-right
  stumpwm:*new-window-preferred-frame* '(:empty :focused)
- stumpwm:*menu-maximum-height* 50
- stumpwm:*menu-scrolling-step* 1
+ stumpwm::*menu-maximum-height* 50
+ stumpwm::*menu-scrolling-step* 1
  stumpwm:*suppress-frame-indicator* nil
  stumpwm:*normal-border-width* 1
  stumpwm:*window-border-style* :thight

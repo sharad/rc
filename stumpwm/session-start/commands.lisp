@@ -11,7 +11,7 @@
 (defun msg-notify (fmt args)
   (let ((*executing-stumpwm-command* nil)
         (*message-window-gravity* :center))
-    (stumpwm:message-no-timeout fmt args)))
+    (stumpwm::message-no-timeout fmt args)))
 
 (stumpwm:defcommand notify (msg) ((:rest "Notify: "))
   (msg-notify "~a" msg))
@@ -22,19 +22,19 @@
 ;; #+pb (fboundp 'stumpwm::run-cli-command)
 
 (stumpwm:defcommand fnext () ()
-  (stumpwm:focus-next-frame (stumpwm:current-group)))
+  (stumpwm::focus-next-frame (stumpwm:current-group)))
 (stumpwm:defcommand fprev () ()
-  (stumpwm:focus-prev-frame (stumpwm:current-group)))
+  (stumpwm::focus-prev-frame (stumpwm:current-group)))
 
 ;; Aquasole
 ;; OSD text
 (stumpwm:defcommand osd-echo () ()
   (let* ((screen (stumpwm:current-screen))
          (w (window-xwin (screen-focus screen))))
-    (stumpwm:echo-in-window w
-                            (stumpwm:screen-font screen)
-                            (stumpwm:screen-fg-color screen)
-                            (stumpwm:screen-bg-color screen)
+    (stumpwm::echo-in-window w
+                            (stumpwm::screen-font screen)
+                            (stumpwm::screen-fg-color screen)
+                            (stumpwm::screen-bg-color screen)
                             "Test de l'osd"))
   (xlib:display-finish-output *display*))
 
