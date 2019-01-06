@@ -406,7 +406,48 @@ function setup_add_to_version_control()
     fi
 }
 
-function setup_add_to_version_control_links_dirs() # SHARAD
+function setup_add_to_version_control_recursive_links_container_dirs() # SHARAD
+{
+    basepath=$1
+    linkdir=$2
+
+    gitrelbase=$3
+    targetdir=$4
+
+    linkbasepath=${basepath}${basepath:+/}${linkdir}
+
+    debug basepath=$basepath
+    debug linkdir=$linkdir
+    debug targetdir=$targetdir
+
+
+
+    if [ -d ${linkbasepath} ]
+    then
+        cd ${linkbasepath}
+        # debug SHARAD TEST
+        # https://unix.stackexchange.com/questions/68577/find-directories-that-do-not-contain-subdirectories
+        local links=( $(find -type d -links 2 | cut -c3- ) )
+        cd - > /dev/null 2>&1
+
+        debug links=${links[*]}
+
+        # TODO? do something here
+        for lnkdir in ${links[*]}
+        do
+            # running setup_make_relative_link ${basepath} ${linkdir}/${lnkdir} ${targetdir}/${lnkdir}
+            git -C ${basepath}/${gitrelbase} rm ${targetdir}/${lnkdir}/*
+            rm -f ${basepath}/${gitrelbase}/${targetdir}/${lnkdir}/*
+            echo '*' > ${basepath}/${gitrelbase}/${targetdir}/${lnkdir}/.gitignore
+            running setup_add_to_version_control ${basepath}/${gitrelbase} ${targetdir}/${lnkdir}/.gitignore
+        done
+    else
+        error dir ${basepath}/${linkdir} not exists
+    fi
+
+}                               # function setup_add_to_version_control_recursive_links_container_dirs()
+
+function setup_add_to_version_control_recursive_links() # SHARAD
 {
     basepath=$1
     linkdir=$2
@@ -441,7 +482,7 @@ function setup_add_to_version_control_links_dirs() # SHARAD
         error dir ${basepath}/${linkdir} not exists
     fi
 
-}                               # function setup_add_to_version_control_links_dirs()
+}                               # function setup_add_to_version_control_recursive_links()
 
 function setup_vc_mkdirpath_ensure()
 {
@@ -1219,8 +1260,11 @@ function setup_dep_control_storage_class_dir()
 
                 debug fullupdirs=$fullupdirs
                 # running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/model.d/${mdirbase}
-                # debug SHARAD running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
+                # debug running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
                 running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
+
+                # SHARAD
+                running setup_add_to_version_control ${LOCALDIRS_DIR} $classcontrol_dir_path/${mdirbase}
 
             done
 
@@ -1556,7 +1600,7 @@ function setup_deps_view_volumes_dirs()
     local volumedir=${hostdir}/volumes.d
     local sysdataname=sysdata
     # TODO?
-    local sysdatascontinername=${dataclassname}/${sysdataname}s.d
+    local sysdatascontinername=${dataclassname}/${sysdataname}s
     # TODO?
     # local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
     local viewdirname=view.d
@@ -1758,7 +1802,8 @@ function setup_org_resource_dirs()
 
     # TODO: add support for git add
     running setup_links_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d resource.d
-    running setup_add_to_version_control_links_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d  .. org/resource.d
+    # running setup_add_to_version_control_recursive_links ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d  .. org/resource.d
+    running setup_add_to_version_control_recursive_links_container_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d  .. org/resource.d
 }
 
 function setup_org_home_portable_local_dirs()
@@ -1973,7 +2018,8 @@ function setup_osetup_org_resource_dirs()
 
     # TODO: add support for git add
     running setup_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
-    running setup_add_to_version_control_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup dirs.d/org/resource.d
+    # running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup dirs.d/org/resource.d
+    running setup_add_to_version_control_recursive_links_container_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup dirs.d/org/resource.d
 
     # setup_add_to_version_control ~/.fa/osetup dirs.d/org/resource.d
 }
@@ -2059,7 +2105,7 @@ function setup_rc_org_dirs()
 
     # TODO: add support for git add
     running setup_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user osetup/dirs.d/org rc/.config/dirs.d/org
-    running setup_add_to_version_control_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user osetup/dirs.d/org rc .config/dirs.d/org
+    running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user osetup/dirs.d/org rc .config/dirs.d/org
 
     running setup_rc_org_home_dirs
 
