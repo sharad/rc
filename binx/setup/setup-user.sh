@@ -1831,11 +1831,8 @@ function setup_org_resource_dirs()
 
 
     # TODO: add support for git add
-    # running setup_recursive_links ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d resource.d
-    # running setup_recursive_links_container_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d resource.d
     running setup_recursive_links_container_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d/model.d resource.d/model.d
     running setup_recursive_links_container_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d/control.d resource.d/control.d
-    running setup_recursive_links_container_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d/view.d resource.d/view.d
     running setup_make_relative_link ${LOCALDIRS_DIR}/org   deps.d/control.d/machine.d/default/volumes.d/view.d resource.d/view.d
     running setup_add_to_version_control_recursive_links ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d  .. org/resource.d
 }
