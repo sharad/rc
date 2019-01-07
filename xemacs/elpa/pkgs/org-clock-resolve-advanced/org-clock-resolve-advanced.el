@@ -38,6 +38,8 @@
 (require 'lotus-misc-utils)
 (eval-when-compile
   (require 'lotus-misc-utils))
+(eval-when-compile
+  (require 'org-clock-utils-lotus))
 
 
 (defun org-rl-debug (level &rest args)
@@ -252,17 +254,17 @@
     (when stop (read-from-minibuffer (format "%s test: " debug)))
     debug))
 
-(defun org-resolve-clock-build-options (prev next)
+(defun org-resolve-clock-build-options (prev next maxtimelen)
   (append
    (when (markerp (org-rl-clock-marker prev))
      (append
       (org-resolve-clock-opts-prev prev)
-      (unless (zerop default) (org-resolve-clock-opts-prev-with-time prev))))
+      (unless (zerop maxtimelen) (org-resolve-clock-opts-prev-with-time prev))))
    (when (markerp (org-rl-clock-marker next))
      (append
       (org-resolve-clock-opts-next next)
-      (unless (zerop default) (org-resolve-clock-opts-next-with-time next))))
-   (unless (zerop default) (org-resolve-clock-opts-common-with-time prev))
+      (unless (zerop maxtimelen) (org-resolve-clock-opts-next-with-time next))))
+   (unless (zerop maxtimelen) (org-resolve-clock-opts-common-with-time prev))
    (org-resolve-clock-opts-common prev)))
 
 (defun org-resolve-clock-read-option (prompt options default)
@@ -274,7 +276,7 @@
 (defun org-resolve-clock-read-timelen (prompt option maxtimelen)
   (progn
     (if (or (zerop maxtimelen)
-            (memq opt
+            (memq option
                   '(done
                     cancel-next-p
                     cancel-prev-p)))
@@ -457,7 +459,7 @@
       (org-rl-debug :warning "going to run %s with default %d" (org-resolve-clock-time-debug-prompt prev next) default)
       ;; (assert (> default 0))
       (when (> default 0)
-        (let* ((options (org-resolve-clock-build-options prev next))
+        (let* ((options (org-resolve-clock-build-options prev next default))
                (opt (org-resolve-clock-read-option
                      (if debug-prompt
                          (format "%s Select option [%d]: " (org-resolve-clock-time-debug-prompt prev next) default)
@@ -582,29 +584,73 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
                #'org-rl-clock-set-correct-idle-timer))
 
 
+
+(defun org-find-open-clocks (file)
+  "Search through the given file and find all open clocks."
+  (let ((buf (or (get-file-buffer file)
+                 (find-file-noselect file)))
+        (org-clock-re (concat org-clock-string " \\(\\[.*?\\]\\)$"))
+        clocks)
+    (with-current-buffer buf
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward org-clock-re nil t)
+          (push (cons (copy-marker (match-end 1) t)
+                      (org-time-string-to-time (match-string 1))) clocks))))
+    clocks))
+
+
+
+
+(defun org-rl-first-clock-started-mins (marker)
+  (let* ((clock-time (org-clock-get-nth-half-clock-time marker 1))
+         (mins-spent
+          (when clock-time
+            (/
+             (float-time
+              (time-subtract
+               (current-time)
+               (cdr (org-clock-get-nth-half-clock-time marker 1))))
+             60))))
+    mins-spent))
+
 (defun test-org-rl-resolve-clocks-if-idle (idle-sec)
   "Resolve all currently open Org clocks.
 This is performed after `org-clock-idle-time' minutes, to check
 if the user really wants to stay clocked in after being idle for
 so long."
-  (when (and
-         org-clock-idle-time
-         (not org-clock-resolving-clocks)
-         org-clock-marker
-         (marker-buffer org-clock-marker))
-    (let* ((org-clock-user-idle-seconds idle-sec)
-           (org-clock-user-idle-start
-            (time-subtract (current-time)
-                           (seconds-to-time org-clock-user-idle-seconds)))
-           (org-clock-resolving-clocks-due-to-idleness t))
-      (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-          (org-resolve-clock-time
-           (make-rl-clock org-clock-marker org-clock-start-time nil)
-           (make-rl-clock 'imaginary 'now org-clock-user-idle-start))
-        (when nil
-          (message "Idle time now sec[%d] min[%d]"
-                   org-clock-user-idle-seconds
-                   (/ org-clock-user-idle-seconds 60)))))))
+  (interactive
+   (let ((mins-spent
+          (or
+           (org-rl-first-clock-started-mins org-clock-marker)
+           0)))
+     (list (* (read-number "Spent mins: " (org-rl-first-clock-started-mins org-clock-marker)) 60))))
+  (let ((mins-spent
+         (or
+          (org-rl-first-clock-started-mins org-clock-marker)
+          0)))
+    (if (> mins-spent 1)
+        (if (< 1 (/ idle-sec 60) (1- mins-spent))
+            (when (and
+                   org-clock-idle-time
+                   (not org-clock-resolving-clocks)
+                   org-clock-marker
+                   (marker-buffer org-clock-marker))
+              (let* ((org-clock-user-idle-seconds idle-sec)
+                     (org-clock-user-idle-start
+                      (time-subtract (current-time)
+                                     (seconds-to-time org-clock-user-idle-seconds)))
+                     (org-clock-resolving-clocks-due-to-idleness t))
+                (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
+                    (org-resolve-clock-time
+                     (make-rl-clock org-clock-marker org-clock-start-time nil)
+                     (make-rl-clock 'imaginary 'now org-clock-user-idle-start))
+                  (when nil
+                    (message "Idle time now sec[%d] min[%d]"
+                             org-clock-user-idle-seconds
+                             (/ org-clock-user-idle-seconds 60))))))
+          (org-rl-debug :warning "Selected min[ = %d ] is more than mins-spent[ = %d ]" (/ idle-sec 60) mins-spent)
+          (org-rl-debug :warning "Not one min is spent with clock mins-spent = %d" mins-spent)))))
 
 (when nil                               ;testing
   (let ((currtime (current-time)))

@@ -22,6 +22,9 @@
 
 ;;; Code:
 
+(provide 'org-clock-utils-lotus)
+
+
 ;; (require 'org-clock-check)
 ;; (require 'org-clock-hooks)
 ;; (require 'org-clock-experimental)
@@ -51,6 +54,32 @@
          (beginning-of-line)
          (let (buffer-read-only)
            ,@forms)))))
+
+
+(defun org-clock-get-nth-half-clock-time (marker n)
+  (let ((org-clock-re
+         (concat org-clock-string " \\(\\[.*?\\]\\)$")))
+    (org-with-narrow-to-marker marker
+      (goto-char (point-min))
+      (when (re-search-forward org-clock-re nil t n)
+        (cons (copy-marker (match-end 1) t)
+              (org-time-string-to-time (match-string 1)))))))
+
+
+(defun org-clock-get-nth-clock-times (marker n)
+  (let ((org-clock-re
+         (concat "^[ \t]*" org-clock-string
+                 " \\[\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}"
+                 " *\\sw+.? +[012][0-9]:[0-5][0-9]\\)\\][ \t]*$")))
+    (org-with-narrow-to-marker marker
+      (goto-char (point-min))
+      (when (re-search-forward org-clock-re nil t n)
+        (list (copy-marker (match-end 1) t)
+              (org-time-string-to-time (match-string 1))
+              (org-time-string-to-time (match-string 2)))))))
+
+;; (org-clock-get-nth-clock-times org-clock-marker 1)
+
 
 (progn
   (eval-when-compile
@@ -175,6 +204,4 @@ he has to read scheme, guixsd details, than see similar module and try to implem
 
 ;;; FOR WORKING FAST START CREATING TEMPLATE OR EMPTY FUNCTION BODY.
 
-
-(provide 'org-clock-utils-lotus)
 ;;; org-clock-utils-lotus.el ends here

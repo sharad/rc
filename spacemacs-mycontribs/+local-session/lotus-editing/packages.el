@@ -48,6 +48,7 @@
     corral
     (autorevert :location local)
     (simple :location local)
+    parinfer
     )
   "The list of Lisp packages required by the lotus-editing layer.
 
@@ -280,6 +281,36 @@ Each entry is either:
     (progn
       (progn
         (setq kill-whole-line t)))))
+
+(defun lotus-editing/post-init-parinfer ()
+  (use-package parinfer
+    :defer t
+    :config
+    (progn
+
+      (progn
+        (when nil
+          (put 'self-insert-command 'delete-selection 'delete-selection-uses-region-p)
+
+          (put 'insert-char 'delete-selection t)
+          (put 'quoted-insert 'delete-selection t)
+
+          (put 'yank 'delete-selection 'yank)
+          (put 'clipboard-yank 'delete-selection 'yank)
+          (put 'insert-register 'delete-selection t)
+          ;; delete-backward-char and delete-forward-char already delete the selection by
+          ;; default, but not delete-char.
+          (put 'delete-char 'delete-selection 'supersede)
+
+          (put 'reindent-then-newline-and-indent 'delete-selection t)
+          (put 'newline-and-indent 'delete-selection t)
+          (put 'newline 'delete-selection t)
+          (put 'electric-newline-and-maybe-indent 'delete-selection t)
+          (put 'open-line 'delete-selection t)))
+
+      (progn
+        ;; (get 'parinfer-yank 'delete-selection)
+        (put 'parinfer-yank 'delete-selection 'yank)))))
 
 (defun lotus-editing/init-PACKAGE ()
   (use-package PACKAGE

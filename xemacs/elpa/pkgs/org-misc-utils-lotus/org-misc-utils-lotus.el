@@ -24,8 +24,6 @@
 
 ;;; Code:
 
-(provide 'org-misc-utils-lotus)
-
 ;; ORG here is issue of naming heading vs headline
 
 (eval-when-compile
@@ -52,12 +50,13 @@
        (with-current-buffer buff
          (let (buffer-read-only)
            ,@body)))))
+(put 'org-with-clock-writeable 'lisp-indent-function 0)
 
 (defmacro org-clock-lotus-with-current-clock (&rest body)
   `(when (marker-buffer org-clock-marker)
      (org-with-clock (cons org-clock-marker org-clock-start-time)
        ,@body)))
-(put 'org-clock-lotus-with-current-clock 'lisp-indent-function 1)
+(put 'org-clock-lotus-with-current-clock 'lisp-indent-function 0)
 
 (defmacro org-with-heading (heading &rest body)
   `(progn
@@ -196,11 +195,13 @@ With prefix arg C-u, copy region instad of killing it."
              (progn
                ,@body))))
        (error "marker is nil")))
+(put 'org-with-narrow-to-marker 'lisp-indent-function 1)
 
 (defmacro org-with-narrow-to-heading-subtree (heading create &rest body)
   `(let ((marker (org-find-heading-marker ,heading ,create)))
      (when marker
        (org-with-narrow-to-marker marker ,@body))))
+(put 'org-with-narrow-to-heading-subtree 'lisp-indent-function 2)
 
 (defmacro org-with-narrow-to-file-heading-subtree (file heading create &rest body)
   `(let ((marker
@@ -208,7 +209,7 @@ With prefix arg C-u, copy region instad of killing it."
             (org-find-heading-marker ,heading ,create))))
      (when marker
        (org-with-narrow-to-marker marker ,@body))))
-
+(put 'org-with-narrow-to-file-heading-subtree 'lisp-indent-function 3)
 
 (defmacro org-with-cloned-buffer (buff clone &rest body)
   `(with-current-buffer ,buff
@@ -597,7 +598,7 @@ With prefix arg C-u, copy region instad of killing it."
        (save-excursion
          (goto-char ,pos)
          ,@body))))
-(put 'org-with-refile 'lisp-indent-function 1)
+(put 'org-with-refile 'lisp-indent-function 3)
 
 (defmacro org-file-loc-with-refile (file pos refile-targets &rest body)
   "Refile run body with file and loc set."
@@ -608,7 +609,7 @@ With prefix arg C-u, copy region instad of killing it."
           (,pos (nth 3 target)))
      (lotus-with-file-pos ,file ,pos
                           ,@body)))
-(put 'org-file-loc-with-refile 'lisp-indent-function 1)
+(put 'org-file-loc-with-refile 'lisp-indent-function 3)
 
 ;; (defmacro org-timed-file-loc-with-refile (file pos timeout refile-targets &rest body)
 (defmacro org-with-file-loc-timed-refile (file pos timeout refile-targets &rest body)
@@ -622,7 +623,7 @@ With prefix arg C-u, copy region instad of killing it."
      (assert ,pos)
      (lotus-with-file-pos ,file ,pos
                           ,@body)))
-(put 'org-with-file-loc-timed-refile 'lisp-indent-function 1)
+(put 'org-with-file-loc-timed-refile 'lisp-indent-function 4)
 
 ;; (defmacro org-miniwin-file-loc-with-refile (win file pos refile-targets &rest body)
 (defmacro org-with-file-loc-refile-new-win (file pos refile-targets newwin &rest body)
@@ -631,7 +632,7 @@ With prefix arg C-u, copy region instad of killing it."
        (lotus-with-file-pos-new-win
            ,file ,pos ,newwin
            ,@body)))
-(put 'org-miniwin-file-loc-with-refile 'lisp-indent-function 1)
+(put 'org-miniwin-file-loc-with-refile 'lisp-indent-function 4)
 
 ;; (defmacro org-timed-miniwin-file-loc-with-refile (win file pos timeout refile-targets &rest body)
 (defmacro org-with-file-loc-timed-refile-new-win (file pos timeout refile-targets newwin &rest body)
@@ -644,7 +645,7 @@ With prefix arg C-u, copy region instad of killing it."
        (lotus-with-file-pos-new-win
            ,file ,pos ,newwin
            ,@body)))
-(put 'org-with-file-loc-timed-refile-new-win 'lisp-indent-function 1)
+(put 'org-with-file-loc-timed-refile-new-win 'lisp-indent-function 5)
 
 ;; (defmacro org-timed-miniwin-file-loc-with-refile (win file pos timeout refile-targets &rest body)
 (defmacro org-with-file-loc-timed-refile-timed-new-win (file pos
@@ -657,7 +658,7 @@ With prefix arg C-u, copy region instad of killing it."
     ,file ,pos ,timeout-refile ,refile-targets
     (lotus-with-file-pos-timed-new-win
      ,file ,pos ,timeout-newwin ,timer-newwin ,cleanupfn-newwin ,cleanupfn-local ,newwin ,@body)))
-(put 'org-with-file-loc-timed-refile-timed-new-win 'lisp-indent-function 1)
+(put 'org-with-file-loc-timed-refile-timed-new-win 'lisp-indent-function 9)
 
 ;; e.g.
 ;; (org-miniwin-file-loc-with-refile nil nil)
@@ -882,4 +883,5 @@ With prefix arg C-u, copy region instad of killing it."
             (show-entry))                 ; display invisible text
           (run-hooks 'org-agenda-after-show-hook))))))
 
+(provide 'org-misc-utils-lotus)
 ;;; org-misc-utils-lotus.el ends here
