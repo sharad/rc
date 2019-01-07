@@ -290,6 +290,7 @@ Each entry is either:
 
       (progn
         (when nil
+          ;; from delsel.el
           (put 'self-insert-command 'delete-selection 'delete-selection-uses-region-p)
 
           (put 'insert-char 'delete-selection t)
