@@ -105,7 +105,7 @@ function main()
 
     cd ~/
 
-    running setup_apt_packages
+    # running setup_apt_packages
 
     running setup_ecrypt_private
 
@@ -142,7 +142,7 @@ function main()
 
     running setup_ldapsearch
 
-    running setup-_password
+    running setup_password
 
     running setup_crontab
 
@@ -155,6 +155,8 @@ function main()
     running setup_bpkg_installler
 
     running setup_bpkg_pkgs
+
+    running set_window_share
 
     rm -rf $TMPDIR
 }
@@ -890,6 +892,11 @@ function setup_config_dirs()
 function setup_user_config_setup()
 {
     RCHOME="$HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc/.config/_home/"
+
+    setup_copy_link ~/.setup/.config/_home/.dirs.d ~/.dirs.d
+    setup_copy_link ~/.setup/.config/_home/.fa     ~/.fa
+
+
     if [ -d "${RCHOME}" ]
     then
 	      if mkdir -p ~/_old_dot_filedirs
@@ -1045,7 +1052,7 @@ function setup_gnomekeyring()
     echo secret-tool store --label offlineimap server '$IMAP_SERVER' user '$DOMAIN\$USER' protocol imap
 }
 
-function setup-_password()
+function setup_password()
 {
     echo ~/.ldappass /etc/postfix/sasl_passwd etc
 }
@@ -1150,23 +1157,23 @@ function setup_machine_dir()
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
 
-    setup_copy_link ~/.setup/.config/_home/.dirs.d ~/.dirs.d
-    setup_copy_link ~/.setup/.config/_home/.fa     ~/.fa
+    # setup_copy_link ~/.setup/.config/_home/.dirs.d ~/.dirs.d
+    # setup_copy_link ~/.setup/.config/_home/.fa     ~/.fa
 
     # ~/.osetup ~/.localdirs going to be removed.
     # can not use ~/.fa as it is for interactive usage and management.
-    for l in ${OSETUP_DIR}/dirs.d/model.d/*/*
-    do
-        if [ -L "$l" ]
-        then
-            r="$(dirname $l)/$(readlink $l)"
-            if [ ! -L "$r" -a ! -d "$r" ]
-            then
-                running rm -f "$r"
-                running mkdir -p "$r"
-            fi
-        fi
-    done
+    # for l in ${OSETUP_DIR}/dirs.d/model.d/*/*
+    # do
+    #     if [ -L "$l" ]
+    #     then
+    #         r="$(dirname $l)/$(readlink $l)"
+    #         if [ ! -L "$r" -a ! -d "$r" ]
+    #         then
+    #             running rm -f "$r"
+    #             running mkdir -p "$r"
+    #         fi
+    #     fi
+    # done
 
     if [ -d ${LOCALDIRS_DIR} ]
     then
@@ -2049,7 +2056,6 @@ function setup_osetup_org_resource_dirs()
 
     # TODO: add support for git add
     running setup_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
-    # running setup_recursive_links_container_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
     running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup dirs.d/org/resource.d
 }
 
@@ -2075,7 +2081,7 @@ function setup_osetup_org_misc_dirs()
     for folder_link in offlineimap mailattachments
     do
         running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/misc.d/${folder_link} osetup/dirs.d/org/misc.d/${folder_link}
-        setup_add_to_version_control ~/.fa/osetup dirs.d/org/misc.d/${folder_link}
+        running setup_add_to_version_control ~/.fa/osetup dirs.d/org/misc.d/${folder_link}
     done
 }
 
@@ -2088,7 +2094,7 @@ function setup_osetup_org_rc_dirs()
     for folder_link in HOME localdirs opt osetup repos setup
     do
         running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/rc.d/${folder_link} osetup/dirs.d/org/rc.d/${folder_link}
-        setup_add_to_version_control ~/.fa/osetup dirs.d/org/rc.d/${folder_link}
+        running setup_add_to_version_control ~/.fa/osetup dirs.d/org/rc.d/${folder_link}
     done
 }
 
@@ -2143,8 +2149,8 @@ function setup_rc_org_dirs()
 
 function setup_dirs()
 {
-    running setup_machine_dir
 
+    running setup_machine_dir
 
     if true
     then
@@ -2328,7 +2334,7 @@ function process_arg()
     warn=1
     error=1
 
-    if ! set -- $(getopt -n $pgm -o rnsehvw -- $@)
+    if ! set -- $(getopt -n $pgm -o "rnsehvw" -- $@)
     then
         verbose Wrong command line.
     fi
@@ -2422,7 +2428,7 @@ function logger()
 }
 
 pgm=$(basename $0)
-
+verbose=1
 main
 
 exit
