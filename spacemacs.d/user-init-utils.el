@@ -834,6 +834,11 @@ variable."
     ;;                (:foreground "#FFFFFF")))
     (set-face-attribute 'org-block nil :inherit 'src-block)
     )
+
+  (with-eval-after-load 'psgml
+    (message "psgml loaded, now loading sgml-mode.el library")
+    (load-library "sgml-mode"))
+
   (message "loading lotus-necessary-functionality finished"))
 
 
