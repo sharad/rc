@@ -1160,21 +1160,6 @@ function setup_machine_dir()
     # setup_copy_link ~/.setup/.config/_home/.dirs.d ~/.dirs.d
     # setup_copy_link ~/.setup/.config/_home/.fa     ~/.fa
 
-    # ~/.osetup ~/.localdirs going to be removed.
-    # can not use ~/.fa as it is for interactive usage and management.
-    # for l in ${OSETUP_DIR}/dirs.d/model.d/*/*
-    # do
-    #     if [ -L "$l" ]
-    #     then
-    #         r="$(dirname $l)/$(readlink $l)"
-    #         if [ ! -L "$r" -a ! -d "$r" ]
-    #         then
-    #             running rm -f "$r"
-    #             running mkdir -p "$r"
-    #         fi
-    #     fi
-    # done
-
     if [ -d ${LOCALDIRS_DIR} ]
     then
         mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
@@ -2427,8 +2412,11 @@ function logger()
     command logger -p local1.notice -t ${pgm} -i - $USER : "$*"
 }
 
+
+
+#verbose=1
+
 pgm=$(basename $0)
-verbose=1
 main
 
 exit
