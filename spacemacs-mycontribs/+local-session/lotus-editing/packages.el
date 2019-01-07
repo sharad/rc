@@ -310,7 +310,11 @@ Each entry is either:
 
       (progn
         ;; (get 'parinfer-yank 'delete-selection)
-        (put 'parinfer-yank 'delete-selection 'yank)))))
+        ;; (get 'parinfer-smart-yank:yank 'delete-selection)
+        (put 'parinfer-yank 'delete-selection 'yank)
+        (put 'parinfer-smart-yank:yank 'delete-selection 'yank)))))
+
+
 
 (defun lotus-editing/init-PACKAGE ()
   (use-package PACKAGE
