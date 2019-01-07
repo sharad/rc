@@ -1868,7 +1868,7 @@ function setup_org_home_portable_public_dirs()
     done
 
     # for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
-    for folder in Documents Downloads Library Music Pictures Templates tmp Videos
+    for folder in Documents Downloads Library Music Pictures Templates tmp Videos Sink
     do
         running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} ${folder}/Public/Publish/html
 
@@ -1946,7 +1946,7 @@ EOF
     # for lnk in org/home.d/portable.d org/home.d/portable.d/Documents org/home.d/portable.d/Private org/home.d/portable.d/Library org/home.d/portable.d/public_html org/home.d/portable.d/Scratches org/home.d/portable.d/Maildir org/home.d/portable.d/Volumes
     for lnk in org/home.d/portable.d/Documents org/home.d/portable.d/Private org/home.d/portable.d/Library org/home.d/portable.d/public_html org/home.d/portable.d/Scratches org/home.d/portable.d/Maildir org/home.d/portable.d/Volumes
     do
-        setup_add_to_version_control ~/.fa/localdirs $lnk
+        running setup_add_to_version_control ~/.fa/localdirs $lnk
     done
 
     running setup_org_home_portable_public_dirs
@@ -1971,7 +1971,7 @@ function setup_org_misc_dirs()
     # links
     for lnk in org/misc.d/offlineimap org/misc.d/mailattachments
     do
-        setup_add_to_version_control ~/.fa/localdirs $lnk
+        running setup_add_to_version_control ~/.fa/localdirs $lnk
     done
 
 } # function setup_org_misc_dirs()
@@ -1998,7 +1998,7 @@ function setup_org_rc_dirs()
 
     for lnk in org/rc.d/repos org/rc.d/opt org/rc.d/localdirs org/rc.d/osetup org/rc.d/setup org/rc.d/HOME
     do
-        setup_add_to_version_control ~/.fa/localdirs $lnk
+        running setup_add_to_version_control ~/.fa/localdirs $lnk
     done
 } # function setup_org_rc_dirs()
 
@@ -2025,9 +2025,9 @@ function setup_manual_dirs()
     running setup_make_relative_link ${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default/volumes.d/control.d manual.d/control
     running setup_make_relative_link ${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default/volumes.d/view.d    manual.d/view
 
-    setup_add_to_version_control ${LOCALDIRS_DIR} manual.d/model
-    setup_add_to_version_control ${LOCALDIRS_DIR} manual.d/control
-    setup_add_to_version_control ${LOCALDIRS_DIR} manual.d/view
+    running setup_add_to_version_control ${LOCALDIRS_DIR} manual.d/model
+    running setup_add_to_version_control ${LOCALDIRS_DIR} manual.d/control
+    running setup_add_to_version_control ${LOCALDIRS_DIR} manual.d/view
 
 }
 
@@ -2053,7 +2053,7 @@ function setup_osetup_org_home_dirs()
     for folder_link in Desktop Documents Downloads Library Maildir Music Pictures Private Public public_html Scratches Sink Templates tmp Videos Volumes
     do
         running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/home.d/portable.d/${folder_link} osetup/dirs.d/org/home.d/${folder_link}
-        # setup_add_to_version_control ~/.fa/osetup dirs.d/org/home.d/${folder_link}
+        # running setup_add_to_version_control ~/.fa/osetup dirs.d/org/home.d/${folder_link}
     done
 }
 
@@ -2112,9 +2112,9 @@ function setup_rc_org_home_dirs()
     local rcorghomedir_rel_path=.config/dirs.d/org/home.d
 
     running setup_make_relative_link ${public_path}/${rcdir_rel_path} _bin ${rcorghomedir_rel_path}/bin
-    setup_add_to_version_control ${rcdirpath} ${rcorghomedir_rel_path}/bin
+    running setup_add_to_version_control ${rcdirpath} ${rcorghomedir_rel_path}/bin
     running setup_make_relative_link ${public_path} system/system/config/bin user/rc/${rcorghomedir_rel_path}/sbin
-    setup_add_to_version_control ${rcdirpath} ${rcorghomedir_rel_path}/sbin
+    running setup_add_to_version_control ${rcdirpath} ${rcorghomedir_rel_path}/sbin
 }
 
 function setup_rc_org_dirs()
@@ -2129,7 +2129,7 @@ function setup_rc_org_dirs()
 
     running setup_rc_org_home_dirs
 
-    setup_add_to_version_control ~/.fa/rc .config/dirs.d/org
+    running setup_add_to_version_control ~/.fa/rc .config/dirs.d/org
 }
 
 function setup_dirs()
