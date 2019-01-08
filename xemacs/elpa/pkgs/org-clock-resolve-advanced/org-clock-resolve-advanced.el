@@ -304,7 +304,7 @@
            (org-rl-clock-stop-time prev)
            nil))))
 (defun org-resolve-clock-opt-include-in-prev (prev next timelen-sec)
-  (org-rl-debug :warning "begin %s" org-resolve-clock-opt-include-in-prev)
+  (org-rl-debug :warning "begin %s" 'org-resolve-clock-opt-include-in-prev)
   ;; include timelen in prev
   ;; update timelength
   (let ((updated-time (time-add
@@ -319,7 +319,7 @@
                     (org-rl-clock-marker prev) updated-time (org-rl-clock-start-time next)))
         (org-rl-clock-clock-in-out next)))))
 (defun org-resolve-clock-opt-include-in-next (prev next timelen-sec)
-  (org-rl-debug :warning "begin %s" org-resolve-clock-opt-include-in-next)
+  (org-rl-debug :warning "begin %s" 'org-resolve-clock-opt-include-in-next)
 
   (when (and             ;clock out if prev is open clock and next is specifying idle time.
          (null (org-rl-clock-stop-time prev))
@@ -354,7 +354,7 @@
 
   ;; TODO: check what sustract is doing here
 
-  (org-rl-debug :warning "begin %s" org-resolve-clock-opt-include-in-other)
+  (org-rl-debug :warning "begin %s" 'org-resolve-clock-opt-include-in-other)
 
   (if (eq opt 'subtract)    ;is it correct.
       (assert (< timelen 0)))
