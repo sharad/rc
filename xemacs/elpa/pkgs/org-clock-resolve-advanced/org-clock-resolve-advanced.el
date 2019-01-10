@@ -81,7 +81,7 @@
 (defun org-resolve-clock-opts-common-with-time (clock)
   (let ((heading (org-get-heading-from-clock clock)))
     (list
-     (cons "Include in other" 'include-in-next)
+     (cons "Include in other" 'include-in-other)
      (cons
       (format "subtract from prev %s" heading)
       'subtract))))
