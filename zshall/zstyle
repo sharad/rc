@@ -184,7 +184,11 @@ local _myhosts;                 # beautiful
 if [ ! -e ~/.var/cache/zsh/etc_hosts ] ||
    [[ /etc/hosts -nt ~/.var/cache/zsh/etc_hosts ]]
 then
-   echo ${=${(f)"$(sed -n '1,/###ADVERTISEMENT/p' /etc/hosts | head -300 (|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} > ~/.var/cache/zsh/etc_hosts
+    mkdir -p ~/.var/cache
+    if [ -d ~/.var/cache ]
+    then
+        echo ${=${(f)"$(sed -n '1,/###ADVERTISEMENT/p' /etc/hosts | head -300 (|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} > ~/.var/cache/zsh/etc_hosts
+    fi
 fi
 
 
