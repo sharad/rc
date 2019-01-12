@@ -43,7 +43,11 @@
 
 
 (defun org-rl-debug (level &rest args)
-  (apply #'lwarn 'org-rl-clock :warning args))
+  (apply #'lwarn 'org-rl-clock :warning args)
+  (message
+   (concat
+    (format "org-rl-clock %s: " :warning)
+    (apply #'format args))))
 
 
 (defun org-clock-idle-time-set (mins)
@@ -303,13 +307,13 @@
            nil
            (org-rl-clock-stop-time prev)
            nil))))
-(defun org-resolve-clock-opt-include-in-prev (prev next timelen-sec)
+(defun org-resolve-clock-opt-include-in-prev (prev next timelen)
   (org-rl-debug :warning "begin %s" 'org-resolve-clock-opt-include-in-prev)
   ;; include timelen in prev
   ;; update timelength
   (let ((updated-time (time-add
-                       (org-rl-clock-start-time prev) timelen-sec)))
-    (if (> timelen 0)
+                       (org-rl-clock-start-time prev) timelen)))
+    (if (> (float-time timelen) 0)
         (progn
           (org-rl-clock-stop-time-set prev updated-time)
           (org-rl-clock-clock-out prev))
@@ -318,7 +322,7 @@
         (setq next (list
                     (org-rl-clock-marker prev) updated-time (org-rl-clock-start-time next)))
         (org-rl-clock-clock-in-out next)))))
-(defun org-resolve-clock-opt-include-in-next (prev next timelen-sec)
+(defun org-resolve-clock-opt-include-in-next (prev next timelen)
   (org-rl-debug :warning "begin %s" 'org-resolve-clock-opt-include-in-next)
 
   (when (and             ;clock out if prev is open clock and next is specifying idle time.
@@ -330,15 +334,15 @@
                     (org-rl-clock-stop-time next))))
   ;; include timelen in next
   ;; update timelength
-  (if (> timelen 0)
+  (if (> (float-time timelen) 0)
       (let ((updated-start-time (time-add
-                                 (org-rl-clock-start-time next) timelen-sec)))
+                                 (org-rl-clock-start-time next) timelen)))
         (org-rl-clock-start-time-set next updated-start-time)
         (when (org-rl-clock-marker next)
           (org-rl-clock-clock-in next))) ;? imple
 
     (let ((updated-stop-time (time-add
-                              (org-rl-clock-start-time prev) timelen-sec)))
+                              (org-rl-clock-start-time prev) timelen)))
       (setq prev (list
                   (org-rl-clock-marker next)
                   (org-rl-clock-start-time prev)
@@ -346,7 +350,7 @@
       ;; make prev is clocked out
       (when (org-rl-clock-marker prev)
         (org-rl-clock-clock-in-out prev)))))
-(defun org-resolve-clock-opt-include-in-other (prev next timelen-sec opt)
+(defun org-resolve-clock-opt-include-in-other (prev next timelen opt)
   ;; select other clock
   ;; include timelen in other
   ;; update timelength
@@ -356,18 +360,18 @@
 
   (org-rl-debug :warning "begin %s" 'org-resolve-clock-opt-include-in-other)
 
-  (if (eq opt 'subtract)    ;is it correct.
-      (assert (< timelen 0)))
+  (if (eq opt 'subtract)    ;is it correct ?
+      (assert (< (float-time timelen) 0)))
 
   (let ((other-marker
          (if (eq opt 'include-in-other)
              (org-rl-select-other-clock)
            nil)))
 
-    (if (> timelen 0)
+    (if (> (float-time timelen) 0)
         (let* ((other-start-time (time-subtract
                                   (org-rl-clock-start-time next)
-                                  timelensec-time))
+                                  timelen))
                (other-clock
                 (make-rl-clock other-marker other-start-time (org-rl-clock-start-time next))))
 
@@ -381,7 +385,7 @@
 
       ;; should 'substract always should not get negative time.
       (let* ((other-stop-time
-              (time-subtract (org-rl-clock-stop-time prev) timelensec-time))
+              (time-subtract (org-rl-clock-stop-time prev) timelen))
              (other-clock
               (make-rl-clock other-marker (org-rl-clock-start-time next) other-stop-time)))
 
@@ -396,7 +400,7 @@
 
 
 (defun org-resolve-clock-time-process-option (next prev opt timelen maxtimelen &optional close-p)
-  (let ((timelensec-time (seconds-to-time (* timelen 60))))
+  (let ((timelen (seconds-to-time (* timelen 60))))
     (cond
      ((eq opt 'jump-prev-p)
       ;; finish here
@@ -416,14 +420,14 @@
      ((eq opt 'include-in-prev)
       ;; include timelen in prev
       ;; update timelength
-      (org-resolve-clock-opt-include-in-prev prev next timelensec-time))
+      (org-resolve-clock-opt-include-in-prev prev next timelen))
      ;; set org-clock-leftover-time here
      ((eq opt 'include-in-next)
-      (org-resolve-clock-opt-include-in-next prev next timelensec-time))
+      (org-resolve-clock-opt-include-in-next prev next timelen))
 
      ((memq opt '(include-in-other
                   subtract)) ;; subtract timelen from timelength
-      (org-resolve-clock-opt-include-in-other prev next timelensec-time opt))
+      (org-resolve-clock-opt-include-in-other prev next timelen opt))
 
      ((eq opt 'done))
      (t (error "Error"))))
@@ -621,19 +625,21 @@ This is performed after `org-clock-idle-time' minutes, to check
 if the user really wants to stay clocked in after being idle for
 so long."
   (interactive
-   (let ((marker org-clock-marker)
+   (let* ((marker org-clock-marker)
+          (mins-spent
+           (or
+            (org-rl-first-clock-started-mins marker)
+            0)))
+     (list (*
+            (read-number
+             (format "clock[ %s ] Spent mins: " (org-get-heading-from-clock (list marker)))
+             (org-rl-first-clock-started-mins marker))
+            60))))
+  (let* ((marker org-clock-marker)
          (mins-spent
           (or
            (org-rl-first-clock-started-mins marker)
            0)))
-     (list (* (read-number
-               (format "clock[ %s ]Spent mins: " (org-get-heading-from-clock marker))
-               (org-rl-first-clock-started-mins marker)) 60))))
-  (let ((marker org-clock-marker)
-        (mins-spent
-         (or
-          (org-rl-first-clock-started-mins marker)
-          0)))
     (if (> mins-spent 1)
         (if (< 1 (/ idle-sec 60) (1- mins-spent))
             (when (and
@@ -650,26 +656,12 @@ so long."
                     (org-resolve-clock-time
                      (make-rl-clock marker org-clock-start-time nil)
                      (make-rl-clock 'imaginary 'now org-clock-user-idle-start))
-                  (when nil
-                    (message "Idle time now sec[%d] min[%d]"
-                             org-clock-user-idle-seconds
-                             (/ org-clock-user-idle-seconds 60))))))
+                  (when t
+                        (message "Idle time now min[%d] sec[%d]"
+                                 (/ org-clock-user-idle-seconds 60)
+                                 (% org-clock-user-idle-seconds 60)
+                                 )))))
           (org-rl-debug :warning "Selected min[ = %d ] is more than mins-spent[ = %d ]" (/ idle-sec 60) mins-spent))
       (org-rl-debug :warning "Not one min is spent with clock mins-spent = %d" mins-spent))))
-
-(when nil                               ;testing
-  (let ((currtime (current-time)))
-    (org-resolve-clock-time
-     (list
-      org-clock-marker
-      org-clock-start-time
-      nil)
-     (list
-      'imaginary
-      'now
-      (time-subtract currtime (seconds-to-time (* 8 60)))))))
-
-(when nil
-  (test-org-rl-resolve-clocks-if-idle 310))
 
 ;;; org-clock-utils-lotus.el ends here

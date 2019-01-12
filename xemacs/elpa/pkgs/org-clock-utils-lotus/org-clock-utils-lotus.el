@@ -39,11 +39,9 @@
 (eval-when-compile
   (require 'org-misc-utils-lotus))
 (require 'org-misc-utils-lotus)
+(require 'org-clock-utils-lotus)
 
-
-
-
-
+
 (defmacro org-with-clock-position (clock &rest forms)
   "Evaluate FORMS with CLOCK as the current active clock."
   `(with-current-buffer (marker-buffer (car ,clock))
@@ -54,7 +52,6 @@
          (beginning-of-line)
          (let (buffer-read-only)
            ,@forms)))))
-
 
 (defun org-clock-get-nth-half-clock-time (marker n)
   (let ((org-clock-re
