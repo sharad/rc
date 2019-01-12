@@ -318,48 +318,54 @@ Each entry is either:
 
 (defun lotus-dev/post-init-semantic ()
   (use-package semantic
-      :defer t
-      :config
+    :defer t
+    :config
+    (progn
       (progn
-       (progn
-         (setq semantic-symref-tool "global"))
+        (setq
+         semantic-symref-tool "global"
+         ;;https://emacs.stackexchange.com/questions/5886/setting-minimum-time-between-consecutive-reparses-by-semantic
+         ;;https://emacs.stackexchange.com/a/5896
+         semantic-idle-scheduler-idle-time 10 ;1 is too less
 
-       (progn
-         (use-package cedet
-             :defer t
-             :config
-             (progn
-               ;; if you want to enable support for gnu global
-               (if (and
-                    (fboundp 'cedet-gnu-global-version-check)
-                    (cedet-gnu-global-version-check t))
-                   (progn
-                     (semanticdb-enable-gnu-global-databases 'c-mode)
-                     (semanticdb-enable-gnu-global-databases 'c++-mode))
-                   (message "function cedet-gnu-global-version-check is not available, not doing semanticdb-enable-gnu-global-databases"))
+         ))
 
-               ;; enable ctags for some languages:
-               ;;  Unix Shell, Perl, Pascal, Tcl, Fortran, Asm
-               (when (and
-                      (fboundp 'cedet-ectag-version-check)
-                      (cedet-ectag-version-check t))
-                 (semantic-load-enable-primary-exuberent-ctags-support)))))
+      (progn
+        (use-package cedet
+          :defer t
+          :config
+          (progn
+            ;; if you want to enable support for gnu global
+            (if (and
+                 (fboundp 'cedet-gnu-global-version-check)
+                 (cedet-gnu-global-version-check t))
+                (progn
+                  (semanticdb-enable-gnu-global-databases 'c-mode)
+                  (semanticdb-enable-gnu-global-databases 'c++-mode))
+              (message "function cedet-gnu-global-version-check is not available, not doing semanticdb-enable-gnu-global-databases"))
 
-       (progn
-         ;; http://www.emacswiki.org/emacs/eassist.el
-         ;; http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
-         ;; (semantic-add-system-include "~/exp/include/boost_1_37" 'c++-mode)
+            ;; enable ctags for some languages:
+            ;;  Unix Shell, Perl, Pascal, Tcl, Fortran, Asm
+            (when (and
+                   (fboundp 'cedet-ectag-version-check)
+                   (cedet-ectag-version-check t))
+              (semantic-load-enable-primary-exuberent-ctags-support)))))
 
-         (use-package imenu
-             :defer t
-             :config
-             (progn
-               (progn
-                 ;; (defun semantic-init-add-tags ()
-                 ;;   (imenu-add-to-menubar "TAGS"))
-                 (add-hook 'semantic-init-hooks
-                           '(lambda ()
-                             (imenu-add-to-menubar "TAGS"))))))))))
+      (progn
+        ;; http://www.emacswiki.org/emacs/eassist.el
+        ;; http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+        ;; (semantic-add-system-include "~/exp/include/boost_1_37" 'c++-mode)
+
+        (use-package imenu
+          :defer t
+          :config
+          (progn
+            (progn
+              ;; (defun semantic-init-add-tags ()
+              ;;   (imenu-add-to-menubar "TAGS"))
+              (add-hook 'semantic-init-hooks
+                        '(lambda ()
+                           (imenu-add-to-menubar "TAGS"))))))))))
 
 (defun lotus-dev/init-semantic/find ()
   (use-package semantic/find

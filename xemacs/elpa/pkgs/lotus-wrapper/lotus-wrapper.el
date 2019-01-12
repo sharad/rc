@@ -28,6 +28,12 @@
 
 (defvar replace-file-truename-link-cycle-counter 201)
 
+(defvar file-truename-cache-enable t)
+
+(defvar file-truename-cache nil)
+
+(defvar file-truename-cache-dependency-list nil)
+
 (defun replace-file-truename (filename &optional counter prev-dirs)
   "Return the truename of FILENAME.
 If FILENAME is not absolute, first expands it against `default-directory'.
@@ -41,101 +47,129 @@ containing it, until no links are left at any level.
   ;; more links to chase before getting an error.
   ;; PREV-DIRS can be a cons cell whose car is an alist
   ;; of truenames we've just recently computed.
-  (cond ((or (string= filename "") (string= filename "~"))
-	 (setq filename (expand-file-name filename))
-	 (if (string= filename "")
-	     (setq filename "/")))
-	((and (string= (substring filename 0 1) "~")
-	      (string-match "~[^/]*/?" filename))
-	 (let ((first-part
-		(substring filename 0 (match-end 0)))
-	       (rest (substring filename (match-end 0))))
-	   (setq filename (concat (expand-file-name first-part) rest)))))
+  (let* ((original-filename filename)
+         (found-filename (and
+                          file-truename-cache-enable
+                          (cdr (assoc original-filename file-truename-cache)))))
 
-  (or counter (setq counter (list replace-file-truename-link-cycle-counter)))
-  (let (done
-	;; For speed, remove the ange-ftp completion handler from the list.
-	;; We know it's not needed here.
-	;; For even more speed, do this only on the outermost call.
-	(file-name-handler-alist
-	 (if prev-dirs file-name-handler-alist
-	   (let ((tem (copy-sequence file-name-handler-alist)))
-	     (delq (rassq 'ange-ftp-completion-hook-function tem) tem)))))
-    (or prev-dirs (setq prev-dirs (list nil)))
+    ;; (when file-truename-cache-enable
+    ;;   (message "filename %s by cache: %s"
+    ;;            original-filename
+    ;;            (cdr (assoc original-filename file-truename-cache))))
 
-    ;; andrewi@harlequin.co.uk - on Windows, there is an issue with
-    ;; case differences being ignored by the OS, and short "8.3 DOS"
-    ;; name aliases existing for all files.  (The short names are not
-    ;; reported by directory-files, but can be used to refer to files.)
-    ;; It seems appropriate for file-truename to resolve these issues in
-    ;; the most natural way, which on Windows is to call the function
-    ;; `w32-long-file-name' - this returns the exact name of a file as
-    ;; it is stored on disk (expanding short name aliases with the full
-    ;; name in the process).
-    (if (eq system-type 'windows-nt)
-	(unless (string-match "[[*?]" filename)
-	  ;; If filename exists, use its long name.  If it doesn't
-	  ;; exist, the recursion below on the directory of filename
-	  ;; will drill down until we find a directory that exists,
-	  ;; and use the long name of that, with the extra
-	  ;; non-existent path components concatenated.
-	  (let ((longname (w32-long-file-name filename)))
-	    (if longname
-		(setq filename longname)))))
+    (if found-filename
+        found-filename
+      (progn
+        (cond ((or (string= filename "") (string= filename "~"))
+               (setq filename (expand-file-name filename))
+               (if (string= filename "")
+                   (setq filename "/")))
+              ((and (string= (substring filename 0 1) "~")
+                    (string-match "~[^/]*/?" filename))
+               (let ((first-part
+                      (substring filename 0 (match-end 0)))
+                     (rest (substring filename (match-end 0))))
+                 (setq filename (concat (expand-file-name first-part) rest)))))
 
-    ;; If this file directly leads to a link, process that iteratively
-    ;; so that we don't use lots of stack.
-    (while (not done)
-      (setcar counter (1- (car counter)))
-      (if (< (car counter) 0)
-	  (error "Apparent cycle of symbolic links for %s" filename))
-      (let ((handler (find-file-name-handler filename 'file-truename)))
-	;; For file name that has a special handler, call handler.
-	;; This is so that ange-ftp can save time by doing a no-op.
-	(if handler
-	    (setq filename (funcall handler 'file-truename filename)
-		  done t)
-	  (let ((dir (or (file-name-directory filename) default-directory))
-		target dirfile)
-	    ;; Get the truename of the directory.
-	    (setq dirfile (directory-file-name dir))
-	    ;; If these are equal, we have the (or a) root directory.
-	    (or (string= dir dirfile)
-		(and (memq system-type '(windows-nt ms-dos cygwin nacl))
-		     (eq (compare-strings dir 0 nil dirfile 0 nil t) t))
-		;; If this is the same dir we last got the truename for,
-		;; save time--don't recalculate.
-		(if (assoc dir (car prev-dirs))
-		    (setq dir (cdr (assoc dir (car prev-dirs))))
-		  (let ((old dir)
-            (new (file-name-as-directory (file-truename dirfile counter prev-dirs))))
-		    (setcar prev-dirs (cons (cons old new) (car prev-dirs)))
-		    (setq dir new))))
-	    (if (equal ".." (file-name-nondirectory filename))
-		(setq filename
-		      (directory-file-name (file-name-directory (directory-file-name dir)))
-		      done t)
-	      (if (equal "." (file-name-nondirectory filename))
-		  (setq filename (directory-file-name dir)
-			done t)
-		;; Put it back on the file name.
-		(setq filename (concat dir (file-name-nondirectory filename)))
-		;; Is the file name the name of a link?
-		(setq target (file-symlink-p filename))
-		(if target
-		    ;; Yes => chase that link, then start all over
-		    ;; since the link may point to a directory name that uses links.
-		    ;; We can't safely use expand-file-name here
-		    ;; since target might look like foo/../bar where foo
-		    ;; is itself a link.  Instead, we handle . and .. above.
-		    (setq filename
-			  (if (file-name-absolute-p target)
-			      target
-			    (concat dir target))
-			  done nil)
-		  ;; No, we are done!
-		  (setq done t))))))))
-    filename))
+        (or counter (setq counter (list replace-file-truename-link-cycle-counter)))
+        (let (done
+              ;; For speed, remove the ange-ftp completion handler from the list.
+              ;; We know it's not needed here.
+              ;; For even more speed, do this only on the outermost call.
+              (file-name-handler-alist
+               (if prev-dirs file-name-handler-alist
+                 (let ((tem (copy-sequence file-name-handler-alist)))
+                   (delq (rassq 'ange-ftp-completion-hook-function tem) tem)))))
+          (or prev-dirs (setq prev-dirs (list nil)))
+
+          ;; andrewi@harlequin.co.uk - on Windows, there is an issue with
+          ;; case differences being ignored by the OS, and short "8.3 DOS"
+          ;; name aliases existing for all files.  (The short names are not
+          ;; reported by directory-files, but can be used to refer to files.)
+          ;; It seems appropriate for file-truename to resolve these issues in
+          ;; the most natural way, which on Windows is to call the function
+          ;; `w32-long-file-name' - this returns the exact name of a file as
+          ;; it is stored on disk (expanding short name aliases with the full
+          ;; name in the process).
+          (if (eq system-type 'windows-nt)
+              (unless (string-match "[[*?]" filename)
+                ;; If filename exists, use its long name.  If it doesn't
+                ;; exist, the recursion below on the directory of filename
+                ;; will drill down until we find a directory that exists,
+                ;; and use the long name of that, with the extra
+                ;; non-existent path components concatenated.
+                (let ((longname (w32-long-file-name filename)))
+                  (if longname
+                      (setq filename longname)))))
+
+          ;; If this file directly leads to a link, process that iteratively
+          ;; so that we don't use lots of stack.
+          (while (not done)
+            (setcar counter (1- (car counter)))
+            (if (< (car counter) 0)
+                (error "Apparent cycle of symbolic links for %s" filename))
+            (let ((handler (find-file-name-handler filename 'file-truename)))
+              ;; For file name that has a special handler, call handler.
+              ;; This is so that ange-ftp can save time by doing a no-op.
+              (if handler
+                  (setq filename (funcall handler 'file-truename filename)
+                        done t)
+                (let ((dir (or (file-name-directory filename) default-directory))
+                      target dirfile)
+                  ;; Get the truename of the directory.
+                  (setq dirfile (directory-file-name dir))
+                  ;; If these are equal, we have the (or a) root directory.
+                  (or (string= dir dirfile)
+                      (and (memq system-type '(windows-nt ms-dos cygwin nacl))
+                           (eq (compare-strings dir 0 nil dirfile 0 nil t) t))
+                      ;; If this is the same dir we last got the truename for,
+                      ;; save time--don't recalculate.
+                      (if (assoc dir (car prev-dirs))
+                          (setq dir (cdr (assoc dir (car prev-dirs))))
+                        (let ((old dir)
+                              (new (file-name-as-directory (file-truename dirfile counter prev-dirs))))
+                          (setcar prev-dirs (cons (cons old new) (car prev-dirs)))
+                          (setq dir new))))
+                  (if (equal ".." (file-name-nondirectory filename))
+                      (setq filename
+                            (directory-file-name (file-name-directory (directory-file-name dir)))
+                            done t)
+                    (if (equal "." (file-name-nondirectory filename))
+                        (setq filename (directory-file-name dir)
+                              done t)
+                      ;; Put it back on the file name.
+                      (setq filename (concat dir (file-name-nondirectory filename)))
+                      ;; Is the file name the name of a link?
+                      (setq target (file-symlink-p filename))
+                      (if target
+                          ;; Yes => chase that link, then start all over
+                          ;; since the link may point to a directory name that uses links.
+                          ;; We can't safely use expand-file-name here
+                          ;; since target might look like foo/../bar where foo
+                          ;; is itself a link.  Instead, we handle . and .. above.
+                          (setq filename
+                                (if (file-name-absolute-p target)
+                                    target
+                                  (concat dir target))
+                                done nil)
+                        ;; No, we are done!
+                        (setq done t))))))))
+
+          (when file-truename-cache-enable
+
+            (dolist (dirpair (car prev-dirs))
+              (let ((dir (car dirpair)))
+                (if (assoc dir file-truename-cache-dependency-list)
+                    (unless (member
+                             original-filename
+                             (cdr (assoc dir file-truename-cache-dependency-list)))
+                      (push original-filename (cdr (assoc dir file-truename-cache-dependency-list))))
+                  (push (list dir original-filename) file-truename-cache-dependency-list))))
+
+            (if (assoc original-filename file-truename-cache)
+                (setcdr (assoc original-filename file-truename-cache) filename)
+              (push (cons original-filename filename) file-truename-cache)))
+          filename)))))
 
 ;;;###autoload
 (defun lotus-wrapper-insinuate ()
@@ -155,3 +189,42 @@ containing it, until no links are left at any level.
 ;; (file-truename "~/.mailbox")
 
 ;;; lotus-wrapper.el ends here
+
+
+
+
+
+(when nil
+  (setq file-truename-cache-enable nil)
+  (setq file-truename-cache-enable t)
+  (replace-file-truename "~/.mailbox")
+  (replace-file-truename "/home/s/hell/.fa/rc")
+
+
+  (setq file-truename-cache-enable nil)
+  (setq file-truename-cache nil)
+  (setq file-truename-cache-dependency-list nil)
+
+  (car (car file-truename-cache-dependency-list)))
+
+;; (replace-file-truename "~/.mailbox")
+
+;; (replace-file-truename "/home/s/hell/.fa/rc")
+
+;; (replace-file-truename
+;;  "/home/s/hell/.setup"
+;;  (181)
+;;  (
+;;   (
+;;    ("/home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/" . "/home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/")
+;;    ("/home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/" . "/home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/")
+;;    ("/home/s/hell/.repos/git/main/resource/userorg/main/readwrite/" . "/home/s/hell/.repos/git/main/resource/userorg/main/readwrite/")
+;;    ("/home/s/hell/.repos/git/main/resource/userorg/main/" . "/home/s/hell/.repos/git/main/resource/userorg/main/")
+;;    ("/home/s/hell/.repos/git/main/resource/userorg/" . "/home/s/hell/.repos/git/main/resource/userorg/")
+;;    ("/home/s/hell/.repos/git/main/resource/" . "/home/s/hell/.repos/git/main/resource/")
+;;    ("/home/s/hell/.repos/git/main/" . "/home/s/hell/.repos/git/main/")
+;;    ("/home/s/hell/.repos/git/" . "/home/s/hell/.repos/git/")
+;;    ("/home/s/hell/.repos/" . "/home/s/hell/.repos/")
+;;    ("/home/s/hell/" . "/home/s/hell/")
+;;    ("/home/s/" . "/home/s/")
+;;    ("/home/" . "/home/"))))
