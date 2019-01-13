@@ -173,11 +173,17 @@
   )
 
 (defun org-rl-clock-clock-in-out (clock &optional resume fail-quietly)
+  (org-rl-debug "org-rl-clock-clock-in-out: clock[%s] resume[%s]"
+                (org-get-heading-from-clock clock)
+                resume)
   (when (not org-clock-clocking-in)
     (org-clock-clock-in clock resume)
     (org-clock-clock-out clock fail-quietly)))
 
 (defun org-rl-clock-clock-in (clock &optional resume)
+  (org-rl-debug "org-rl-clock-clock-in: clock[%s] resume[%s]"
+                (org-get-heading-from-clock clock)
+                resume)
   (when (not org-clock-clocking-in)
     (if (org-rl-clock-marker clock)
         (if (org-rl-clock-start-time clock)
@@ -187,10 +193,13 @@
               (org-rl-clock-start-time clock))
              resume
              (org-rl-clock-start-time clock))
-            (error "%s start time is null" (org-rl-clock-start-time clock)))
-        (error "%s clock is null" (org-rl-clock-marker clock)))))
+          (error "%s start time is null" (org-rl-clock-start-time clock)))
+      (error "%s clock is null" (org-rl-clock-marker clock)))))
 
 (defun org-rl-clock-clock-out (clock &optional fail-quietly)
+  (org-rl-debug "org-rl-clock-clock-out: clock[%s] fail-quietly[%s]"
+                (org-get-heading-from-clock clock)
+                fail-quietly)
   (when (not org-clock-clocking-in)
     (if (org-rl-clock-marker clock)
         (if (org-rl-clock-stop-time clock)
@@ -200,20 +209,25 @@
               (org-rl-clock-start-time clock))
              fail-quietly
              (org-rl-clock-stop-time clock))
-            (error "%s stop time is null" (org-rl-clock-stop-time clock)))
-        (error "%s clock is null" (org-rl-clock-marker clock)))))
+          (error "%s stop time is null" (org-rl-clock-stop-time clock)))
+      (error "%s clock is null" (org-rl-clock-marker clock)))))
 
 (defun org-rl-clock-clock-cancel (clock &optional fail-quietly)
+  (org-rl-debug "org-rl-clock-clock-cancel: clock[%s] fail-quietly[%s]"
+                (org-get-heading-from-clock clock)
+                fail-quietly)
   (if (org-rl-clock-marker clock)
       (if (org-rl-clock-start-time clock)
           (org-clock-clock-cancel
            (cons
             (org-rl-clock-marker clock)
             (org-rl-clock-start-time clock)))
-          (error "%s start time is null" (org-rl-clock-start-time clock)))
-      (error "%s clock is null" (org-rl-clock-marker clock))))
+        (error "%s start time is null" (org-rl-clock-start-time clock)))
+    (error "%s clock is null" (org-rl-clock-marker clock))))
 
 (defun org-rl-clock-clock-jump-to (clock)
+  (org-rl-debug "org-rl-clock-clock-cancel: clock[%s]"
+                (org-get-heading-from-clock clock))
   (if (org-rl-clock-marker clock)
       (org-clock-jump-to-current-clock
        (cons
@@ -223,11 +237,12 @@
 
 (defun org-rl-select-other-clock (&optional target)
   (interactive)
+  (org-rl-debug "org-rl-select-other-clock: target[%s]" target)
   (org-with-refile
       file loc (or target org-refile-targets)
-      (let ((marker (make-marker)))
-        (set-marker marker loc)
-        marker)))
+    (let ((marker (make-marker)))
+      (set-marker marker loc)
+      marker)))
 
 (defun org-rl-get-time-gap (prev next)
   (/
@@ -259,6 +274,10 @@
     debug))
 
 (defun org-resolve-clock-build-options (prev next maxtimelen)
+  (org-rl-debug "org-resolve-clock-build-options: prev[%s] next[%s] maxtimelen[%d] secs"
+                (org-get-heading-from-clock prev)
+                (org-get-heading-from-clock next)
+                maxtimelen)
   (append
    (when (markerp (org-rl-clock-marker prev))
      (append
