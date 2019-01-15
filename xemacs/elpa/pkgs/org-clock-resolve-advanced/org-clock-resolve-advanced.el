@@ -73,7 +73,18 @@
   (if (markerp (car clock))
       (lotus-with-marker (car clock)
         (org-get-heading t))
-      "imaginary"))
+    "imaginary"))
+
+(defun org-rl-format-clock (clock)
+  (let ((fmt (cdr org-time-stamp-formats)))
+    (let ((heading
+           (if (markerp (car clock))
+               (lotus-with-marker (car clock)
+                 (org-get-heading t))
+             "imaginary"))
+          (start (format-time-string fmt (org-rl-clock-start-time clock)))
+          (stop  (format-time-string fmt (org-rl-clock-stop-time clock))))
+      (format "<%s> %s-%s" heading start stop))))
 
 (setq
  org-resolve-clock-opts-common
@@ -173,16 +184,42 @@
   )
 
 (defun org-rl-clock-clock-in-out (clock &optional resume fail-quietly)
-  (org-rl-debug "org-rl-clock-clock-in-out: clock[%s] resume[%s]"
-                (org-get-heading-from-clock clock)
-                resume)
-  (when (not org-clock-clocking-in)
-    (org-clock-clock-in clock resume)
-    (org-clock-clock-out clock fail-quietly)))
+  (org-rl-debug :warning "org-rl-clock-clock-in-out: clock[%s] resume[%s] org-clock-clocking-in[%s]"
+                (org-rl-format-clock clock)
+                resume
+                org-clock-clocking-in)
+  (if (not org-clock-clocking-in)
+      (progn
+        (org-rl-debug :warning "org-rl-clock-clock-in-out in")
+        (org-clock-clock-in clock resume)
+        (org-rl-debug :warning "org-rl-clock-clock-in-out out")
+        (org-clock-clock-out clock fail-quietly)
+        (org-rl-debug :warning "org-rl-clock-clock-in-out out done"))
+    (error "Clock org-clock-clocking-in is %s" org-clock-clocking-in)))
+
+
+;; Warning (org-rl-clock): going to run prev[<STARTED Unnamed task 615> <2019-01-15 Tue 21:59>-<2019-01-15 Tue 22:15> 16 0] next[<imaginary> <2019-01-15 Tue 22:15>-<2019-01-15 Tue 22:05> 32 22] with default 10
+;; Warning (org-rl-clock): org-resolve-clock-build-options: prev[<STARTED Unnamed task 615> <2019-01-15 Tue 21:59>-<2019-01-15 Tue 22:15>] next[<imaginary> <2019-01-15 Tue 22:15>-<2019-01-15 Tue 22:05>] maxtimelen[10] secs
+;; Warning (org-rl-clock): You have selected opt include-in-other and timelen 10
+;; Warning (org-rl-clock): begin org-resolve-clock-opt-include-in-other
+;; Warning (org-rl-clock): org-rl-select-other-clock: target[nil]
+;; Warning (org-rl-clock): org-rl-clock-clock-in-out: clock[<STARTED Office related work> <2019-01-15 Tue 22:05>-<2019-01-15 Tue 22:15>] resume[nil] org-clock-clocking-in[nil]
+;; Warning (org-rl-clock): org-rl-clock-clock-in-out in
+;; Warning (org-rl-clock): going to run prev[<STARTED Unnamed task 615> <2019-01-15 Tue 21:17>-<2019-01-15 Tue 22:15> 35 0] next[<imaginary> <2019-01-15 Tue 22:15>-<2019-01-15 Tue 21:17> 32 35] with default 58
+;; Warning (org-rl-clock): org-resolve-clock-build-options: prev[<STARTED Unnamed task 615> <2019-01-15 Tue 21:17>-<2019-01-15 Tue 22:15>] next[<imaginary> <2019-01-15 Tue 22:15>-<2019-01-15 Tue 21:17>] maxtimelen[58] secs
+;; Warning (org-rl-clock): You have selected opt done and timelen 59
+;; Warning (org-rl-clock): going to run prev[<STARTED Unnamed task 614> <2019-01-15 Tue 20:07>-<2019-01-15 Tue 22:16> 26 0] next[<imaginary> <2019-01-15 Tue 22:16>-<2019-01-15 Tue 20:07> 33 26] with default 129
+;; Warning (org-rl-clock): org-resolve-clock-build-options: prev[<STARTED Unnamed task 614> <2019-01-15 Tue 20:07>-<2019-01-15 Tue 22:16>] next[<imaginary> <2019-01-15 Tue 22:16>-<2019-01-15 Tue 20:07>] maxtimelen[129] secs
+;; Warning (org-rl-clock): You have selected opt done and timelen 129
+;; Warning (org-rl-clock): going to run prev[<STARTED Unnamed task 614> <2019-01-15 Tue 21:59>-<2019-01-15 Tue 22:16> 16 0] next[<imaginary> <2019-01-15 Tue 22:16>-<2019-01-15 Tue 21:59> 33 16] with default 17
+;; Warning (org-rl-clock): org-resolve-clock-build-options: prev[<STARTED Unnamed task 614> <2019-01-15 Tue 21:59>-<2019-01-15 Tue 22:16>] next[<imaginary> <2019-01-15 Tue 22:16>-<2019-01-15 Tue 21:59>] maxtimelen[17] secs
+;; Warning (org-rl-clock): You have selected opt done and timelen 17
+;; Warning (org-rl-clock): org-rl-clock-clock-in-out out
+
 
 (defun org-rl-clock-clock-in (clock &optional resume)
-  (org-rl-debug "org-rl-clock-clock-in: clock[%s] resume[%s]"
-                (org-get-heading-from-clock clock)
+  (org-rl-debug :warning "org-rl-clock-clock-in: clock[%s] resume[%s]"
+                (org-rl-format-clock clock)
                 resume)
   (when (not org-clock-clocking-in)
     (if (org-rl-clock-marker clock)
@@ -197,8 +234,8 @@
       (error "%s clock is null" (org-rl-clock-marker clock)))))
 
 (defun org-rl-clock-clock-out (clock &optional fail-quietly)
-  (org-rl-debug "org-rl-clock-clock-out: clock[%s] fail-quietly[%s]"
-                (org-get-heading-from-clock clock)
+  (org-rl-debug :warning "org-rl-clock-clock-out: clock[%s] fail-quietly[%s]"
+                (org-rl-format-clock clock)
                 fail-quietly)
   (when (not org-clock-clocking-in)
     (if (org-rl-clock-marker clock)
@@ -213,8 +250,8 @@
       (error "%s clock is null" (org-rl-clock-marker clock)))))
 
 (defun org-rl-clock-clock-cancel (clock &optional fail-quietly)
-  (org-rl-debug "org-rl-clock-clock-cancel: clock[%s] fail-quietly[%s]"
-                (org-get-heading-from-clock clock)
+  (org-rl-debug :warning "org-rl-clock-clock-cancel: clock[%s] fail-quietly[%s]"
+                (org-rl-format-clock clock)
                 fail-quietly)
   (if (org-rl-clock-marker clock)
       (if (org-rl-clock-start-time clock)
@@ -226,8 +263,8 @@
     (error "%s clock is null" (org-rl-clock-marker clock))))
 
 (defun org-rl-clock-clock-jump-to (clock)
-  (org-rl-debug "org-rl-clock-clock-cancel: clock[%s]"
-                (org-get-heading-from-clock clock))
+  (org-rl-debug :warning "org-rl-clock-clock-cancel: clock[%s]"
+                (org-rl-format-clock clock))
   (if (org-rl-clock-marker clock)
       (org-clock-jump-to-current-clock
        (cons
@@ -237,7 +274,7 @@
 
 (defun org-rl-select-other-clock (&optional target)
   (interactive)
-  (org-rl-debug "org-rl-select-other-clock: target[%s]" target)
+  (org-rl-debug :warning "org-rl-select-other-clock: target[%s]" target)
   (org-with-refile
       file loc (or target org-refile-targets)
     (let ((marker (make-marker)))
@@ -273,10 +310,27 @@
     (when stop (read-from-minibuffer (format "%s test: " debug)))
     debug))
 
+
+(defun org-resolve-clock-time-adv-debug-prompt (prev next &optional prompt stop)
+  (let* ( ;;(base 120) ;; TODO: why it was 120 ?
+         (base 61)
+         (_debug (format "prev[%s %d %d] next[%s %d %d]"
+                         ;; (org-rl-clock-marker prev)
+                         (org-rl-format-clock prev)
+                         (if (org-rl-clock-start-time prev) (% (/ (floor (float-time (org-rl-clock-start-time prev))) 60) base) 0)
+                         (if (org-rl-clock-stop-time prev)  (% (/ (floor (float-time (org-rl-clock-stop-time prev))) 60) base) 0)
+                         ;; (org-rl-clock-marker next)
+                         (org-rl-format-clock next)
+                         (if (org-rl-clock-start-time next) (% (/ (floor (float-time (org-rl-clock-start-time next))) 60) base) 0)
+                         (if (org-rl-clock-stop-time next)  (% (/ (floor (float-time (org-rl-clock-stop-time next))) 60) base) 0)))
+         (debug (if prompt (concat prompt " " _debug) _debug)))
+    (when stop (read-from-minibuffer (format "%s test: " debug)))
+    debug))
+
 (defun org-resolve-clock-build-options (prev next maxtimelen)
-  (org-rl-debug "org-resolve-clock-build-options: prev[%s] next[%s] maxtimelen[%d] secs"
-                (org-get-heading-from-clock prev)
-                (org-get-heading-from-clock next)
+  (org-rl-debug :warning "org-resolve-clock-build-options: prev[%s] next[%s] maxtimelen[%d] secs"
+                (org-rl-format-clock prev)
+                (org-rl-format-clock next)
                 maxtimelen)
   (append
    (when (markerp (org-rl-clock-marker prev))
@@ -479,7 +533,7 @@
       ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 10 5] with default 5
       ;; Warning (org-rl-clock): You have selected opt subtract and timelen 9
       ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 5 5] with default 0
-      (org-rl-debug :warning "going to run %s with default %d" (org-resolve-clock-time-debug-prompt prev next) default)
+      (org-rl-debug :warning "going to run %s with default %d" (org-resolve-clock-time-adv-debug-prompt prev next) default)
       ;; (assert (> default 0))
       (when (> default 0)
         (let* ((options (org-resolve-clock-build-options prev next default))
@@ -644,7 +698,10 @@ This is performed after `org-clock-idle-time' minutes, to check
 if the user really wants to stay clocked in after being idle for
 so long."
   (interactive
-   (let* ((marker org-clock-marker)
+   (let* ((marker
+           (if current-prefix-arg
+               (point-marker)
+             org-clock-marker))
           (mins-spent
            (or
             (org-rl-first-clock-started-mins marker)
@@ -654,19 +711,22 @@ so long."
              (format "clock[ %s ] Spent mins: " (org-get-heading-from-clock (list marker)))
              (org-rl-first-clock-started-mins marker))
             60))))
-  (let* ((marker org-clock-marker)
+  (let* ((marker
+          (if current-prefix-arg
+              (point-marker)
+            org-clock-marker))
          (mins-spent
           (or
            (org-rl-first-clock-started-mins marker)
            0)))
     (if (> mins-spent 1)
-        (if (< 1 (/ idle-sec 60) (1- mins-spent))
+        (if (< 1 (/ (abs idle-sec) 60) (1- mins-spent))
             (when (and
                    org-clock-idle-time
                    (not org-clock-resolving-clocks)
                    marker
                    (marker-buffer marker))
-              (let* ((org-clock-user-idle-seconds idle-sec)
+              (let* ((org-clock-user-idle-seconds (abs idle-sec))
                      (org-clock-user-idle-start
                       (time-subtract (current-time)
                                      (seconds-to-time org-clock-user-idle-seconds)))
@@ -676,10 +736,10 @@ so long."
                      (make-rl-clock marker org-clock-start-time nil)
                      (make-rl-clock 'imaginary 'now org-clock-user-idle-start))
                   (when t
-                        (message "Idle time now min[%d] sec[%d]"
-                                 (/ org-clock-user-idle-seconds 60)
-                                 (% org-clock-user-idle-seconds 60)
-                                 )))))
+                    (message "Idle time now min[%d] sec[%d]"
+                             (/ org-clock-user-idle-seconds 60)
+                             (% org-clock-user-idle-seconds 60)
+                             )))))
           (org-rl-debug :warning "Selected min[ = %d ] is more than mins-spent[ = %d ]" (/ idle-sec 60) mins-spent))
       (org-rl-debug :warning "Not one min is spent with clock mins-spent = %d" mins-spent))))
 
