@@ -31,6 +31,9 @@
 (require 'emacs-panel)
 
 
+(defvar session-unified-utils-select-frame-fn #'select-frame-set-input-focus "session-unified-utils-select-frame-fn")
+
+
 ;; Not required
 (defun sessions-unified-put-alist (key value alist)
   "Set cdr of an element (KEY . ...) in ALIST to VALUE and return ALIST.
@@ -521,7 +524,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
   (defun frame-session-set-this-location (nframe &optional not-ask)
     (interactive
      (list (selected-frame)))
-    (if nframe (select-frame nframe) (error "nframe is nil"))
+    (if nframe (funcall session-unified-utils-select-frame-fn nframe) (error "nframe is nil"))
     (message "in frame-session-set-this-location")
     (let* ((xwin-enabled (custom-display-graphic-p))
            (wm-hints
@@ -564,7 +567,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
          (null *desktop-vc-read-inprogress*))
         (progn
           (message "pass in frame-session-restore")
-          (if nframe (select-frame nframe) (error "nframe is nil"))
+          (if nframe (funcall session-unified-utils-select-frame-fn nframe) (error "nframe is nil"))
           (fmsession-restore (frame-session-set-this-location nframe not-ask))
           ;; nframe)
 
@@ -596,7 +599,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
     (interactive
      (list (selected-frame)))
     (progn
-      (select-frame nframe)
+      (funcall session-unified-utils-select-frame-fn nframe)
       (fmsession-restore (fmsession-read-location) nframe)))
 
   (defun frame-session-save (nframe)
