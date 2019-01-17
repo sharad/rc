@@ -57,7 +57,7 @@
               ,@(mapcar '(lambda (s)
                            (read (desktop-value-to-string s))) l)))))))
 
-  (testing
+  (when nil ;; (testing
    ;; (desktop-make-create-buffer-list (current-buffer))
    (let ((desktop-buffer-ok-count 0)
          (desktop-buffer-fail-count 0)
