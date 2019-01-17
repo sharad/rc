@@ -206,7 +206,7 @@
           ;; which will finally fix the problem
           ;; (error "Clock start time is gone") from org-clock-out function
           (org-clock-clock-out (cons
-                                (org-rl-clock-marker clock)
+                                (org-clock-get-nth-half-clock-beginning (org-rl-clock-marker clock))
                                 (org-rl-clock-start-time clock))
                                fail-quietly
                                (org-rl-clock-stop-time clock))
@@ -243,7 +243,7 @@
           (if (org-rl-clock-start-time clock)
               (org-clock-clock-in
                (cons
-                (org-rl-clock-marker clock)
+                (org-clock-get-nth-half-clock-beginning (org-rl-clock-marker clock))
                 (org-rl-clock-start-time clock))
                resume
                (org-rl-clock-start-time clock))
@@ -704,7 +704,7 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
              (float-time
               (time-subtract
                (current-time)
-               (cdr (org-clock-get-nth-half-clock-time marker 1))))
+               (org-clock-get-nth-half-clock-time marker 1)))
              60))))
     mins-spent))
 
@@ -732,7 +732,7 @@ so long."
           (if current-prefix-arg
               (point-marker)
             org-clock-marker))
-         (start-time (cdr (org-clock-get-nth-half-clock-time marker 1)))
+         (start-time (org-clock-get-nth-half-clock-time marker 1))
          (mins-spent
           (or
            (org-rl-first-clock-started-mins marker)

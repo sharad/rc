@@ -1,8 +1,9 @@
-;;; occ-util-common.el --- occ-api               -*- lexical-binding: t; -*-
-;; Copyright (C) 2016  sharad
+;;; sessions-unified-test.el --- Sessions Unified Unit Tests  -*- lexical-binding: t; -*-
 
-;; Author: sharad <sh4r4d _at_ _G-mail_>
-;; Keywords: convenience
+;; Copyright (C) 2019  Sharad
+
+;; Author: Sharad <sh4r4d@gmail.com>
+;; Keywords: convenience, abbrev
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -23,30 +24,21 @@
 
 ;;; Code:
 
-
-
-
-
-(provide 'occ-util-common)
-
-
-(cl-defmethod ignore-p ((buff buffer))
-  nil)
 
 
+(require 'ert)
+(require 'ert-x)
 
-(defmacro run-unobtrusively (&rest body)
-  `(while-no-input
-    (redisplay)
-    ,@body))
+(ert-deftest ert-sessions-unified-test-frame-param-spec-id ()
+  "Test"
+  :expected-result :failed
+  :tags '(sessions-unified)
+  (should
+   (let ((frame-spec-id (frame-parameter (selected-frame) 'frame-spec-id)))
+     (and
+      frame-spec-id
+      (stringp frame-spec-id)))))
 
 
-(defmacro run-unobtrusively (&rest body)
-  `(let ((retval (while-no-input
-                   (redisplay)
-                   ,@body)))
-     (when (eq retval t)
-       (message "user input %s retval %s" last-input-event retval))
-     retval))
-
-;;; occ-util-common.el ends here
+(provide 'sessions-unified-test)
+;;; sessions-unified-test.el ends here

@@ -135,31 +135,13 @@
                         (file-truename f2))))
         ;; TODO workaround do complete nil, later change it to optimized.
         ;; TODO update existing occ-collection.tree or occ-collection.list
-        (occ-reset-global-tsk-collection))))
+        (occ-reset-global-tsk-collection)))))
 
 
 
 
 
 
-  (when nil                             ;while-no-input
-   (defun time-consuming ()
-            (cl-loop for i below (* 1000 1000 1) sum i)
-
-       (defun test-no-input ()
-         (let ((retval
-                 (while-no-input
-                  (redisplay)
-                  (message "started")
-                  (prog1
-                      (time-consuming)
-                    (message "stopped")))))
-           (message "last-input-event %s retval %s" last-input-event retval)))
-
-       (progn
-         (run-with-idle-timer 3 nil #'test-no-input)
-         (run-with-idle-timer 6 nil #'test-no-input)
-         (run-with-idle-timer 18 nil #'test-no-input)))))
 
 
 ;;; occ-main.el ends here

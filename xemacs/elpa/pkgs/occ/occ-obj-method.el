@@ -665,8 +665,8 @@ pointing to it."
                     (if (> (length matched-ctxual-tsks) 1)
                         (occ-sacha-helm-select-timed matched-ctxual-tsks)
                       (car matched-ctxual-tsks))))
-                   ;; (sel-tsk   (if sel-ctxual-tsk (plist-get sel-ctxual-tsk :tsk)))
-                   ;; (sel-marker (if sel-tsk      (plist-get sel-tsk      :tsk-clock-marker)))
+              ;; (sel-tsk   (if sel-ctxual-tsk (plist-get sel-ctxual-tsk :tsk)))
+              ;; (sel-marker (if sel-tsk      (plist-get sel-tsk      :tsk-clock-marker)))
 
               ;; (occ-debug 6 "sel-ctxual-tsk %s sel-tsk %s sel-marker %s" sel-ctxual-tsk sel-tsk sel-marker)
               (if sel-ctxual-tsk (occ-clock-in sel-ctxual-tsk)))
@@ -680,32 +680,6 @@ pointing to it."
             nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(when nil
-
-  (occ-add-to-org-heading-when-idle (occ-make-ctx) 7)
-
-  (length
-   (occ-matching-ctxual-tsks
-    (occ-collection-object)
-    (occ-make-ctx
-     (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp"))))
-
-  (occ-ctxual-tsk-tsk
-   (car
-    (occ-matching-ctxual-tsks
-     (occ-collection-object)
-     (occ-make-ctx
-      (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp")))))
-
-  (length
-   (occ-matching-ctxual-tsks
-    (occ-collection-object)
-    (occ-make-ctx (current-buffer)))))
-
-
-
 
 ;; Errors
 

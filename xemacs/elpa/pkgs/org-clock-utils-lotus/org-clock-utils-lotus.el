@@ -53,27 +53,72 @@
          (let (buffer-read-only)
            ,@forms)))))
 
-(defun org-clock-get-nth-half-clock-time (marker n)
-  (let ((org-clock-re
-         (concat org-clock-string " \\(\\[.*?\\]\\)$")))
-    (org-with-narrow-to-marker marker
-      (goto-char (point-min))
-      (when (re-search-forward org-clock-re nil t n)
-        (cons (copy-marker (match-end 1) t)
-              (org-time-string-to-time (match-string 1)))))))
+;; (defun org-clock-get-nth-half-clock-time (marker n)
+;;   (let ((org-clock-re
+;;          (concat org-clock-string " \\(\\[.*?\\]\\)$")))
+;;     (org-with-narrow-to-marker marker
+;;       (goto-char (point-min))
+;;       (when (re-search-forward org-clock-re nil t n)
+;;         (cons (copy-marker (match-end 1) t)
+;;               (org-time-string-to-time (match-string 1)))))))
 
 
-(defun org-clock-get-nth-clock-times (marker n)
-  (let ((org-clock-re
+;; (defun org-clock-get-nth-clock-times (marker n)
+;;   (let ((org-clock-re
+;;          (concat "^[ \t]*" org-clock-string
+;;                  " \\[\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}"
+;;                  " *\\sw+.? +[012][0-9]:[0-5][0-9]\\)\\][ \t]*$")))
+;;     (org-with-narrow-to-marker marker
+;;       (goto-char (point-min))
+;;       (when (re-search-forward org-clock-re nil t n)
+;;         (list (copy-marker (match-end 1) t)
+;;               (org-time-string-to-time (match-string 1))
+;;               (org-time-string-to-time (match-string 2)))))))
+
+
+
+(defun org-clock-get-nth-full-clock-data (marker &optional n)
+  (let ((n (or n 1))
+        (org-clock-re
          (concat "^[ \t]*" org-clock-string
                  " \\[\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}"
                  " *\\sw+.? +[012][0-9]:[0-5][0-9]\\)\\][ \t]*$")))
     (org-with-narrow-to-marker marker
       (goto-char (point-min))
       (when (re-search-forward org-clock-re nil t n)
-        (list (copy-marker (match-end 1) t)
+        (list (copy-marker (match-begining 0) t)
+              (copy-marker (match-end 0) t)
               (org-time-string-to-time (match-string 1))
               (org-time-string-to-time (match-string 2)))))))
+
+(defun org-clock-get-nth-half-clock-data (marker &optional n)
+  (let ((n (or n 1))
+        (org-clock-re
+         (concat "^[ \t]*" org-clock-string " \\(\\[.*?\\]\\)$")))
+    (org-with-narrow-to-marker marker
+      (goto-char (point-min))
+      (when (re-search-forward org-clock-re nil t n)
+        (list
+         (copy-marker (match-beginning 0) t)
+         (copy-marker (match-end 1) t)
+         (org-time-string-to-time (match-string 1)))))))
+
+(defun org-clock-get-nth-full-clock-beginning (marker &optional n)
+  (nth 0 (org-clock-get-nth-full-clock-data marker n)))
+(defun org-clock-get-nth-full-clock-end (marker &optional n)
+  (nth 1 (org-clock-get-nth-full-clock-data marker n)))
+(defun org-clock-get-nth-full-clock-start-time (marker &optional n)
+  (nth 2 (org-clock-get-nth-full-clock-data marker n)))
+(defun org-clock-get-nth-full-clock-end-time (marker &optional n)
+  (nth 3 (org-clock-get-nth-full-clock-data marker n)))
+
+
+(defun org-clock-get-nth-half-clock-beginning (marker &optional n)
+  (nth 0 (org-clock-get-nth-half-clock-data marker n)))
+(defun org-clock-get-nth-half-clock-end (marker &optional n)
+  (nth 1 (org-clock-get-nth-half-clock-data marker n)))
+(defun org-clock-get-nth-half-clock-time (marker &optional n)
+  (nth 2 (org-clock-get-nth-half-clock-data marker n)))
 
 ;; (org-clock-get-nth-clock-times org-clock-marker 1)
 
