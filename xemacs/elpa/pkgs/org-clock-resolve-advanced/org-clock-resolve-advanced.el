@@ -243,7 +243,7 @@
           (if (org-rl-clock-start-time clock)
               (org-clock-clock-in
                (cons
-                (org-clock-get-nth-half-clock-beginning (org-rl-clock-marker clock))
+                (org-rl-clock-marker clock)
                 (org-rl-clock-start-time clock))
                resume
                (org-rl-clock-start-time clock))
@@ -259,7 +259,7 @@
         (if (org-rl-clock-stop-time clock)
             (org-clock-clock-out
              (cons
-              (org-rl-clock-marker clock)
+              (org-clock-get-nth-half-clock-beginning (org-rl-clock-marker clock))
               (org-rl-clock-start-time clock))
              fail-quietly
              (org-rl-clock-stop-time clock))
