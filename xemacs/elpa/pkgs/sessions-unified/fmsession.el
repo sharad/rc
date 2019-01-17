@@ -31,6 +31,7 @@
 (require 'emacs-panel)
 
 
+;; Not required
 (defun sessions-unified-put-alist (key value alist)
   "Set cdr of an element (KEY . ...) in ALIST to VALUE and return ALIST.
 If there is no such element, create a new pair (KEY . VALUE) and
@@ -42,6 +43,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
           alist)
       (cons (cons key value) alist))))
 
+;; Not required
 (defun sessions-unified-set-alist (symbol key value)
   "Set cdr of an element (KEY . ...) in the alist bound to SYMBOL to VALUE."
   (or (boundp symbol)
@@ -55,8 +57,11 @@ return a new alist whose car is the new pair and cdr is ALIST."
     (elscreen-notify-screen-modification-suppress
      (elscreen-set-window-configuration (elscreen-get-current-screen)
                                         (elscreen-current-window-configuration))
-     (let* ((screen-list (sort (elscreen-get-screen-list) '<))
-            screen-name screen-to-name-alist nickname-type-map)
+     (let* ((lexical-binding nil)
+            (screen-list (sort (elscreen-get-screen-list) '<))
+            screen-name
+            screen-to-name-alist
+            nickname-type-map)
        (elscreen-save-screen-excursion
         (mapcar
          #'(lambda (screen)
@@ -93,7 +98,8 @@ return a new alist whose car is the new pair and cdr is ALIST."
                  ;;       (mapconcat 'identity (reverse nickname-list) ":"))
                  (setq screen-name (reverse nickname-list))))
 
-             (sessions-unified-set-alist 'screen-to-name-alist screen screen-name))
+             ;; (sessions-unified-set-alist 'screen-to-name-alist screen screen-name)
+             (push (cons screen screen-name) screen-to-name-alist ))
          screen-list))
 
        ;; (elscreen-set-screen-to-name-alist-cache screen-to-name-alist)
@@ -294,9 +300,9 @@ return a new alist whose car is the new pair and cdr is ALIST."
           (testing
            (message "elscreen-notify-screen-modification"))
           (elscreen-notify-screen-modification 'force-immediately)
-          (message "elscreen-session-session-list-set: DONE.")
+          (message "elscreen-session-session-list-set: DONE."))
 
-          (message "elscreen-session-session-list-set: Session do not exists."))))
+      (message "elscreen-session-session-list-set: Session do not exists.")))
 
   (defvar *frames-elscreen-session* nil "Stores all elscreen sessions here.")
   (defvar *frames-elscreen-session-old* nil "Stores all discarded elscreen sessions here.")
@@ -389,8 +395,8 @@ return a new alist whose car is the new pair and cdr is ALIST."
            (cdr (assoc elscreen-session *frames-elscreen-session*))))
       (testing
        (message "Nstart: session-session %s" elscreen-session))
-      (if elscreen-session-list
-          (elscreen-session-session-list-set elscreen-session-list (or nframe (selected-frame))))))
+      (when elscreen-session-list
+        (elscreen-session-session-list-set elscreen-session-list (or nframe (selected-frame))))))
 
   (defun fmsession-read-location (&optional initial-input)
     (let ((used t)

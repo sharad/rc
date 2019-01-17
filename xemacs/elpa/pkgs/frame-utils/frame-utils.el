@@ -1,4 +1,4 @@
-;;; frame-utils.el --- Anything Config
+;;; frame-utils.el --- Anything Config  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2011  Sharad Pratap
 
@@ -67,37 +67,51 @@ Return the modified ALIST."
   ;; toggle-ibuffer-group
   (require 'buffer-utils)
 
-;;;###autoload
+  (defvar frame-utils-select-frame-fn #'select-frame-set-input-focus "startup-select-frame-fn alternate value is select-frame")
+
+  (defun frame-launcher-internal (ignore-err name args &optional fun)
+    (let ((*frame-session-restore* nil)  ;not need to restore elsession for frames
+          (org-donot-try-to-clock-in t)) ;no clock require to be clocked-in.
+      (let ((f (make-frame (list (cons 'name name))))
+            (screennum 0)
+            (first-screen t))
+        (funcall frame-utils-select-frame-fn f)
+        (dolist (a args)
+          (when (or first-screen
+                    (setq screennum (elscreen-create)))
+            (setq first-screen nil)
+            (if ignore-err
+                (condition-case e
+                    (progn
+                      (if (if fun
+                              (funcall fun a)
+                            (funcall a))
+                          (sticky-buffer-mode t))
+                      (launcher-set-elscreen-altname (format "%s" a) f screennum))
+                  ('quit  (funcall frame-utils-notify "frame-launcher" "Not able to start %s error %s" a e))
+                  ('error (funcall frame-utils-notify "frame-launcher" "Not able to start %s error %s" a e)))
+              (progn
+                (if (if fun
+                        (funcall fun a)
+                      (funcall a))
+                    (sticky-buffer-mode t))
+                (launcher-set-elscreen-altname (format "%s" a) f screennum))))))))
+
+  ;;;###autoload
   (defun frame-launcher (name args &optional fun)
     (if (progn
           (ignore-errors
             (select-frame-by-name name))
           (equal (get-frame-name) name))
-        (frame-utils-notify "frame-launcher" "frame-launcher frame already exists, so not creating another frame.")
-        (condition-case e
-            (let ((*frame-session-restore* nil)  ;not need to restore elsession for frames
-                  (org-donot-try-to-clock-in t)) ;no clock require to be clocked-in.
-              (let ((f (make-frame (list (cons 'name name))))
-                    (screennum 0)
-                    (first-screen t))
-                (select-frame f)
-                (dolist (a args)
-                  (when (or first-screen
-                            (setq screennum (elscreen-create)))
-                    (setq first-screen nil)
-                    (condition-case e
-                        (progn
-                          (if (if fun
-                                  (funcall fun a)
-                                  (funcall a))
-                              (sticky-buffer-mode t))
-                          (launcher-set-elscreen-altname (format "%s" a) f screennum))
-                      ('quit  (frame-utils-notify "frame-launcher" "Not able to start %s error %s" a e))
-                      ('error (frame-utils-notify "frame-launcher" "Not able to start %s error %s" a e)))))))
-          ('error (frame-utils-notify "frame-launcher" "Error in creating frame %s" e)))))
+        (funcall frame-utils-notify "frame-launcher" "frame-launcher frame already exists, so not creating another frame.")
+      (if nil
+          (condition-case e
+              (frame-launcher-internal t name args fun)
+            ('error (funcall frame-utils-notify "frame-launcher" "Error in creating frame %s" e)))
+        (frame-launcher-internal nil name args fun))))
 
   ;; (frame-parameter (selected-frame) 'altscreen)
-;;;###autoload
+  ;;;###autoload
   (defun launcher-set-elscreen-altname (name &optional frame screennum)
     (interactive "sname:")
     (let* ((frame (or frame (selected-frame)))
@@ -109,7 +123,7 @@ Return the modified ALIST."
                            (put-alist screennum
                                       name
                                       place))))
-;;;###autoload
+  ;;;###autoload
   (defun launcher-del-elscreen-altname (&optional frame screennum)
     (interactive "sname: ")
     (let* ((frame (or frame (selected-frame)))
@@ -119,7 +133,7 @@ Return the modified ALIST."
         (set-frame-parameter frame 'altscreen nil))
       (set-frame-parameter frame 'altscreen
                            (elscreen--del-alist screennum place))))
-;;;###autoload
+  ;;;###autoload
   (defun launcher-get-elscreen-altname (&optional frame screennum)
     (interactive)
     (let* ((frame (or frame (selected-frame)))
@@ -128,7 +142,7 @@ Return the modified ALIST."
       (if altscreen
           (if (called-interactively-p 'any)
               (message "altcreen: %s" (get-alist screennum altscreen))
-              (get-alist screennum altscreen)))))
+            (get-alist screennum altscreen)))))
 
   ;; (add-hook 'elscreen-kill-hook #'launcher-del-elscreen-altname)
 
@@ -141,7 +155,7 @@ Return the modified ALIST."
   ;; (launcher-set-elscreen-altname "test" (selected-frame))
   ;; (launcher-get-elscreen-altname)
   ;; (launcher-del-elscreen-altname)
-)
+  )
 
 (progn ;; deh-section "test"
 

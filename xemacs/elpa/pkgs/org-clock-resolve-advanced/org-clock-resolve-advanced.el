@@ -188,14 +188,15 @@
                 (org-rl-format-clock clock)
                 resume
                 org-clock-clocking-in)
-  (if (not org-clock-clocking-in)
-      (progn
-        (org-rl-debug :warning "org-rl-clock-clock-in-out in")
-        (org-clock-clock-in clock resume)
-        (org-rl-debug :warning "org-rl-clock-clock-in-out out")
-        (org-clock-clock-out clock fail-quietly)
-        (org-rl-debug :warning "org-rl-clock-clock-in-out out done"))
-    (error "Clock org-clock-clocking-in is %s" org-clock-clocking-in)))
+  (let ((org-clock-auto-clock-resolution nil))
+    (if (not org-clock-clocking-in)
+        (progn
+          (org-rl-debug :warning "org-rl-clock-clock-in-out in")
+          (org-clock-clock-in clock resume)
+          (org-rl-debug :warning "org-rl-clock-clock-in-out out")
+          (org-clock-clock-out clock fail-quietly)
+          (org-rl-debug :warning "org-rl-clock-clock-in-out out done"))
+      (error "Clock org-clock-clocking-in is %s" org-clock-clocking-in))))
 
 
 ;; Warning (org-rl-clock): going to run prev[<STARTED Unnamed task 615> <2019-01-15 Tue 21:59>-<2019-01-15 Tue 22:15> 16 0] next[<imaginary> <2019-01-15 Tue 22:15>-<2019-01-15 Tue 22:05> 32 22] with default 10
@@ -221,17 +222,18 @@
   (org-rl-debug :warning "org-rl-clock-clock-in: clock[%s] resume[%s]"
                 (org-rl-format-clock clock)
                 resume)
-  (when (not org-clock-clocking-in)
-    (if (org-rl-clock-marker clock)
-        (if (org-rl-clock-start-time clock)
-            (org-clock-clock-in
-             (cons
-              (org-rl-clock-marker clock)
-              (org-rl-clock-start-time clock))
-             resume
-             (org-rl-clock-start-time clock))
-          (error "%s start time is null" (org-rl-clock-start-time clock)))
-      (error "%s clock is null" (org-rl-clock-marker clock)))))
+  (let ((org-clock-auto-clock-resolution nil))
+    (when (not org-clock-clocking-in)
+      (if (org-rl-clock-marker clock)
+          (if (org-rl-clock-start-time clock)
+              (org-clock-clock-in
+               (cons
+                (org-rl-clock-marker clock)
+                (org-rl-clock-start-time clock))
+               resume
+               (org-rl-clock-start-time clock))
+            (error "%s start time is null" (org-rl-clock-start-time clock)))
+        (error "%s clock is null" (org-rl-clock-marker clock))))))
 
 (defun org-rl-clock-clock-out (clock &optional fail-quietly)
   (org-rl-debug :warning "org-rl-clock-clock-out: clock[%s] fail-quietly[%s]"
@@ -715,6 +717,7 @@ so long."
           (if current-prefix-arg
               (point-marker)
             org-clock-marker))
+         (start-time (cdr (org-clock-get-nth-half-clock-time marker 1)))
          (mins-spent
           (or
            (org-rl-first-clock-started-mins marker)
@@ -733,7 +736,7 @@ so long."
                      (org-clock-resolving-clocks-due-to-idleness t))
                 (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
                     (org-resolve-clock-time
-                     (make-rl-clock marker org-clock-start-time nil)
+                     (make-rl-clock marker start-time nil)
                      (make-rl-clock 'imaginary 'now org-clock-user-idle-start))
                   (when t
                     (message "Idle time now min[%d] sec[%d]"
