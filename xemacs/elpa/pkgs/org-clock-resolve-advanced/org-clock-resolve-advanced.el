@@ -40,6 +40,7 @@
   (require 'lotus-misc-utils))
 (eval-when-compile
   (require 'org-clock-utils-lotus))
+(require 'org-clock-utils-lotus)
 
 
 (defun org-rl-debug (level &rest args)

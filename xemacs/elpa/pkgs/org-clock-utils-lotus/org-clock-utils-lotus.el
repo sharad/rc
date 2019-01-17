@@ -39,7 +39,6 @@
 (eval-when-compile
   (require 'org-misc-utils-lotus))
 (require 'org-misc-utils-lotus)
-(require 'org-clock-utils-lotus)
 
 
 (defmacro org-with-clock-position (clock &rest forms)
