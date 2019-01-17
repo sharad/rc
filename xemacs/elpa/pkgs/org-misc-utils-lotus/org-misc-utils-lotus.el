@@ -500,6 +500,7 @@ With prefix arg C-u, copy region instad of killing it."
 
 (defun quiet--select-frame (frame &optional norecord)
   ;; (select-frame frame norecord)
+  ;; select-frame-set-input-focus should not be used as it will pull window if hidden.
   (select-frame frame norecord)
   ;; (raise-frame frame)
   ;; Ensure, if possible, that FRAME gets input focus.

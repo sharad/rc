@@ -192,9 +192,21 @@
     (if (not org-clock-clocking-in)
         (progn
           (org-rl-debug :warning "org-rl-clock-clock-in-out in")
-          (org-clock-clock-in clock resume)
+
+          (cl-assert (org-rl-clock-start-time clock))
+          (cl-assert (org-rl-clock-stop-time clock))
+
+          (org-clock-clock-in (cons
+                               (org-rl-clock-marker clock)
+                               (org-rl-clock-start-time clock))
+                              resume
+                              (org-rl-clock-start-time clock))
           (org-rl-debug :warning "org-rl-clock-clock-in-out out")
-          (org-clock-clock-out clock fail-quietly)
+          (org-clock-clock-out (cons
+                                (org-rl-clock-marker clock)
+                                (org-rl-clock-start-time clock))
+                               fail-quietly
+                               (org-rl-clock-stop-time clock))
           (org-rl-debug :warning "org-rl-clock-clock-in-out out done"))
       (error "Clock org-clock-clocking-in is %s" org-clock-clocking-in))))
 
