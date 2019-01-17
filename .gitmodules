@@ -67,9 +67,6 @@
 [submodule "xemacs/pkgrepos/world/gits/espuds"]
 	path = xemacs/pkgrepos/world/gits/espuds
 	url = https://github.com/rejeep/espuds.git
-[submodule "xemacs/pkgrepos/world/gits/s"]
-	path = xemacs/pkgrepos/world/gits/s
-	url = https://github.com/magnars/s.el.git
 [submodule "xemacs/pkgrepos/world/gits/cclookup"]
 	path = xemacs/pkgrepos/world/gits/cclookup
 	url = git@github.com:tsgates/cclookup.git

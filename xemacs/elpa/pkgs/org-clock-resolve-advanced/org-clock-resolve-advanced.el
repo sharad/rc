@@ -179,9 +179,9 @@
 ;; helpers
 ;; - org-clock-clock-out
 ;; - org-clock-clock-in
-(defun org-clock-clock-remove-last-clock (clock)
+(defun org-clock-clock-remove-last-clock (clock))
   ;; TODO
-  )
+
 
 (defun org-rl-clock-clock-in-out (clock &optional resume fail-quietly)
   (org-rl-debug :warning "org-rl-clock-clock-in-out: clock[%s] resume[%s] org-clock-clocking-in[%s]"
@@ -202,6 +202,9 @@
                               resume
                               (org-rl-clock-start-time clock))
           (org-rl-debug :warning "org-rl-clock-clock-in-out out")
+          ;; TODO: here we have to correct/update the marker with last CLOCK in marker
+          ;; which will finally fix the problem
+          ;; (error "Clock start time is gone") from org-clock-out function
           (org-clock-clock-out (cons
                                 (org-rl-clock-marker clock)
                                 (org-rl-clock-start-time clock))
