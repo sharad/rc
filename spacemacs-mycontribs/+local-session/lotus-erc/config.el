@@ -24,6 +24,10 @@
 
 ;;; Code:
 
+;; https://www.google.com/search?q=elisp+erc+erc-after-connect&hl=en&oq=elisp+erc+erc-after-connect&gs_l=heirloom-serp.3...25300.27524.0.27777.29.13.0.1.0.7.247.1170.7j5j1.13.0....0...1ac.1.34.heirloom-serp..26.3.95.vyJ6lf6KStY
+(add-hook 'erc-after-connect
+          (lambda (server nick)
+            (add-hook 'erc-server-NOTICE-hook 'erc-auto-query)))
 
 
 ;; (provide 'config)

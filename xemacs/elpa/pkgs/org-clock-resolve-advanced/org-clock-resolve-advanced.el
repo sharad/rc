@@ -60,6 +60,7 @@
   (setq org-clock-idle-time mins))
 
 (defun org-clock-steel-time ()
+  (interactive)
   )
 
 
@@ -470,6 +471,9 @@
                 (if (eq (org-rl-clock-marker next) 'imaginary)
                     (org-rl-clock-start-time-set next other-start-time)
                   other-clock))
+
+          ;; TODO: handle prev here.
+
           (when other-marker
             ;; TODO: see if this is working
             (org-rl-clock-clock-in-out other-clock)))
