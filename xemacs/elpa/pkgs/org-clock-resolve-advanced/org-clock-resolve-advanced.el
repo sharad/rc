@@ -62,19 +62,19 @@ so long."
         (setq org-clock-last-user-idle-seconds org-clock-user-idle-seconds)
 
         (when nil
-         (message "1. Idle time now sec[%d] min[%d]"
-                 org-clock-user-idle-seconds
-                 (/ org-clock-user-idle-seconds 60)))
+          ssage "1. Idle time now sec[%d] min[%d]"
+          -clock-user-idle-seconds
+          org-clock-user-idle-seconds 60)))
 
-        (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-            (org-resolve-clock-time
-             (make-rl-clock org-clock-marker org-clock-start-time nil)
-             (make-rl-clock 'imaginary 'now org-clock-user-idle-start))
-          (when nil
-            (message "2. Idle time now sec[%d] min[%d]"
-                     org-clock-user-idle-seconds
-                     (/ org-clock-user-idle-seconds 60))))
-        (setq org-clock-last-user-idle-seconds nil)))))
+    (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
+        (org-rl-clock-time
+         (make-rl-clock org-clock-marker org-clock-start-time nil)
+         (make-rl-clock 'imaginary 'now org-clock-user-idle-start))
+      (when nil
+        (message "2. Idle time now sec[%d] min[%d]"
+                 org-clock-user-idle-seconds
+                 (/ org-clock-user-idle-seconds 60))))
+    (setq org-clock-last-user-idle-seconds nil)))))
 
 (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
 
@@ -105,7 +105,7 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
             (let ((dangling (or (not (org-clock-is-active))
                                 (/= (car clock) org-clock-marker))))
               (when (or (not only-dangling-p) dangling)
-                (org-resolve-clock-time
+                (org-rl-clock-time
                  (make-rl-clock (car clock) (cdr clock) nil)
                  (make-rl-clock 'imaginary 'now (cdr clock)))))))))))
 
@@ -116,7 +116,7 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
 (defun org-clock-resolve-clocks (clocks) ;TODO
   (let ((next (pop clocks))
         (prev (pop clocks)))
-    (org-resolve-clock-time next prev)))
+    (org-rl-clock-time next prev)))
 
 ;;;###autoload
 (defun org-clock-resolve-advanced-insinuate ()
@@ -204,7 +204,7 @@ so long."
                                      (seconds-to-time org-clock-user-idle-seconds)))
                      (org-clock-resolving-clocks-due-to-idleness t))
                 (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-                    (org-resolve-clock-time
+                    (org-rl-clock-time
                      (make-rl-clock marker start-time nil)
                      (make-rl-clock 'imaginary 'now org-clock-user-idle-start))
                   (when t

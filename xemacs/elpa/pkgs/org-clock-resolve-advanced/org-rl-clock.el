@@ -94,8 +94,11 @@
 (cl-defmethod org-rl-clock-stop-dirty ((clock org-rl-clock))
   (org-rl-dirty-dirty (org-rl-clock-stop clock)))
 
-
+(cl-defmethod org-rl-clock-first-clock-beginning ((clock org-rl-clock))
+  (org-clock-get-nth-half-clock-beginning
+   (org-rl-clock-marker clock)))
 
+
 (cl-defmethod org-get-heading-from-clock ((clock org-rl-clock))
   (if (markerp (org-rl-clock-marker clock))
       (lotus-with-marker (org-rl-clock-marker clock)
@@ -113,13 +116,22 @@
           (stop  (format-time-string fmt (org-rl-clock-stop-time clock))))
       (format "<%s> %s-%s" heading start stop))))
 
-(cl-defmethod org-rl-clock-first-clock-beginning ((clock org-rl-clock))
-  (org-clock-get-nth-half-clock-beginning (org-rl-clock-marker clock)))
-
 (cl-defmethod org-rl-clock-name-bracket ((clock org-rl-clock))
   ;;(org-rl-clock-marker clock)
   (concat "<" (org-get-heading-from-clock clock) ">"))
 
+
+(cl-defmethod org-rl-clock-for-clock-in ((clock org-rl-clock))
+  (cons
+   (org-rl-clock-marker clock)
+   (org-rl-clock-start-time clock)))
+
+(cl-defmethod org-rl-clock-for-clock-for ((clock org-rl-clock))
+  (cons
+   (org-rl-clock-first-clock-beginning clock)
+   (org-rl-clock-start-time clock)))
+
+
 
 (cl-defmethod org-clock-clock-remove-last-clock ((clock org-rl-clock)))
 ;; TODO
@@ -148,29 +160,9 @@
         (org-rl-clock-marker clock)
         (org-rl-clock-start-time clock)))))
 
-
-;; Warning (org-rl-clock): going to run prev[<STARTED Unnamed task 615> <2019-01-15 Tue 21:59>-<2019-01-15 Tue 22:15> 16 0] next[<imaginary> <2019-01-15 Tue 22:15>-<2019-01-15 Tue 22:05> 32 22] with default 10
-;; Warning (org-rl-clock): org-resolve-clock-build-options: prev[<STARTED Unnamed task 615> <2019-01-15 Tue 21:59>-<2019-01-15 Tue 22:15>] next[<imaginary> <2019-01-15 Tue 22:15>-<2019-01-15 Tue 22:05>] maxtimelen[10] secs
-;; Warning (org-rl-clock): You have selected opt include-in-other and timelen 10
-;; Warning (org-rl-clock): begin org-resolve-clock-opt-include-in-other
-;; Warning (org-rl-clock): org-rl-select-other-clock: target[nil]
-;; Warning (org-rl-clock): org-rl-clock-clock-in-out: clock[<STARTED Office related work> <2019-01-15 Tue 22:05>-<2019-01-15 Tue 22:15>] resume[nil] org-clock-clocking-in[nil]
-;; Warning (org-rl-clock): org-rl-clock-clock-in-out in
-;; Warning (org-rl-clock): going to run prev[<STARTED Unnamed task 615> <2019-01-15 Tue 21:17>-<2019-01-15 Tue 22:15> 35 0] next[<imaginary> <2019-01-15 Tue 22:15>-<2019-01-15 Tue 21:17> 32 35] with default 58
-;; Warning (org-rl-clock): org-resolve-clock-build-options: prev[<STARTED Unnamed task 615> <2019-01-15 Tue 21:17>-<2019-01-15 Tue 22:15>] next[<imaginary> <2019-01-15 Tue 22:15>-<2019-01-15 Tue 21:17>] maxtimelen[58] secs
-;; Warning (org-rl-clock): You have selected opt done and timelen 59
-;; Warning (org-rl-clock): going to run prev[<STARTED Unnamed task 614> <2019-01-15 Tue 20:07>-<2019-01-15 Tue 22:16> 26 0] next[<imaginary> <2019-01-15 Tue 22:16>-<2019-01-15 Tue 20:07> 33 26] with default 129
-;; Warning (org-rl-clock): org-resolve-clock-build-options: prev[<STARTED Unnamed task 614> <2019-01-15 Tue 20:07>-<2019-01-15 Tue 22:16>] next[<imaginary> <2019-01-15 Tue 22:16>-<2019-01-15 Tue 20:07>] maxtimelen[129] secs
-;; Warning (org-rl-clock): You have selected opt done and timelen 129
-;; Warning (org-rl-clock): going to run prev[<STARTED Unnamed task 614> <2019-01-15 Tue 21:59>-<2019-01-15 Tue 22:16> 16 0] next[<imaginary> <2019-01-15 Tue 22:16>-<2019-01-15 Tue 21:59> 33 16] with default 17
-;; Warning (org-rl-clock): org-resolve-clock-build-options: prev[<STARTED Unnamed task 614> <2019-01-15 Tue 21:59>-<2019-01-15 Tue 22:16>] next[<imaginary> <2019-01-15 Tue 22:16>-<2019-01-15 Tue 21:59>] maxtimelen[17] secs
-;; Warning (org-rl-clock): You have selected opt done and timelen 17
-;; Warning (org-rl-clock): org-rl-clock-clock-in-out out
-
-
-(cl-defmethod org-rl-clock-clock-in ((clock org-rl-clock)
+(cl-defmethod org-rl-clock-clock-in ((clock org-rl-clock))
                                      &optional
-                                     resume)
+                                     resume
   (org-rl-debug :warning "org-rl-clock-clock-in: clock[%s] resume[%s]"
                 (org-rl-format-clock clock)
                 resume)
@@ -179,9 +171,7 @@
       (if (org-rl-clock-marker clock)
           (if (org-rl-clock-start-time clock)
               (org-clock-clock-in
-               (cons
-                (org-rl-clock-marker clock)
-                (org-rl-clock-start-time clock))
+               (org-rl-clock-for-clock-in clock)
                resume
                (org-rl-clock-start-time clock))
             (error "%s start time is null" (org-rl-clock-start-time clock)))
@@ -196,10 +186,7 @@
   (when (not org-clock-clocking-in)
     (if (org-rl-clock-marker clock)
         (if (org-rl-clock-stop-time clock)
-            (org-clock-clock-out
-             (cons
-              (org-rl-clock-first-clock-beginning clock)
-              (org-rl-clock-start-time clock))
+            (org-clock-clock-out (org-rl-clock-for-clock-out clock)
              fail-quietly
              (org-rl-clock-stop-time clock))
           (error "%s stop time is null" (org-rl-clock-stop-time clock)))
@@ -264,13 +251,13 @@
 
 
 (setq
- org-resolve-clock-opts-common
+ org-rl-clock-opts-common
  '(("Done" . done)))
 
-(cl-defmethod org-resolve-clock-opts-common ((clock org-rl-clock))
+(cl-defmethod org-rl-clock-opts-common ((clock org-rl-clock))
   (list (cons "Done" 'done)))
 
-(cl-defmethod org-resolve-clock-opts-common-with-time ((clock org-rl-clock))
+(cl-defmethod org-rl-clock-opts-common-with-time ((clock org-rl-clock))
   (let ((heading (org-get-heading-from-clock clock)))
     (list
      (cons "Include in other" 'include-in-other)
@@ -278,7 +265,7 @@
       (format "subtract from prev %s" heading)
       'subtract))))
 
-(cl-defmethod org-resolve-clock-opts-prev ((clock org-rl-clock))
+(cl-defmethod org-rl-clock-opts-prev ((clock org-rl-clock))
   (let ((heading (org-get-heading-from-clock clock)))
     (list
      (cons
@@ -288,14 +275,14 @@
       (format "Jump to prev %s" heading)
       'jump-prev-p))))
 
-(cl-defmethod org-resolve-clock-opts-prev-with-time ((clock org-rl-clock))
+(cl-defmethod org-rl-clock-opts-prev-with-time ((clock org-rl-clock))
   (let ((heading (org-get-heading-from-clock clock)))
     (list
      (cons
       (format "Include in prev %s" heading)
       'include-in-prev))))
 
-(cl-defmethod org-resolve-clock-opts-next ((clock org-rl-clock))
+(cl-defmethod org-rl-clock-opts-next ((clock org-rl-clock))
   (let ((heading (org-get-heading-from-clock clock))
         (marker (car clock)))
     (list
@@ -308,7 +295,7 @@
       (format "Jump to next %s" heading)
       'jump-next-p))))
 
-(cl-defmethod org-resolve-clock-opts-next-with-time ((clock org-rl-clock))
+(cl-defmethod org-rl-clock-opts-next-with-time ((clock org-rl-clock))
   (let ((heading (org-get-heading-from-clock clock)))
     (list
      (cons
@@ -347,10 +334,10 @@
          (error "Can not get start time."))))))
    60))
 
-(cl-defmethod org-resolve-clock-time-debug-prompt ((prev org-rl-clock)
+(cl-defmethod org-rl-clock-time-debug-prompt ((prev org-rl-clock
                                                    (next org-rl-clock)
                                                    &optional
-                                                   prompt stop)
+                                                   prompt stop))
   (let* ( ;;(base 120) ;; TODO: why it was 120 ?
          (base 61)
          (_debug (format "prev[%s %d %d] next[%s %d %d]"
@@ -367,11 +354,11 @@
     debug))
 
 
-(cl-defmethod org-resolve-clock-time-adv-debug-prompt ((prev org-rl-clock)
+(cl-defmethod org-rl-clock-time-adv-debug-prompt ((prev org-rl-clock
                                                        (next org-rl-clock)
                                                        &optional
                                                        prompt
-                                                       stop)
+                                                       stop))
   (let* ( ;;(base 120) ;; TODO: why it was 120 ?
          (base 61)
          (_debug (format "prev[%s %d %d] next[%s %d %d]"
@@ -387,32 +374,32 @@
     (when stop (read-from-minibuffer (format "%s test: " debug)))
     debug))
 
-(cl-defmethod org-resolve-clock-build-options ((prev org-rl-clock)
+(cl-defmethod org-rl-clock-build-options ((prev org-rl-clock
                                                (next org-rl-clock)
-                                               maxtimelen)
-  (org-rl-debug :warning "org-resolve-clock-build-options: prev[%s] next[%s] maxtimelen[%d] secs"
+                                               maxtimelen))
+  (org-rl-debug :warning "org-rl-clock-build-options: prev[%s] next[%s] maxtimelen[%d] secs"
                 (org-rl-format-clock prev)
                 (org-rl-format-clock next)
                 maxtimelen)
   (append
    (when (markerp (org-rl-clock-marker prev))
      (append
-      (org-resolve-clock-opts-prev prev)
-      (unless (zerop maxtimelen) (org-resolve-clock-opts-prev-with-time prev))))
+      (org-rl-clock-opts-prev prev)
+      (unless (zerop maxtimelen) (org-rl-clock-opts-prev-with-time prev))))
    (when (markerp (org-rl-clock-marker next))
      (append
-      (org-resolve-clock-opts-next next)
-      (unless (zerop maxtimelen) (org-resolve-clock-opts-next-with-time next))))
-   (unless (zerop maxtimelen) (org-resolve-clock-opts-common-with-time prev))
-   (org-resolve-clock-opts-common prev)))
+      (org-rl-clock-opts-next next)
+      (unless (zerop maxtimelen) (org-rl-clock-opts-next-with-time next))))
+   (unless (zerop maxtimelen) (org-rl-clock-opts-common-with-time prev))
+   (org-rl-clock-opts-common prev)))
 
-(defun org-resolve-clock-read-option (prompt options default)
+(defun org-rl-clock-read-option (prompt options default)
   (cdr
    (assoc
     (completing-read prompt options)
     options)))
 
-(defun org-resolve-clock-read-timelen (prompt option maxtimelen)
+(defun org-rl-clock-read-timelen (prompt option maxtimelen)
   (progn
     (if (or (zerop maxtimelen)
             (memq option
@@ -423,8 +410,8 @@
       (read-number prompt maxtimelen))))
 
 
-(cl-defmethod org-resolve-clock-opt-cancel-prev ((prev org-rl-clock)
-                                                 (next org-rl-clock))
+(cl-defmethod org-rl-clock-opt-cancel-prev ((prev org-rl-clock
+                                                 (next org-rl-clock)))
   (progn
     (org-rl-clock-clock-cancel prev)
     (let ((prev-start (cdr prev)))
@@ -434,8 +421,8 @@
              nil
              (org-rl-clock-start-time prev))))
     (list prev next)))
-(cl-defmethod org-resolve-clock-opt-cancel-next ((prev org-rl-clock)
-                                                 (next org-rl-clock))
+(cl-defmethod org-rl-clock-opt-cancel-next ((prev org-rl-clock
+                                                 (next org-rl-clock)))
   ;; cancel next clock
   ;; add next clock time
   (progn
@@ -446,10 +433,10 @@
            (org-rl-clock-stop-time prev)
            nil))
     (list prev next)))
-(cl-defmethod org-resolve-clock-opt-include-in-prev ((prev org-rl-clock)
+(cl-defmethod org-rl-clock-opt-include-in-prev ((prev org-rl-clock
                                                      (next org-rl-clock)
-                                                     timelen)
-  (org-rl-debug :warning "begin %s" 'org-resolve-clock-opt-include-in-prev)
+                                                     timelen))
+  (org-rl-debug :warning "begin %s" 'org-rl-clock-opt-include-in-prev)
   ;; include timelen in prev
   ;; update timelength
   (let ((updated-time (time-add
@@ -469,10 +456,10 @@
         (org-rl-clock-clock-in-out next))))
 
   (list prev next))
-(cl-defmethod org-resolve-clock-opt-include-in-next ((prev org-rl-clock)
+(cl-defmethod org-rl-clock-opt-include-in-next ((prev org-rl-clock
                                                      (next org-rl-clock)
-                                                     timelen)
-  (org-rl-debug :warning "begin %s" 'org-resolve-clock-opt-include-in-next)
+                                                     timelen))
+  (org-rl-debug :warning "begin %s" 'org-rl-clock-opt-include-in-next)
 
   (let ((maxtimelen (org-rl-get-time-gap prev next)))
 
@@ -505,17 +492,17 @@
           (org-rl-clock-clock-in-out prev)))))
 
   (list prev next))
-(cl-defmethod org-resolve-clock-opt-include-in-other ((prev org-rl-clock)
+(cl-defmethod org-rl-clock-opt-include-in-other ((prev org-rl-clock
                                                       (next org-rl-clock)
                                                       timelen
-                                                      opt)
+                                                      opt))
   ;; select other clock
   ;; include timelen in other
   ;; update timelength
-  ;; (if debug-prompt (org-resolve-clock-time-debug-prompt prev next t "include-in-other"))
+  ;; (if debug-prompt (org-rl-clock-time-debug-prompt prev next t "include-in-other"))
 
   ;; TODO: check what sustract is doing here
-  (org-rl-debug :warning "begin %s" 'org-resolve-clock-opt-include-in-other)
+  (org-rl-debug :warning "begin %s" 'org-rl-clock-opt-include-in-other)
 
   (let ((maxtimelen (org-rl-get-time-gap prev next)))
 
@@ -580,12 +567,12 @@
   (list prev next))
 
 
-(cl-defmethod org-resolve-clock-time-process-option ((prev org-rl-clock)
+(cl-defmethod org-rl-clock-time-process-option ((prev org-rl-clock
                                                      (next org-rl-clock)
                                                      opt
                                                      timelen
                                                      maxtimelen
-                                                     &optional close-p)
+                                                     &optional close-p))
   (let* ((timelen (seconds-to-time (* timelen 60)))
          (clocks
           (cond
@@ -598,23 +585,23 @@
             (org-rl-clock-clock-jump-to next))
 
            ((eq opt 'cancel-prev-p)
-            (org-resolve-clock-opt-cancel-prev prev next))
+            (org-rl-clock-opt-cancel-prev prev next))
            ;; set org-clock-leftover-time here
 
            ((eq opt 'cancel-next-p)
-            (org-resolve-clock-opt-cancel-next prev next))
+            (org-rl-clock-opt-cancel-next prev next))
 
            ((eq opt 'include-in-prev)
             ;; include timelen in prev
             ;; update timelength
-            (org-resolve-clock-opt-include-in-prev prev next timelen))
+            (org-rl-clock-opt-include-in-prev prev next timelen))
            ;; set org-clock-leftover-time here
            ((eq opt 'include-in-next)
-            (org-resolve-clock-opt-include-in-next prev next timelen))
+            (org-rl-clock-opt-include-in-next prev next timelen))
 
            ((memq opt '(include-in-other
                         subtract)) ;; subtract timelen from timelength
-            (org-resolve-clock-opt-include-in-other prev next timelen opt))
+            (org-rl-clock-opt-include-in-other prev next timelen opt))
 
            ((eq opt 'done))
 
@@ -624,9 +611,9 @@
 
 ;; NOTE: Remember here the concept of Positive and Negative and Full time.
 ;; Read time which could be positive or negative or full
-(cl-defmethod org-resolve-clock-time ((prev org-rl-clock)
+(cl-defmethod org-rl-clock-time ((prev org-rl-clock
                                       (next org-rl-clock)
-                                      &optional force close-p)
+                                      &optional force close-p))
   "Read time which could be positive or negative or full"
   ;; BUG how to handle current time == 'now
   ;; BUG how to handle when prev == next
@@ -645,18 +632,18 @@
       ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 10 5] with maxtimelen 5
       ;; Warning (org-rl-clock): You have selected opt subtract and timelen 9
       ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 5 5] with maxtimelen 0
-      (org-rl-debug :warning "going to run %s with maxtimelen %d" (org-resolve-clock-time-adv-debug-prompt prev next) maxtimelen)
+      (org-rl-debug :warning "going to run %s with maxtimelen %d" (org-rl-clock-time-adv-debug-prompt prev next) maxtimelen)
       ;; (assert (> maxtimelen 0))
       (when (> maxtimelen 0)
-        (let* ((options (org-resolve-clock-build-options prev next maxtimelen))
-               (opt (org-resolve-clock-read-option
+        (let* ((options (org-rl-clock-build-options prev next maxtimelen))
+               (opt (org-rl-clock-read-option
                      (if debug-prompt
-                         (format "%s Select option [%d]: " (org-resolve-clock-time-debug-prompt prev next) maxtimelen)
+                         (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen)
                        (format "Select option [%d]: " maxtimelen))
                      options maxtimelen))
-               (timelen (org-resolve-clock-read-timelen
+               (timelen (org-rl-clock-read-timelen
                          (if debug-prompt
-                             (format "%s [%s] how many minutes? [%d] " (org-resolve-clock-time-debug-prompt prev next) opt maxtimelen)
+                             (format "%s [%s] how many minutes? [%d] " (org-rl-clock-time-debug-prompt prev next) opt maxtimelen)
                            (format "[%s] how many minutes? [%d] " opt maxtimelen))
                          opt
                          (org-rl-get-time-gap prev next))))
@@ -670,7 +657,7 @@
           (let ((maxtimelen (org-rl-get-time-gap prev next))) ;get maxtimelen time again
             (if (<= (abs timelen) maxtimelen)
                 (let* ((clocks
-                        (org-resolve-clock-time-process-option prev next
+                        (org-rl-clock-time-process-option prev next
                                                                opt timelen maxtimelen close-p))
                        (prev (nth 0 clocks))
                        (next (nth 1 clocks)))
@@ -682,10 +669,10 @@
                       (org-clock-out))
                     (let ((timegap (org-rl-get-time-gap prev next)))
                       (when (> timegap 0)         ;this solved the assert
-                        (org-resolve-clock-time prev next close-p)))))
+                        (org-rl-clock-time prev next close-p)))))
               (progn
                 (message "Error given time %d can not be greater than %d" timelen maxtimelen)
-                (org-resolve-clock-time prev next force close-p)))))))))
+                (org-rl-clock-time prev next force close-p)))))))))
 
 
 ;;; org-rl-clock.el ends here
