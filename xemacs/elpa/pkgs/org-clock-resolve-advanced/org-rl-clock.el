@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2019  Sharad
 
-;; Author: Sharad <sh4r4d@gmail.com>
+;; Author: Sharad Pratap <sh4r4d _at_ _G-mail_>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -27,6 +27,7 @@
 (provide 'org-rl-clock)
 
 (require 'cl-macs)
+(require 'cl-generic)
 
 (require 'org)
 (require 'org-timer)
@@ -45,16 +46,21 @@
 (require 'org-clock-utils-lotus)
 
 
-(defstruct org-rl-time
+(cl-defstruct org-rl-time
   time
   dirty)
 
-(defstruct org-rl-clock
+(cl-defstruct org-rl-clock
   marker
   start
   stop)
 
-(defun org-rl-make-clock (marker start-time stop-time &optional start-dirty stop-dirty)
+(defun org-rl-make-clock (marker
+                          start-time
+                          stop-time
+                          &optional
+                          start-dirty
+                          stop-dirty)
  (make-org-rl-clock
   :marker marker
   :start (make-org-rl-time :time start-time :dirty start-dirty)
@@ -64,33 +70,39 @@
   (make-org-rl-time :time time :dirty dirty))
 
 
-(defmethod org-rl-clock-start-time ((clock org-rl-clock))
+(cl-defmethod org-rl-clock-start-time ((clock org-rl-clock))
   (org-rl-time-time (org-rl-clock-start clock)))
-(defmethod org-rl-clock-start-set ((clock org-rl-clock) time &optional dirty)
+(cl-defmethod org-rl-clock-start-set ((clock org-rl-clock)
+                                      time
+                                      &optional
+                                      dirty)
   (setf
    (org-rl-clock-start clock)
    (org-rl-make-time time dirty)))
-(defmethod org-rl-clock-stop-time ((clock org-rl-clock))
+(cl-defmethod org-rl-clock-stop-time ((clock org-rl-clock))
   (org-rl-time-time (org-rl-clock-stop clock)))
-(defmethod org-rl-clock-stop-set ((clock org-rl-clock) time &optional dirty)
+(cl-defmethod org-rl-clock-stop-set ((clock org-rl-clock)
+                                     time
+                                     &optional
+                                     dirty)
   (setf
    (org-rl-clock-stop clock)
    (org-rl-make-time time dirty)))
 
-(defmethod org-rl-clock-start-dirty ((clock org-rl-clock))
+(cl-defmethod org-rl-clock-start-dirty ((clock org-rl-clock))
   (org-rl-dirty-dirty (org-rl-clock-start clock)))
-(defmethod org-rl-clock-stop-dirty ((clock org-rl-clock))
+(cl-defmethod org-rl-clock-stop-dirty ((clock org-rl-clock))
   (org-rl-dirty-dirty (org-rl-clock-stop clock)))
 
 
 
-(defmethod org-get-heading-from-clock ((clock org-rl-clock))
+(cl-defmethod org-get-heading-from-clock ((clock org-rl-clock))
   (if (markerp (org-rl-clock-marker clock))
       (lotus-with-marker (org-rl-clock-marker clock)
         (org-get-heading t))
     "imaginary"))
 
-(defmethod org-rl-format-clock ((clock org-rl-clock))
+(cl-defmethod org-rl-format-clock ((clock org-rl-clock))
   (let ((fmt (cdr org-time-stamp-formats)))
     (let ((heading
            (if (markerp (org-rl-clock-marker clock))
@@ -101,18 +113,20 @@
           (stop  (format-time-string fmt (org-rl-clock-stop-time clock))))
       (format "<%s> %s-%s" heading start stop))))
 
-(defmethod org-rl-clock-first-clock-beginning ((clock org-rl-clock))
+(cl-defmethod org-rl-clock-first-clock-beginning ((clock org-rl-clock))
   (org-clock-get-nth-half-clock-beginning (org-rl-clock-marker clock)))
 
-(defmethod org-rl-clock-name-bracket ((clock org-rl-clock))
+(cl-defmethod org-rl-clock-name-bracket ((clock org-rl-clock))
   ;;(org-rl-clock-marker clock)
   (concat "<" (org-get-heading-from-clock clock) ">"))
 
 
-(defmethod org-clock-clock-remove-last-clock ((clock org-rl-clock)))
+(cl-defmethod org-clock-clock-remove-last-clock ((clock org-rl-clock)))
 ;; TODO
 
-(defmethod org-rl-clock-clock-cancel ((clock org-rl-clock) &optional fail-quietly)
+(cl-defmethod org-rl-clock-clock-cancel ((clock org-rl-clock)
+                                         &optional
+                                         fail-quietly)
   (org-rl-debug :warning "org-rl-clock-clock-cancel: clock[%s] fail-quietly[%s]"
                 (org-rl-format-clock clock)
                 fail-quietly)
@@ -125,7 +139,7 @@
         (error "%s start time is null" (org-rl-clock-start-time clock)))
     (error "%s clock is null" (org-rl-clock-marker clock))))
 
-(defmethod org-rl-clock-clock-jump-to ((clock org-rl-clock))
+(cl-defmethod org-rl-clock-clock-jump-to ((clock org-rl-clock))
   (org-rl-debug :warning "org-rl-clock-clock-cancel: clock[%s]"
                 (org-rl-format-clock clock))
   (if (org-rl-clock-marker clock)
@@ -154,7 +168,9 @@
 ;; Warning (org-rl-clock): org-rl-clock-clock-in-out out
 
 
-(defmethod org-rl-clock-clock-in ((clock org-rl-clock) &optional resume)
+(cl-defmethod org-rl-clock-clock-in ((clock org-rl-clock)
+                                     &optional
+                                     resume)
   (org-rl-debug :warning "org-rl-clock-clock-in: clock[%s] resume[%s]"
                 (org-rl-format-clock clock)
                 resume)
@@ -171,7 +187,9 @@
             (error "%s start time is null" (org-rl-clock-start-time clock)))
         (error "%s clock is null" (org-rl-clock-marker clock))))))
 
-(defmethod org-rl-clock-clock-out ((clock org-rl-clock) &optional fail-quietly)
+(cl-defmethod org-rl-clock-clock-out ((clock org-rl-clock)
+                                      &optional
+                                      fail-quietly)
   (org-rl-debug :warning "org-rl-clock-clock-out: clock[%s] fail-quietly[%s]"
                 (org-rl-format-clock clock)
                 fail-quietly)
@@ -187,7 +205,10 @@
           (error "%s stop time is null" (org-rl-clock-stop-time clock)))
       (error "%s clock is null" (org-rl-clock-marker clock)))))
 
-(defmethod org-rl-clock-clock-in-out ((clock org-rl-clock) &optional resume fail-quietly)
+(cl-defmethod org-rl-clock-clock-in-out ((clock org-rl-clock)
+                                         &optional
+                                         resume
+                                         fail-quietly)
   (org-rl-debug :warning "org-rl-clock-clock-in-out: clock[%s] resume[%s] org-clock-clocking-in[%s]"
                 (org-rl-format-clock clock)
                 resume
@@ -205,7 +226,10 @@
           (org-rl-debug :warning "org-rl-clock-clock-in-out out done"))
       (error "Clock org-clock-clocking-in is %s" org-clock-clocking-in))))
 
-(defmethod org-rl-clock-action ((clock org-rl-clock) &option resume fail-quietly)
+(cl-defmethod org-rl-clock-action ((clock org-rl-clock)
+                                   &option
+                                   resume
+                                   fail-quietly)
   (when (org-rl-clock-start-dirty clock)
     (org-rl-clock-clock-in clock resume fail-quietly))
   (when (org-rl-clock-start-dirty clock)
@@ -243,10 +267,10 @@
  org-resolve-clock-opts-common
  '(("Done" . done)))
 
-(defmethod org-resolve-clock-opts-common ((clock org-rl-clock))
+(cl-defmethod org-resolve-clock-opts-common ((clock org-rl-clock))
   (list (cons "Done" 'done)))
 
-(defmethod org-resolve-clock-opts-common-with-time ((clock org-rl-clock))
+(cl-defmethod org-resolve-clock-opts-common-with-time ((clock org-rl-clock))
   (let ((heading (org-get-heading-from-clock clock)))
     (list
      (cons "Include in other" 'include-in-other)
@@ -254,7 +278,7 @@
       (format "subtract from prev %s" heading)
       'subtract))))
 
-(defmethod org-resolve-clock-opts-prev ((clock org-rl-clock))
+(cl-defmethod org-resolve-clock-opts-prev ((clock org-rl-clock))
   (let ((heading (org-get-heading-from-clock clock)))
     (list
      (cons
@@ -264,14 +288,14 @@
       (format "Jump to prev %s" heading)
       'jump-prev-p))))
 
-(defmethod org-resolve-clock-opts-prev-with-time ((clock org-rl-clock))
+(cl-defmethod org-resolve-clock-opts-prev-with-time ((clock org-rl-clock))
   (let ((heading (org-get-heading-from-clock clock)))
     (list
      (cons
       (format "Include in prev %s" heading)
       'include-in-prev))))
 
-(defmethod org-resolve-clock-opts-next ((clock org-rl-clock))
+(cl-defmethod org-resolve-clock-opts-next ((clock org-rl-clock))
   (let ((heading (org-get-heading-from-clock clock))
         (marker (car clock)))
     (list
@@ -284,7 +308,7 @@
       (format "Jump to next %s" heading)
       'jump-next-p))))
 
-(defmethod org-resolve-clock-opts-next-with-time ((clock org-rl-clock))
+(cl-defmethod org-resolve-clock-opts-next-with-time ((clock org-rl-clock))
   (let ((heading (org-get-heading-from-clock clock)))
     (list
      (cons
@@ -309,8 +333,8 @@
       (set-marker marker loc)
       marker)))
 
-(defmethod org-rl-get-time-gap ((prev org-rl-clock)
-                                (next org-rl-clock))
+(cl-defmethod org-rl-get-time-gap ((prev org-rl-clock)
+                                   (next org-rl-clock))
   (/
    (floor
     (float-time
@@ -323,10 +347,10 @@
          (error "Can not get start time."))))))
    60))
 
-(defmethod org-resolve-clock-time-debug-prompt ((prev org-rl-clock)
-                                                (next org-rl-clock)
-                                                &optional
-                                                prompt stop)
+(cl-defmethod org-resolve-clock-time-debug-prompt ((prev org-rl-clock)
+                                                   (next org-rl-clock)
+                                                   &optional
+                                                   prompt stop)
   (let* ( ;;(base 120) ;; TODO: why it was 120 ?
          (base 61)
          (_debug (format "prev[%s %d %d] next[%s %d %d]"
@@ -343,11 +367,11 @@
     debug))
 
 
-(defmethod org-resolve-clock-time-adv-debug-prompt ((prev org-rl-clock)
-                                                    (next org-rl-clock)
-                                                    &optional
-                                                    prompt
-                                                    stop)
+(cl-defmethod org-resolve-clock-time-adv-debug-prompt ((prev org-rl-clock)
+                                                       (next org-rl-clock)
+                                                       &optional
+                                                       prompt
+                                                       stop)
   (let* ( ;;(base 120) ;; TODO: why it was 120 ?
          (base 61)
          (_debug (format "prev[%s %d %d] next[%s %d %d]"
@@ -363,9 +387,9 @@
     (when stop (read-from-minibuffer (format "%s test: " debug)))
     debug))
 
-(defmethod org-resolve-clock-build-options ((prev org-rl-clock)
-                                            (next org-rl-clock)
-                                            maxtimelen)
+(cl-defmethod org-resolve-clock-build-options ((prev org-rl-clock)
+                                               (next org-rl-clock)
+                                               maxtimelen)
   (org-rl-debug :warning "org-resolve-clock-build-options: prev[%s] next[%s] maxtimelen[%d] secs"
                 (org-rl-format-clock prev)
                 (org-rl-format-clock next)
@@ -399,8 +423,8 @@
       (read-number prompt maxtimelen))))
 
 
-(defmethod org-resolve-clock-opt-cancel-prev ((prev org-rl-clock)
-                                              (next org-rl-clock))
+(cl-defmethod org-resolve-clock-opt-cancel-prev ((prev org-rl-clock)
+                                                 (next org-rl-clock))
   (progn
     (org-rl-clock-clock-cancel prev)
     (let ((prev-start (cdr prev)))
@@ -410,8 +434,8 @@
              nil
              (org-rl-clock-start-time prev))))
     (list prev next)))
-(defmethod org-resolve-clock-opt-cancel-next ((prev org-rl-clock)
-                                              (next org-rl-clock))
+(cl-defmethod org-resolve-clock-opt-cancel-next ((prev org-rl-clock)
+                                                 (next org-rl-clock))
   ;; cancel next clock
   ;; add next clock time
   (progn
@@ -422,9 +446,9 @@
            (org-rl-clock-stop-time prev)
            nil))
     (list prev next)))
-(defmethod org-resolve-clock-opt-include-in-prev ((prev org-rl-clock)
-                                                  (next org-rl-clock)
-                                                  timelen)
+(cl-defmethod org-resolve-clock-opt-include-in-prev ((prev org-rl-clock)
+                                                     (next org-rl-clock)
+                                                     timelen)
   (org-rl-debug :warning "begin %s" 'org-resolve-clock-opt-include-in-prev)
   ;; include timelen in prev
   ;; update timelength
@@ -445,9 +469,9 @@
         (org-rl-clock-clock-in-out next))))
 
   (list prev next))
-(defmethod org-resolve-clock-opt-include-in-next ((prev org-rl-clock)
-                                                  (next org-rl-clock)
-                                                  timelen)
+(cl-defmethod org-resolve-clock-opt-include-in-next ((prev org-rl-clock)
+                                                     (next org-rl-clock)
+                                                     timelen)
   (org-rl-debug :warning "begin %s" 'org-resolve-clock-opt-include-in-next)
 
   (let ((maxtimelen (org-rl-get-time-gap prev next)))
@@ -481,10 +505,10 @@
           (org-rl-clock-clock-in-out prev)))))
 
   (list prev next))
-(defmethod org-resolve-clock-opt-include-in-other ((prev org-rl-clock)
-                                                   (next org-rl-clock)
-                                                   timelen
-                                                   opt)
+(cl-defmethod org-resolve-clock-opt-include-in-other ((prev org-rl-clock)
+                                                      (next org-rl-clock)
+                                                      timelen
+                                                      opt)
   ;; select other clock
   ;; include timelen in other
   ;; update timelength
@@ -556,12 +580,12 @@
   (list prev next))
 
 
-(defmethod org-resolve-clock-time-process-option ((prev org-rl-clock)
-                                                  (next org-rl-clock)
-                                                  opt
-                                                  timelen
-                                                  maxtimelen
-                                                  &optional close-p)
+(cl-defmethod org-resolve-clock-time-process-option ((prev org-rl-clock)
+                                                     (next org-rl-clock)
+                                                     opt
+                                                     timelen
+                                                     maxtimelen
+                                                     &optional close-p)
   (let* ((timelen (seconds-to-time (* timelen 60)))
          (clocks
           (cond
@@ -600,9 +624,9 @@
 
 ;; NOTE: Remember here the concept of Positive and Negative and Full time.
 ;; Read time which could be positive or negative or full
-(defmethod org-resolve-clock-time ((prev org-rl-clock)
-                                   (next org-rl-clock)
-                                   &optional force close-p)
+(cl-defmethod org-resolve-clock-time ((prev org-rl-clock)
+                                      (next org-rl-clock)
+                                      &optional force close-p)
   "Read time which could be positive or negative or full"
   ;; BUG how to handle current time == 'now
   ;; BUG how to handle when prev == next

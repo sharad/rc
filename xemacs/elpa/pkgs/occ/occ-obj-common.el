@@ -26,6 +26,11 @@
 (provide 'occ-obj-common)
 
 
+(require 'cl-macs)
+(require 'cl-generic)
+
+
+
 ;; TODO org-base-buffer
 
 ;; https://stackoverflow.com/questions/12262220/add-created-date-property-to-todos-in-org-mode

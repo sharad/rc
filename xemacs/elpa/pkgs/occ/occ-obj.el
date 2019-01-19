@@ -25,7 +25,6 @@
 
 ;; (require 'eieio)
 
-(require 'cl-macs)
 (require 'occ-obj-common)
 
 
@@ -43,10 +42,10 @@
 
 (defvar occ-verbose 0)
 
-(defstruct occ-obj
+(cl-defstruct occ-obj
   name)
 
-(defstruct (occ-prop (:include occ-obj))
+(cl-defstruct (occ-prop (:include occ-obj))
   value)
 
 ;; NOTE: Remember when adding new attributes, nned to destroy existing object, else it will cause miss-match.
