@@ -25,7 +25,7 @@
 
 ;; (require 'eieio)
 
-
+(require 'cl-macs)
 (require 'occ-obj-common)
 
 

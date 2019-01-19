@@ -26,7 +26,9 @@
 
 (provide 'org-rl-clock)
 
-(require 'org)
+(require 'cl-macs)
+
+(require 'org)
 (require 'org-timer)
 (require 'org-clock)
 (require 'timer-utils-lotus)
@@ -64,8 +66,16 @@
 
 (defmethod org-rl-clock-start-time ((clock org-rl-clock))
   (org-rl-time-time (org-rl-clock-start clock)))
+(defmethod org-rl-clock-start-set ((clock org-rl-clock) time &optional dirty)
+  (setf
+   (org-rl-clock-start clock)
+   (org-rl-make-time time dirty)))
 (defmethod org-rl-clock-stop-time ((clock org-rl-clock))
   (org-rl-time-time (org-rl-clock-stop clock)))
+(defmethod org-rl-clock-stop-set ((clock org-rl-clock) time &optional dirty)
+  (setf
+   (org-rl-clock-stop clock)
+   (org-rl-make-time time dirty)))
 
 (defmethod org-rl-clock-start-dirty ((clock org-rl-clock))
   (org-rl-dirty-dirty (org-rl-clock-start clock)))
