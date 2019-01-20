@@ -67,9 +67,9 @@ so long."
                    (/ org-clock-user-idle-seconds 60)))
 
         (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-            (org-resolve-clock-time
-             (make-rl-clock org-clock-marker org-clock-start-time nil)
-             (make-rl-clock 'imaginary 'now org-clock-user-idle-start))
+            (org-rl-clock-resolve-time
+             (org-rl-make-clock org-clock-marker org-clock-start-time nil)
+             (org-rl-make-clock 'imaginary 'now org-clock-user-idle-start))
           (when nil
             (message "2. Idle time now sec[%d] min[%d]"
                      org-clock-user-idle-seconds
@@ -106,8 +106,8 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
                                 (/= (car clock) org-clock-marker))))
               (when (or (not only-dangling-p) dangling)
                 (org-rl-clock-time
-                 (make-rl-clock (car clock) (cdr clock) nil)
-                 (make-rl-clock 'imaginary 'now (cdr clock)))))))))))
+                 (org-rl-make-clock (car clock) (cdr clock) nil)
+                 (org-rl-make-clock 'imaginary 'now (cdr clock)))))))))))
 
 ;;;###autoload
 (defalias 'org-resolve-clocks 'org-rl-resolve-clocks)
@@ -204,9 +204,9 @@ so long."
                                      (seconds-to-time org-clock-user-idle-seconds)))
                      (org-clock-resolving-clocks-due-to-idleness t))
                 (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-                    (org-rl-clock-time
-                     (make-rl-clock marker start-time nil)
-                     (make-rl-clock 'imaginary 'now org-clock-user-idle-start))
+                    (org-rl-clock-resolve-time
+                     (org-rl-make-clock marker start-time nil)
+                     (org-rl-make-clock 'imaginary 'now org-clock-user-idle-start))
                   (when t
                     (message "Idle time now min[%d] sec[%d]"
                              (/ org-clock-user-idle-seconds 60)
