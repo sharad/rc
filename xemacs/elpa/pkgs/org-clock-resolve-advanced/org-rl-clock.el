@@ -64,23 +64,70 @@
   active
   cancel)
 
-(defun org-rl-make-clock (marker
-                          start-time
-                          stop-time
-                          &optional
-                          start-dirty
-                          stop-dirty
-                          active
-                          cancel)
- (make-org-rl-clock
-  :marker marker
-  :start (make-org-rl-time :time start-time :dirty start-dirty)
-  :stop  (make-org-rl-time :time stop-time  :dirty stop-dirty)
-  :active active
-  :cancel cancel))
+;; (defun org-rl-make-clock (marker
+;;                           start-time
+;;                           stop-time
+;;                           &optional
+;;                           active
+;;                           cancel)
+;;   (make-org-rl-clock
+;;    :marker marker
+;;    :start (make-org-rl-time :time start-time :dirty start-dirty)
+;;    :stop  (make-org-rl-time :time stop-time  :dirty stop-dirty)
+;;    :active active
+;;    :cancel cancel))
+
+(cl-defmethod org-rl-make-clock ((marker marker)
+                                 (start org-rl-time)
+                                 (stop org-rl-time)
+                                 &optional
+                                 active
+                                 cancel)
+  ;; (org-rl-debug :warning "calling 1")
+  (make-org-rl-clock
+   :marker marker
+   :start start
+   :stop  stop
+   :active active
+   :cancel cancel))
+
+;; (cl-defgeneric org-rl-make-clock ((marker marker)
+;;                                   start-time
+;;                                   stop-time
+;;                                   &optional
+;;                                   start-dirty
+;;                                   stop-dirty
+;;                                   active
+;;                                   cancel))
+
+(cl-defmethod org-rl-make-clock ((marker marker)
+                                 start-time
+                                 stop-time
+                                 &optional
+                                 start-dirty
+                                 stop-dirty
+                                 active
+                                 cancel)
+  ;; (org-rl-debug :warning "calling 2")
+  (make-org-rl-clock
+   :marker marker
+   :start (make-org-rl-time :time start-time :dirty start-dirty)
+   :stop  (make-org-rl-time :time stop-time  :dirty stop-dirty)
+   :active active
+   :cancel cancel))
+
+;; good
+;; (org-rl-make-clock (point-marker) (current-time) 1)
+;; (org-rl-make-clock (point-marker) (make-org-rl-time :time (current-time)) (make-org-rl-time :time (current-time)))
+
+
 
 (defun org-rl-make-time (time &optional dirty)
   (make-org-rl-time :time time :dirty dirty))
+
+(defun org-rl-make-current-time (&optional dirty)
+  (make-org-rl-time :time 'now :dirty dirty))
+
 
 (cl-defmethod org-rl-time-get-time ((time org-rl-time))
   (let ((rl-time (org-rl-time-time time)))
