@@ -171,6 +171,32 @@ previous clocking intervals."
      ["Go to clock entry" org-clock-goto t]
      ["Switch task" (lambda () (interactive) (org-clock-in '(4))) :active t :keys "C-u C-c C-x C-i"])))
 
+(defun org-timer-secs-to-hm (s)
+  "Convert integer S into h:mm.
+If the integer is negative, the string will start with \"-\"."
+  (let (sign m h)
+    (setq sign (if (< s 0) "-" "")
+          s (abs s)
+          m (/ s 60) s (- s (* 60 m))
+          h (/ m 60) m (- m (* 60 h)))
+    (format "%s%d:%02d" sign h m)))
+
+(defun org-timer-secs-to-intelligent (s)
+  "Convert integer S into h:mm.
+If the integer is negative, the string will start with \"-\"
+it omit prefixed 0s."
+  (let (sign m h)
+    (setq sign (if (< s 0) "-" "")
+          s (abs s)
+          m (/ s 60) s (- s (* 60 m))
+          h (/ m 60) m (- m (* 60 h)))
+    (format
+     (concat "%s%d" (unless (= m 0) ":%02d"))
+     sign h m)))
+
+(defvar org-timer-secs-to-time-fmt-fn #'org-timer-secs-to-intelligent
+  "could be org-timer-secs-to-intelligent or org-timer-secs-to-hm or org-timer-secs-to-hms")
+
 ;; TODO: optimize it.
 (defun org-clock-get-work-day-clock-string (&optional force)
   "Form a clock-string, that will be shown in the mode line.
@@ -184,11 +210,11 @@ If not, show simply the clocked time like 01:50."
              (work-day-end-secs   (+ day-start-secs (* org-clock-work-day-end 60 60)))
              (work-day-over-secs  (- now-sec work-day-start-secs))
              (work-day-left-secs  (- work-day-end-secs now-sec))
-             (work-day-over-str   (org-timer-secs-to-hms work-day-over-secs))
-             (work-day-left-str   (org-timer-secs-to-hms work-day-left-secs))
+             (work-day-over-str   (funcall org-timer-secs-to-time-fmt-fn work-day-over-secs))
+             (work-day-left-str   (funcall org-timer-secs-to-time-fmt-fn work-day-left-secs))
              (today-clocked-secs  (org-clock-files-secs org-clock-monitor-files force))
              (today-dur-left-sec  (- (* org-clock-work-day-hours 60 60) today-clocked-secs))
-             (today-dur-left-str  (org-timer-secs-to-hms today-dur-left-sec))
+             (today-dur-left-str  (funcall org-timer-secs-to-time-fmt-fn today-dur-left-sec))
              (work-done-str
               (org-propertize
                today-dur-left-str
@@ -196,7 +222,8 @@ If not, show simply the clocked time like 01:50."
                          org-work-day-face-underrun
                        org-work-day-face-overrun)))
              (work-day-time-str
-              (org-minutes-to-clocksum-string (* org-clock-work-day-hours 60)))
+              ;; (org-minutes-to-clocksum-string (* org-clock-work-day-hours 60))
+              (funcall org-timer-secs-to-time-fmt-fn (* org-clock-work-day-hours 60 60)))
              (clockstr (org-propertize
                         (concat
                          (if org-clock-get-work-day-clock-string-separator " " "")
@@ -212,7 +239,7 @@ If not, show simply the clocked time like 01:50."
                 work-done-str
                 work-day-time-str
                 work-day-left-str))
-      (message "org-clock-monitor-files is not set")))
+    (message "org-clock-monitor-files is not set")))
 
 (defun org-clock-monitor-files-set-from-dir (monitor-dir)
   (interactive "Dset org clock monitor dir: ")

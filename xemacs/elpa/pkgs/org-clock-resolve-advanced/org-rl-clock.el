@@ -471,7 +471,7 @@
   (org-rl-clocks-action nil nil prev next))
 
 ;; TODO:
-;; still we need to tink we are resolving time between two prev next clock or
+;; still we need to think we are resolving time between two prev next clock or
 ;; we are resolving time of one clock
 (cl-defmethod org-rl-clock-opt-include-in-prev ((prev org-rl-clock)
                                                 (next org-rl-clock)
@@ -646,9 +646,10 @@
                         subtract)) ;; subtract timelen from timelength
             (org-rl-clock-opt-include-in-other prev next timelen opt))
 
-           ((eq opt 'done))
+           ((eq opt 'done)
+            (list prev next))
 
-           (t (error "Error")))))
+           (t (error "Wrong option %s" opt)))))
 
     clocks))
 
