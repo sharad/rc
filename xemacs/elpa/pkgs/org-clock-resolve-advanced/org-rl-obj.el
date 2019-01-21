@@ -148,9 +148,9 @@
    (org-rl-make-time time dirty)))
 
 (cl-defmethod org-rl-clock-start-dirty ((clock org-rl-clock))
-  (org-rl-dirty-dirty (org-rl-clock-start clock)))
+  (org-rl-time-dirty (org-rl-clock-start clock)))
 (cl-defmethod org-rl-clock-stop-dirty ((clock org-rl-clock))
-  (org-rl-dirty-dirty (org-rl-clock-stop clock)))
+  (org-rl-time-dirty (org-rl-clock-stop clock)))
 
 (cl-defmethod org-rl-clock-first-clock-beginning ((clock org-rl-clock))
   (org-clock-get-nth-half-clock-beginning
