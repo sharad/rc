@@ -38,6 +38,7 @@
 (require 'org-capture+)
 (require 'activity-base)
 
+;; TODO: see it https://orgmode.org/manual/Template-expansion.html#Template-expansion
 
 (defobjgen@ @dest-class :gen-org-capture-dest ()
   "Capture Dest class"
@@ -138,5 +139,24 @@
  (@! @note-class :gen-org-capture-edit-entry-dest-note "org-capture-edit-entry-dest-note"))
 
 ;; (@! @org-capture-edit-entry-dest-note :send '(clock) "* Hello")
+
+
+(when nil ;;https://orgmode.org/manual/Template-expansion.html#Template-expansion
+
+  ;;TODO: Will be required later.
+
+  (org-capture+
+   'entry
+   '(marker org-clock-marker)
+   "* Hello %^{PROMPT}"
+   ;; :immediate-finish t
+   :empty-lines 1)
+
+  (org-capture+
+   'entry
+   '(marker org-clock-marker)
+   "* Hello %^{PROMPT}"
+   :immediate-finish t
+   :empty-lines 1))
 
 ;;; org-capture-note.el ends here

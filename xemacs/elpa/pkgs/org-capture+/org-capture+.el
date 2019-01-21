@@ -609,7 +609,23 @@ of the day at point (if any) or the current HH:MM time."
    :empty-lines 1)
 
 
- )
+
+  (when nil ;;https://orgmode.org/manual/Template-expansion.html#Template-expansion
+    (org-capture+
+     'entry
+     '(marker org-clock-marker)
+     "* Hello %^{PROMPT}"
+     ;; :immediate-finish t
+     :empty-lines 1)
+
+    (org-capture+
+     'entry
+     '(marker org-clock-marker)
+     "* Hello %^{PROMPT}"
+     :immediate-finish t
+     :empty-lines 1)))
+
+
 
 (when nil
 (let (helm-sources)
