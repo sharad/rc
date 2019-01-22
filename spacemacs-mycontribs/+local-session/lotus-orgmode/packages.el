@@ -254,8 +254,56 @@ Each entry is either:
 
 (defun lotus-orgmode/init-org-parser ()
   (use-package org-parser
-               :defer t
-               :config
-               (progn)))
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-orgmode/init-org-context ()
+  (use-package org-context
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-orgmode/init-org-dashboard ()
+  (use-package org-dashboard
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-orgmode/init-org-email ()
+  (use-package org-email
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-orgmode/init-org-mobile-sync ()
+  (use-package org-mobile-sync
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-orgmode/init-org-mru-clock ()
+  (use-package org-mru-clock
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-orgmode/init-org-noter ()
+  (use-package org-noter
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-orgmode/init-org-repo-todo ()
+  (use-package org-repo-todo
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-orgmode/init-org-snooze ()
+  (use-package org-snooze
+    :defer t
+    :config
+    (progn)))
 
 ;;; packages.el ends here

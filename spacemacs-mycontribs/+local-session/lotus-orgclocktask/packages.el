@@ -55,7 +55,6 @@
     task-manager
     startup-hooks
     counsel-org-clock
-    ;; new
     org-clock-split
     )
 
@@ -665,9 +664,15 @@ Each entry is either:
 
 (defun lotus-orgclocktask/init-counsel-org-clock ()
   (use-package counsel-org-clock
-      :defer t
-      :config
-      (progn
-        )))
+    :defer t
+    :config
+    (progn
+      )))
+
+(defun lotus-orgclocktask/init-org-clock-split ()
+  (use-package org-clock-split
+    :defer t
+    :config
+    (progn)))
 
 ;;; packages.el ends here
