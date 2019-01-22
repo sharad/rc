@@ -39,6 +39,9 @@
 ;; (defvar org-)
 (defvar occ-verbose 0)
 
+(defvar occ-org-clock-persist nil "Control org-clock-persist at time of occ clock-in")
+(defvar occ-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of occ clock-in")
+
 (defun occ-debug (level &rest args)
   (when (car args)
     (apply #'format args)))
@@ -83,5 +86,12 @@
          (< clock-duration 60)
          (> clock-duration 120)))
     t))
+
+;;;###autoload
+(defun occ-straight-org-clock-clock-in (clock &optional resume start-time)
+  (let ((org-clock-persist occ-org-clock-persist)
+        (org-clock-auto-clock-resolution occ-org-clock-auto-clock-resolution))
+    (org-clock-clock-in clock resume start-time)))
+
 
 ;;; occ-obj-common.el ends here

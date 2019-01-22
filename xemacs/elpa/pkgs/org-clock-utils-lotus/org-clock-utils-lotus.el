@@ -41,6 +41,24 @@
 (require 'org-misc-utils-lotus)
 
 
+(defvar lotus-straight-org-clock-persist nil "Control org-clock-persist at time of lotus-straight clock-in")
+(defvar lotus-straight-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of lotus-straight clock-in")
+
+;;;###autoload
+(defun lotus-straight-org-clock-clock-in (clock &optional resume start-time)
+  "lotus-straight-org-clock-clock-in"
+  (let ((org-clock-persist lotus-straight-org-clock-persist)
+        (org-clock-auto-clock-resolution lotus-straight-org-clock-auto-clock-resolution))
+    (org-clock-clock-in clock resume start-time)))
+
+;;;###autoload
+(defun lotus-straight-org-clock-clock-out (clock &optional fail-quietly at-time)
+  "lotus-straight-org-clock-clock-out"
+  (let ((org-clock-persist lotus-straight-org-clock-persist)
+        (org-clock-auto-clock-resolution lotus-straight-org-clock-auto-clock-resolution))
+    (org-clock-clock-out clock fail-quietly at-time)))
+
+
 (defmacro org-with-clock-position (clock &rest forms)
   "Evaluate FORMS with CLOCK as the current active clock."
   `(with-current-buffer (marker-buffer (car ,clock))
@@ -75,7 +93,7 @@
 ;;               (org-time-string-to-time (match-string 2)))))))
 
 
-
+;;;###autoload
 (defun org-clock-get-nth-full-clock-data (marker &optional n)
   (let ((n (or n 1))
         (org-clock-re
@@ -90,6 +108,7 @@
               (org-time-string-to-time (match-string 1))
               (org-time-string-to-time (match-string 2)))))))
 
+;;;###autoload
 (defun org-clock-get-nth-half-clock-data (marker &optional n)
   (let ((n (or n 1))
         (org-clock-re
@@ -102,26 +121,32 @@
          (copy-marker (match-end 1) t)
          (org-time-string-to-time (match-string 1)))))))
 
+;;;###autoload
 (defun org-clock-get-nth-full-clock-beginning (marker &optional n)
   (nth 0 (org-clock-get-nth-full-clock-data marker n)))
+;;;###autoload
 (defun org-clock-get-nth-full-clock-end (marker &optional n)
   (nth 1 (org-clock-get-nth-full-clock-data marker n)))
+;;;###autoload
 (defun org-clock-get-nth-full-clock-start-time (marker &optional n)
   (nth 2 (org-clock-get-nth-full-clock-data marker n)))
+;;;###autoload
 (defun org-clock-get-nth-full-clock-end-time (marker &optional n)
   (nth 3 (org-clock-get-nth-full-clock-data marker n)))
 
-
+;;;###autoload
 (defun org-clock-get-nth-half-clock-beginning (marker &optional n)
   (nth 0 (org-clock-get-nth-half-clock-data marker n)))
+;;;###autoload
 (defun org-clock-get-nth-half-clock-end (marker &optional n)
   (nth 1 (org-clock-get-nth-half-clock-data marker n)))
+;;;###autoload
 (defun org-clock-get-nth-half-clock-time (marker &optional n)
   (nth 2 (org-clock-get-nth-half-clock-data marker n)))
 
 ;; (org-clock-get-nth-clock-times org-clock-marker 1)
 
-
+
 (progn
   (eval-when-compile
     (require 'org-misc-utils-lotus))
@@ -183,11 +208,13 @@
 
     ))
 
+;;;###autoload
 (defun lotus-org-clock-detect-first-clockin-of-day ()
   ;; do necessary stuff
   ;; like context presentation etc.
   )
 
+;;;###autoload
 (defun lotus-org-clock-declare-last-clockout-of-day ()
   )
 
@@ -195,14 +222,17 @@
 ;; clock the time from last known clock to now
   )
 
+;;;###autoload
 (defun lll ()
   ;; schedule deadline to honour end of day time also.
  )
 
+;;;###autoload
 (defun lll ()
   ;; calculate schedule deadline whether available in given time
  )
 
+;;;###autoload
 (defun org-define-a-task ()
   "This function is used to create a org tree to complete a task.
 for e.g. implementing lvm support for guixsd what all steps a person have to take
@@ -210,9 +240,11 @@ he has to read scheme, guixsd details, than see similar module and try to implem
   (interactive)
   )
 
+;;;###autoload
 (defun org-log-not-on-event (start end event)
   )
 
+;;;###autoload
 (defun org-goto-refile (&optional refile-targets)
   "Refile goto."
   ;; mark paragraph if no region is set
@@ -223,6 +255,7 @@ he has to read scheme, guixsd details, than see similar module and try to implem
     (when (set-buffer (find-file-noselect file)) ;; (switch-to-buffer (find-file-noselect file) 'norecord)
       (goto-char pos))))
 
+;;;###autoload
 (defun org-clock-new-task ()
   (interactive)
   (org-capture nil "x"))
@@ -230,7 +263,8 @@ he has to read scheme, guixsd details, than see similar module and try to implem
 ;;;}}}
 
 
-(defun get-last-cloc (tstart)
+;;;###autoload
+(defun get-last-clock (tstart)
   (save-excursion
     (save-restriction
       (org-narrow-to-subtree)
