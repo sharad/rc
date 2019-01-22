@@ -89,7 +89,7 @@
 
 ;;;###autoload
 (defun occ-straight-org-clock-clock-in (clock &optional resume start-time)
-  (let ((org-clock-persist occ-org-clock-persist)
+  (let ((org-clock-persist               occ-org-clock-persist)
         (org-clock-auto-clock-resolution occ-org-clock-auto-clock-resolution))
     (org-clock-clock-in clock resume start-time)))
 

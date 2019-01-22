@@ -47,7 +47,7 @@
 ;;;###autoload
 (defun lotus-straight-org-clock-clock-in (clock &optional resume start-time)
   "lotus-straight-org-clock-clock-in"
-  (let ((org-clock-persist lotus-straight-org-clock-persist)
+  (let ((org-clock-persist               lotus-straight-org-clock-persist)
         (org-clock-auto-clock-resolution lotus-straight-org-clock-auto-clock-resolution))
     (org-clock-clock-in clock resume start-time)))
 
