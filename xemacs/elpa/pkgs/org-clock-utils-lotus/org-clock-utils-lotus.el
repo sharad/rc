@@ -45,11 +45,51 @@
 (defvar lotus-straight-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of lotus-straight clock-in")
 
 ;;;###autoload
+(defun lotus-org-clock-load-only ()
+  "Load clock-related data from disk, maybe resuming a stored clock."
+  (when (and org-clock-persist (not org-clock-loaded))
+    (if (not (file-readable-p org-clock-persist-file))
+        (message "Not restoring clock data; %S not found" org-clock-persist-file)
+      (message "Restoring clock data")
+      ;; Load history.
+      (load-file org-clock-persist-file)
+      (setq org-clock-loaded t)
+      (pcase-dolist (`(,(and file (pred file-exists-p)) . ,position)
+                     org-clock-stored-history)
+        (org-clock-history-push position (find-file-noselect file))))))
+
+;;;###autoload
+(defun lotus-org-clock-resume ()
+  (when (and
+         org-clock-persist
+         ;; may not work as file is already loaded.
+         (not org-clock-loaded))
+    (if (not (file-readable-p org-clock-persist-file))
+        (message "Not restoring clock data; %S not found" org-clock-persist-file)
+      ;; Resume clock.
+      (pcase org-clock-stored-resume-clock
+        (`(,(and file (pred file-exists-p)) . ,position)
+         (with-current-buffer (find-file-noselect file)
+           (when (or (not org-clock-persist-query-resume)
+                     (y-or-n-p (format "Resume clock (%s) "
+                                       (save-excursion
+                                         (goto-char position)
+                                         (org-get-heading t t)))))
+             (goto-char position)
+             (let ((org-clock-in-resume 'auto-restart)
+                   (org-clock-auto-clock-resolution nil))
+               (org-clock-in)
+               (when (org-invisible-p) (org-show-context))))))
+        (_ nil)))))
+
+;;;###autoload
 (defun lotus-straight-org-clock-clock-in (clock &optional resume start-time)
   "lotus-straight-org-clock-clock-in"
   (let ((org-clock-persist               lotus-straight-org-clock-persist)
         (org-clock-auto-clock-resolution lotus-straight-org-clock-auto-clock-resolution))
-    (org-clock-clock-in clock resume start-time)))
+    (progn
+      (lotus-org-clock-load-only)
+      (org-clock-clock-in clock resume start-time))))
 
 ;;;###autoload
 (defun lotus-straight-org-clock-clock-out (clock &optional fail-quietly at-time)

@@ -50,6 +50,12 @@
 (defvar org-rl-org-clock-persist nil "Control org-clock-persist at time of org-resolve clock-in")
 (defvar org-rl-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of org-resolev clock-in")
 
+(defun org-rl-straight-org-clock-clock-in (clock &optional resume start-time)
+  (let ((org-clock-persist               org-rl-org-clock-persist)
+        (org-clock-auto-clock-resolution org-rl-org-clock-auto-clock-resolution))
+    (progn
+      (lotus-org-clock-load-only)
+      (org-clock-clock-in clock resume start-time))))
 
 
 (defun time-p (time)
@@ -259,17 +265,15 @@
   (org-rl-debug :warning "org-rl-clock-clock-in: clock[%s] resume[%s]"
                 (org-rl-format-clock clock)
                 resume)
-  (let ((org-clock-persist               org-rl-org-clock-persist)
-        (org-clock-auto-clock-resolution org-rl-org-clock-auto-clock-resolution))
-    (when (not org-clock-clocking-in)
-      (if (org-rl-clock-marker clock)
-          (if (time-p (org-rl-clock-start-time clock))
-              (org-clock-clock-in
-               (org-rl-clock-for-clock-in clock)
-               resume
-               (org-rl-clock-start-time clock))
-            (error "%s start time is null" (org-rl-clock-start-time clock)))
-        (error "%s clock is null" (org-rl-clock-marker clock))))))
+  (when (not org-clock-clocking-in)
+    (if (org-rl-clock-marker clock)
+        (if (time-p (org-rl-clock-start-time clock))
+            (org-rl-straight-org-clock-clock-in
+             (org-rl-clock-for-clock-in clock)
+             resume
+             (org-rl-clock-start-time clock))
+          (error "%s start time is null" (org-rl-clock-start-time clock)))
+      (error "%s clock is null" (org-rl-clock-marker clock)))))
 
 (cl-defmethod org-rl-clock-clock-out ((clock org-rl-clock)
                                       &optional
