@@ -135,6 +135,46 @@
                      (org-clock-auto-clock-resolution nil))
                  (org-clock-in)
                  (when (org-invisible-p) (org-show-context))))))
-          (_ nil)))))
-  )
+          (_ nil))))))
+  
 
+
+
+
+
+
+
+(when nil
+
+  (defun run-hooks (&rest hooks)
+    (dolist (hook hooks)
+      (dolist (f (symbol-value hook))
+        (condition-case e
+            (unless (eq t f)
+              (funcall f))
+          (error
+           (message "Error: function: %s error %s hooks %s"
+                    f
+                    e
+                    hooks))))))
+  (progn
+    (setq helm--remap-mouse-mode-off-hook nil)
+    (setq helm--remap-mouse-mode-on-hook nil)
+    (setq evil-local-mode-on-hook nil)
+    (setq evil-local-mode-off-hook nil)
+    (setq font-lock-mode-off-hook nil))
+
+
+  (defun git-gutter+-reenable-buffers ()
+    (dolist (buf git-gutter+-buffers-to-reenable)
+      (if (and
+           (bufferp buf) (buffer-live-p buf))
+          (with-current-buffer buf
+            (git-gutter+-turn-on))
+        (message "buffer %s is not buffer or already killed" buf)))
+    (setq git-gutter+-buffers-to-reenable nil)))
+
+
+;; git-gutter+-reenable-buffers error (error Selecting deleted buffer) hooks (after-change-major-mode-hook)
+
+;; (git-gutter+-reenable-buffers)

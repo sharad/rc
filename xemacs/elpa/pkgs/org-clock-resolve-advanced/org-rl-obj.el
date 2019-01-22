@@ -104,6 +104,22 @@
    :active active
    :cancel cancel))
 
+(cl-defmethod org-rl-make-clock ((marker symbol)
+                                 start-time
+                                 stop-time
+                                 &optional
+                                 start-dirty
+                                 stop-dirty
+                                 active
+                                 cancel)
+  ;; (org-rl-debug :warning "calling 2")
+  (make-org-rl-clock
+   :marker marker
+   :start (make-org-rl-time :time start-time :dirty start-dirty)
+   :stop  (make-org-rl-time :time stop-time  :dirty stop-dirty)
+   :active active
+   :cancel cancel))
+
 ;; good
 ;; (org-rl-make-clock (point-marker) (current-time) 1)
 ;; (org-rl-make-clock (point-marker) (make-org-rl-time :time (current-time)) (make-org-rl-time :time (current-time)))

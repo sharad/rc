@@ -37,7 +37,7 @@
 (defconst lotus-override-packages
   '(
     (lsdb    :location local)
-    helm
+    git-gutter+
     )
   "The list of Lisp packages required by the lotus-override layer.
 
@@ -81,8 +81,8 @@ Each entry is either:
 
 
 
-(defun lotus-override/post-init-helm ()
-  (use-package helm
+(defun lotus-override/post-init-git-gutter+ ()
+  (use-package git-gutter+
     :defer t
     :config
     (progn
@@ -104,4 +104,35 @@ Each entry is either:
         ;;other similar issue https://github.com/syl20bnr/spacemacs/issues/6945
         ;;but not with helm
 
-        (message "Fix error \"Selecting deleted buffer\"")))))
+        ;;TODO: after-change-major-mode-hook from subr.el
+        ;;TODO: with-current-buffer          from subr.el
+        ;; here a new run-hooks like run-hook-failsafe
+        ;; which will remove hook function it throw error
+        ;; than after-change-major-mode-hook should be run with it.
+        ;; also with-current-buffer buffer could also add some error check for
+        ;; for killed buffers.
+
+        ;;; from subr.el
+
+        ;; (defmacro with-current-buffer (buffer-or-name &rest body)
+        ;;           "Execute the forms in BODY with BUFFER-OR-NAME temporarily current.
+        ;; BUFFER-OR-NAME must be a buffer or the name of an existing buffer.
+        ;; The value returned is the value of the last form in BODY.  See
+        ;; also `with-temp-buffer'."
+        ;;           (declare (indent 1) (debug t))
+        ;;           `(save-current-buffer
+        ;;              (set-buffer ,buffer-or-name)
+        ;;              ,@body))
+
+        (message "Fixed error \"Selecting deleted buffer\" in git-gutter+ package")
+
+        (defun git-gutter+-reenable-buffers ()
+          ;; (message "test")
+          (dolist (buf git-gutter+-buffers-to-reenable)
+            (if (and
+                 (bufferp buf)
+                 (buffer-live-p buf))
+                (with-current-buffer buf
+                  (git-gutter+-turn-on))
+              (message "buffer %s is not buffer or already killed" buf)))
+          (setq git-gutter+-buffers-to-reenable nil))))))
