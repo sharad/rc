@@ -37,7 +37,7 @@
 (require 'timer-utils-lotus)
 (require 'startup-hooks)
 (eval-when-compile
-  (require 'org-misc-utils-lotus))
+  '(require 'org-misc-utils-lotus))
 (require 'org-misc-utils-lotus)
 
 
