@@ -44,6 +44,13 @@
 
 ;; Misc Macros Starts
 
+(defvar lotus-inhibit-modification-hooks t "lotus-inhibit-modification-hooks")
+
+(defmacro org-with-inhibit-modification-hooks (&rest body)
+  `(let ((inhibit-modification-hooks lotus-inhibit-modification-hooks))
+     ,@body))
+(put 'org-with-inhibit-modification-hooks 'lisp-indent-function 0)
+
 (defmacro org-with-clock-writeable (&rest body)
   `(let ((buff (org-base-buffer (marker-buffer org-clock-marker))))
      (when buff
@@ -292,7 +299,7 @@ With prefix arg C-u, copy region instad of killing it."
 
 (defun org-insert-subheading-at-point (subheading)
   "return point"
-  (let ((inhibit-modification-hooks t)
+  (org-with-inhibit-modification-hooks
         ;; Debugger entered--Lisp error: (error "Invalid search bound (wrong side of point)")
         ;; re-search-forward(":[a-z0-9\\+_-]+?:" 128068 t)
         ;; emoji-cheat-sheet-plus--display-region(128714 128068)
@@ -308,7 +315,7 @@ With prefix arg C-u, copy region instad of killing it."
         (subheading (cond
                       ((stringp subheading) subheading)
                       ((functionp subheading) (funcall subheading))
-                      (t (error "no subheading")))))
+                      (t (error "no subheading"))))
     (progn
       (if (org-heading-has-child-p)
           (progn
@@ -325,7 +332,7 @@ With prefix arg C-u, copy region instad of killing it."
       (point))))
 
 (defun org-insert-grandsubheading-at-point (subheading)
-  (let ((inhibit-modification-hooks t)
+  (org-with-inhibit-modification-hooks
         ;; Debugger entered--Lisp error: (error "Invalid search bound (wrong side of point)")
         ;; re-search-forward(":[a-z0-9\\+_-]+?:" 128068 t)
         ;; emoji-cheat-sheet-plus--display-region(128714 128068)
@@ -341,7 +348,7 @@ With prefix arg C-u, copy region instad of killing it."
         (subheading (cond
                       ((stringp subheading) subheading)
                       ((functionp subheading) (funcall subheading))
-                      (t (error "no subheading")))))
+                      (t (error "no subheading"))))
     (progn
       (if (eql org-refile-string-position 'bottom)
           (org-end-of-subtree)

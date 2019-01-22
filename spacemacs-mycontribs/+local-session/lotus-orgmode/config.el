@@ -594,7 +594,7 @@
      org-clock-clocked-in-display 'both ;; ('mode-line 'frame-title 'both)
      org-clock-idle-time 5 ;; minutes
      org-clock-resolve-expert nil ;; good
-     org-clock-sound t ;; could be file name
+     org-clock-sound t ;; TODO: could be file name
      ;; org-clock-current-task
      ;; org-clock-heading
      org-clock-history-length 100

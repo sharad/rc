@@ -579,7 +579,8 @@ pointing to it."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+(defvar occ-org-clock-persist nil "Control org-clock-persist at time of occ clock-in")
+(defvar occ-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of occ clock-in")
 (defvar *occ-clocked-ctxual-tsk-ctx-history* nil)
 (defvar occ-clock-in-hooks nil "Hook to run on clockin with previous and next markers.")
 
@@ -630,7 +631,8 @@ pointing to it."
               (when old-heading
                 (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
               (condition-case err
-                  (let ((org-clock-auto-clock-resolution nil))
+                  (let ((org-clock-persist occ-org-clock-persist)
+                        (org-clock-auto-clock-resolution occ-org-clock-auto-clock-resolution))
                     (org-clock-clock-in (list new-marker))
                     (setq retval t)
                     (push new-ctxask *occ-clocked-ctxual-tsk-ctx-history*))

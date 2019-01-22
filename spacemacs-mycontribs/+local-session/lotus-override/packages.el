@@ -73,8 +73,10 @@ Each entry is either:
     (progn
       (progn
         (defun lsdb-gnus-update-record ()
-          (with-current-buffer (with-current-buffer (or gnus-article-current-summary (current-buffer))
-                                 gnus-original-article-buffer)
+          (with-current-buffer (or
+                                gnus-article-current-summary
+                                gnus-original-article-buffer
+                                (current-buffer))
             (lsdb-update-records-and-display)))))))
 
 

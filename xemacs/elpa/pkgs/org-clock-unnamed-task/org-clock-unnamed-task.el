@@ -35,12 +35,14 @@
 (defvar *lotus-org-unnamed-parent-task-name* "Unnamed tasks")
 (defvar *lotus-org-unnamed-task-name-fmt*    "Unnamed task %d")
 (defvar *lotus-org-unnamed-task-clock-marker* nil)
+(defvar lotus-org-unnamed-task-org-clock-persist nil "Control org-clock-persist at time of unnamed task clock-in")
+(defvar lotus-org-unnamed-task-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of unnamed task clock-in")
 
 ;;;###autoload
 (defun lotus-org-unnamed-task-file (&optional file)
   (if file
       (setq *lotus-org-unnamed-task-file* file)
-      *lotus-org-unnamed-task-file*))
+    *lotus-org-unnamed-task-file*))
 
 ;;;###autoload
 (defun lotus-org-unnamed-parent-task-name (&optional name)
@@ -96,8 +98,8 @@
         (error "No marker %s returned" marker))
       (with-current-buffer (marker-buffer marker)
         (goto-char marker)
-        (let ((inhibit-modification-hooks t))
-          (org-entry-put nil "Effort" "10")))
+        (org-with-inhibit-modification-hooks
+         (org-entry-put nil "Effort" "10")))
       (cons subtask marker))))
 
 (when nil
@@ -134,7 +136,9 @@
      (lotus-org-create-unnamed-task file parent-task)
      (org-entry-put nil "Effort" "10")
      ;; BUG: It is clocking to last unfinished task
-     (org-clock-clock-in (list (lotus-org-unnamed-task-clock-marker (mark-marker))))
+     (let ((org-clock-persist lotus-org-unnamed-task-org-clock-persist)
+           (org-clock-auto-clock-resolution lotus-org-unnamed-task-org-clock-auto-clock-resolution))
+       (org-clock-clock-in (list (lotus-org-unnamed-task-clock-marker (mark-marker)))))
      ;; (org-clock-in)
      ;; (lotus-org-unnamed-task-clock-marker (mark-marker))
      )))
@@ -188,10 +192,12 @@
   (interactive)
   (if org-clock-marker
       (org-with-narrow-to-marker org-clock-marker
-       (org-insert-subheading-at-point
-        (read-from-minibuffer "Subtask: "))
-       (org-entry-put nil "Effort" "10")
-       (org-clock-in))))
+        (org-insert-subheading-at-point
+         (read-from-minibuffer "Subtask: "))
+        (org-entry-put nil "Effort" "10")
+        (let ((org-clock-persist lotus-org-unnamed-task-org-clock-persist)
+              (org-clock-auto-clock-resolution lotus-org-unnamed-task-org-clock-auto-clock-resolution))
+          (org-clock-clock-in (list (point-marker)))))))
 
 (defun lotus-org-clockin-last-time (min)
   )

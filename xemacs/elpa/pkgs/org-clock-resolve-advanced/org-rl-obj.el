@@ -47,6 +47,11 @@
 (require 'org-clock-utils-lotus)
 
 
+(defvar org-rl-org-clock-persist nil "Control org-clock-persist at time of org-resolve clock-in")
+(defvar org-rl-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of org-resolev clock-in")
+
+
+
 (defun time-p (time)
   (or
    (eq 'now time)
@@ -254,7 +259,8 @@
   (org-rl-debug :warning "org-rl-clock-clock-in: clock[%s] resume[%s]"
                 (org-rl-format-clock clock)
                 resume)
-  (let ((org-clock-auto-clock-resolution nil))
+  (let ((org-clock-persist               org-rl-org-clock-persist)
+        (org-clock-auto-clock-resolution org-rl-org-clock-auto-clock-resolution))
     (when (not org-clock-clocking-in)
       (if (org-rl-clock-marker clock)
           (if (time-p (org-rl-clock-start-time clock))
