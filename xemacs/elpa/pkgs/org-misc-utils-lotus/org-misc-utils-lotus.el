@@ -311,25 +311,25 @@ With prefix arg C-u, copy region instad of killing it."
         ;; org-insert-subheadline-to-file-headline("Unnamed task 557" "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/Unnamed.org" "Unnamed tasks" t)
         ;; lotus-org-create-unnamed-task()
         ;; occ-maybe-create-unnamed-tsk()
-        (buffer-read-only nil)
-        (subheading (cond
-                      ((stringp subheading) subheading)
-                      ((functionp subheading) (funcall subheading))
-                      (t (error "no subheading"))))
-    (progn
-      (if (org-heading-has-child-p)
-          (progn
-            (org-goto-last-child)
-            (beginning-of-line)
-            (end-of-line 1)
-            (org-insert-heading-after-current))
+    (let ((buffer-read-only nil)
+          (subheading (cond
+                       ((stringp subheading) subheading)
+                       ((functionp subheading) (funcall subheading))
+                       (t (error "no subheading")))))
+      (progn
+        (if (org-heading-has-child-p)
+            (progn
+              (org-goto-last-child)
+              (beginning-of-line)
+              (end-of-line 1)
+              (org-insert-heading-after-current))
           (progn
             (beginning-of-line)
             (end-of-line 1)
             (org-end-of-subtree)
             (org-insert-subheading nil)))
-      (insert (format org-refile-string-format subheading))
-      (point))))
+        (insert (format org-refile-string-format subheading))
+        (point)))))
 
 (defun org-insert-grandsubheading-at-point (subheading)
   (org-with-inhibit-modification-hooks
@@ -344,20 +344,23 @@ With prefix arg C-u, copy region instad of killing it."
         ;; org-insert-subheadline-to-file-headline("Unnamed task 557" "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/Unnamed.org" "Unnamed tasks" t)
         ;; lotus-org-create-unnamed-task()
         ;; occ-maybe-create-unnamed-tsk()
-        (buffer-read-only nil)
-        (subheading (cond
-                      ((stringp subheading) subheading)
-                      ((functionp subheading) (funcall subheading))
-                      (t (error "no subheading"))))
-    (progn
-      (if (eql org-refile-string-position 'bottom)
-          (org-end-of-subtree)
+    (let ((buffer-read-only nil)
+          (subheading (cond
+                       ((stringp subheading) subheading)
+                       ((functionp subheading) (funcall subheading))
+                       (t (error "no subheading")))))
+      (progn
+        (if (eql org-refile-string-position 'bottom)
+            (org-end-of-subtree)
           ;; (org-end-of-meta-data-and-drawers)
           ;; (org-end-of-meta-data)
           (org-end-of-subtree))
-      (org-insert-subheading nil)
-      (insert (format org-refile-string-format subheading))
-      (point))))
+        (org-insert-subheading nil)
+        (insert (format org-refile-string-format subheading))
+        (point)))))
+
+
+
 
 (defun org-insert-sibling-headline-at-point (subheading)
   (let ((buffer-read-only nil)
