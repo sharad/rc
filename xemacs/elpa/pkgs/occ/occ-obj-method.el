@@ -636,11 +636,11 @@ pointing to it."
                 ((error)
                  (progn
                    (setq retval nil)
-                   (signal (car err) (cdr err))))))))
-        (if old-buff
-            (with-current-buffer old-buff
-              (setq buffer-read-only old-buff-read-only)))
-        retval)))))
+                   (signal (car err) (cdr err)))))))
+          (if old-buff
+              (with-current-buffer old-buff
+                (setq buffer-read-only old-buff-read-only)))
+          retval)))))
 
 (cl-defmethod occ-clock-in ((ctx occ-ctx))
   "marker and ranked version"
