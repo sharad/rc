@@ -55,12 +55,14 @@
 
   (def@ @@ :dispatch (prev curr time-spent)
     (@:initialize)
-    (let* ((mjmode (with-current-buffer curr
-                    major-mode))
-           (transition (or
-                        (cdr (assq mjmode @:mode-transition))
-                        @:transition)))
-      (@! transition :dispatch prev curr time-spent))))
+    (if (and (bufferp curr) (buffer-live-p curr))
+        (let* ((mjmode
+                (with-current-buffer curr
+                  major-mode))
+               (transition (or
+                            (cdr (assq mjmode @:mode-transition))
+                            @:transition)))
+          (@! transition :dispatch prev curr time-spent)))))
 
 
 (defobjgen@ @transition-span-dectector-class :gen-buffer-trans-span-detector (transition)
