@@ -42,7 +42,7 @@ APT_REPO_KOI="ppa:team-xbmc/ppa"
 
 DEB_PKG_FIRST_INTERCATIVE_QA="macchanger postfix cyrus-clients lyskom-server console-data tlp"
 DEB_PKG_FIRST_INSTALL="zsh"
-DEB_PKG_EMACS="elpa-git-commit elpa-git-annex elpa-magit elpa-magit-popup elpa-magit-annex elpa-magithub magit elpa-with-editor emacs-goodies-el enscript flim lm-sensors preload pandoc automake g++ gcc libpng-dev libpoppler-dev libpoppler-glib-dev libpoppler-private-dev libz-dev make pkg-config elpa-projectile elpa-ghub elpa-ghub+ git-el rtv elpa-ert-async elpa-ert-expectations" #
+DEB_PKG_EMACS="elpa-git-commit elpa-git-annex elpa-magit elpa-magit-popup elpa-magit-annex elpa-magithub magit elpa-with-editor emacs-goodies-el enscript flim lm-sensors preload pandoc automake g++ gcc libpng-dev libpoppler-dev libpoppler-glib-dev libpoppler-private-dev libz-dev make pkg-config elpa-projectile elpa-ghub elpa-ghub+ git-el rtv elpa-ert-async elpa-ert-expectations elpa-package-lint" #
 DEB_PKG_MESSAGING="namazu2 mhc x-face-el compface"
 DEB_PKG_NECESSARY_MORE1="xaos xnee xnee-doc xzgv yatex zsh zsh-doc zutils screen tmate tmux tmuxp byobu landscape-common update-motd ccze shutdown-at-night sitesummary xterm rxvt-unicode-256color cifs-utils"
 # TODO BUG set zsh as login shell
@@ -52,7 +52,7 @@ hDEB_PKG_NECESSARY_MORE3="libcommoncpp2-doc libconfig-dev libsocket++-dev licens
 DEB_PKG_NECESSARY_MORE4="pinfo psgml qingy r-doc-info r5rs-doc semi sepia sharutils slime source-highlight spell ssed stow rlwrap teseq time trueprint turnin-ng units vera wcalc gnome-calculator wdiff wizzytex wysihtml-el"
 DEB_PKG_GAME="gnugo"
 DEB_PKGS_BACKUP="bup git-annex tahoe-lafs unison unison-all inotify-tools"
-DEB_PKG_NECESSARY="git git-review legit git-extras git-flow git-sh git-extras git-crypt ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server sshpass rcs apt-src flatpak apt-file jargon cutils complexity-doc dejagnu diffutils extract festival ffe gccintro gddrescue geda-doc genparse gpodder gnutls-bin pinentry-gnome3 pinentry-tty pinentry-curses mew-beta mew-beta-bin kwalletcli scdaemon kleopatra pinentry-x2go" # mew-bin
+DEB_PKG_NECESSARY="git git-review legit git-extras git-flow git-sh git-extras git-crypt ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server sshpass zssh rcs apt-src flatpak apt-file jargon cutils complexity-doc dejagnu diffutils extract festival ffe gccintro gddrescue geda-doc genparse gpodder gnutls-bin pinentry-gnome3 pinentry-tty pinentry-curses mew-beta mew-beta-bin kwalletcli scdaemon kleopatra pinentry-x2go" # mew-bin
 DEB_PKG_WITH_ERROR="edb"
 DEB_PKG_APPEARANCE="lxappearance gnome-tweak-tool gnome-themes-standard libgtk-3-dev console-data gnome-session gnome-settings-daemon gnome-panel policykit-1-gnome dex"
 DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp virtualbox-dkms virtualbox-guest-x11 vagrant"
@@ -86,9 +86,13 @@ DEB_PKG_UTILS="gcalcli newsbeuter liblz4-tool"
 DEB_PKG_MEDIA="libavcodec-extra pulseeffects pavucontrol pulseaudio-module-gconf pulseaudio-equalizer vokoscreen pulseaudio-utils pulsemixer kodi sox mpg123 mpg321 vlc"
 DEB_PKG_WINDOW="smbclient python3-smbc python-smbc"
 DEB_PKG1_NET="network-manager-fortisslvpn openfortivpn python-pyftpdlib python3-pyftpdlib whois "
-DEB_PKG_DOC="wv"
+DEB_PKG_DOC="wv epub-utils"
 DEB_PKG_DOC_PUB="hugo jekyll"
 DEB_PKG_JAVA1="libreoffice-java-common"
+DEB_PKG_LINT="shellcheck splint splint-data yapf yapf3 foodcritic ansible-lint adlint ansible-lint api-sanity-checker flycheck-doc"
+DEB_PKG_DEB="devscripts revu-tools debaux devscripts dput"
+DEB_PKG_BUILD="elida pbuilder"
+DEB_PKG_VOICE="espeak-ng espeak-ng-espeak"
 
 PY_PIP_PKG="termdown "
 NODE_PKG="tern "
@@ -661,6 +665,9 @@ function setup_apt_packages()
         DEB_PKG_DOC
         DEB_PKG_DOC_PUB
         DEB_PKG_JAVA1
+        DEB_PKG_LINT
+        DEB_PKG_DEB
+        DEB_PKG_BUILD
     )
 
     for pkg in ${deb_pkg_lists[*]}

@@ -51,10 +51,10 @@
 (defvar org-rl-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of org-resolev clock-in")
 
 (defun org-rl-straight-org-clock-clock-in (clock &optional resume start-time)
-  (let ((org-clock-persist               org-rl-org-clock-persist)
-        (org-clock-auto-clock-resolution org-rl-org-clock-auto-clock-resolution))
-    (progn
-      (lotus-org-clock-load-only)
+  (progn
+    (lotus-org-clock-load-only)
+    (let ((org-clock-persist               org-rl-org-clock-persist)
+          (org-clock-auto-clock-resolution org-rl-org-clock-auto-clock-resolution))
       (org-clock-clock-in clock resume start-time))))
 
 

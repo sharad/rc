@@ -29,9 +29,11 @@
 (require 'ert)
 (require 'ert-x)
 
+;; https://www.gnu.org/software/emacs/manual/html_node/ert/index.html
+
 (ert-deftest ert-sessions-unified-test-frame-param-spec-id ()
   "Test"
-  :expected-result :failed
+  :expected-result :passed
   :tags '(sessions-unified)
   (should
    (let ((frame-spec-id (frame-parameter (selected-frame) 'frame-spec-id)))

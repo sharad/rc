@@ -85,10 +85,10 @@
 ;;;###autoload
 (defun lotus-straight-org-clock-clock-in (clock &optional resume start-time)
   "lotus-straight-org-clock-clock-in"
-  (let ((org-clock-persist               lotus-straight-org-clock-persist)
-        (org-clock-auto-clock-resolution lotus-straight-org-clock-auto-clock-resolution))
-    (progn
-      (lotus-org-clock-load-only)
+  (progn
+    (lotus-org-clock-load-only)
+    (let ((org-clock-persist               lotus-straight-org-clock-persist)
+          (org-clock-auto-clock-resolution lotus-straight-org-clock-auto-clock-resolution))
       (org-clock-clock-in clock resume start-time))))
 
 ;;;###autoload
