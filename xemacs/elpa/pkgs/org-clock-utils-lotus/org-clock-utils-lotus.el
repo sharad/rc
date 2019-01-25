@@ -112,6 +112,13 @@
      ,@body))
 (put 'org-without-org-clock-auto-clock-resolution 'lisp-indent-function 0)
 
+(defmacro org-without-org-clock-persist-and-auto-clock-resolution (&rest body)
+  "org-without-org-clock-persist"
+  `(org-without-org-clock-persist
+     (org-without-org-clock-auto-clock-resolution
+       ,@body)))
+(put 'org-without-org-clock-persist-and-auto-clock-resolution 'lisp-indent-function 0)
+
 
 (defmacro org-with-clock-position (clock &rest forms)
   "Evaluate FORMS with CLOCK as the current active clock."

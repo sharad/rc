@@ -51,12 +51,30 @@
 ;; TODO:
 ;; still we need to think we are resolving time between two prev next clock or
 ;; we are resolving time of one clock
+;; currtime 2.24
+;; Warning (org-rl-clock): going to run prev[<STARTED Unnamed task 640> <2019-01-26 Sat 00:24>-<2019-01-26 Sat 02:21> 43 0] next[<imaginary> <2019-01-26 Sat 02:21>-<2019-01-26 Sat 02:11> 38 28] with maxtimelen 10
+;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 640> <2019-01-26 Sat 00:24>-<2019-01-26 Sat 02:21>] next[<imaginary> <2019-01-26 Sat 02:21>-<2019-01-26 Sat 02:11>] maxtimelen[10] secs
+;; Warning (org-rl-clock): You have selected opt include-in-prev and timelen -10
+;; Warning (org-rl-clock): begin org-rl-clock-opt-include-in-prev
+;; Warning (org-rl-clock): timelen -600
+;; Warning (org-rl-clock): timelen -600
+;; Warning (org-rl-clock): org-rl-clock-clock-out: clock[<STARTED Unnamed task 640> <2019-01-26 Sat 00:24>-<2019-01-26 Sat 00:14>] fail-quietly[nil]
+;; Warning (org-rl-clock): org-rl-clock-clock-in-out: clock[<STARTED Unnamed task 640> <2019-01-26 Sat 00:14>-<2019-01-26 Sat 02:21>] resume[nil] org-clock-clocking-in[nil]
+;; Warning (org-rl-clock): org-rl-clock-clock-in-out in
+;; Warning (org-rl-clock): org-rl-clock-clock-in: clock[<STARTED Unnamed task 640> <2019-01-26 Sat 00:14>-<2019-01-26 Sat 02:21>] resume[nil]
+;; Warning (org-rl-clock): org-rl-clock-clock-in-out out
+;; Warning (org-rl-clock): org-rl-clock-clock-out: clock[<STARTED Unnamed task 640> <2019-01-26 Sat 00:14>-<2019-01-26 Sat 02:21>] fail-quietly[nil]
+;; Warning (org-rl-clock): org-rl-clock-clock-in-out out done
+
+
 (cl-defmethod org-rl-clock-opt-include-in-prev ((prev org-rl-clock)
                                                 (next org-rl-clock)
                                                 timelen
                                                 &optional
                                                 resume)
+
   (org-rl-debug :warning "begin %s" 'org-rl-clock-opt-include-in-prev)
+
   (let ((maxtimelen (org-rl-get-time-gap prev next)))
     (if (= (org-rl-compare-time-gap prev next timelen) 0)
         (progn
@@ -64,24 +82,41 @@
                                        (org-rl-clock-start-time prev) maxtimelen) t)
           (org-rl-clock-clock-out prev resume))
       (if (< (org-rl-compare-time-gap prev next timelen) 0)
-        (let ((updated-time (time-add
-                             (org-rl-clock-start-time prev) timelen)))
-          (if (> (float-time timelen) 0)
+          (let ((updated-time (time-subtract
+                               (if (> timelen 0)
+                                   (org-rl-clock-stop-time  prev)
+                                   (org-rl-clock-start-time prev))
+                               timelen)))
+
+            (org-rl-debug :warning "prev clock: %s" (org-rl-format-clock prev))
+
+
+
+            ;; TODO: Need to decide what will now be next ?
+
+            (if (> timelen 0)
+                (progn
+                  ;; (org-rl-clock-stop-set prev updated-time t)
+                  ;;time between updated prev and next will be resolve in next call of resolve
+                  (org-rl-clock-stop-set prev updated-time t)
+                                        ;if prev is running clock else in-out we have to do ?
+                  (org-rl-clock-clock-out prev))
               (progn
+                (setf (org-rl-clock-stop-dirty prev) t)
+                ;; (org-rl-clock-stop-set prev updated-time t)
+                (org-rl-clock-clock-out prev)
+
                 (org-rl-clock-stop-set prev updated-time t)
-                ;;time between updated prev and next will be resolve in next call of resolve
-                (org-rl-clock-clock-out prev))
-            (progn
-              (setf (org-rl-clock-stop-dirty prev) t)
-              (org-rl-clock-clock-out prev)
-              (setq next
-                    (org-rl-make-clock
-                     (org-rl-clock-marker prev)
-                     updated-time
-                     (org-rl-clock-start-time next)
-                     t
-                     t))
-              (org-rl-clock-clock-in-out next resume))))
+
+                TODO ?
+                ;; (setq next              ;this is wrong.
+                ;;       (org-rl-make-clock
+                ;;        (org-rl-clock-marker prev) ;totally wrong
+                ;;        updated-time
+                ;;        (org-rl-clock-start-time next)
+                ;;        t
+                ;;        t))
+                (org-rl-clock-clock-in-out next resume))))
         (error "timelen %d is greater than time difference %d between clocks" timelen maxtimelen))))
   (org-rl-clocks-action resume nil prev next))
 
@@ -101,7 +136,7 @@
                           (org-rl-clock-stop-time next))))
     ;; include timelen in next
     ;; update timelength
-    (if (> (float-time timelen) 0)
+    (if (> timelen 0)
         (let ((updated-start-time (time-add
                                    (org-rl-clock-start-time next) timelen)))
           (org-rl-clock-start-set next updated-start-time)
@@ -135,14 +170,14 @@
   (let ((maxtimelen (org-rl-get-time-gap prev next)))
 
     (if (eq opt 'subtract)    ;is it correct ?
-        (assert (< (float-time timelen) 0)))
+        (assert (< timelen 0)))
 
     (let ((other-marker
            (if (eq opt 'include-in-other)
                (org-rl-select-other-clock)
              nil)))
 
-      (if (> (float-time timelen) 0)
+      (if (> timelen 0)
 
           (let* ((prev-stop-time (time-subtract
                                   (org-rl-clock-start-time next)
@@ -194,7 +229,7 @@
                                                 timelen
                                                 maxtimelen
                                                 &optional close-p)
-  (let* ((timelen (seconds-to-time (* timelen 60)))
+  (let* ((timelen (* timelen 60))
          (clocks
           (cond
            ((eq opt 'jump-prev-p)
@@ -293,10 +328,10 @@
                       (org-clock-out))
                     (let ((timegap (org-rl-get-time-gap prev next)))
                       (when (> timegap 0)         ;this solved the assert
-                        (org-rl-clock-time prev next close-p)))))
+                        (org-rl-clock-resolve-time prev next close-p)))))
               (progn
                 (message "Error given time %d can not be greater than %d" timelen maxtimelen)
-                (org-rl-clock-time prev next force close-p)))))))))
+                (org-rl-clock-resolve-time prev next force close-p)))))))))
 
 
 ;;; org-rl-clock.el ends here

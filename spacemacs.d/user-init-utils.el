@@ -631,7 +631,7 @@
   (interactive)
   (message "loading lotus-unnecessary-functionality begin")
 
-  ;; (debug-on-entry 'org-clock-load)
+  (debug-on-entry 'org-clock-load)
 
   (message "loading lotus-unnecessary-functionality finished"))
 
@@ -848,7 +848,6 @@ variable."
   (with-eval-after-load 'psgml
     (message "psgml loaded, now loading sgml-mode.el library")
     (load-library "sgml-mode"))
-
 
   (lotus-unnecessary-functionality)
 

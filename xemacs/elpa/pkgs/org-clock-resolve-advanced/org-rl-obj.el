@@ -144,14 +144,25 @@
   (make-org-rl-time :time 'now :dirty dirty))
 
 
+(defun time-get-time (time)
+  (when time
+    (if (time-p time)
+        (if (eq time 'now)
+            (current-time)
+          time)
+      (error "Wring time %s passed." time))))
+
+(defun org-rl-format (time)
+  (let ((fmt (cdr org-time-stamp-formats)))
+    (format-time-string fmt (time-get-time time))))
+
+(cl-defmethod org-rl-format ((time org-rl-time))
+  (let ((fmt (cdr org-time-stamp-formats)))
+    (format-time-string fmt (org-rl-time-get-time time))))
+
 (cl-defmethod org-rl-time-get-time ((time org-rl-time))
   (let ((rl-time (org-rl-time-time time)))
-    (when rl-time
-      (if (time-p rl-time)
-          (if (eq rl-time 'now)
-              (current-time)
-            rl-time)
-        (error "Wring time %s passed." rl-time)))))
+    (time-get-time rl-time)))
 
 (cl-defmethod org-rl-clock-start-time ((clock org-rl-clock))
   (org-rl-time-get-time
@@ -176,8 +187,12 @@
 
 (cl-defmethod org-rl-clock-start-dirty ((clock org-rl-clock))
   (org-rl-time-dirty (org-rl-clock-start clock)))
+(cl-defmethod (setf org-rl-clock-start-dirty) (dirty (clock org-rl-clock))
+  (setf (org-rl-time-dirty (org-rl-clock-start clock)) dirty))
 (cl-defmethod org-rl-clock-stop-dirty ((clock org-rl-clock))
   (org-rl-time-dirty (org-rl-clock-stop clock)))
+(cl-defmethod (setf org-rl-clock-stop-dirty) (dirty (clock org-rl-clock))
+  (setf (org-rl-time-dirty (org-rl-clock-stop clock)) dirty))
 
 (cl-defmethod org-rl-clock-first-clock-beginning ((clock org-rl-clock))
   (org-clock-get-nth-half-clock-beginning
@@ -440,9 +455,10 @@
 (cl-defmethod org-rl-compare-time-gap ((prev org-rl-clock)
                                        (next org-rl-clock)
                                        timelen)
+  (org-rl-debug :warning "timelen %s" timelen)
   (if (eq timelen 'all)
       0
-    (- timelen (org-rl-get-time-gap prev next))))
+    (- timelen (float-time (org-rl-get-time-gap prev next)))))
 
 
 (cl-defmethod org-rl-clock-time-debug-prompt ((prev org-rl-clock)
