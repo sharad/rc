@@ -84,29 +84,30 @@
          (task *lotus-org-unnamed-parent-task-name*))
      (list file task)))
 
-  (let* ((file (or file *lotus-org-unnamed-task-file*))
-         (task (or task *lotus-org-unnamed-parent-task-name*))
-         (subtask (format *lotus-org-unnamed-task-name-fmt*
-                          (1+
-                           (with-current-buffer (find-file-noselect file)
-                             (org-with-heading-pos pos task
-                               (if pos
-                                   (org-number-of-subheadings)
-                                 0)))))))
-    ;; (assert file)
-    (org-find-file-heading-marker file task t)
-    (let ((marker (org-insert-subheadline-to-file-headline
-                   subtask
-                   file
-                   task
-                   t)))
-      (unless (markerp marker)
-        (error "No marker %s returned" marker))
-      (with-current-buffer (marker-buffer marker)
-        (goto-char marker)
-        (org-with-inhibit-modification-hooks
-         (org-entry-put nil "Effort" "10")))
-      (cons subtask marker))))
+  (org-without-org-clock-persist
+   (let* ((file (or file *lotus-org-unnamed-task-file*))
+          (task (or task *lotus-org-unnamed-parent-task-name*))
+          (subtask (format *lotus-org-unnamed-task-name-fmt*
+                           (1+
+                            (with-current-buffer (find-file-noselect file)
+                              (org-with-heading-pos pos task
+                                (if pos
+                                    (org-number-of-subheadings)
+                                  0)))))))
+     ;; (assert file)
+     (org-find-file-heading-marker file task t)
+     (let ((marker (org-insert-subheadline-to-file-headline
+                    subtask
+                    file
+                    task
+                    t)))
+       (unless (markerp marker)
+         (error "No marker %s returned" marker))
+       (with-current-buffer (marker-buffer marker)
+         (goto-char marker)
+         (org-with-inhibit-modification-hooks
+           (org-entry-put nil "Effort" "10")))
+       (cons subtask marker)))))
 
 (when nil
   (progn

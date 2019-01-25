@@ -76,12 +76,13 @@
 
 (defun occ-maybe-create-unnamed-tsk ()
   ;; back
-  (let* ((unnamed-heading-marker
-          (cdr (lotus-org-create-unnamed-task)))
-         (unnamed-tsk
-          (when unnamed-heading-marker
-            (occ-make-tsk unnamed-heading-marker (occ-tsk-builder)))))
-    unnamed-tsk))
+  (org-without-org-clock-persist
+   (let* ((unnamed-heading-marker
+           (cdr (lotus-org-create-unnamed-task)))
+          (unnamed-tsk
+           (when unnamed-heading-marker
+             (occ-make-tsk unnamed-heading-marker (occ-tsk-builder)))))
+     unnamed-tsk)))
 
 (when nil
   (cl-classname (occ-make-tsk org-clock-hd-marker (occ-tsk-builder)))

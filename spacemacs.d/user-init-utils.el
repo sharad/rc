@@ -566,11 +566,11 @@
   (when nil
     (put-file-in-rcs (auto-config-file "startup/startup.log"))
     (with-current-buffer "*Messages*"
-      (setq messages-buffer-max-lines 2000
+      (setq messages-buffer-max-lines 2000)
             ;; old-messages-buffer-max-lines
-            )
+
       ;; (append-to-buffer "*xxemacs-startup-log*" (point-min) (point-max))
-      (copy-to-buffer "*emacs-startup-log*" (point-min) (point-max)))
+      (copy-to-buffer "*emacs-startup-log*" (point-min) (point-max))))
 
     ;; (with-current-buffer "*emacs-startup-log*"
     ;;   ;; (with-temp-file file body)
@@ -580,7 +580,7 @@
     ;;        'emacs-mule))
     ;;   (write-region (point-min) (point-max) "~/.emacs.d/startup.log" t)
     ;;   (put-file-in-rcs "~/.emacs.d/startup.log"))
-    )
+
 
 
   ;; (redefine-function-remembered 'server-create-window-system-frame)
@@ -595,9 +595,9 @@
    'lotus-enable-startup-interrupting-feature-hook
    #'(lambda ()
        (with-temp-buffer
-           (spacemacs/startup-hook)))
+           (spacemacs/startup-hook))))
    ;; 'spacemacs-buffer/goto-buffer
-   )
+
 
   (when (advice--p (advice--symbol-function 'server-create-window-system-frame))
     (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init))
@@ -620,8 +620,8 @@
 
     (defun spacemacs/lazy-load-stickyfunc-enhance ()
       "Lazy load the package."
-      (require 'stickyfunc-enhance))
-    )
+      (require 'stickyfunc-enhance)))
+
 
   (message "loading lotus-emacs-user-init-finish finished"))
 
@@ -631,7 +631,7 @@
   (interactive)
   (message "loading lotus-unnecessary-functionality begin")
 
-  (debug-on-entry 'org-clock-load)
+  ;; (debug-on-entry 'org-clock-load)
 
   (message "loading lotus-unnecessary-functionality finished"))
 

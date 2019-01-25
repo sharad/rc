@@ -56,7 +56,8 @@
       (setq org-clock-loaded t)
       (pcase-dolist (`(,(and file (pred file-exists-p)) . ,position)
                      org-clock-stored-history)
-        (org-clock-history-push position (find-file-noselect file))))))
+        (org-clock-history-push position (find-file-noselect file))))
+    (setq org-clock-loaded nil)))
 
 ;;;###autoload
 (defun lotus-org-clock-resume ()
@@ -97,6 +98,19 @@
   (let ((org-clock-persist lotus-straight-org-clock-persist)
         (org-clock-auto-clock-resolution lotus-straight-org-clock-auto-clock-resolution))
     (org-clock-clock-out clock fail-quietly at-time)))
+
+(defmacro org-without-org-clock-persist (&rest body)
+  "org-without-org-clock-persist"
+  `(let ((org-clock-persist lotus-org-unnamed-task-org-clock-persist))
+     (lotus-org-clock-load-only)
+     ,@body))
+(put 'org-without-org-clock-persist 'lisp-indent-function 0)
+
+(defmacro org-without-org-clock-auto-clock-resolution (&rest body)
+  "org-without-org-clock-auto-clock-resolution"
+  `(let ((org-clock-auto-clock-resolution lotus-org-unnamed-task-org-clock-auto-clock-resolution))
+     ,@body))
+(put 'org-without-org-clock-auto-clock-resolution 'lisp-indent-function 0)
 
 
 (defmacro org-with-clock-position (clock &rest forms)
