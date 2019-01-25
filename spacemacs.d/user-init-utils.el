@@ -625,6 +625,16 @@
 
   (message "loading lotus-emacs-user-init-finish finished"))
 
+
+
+(defun lotus-unnecessary-functionality ()
+  (interactive)
+  (message "loading lotus-unnecessary-functionality begin")
+
+  (debug-on-entry 'org-clock-load)
+
+  (message "loading lotus-unnecessary-functionality finished"))
+
 (defun lotus-necessary-functionality ()
   (interactive)
   (message "loading lotus-necessary-functionality begin")
@@ -839,9 +849,10 @@ variable."
     (message "psgml loaded, now loading sgml-mode.el library")
     (load-library "sgml-mode"))
 
+
+  (lotus-unnecessary-functionality)
+
   (message "loading lotus-necessary-functionality finished"))
-
-
 
 (defun lotus-necessary-functionality-once-add-to-spacemacs-later ()
 
