@@ -91,8 +91,8 @@
 (defun occ-straight-org-clock-clock-in (clock &optional resume start-time)
   (progn
     (lotus-org-clock-load-only)
-    (let ((org-clock-persist               occ-org-clock-persist))
-        (org-clock-auto-clock-resolution occ-org-clock-auto-clock-resolution)
+    (let ((org-clock-persist               occ-org-clock-persist)
+          (org-clock-auto-clock-resolution occ-org-clock-auto-clock-resolution))
       (org-clock-clock-in clock resume start-time))))
 
 

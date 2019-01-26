@@ -90,8 +90,6 @@
 
             (org-rl-debug :warning "prev clock: %s" (org-rl-format-clock prev))
 
-
-
             ;; TODO: Need to decide what will now be next ?
 
             (if (> timelen 0)
@@ -99,16 +97,21 @@
                   ;; (org-rl-clock-stop-set prev updated-time t)
                   ;;time between updated prev and next will be resolve in next call of resolve
                   (org-rl-clock-stop-set prev updated-time t)
-                                        ;if prev is running clock else in-out we have to do ?
-                  (org-rl-clock-clock-out prev))
+                  ;;if prev is running clock else in-out we have to do ?
+                  ;; (org-rl-clock-add-time prev timelen)
+                  (if (or
+                       (org-rl-clock-active pre)
+                       (org-rl-clock-half-clock-p pre))
+                      (org-rl-clock-clock-out prev)
+                    (error "what TODO ?")))
               (progn
-                (setf (org-rl-clock-stop-dirty prev) t)
-                ;; (org-rl-clock-stop-set prev updated-time t)
                 (org-rl-clock-clock-out prev)
 
+                (setf (org-rl-clock-stop-dirty prev) t)
+                ;; (org-rl-clock-stop-set prev updated-time t)
                 (org-rl-clock-stop-set prev updated-time t)
 
-                TODO ?
+                ;; TODO ?
                 ;; (setq next              ;this is wrong.
                 ;;       (org-rl-make-clock
                 ;;        (org-rl-clock-marker prev) ;totally wrong

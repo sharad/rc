@@ -342,6 +342,14 @@
   clocks)
 
 
+
+(cl-defmethod org-rl-clock-add-time ((clock org-rl-clock) sec)
+  "if sec is positive add in future else add in past.")
+
+(cl-defmethod org-rl-clock-subtract-time ((clock org-rl-clock) sec)
+  "if sec is positive subtract from future else subtract from past.")
+
+
 (defun org-rl-debug (level &rest args)
   (apply #'lwarn 'org-rl-clock :warning args)
   (message
