@@ -343,11 +343,18 @@
 
 
 
-(cl-defmethod org-rl-clock-add-time ((clock org-rl-clock) sec)
-  "if sec is positive add in future else add in past.")
+(cl-defmethod org-rl-clock-expand-time ((clock org-rl-clock) sec)
+  "if sec is positive expand in future else expand in past."
+  (org-rl-clock-stop-set prev updated-time t)
+  ;; do clock in clock out accordingly
+  (if (or
+       (org-rl-clock-active pre)
+       (org-rl-clock-half-clock-p pre))
+      (org-rl-clock-clock-out prev)
+    (error "what TODO ?")))
 
-(cl-defmethod org-rl-clock-subtract-time ((clock org-rl-clock) sec)
-  "if sec is positive subtract from future else subtract from past.")
+(cl-defmethod org-rl-clock-contract-time ((clock org-rl-clock) sec)
+  "if sec is positive contract from future else contract from past.")
 
 
 (defun org-rl-debug (level &rest args)
