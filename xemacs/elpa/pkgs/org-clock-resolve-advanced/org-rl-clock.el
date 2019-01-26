@@ -105,21 +105,21 @@
   (let ((maxtimelen (org-rl-get-time-gap prev next)))
     (if (= (org-rl-compare-time-gap prev next timelen) 0)
         (progn
-          (org-rl-clock-stop-set prev (time-add
-                                       (org-rl-clock-start-time prev) maxtimelen) t)
-          (org-rl-clock-clock-out prev resume))
-      (if (< (org-rl-compare-time-gap prev next timelen) 0)
-          (if (> timelen 0)
-              (org-rl-clock-expand-time prev (abs timelen))
+          (org-rl-clock-stop-set next (time-add
+                                       (org-rl-clock-start-time next) maxtimelen) t)
+          (org-rl-clock-clock-out next resume))
+      (if (< (org-rl-compare-time-gap next prev timelen) 0)
+          (if (< timelen 0)
+              (org-rl-clock-expand-time next (abs timelen))
             (progn
-              (org-rl-clock-clock-out prev)     ;if necessary
-              (setf prev (org-rl-make-clock nil ;imaginary clock
-                                            (org-rl-clock-stop-time prev)
+              (org-rl-clock-clock-out next)     ;if necessary
+              (setf next (org-rl-make-clock nil ;imaginary clock
+                                            (org-rl-clock-stop-time next)
                                             (time-subtract
-                                             (org-rl-clock-start-time next)
+                                             (org-rl-clock-start-time prev)
                                              (abs timelen))))
-              (setf (org-rl-clock-marker next) (org-rl-clock-marker prev))
-              (org-rl-clock-expand-time next timelen)))
+              (setf (org-rl-clock-marker prev) (org-rl-clock-marker next))
+              (org-rl-clock-expand-time prev timelen)))
         (error "timelen %d is greater than time difference %d between clocks" timelen maxtimelen))))
   (org-rl-clocks-action nil nil prev next))
 
