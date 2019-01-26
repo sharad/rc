@@ -152,7 +152,7 @@
           time)
       (error "Wring time %s passed." time))))
 
-(defun org-rl-format (time)
+(cl-defmethod org-rl-format (time)
   (let ((fmt (cdr org-time-stamp-formats)))
     (format-time-string fmt (time-get-time time))))
 
