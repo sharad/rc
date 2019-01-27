@@ -82,7 +82,6 @@
                                                 (next org-rl-clock)
                                                 timelen)
   (org-rl-debug :warning "begin %s" 'org-rl-clock-opt-include-in-next)
-
   (let ((maxtimelen (org-rl-get-time-gap prev next)))
     (if (= (org-rl-compare-time-gap prev next timelen) 0)
         (progn
@@ -160,8 +159,7 @@
            ((eq opt 'include-in-next)
             (org-rl-clock-opt-include-in-next prev next timelen))
 
-           ((memq opt '(include-in-other
-                        subtract)) ;; subtract timelen from timelength
+           ((eq opt include-in-other) ;; subtract timelen from timelength
             (org-rl-clock-opt-include-in-other prev next timelen opt))
 
            ((eq opt 'done)
