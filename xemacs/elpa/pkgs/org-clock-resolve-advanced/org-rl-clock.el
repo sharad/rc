@@ -48,25 +48,6 @@
   (org-rl-clock-stop-set  next nil)
   (org-rl-clocks-action nil nil prev next))
 
-;; TODO:
-;; still we need to think we are resolving time between two prev next clock or
-;; we are resolving time of one clock
-;; currtime 2.24
-;; Warning (org-rl-clock): going to run prev[<STARTED Unnamed task 640> <2019-01-26 Sat 00:24>-<2019-01-26 Sat 02:21> 43 0] next[<imaginary> <2019-01-26 Sat 02:21>-<2019-01-26 Sat 02:11> 38 28] with maxtimelen 10
-;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 640> <2019-01-26 Sat 00:24>-<2019-01-26 Sat 02:21>] next[<imaginary> <2019-01-26 Sat 02:21>-<2019-01-26 Sat 02:11>] maxtimelen[10] secs
-;; Warning (org-rl-clock): You have selected opt include-in-prev and timelen -10
-;; Warning (org-rl-clock): begin org-rl-clock-opt-include-in-prev
-;; Warning (org-rl-clock): timelen -600
-;; Warning (org-rl-clock): timelen -600
-;; Warning (org-rl-clock): org-rl-clock-clock-out: clock[<STARTED Unnamed task 640> <2019-01-26 Sat 00:24>-<2019-01-26 Sat 00:14>] fail-quietly[nil]
-;; Warning (org-rl-clock): org-rl-clock-clock-in-out: clock[<STARTED Unnamed task 640> <2019-01-26 Sat 00:14>-<2019-01-26 Sat 02:21>] resume[nil] org-clock-clocking-in[nil]
-;; Warning (org-rl-clock): org-rl-clock-clock-in-out in
-;; Warning (org-rl-clock): org-rl-clock-clock-in: clock[<STARTED Unnamed task 640> <2019-01-26 Sat 00:14>-<2019-01-26 Sat 02:21>] resume[nil]
-;; Warning (org-rl-clock): org-rl-clock-clock-in-out out
-;; Warning (org-rl-clock): org-rl-clock-clock-out: clock[<STARTED Unnamed task 640> <2019-01-26 Sat 00:14>-<2019-01-26 Sat 02:21>] fail-quietly[nil]
-;; Warning (org-rl-clock): org-rl-clock-clock-in-out out done
-
-
 (cl-defmethod org-rl-clock-opt-include-in-prev ((prev org-rl-clock)
                                                 (next org-rl-clock)
                                                 timelen
@@ -86,14 +67,14 @@
               (org-rl-clock-expand-time prev (abs timelen))
             (progn
               (org-rl-clock-clock-out prev)     ;if already not necessary
-              (setf prev (org-rl-make-clock nil ;imaginary clock
-                                            (org-rl-clock-stop-time prev)
-                                            (time-subtract
-                                             (org-rl-clock-start-time next)
-                                             (abs timelen))))
-              (setf (org-rl-clock-marker next) (org-rl-clock-marker prev))
-              ;; decide if need to clockout or not.
-              (org-rl-clock-expand-time next timelen)))
+              (org-rl-clock-clock-out next)     ;if necessary
+              (setf next
+                    (org-rl-make-clock (org-rl-clock-marker prev)
+                                       (time-subtract
+                                        (org-rl-clock-start-time next)
+                                        (abs timelen))
+                                       (org-rl-clock-stop-time next)))
+              (org-rl-clock-clock-in-out next)))
         (error "timelen %d is greater than time difference %d between clocks" timelen maxtimelen))))
   (org-rl-clocks-action resume nil prev next))
 
@@ -110,84 +91,40 @@
           (org-rl-clock-clock-out next resume))
       (if (< (org-rl-compare-time-gap next prev timelen) 0)
           (if (< timelen 0)
-              (org-rl-clock-expand-time next (abs timelen))
+              (org-rl-clock-expand-time next timelen)
             (progn
+              (org-rl-clock-clock-out prev)     ;if necessary
               (org-rl-clock-clock-out next)     ;if necessary
-              (setf next (org-rl-make-clock nil ;imaginary clock
-                                            (org-rl-clock-stop-time next)
-                                            (time-subtract
-                                             (org-rl-clock-start-time prev)
+              (setf prev (org-rl-make-clock (org-rl-clock-marker next)
+                                            (org-rl-clock-stop-time prev)
+                                            (time-add
+                                             (org-rl-clock-stop-time prev)
                                              (abs timelen))))
-              (setf (org-rl-clock-marker prev) (org-rl-clock-marker next))
-              (org-rl-clock-expand-time prev timelen)))
+              (org-rl-clock-clock-in-out prev)))
         (error "timelen %d is greater than time difference %d between clocks" timelen maxtimelen))))
   (org-rl-clocks-action nil nil prev next))
 
 (cl-defmethod org-rl-clock-opt-include-in-other ((prev org-rl-clock)
                                                  (next org-rl-clock)
-                                                 timelen
-                                                 opt)
-  ;; select other clock
-  ;; include timelen in other
-  ;; update timelength
+                                                 timelen)
   ;; (if debug-prompt (org-rl-clock-time-debug-prompt prev next t "include-in-other"))
 
-  ;; TODO: check what sustract is doing here
   (org-rl-debug :warning "begin %s" 'org-rl-clock-opt-include-in-other)
 
   (let ((maxtimelen (org-rl-get-time-gap prev next)))
 
-    (if (eq opt 'subtract)    ;is it correct ?
-        (assert (< timelen 0)))
-
-    (let ((other-marker
-           (if (eq opt 'include-in-other)
-               (org-rl-select-other-clock)
-             nil)))
-
-      (if (> timelen 0)
-
-          (let* ((prev-stop-time (time-subtract
-                                  (org-rl-clock-start-time next)
-                                  (1+ timelen)))
-                 (other-start-time
-                  (time-subtract (org-rl-clock-start-time next) timelen))
-                 (other-clock
-                  (org-rl-make-clock other-marker other-start-time (org-rl-clock-start-time next))))
-
-            (cl-assert (> (float-tome other-start-time) org-rl-min-clocking-time))
-
-            (setq next
-                  (if (org-rl-clock-null next)
-                    (org-rl-clock-start-set next other-start-time)
-                    other-clock))
-
-            (org-rl-clock-stop-set prev prev-stop-time t)
-
-            (org-rl-clock-clock-out prev)
-            (when other-marker
-              ;; TODO: see if this is working
-              (org-rl-clock-clock-in-out other-clock)))
-
-        ;; should 'substract always should not get negative time.
-        (let* ((other-stop-time
-                (time-subtract (org-rl-clock-stop-time prev) timelen))
-               (other-clock
-                (org-rl-make-clock other-marker (org-rl-clock-start-time next) other-stop-time)))
-
-          (when (and         ;clockout prev clock
-                 (null (org-rl-clock-stop-time prev))
-                 (org-rl-clock-stop-time next))
-            (org-rl-clock-stop-set prev (org-rl-clock-stop-time next) t)
-            (org-rl-clock-clock-out prev t))
-
-          (when other-marker
-            (org-rl-clock-clock-in-out other-clock))
-          (setq
-            prev other-clock
-            next other-clock)))))
-
-
+    (if (> timelen 0)
+        (setq prev (org-rl-make-clock other-marker
+                                      (org-rl-clock-stop-time prev)
+                                      (time-add
+                                       (org-rl-clock-stop-time prev)
+                                       timelen)))
+      (setq next (org-rl-make-clock other-marker
+                                    (time-subtract
+                                     (org-rl-clock-start-time next)
+                                     (abs timelen))
+                                    (org-rl-clock-stop-time next)))))
+  (org-rl-clock-clock-in-out other-clock)
   (org-rl-clocks-action nil nil prev next))
 
 
