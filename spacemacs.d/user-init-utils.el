@@ -631,7 +631,7 @@
   (interactive)
   (message "loading lotus-unnecessary-functionality begin")
 
-  (debug-on-entry 'org-clock-load)
+  ;; (debug-on-entry 'org-clock-load)
 
   (message "loading lotus-unnecessary-functionality finished"))
 

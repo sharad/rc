@@ -46,6 +46,7 @@
     popup-kill-ring
     crm
     swiper
+    helm
     )
   "The list of Lisp packages required by the lotus-interactivity layer.
 
@@ -593,9 +594,17 @@ Each entry is either:
 
 (defun lotus-interactivity/init-counsel ()
   (use-package counsel
-      :ensure t
-      :config
-      (progn
-        )))
+    :ensure t
+    :config
+    (progn
+      )))
+
+(defun lotus-interactivity/post-init-helm ()
+  (use-packagehelm
+   :ensure t
+   :config
+   (progn
+     (progn
+       (setq helm-exit-idle-delay 0.3)))))
 
 ;;; packages.el ends here

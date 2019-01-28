@@ -42,7 +42,10 @@
 (defun lotus-org-unnamed-task-straight-org-clock-clock-in (clock &optional resume start-time)
   (let ((org-clock-persist               lotus-org-unnamed-task-org-clock-persist)
         (org-clock-auto-clock-resolution lotus-org-unnamed-task-org-clock-auto-clock-resolution))
-    (org-clock-clock-in clock resume start-time)))
+    (lotus-org-clock-load-only)
+    (prog1
+        (org-clock-clock-in clock resume start-time)
+      (setq org-clock-loaded t))))
 
 ;;;###autoload
 (defun lotus-org-unnamed-task-file (&optional file)

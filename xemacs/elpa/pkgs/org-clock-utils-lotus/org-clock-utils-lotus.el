@@ -48,15 +48,16 @@
 (defun lotus-org-clock-load-only ()
   "Load clock-related data from disk, maybe resuming a stored clock."
   (when (and org-clock-persist (not org-clock-loaded))
-    (if (not (file-readable-p org-clock-persist-file))
-        (message "Not restoring clock data; %S not found" org-clock-persist-file)
-      (message "Restoring clock data")
-      ;; Load history.
-      (load-file org-clock-persist-file)
-      (setq org-clock-loaded t)
-      (pcase-dolist (`(,(and file (pred file-exists-p)) . ,position)
-                     org-clock-stored-history)
-        (org-clock-history-push position (find-file-noselect file))))
+    (progn
+      (if (not (file-readable-p org-clock-persist-file))
+          (message "Not restoring clock data; %S not found" org-clock-persist-file)
+        (message "Restoring clock data")
+        ;; Load history.
+        (load-file org-clock-persist-file)
+        (setq org-clock-loaded t)
+        (pcase-dolist (`(,(and file (pred file-exists-p)) . ,position)
+                       org-clock-stored-history)
+          (org-clock-history-push position (find-file-noselect file)))))
     (setq org-clock-loaded nil)))
 
 ;;;###autoload
@@ -88,9 +89,11 @@
   "lotus-straight-org-clock-clock-in"
   (progn
     (lotus-org-clock-load-only)
-    (let ((org-clock-persist               lotus-straight-org-clock-persist)
-          (org-clock-auto-clock-resolution lotus-straight-org-clock-auto-clock-resolution))
-      (org-clock-clock-in clock resume start-time))))
+    (prog1
+        (let ((org-clock-persist               lotus-straight-org-clock-persist)
+              (org-clock-auto-clock-resolution lotus-straight-org-clock-auto-clock-resolution))
+          (org-clock-clock-in clock resume start-time))
+      (setq org-clock-loaded t))))
 
 ;;;###autoload
 (defun lotus-straight-org-clock-clock-out (clock &optional fail-quietly at-time)
@@ -103,7 +106,7 @@
   "org-without-org-clock-persist"
   `(let ((org-clock-persist lotus-org-unnamed-task-org-clock-persist))
      (lotus-org-clock-load-only)
-     ,@body))
+     (progn ,@body)))
 (put 'org-without-org-clock-persist 'lisp-indent-function 0)
 
 (defmacro org-without-org-clock-auto-clock-resolution (&rest body)
