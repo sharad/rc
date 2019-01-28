@@ -65,7 +65,7 @@
  ("작업환경",
   ("설    정", SHEXEC, "/usr/GNUstep/Applications/WPrefs.app/WPrefs || wmakerconf"),
   ("테    마", OPEN_MENU, "-noext /usr/share/WindowMaker/Themes ~/GNUstep/Library/WindowMaker/Themes WITH setstyle"),
-  ("테마저장", EXEC, "getstyle -t $HOME/GNUstep/Library/WindowMaker/Themes/\"%a(테마 이름,파일 이름을 입력하세요:)\""),
+  ("테마저장", EXEC, "getstyle -t $HOME/.GNUstep/Library/WindowMaker/Themes/\"%a(테마 이름,파일 이름을 입력하세요:)\""),
   ("스 타 일", OPEN_MENU, "-noext /usr/share/WindowMaker/Styles ~/GNUstep/Library/WindowMaker/Styles WITH setstyle"),
   ("아이콘셋", OPEN_MENU, "-noext /usr/share/WindowMaker/IconSets ~/GNUstep/Library/WindowMaker/IconSets WITH seticons"),
   ("아이콘셋저장", EXEC, "geticonset ~/GNUstep/Library/WindowMaker/IconSets/\"%a(아이콘셋 이름,파일 이름을 입력하세요:)\""),

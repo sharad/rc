@@ -66,9 +66,9 @@
   ("Borrar sesion", CLEAR_SESSION)
   ),
  ("Apariencia",
-  ("Temas", OPEN_MENU, "-noext /usr/share/WindowMaker/Themes $HOME/GNUstep/Library/WindowMaker/Themes WITH setstyle"),
-  ("Estilos", OPEN_MENU, "-noext /usr/share/WindowMaker/Styles $HOME/GNUstep/Library/WindowMaker/Styles WITH setstyle"),
-  ("Grupos de iconos", OPEN_MENU, "-noext /usr/share/WindowMaker/IconSets $HOME/GNUstep/Library/WindowMaker/IconSets WITH seticons"),
+  ("Temas", OPEN_MENU, "-noext /usr/share/WindowMaker/Themes $HOME/.GNUstep/Library/WindowMaker/Themes WITH setstyle"),
+  ("Estilos", OPEN_MENU, "-noext /usr/share/WindowMaker/Styles $HOME/.GNUstep/Library/WindowMaker/Styles WITH setstyle"),
+  ("Grupos de iconos", OPEN_MENU, "-noext /usr/share/WindowMaker/IconSets $HOME/.GNUstep/Library/WindowMaker/IconSets WITH seticons"),
   ("Papel Tapiz",
    ("Solido",
     ("Negro", EXEC, "wdwrite WindowMaker WorkspaceBack '(solid, black)'"),
@@ -90,10 +90,10 @@
     ("Sombras grises",   EXEC, "wdwrite WindowMaker WorkspaceBack '(vgradient, \"#636380\", \"#131318\")'"),
     ("Sombras vino",   EXEC, "wdwrite WindowMaker WorkspaceBack '(vgradient, \"#600040\", \"#180010\")'")
     ),
-   ("Imagenes", OPEN_MENU, "-noext /usr/share/WindowMaker/Backgrounds $HOME/GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t")
+   ("Imagenes", OPEN_MENU, "-noext /usr/share/WindowMaker/Backgrounds $HOME/.GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t")
    ),   
-  ("Guardar tema", SHEXEC, "getstyle -t $HOME/GNUstep/Library/WindowMaker/Themes/\"%a(Theme name)\""),
-  ("Guardar iconos", SHEXEC, "geticonset $HOME/GNUstep/Library/WindowMaker/IconSets/\"%a(IconSet name)\""),
+  ("Guardar tema", SHEXEC, "getstyle -t $HOME/.GNUstep/Library/WindowMaker/Themes/\"%a(Theme name)\""),
+  ("Guardar iconos", SHEXEC, "geticonset $HOME/.GNUstep/Library/WindowMaker/IconSets/\"%a(IconSet name)\""),
   ("Preferencias", EXEC, "/usr/GNUstep/Applications/WPrefs.app/WPrefs")
   ), 
  ("Salir",

@@ -66,9 +66,9 @@
   ("Изчисти запазената сесия", CLEAR_SESSION)
   ),
  ("Изглед",
-  ("Теми", OPEN_MENU, "-noext /usr/share/WindowMaker/Themes $HOME/GNUstep/Library/WindowMaker/Themes WITH setstyle"),
-  ("Стилове", OPEN_MENU, "-noext /usr/share/WindowMaker/Styles $HOME/GNUstep/Library/WindowMaker/Styles WITH setstyle"),
-  ("Колекции иконки", OPEN_MENU, "-noext /usr/share/WindowMaker/IconSets $HOME/GNUstep/Library/WindowMaker/IconSets WITH seticons"),
+  ("Теми", OPEN_MENU, "-noext /usr/share/WindowMaker/Themes $HOME/.GNUstep/Library/WindowMaker/Themes WITH setstyle"),
+  ("Стилове", OPEN_MENU, "-noext /usr/share/WindowMaker/Styles $HOME/.GNUstep/Library/WindowMaker/Styles WITH setstyle"),
+  ("Колекции иконки", OPEN_MENU, "-noext /usr/share/WindowMaker/IconSets $HOME/.GNUstep/Library/WindowMaker/IconSets WITH seticons"),
   ("Фон",
    ("Плътен",
     ("Черен", EXEC, "wdwrite WindowMaker WorkspaceBack '(solid, black)'"),
@@ -90,10 +90,10 @@
     ("Сиви сенки",   EXEC, "wdwrite WindowMaker WorkspaceBack '(vgradient, \"#636380\", \"#131318\")'"),
     ("Винени сенки",   EXEC, "wdwrite WindowMaker WorkspaceBack '(vgradient, \"#600040\", \"#180010\")'")
     ),
-   ("Изображения", OPEN_MENU, "-noext /usr/share/WindowMaker/Backgrounds $HOME/GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t")
+   ("Изображения", OPEN_MENU, "-noext /usr/share/WindowMaker/Backgrounds $HOME/.GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t")
    ),   
-  ("Запази темата", SHEXEC, "getstyle -t $HOME/GNUstep/Library/WindowMaker/Themes/\"%a(Theme name)\""),
-  ("Запази колекцията иконки", SHEXEC, "geticonset $HOME/GNUstep/Library/WindowMaker/IconSets/\"%a(IconSet name)\""),
+  ("Запази темата", SHEXEC, "getstyle -t $HOME/.GNUstep/Library/WindowMaker/Themes/\"%a(Theme name)\""),
+  ("Запази колекцията иконки", SHEXEC, "geticonset $HOME/.GNUstep/Library/WindowMaker/IconSets/\"%a(IconSet name)\""),
   ("Пособие за настройки", EXEC, "/usr/GNUstep/Applications/WPrefs.app/WPrefs")
   ), 
  ("Изход",

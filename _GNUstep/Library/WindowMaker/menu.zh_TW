@@ -171,9 +171,9 @@
 	"工作區" END
 
 	"外觀" MENU
-		"主題" OPEN_MENU THEMES_DIR $HOME/GNUstep/Library/WindowMaker/Themes WITH setstyle
-		"風格" OPEN_MENU STYLES_DIR $HOME/GNUstep/Library/WindowMaker/Styles WITH setstyle
-		"圖示集" OPEN_MENU ICON_SETS_DIR $HOME/GNUstep/Library/WindowMaker/IconSets WITH seticons
+		"主題" OPEN_MENU THEMES_DIR $HOME/.GNUstep/Library/WindowMaker/Themes WITH setstyle
+		"風格" OPEN_MENU STYLES_DIR $HOME/.GNUstep/Library/WindowMaker/Styles WITH setstyle
+		"圖示集" OPEN_MENU ICON_SETS_DIR $HOME/.GNUstep/Library/WindowMaker/IconSets WITH seticons
 		"背景" MENU
 			"實體色" MENU
                         	"Black" WS_BACK '(solid, black)'
@@ -195,10 +195,10 @@
     				"Grey Shades" WS_BACK '(vgradient, "#636380", "#131318")'
     				"Wine Shades" WS_BACK '(vgradient, "#600040", "#180010")'
 			"漸層色" END
-			"圖片" OPEN_MENU BACKGROUNDS_DIR $HOME/GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t
+			"圖片" OPEN_MENU BACKGROUNDS_DIR $HOME/.GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t
 		"背景" END
-		"儲存主題" SHEXEC getstyle -t $HOME/GNUstep/Library/WindowMaker/Themes/"%a(主題名稱)"
-		"儲存圖示集" SHEXEC geticonset $HOME/GNUstep/Library/WindowMaker/IconSets/"%a(圖示集名稱)"
+		"儲存主題" SHEXEC getstyle -t $HOME/.GNUstep/Library/WindowMaker/Themes/"%a(主題名稱)"
+		"儲存圖示集" SHEXEC geticonset $HOME/.GNUstep/Library/WindowMaker/IconSets/"%a(圖示集名稱)"
 		"偏好設定公用程式" EXEC /usr/GNUstep/Applications/WPrefs.app/WPrefs
 	"外觀" END
 

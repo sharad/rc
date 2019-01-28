@@ -10,7 +10,7 @@
  * 
  * SHORTCUT specifies a shortcut for that item. <Shortcut> has the
  * same syntax of the shortcuts key options in the 
- * $HOME/GNUstep/Defaults/WindowMaker file, such as RootMenuKey or MiniaturizeKey.
+ * $HOME/.GNUstep/Defaults/WindowMaker file, such as RootMenuKey or MiniaturizeKey.
  *
  * You can't specify a shortcut for a MENU or OPEN_MENU entry.
  * 
@@ -171,9 +171,9 @@
 	"Delovni prostor" END
 
 	"Izgled" MENU
-		"Teme" OPEN_MENU -noext THEMES_DIR $HOME/GNUstep/Library/WindowMaker/Themes WITH setstyle
-		"Stili" OPEN_MENU -noext STYLES_DIR $HOME/GNUstep/Library/WindowMaker/Styles WITH setstyle
-		"Zbirke ikon" OPEN_MENU -noext ICON_SETS_DIR $HOME/GNUstep/Library/WindowMaker/IconSets WITH seticons
+		"Teme" OPEN_MENU -noext THEMES_DIR $HOME/.GNUstep/Library/WindowMaker/Themes WITH setstyle
+		"Stili" OPEN_MENU -noext STYLES_DIR $HOME/.GNUstep/Library/WindowMaker/Styles WITH setstyle
+		"Zbirke ikon" OPEN_MENU -noext ICON_SETS_DIR $HOME/.GNUstep/Library/WindowMaker/IconSets WITH seticons
 		"Odzadje" MENU
 			"Barva" MENU
                         	"Črna" WS_BACK '(solid, black)'
@@ -189,10 +189,10 @@
 				"Zastava" WS_BACK '(mdgradient, green, red, white, green)'
 				"Nebo" WS_BACK '(vgradient, blue4, white)'
 			"Preliv" END
-			"Slike" OPEN_MENU -noext BACKGROUNDS_DIR $HOME/GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t
+			"Slike" OPEN_MENU -noext BACKGROUNDS_DIR $HOME/.GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t
 		"Odzadje" END
-		"Shrani temo" SHEXEC getstyle -t $HOME/GNUstep/Library/WindowMaker/Themes/"%a(Theme name)"
-		"Shrani zbirko ikon" SHEXEC geticonset $HOME/GNUstep/Library/WindowMaker/IconSets/"%a(IconSet name)"
+		"Shrani temo" SHEXEC getstyle -t $HOME/.GNUstep/Library/WindowMaker/Themes/"%a(Theme name)"
+		"Shrani zbirko ikon" SHEXEC geticonset $HOME/.GNUstep/Library/WindowMaker/IconSets/"%a(IconSet name)"
 	"Izgled" END
 
 	"Izhod"	MENU

@@ -169,9 +169,9 @@
 	"ワークスペース" END
 
 	"外観" MENU
-		"テーマ" OPEN_MENU -noext THEMES_DIR $HOME/GNUstep/Library/WindowMaker/Themes WITH setstyle
-		"スタイル" OPEN_MENU -noext STYLES_DIR $HOME/GNUstep/Library/WindowMaker/Styles WITH setstyle
-		"アイコン集" OPEN_MENU -noext ICON_SETS_DIR $HOME/GNUstep/Library/WindowMaker/IconSets WITH seticons
+		"テーマ" OPEN_MENU -noext THEMES_DIR $HOME/.GNUstep/Library/WindowMaker/Themes WITH setstyle
+		"スタイル" OPEN_MENU -noext STYLES_DIR $HOME/.GNUstep/Library/WindowMaker/Styles WITH setstyle
+		"アイコン集" OPEN_MENU -noext ICON_SETS_DIR $HOME/.GNUstep/Library/WindowMaker/IconSets WITH seticons
 		"背景" MENU
 			"ソリッド" MENU
                         	"Black" WS_BACK '(solid, black)'
@@ -187,10 +187,10 @@
 				"Flag" WS_BACK '(mdgradient, green, red, white, green)'
 				"Sky" WS_BACK '(vgradient, blue4, white)'
 			"グラデーション" END
-			"イメージ" OPEN_MENU -noext BACKGROUNDS_DIR $HOME/GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t
+			"イメージ" OPEN_MENU -noext BACKGROUNDS_DIR $HOME/.GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t
 		"背景" END
-		"現在の設定をテーマとしてセーブ" SHEXEC getstyle -t $HOME/GNUstep/Library/WindowMaker/Themes/"%a(Theme name)"
-		"現在のアイコン集をセーブ" SHEXEC geticonset $HOME/GNUstep/Library/WindowMaker/IconSets/"%a(IconSet name)"
+		"現在の設定をテーマとしてセーブ" SHEXEC getstyle -t $HOME/.GNUstep/Library/WindowMaker/Themes/"%a(Theme name)"
+		"現在のアイコン集をセーブ" SHEXEC geticonset $HOME/.GNUstep/Library/WindowMaker/IconSets/"%a(IconSet name)"
 	"外観" END
 
 	"終了"	MENU

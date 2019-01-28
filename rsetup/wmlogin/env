@@ -24,6 +24,10 @@ else
     echo env var HOST is not set $HOST
 fi
 
+#{{
+export GNUSTEP_USER_ROOT=~/.GNUstep/
+#}}
+
 if ! pgrep gnome-keyring-d >> ~/.logs/wmlogin.log 2>&1
 then
  	  # eval $(gnome-keyring-daemon --start)

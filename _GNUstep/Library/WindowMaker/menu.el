@@ -11,7 +11,7 @@
  * 
  * SHORTCUT είναι ο συνδυασμός πλήκτρων για το συγκεκριμένο πρόγραμμα π.χ:
  *          "Meta+1". Άλλα παραδείγματα θα δείτε στο αχρείο:
- *          $HOME/GNUstep/Defaults/WindowMaker
+ *          $HOME/.GNUstep/Defaults/WindowMaker
  *
  * Δεν μπορεί να δηλωθεί ένα shortcut για MENU και για OPEN_MENU εντολή.
  * 
@@ -44,7 +44,7 @@
  *                 θα ανακληθούν την επόμενη φορά που ο χρήστης
  *                 εκκινήσει τον Window Maker μέχρι η εντολή SAVE_SESSION ή
  *                 CLEAR_SESSION χρησιμοποιηθούν. Αν στο αρχείο Window Maker του
- *                 καταλόγου "$HOME/GNUstep/Defaults/" υπάρχει η εντολή:
+ *                 καταλόγου "$HOME/.GNUstep/Defaults/" υπάρχει η εντολή:
  *                 "SaveSessionOnExit = Yes;", τότε όλα τα παραπάνω γίνονται
  *                 αυτόματα με κάθε έξοδο του χρήστη από τον Window Maker,
  *                 ακυρώνοντας ουσιαστικά κάθε προηγούμενη χρήση τως εντολών
@@ -185,9 +185,9 @@
 	"Επιφάνεια" END
 
 	"Εμφάνιση" MENU
-		"Θέματα" OPEN_MENU -noext  THEMES_DIR $HOME/GNUstep/Library/WindowMaker/Themes WITH setstyle
-		"Στυλ" OPEN_MENU -noext  STYLES_DIR $HOME/GNUstep/Library/WindowMaker/Styles WITH setstyle
-		"Ομάδα Εικονιδίων" OPEN_MENU -noext  ICON_SETS_DIR $HOME/GNUstep/Library/WindowMaker/IconSets WITH seticons
+		"Θέματα" OPEN_MENU -noext  THEMES_DIR $HOME/.GNUstep/Library/WindowMaker/Themes WITH setstyle
+		"Στυλ" OPEN_MENU -noext  STYLES_DIR $HOME/.GNUstep/Library/WindowMaker/Styles WITH setstyle
+		"Ομάδα Εικονιδίων" OPEN_MENU -noext  ICON_SETS_DIR $HOME/.GNUstep/Library/WindowMaker/IconSets WITH seticons
 		"Παρασκήνιο" MENU
 			"Μονόχρωμο" MENU
                         	"Μαύρο" WS_BACK '(solid, black)'
@@ -209,10 +209,10 @@
     				"Γκρίζες Αποχρώσεις" WS_BACK '(vgradient, "#636380", "#131318")'
     				"Κοκκινωπές Αποχρώσεις" WS_BACK '(vgradient, "#600040", "#180010")'
 			"Διαβαθμισμένο" END
-			"Εικόνες" OPEN_MENU -noext  BACKGROUNDS_DIR $HOME/GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t
+			"Εικόνες" OPEN_MENU -noext  BACKGROUNDS_DIR $HOME/.GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t
 		"Παρασκήνιο" END
-		"Αποθήκευση Θέματος" SHEXEC getstyle -t $HOME/GNUstep/Library/WindowMaker/Themes/"%a(Όνομα Θέματος,Γράψε το όνομα του αρχείου:)"
-		"Αποθήκευση Ομάδας Εικονιδίων" SHEXEC geticonset $HOME/GNUstep/Library/WindowMaker/IconSets/"%a(Όνομα Ομάδας,Γράψε το όνομα του αρχείου:)"
+		"Αποθήκευση Θέματος" SHEXEC getstyle -t $HOME/.GNUstep/Library/WindowMaker/Themes/"%a(Όνομα Θέματος,Γράψε το όνομα του αρχείου:)"
+		"Αποθήκευση Ομάδας Εικονιδίων" SHEXEC geticonset $HOME/.GNUstep/Library/WindowMaker/IconSets/"%a(Όνομα Ομάδας,Γράψε το όνομα του αρχείου:)"
 	"Εμφάνιση" END
 
 	"Έξοδος" MENU

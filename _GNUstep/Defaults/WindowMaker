@@ -3,20 +3,23 @@
   DontLinkWorkspaces = NO;
   TranceAmount = 5;
   WindowTitleBalloons = NO;
-  MenuDisabledColor = gray30;
-  IconTitleBack = "#00888a";
+  MenuDisabledColor = gray40;
+  MenuTextJustify = center;
+  IconTitleBack = white;
   PixmapPath = (
-    "/home/c_sharad/GNUstep/Library/WindowMaker/Pixmaps",
-    "/home/c_sharad/GNUstep/Library/WindowMaker/Backgrounds",
+    "/home/s/hell/.GNUstep/Library/WindowMaker/Pixmaps",
+    "/home/s/hell/.GNUstep/Library/WindowMaker/Backgrounds",
     "/usr/share/WindowMaker/Pixmaps",
     "/usr/share/WindowMaker/Backgrounds",
     "/usr/X11R6/include/X11/pixmaps",
     "/usr/local/share/pixmaps",
-    "/usr/share/pixmaps"
+    "/usr/share/pixmaps",
+    "/home/s/hell/.GNUstep/Library/WindowMaker/Pixmaps"
   );
-  FTitleBack = (hgradient, darkturquoise, "rgb:00/41/42");
+  FTitleBack = (dgradient, "rgb:21/00/05", "rgb:90/00/30");
   RaiseDelay = 800;
   ClipTitleFont = "Verdana:bold:pixelsize=10";
+  MiniwindowPreviewBalloons = NO;
   HideKey = "Mod3+H";
   MaximizeKey = "Mod4+M";
   IconTitleFont = "Arial,sans serif:pixelsize=9";
@@ -33,82 +36,101 @@
   MenuTitleColor = white;
   WindowShortcut3Key = None;
   MenuTitleFont = "Trebuchet MS,sans serif:bold:pixelsize=12";
+  ClipAutolowerDelay = "";
   SmoothWorkspaceBack = NO;
-  IconPosition = blv;
   WindowShortcut4Key = None;
+  IconPosition = blv;
   NoWindowOverDock = NO;
-  WorkspaceBack = (vgradient, blue4, white);
+  WorkspaceBack = (
+    tpixmap,
+    "/home/s/hell/.GNUstep/Library/WindowMaker/Backgrounds/Aqua_Strawberries_Abstract_3d_226.jpg",
+    gray20
+  );
   HighlightTextColor = black;
   VirtualEdgeLeftKey = "Mod4+Left";
+  ClipAutoexpandDelay = "";
   WindowShortcut9Key = None;
   HelpBalloons = NO;
+  TextJustify = center;
   AutoArrangeIcons = YES;
   PrevWorkspaceKey = "Control+Mod4+Left";
   MoveResizeKey = "Mod4+R";
-  ClipTitleColor = "rgb:79/96/cf";
+  ClipTitleColor = black;
   AppIconBalloons = NO;
   WaitCursor = (
     bitmap,
     "/usr/share/WindowMaker/Themes/Aqua Strawberry.themed/dot_wait.xbm",
     "/usr/share/WindowMaker/Themes/Aqua Strawberry.themed/dot_wait_mask.xbm"
   );
+  WorkspaceBorder = None;
   WindowTitleFont = "Trebuchet MS,sans serif:bold:pixelsize=12";
+  LargeDisplayTextColor = white;
   Workspace8Key = "Mod4+8";
   Workspace9Key = "Mod4+9";
   RootMenuKey = "Mod4+Z";
   UseSaveUnders = YES;
-  ResizebarBack = (hgradient, deepskyblue4, black);
+  ResizebarBack = (dgradient, "rgb:90/90/90", "rgb:c0/c0/c0");
   Workspace4Key = "Mod4+4";
   DisplayFont = "helvetica:pixelsize=12";
-  Workspace5Key = "Mod4+5";
   KbdModeLock = YES;
+  Workspace5Key = "Mod4+5";
   Workspace6Key = "Mod4+6";
-  OpenTransientOnOwnerWorkspace = YES;
+  WorkspaceBorderSize = 0;
   Workspace7Key = "Mod4+7";
+  OpenTransientOnOwnerWorkspace = YES;
   VirtualEdgeRightKey = "Mod4+Right";
   Workspace1Key = "Mod4+1";
   Workspace2Key = "Mod4+2";
   VirtualEdgeDownKey = "Mod4+Down";
+  MenuTitleExtendSpace = 0;
   Workspace3Key = "Mod4+3";
-  MenuTitleExtendSpace = "-1";
   WindowShortcut1Key = None;
+  ClipAutocollapseDelay = "";
   MiniaturizeKey = "Mod3+I";
   DisableDock = YES;
   WindowShortcut2Key = None;
   FocusNextKey = "Mod4+Tab";
   ToggleKbdModeKey = None;
+  DragMaximizedWindow = Move;
+  DoNotMakeAppIconsBounce = NO;
   MiniwindowTitleBalloons = NO;
   WindowShortcut7Key = None;
-  MenuTextBack = (hgradient, darkturquoise, "rgb:00/41/42");
+  OpaqueResize = NO;
+  MenuTextBack = (dgradient, "rgb:b0/b0/b0", "rgb:60/60/60");
+  RaiseAppIconsWhenBouncing = NO;
   WindowPlacement = smart;
   MenuTrance = NO;
+  ResizeIncrement = 0;
   CycleWorkspaces = YES;
   WindowShortcut8Key = None;
+  OpaqueMoveResizeKeyboard = NO;
   TitleJustify = center;
   MenuTextColor = black;
-  Attraction = NO;
   SingleClickLaunch = NO;
-  IconBack = (mdgradient, "rgb:18/34/54", "rgb:28/45/69", "rgb:08/24/20");
+  Attraction = NO;
+  IconBack = (dgradient, "rgb:a6/a6/b6", "rgb:51/55/61");
   DontConfirmKill = YES;
   DisableBlinking = NO;
   AntialiasedText = NO;
   LowerKey = "Mod4+Down";
-  WindowTitleExtendSpace = "-1";
+  WindowTitleExtendSpace = 0;
   FocusPrevKey = "Shift+Mod4+Tab";
-  NewStyle = new;
   NormalCursor = (builtin, left_ptr);
+  NewStyle = new;
   WindowListKey = "Mod4+W";
   WorkspaceNameDisplayPosition = center;
   IconSize = 56;
+  "//MenuTextFont" = "-lispm-fixed-*-*-*-*-*-*-*-*-*-*-iso8859-15";
   MenuTextFont = "Trebuchet MS,sans serif:pixelsize=12";
   ScreenSwitchKey = None;
-  MenuTitleBack = (hgradient, deepskyblue4, black);
+  MenuTitleBack = (dgradient, "rgb:90/00/30", "rgb:21/00/05");
   HMaximizeKey = "Mod4+H";
   CloseKey = "Control+Mod4+W";
-  HighlightColor = lightgoldenrod1;
+  HighlightColor = white;
   NextWorkspaceKey = "Control+Mod4+Right";
   Workspace10Key = "Mod4+0";
-  CClipTitleColor = "rgb:61/61/61";
+  DisableDrawers = NO;
+  CClipTitleColor = gray30;
   VMaximizeKey = "Mod4+V";
   MoveCursor = (
     bitmap,
@@ -117,23 +139,29 @@
   );
   WindowShortcut5Key = None;
   MenuStyle = normal;
+  MenuTitleJustify = left;
   HideOthersKey = "Mod3+O";
   IconPath = (
-    "/home/c_sharad/GNUstep/Library/Icons",
+    "/home/s/hell/.GNUstep/Library/Icons",
     "/usr/share/WindowMaker/Icons",
     "/usr/share/WindowMaker/Pixmaps",
     "/usr/X11R6/include/X11/pixmaps",
-    "/home/c_sharad/GNUstep/Library/WindowMaker/Pixmaps",
+    "/home/s/hell/.GNUstep/Library/WindowMaker/Pixmaps",
     "/usr/share/icons",
     "/usr/local/share/pixmaps",
-    "/usr/share/pixmaps"
+    "/usr/share/pixmaps",
+    "/home/s/hell/.GNUstep/Library/WindowMaker/Pixmaps"
   );
   RaiseKey = "Mod4+Up";
-  PTitleBack = (hgradient, deepskyblue2, deepskyblue4);
-  MenuTextExtendSpace = "-1";
+  MenuJustify = center;
+  ClipAutoraiseDelay = "";
+  PTitleBack = (dgradient, "rgb:51/50/55", "rgb:80/80/80");
   WindowShortcut6Key = None;
-  UTitleColor = white;
-  UTitleBack = (hgradient, deepskyblue4, black);
+  MenuTextExtendSpace = 0;
+  UTitleColor = gray20;
+  BounceAppIconsWhenUrgent = YES;
+  ViKeyMenus = NO;
+  UTitleBack = (dgradient, "rgb:90/90/90", "rgb:c0/c0/c0");
   CirculateRaise = NO;
-  PTitleColor = gray;
+  PTitleColor = white;
 }

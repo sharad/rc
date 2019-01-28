@@ -22,7 +22,7 @@
 /*
  * SETSTYLE FILE - loads a style file 
  */
-#define SETSTYLE EXEC cd $HOME/GNUstep/Library/WindowMaker/Styles; setstyle 
+#define SETSTYLE EXEC cd $HOME/.GNUstep/Library/WindowMaker/Styles; setstyle 
 
 
 /*

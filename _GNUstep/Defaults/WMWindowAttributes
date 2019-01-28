@@ -2,23 +2,23 @@
   tip_of_the_day.Gimp = {
     NoMiniaturizeButton = Yes;
     AlwaysUserIcon = Yes;
-    Icon = "wmaker-gimp2.tif";
     NoResizebar = Yes;
+    Icon = "wmaker-gimp2.tif";
     KeepOnTop = Yes;
     NoCloseButton = Yes;
   };
   color_palette.Gimp = {
     AlwaysUserIcon = Yes;
-    Icon = "wmaker-gimp-palette.tif";
     NoResizebar = Yes;
+    Icon = "wmaker-gimp-palette.tif";
   };
   "gnome-help.Gnome-help" = {
-    Icon = "/home/s/hell/GNUstep/Library/WindowMaker/CachedPixmaps/gnome-help.Gnome-help.xpm";
+    Icon = "/home/s/hell/.GNUstep/Library/WindowMaker/CachedPixmaps/gnome-help.Gnome-help.xpm";
   };
   indexed_color_palette.Gimp = {
     AlwaysUserIcon = Yes;
-    Icon = "wmaker-gimp-palette.tif";
     NoResizebar = Yes;
+    Icon = "wmaker-gimp-palette.tif";
   };
   "script-fu.Script-fu" = {
     Icon = "wmaker-gimp-script-fu.tif";
@@ -33,7 +33,7 @@
     Icon = "wmaker-netscape.tif";
   };
   xterm.XTerm = {
-    Icon = "/home/s/hell/GNUstep/Library/WindowMaker/CachedPixmaps/xterm.XTerm.xpm";
+    Icon = "/home/s/hell/.GNUstep/Library/WindowMaker/CachedPixmaps/xterm.XTerm.xpm";
   };
   tool_options.Gimp = {
     AlwaysUserIcon = Yes;
@@ -71,15 +71,15 @@
     Icon = GNUstep.tiff;
   };
   groupLeader.WPrefs = {
-    Icon = "/home/s/hell/GNUstep/Library/WindowMaker/CachedPixmaps/groupLeader.WPrefs.xpm";
+    Icon = "/home/s/hell/.GNUstep/Library/WindowMaker/CachedPixmaps/groupLeader.WPrefs.xpm";
   };
   gimp_startup.Gimp = {
     NotClosable = Yes;
     NoTitlebar = Yes;
     NotMiniaturizable = Yes;
     AlwaysUserIcon = Yes;
-    Icon = "wmaker-gimp2.tif";
     NoResizebar = Yes;
+    Icon = "wmaker-gimp2.tif";
   };
   patternselection.Gimp = {
     AlwaysUserIcon = Yes;
@@ -98,13 +98,13 @@
   "Script-fu" = {
     Icon = "wmaker-gimp-script-fu.tif";
   };
+  Logo.WMPanel = {
+    Icon = GNUstep.tiff;
+  };
   gmc = {
     SkipWindowList = Yes;
     NoAppIcon = Yes;
     Omnipresent = Yes;
-  };
-  Logo.WMPanel = {
-    Icon = GNUstep.tiff;
   };
   Tile.WMClip = {
     Icon = clip.tiff;
@@ -126,11 +126,11 @@
     AlwaysUserIcon = Yes;
     Icon = "wmaker-gimp2.tif";
   };
-  "gnome-terminal.Gnome-terminal" = {
-    Icon = "/home/s/hell/GNUstep/Library/WindowMaker/CachedPixmaps/gnome-terminal.Gnome-terminal.xpm";
-  };
   Logo.WMClip = {
     Icon = clip.tiff;
+  };
+  "gnome-terminal.Gnome-terminal" = {
+    Icon = "/home/s/hell/.GNUstep/Library/WindowMaker/CachedPixmaps/gnome-terminal.Gnome-terminal.xpm";
   };
   preferences.Gimp = {
     AlwaysUserIcon = Yes;

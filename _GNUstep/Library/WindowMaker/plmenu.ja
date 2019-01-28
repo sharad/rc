@@ -66,9 +66,9 @@
   ("セッションをクリア", CLEAR_SESSION)
   ),
  ("外観",
-  ("テーマ", OPEN_MENU, "-noext /usr/share/WindowMaker/Themes $HOME/GNUstep/Library/WindowMaker/Themes WITH setstyle"),
-  ("スタイル", OPEN_MENU, "-noext /usr/share/WindowMaker/Styles $HOME/GNUstep/Library/WindowMaker/Styles WITH setstyle"),
-  ("アイコンセット", OPEN_MENU, "-noext /usr/share/WindowMaker/IconSets $HOME/GNUstep/Library/WindowMaker/IconSets WITH seticons"),
+  ("テーマ", OPEN_MENU, "-noext /usr/share/WindowMaker/Themes $HOME/.GNUstep/Library/WindowMaker/Themes WITH setstyle"),
+  ("スタイル", OPEN_MENU, "-noext /usr/share/WindowMaker/Styles $HOME/.GNUstep/Library/WindowMaker/Styles WITH setstyle"),
+  ("アイコンセット", OPEN_MENU, "-noext /usr/share/WindowMaker/IconSets $HOME/.GNUstep/Library/WindowMaker/IconSets WITH seticons"),
   ("背景",
    ("ソリッド",
     ("Black", EXEC, "wdwrite WindowMaker WorkspaceBack '(solid, black)'"),
@@ -90,10 +90,10 @@
     ("Grey Shades",   EXEC, "wdwrite WindowMaker WorkspaceBack '(vgradient, \"#636380\", \"#131318\")'"),
     ("Wine Shades",   EXEC, "wdwrite WindowMaker WorkspaceBack '(vgradient, \"#600040\", \"#180010\")'")
     ),
-   ("イメージ", OPEN_MENU, "-noext /usr/share/WindowMaker/Backgrounds $HOME/GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t")
+   ("イメージ", OPEN_MENU, "-noext /usr/share/WindowMaker/Backgrounds $HOME/.GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t")
    ),   
-  ("設定をテーマとしてセーブ", SHEXEC, "getstyle -t $HOME/GNUstep/Library/WindowMaker/Themes/\"%a(Theme name)\""),
-  ("現在のアイコンセットをセーブ", SHEXEC, "geticonset $HOME/GNUstep/Library/WindowMaker/IconSets/\"%a(IconSet name)\""),
+  ("設定をテーマとしてセーブ", SHEXEC, "getstyle -t $HOME/.GNUstep/Library/WindowMaker/Themes/\"%a(Theme name)\""),
+  ("現在のアイコンセットをセーブ", SHEXEC, "geticonset $HOME/.GNUstep/Library/WindowMaker/IconSets/\"%a(IconSet name)\""),
   ("設定ユーティリティ", EXEC, "/usr/GNUstep/Applications/WPrefs.app/WPrefs")
   ), 
  ("終了",

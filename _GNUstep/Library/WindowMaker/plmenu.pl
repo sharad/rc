@@ -9,9 +9,9 @@
 	),
 	
 	("Konfiguracja",	
-		("Edycja menu",       EXEC, "xterm -T 'Edycja menu' -e vi $HOME/GNUstep/Library/WindowMaker/menu"),
-		("Ustawienie fontów", EXEC, "xterm -T 'Ustawienie fontów' -e vi $HOME/GNUstep/Defaults/WMGLOBAL"),
-		("Konfiguracja",      EXEC, "xterm -T 'Konfiguracja' -e vi $HOME/GNUstep/Defaults/WindowMaker")
+		("Edycja menu",       EXEC, "xterm -T 'Edycja menu' -e vi $HOME/.GNUstep/Library/WindowMaker/menu"),
+		("Ustawienie fontów", EXEC, "xterm -T 'Ustawienie fontów' -e vi $HOME/.GNUstep/Defaults/WMGLOBAL"),
+		("Konfiguracja",      EXEC, "xterm -T 'Konfiguracja' -e vi $HOME/.GNUstep/Defaults/WindowMaker")
 	),
 	
 	("Uruchom...", EXEC, "%a(Uruchom,Wpisz komende do uruchomienia:)"),
@@ -131,9 +131,9 @@
 	),
 
 	("Wygląd",
-		("Tematy",          OPEN_MENU, "-noext /usr/share/WindowMaker/Themes $HOME/GNUstep/Library/WindowMaker/Themes WITH setstyle"),
-		("Style",           OPEN_MENU, "-noext /usr/share/WindowMaker/Styles $HOME/GNUstep/Library/WindowMaker/Styles WITH setstyle"),
-		("Ustawienia ikon", OPEN_MENU, "-noext /usr/share/WindowMaker/IconSets $HOME/GNUstep/Library/WindowMaker/IconSets WITH seticons"),
+		("Tematy",          OPEN_MENU, "-noext /usr/share/WindowMaker/Themes $HOME/.GNUstep/Library/WindowMaker/Themes WITH setstyle"),
+		("Style",           OPEN_MENU, "-noext /usr/share/WindowMaker/Styles $HOME/.GNUstep/Library/WindowMaker/Styles WITH setstyle"),
+		("Ustawienia ikon", OPEN_MENU, "-noext /usr/share/WindowMaker/IconSets $HOME/.GNUstep/Library/WindowMaker/IconSets WITH seticons"),
 		("Tło",
 			("Jednolite",
                	("Czarny",            EXEC, "wdwrite WindowMaker WorkspaceBack '(solid, black)'"),
@@ -155,10 +155,10 @@
     			("Cieniowany Szary",      EXEC, "wdwrite WindowMaker WorkspaceBack '(vgradient, '#636380', '#131318')'"),
     			("Cieniowany Winnny",     EXEC, "wdwrite WindowMaker WorkspaceBack '(vgradient, '#600040', '#180010')'")
 			),
-			("Obrazki", OPEN_MENU, "-noext /usr/share/WindowMaker/Backgrounds $HOME/GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t)")
+			("Obrazki", OPEN_MENU, "-noext /usr/share/WindowMaker/Backgrounds $HOME/.GNUstep/Library/WindowMaker/Backgrounds WITH wmsetbg -u -t)")
 		),
-		("Zaoamiętanie Tematu",        EXEC, "getstyle -t $HOME/GNUstep/Library/WindowMaker/Themes/'%a(Nazwa tematu,Wpisz nazwe pliku:)'"),
-		("Zapamiętanie Ustawień Ikon", EXEC, "geticonset $HOME/GNUstep/Library/WindowMaker/IconSets/'%a(Ustawienia ikon,Wpisz nazwe pliku:)'")
+		("Zaoamiętanie Tematu",        EXEC, "getstyle -t $HOME/.GNUstep/Library/WindowMaker/Themes/'%a(Nazwa tematu,Wpisz nazwe pliku:)'"),
+		("Zapamiętanie Ustawień Ikon", EXEC, "geticonset $HOME/.GNUstep/Library/WindowMaker/IconSets/'%a(Ustawienia ikon,Wpisz nazwe pliku:)'")
 	),
 
 	("Wyjście",

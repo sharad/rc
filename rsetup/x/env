@@ -21,7 +21,9 @@ else
     echo env var HOST is not set $HOST
 fi
 
-
+#{{
+export GNUSTEP_USER_ROOT=~/.GNUstep/
+#}}
 
 #{{ from: http://fragglet.livejournal.com/9666.html
 # eval "`gnome-keyring-daemon`"
