@@ -546,6 +546,16 @@
          (error "Can not get start time."))))))
    60))
 
+(cl-defmethod org-rl-get-time-gap ((prev org-rl-clock)
+                                   (next org-rl-clock))
+  (/
+   (floor
+    (float-time
+     (time-subtract
+      (org-rl-clock-start-time next)
+      (org-rl-clock-stop-time prev))))
+   60))
+
 (cl-defmethod org-rl-compare-time-gap ((prev org-rl-clock)
                                        (next org-rl-clock)
                                        timelen)
