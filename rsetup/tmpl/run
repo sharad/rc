@@ -2,14 +2,31 @@
 
 __comp=tmpl
 
-if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-    if [ ! -d ~/.rsetup/${__comp}/env.d/${HOST} ] ; then
-        rm -f ~/.rsetup/${__comp}/env.d/${HOST}
-    fi
-    mkdir ~/.rsetup/${__comp}/env.d/${HOST}
-    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
+if [ "x${HOST}" != "x" ]
+then
+    HOST=$HOSTNAME
 fi
 
-[ -r ~/.rsetup/${__comp}/run.d/${HOST} ] && ~/.rsetup/${__comp}/run.d/${HOST}
+if [ "x${HOST}" != "x" ]
+then
+    __comp=sh
 
-unset __comp
+    if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ]
+    then
+        rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
+    fi
+    if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ]
+    then
+        mkdir -p ~/.setup/osetup/setup/rsetup.d/sh.d/run.d
+        cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
+    fi
+
+    if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ]
+    then
+        ~/.rsetup/${__comp}/run.d/${HOST}
+    fi
+
+    unset __comp
+else
+    print env var HOST is not set $HOST
+fi

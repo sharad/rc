@@ -1,6 +1,12 @@
 #!/bin/zsh
 
-if [ "x${HOST}" != "x" ] ; then
+if [ "x${HOST}" != "x" ]
+then
+    HOST=$HOSTNAME
+fi
+
+if [ "x${HOST}" != "x" ]
+then
     __comp=bash
 
 

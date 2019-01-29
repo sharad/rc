@@ -1,6 +1,11 @@
 # -*- mode: shell-script; -*-
 
-if [ "x${HOST}" != "x" ] ; then
+if [ "x${HOST}" = "x" ]
+then
+    HOST=$HOSTNAME
+fi
+if [ "x${HOST}" != "x" ]
+then
     __comp=wscreenlockon
 
     if [ -d ~/.rsetup/${__comp}/env.d/${HOST} ] ; then

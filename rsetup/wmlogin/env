@@ -1,13 +1,17 @@
 # -*- mode: shell-script; -*-
 
-if [ "x${HOST}" != "x" ] ; then
+if [ "x${HOST}" = "x" ]
+then
+    HOST=$HOSTNAME
+fi
+if [ "x${HOST}" != "x" ]
+then
     __comp=wmlogin
 
     if [ -d ~/.rsetup/${__comp}/env.d/${HOST} ]
     then
         rm -rf ~/.rsetup/${__comp}/env.d/${HOST}
     fi
-
     if [ ! -e ~/.rsetup/${__comp}/env.d/${HOST} ]
     then
         mkdir -p ~/.rsetup/${__comp}/env.d/

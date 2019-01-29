@@ -10,7 +10,10 @@
 #     -merge ~/.Xresource/init  # should use m4
 
 
-
+if [ "x${HOST}" = "x" ]
+then
+    HOST=$HOSTNAME
+fi
 if [ "x${HOST}" != "x" ]
 then
     __comp=x

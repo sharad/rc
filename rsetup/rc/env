@@ -157,23 +157,16 @@ export IN_API_KEY
 
 __comp=rc
 __subcomp=env
+
+if [ "x${HOST}" = "x" ]
+then
+    HOST=$HOSTNAME
+fi
 if [ "x${HOST}" != "x" ]
 then
     if [ -d ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ]
     then
         rm -rf ~/.rsetup/${__comp}/${__subcomp}.d/${HOST}
-    fi
-
-    tdir=$(readlink -m ~/.rsetup/${__comp}/${__subcomp}.d/)
-    if [ ! -d $tdir ]
-    then
-        mkdir -p $tdir
-        cat <<'EOF' > $tdir/.gitignore
-*
-!.stub
-!.gitignore
-EOF
-        unset tdir
     fi
     if [ ! -e ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ]
     then

@@ -1,18 +1,27 @@
 #!/bin/zsh
 
-if [ "x${HOST}" != "x" ] ; then
+if [ "x${HOST}" = "x" ]
+then
+    HOST=$HOSTNAME
+fi
+
+if [ "x${HOST}" != "x" ]
+then
     __comp=ifdown
 
 
-    if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ]
+    then
         rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
     fi
-    if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ]
+    then
         mkdir ~/.rsetup/${__comp}/run.d/
         cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
     fi
 
-    if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ]
+    then
         ~/.rsetup/${__comp}/run.d/${HOST}
     fi
 

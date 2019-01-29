@@ -585,7 +585,7 @@ Each entry is either:
   ;; http://oremacs.com/2015/04/16/ivy-mode/
   ;; http://irreal.org/blog/
   (use-package swiper
-      :ensure t
+      :defer t
       :config
       (progn
         (progn
@@ -594,14 +594,14 @@ Each entry is either:
 
 (defun lotus-interactivity/init-counsel ()
   (use-package counsel
-    :ensure t
+    :defer t
     :config
     (progn
       )))
 
 (defun lotus-interactivity/post-init-helm ()
-  (use-packagehelm
-   :ensure t
+  (use-package helm
+   :defer t
    :config
    (progn
      (progn
