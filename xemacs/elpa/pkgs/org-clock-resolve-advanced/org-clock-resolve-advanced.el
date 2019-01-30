@@ -67,7 +67,7 @@ so long."
                    (/ org-clock-user-idle-seconds 60)))
 
         (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-            (org-rl-get-time-gap
+            (org-rl-clock-resolve-time
              (org-rl-make-clock org-clock-marker
                                 org-clock-start-time
                                 org-clock-user-idle-start) ;TODO: what important.

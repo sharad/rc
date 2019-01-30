@@ -28,11 +28,23 @@
 
 (defvar replace-file-truename-link-cycle-counter 201)
 
-(defvar file-truename-cache-enable t)
+(defvar file-truename-do-caching t)
 
 (defvar file-truename-cache nil)
 
 (defvar file-truename-cache-dependency-list nil)
+
+(defun enable-file-truename-cache ()
+  (interactive)
+  (setq file-truename-do-caching t))
+
+(defun disable-file-truename-cache ()
+  (interactive)
+  (setq file-truename-do-caching nil))
+
+(defun toggle-file-truename-cache ()
+  (interactive)
+  (setq file-truename-do-caching (not file-truename-do-caching)))
 
 (defun replace-file-truename (filename &optional counter prev-dirs)
   "Return the truename of FILENAME.
@@ -49,10 +61,10 @@ containing it, until no links are left at any level.
   ;; of truenames we've just recently computed.
   (let* ((original-filename filename)
          (found-filename (and
-                          file-truename-cache-enable
+                          file-truename-do-caching
                           (cdr (assoc original-filename file-truename-cache)))))
 
-    ;; (when file-truename-cache-enable
+    ;; (when file-truename-do-caching
     ;;   (message "filename %s by cache: %s"
     ;;            original-filename
     ;;            (cdr (assoc original-filename file-truename-cache))))
@@ -155,7 +167,7 @@ containing it, until no links are left at any level.
                         ;; No, we are done!
                         (setq done t))))))))
 
-          (when file-truename-cache-enable
+          (when file-truename-do-caching
 
             (dolist (dirpair (car prev-dirs))
               (let ((dir (car dirpair)))
@@ -195,13 +207,13 @@ containing it, until no links are left at any level.
 
 
 (when nil
-  (setq file-truename-cache-enable nil)
-  (setq file-truename-cache-enable t)
+  (setq file-truename-do-caching nil)
+  (setq file-truename-do-caching t)
   (replace-file-truename "~/.mailbox")
   (replace-file-truename "/home/s/hell/.fa/rc")
 
 
-  (setq file-truename-cache-enable nil)
+  (setq file-truename-do-caching nil)
   (setq file-truename-cache nil)
   (setq file-truename-cache-dependency-list nil)
 
