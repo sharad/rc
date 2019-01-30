@@ -67,17 +67,11 @@ so long."
                    (/ org-clock-user-idle-seconds 60)))
 
         (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-            (org-rl-clock-resolve-time
+            (org-rl-get-time-gap
              (org-rl-make-clock org-clock-marker
                                 org-clock-start-time
-                                (time-add
-                                 org-clock-start-time
-                                 org-clock-user-idle-start)) ;TODO: what important.
-             (org-rl-make-clock nil
-                                (time-add
-                                 org-clock-start-time
-                                 org-clock-user-idle-start)
-                                'now))
+                                org-clock-user-idle-start) ;TODO: what important.
+             (org-rl-make-clock nil 'now 'now))
           (when nil
             (message "2. Idle time now sec[%d] min[%d]"
                      org-clock-user-idle-seconds
