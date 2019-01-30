@@ -971,3 +971,12 @@ function chain ()
 }
 
 ##}}
+
+##{ GUI
+
+function runwmaker ()
+{
+    startx =wmaker -- =Xephyr :3  -ac -screen 1280x1024 -br -no-host-grab -reset -terminate 2> /dev/null
+}
+
+##}
