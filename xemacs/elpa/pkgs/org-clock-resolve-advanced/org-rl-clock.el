@@ -40,6 +40,7 @@
 
 (cl-defmethod org-rl-clock-opt-cancel-next ((prev org-rl-clock)
                                             (next org-rl-clock))
+  ;; what to do with prev.
   ;; cancel next clock
   ;; add next clock time
   (setf (org-rl-clock-cancel next) t)

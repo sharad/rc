@@ -512,13 +512,13 @@
                                       (next org-rl-clock))
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
-    (list
-     (cons
-      (if (org-rl-clock-null prev)
-          "Ignore prev all idle time"
-        (format "Cancel prev %s" prev-heading))
-      'cancel-prev-p)
-     (when (org-rl-clock-null prev)
+    (unless (org-rl-clock-null prev)
+      (list
+       (cons
+        (if (org-rl-clock-null prev)
+            "Ignore prev all idle time"
+          (format "Cancel prev %s" prev-heading))
+        'cancel-prev-p)
        (cons
         (format "Jump to prev %s" prev-heading)
         'jump-prev-p)))))
@@ -531,8 +531,8 @@
      (cons
       (if (org-rl-clock-null prev)
           (if (org-rl-clock-null next)
-              (format "Subtract from next %s" next-heading)
-            "No idea")
+              "No idea"
+            (format "Subtract from next %s" next-heading))
         (format "Include in prev %s" prev-heading))
       'include-in-prev))))
 
@@ -540,13 +540,13 @@
                                       (next org-rl-clock))
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
-    (list
-     (cons
-      (if (org-rl-clock-null next)
-          "Ignore next all idle time"        ;TODO: still only considering resolve-idle not both prev next, prev can also be null ?
-        (format "Cancel next %s" next-heading))
-      'cancel-next-p)
-     (when (org-rl-clock-null next)
+    (unless (org-rl-clock-null next)
+      (list
+       (cons
+        (if (org-rl-clock-null next)
+            "Ignore next all idle time"        ;TODO: still only considering resolve-idle not both prev next, prev can also be null ?
+          (format "Cancel next %s" next-heading))
+        'cancel-next-p)
        (cons
         (format "Jump to next %s" next-heading)
         'jump-next-p)))))
@@ -559,8 +559,8 @@
      (cons
       (if (org-rl-clock-null next)
           (if (org-rl-clock-null prev)
-              (format "Subtract from prev %s" prev-heading)
-            "No idea")
+              "No idea"
+            (format "Subtract from prev %s" prev-heading))
         (format "Include in next %s" next-heading))
       'include-in-next))))
 
