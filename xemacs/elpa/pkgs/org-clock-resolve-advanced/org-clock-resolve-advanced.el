@@ -62,9 +62,9 @@ so long."
         (setq org-clock-last-user-idle-seconds org-clock-user-idle-seconds)
 
         (when nil
-          (message "1. Idle time now sec[%d] min[%d]"
-                   org-clock-user-idle-seconds
-                   (/ org-clock-user-idle-seconds 60)))
+          (message "1. Idle time now min[%d] sec[%d]"
+                   (/ org-clock-user-idle-seconds 60)
+                   (% org-clock-user-idle-seconds 60)))
 
         (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
             (org-rl-clock-resolve-time
@@ -73,9 +73,9 @@ so long."
                                 org-clock-user-idle-start) ;TODO: what important.
              (org-rl-make-clock nil 'now 'now))
           (when nil
-            (message "2. Idle time now sec[%d] min[%d]"
-                     org-clock-user-idle-seconds
-                     (/ org-clock-user-idle-seconds 60))))
+            (message "1. Idle time now min[%d] sec[%d]"
+                     (/ org-clock-user-idle-seconds 60)
+                     (% org-clock-user-idle-seconds 60))))
         (setq org-clock-last-user-idle-seconds nil)))))
 
 (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
