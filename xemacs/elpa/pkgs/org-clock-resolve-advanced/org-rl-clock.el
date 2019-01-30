@@ -199,20 +199,24 @@
       (when (> maxtimelen 0)
         (let* ((maxtimelen-fn #'(lambda () (org-rl-get-time-gap prev next)))
                (options (org-rl-clock-build-options prev next maxtimelen))
-               (opt (org-rl-clock-read-option org-rl-read-interval
-                                              #'(lambda ()
-                                                  (if debug-prompt
-                                                      (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen)
-                                                    (format "Select option [%d]: " maxtimelen)))
-                                              options
-                                              maxtimelen-fn))
-               (timelen (org-rl-clock-read-timelen org-rl-read-interval
-                                                   #'(lambda ()
-                                                       (if debug-prompt
-                                                           (format "%s [%s] how many minutes? [%d] " (org-rl-clock-time-debug-prompt prev next) opt maxtimelen)
-                                                         (format "[%s] how many minutes? [%d] " opt maxtimelen)))
-                                                   opt
-                                                   maxtimelen-fn)))
+               (opt (org-rl-clock-read-option
+                     org-rl-read-interval
+                     #'(lambda ()
+                         (let ((maxtimelen-mins (/ (funcall maxtimelen-fn) 60)))
+                           (if debug-prompt
+                               (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen-mins)
+                             (format "Select option [%d]: " maxtimelen-mins))))
+                     options
+                     maxtimelen-fn))
+               (timelen (org-rl-clock-read-timelen
+                         org-rl-read-interval
+                         #'(lambda ()
+                             (let ((maxtimelen (/ (funcall maxtimelen-fn) 60)))
+                               (if debug-prompt
+                                   (format "%s [%s] how many minutes? [%d] " (org-rl-clock-time-debug-prompt prev next) opt maxtimelen-mins)
+                                 (format "[%s] how many minutes? [%d] " opt maxtimelen-mins))))
+                         opt
+                         maxtimelen-fn)))
           ;; (barely-started-p (< (- (float-time last-valid)
           ;;                         (float-time (cdr clock))) 45))
           ;; (start-over-p (and subtractp barely-started-p))

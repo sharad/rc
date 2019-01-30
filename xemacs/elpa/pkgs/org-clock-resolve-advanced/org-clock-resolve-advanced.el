@@ -207,8 +207,8 @@ so long."
                      (org-clock-resolving-clocks-due-to-idleness t))
                 (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
                     (org-rl-clock-resolve-time
-                     (org-rl-make-clock marker start-time nil)
-                     (org-rl-make-clock 'imaginary 'now org-clock-user-idle-start))
+                     (org-rl-make-clock marker start-time org-clock-user-idle-start)
+                     (org-rl-make-clock 'imaginary 'now 'now))
                   (when t
                     (message "Idle time now min[%d] sec[%d]"
                              (/ org-clock-user-idle-seconds 60)

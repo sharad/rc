@@ -58,27 +58,20 @@
       (org-clock-clock-in clock resume start-time))))
 
 
-(defun time-aware-completing-read (interval prompt-fn options-fn default-fn)
-  (interactive)
-  (let* ((currtime-secs (time-to-seconds (current-time)))
-         (prompt (funcall prompt-fn)))
-    (with-timeout (interval
-                   (time-aware-completing-read interval prompt-fn options default-fn))
-      (let ((prompt (if (fboundp prompt-fn) (funcall prompt-fn)))
-            (options (if (fboundp options-fn) (funcall options-fn)))
-            (default (if (fboundp default-fn) (funcall default-fn))))
-        (completing-read prompt options default)))))
-
+(defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
+  (with-timeout (interval
+                 (time-aware-completing-read interval prompt-fn options-fn default-fn))
+    (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
+          (options (if (functionp options-fn) (funcall options-fn) options-fn))
+          (default (if (functionp default-fn) (funcall default-fn) default-fn)))
+      (completing-read prompt options))))
 
 (defun time-aware-read-number (interval prompt-fn default-fn)
-  (interactive)
-  (let* ((currtime-secs (time-to-seconds (current-time)))
-         (prompt (funcall prompt-fn)))
-    (with-timeout (interval
-                   (time-aware-read-number interval prompt-fn default-fn))
-      (let ((prompt (if (fboundp prompt-fn) (funcall prompt-fn)))
-            (default (if (fboundp default-fn) (funcall default-fn))))
-        (read-number prompt default)))))
+  (with-timeout (interval
+                 (time-aware-read-number interval prompt-fn default-fn))
+    (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
+          (default (if (functionp default-fn) (funcall default-fn) default-fn)))
+      (read-number prompt default))))
 
 
 (defun time-p (time)
@@ -484,67 +477,86 @@
 ;; (defvar org-clock-resolving-clocks nil)
 ;; (defvar org-clock-resolving-clocks-due-to-idleness nil)
 
+
+;; TODO: Re-org here.
 
 (setq
  org-rl-clock-opts-common
  '(("Done" . done)))
 
-(cl-defmethod org-rl-clock-opts-common ((clock org-rl-clock))
+(cl-defmethod org-rl-clock-opts-common ((prev org-rl-clock)
+                                        (next org-rl-clock))
   (list (cons "Done" 'done)))
 
-(cl-defmethod org-rl-clock-opts-common-with-time ((clock org-rl-clock))
-  (let ((heading (org-rl-clock-heading clock)))
-    (list
-     (cons "Include in other" 'include-in-other)
-     ;; (cons
-     ;;  (format "subtract from prev %s" heading)
-     ;;  'subtract)
-     )))
+(cl-defmethod org-rl-clock-opts-common-with-time ((prev org-rl-clock)
+                                                  (next org-rl-clock))
 
-(cl-defmethod org-rl-clock-opts-prev ((clock org-rl-clock))
-  (let ((heading (org-rl-clock-heading clock)))
+
+
+  ;; (let ((heading (org-rl-clock-heading clock)))
+  ;;   (list
+  ;;    (cons "Include in other" 'include-in-other)))
+  ;; ;; (cons
+  ;; ;;  (format "subtract from prev %s" heading)
+  ;; ;;  'subtract)
+
+
+  (list
+   (cons "Include in other" 'include-in-other))
+  ;; (cons
+  ;;  (format "subtract from prev %s" heading)
+  ;;  'subtract)
+  )
+
+(cl-defmethod org-rl-clock-opts-prev ((prev org-rl-clock)
+                                      (next org-rl-clock))
+  (let ((prev-heading (org-rl-clock-heading prev)))
     (list
      (cons
-      (format "Cancel prev %s" heading)
+      (format "Cancel prev %s" prev-heading)
       'cancel-prev-p)
      (cons
-      (format "Jump to prev %s" heading)
+      (format "Jump to prev %s" prev-heading)
       'jump-prev-p))))
 
-(cl-defmethod org-rl-clock-opts-prev-with-time ((clock org-rl-clock))
-  (let ((heading (org-rl-clock-heading clock)))
+(cl-defmethod org-rl-clock-opts-prev-with-time ((prev org-rl-clock)
+                                                (next org-rl-clock))
+  (let ((prev-heading (org-rl-clock-heading prev)))
     (list
      (cons
-      (format "Include in prev %s" heading)
+      (format "Include in prev %s" prev-heading)
       'include-in-prev))))
 
-(cl-defmethod org-rl-clock-opts-next ((clock org-rl-clock))
-  (let ((heading (org-rl-clock-heading clock))
-        (marker (car clock)))
+(cl-defmethod org-rl-clock-opts-next ((prev org-rl-clock)
+                                      (next org-rl-clock))
+  (let ((next-heading (org-rl-clock-heading next))
+        (marker       (org-rl-clock-marker clock)))
     (list
      (cons
-      (if (org-rl-clock-null clock)
-          "Ignore all idle time"
-          (format "Cancel next %s" heading))
+      (if (org-rl-clock-null next)
+          "Ignore all idle time"        ;TODO: still only considering resolve-idle not both prev next, prev can also be null ?
+        (format "Cancel next %s" next-heading))
       'cancel-next-p)
      (cons
-      (format "Jump to next %s" heading)
+      (format "Jump to next %s" next-heading)
       'jump-next-p))))
 
-(cl-defmethod org-rl-clock-opts-next-with-time ((clock org-rl-clock))
-  (let ((heading (org-rl-clock-heading clock)))
+(cl-defmethod org-rl-clock-opts-next-with-time ((prev org-rl-clock)
+                                                (next org-rl-clock))
+  (let ((next-heading (org-rl-clock-heading next)))
     (list
      (cons
-      (format "Include in next %s" heading)
+      (format "Include in next %s" next-heading)
       'include-in-next))))
 
+
 (defun time-get-rl-time (time)
   (cond
-    ((eq time 'now)
-     (current-time))
-    ((eq time nil) nil)
-    (time time)
-    (t nil)))
+   ((eq time 'now)
+    (current-time))
+   ((eq time nil) nil)
+   (time time)
+   (t nil)))
 
 
 (defun org-rl-select-other-clock (&optional target)
@@ -558,27 +570,23 @@
 
 (cl-defmethod org-rl-get-time-gap ((prev org-rl-clock)
                                    (next org-rl-clock))
-  (/
-   (floor
-    (float-time
-     (time-subtract
-      (org-rl-clock-start-time next)
-      (or
-       (org-rl-clock-stop-time prev)
-       (if (org-rl-clock-null next)
-           (org-rl-clock-stop-time next)
-         (error "Can not get start time."))))))
-   60))
+  (floor
+   (float-time
+    (time-subtract
+     (org-rl-clock-start-time next)
+     (or
+      (org-rl-clock-stop-time prev)
+      (if (org-rl-clock-null next)
+          (org-rl-clock-stop-time next)
+        (error "Can not get start time.")))))))
 
 (cl-defmethod org-rl-get-time-gap ((prev org-rl-clock)
                                    (next org-rl-clock))
-  (/
-   (floor
-    (float-time
-     (time-subtract
-      (org-rl-clock-start-time next)
-      (org-rl-clock-stop-time prev))))
-   60))
+  (floor
+   (float-time
+    (time-subtract
+     (org-rl-clock-start-time next)
+     (org-rl-clock-stop-time prev)))))
 
 (cl-defmethod org-rl-compare-time-gap ((prev org-rl-clock)
                                        (next org-rl-clock)
@@ -640,31 +648,36 @@
   (append
    (when (markerp (org-rl-clock-marker prev))
      (append
-      (org-rl-clock-opts-prev prev)
-      (unless (zerop maxtimelen) (org-rl-clock-opts-prev-with-time prev))))
+      (org-rl-clock-opts-prev prev next)
+      (unless (zerop maxtimelen) (org-rl-clock-opts-prev-with-time prev next))))
    (when (markerp (org-rl-clock-marker next))
      (append
-      (org-rl-clock-opts-next next)
-      (unless (zerop maxtimelen) (org-rl-clock-opts-next-with-time next))))
-   (unless (zerop maxtimelen) (org-rl-clock-opts-common-with-time prev))
+      (org-rl-clock-opts-next prev next)
+      (unless (zerop maxtimelen) (org-rl-clock-opts-next-with-time prev next))))
+   (unless (zerop maxtimelen) (org-rl-clock-opts-common-with-time prev next))
    (org-rl-clock-opts-common prev)))
 
 (defvar org-rl-read-interval 60)
 
 (defun org-rl-clock-read-option (interval prompt-fn options-fn default-fn)
-  (cdr
-   (assoc
-    (time-aware-completing-read interval prompt-fn options-fn default-fn)
-    options)))
+  (let ((options (if (functionp options-fn) (funcall options-fn) options-fn)))
+    (cdr
+     (assoc
+      ;; (time-aware-completing-read interval prompt-fn options-fn default-fn)
+      (time-aware-completing-read interval prompt-fn options-fn)
+      options))))
 
 (defun org-rl-clock-read-timelen (interval prompt-fn option-fn maxtimelen-fn)
-  (let ((option (if (fboundp option-fn) (funcall option-fn) option-fn)))
-    (if (or (zerop maxtimelen-fn)
-            (memq option
-                  '(done
-                    cancel-next-p
-                    cancel-prev-p)))
-        maxtimelen-fn
-      (time-aware-read-number interval prompt-fn maxtimelen-fn))))
+  "read in mins return secs"
+  (let ((option (if (functionp option-fn) (funcall option-fn) option-fn))
+        (maxtimelen (if (functionp maxtimelen-fn) (funcall maxtimelen-fn) maxtimelen-fn)))
+    (if (or
+         (zerop maxtimelen)
+         (memq option
+               '(done
+                 cancel-next-p
+                 cancel-prev-p)))
+        maxtimelen
+      (* (time-aware-read-number interval prompt-fn maxtimelen-fn) 60))))
 
 ;;; org-rl-obj.el ends here
