@@ -510,43 +510,58 @@
 
 (cl-defmethod org-rl-clock-opts-prev ((prev org-rl-clock)
                                       (next org-rl-clock))
-  (let ((prev-heading (org-rl-clock-heading prev)))
+  (let ((prev-heading (org-rl-clock-heading prev))
+        (next-heading (org-rl-clock-heading next)))
     (list
      (cons
-      (format "Cancel prev %s" prev-heading)
+      (if (org-rl-clock-null prev)
+          "Ignore prev all idle time"
+        (format "Cancel prev %s" prev-heading))
       'cancel-prev-p)
-     (cons
-      (format "Jump to prev %s" prev-heading)
-      'jump-prev-p))))
+     (when (org-rl-clock-null prev)
+       (cons
+        (format "Jump to prev %s" prev-heading)
+        'jump-prev-p)))))
 
 (cl-defmethod org-rl-clock-opts-prev-with-time ((prev org-rl-clock)
                                                 (next org-rl-clock))
-  (let ((prev-heading (org-rl-clock-heading prev)))
+  (let ((prev-heading (org-rl-clock-heading prev))
+        (next-heading (org-rl-clock-heading next)))
     (list
      (cons
-      (format "Include in prev %s" prev-heading)
+      (if (org-rl-clock-null prev)
+          (if (org-rl-clock-null next)
+              (format "Subtract from next %s" next-heading)
+            "No idea")
+        (format "Include in prev %s" prev-heading))
       'include-in-prev))))
 
 (cl-defmethod org-rl-clock-opts-next ((prev org-rl-clock)
                                       (next org-rl-clock))
-  (let ((next-heading (org-rl-clock-heading next))
-        (marker       (org-rl-clock-marker clock)))
+  (let ((prev-heading (org-rl-clock-heading prev))
+        (next-heading (org-rl-clock-heading next)))
     (list
      (cons
       (if (org-rl-clock-null next)
-          "Ignore all idle time"        ;TODO: still only considering resolve-idle not both prev next, prev can also be null ?
+          "Ignore next all idle time"        ;TODO: still only considering resolve-idle not both prev next, prev can also be null ?
         (format "Cancel next %s" next-heading))
       'cancel-next-p)
-     (cons
-      (format "Jump to next %s" next-heading)
-      'jump-next-p))))
+     (when (org-rl-clock-null next)
+       (cons
+        (format "Jump to next %s" next-heading)
+        'jump-next-p)))))
 
 (cl-defmethod org-rl-clock-opts-next-with-time ((prev org-rl-clock)
                                                 (next org-rl-clock))
-  (let ((next-heading (org-rl-clock-heading next)))
+  (let ((prev-heading (org-rl-clock-heading prev))
+        (next-heading (org-rl-clock-heading next)))
     (list
      (cons
-      (format "Include in next %s" next-heading)
+      (if (org-rl-clock-null next)
+          (if (org-rl-clock-null prev)
+              (format "Subtract from prev %s" prev-heading)
+            "No idea")
+        (format "Include in next %s" next-heading))
       'include-in-next))))
 
 
@@ -646,16 +661,34 @@
                 (org-rl-format-clock next)
                 maxtimelen)
   (append
-   (when (markerp (org-rl-clock-marker prev))
+   (when (org-rl-clock-null prev)
      (append
       (org-rl-clock-opts-prev prev next)
       (unless (zerop maxtimelen) (org-rl-clock-opts-prev-with-time prev next))))
-   (when (markerp (org-rl-clock-marker next))
+   (when (org-rl-clock-null next)
      (append
       (org-rl-clock-opts-next prev next)
       (unless (zerop maxtimelen) (org-rl-clock-opts-next-with-time prev next))))
    (unless (zerop maxtimelen) (org-rl-clock-opts-common-with-time prev next))
-   (org-rl-clock-opts-common prev)))
+   (org-rl-clock-opts-common prev next)))
+
+
+(cl-defmethod org-rl-clock-build-options ((prev org-rl-clock)
+                                          (next org-rl-clock)
+                                          maxtimelen)
+  (org-rl-debug :warning "org-rl-clock-build-options: prev[%s] next[%s] maxtimelen[%d] secs"
+                (org-rl-format-clock prev)
+                (org-rl-format-clock next)
+                maxtimelen)
+  (append
+   (append
+    (org-rl-clock-opts-prev prev next)
+    (unless (zerop maxtimelen) (org-rl-clock-opts-prev-with-time prev next)))
+   (append
+    (org-rl-clock-opts-next prev next)
+    (unless (zerop maxtimelen) (org-rl-clock-opts-next-with-time prev next)))
+   (unless (zerop maxtimelen) (org-rl-clock-opts-common-with-time prev next))
+   (org-rl-clock-opts-common prev next)))
 
 (defvar org-rl-read-interval 60)
 
