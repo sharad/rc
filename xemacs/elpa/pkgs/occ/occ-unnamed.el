@@ -63,7 +63,8 @@
       (if (occ-clock-marker-is-unnamed-clock-p)
           (occ-debug :debug "occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk")
         (prog1
-            (lotus-org-create-unnamed-task-task-clock-in)
+            (org-without-org-clock-persist
+              (lotus-org-create-unnamed-task-task-clock-in))
           (occ-unassociate-ctx-start-time-reset))))))
 
 (defun occ-maybe-create-unnamed-heading ()
@@ -71,18 +72,20 @@
     (let ((org-log-note-clock-out nil))
       (if (occ-clock-marker-is-unnamed-clock-p)
           (occ-debug :debug "occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk")
-        (cdr (lotus-org-create-unnamed-task))))))
-
+        (cdr
+         (org-without-org-clock-persist
+           (lotus-org-create-unnamed-task)))))))
 
 (defun occ-maybe-create-unnamed-tsk ()
   ;; back
-  (org-without-org-clock-persist
-   (let* ((unnamed-heading-marker
-           (cdr (lotus-org-create-unnamed-task)))
-          (unnamed-tsk
-           (when unnamed-heading-marker
-             (occ-make-tsk unnamed-heading-marker (occ-tsk-builder)))))
-     unnamed-tsk)))
+  (let* ((unnamed-heading-marker
+          (cdr (org-without-org-clock-persist
+                 (lotus-org-create-unnamed-task))))
+         (unnamed-tsk
+          (when unnamed-heading-marker
+            (occ-make-tsk unnamed-heading-marker (occ-tsk-builder)))))
+    unnamed-tsk))
+
 
 (when nil
   (cl-classname (occ-make-tsk org-clock-hd-marker (occ-tsk-builder)))

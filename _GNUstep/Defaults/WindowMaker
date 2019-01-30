@@ -42,7 +42,7 @@
   WindowShortcut4Key = None;
   NoWindowOverDock = NO;
   WorkspaceBack = (
-    tpixmap,
+    spixmap,
     "/home/s/hell/.GNUstep/Library/WindowMaker/Backgrounds/Aqua_Strawberries_Abstract_3d_226.jpg",
     gray20
   );

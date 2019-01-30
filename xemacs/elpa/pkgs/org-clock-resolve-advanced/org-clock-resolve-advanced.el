@@ -108,8 +108,8 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
                                 (/= (car clock) org-clock-marker))))
               (when (or (not only-dangling-p) dangling)
                 (org-rl-clock-time
-                 (org-rl-make-clock (car clock) (cdr clock) nil)
-                 (org-rl-make-clock 'imaginary 'now (cdr clock)))))))))))
+                 (org-rl-make-clock (car clock) (cdr clock) (cdr clock))
+                 (org-rl-make-clock 'imaginary 'now 'now)))))))))) ;TODO: should not be now ?
 
 ;;;###autoload
 (defalias 'org-resolve-clocks 'org-rl-resolve-clocks)

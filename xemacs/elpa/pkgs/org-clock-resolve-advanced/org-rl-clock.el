@@ -197,18 +197,22 @@
       (org-rl-debug :warning "going to run %s with maxtimelen %d" (org-rl-clock-time-adv-debug-prompt prev next) maxtimelen)
       ;; (assert (> maxtimelen 0))
       (when (> maxtimelen 0)
-        (let* ((options (org-rl-clock-build-options prev next maxtimelen))
-               (opt (org-rl-clock-read-option
-                     (if debug-prompt
-                         (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen)
-                       (format "Select option [%d]: " maxtimelen))
-                     options maxtimelen))
-               (timelen (org-rl-clock-read-timelen
-                         (if debug-prompt
-                             (format "%s [%s] how many minutes? [%d] " (org-rl-clock-time-debug-prompt prev next) opt maxtimelen)
-                           (format "[%s] how many minutes? [%d] " opt maxtimelen))
-                         opt
-                         (org-rl-get-time-gap prev next))))
+        (let* ((maxtimelen-fn #'(lambda () (org-rl-get-time-gap prev next)))
+               (options (org-rl-clock-build-options prev next maxtimelen))
+               (opt (org-rl-clock-read-option org-rl-read-interval
+                                              #'(lambda ()
+                                                  (if debug-prompt
+                                                      (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen)
+                                                    (format "Select option [%d]: " maxtimelen)))
+                                              options
+                                              maxtimelen-fn))
+               (timelen (org-rl-clock-read-timelen org-rl-read-interval
+                                                   #'(lambda ()
+                                                       (if debug-prompt
+                                                           (format "%s [%s] how many minutes? [%d] " (org-rl-clock-time-debug-prompt prev next) opt maxtimelen)
+                                                         (format "[%s] how many minutes? [%d] " opt maxtimelen)))
+                                                   opt
+                                                   maxtimelen-fn)))
           ;; (barely-started-p (< (- (float-time last-valid)
           ;;                         (float-time (cdr clock))) 45))
           ;; (start-over-p (and subtractp barely-started-p))
@@ -220,7 +224,7 @@
             (if (<= (abs timelen) maxtimelen)
                 (let* ((clocks
                         (org-rl-clock-time-process-option prev next
-                                                               opt timelen maxtimelen close-p))
+                                                          opt timelen maxtimelen close-p))
                        (prev (nth 0 clocks))
                        (next (nth 1 clocks)))
 

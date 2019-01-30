@@ -58,12 +58,36 @@
       (org-clock-clock-in clock resume start-time))))
 
 
+(defun time-aware-completing-read (interval prompt-fn options-fn default-fn)
+  (interactive)
+  (let* ((currtime-secs (time-to-seconds (current-time)))
+         (prompt (funcall prompt-fn)))
+    (with-timeout (interval
+                   (time-aware-completing-read interval prompt-fn options default-fn))
+      (let ((prompt (if (fboundp prompt-fn) (funcall prompt-fn)))
+            (options (if (fboundp options-fn) (funcall options-fn)))
+            (default (if (fboundp default-fn) (funcall default-fn))))
+        (completing-read prompt options default)))))
+
+
+(defun time-aware-read-number (interval prompt-fn default-fn)
+  (interactive)
+  (let* ((currtime-secs (time-to-seconds (current-time)))
+         (prompt (funcall prompt-fn)))
+    (with-timeout (interval
+                   (time-aware-read-number interval prompt-fn default-fn))
+      (let ((prompt (if (fboundp prompt-fn) (funcall prompt-fn)))
+            (default (if (fboundp default-fn) (funcall default-fn))))
+        (read-number prompt default)))))
+
+
 (defun time-p (time)
   (or
    (eq 'now time)
    (and
-     (consp time)
-     (nth 1 time))))
+    (consp time)
+    (nth 1 time))))
+
 
 (cl-defstruct org-rl-time
   time
@@ -388,7 +412,7 @@
                 (org-rl-format-clock clock)
                 resume
                 org-clock-clocking-in)
-  (let ((org-clock-auto-clock-resolution nil))
+  (let ((org-clock-auto-clock-resolution org-rl-org-clock-auto-clock-resolution))
     (if (not org-clock-clocking-in)
         (progn
           (org-rl-debug :warning "org-rl-clock-clock-in-out in")
@@ -625,20 +649,22 @@
    (unless (zerop maxtimelen) (org-rl-clock-opts-common-with-time prev))
    (org-rl-clock-opts-common prev)))
 
-(defun org-rl-clock-read-option (prompt options default)
+(defvar org-rl-read-interval 60)
+
+(defun org-rl-clock-read-option (interval prompt-fn options-fn default-fn)
   (cdr
    (assoc
-    (completing-read prompt options)
+    (time-aware-completing-read interval prompt-fn options-fn default-fn)
     options)))
 
-(defun org-rl-clock-read-timelen (prompt option maxtimelen)
-  (progn
-    (if (or (zerop maxtimelen)
+(defun org-rl-clock-read-timelen (interval prompt-fn option-fn maxtimelen-fn)
+  (let ((option (if (fboundp option-fn) (funcall option-fn) option-fn)))
+    (if (or (zerop maxtimelen-fn)
             (memq option
                   '(done
                     cancel-next-p
                     cancel-prev-p)))
-        maxtimelen
-      (read-number prompt maxtimelen))))
+        maxtimelen-fn
+      (time-aware-read-number interval prompt-fn maxtimelen-fn))))
 
 ;;; org-rl-obj.el ends here
