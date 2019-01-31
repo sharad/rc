@@ -181,7 +181,7 @@ so long."
             0)))
      (list (*
             (read-number
-             (format "clock[ %s ] Spent mins: " (org-get-heading-from-clock (list marker)))
+             (format "clock[ %s ] Resolve mins: " (org-get-heading-from-clock (list marker)))
              (org-rl-first-clock-started-mins marker))
             60))))
   (let* ((marker
