@@ -6,5 +6,6 @@
 (define-package "org-onchange" "20171222.128" "org-onchange"
                 '((timer-utils-lotus "1")
                   (org-misc-utils-lotus "1")
-                  (lotus-misc-utils "1")))
+                  (lotus-misc-utils "1")
+                  (s "1")))
 ;; No heading:1 ends here

@@ -42,9 +42,11 @@
   (message "%s: org-clock-in-if-not: begin" (time-stamp-string))
   (lotus-with-no-active-minibuffer-if
       (progn
+        (lwarn 'org-ci-if-not :debug "org-clock-in-if-not: [minibuff body] lotus-with-override-minibuffer-if")
         (message
          "%s: org-clock-in-if-not: not running as minibuffer is already active."
          (time-stamp-string)))
+    (lwarn 'org-ci-if-not :debug "org-clock-in-if-not: [body] lotus-with-override-minibuffer-if")
     (unless (or
              org-donot-try-to-clock-in
              (org-clock-is-active))

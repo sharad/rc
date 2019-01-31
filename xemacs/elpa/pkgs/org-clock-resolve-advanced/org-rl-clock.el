@@ -210,6 +210,7 @@
   ;; than save data for this function and abort this function invocation here
   ;; again run this function in that frame.
   (lotus-with-override-minibuffer
+    (lwarn 'org-rl-clock :debug "org-rl-clock-resolve-time: [body] lotus-with-override-minibuffer")
     (let ((debug-prompt t)
           (maxtimelen (org-rl-get-time-gap prev next)))
       ;;;

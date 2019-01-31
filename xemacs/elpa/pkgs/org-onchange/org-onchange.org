@@ -33,18 +33,19 @@
 ** Libraries required
 
 #+BEGIN_SRC emacs-lisp
-(require 'desktop)
-(require 'session)
+  (require 'subr-x)
+  (require 'desktop)
+  (require 'session)
 
-(require 'timer-utils-lotus)
-(eval-when-compile
-  (require 'timer-utils-lotus))
-(require 'org-misc-utils-lotus)
-(eval-when-compile
-  (require 'org-misc-utils-lotus))
-(require 'lotus-misc-utils)
-(eval-when-compile
-  (require 'lotus-misc-utils))
+  (require 'timer-utils-lotus)
+  (eval-when-compile
+    (require 'timer-utils-lotus))
+  (require 'org-misc-utils-lotus)
+  (eval-when-compile
+    (require 'org-misc-utils-lotus))
+  (require 'lotus-misc-utils)
+  (eval-when-compile
+    (require 'lotus-misc-utils))
 #+END_SRC
 
 ** Functions
@@ -96,28 +97,30 @@
     (if (memq org-log-note-how '(time state))
         (org-store-log-note)
       (let ((org-inhibit-startup t)) (org-mode))
-      (insert (format "# Insert note for %s.
-  # Finish with C-c C-c, or cancel with C-c C-k.\n\n"
-          (cond
-           ((eq org-log-note-purpose 'clock-out) "stopped clock")
-           ((eq org-log-note-purpose 'done)  "closed todo item")
-           ((eq org-log-note-purpose 'state)
-            (format "state change from \"%s\" to \"%s\""
-              (or org-log-note-previous-state "")
-              (or org-log-note-state "")))
-           ((eq org-log-note-purpose 'reschedule)
-            "rescheduling")
-           ((eq org-log-note-purpose 'delschedule)
-            "no longer scheduled")
-           ((eq org-log-note-purpose 'redeadline)
-            "changing deadline")
-           ((eq org-log-note-purpose 'deldeadline)
-            "removing deadline")
-           ((eq org-log-note-purpose 'refile)
-            "refiling")
-           ((eq org-log-note-purpose 'note)
-            "this entry")
-           (t (error "This should not happen")))))
+      (insert (format (string-join
+                       '("# Insert note for %s."
+                         "# Finish with C-c C-c, or cancel with C-c C-k.\n\n")
+                       "\n")
+                      (cond
+                       ((eq org-log-note-purpose 'clock-out) "stopped clock")
+                       ((eq org-log-note-purpose 'done)  "closed todo item")
+                       ((eq org-log-note-purpose 'state)
+                        (format "state change from \"%s\" to \"%s\""
+                                (or org-log-note-previous-state "")
+                                (or org-log-note-state "")))
+                       ((eq org-log-note-purpose 'reschedule)
+                        "rescheduling")
+                       ((eq org-log-note-purpose 'delschedule)
+                        "no longer scheduled")
+                       ((eq org-log-note-purpose 'redeadline)
+                        "changing deadline")
+                       ((eq org-log-note-purpose 'deldeadline)
+                        "removing deadline")
+                       ((eq org-log-note-purpose 'refile)
+                        "refiling")
+                       ((eq org-log-note-purpose 'note)
+                        "this entry")
+                       (t (error "This should not happen")))))
       (when org-log-note-extra (insert org-log-note-extra))
       (setq-local org-finish-function 'org-store-log-note)
       (run-hooks 'org-log-buffer-setup-hook)))
@@ -352,23 +355,25 @@ add note but in this case it is not shown so background word is used.
  #+begin_src emacs-lisp
 
 
-;; copy of org-add-log-note
- (defun org-add-log-note-buffer (target-buffer)
-   "Prepare buffer for taking a note, to add this note later."
-   ;; (pop-to-buffer-same-window (marker-buffer org-log-note-marker))
-   ;; (goto-char org-log-note-marker)
-   ;; (org-switch-to-buffer-other-window "*Org Note*")
+   ;; copy of org-add-log-note
+    (defun org-add-log-note-buffer (target-buffer)
+      "Prepare buffer for taking a note, to add this note later."
+      ;; (pop-to-buffer-same-window (marker-buffer org-log-note-marker))
+      ;; (goto-char org-log-note-marker)
+      ;; (org-switch-to-buffer-other-window "*Org Note*")
 
-   (switch-to-buffer target-buffer 'norecord)
-   ;; (set-buffer target-buffer)
-   (erase-buffer)
+      (switch-to-buffer target-buffer 'norecord)
+      ;; (set-buffer target-buffer)
+      (erase-buffer)
 
-   (if (memq org-log-note-how '(time state))
-       (let (current-prefix-arg) (org-store-log-note))
-       (let ((org-inhibit-startup t)) (org-mode))
-       (insert (format "# Insert note for %s.
-  # Finish with C-c C-c, or cancel with C-c C-k.\n\n"
-                       (cond
+      (if (memq org-log-note-how '(time state))
+          (let (current-prefix-arg) (org-store-log-note))
+        (let ((org-inhibit-startup t)) (org-mode))
+        (insert (format (string-join
+                         '("# Insert note for %s."
+                           "# Finish with C-c C-c, or cancel with C-c C-k.\n\n")
+                         "\n")
+                        (cond
                          ((eq org-log-note-purpose 'clock-out) "stopped clock")
                          ((eq org-log-note-purpose 'done)  "closed todo item")
                          ((eq org-log-note-purpose 'state)
@@ -388,72 +393,74 @@ add note but in this case it is not shown so background word is used.
                          ((eq org-log-note-purpose 'note)
                           "this entry")
                          (t (error "This should not happen")))))
-       (when org-log-note-extra (insert org-log-note-extra))
-       (setq-local org-finish-function 'org-store-log-note)
-       (run-hooks 'org-log-buffer-setup-hook)))
+        (when org-log-note-extra (insert org-log-note-extra))
+        (setq-local org-finish-function 'org-store-log-note)
+        (run-hooks 'org-log-buffer-setup-hook)))
 
 
-  (defun org-add-log-note-with-timed-new-win (win-timeout &optional _purpose)
-    "Pop up a window for taking a note, and add this note later."
-    ;; (remove-hook 'post-command-hook 'org-add-log-note-background)
-    ;; (setq org-log-note-window-configuration (current-window-configuration))
-    ;; (delete-other-windows)
+     (defun org-add-log-note-with-timed-new-win (win-timeout &optional _purpose)
+       "Pop up a window for taking a note, and add this note later."
+       ;; (remove-hook 'post-command-hook 'org-add-log-note-background)
+       ;; (setq org-log-note-window-configuration (current-window-configuration))
+       ;; (delete-other-windows)
 
-    ;; (move-marker org-log-note-return-to (point))
-    (lotus-with-no-active-minibuffer-if
-        (progn                            ;could schedule in little further.
-          (message "add-log-note-background: minibuffer already active quitting")
-          (message nil))
-      (let ((win-timeout (or win-timeout 7))
-            (cleanupfn-local nil))
-        (setq org-log-note-window-configuration (current-window-configuration))
-        (lotus-with-timed-new-win
-            win-timeout timer cleanupfn-newwin cleanupfn-local win
-            (condition-case err
-                (let ((target-buffer (get-buffer-create "*Org Note*")))
-                  (org-add-log-note-buffer target-buffer))
-              ((quit)
-               (progn
-                 (funcall cleanupfn-newwin win cleanupfn-local)
-                 (if timer (cancel-timer timer))
-                 (signal (car err) (cdr err)))))))))
+       ;; (move-marker org-log-note-return-to (point))
+       (lotus-with-no-active-minibuffer-if
+           (progn                            ;could schedule in little further.
+             (lwarn 'org-onchange :debug "org-add-log-note-with-timed-new-win: [minibuff body] lotus-with-override-minibuffer-if")
+             (message "add-log-note-background: minibuffer already active quitting")
+             (message nil))
+         (lwarn 'org-onchange :debug "org-add-log-note-with-timed-new-win: [body] lotus-with-override-minibuffer-if")
+         (let ((win-timeout (or win-timeout 7))
+               (cleanupfn-local nil))
+           (setq org-log-note-window-configuration (current-window-configuration))
+           (lotus-with-timed-new-win
+               win-timeout timer cleanupfn-newwin cleanupfn-local win
+               (condition-case err
+                   (let ((target-buffer (get-buffer-create "*Org Note*")))
+                     (org-add-log-note-buffer target-buffer))
+                 ((quit)
+                  (progn
+                    (funcall cleanupfn-newwin win cleanupfn-local)
+                    (if timer (cancel-timer timer))
+                    (signal (car err) (cdr err)))))))))
 
-  (defun org-add-log-setup-with-timed-new-win (win-timeout &optional purpose state prev-state how extra)
-    "Set up the post command hook to take a note.
-  If this is about to TODO state change, the new state is expected in STATE.
-  HOW is an indicator what kind of note should be created.
-  EXTRA is additional text that will be inserted into the notes buffer."
-    (let ((win-timeout (or win-timeout 7)))
-      (move-marker org-log-note-marker (point))
-      (setq org-log-note-purpose purpose
-            org-log-note-state state
-            org-log-note-previous-state prev-state
-            org-log-note-how how
-            org-log-note-extra extra
-            org-log-note-effective-time (org-current-effective-time)))
-    (org-add-log-note-with-timed-new-win  win-timeout)
-    ;; (add-hook 'post-command-hook 'org-add-log-note-background 'append)
-    )
+     (defun org-add-log-setup-with-timed-new-win (win-timeout &optional purpose state prev-state how extra)
+       "Set up the post command hook to take a note.
+     If this is about to TODO state change, the new state is expected in STATE.
+     HOW is an indicator what kind of note should be created.
+     EXTRA is additional text that will be inserted into the notes buffer."
+       (let ((win-timeout (or win-timeout 7)))
+         (move-marker org-log-note-marker (point))
+         (setq org-log-note-purpose purpose
+               org-log-note-state state
+               org-log-note-previous-state prev-state
+               org-log-note-how how
+               org-log-note-extra extra
+               org-log-note-effective-time (org-current-effective-time)))
+       (org-add-log-note-with-timed-new-win  win-timeout)
+       ;; (add-hook 'post-command-hook 'org-add-log-note-background 'append)
+       )
 
-  ;;;##autoload
-  (defun org-clock-lotus-log-note-current-clock-with-timed-new-win (win-timeout &optional fail-quietly)
-    (interactive)
-    (let ((win-timeout  (or win-timeout  7)))
-      (when (org-clocking-p)
-        (move-marker org-log-note-return-to (point))
-        (org-clock-lotus-with-current-clock
-            (org-add-log-setup-with-timed-new-win win-timeout
-            'note nil nil nil
-            (concat "# Task: " (org-get-heading t) "\n\n"))))))
+     ;;;##autoload
+     (defun org-clock-lotus-log-note-current-clock-with-timed-new-win (win-timeout &optional fail-quietly)
+       (interactive)
+       (let ((win-timeout  (or win-timeout  7)))
+         (when (org-clocking-p)
+           (move-marker org-log-note-return-to (point))
+           (org-clock-lotus-with-current-clock
+               (org-add-log-setup-with-timed-new-win win-timeout
+               'note nil nil nil
+               (concat "# Task: " (org-get-heading t) "\n\n"))))))
 
-  ;; (defun org-clock-lotus-log-note-current-clock-with-timed-new-win (&optional fail-quietly)
-  ;;   (interactive)
-  ;;   (if (org-clocking-p)
-  ;;       (org-clock-lotus-with-current-clock
-  ;;        (org-add-log-setup-background
-  ;;         'note nil nil nil
-  ;;         (concat "# Task: " (org-get-heading t) "\n\n")))
-  ;;       (if fail-quietly (throw 'exit t) (user-error "No active clock"))))
+     ;; (defun org-clock-lotus-log-note-current-clock-with-timed-new-win (&optional fail-quietly)
+     ;;   (interactive)
+     ;;   (if (org-clocking-p)
+     ;;       (org-clock-lotus-with-current-clock
+     ;;        (org-add-log-setup-background
+     ;;         'note nil nil nil
+     ;;         (concat "# Task: " (org-get-heading t) "\n\n")))
+     ;;       (if fail-quietly (throw 'exit t) (user-error "No active clock"))))
 
  #+end_src
 
