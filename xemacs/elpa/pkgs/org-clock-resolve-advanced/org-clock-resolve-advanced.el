@@ -43,6 +43,7 @@ so long."
   ;; last-event-frame
   (when nil (message "called org-rl-resolve-clocks-if-idle"))
   (lotus-with-other-frame-event-debug "org-rl-resolve-clocks-if-idle" :restart
+    (lwarn 'org-rl-clock :debug "org-rl-resolve-clocks-if-idle: lotus-with-other-frame-event-debug")
     (org-rl-debug :warning
                   "org-rl-resolve-clocks-if-idle: org-clock-last-idle-start-time: %s, (org-user-idle-seconds) %s"
                   (if org-clock-last-idle-start-time

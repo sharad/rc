@@ -141,6 +141,7 @@ using three `C-u' prefix arguments."
 
 (defun replace-org-clock-select-task (&optional prompt)
   (lotus-with-other-frame-event-debug "replace-org-clock-select-task" :restart
+    (lwarn 'org-clock-wrapper :debug "replace-org-clock-select-task: lotus-with-other-frame-event-debug")
     (let ((helm-sources nil))
       (when (marker-buffer org-clock-default-task)
         (push

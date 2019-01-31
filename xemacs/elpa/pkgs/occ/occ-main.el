@@ -99,6 +99,7 @@
   ;; else postpone it by calling run-with-idle-plus-timer
   (occ-debug :debug "begin occ-clock-in-curr-ctx-if-not")
   (lotus-with-other-frame-event-debug "occ-clock-in-curr-ctx-if-not" :cancel
+    (lwarn 'occ :debug "occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug")
     (if force
         (occ-clock-in-curr-ctx (occ-make-ctx))
       (occ-clock-in-if-chg (occ-make-ctx))))

@@ -849,6 +849,8 @@ variable."
     (message "psgml loaded, now loading sgml-mode.el library")
     (load-library "sgml-mode"))
 
+  (setq warning-minimum-log-level :debug)
+
   (lotus-unnecessary-functionality)
 
   (message "loading lotus-necessary-functionality finished"))
