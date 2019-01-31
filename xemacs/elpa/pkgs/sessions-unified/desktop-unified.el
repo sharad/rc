@@ -487,7 +487,6 @@ to restore in case of sudden emacs crash."
             (desktop-vc-save *desktop-save-filename*)))
       (message
        "*session-unified-desktop-enabled*: %s"
-
        *session-unified-desktop-enabled*)))
 
   (defun lotus-disable-session-saving-immediately ()
@@ -619,9 +618,10 @@ when all buffer were creaed idly."
                       (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s"
                                *constructed-name-desktop-save-filename*
                                *desktop-save-filename*)
-                      (if (y-or-n-p (format "lotus-desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s\nshould continue with it ? "
-                                            *constructed-name-desktop-save-filename*
-                                            *desktop-save-filename*))
+                      (if (y-or-n-p
+                           (format "lotus-desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s\nshould continue with it ? "
+                                   *constructed-name-desktop-save-filename*
+                                   *desktop-save-filename*))
                           (message "continuing..")
                         (error "desktop file %s is not correct" *desktop-save-filename*)))
 
@@ -817,11 +817,5 @@ It returns t if a desktop file was loaded, nil otherwise."
               ('error (message "%s: %s" ,modefn e))))))))
 
 
-
-
-
-
-
-
 
 ;;; desktop-unified.el ends here
