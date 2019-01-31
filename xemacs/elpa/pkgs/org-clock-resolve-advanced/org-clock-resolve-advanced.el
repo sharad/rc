@@ -45,7 +45,8 @@ so long."
   (lotus-with-other-frame-event-debug "org-rl-resolve-clocks-if-idle" :restart
     (org-rl-debug :warning
                   "org-rl-resolve-clocks-if-idle: org-clock-last-idle-start-time: %s, (org-user-idle-seconds) %s"
-                  org-clock-last-idle-start-time
+                  (if org-clock-last-idle-start-time
+                      (time-to-seconds (time-subtract (current-time) org-clock-last-idle-start-time)))
                   (org-user-idle-seconds))
     ;; (message "(org-user-idle-seconds) %s" (org-user-idle-seconds))
     (when (and
