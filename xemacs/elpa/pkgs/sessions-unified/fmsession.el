@@ -34,6 +34,64 @@
 (defvar session-unified-utils-select-frame-fn #'select-frame-set-input-focus "session-unified-utils-select-frame-fn")
 
 
+(defun completing-read-timeout-if-default-input (seconds
+                                                 prompt
+                                                 collection
+                                                 &optional
+                                                 predicate
+                                                 require-match
+                                                 initial-input
+                                                 hist
+                                                 def
+                                                 inherit-input-method)
+  (if initial-input
+      (with-timeout (seconds
+                     (progn
+                       (when (active-minibuffer-window)
+                         (abort-recursive-edit))
+                       initial-input))
+        (completing-read prompt
+                         collection
+                         predicate
+                         require-match
+                         initial-input
+                         hist
+                         def
+                         inherit-input-method))
+    (completing-read prompt
+                     collection
+                     predicate
+                     require-match
+                     initial-input
+                     hist
+                     def
+                     inherit-input-method)))
+
+(defun completing-read-timeout (seconds
+                                prompt
+                                collection
+                                &optional
+                                predicate
+                                require-match
+                                initial-input
+                                hist
+                                def
+                                inherit-input-method)
+  (with-timeout (seconds
+                 (progn
+                   (when (active-minibuffer-window)
+                     (abort-recursive-edit))
+                   initial-input))
+    (completing-read prompt
+                     collection
+                     predicate
+                     require-match
+                     initial-input
+                     hist
+                     def
+                     inherit-input-method)))
+
+
 ;; Not required
 (defun sessions-unified-put-alist (key value alist)
   "Set cdr of an element (KEY . ...) in ALIST to VALUE and return ALIST.
@@ -305,7 +363,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
           (elscreen-notify-screen-modification 'force-immediately)
           (message "elscreen-session-session-list-set: DONE."))
 
-      (message "elscreen-session-session-list-set: Session do not exists.")))
+      (message "elscreen-session-session-list-set: Error: Session do not exists.")))
 
   (defvar *frames-elscreen-session* nil "Stores all elscreen sessions here.")
   (defvar *frames-elscreen-session-old* nil "Stores all discarded elscreen sessions here.")
@@ -394,12 +452,15 @@ return a new alist whose car is the new pair and cdr is ALIST."
      (list
       (fmsession-read-location)))
     (message "elscreen-session-restore: start")
-    (let ((elscreen-session-list
-           (cdr (assoc elscreen-session *frames-elscreen-session*))))
-      (testing
-       (message "Nstart: session-session %s" elscreen-session))
-      (when elscreen-session-list
-        (elscreen-session-session-list-set elscreen-session-list (or nframe (selected-frame))))))
+    (if elscreen-session
+        (let ((elscreen-session-list
+               (cdr (assoc elscreen-session *frames-elscreen-session*))))
+          (testing
+           (message "Nstart: session-session %s" elscreen-session))
+          (if elscreen-session-list
+              (elscreen-session-session-list-set elscreen-session-list (or nframe (selected-frame)))
+            (message "elscreen-session-restore: Error: elscreen-session-list %s" elscreen-session-list)))
+      (message "elscreen-session-restore: Error: elscreen-session is %s" elscreen-session)))
 
   (defun fmsession-read-location (&optional initial-input)
     (let ((used t)
@@ -428,6 +489,25 @@ return a new alist whose car is the new pair and cdr is ALIST."
                              initial-input)
       ('quit nil)))
 
+  (defun fmsession-read-location-internal (&optional initial-input)
+    (condition-case terr
+        (completing-read-timeout 7
+                                 "Session: "
+                                 (remove-if-not
+                                  #'(lambda (dir)
+                                      (not
+                                       (member
+                                        dir
+                                        (remove-if #'null
+                                                   (mapcar
+                                                    #'(lambda (f) (frame-parameter f 'frame-spec-id))
+                                                    (frame-list))))))
+                                  (mapcar 'car *frames-elscreen-session*))
+                                 nil
+                                 nil
+                                 initial-input)
+      ('quit nil)))
+
   (defun fmsession-store (session-name &optional nframe)
     "Store the elscreen tab configuration."
     (interactive
@@ -445,7 +525,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
         (elscreen-session-restore session-name nframe)
       (funcall sessions-unified-utils-notify
                "fmsession-restore"
-               "not restoring screen session as screen-history config not found.")))
+               "Error: not restoring screen session as screen-history config not found.")))
 
   ;; (elscreen-restore)
   ;;}}
@@ -493,28 +573,28 @@ return a new alist whose car is the new pair and cdr is ALIST."
       (server-create-frame-around-adrun)))
 
   (when nil))
-    ;; (ad-disable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
-    ;; (ad-disable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
-    ;; (ad-enable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
-    ;; (ad-enable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
-    ;; (ad-remove-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
-    ;; (ad-remove-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
-    ;; (ad-update 'server-create-window-system-frame)
-    ;; (ad-activate 'server-create-window-system-frame)
+;; (ad-disable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
+;; (ad-disable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
+;; (ad-enable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
+;; (ad-enable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
+;; (ad-remove-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
+;; (ad-remove-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
+;; (ad-update 'server-create-window-system-frame)
+;; (ad-activate 'server-create-window-system-frame)
 
-    ;; (ad-disable-advice 'server-create-tty-frame 'before 'set-restore-frame-session)
-    ;; (ad-disable-advice 'server-create-tty-frame 'after 'remove-scratch-buffer)
-    ;; (ad-enable-advice 'server-create-tty-frame 'before 'set-restore-frame-session)
-    ;; (ad-enable-advice 'server-create-tty-frame 'after 'remove-scratch-buffer)
-    ;; (ad-remove-advice 'server-create-tty-frame 'before 'set-restore-frame-session)
-    ;; (ad-remove-advice 'server-create-tty-frame 'after 'remove-scratch-buffer)
-    ;; (ad-update 'server-create-tty-frame)
-    ;; (ad-activate 'server-create-tty-frame)
+;; (ad-disable-advice 'server-create-tty-frame 'before 'set-restore-frame-session)
+;; (ad-disable-advice 'server-create-tty-frame 'after 'remove-scratch-buffer)
+;; (ad-enable-advice 'server-create-tty-frame 'before 'set-restore-frame-session)
+;; (ad-enable-advice 'server-create-tty-frame 'after 'remove-scratch-buffer)
+;; (ad-remove-advice 'server-create-tty-frame 'before 'set-restore-frame-session)
+;; (ad-remove-advice 'server-create-tty-frame 'after 'remove-scratch-buffer)
+;; (ad-update 'server-create-tty-frame)
+;; (ad-activate 'server-create-tty-frame)
 
-  ;;}}
+;;}}
 
 
-  ;;{{
+;;{{
 (progn ;; "per frame session"
 
   ;; (require 'emacs-panel)
@@ -554,7 +634,8 @@ return a new alist whose car is the new pair and cdr is ALIST."
           (unless wm-hints
             (message "Some error in wm-hints")))
       (message "frame-session-set-this-location: %s" location)
-      (set-frame-parameter nframe 'frame-spec-id location)
+      (when location
+        (set-frame-parameter nframe 'frame-spec-id location))
       location))
 
   (defvar *frame-session-restore-screen-display-function* #'display-about-screen
@@ -567,7 +648,9 @@ return a new alist whose car is the new pair and cdr is ALIST."
          (null *desktop-vc-read-inprogress*))
         (progn
           (message "pass in frame-session-restore")
-          (if nframe (funcall session-unified-utils-select-frame-fn nframe) (error "nframe is nil"))
+          (if nframe
+              (funcall session-unified-utils-select-frame-fn nframe)
+            (error "nframe is nil"))
           (fmsession-restore (frame-session-set-this-location nframe not-ask))
           ;; nframe)
 

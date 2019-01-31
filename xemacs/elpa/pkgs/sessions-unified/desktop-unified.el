@@ -27,6 +27,25 @@
 (provide 'desktop-unified)
 
 
+(defun read-file-name-timeout-if-default-input (seconds prompt &optional dir default-filename mustmatch initial predicate)
+    (if default-initial-input
+        (with-timeout (seconds
+                       (progn
+                         (when (active-minibuffer-window)
+                           (abort-recursive-edit))
+                         initial))
+          (read-file-name prompt dir default-filename mustmatch initial predicate))
+      (read-file-name prompt dir default-filename mustmatch initial predicate)))
+
+(defun read-file-name-timeout (seconds prompt &optional dir default-filename mustmatch initial predicate)
+  (with-timeout (seconds
+                 (progn
+                   (when (active-minibuffer-window)
+                     (abort-recursive-edit))
+                   initial))
+    (read-file-name prompt dir default-filename mustmatch initial predicate)))
+
+
 
 (with-eval-after-load "desktop"
   (defun desktop-make-create-buffer (buffer)
@@ -255,25 +274,20 @@ Also returns nil if pid is nil."
                  file default-local-file)
                 (vc-checkout-file default-local-file)))
 
-            (expand-file-name
-             (with-timeout (20
-                            (progn
-                              (when (active-minibuffer-window)
-                                (abort-recursive-edit))
-                              default-local-file))
-               (read-file-name prompt     ;promt
-                               desktop-dir ;dir
-                               default-local-file ;default file name
-                               'confirm           ;mustmatch
-                               default-local-file ;initial
-                               (lambda (f)        ;predicate  BUG failing this cause bugs
-                                 (message "f: %s" f)
-                                 (string-match
-                                  (concat "^"
-                                          (file-truename (expand-file-name default-file desktop-dir)) "-")
-                                  ;; (concat "^" desktop-dir "/" default-file "-")
-                                  (file-truename f)))))
-             desktop-dir))
+            (let ((file (read-file-name-timeout 20
+                                                prompt     ;promt
+                                                desktop-dir ;dir
+                                                default-local-file ;default file name
+                                                'confirm           ;mustmatch
+                                                default-local-file ;initial
+                                                #'(lambda (f)        ;predicate  BUG failing this cause bugs
+                                                    (message "f: %s" f)
+                                                    (string-match
+                                                     (concat "^"
+                                                             (file-truename (expand-file-name default-file desktop-dir)) "-")
+                                                     ;; (concat "^" desktop-dir "/" default-file "-")
+                                                     (file-truename f))))))
+               (expand-file-name file desktop-dir)))
         (error "desktop directory %s don't exists." desktop-dir))))
 
   ;; (find-desktop-file "select desktop: " "~/tmp/" desktop-base-file-name)
