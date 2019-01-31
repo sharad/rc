@@ -128,6 +128,12 @@
   (org-rl-clocks-action nil nil prev next))
 
 
+;; Warning (org-rl-clock): going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 21:41> 30 41] next[<imaginary> <2019-01-31 Thu 21:46>-<2019-01-31 Thu 21:46> 46 46] with maxtimelen 310
+;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 21:41>] next[<imaginary> <2019-01-31 Thu 21:46>-<2019-01-31 Thu 21:46>] maxtimelen[310] secs
+;; Warning (org-rl-clock): going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 22:47> 30 46] next[<imaginary> <2019-01-31 Thu 22:52>-<2019-01-31 Thu 22:52> 51 51] with maxtimelen 310
+;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 22:47>] next[<imaginary> <2019-01-31 Thu 22:52>-<2019-01-31 Thu 22:52>] maxtimelen[310] secs
+;; Warning (org-rl-clock): You have selected opt done and timelen 334
+
 (cl-defmethod org-rl-clock-time-process-option ((prev org-rl-clock)
                                                 (next org-rl-clock)
                                                 opt
