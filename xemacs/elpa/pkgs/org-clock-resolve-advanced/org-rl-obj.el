@@ -490,35 +490,21 @@
 
 (cl-defmethod org-rl-clock-opts-common-with-time ((prev org-rl-clock)
                                                   (next org-rl-clock))
-
-
-
-  ;; (let ((heading (org-rl-clock-heading clock)))
-  ;;   (list
-  ;;    (cons "Include in other" 'include-in-other)))
-  ;; ;; (cons
-  ;; ;;  (format "subtract from prev %s" heading)
-  ;; ;;  'subtract)
-
-
   (list
-   (cons "Include in other" 'include-in-other))
-  ;; (cons
-  ;;  (format "subtract from prev %s" heading)
-  ;;  'subtract)
-  )
+   (cons "Include in other" 'include-in-other)))
 
 (cl-defmethod org-rl-clock-opts-prev ((prev org-rl-clock)
                                       (next org-rl-clock))
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
-    (unless (org-rl-clock-null prev)
-      (list
-       (cons
-        (if (org-rl-clock-null prev)
-            "Ignore prev all idle time"
-          (format "Cancel prev %s" prev-heading))
-        'cancel-prev-p)
+    (append
+     (list
+      (cons
+       (if (org-rl-clock-null prev)
+           "Subtract all from next %s"
+         (format "Cancel prev %s" next-heading))
+       'cancel-prev-p))
+     (unless (org-rl-clock-null prev)
        (cons
         (format "Jump to prev %s" prev-heading)
         'jump-prev-p)))))
@@ -540,13 +526,16 @@
                                       (next org-rl-clock))
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
-    (unless (org-rl-clock-null next)
-      (list
-       (cons
-        (if (org-rl-clock-null next)
-            "Ignore next all idle time"        ;TODO: still only considering resolve-idle not both prev next, prev can also be null ?
-          (format "Cancel next %s" next-heading))
-        'cancel-next-p)
+    (append
+     (list
+      (cons
+       (if (org-rl-clock-null next)
+           (if (org-rl-clock-null prev)
+               "No idea"
+             (format "Subtract all from prev %s" prev-heading))        ;TODO: still only considering resolve-idle not both prev next, prev can also be null ?
+         (format "Cancel next %s" next-heading))
+       'cancel-next-p))
+     (unless (org-rl-clock-null next)
        (cons
         (format "Jump to next %s" next-heading)
         'jump-next-p)))))

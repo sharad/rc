@@ -160,7 +160,7 @@
            ((eq opt 'include-in-next)
             (org-rl-clock-opt-include-in-next prev next timelen))
 
-           ((eq opt include-in-other) ;; subtract timelen from timelength
+           ((eq opt 'include-in-other) ;; subtract timelen from timelength
             (org-rl-clock-opt-include-in-other prev next timelen opt))
 
            ((eq opt 'done)

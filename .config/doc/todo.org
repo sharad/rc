@@ -86,7 +86,7 @@ Will be responsible to find related project' repository and guidelines for code 
 ** mindshare contribution manager [high level detail in idea.org]
 ** Support for adding D-O-N-E task
 ** Support for task to have information about who requested, when request, where requested
-
+** Add gtags-update when inotify-file change happened.
 
 * Occasionally remind
 
