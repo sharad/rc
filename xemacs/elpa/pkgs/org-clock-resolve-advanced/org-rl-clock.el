@@ -253,5 +253,4 @@
                 (message "Error given time %d can not be greater than %d" timelen maxtimelen)
                 (org-rl-clock-resolve-time prev next force close-p)))))))))
 
-
 ;;; org-rl-clock.el ends here
