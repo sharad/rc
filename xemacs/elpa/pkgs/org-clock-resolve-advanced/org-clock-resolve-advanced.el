@@ -43,7 +43,10 @@ so long."
   ;; last-event-frame
   (when nil (message "called org-rl-resolve-clocks-if-idle"))
   (lotus-with-other-frame-event-debug "org-rl-resolve-clocks-if-idle" :restart
-    (message "org-clock-last-user-idle-seconds: %s" org-clock-last-user-idle-seconds)
+    (org-rl-debug :warning
+                  "org-rl-resolve-clocks-if-idle: org-clock-last-user-idle-seconds: %s, (org-user-idle-seconds) %s"
+                  org-clock-last-user-idle-seconds
+                  (org-user-idle-seconds))
     ;; (message "(org-user-idle-seconds) %s" (org-user-idle-seconds))
     (when (and
            org-clock-idle-time
@@ -56,7 +59,7 @@ so long."
                (org-user-idle-seconds)))
              (org-clock-user-idle-start
               (time-subtract (current-time)
-                             (seconds-to-time org-clock-user-idle-seconds)))
+                             org-clock-user-idle-seconds))
              (org-clock-resolving-clocks-due-to-idleness t))
 
         (setq org-clock-last-user-idle-seconds org-clock-user-idle-seconds)

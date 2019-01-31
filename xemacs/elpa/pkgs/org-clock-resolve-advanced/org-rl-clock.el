@@ -201,7 +201,9 @@
       ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 10 5] with maxtimelen 5
       ;; Warning (org-rl-clock): You have selected opt subtract and timelen 9
       ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 5 5] with maxtimelen 0
-      (org-rl-debug :warning "going to run %s with maxtimelen %d" (org-rl-clock-time-adv-debug-prompt prev next) maxtimelen)
+      (org-rl-debug :warning
+                    "org-rl-clock-resolve-time: going to run %s with maxtimelen %d"
+                    (org-rl-clock-time-adv-debug-prompt prev next) maxtimelen)
       ;; (assert (> maxtimelen 0))
       (when (> maxtimelen 0)
         (let* ((maxtimelen-fn #'(lambda () (org-rl-get-time-gap prev next)))
