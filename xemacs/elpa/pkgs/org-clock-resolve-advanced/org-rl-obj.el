@@ -501,13 +501,16 @@
      (list
       (cons
        (if (org-rl-clock-null prev)
-           "Subtract all from next %s"
-         (format "Cancel prev %s" next-heading))
+           (if (org-rl-clock-null next)
+               "No idea"
+             (format "Subtract all from next %s" next-heading))
+         (format "Cancel prev %s" prev-heading))
        'cancel-prev-p))
      (unless (org-rl-clock-null prev)
-       (cons
-        (format "Jump to prev %s" prev-heading)
-        'jump-prev-p)))))
+       (list
+        (cons
+         (format "Jump to prev %s" prev-heading)
+         'jump-prev-p))))))
 
 (cl-defmethod org-rl-clock-opts-prev-with-time ((prev org-rl-clock)
                                                 (next org-rl-clock))
@@ -536,9 +539,10 @@
          (format "Cancel next %s" next-heading))
        'cancel-next-p))
      (unless (org-rl-clock-null next)
-       (cons
-        (format "Jump to next %s" next-heading)
-        'jump-next-p)))))
+       (list
+        (cons
+         (format "Jump to next %s" next-heading)
+         'jump-next-p))))))
 
 (cl-defmethod org-rl-clock-opts-next-with-time ((prev org-rl-clock)
                                                 (next org-rl-clock))
