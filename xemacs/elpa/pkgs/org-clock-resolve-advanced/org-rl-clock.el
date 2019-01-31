@@ -128,10 +128,25 @@
   (org-rl-clocks-action nil nil prev next))
 
 
-;; Warning (org-rl-clock): going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 21:41> 30 41] next[<imaginary> <2019-01-31 Thu 21:46>-<2019-01-31 Thu 21:46> 46 46] with maxtimelen 310
-;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 21:41>] next[<imaginary> <2019-01-31 Thu 21:46>-<2019-01-31 Thu 21:46>] maxtimelen[310] secs
-;; Warning (org-rl-clock): going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 22:47> 30 46] next[<imaginary> <2019-01-31 Thu 22:52>-<2019-01-31 Thu 22:52> 51 51] with maxtimelen 310
-;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 22:47>] next[<imaginary> <2019-01-31 Thu 22:52>-<2019-01-31 Thu 22:52>] maxtimelen[310] secs
+;; Warning (org-rl-clock): org-clock-last-user-idle-seconds: nil, (org-user-idle-seconds) 0
+;; Warning (org-rl-clock): org-rl-resolve-clocks-if-idle: org-clock-last-user-idle-seconds: nil, (org-user-idle-seconds) 310.001173849
+;; Warning (org-rl-clock): org-rl-clock-resolve-time: going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:10> 30 8] next[<imaginary> <2019-01-31 Thu 23:16>-<2019-01-31 Thu 23:16> 14 14] with maxtimelen 310
+;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:10>] next[<imaginary> <2019-01-31 Thu 23:16>-<2019-01-31 Thu 23:16>] maxtimelen[310] secs
+;; Warning (org-rl-clock): org-rl-resolve-clocks-if-idle: org-clock-last-user-idle-seconds: 310.02600633, (org-user-idle-seconds) 0
+;; Warning (org-rl-clock): org-rl-clock-resolve-time: going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:13> 30 11] next[<imaginary> <2019-01-31 Thu 23:19>-<2019-01-31 Thu 23:19> 17 17] with maxtimelen 310
+;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:13>] next[<imaginary> <2019-01-31 Thu 23:19>-<2019-01-31 Thu 23:19>] maxtimelen[310] secs
+;; Warning (org-rl-clock): org-rl-resolve-clocks-if-idle: org-clock-last-user-idle-seconds: 310.02600633, (org-user-idle-seconds) 310.002479784
+;; Warning (org-rl-clock): org-rl-clock-resolve-time: going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21> 30 19] next[<imaginary> <2019-01-31 Thu 23:26>-<2019-01-31 Thu 23:26> 24 24] with maxtimelen 310
+;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21>] next[<imaginary> <2019-01-31 Thu 23:26>-<2019-01-31 Thu 23:26>] maxtimelen[310] secs
+;; Warning (org-rl-clock): org-rl-resolve-clocks-if-idle: org-clock-last-user-idle-seconds: 310.02600633, (org-user-idle-seconds) 0
+;; Warning (org-rl-clock): org-rl-clock-resolve-time: going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21> 30 19] next[<imaginary> <2019-01-31 Thu 23:27>-<2019-01-31 Thu 23:27> 25 25] with maxtimelen 310
+;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21>] next[<imaginary> <2019-01-31 Thu 23:27>-<2019-01-31 Thu 23:27>] maxtimelen[310] secs
+;; Warning (org-rl-clock): org-rl-resolve-clocks-if-idle: org-clock-last-user-idle-seconds: 310.02600633, (org-user-idle-seconds) 0
+;; Warning (org-rl-clock): org-rl-clock-resolve-time: going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21> 30 19] next[<imaginary> <2019-01-31 Thu 23:27>-<2019-01-31 Thu 23:27> 25 25] with maxtimelen 310
+;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21>] next[<imaginary> <2019-01-31 Thu 23:27>-<2019-01-31 Thu 23:27>] maxtimelen[310] secs
+;; Warning (org-rl-clock): org-rl-resolve-clocks-if-idle: org-clock-last-user-idle-seconds: 310.02600633, (org-user-idle-seconds) 0
+;; Warning (org-rl-clock): org-rl-clock-resolve-time: going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21> 30 19] next[<imaginary> <2019-01-31 Thu 23:27>-<2019-01-31 Thu 23:27> 25 25] with maxtimelen 310
+;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21>] next[<imaginary> <2019-01-31 Thu 23:27>-<2019-01-31 Thu 23:27>] maxtimelen[310] secs
 ;; Warning (org-rl-clock): You have selected opt done and timelen 334
 
 (cl-defmethod org-rl-clock-time-process-option ((prev org-rl-clock)

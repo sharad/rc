@@ -1,11 +1,11 @@
 {
-  FTitleColor = white;
+  FTitleColor = "#eeeeee";
   DontLinkWorkspaces = NO;
   TranceAmount = 5;
   WindowTitleBalloons = NO;
-  MenuDisabledColor = gray80;
+  MenuDisabledColor = "#666666";
   MenuTextJustify = center;
-  IconTitleBack = "#8b0000";
+  IconTitleBack = "rgb:50/5a/5e";
   PixmapPath = (
     "/home/s/hell/.GNUstep/Library/WindowMaker/Pixmaps",
     "/home/s/hell/.GNUstep/Library/WindowMaker/Backgrounds",
@@ -16,14 +16,18 @@
     "/usr/share/pixmaps",
     "/home/s/hell/.GNUstep/Library/WindowMaker/Pixmaps"
   );
-  FTitleBack = (hgradient, darkred, black);
+  FTitleBack = (
+    spixmap,
+    "~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/_GNUstep/Library/WindowMaker/Themes/Sanya.themed/title_active.tiff",
+    "#000000"
+  );
   RaiseDelay = 800;
   ClipTitleFont = "Verdana:bold:pixelsize=10";
   MiniwindowPreviewBalloons = NO;
   HideKey = "Mod3+H";
   MaximizeKey = "Mod4+M";
-  IconTitleFont = "Arial,sans serif:pixelsize=9";
-  LargeDisplayFont = "Trebuchet MS,sans serif:pixelsize=24";
+  IconTitleFont = "Arial,Luxi Sans:pixelsize=9";
+  LargeDisplayFont = "Trebuchet MS,Luxi Sans:pixelsize=24";
   ResizeCursor = (
     bitmap,
     "/usr/share/WindowMaker/Themes/Aqua Strawberry.themed/dot_resize.xbm",
@@ -33,20 +37,20 @@
   VirtualEdgeUpKey = "Mod4+Up";
   WindowShortcut10Key = None;
   IconTitleColor = white;
-  MenuTitleColor = white;
+  MenuTitleColor = "#ffffff";
   WindowShortcut3Key = None;
-  MenuTitleFont = "Trebuchet MS,sans serif:bold:pixelsize=12";
+  MenuTitleFont = "Trebuchet MS,Luxi Sans:bold:pixelsize=12";
   ClipAutolowerDelay = "";
   SmoothWorkspaceBack = NO;
   IconPosition = blv;
   WindowShortcut4Key = None;
   NoWindowOverDock = NO;
   WorkspaceBack = (
-    spixmap,
+    tpixmap,
     "/home/s/hell/.GNUstep/Library/WindowMaker/Backgrounds/Aqua_Strawberries_Abstract_3d_226.jpg",
     gray20
   );
-  HighlightTextColor = black;
+  HighlightTextColor = "#000000";
   VirtualEdgeLeftKey = "Mod4+Left";
   ClipAutoexpandDelay = "";
   WindowShortcut9Key = None;
@@ -55,7 +59,7 @@
   PrevWorkspaceKey = "Control+Mod4+Left";
   AutoArrangeIcons = YES;
   TextJustify = center;
-  ClipTitleColor = white;
+  ClipTitleColor = black;
   AppIconBalloons = NO;
   WaitCursor = (
     bitmap,
@@ -63,15 +67,15 @@
     "/usr/share/WindowMaker/Themes/Aqua Strawberry.themed/dot_wait_mask.xbm"
   );
   WorkspaceBorder = None;
-  WindowTitleFont = "Trebuchet MS,sans serif:bold:pixelsize=12";
+  WindowTitleFont = "Liberation Sans:slant=0:weight=200:width=100:pixelsize=11";
   LargeDisplayTextColor = white;
   Workspace8Key = "Mod4+8";
   Workspace9Key = "Mod4+9";
   RootMenuKey = "Mod4+Z";
   UseSaveUnders = YES;
-  ResizebarBack = (hgradient, peru, black);
+  ResizebarBack = (solid, "#acacac");
   Workspace4Key = "Mod4+4";
-  DisplayFont = "helvetica:pixelsize=12";
+  DisplayFont = "Trebuchet MS,Luxi Sans:pixelsize=12";
   KbdModeLock = YES;
   Workspace5Key = "Mod4+5";
   Workspace6Key = "Mod4+6";
@@ -96,7 +100,7 @@
   MiniwindowTitleBalloons = NO;
   WindowShortcut7Key = None;
   OpaqueResize = NO;
-  MenuTextBack = (hgradient, peru, black);
+  MenuTextBack = (solid, "#acacac");
   RaiseAppIconsWhenBouncing = NO;
   WindowPlacement = smart;
   MenuTrance = NO;
@@ -105,32 +109,40 @@
   WindowShortcut8Key = None;
   OpaqueMoveResizeKeyboard = NO;
   TitleJustify = center;
-  MenuTextColor = white;
+  MenuTextColor = "#000000";
   SingleClickLaunch = NO;
   Attraction = NO;
-  IconBack = (dgradient, "#efb573", "#734221");
+  IconBack = (
+    tpixmap,
+    "~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/_GNUstep/Library/WindowMaker/Themes/Sanya.themed/t3.tiff",
+    "#000000"
+  );
   DontConfirmKill = YES;
   DisableBlinking = NO;
   AntialiasedText = NO;
   LowerKey = "Mod4+Down";
   WindowTitleExtendSpace = 0;
-  NewStyle = new;
   NormalCursor = (builtin, left_ptr);
+  NewStyle = new;
   FocusPrevKey = "Shift+Mod4+Tab";
   WorkspaceNameDisplayPosition = center;
   WindowListKey = "Mod4+W";
   IconSize = 56;
   "//MenuTextFont" = "-lispm-fixed-*-*-*-*-*-*-*-*-*-*-iso8859-15";
-  MenuTextFont = "Trebuchet MS,sans serif:pixelsize=12";
+  MenuTextFont = "Trebuchet MS,Luxi Sans:pixelsize=12";
   ScreenSwitchKey = None;
-  MenuTitleBack = (hgradient, firebrick, black);
+  MenuTitleBack = (
+    spixmap,
+    "~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/_GNUstep/Library/WindowMaker/Themes/Sanya.themed/title_active.tiff",
+    "#000000"
+  );
   HMaximizeKey = "Mod4+H";
   CloseKey = "Control+Mod4+W";
-  HighlightColor = white;
+  HighlightColor = "#ffffff";
   NextWorkspaceKey = "Control+Mod4+Right";
   DisableDrawers = NO;
   Workspace10Key = "Mod4+0";
-  CClipTitleColor = gray20;
+  CClipTitleColor = "rgb:61/61/61";
   VMaximizeKey = "Mod4+V";
   MoveCursor = (
     bitmap,
@@ -138,7 +150,7 @@
     "/usr/share/WindowMaker/Themes/Aqua Strawberry.themed/dot_move_mask.xbm"
   );
   WindowShortcut5Key = None;
-  MenuStyle = normal;
+  MenuStyle = flat;
   HideOthersKey = "Mod3+O";
   MenuTitleJustify = left;
   IconPath = (
@@ -155,13 +167,21 @@
   RaiseKey = "Mod4+Up";
   MenuJustify = center;
   ClipAutoraiseDelay = "";
-  PTitleBack = (hgradient, indianred, black);
+  PTitleBack = (
+    spixmap,
+    "~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/_GNUstep/Library/WindowMaker/Themes/Sanya.themed/title_owner.tiff",
+    "#000000"
+  );
   MenuTextExtendSpace = 0;
   WindowShortcut6Key = None;
-  UTitleColor = white;
+  UTitleColor = "#323232";
   ViKeyMenus = NO;
   BounceAppIconsWhenUrgent = YES;
-  UTitleBack = (hgradient, peru, black);
+  UTitleBack = (
+    spixmap,
+    "~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/_GNUstep/Library/WindowMaker/Themes/Sanya.themed/title_inactive.tiff",
+    "#000000"
+  );
   CirculateRaise = NO;
-  PTitleColor = gray;
+  PTitleColor = "#ffffff";
 }

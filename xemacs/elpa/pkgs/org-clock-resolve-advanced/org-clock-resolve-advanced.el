@@ -32,7 +32,7 @@
 
 
 ;;;###autoload
-(defvar org-clock-last-user-idle-seconds nil)
+(defvar org-clock-last-idle-start-time nil)
 
 (defun org-rl-resolve-clocks-if-idle ()
   "Resolve all currently open Org clocks.
@@ -44,8 +44,8 @@ so long."
   (when nil (message "called org-rl-resolve-clocks-if-idle"))
   (lotus-with-other-frame-event-debug "org-rl-resolve-clocks-if-idle" :restart
     (org-rl-debug :warning
-                  "org-rl-resolve-clocks-if-idle: org-clock-last-user-idle-seconds: %s, (org-user-idle-seconds) %s"
-                  org-clock-last-user-idle-seconds
+                  "org-rl-resolve-clocks-if-idle: org-clock-last-idle-start-time: %s, (org-user-idle-seconds) %s"
+                  org-clock-last-idle-start-time
                   (org-user-idle-seconds))
     ;; (message "(org-user-idle-seconds) %s" (org-user-idle-seconds))
     (when (and
@@ -54,15 +54,15 @@ so long."
            org-clock-marker
            (marker-buffer org-clock-marker))
       (let* ((org-clock-user-idle-seconds
-              (or
-               org-clock-last-user-idle-seconds
-               (org-user-idle-seconds)))
+              (if org-clock-last-idle-start-time
+                  (time-subtract (current-time) org-clock-last-idle-start-time)
+                (org-user-idle-seconds)))
              (org-clock-user-idle-start
               (time-subtract (current-time)
                              org-clock-user-idle-seconds))
              (org-clock-resolving-clocks-due-to-idleness t))
 
-        (setq org-clock-last-user-idle-seconds org-clock-user-idle-seconds)
+        (setq org-clock-last-idle-start-time org-clock-user-idle-start)
 
         (when nil
           (message "1. Idle time now min[%d] sec[%d]"
@@ -79,7 +79,7 @@ so long."
             (message "1. Idle time now min[%d] sec[%d]"
                      (/ org-clock-user-idle-seconds 60)
                      (% org-clock-user-idle-seconds 60))))
-        (setq org-clock-last-user-idle-seconds nil)))))
+        (setq org-clock-last-idle-start-time nil)))))
 
 (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
 

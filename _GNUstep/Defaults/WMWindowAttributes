@@ -1,139 +1,26 @@
 {
-  tip_of_the_day.Gimp = {
-    NoMiniaturizeButton = Yes;
-    AlwaysUserIcon = Yes;
-    NoResizebar = Yes;
-    Icon = "wmaker-gimp2.tif";
-    KeepOnTop = Yes;
-    NoCloseButton = Yes;
-  };
-  color_palette.Gimp = {
-    AlwaysUserIcon = Yes;
-    NoResizebar = Yes;
-    Icon = "wmaker-gimp-palette.tif";
-  };
   "gnome-help.Gnome-help" = {
     Icon = "/home/s/hell/.GNUstep/Library/WindowMaker/CachedPixmaps/gnome-help.Gnome-help.xpm";
   };
-  indexed_color_palette.Gimp = {
-    AlwaysUserIcon = Yes;
-    NoResizebar = Yes;
-    Icon = "wmaker-gimp-palette.tif";
-  };
-  "script-fu.Script-fu" = {
-    Icon = "wmaker-gimp-script-fu.tif";
-  };
-  KTerm = {
-    Icon = GNUterm.tiff;
-  };
-  panel = {
-    NoAppIcon = Yes;
-  };
-  Netscape = {
-    Icon = "wmaker-netscape.tif";
-  };
   xterm.XTerm = {
-    Icon = "/home/s/hell/.GNUstep/Library/WindowMaker/CachedPixmaps/xterm.XTerm.xpm";
-  };
-  tool_options.Gimp = {
-    AlwaysUserIcon = Yes;
-    Icon = "wmaker-gimp-tooloption.tif";
-  };
-  layers_and_channels.Gimp = {
-    AlwaysUserIcon = Yes;
-    Icon = "wmaker-gimp-layers.tif";
+    AlwaysUserIcon = No;
   };
   WPrefs = {
     Icon = "/usr/lib/GNUstep/System/Applications/WPrefs.app/WPrefs.tiff";
   };
-  emacs = {
-    Icon = "wmaker-emacs.tif";
-  };
-  brushselection.Gimp = {
-    AlwaysUserIcon = Yes;
-    Icon = "wmaker-gimp-brushes.tif";
-  };
-  gradient_editor.Gimp = {
-    AlwaysUserIcon = Yes;
-    Icon = "wmaker-gimp-gradient.tif";
-  };
-  toolbox.Gimp = {
-    NoAppIcon = Yes;
-    Icon = "wmaker-gimp2.tif";
-  };
-  WMSoundServer = {
-    Icon = Sound.tiff;
-  };
   WMDrawer = {
     Icon = Drawer.tiff;
   };
-  Dockit = {
-    Icon = GNUstep.tiff;
-  };
   groupLeader.WPrefs = {
     Icon = "/home/s/hell/.GNUstep/Library/WindowMaker/CachedPixmaps/groupLeader.WPrefs.xpm";
-  };
-  gimp_startup.Gimp = {
-    NotClosable = Yes;
-    NoTitlebar = Yes;
-    NotMiniaturizable = Yes;
-    AlwaysUserIcon = Yes;
-    NoResizebar = Yes;
-    Icon = "wmaker-gimp2.tif";
-  };
-  patternselection.Gimp = {
-    AlwaysUserIcon = Yes;
-    Icon = "wmaker-gimp-patterns.tif";
-  };
-  NXTerm = {
-    Icon = GNUterm.tiff;
-  };
-  image_window.Gimp = {
-    AlwaysUserIcon = Yes;
-    Icon = "wmaker-gimp-work.tif";
-  };
-  Rxvt = {
-    Icon = GNUterm.tiff;
-  };
-  "Script-fu" = {
-    Icon = "wmaker-gimp-script-fu.tif";
-  };
-  Logo.WMPanel = {
-    Icon = GNUstep.tiff;
-  };
-  gmc = {
-    SkipWindowList = Yes;
-    NoAppIcon = Yes;
-    Omnipresent = Yes;
-  };
-  Tile.WMClip = {
-    Icon = clip.tiff;
-  };
-  XTerm = {
-    Icon = GNUterm.tiff;
-  };
-  "Mozilla-bin" = {
-    Icon = "wmaker-nav.tif";
   };
   Logo.WMDock = {
     Icon = GNUstepGlow.tiff;
   };
   "*" = {
     SharedAppIcon = Yes;
-    Icon = defaultAppIcon.tiff;
-  };
-  Gimp = {
-    AlwaysUserIcon = Yes;
-    Icon = "wmaker-gimp2.tif";
-  };
-  Logo.WMClip = {
-    Icon = clip.tiff;
   };
   "gnome-terminal.Gnome-terminal" = {
     Icon = "/home/s/hell/.GNUstep/Library/WindowMaker/CachedPixmaps/gnome-terminal.Gnome-terminal.xpm";
-  };
-  preferences.Gimp = {
-    AlwaysUserIcon = Yes;
-    Icon = "wmaker-gimp-prefs.tif";
   };
 }
