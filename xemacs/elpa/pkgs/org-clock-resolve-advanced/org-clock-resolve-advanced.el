@@ -57,7 +57,8 @@ so long."
            (marker-buffer org-clock-marker))
       (let* ((org-clock-user-idle-seconds
               (if org-clock-last-idle-start-time
-                  (time-subtract (current-time) org-clock-last-idle-start-time)
+                  (time-to-seconds
+                   (time-subtract (current-time) org-clock-last-idle-start-time))
                 (org-user-idle-seconds)))
              (org-clock-user-idle-start
               (time-subtract (current-time)
