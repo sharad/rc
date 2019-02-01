@@ -84,13 +84,17 @@
 
 ;;;###autoload
 (defun org-clock-in-if-not-at-time-delay-fn ()
-  (message "%s: org-clock-in-if-not-at-time-delay-fn begin")
+  (message
+   "%s: org-clock-in-if-not-at-time-delay-fn begin"
+   (time-stamp-string))
   (org-clock-in-if-not-at-time-delay))
 
 (defun org-clock-out-if-active ()
   (if (and
        (org-clock-is-active)
-       (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
+       (y-or-n-p-with-timeout
+        (format "Do you want to clock out current task %s: " org-clock-heading)
+        7 nil))
       (org-with-clock-writeable
        (let (org-log-note-clock-out)
          (if (org-clock-is-active)

@@ -462,17 +462,6 @@ return a new alist whose car is the new pair and cdr is ALIST."
             (message "elscreen-session-restore: Error: elscreen-session-list %s" elscreen-session-list)))
       (message "elscreen-session-restore: Error: elscreen-session is %s" elscreen-session)))
 
-  (defun fmsession-read-location (&optional initial-input)
-    (let ((used t)
-          sel)
-      (while used
-        (setq used
-              (member
-               (setq sel (fmsession-read-location-internal initial-input))
-               (remove-if #'null
-                          (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list))))))
-      sel))
-
   (defun fmsession-read-location-internal (&optional initial-input)
     (condition-case terr
         (ido-completing-read "Session: "
@@ -507,6 +496,22 @@ return a new alist whose car is the new pair and cdr is ALIST."
                                  nil
                                  initial-input)
       ('quit nil)))
+
+  (defun fmsession-read-location (&optional initial-input)
+    ;; keeps on reading name.
+    (let ((locations
+           (remove-if #'null
+                      (mapcar
+                       #'(lambda (f) (frame-parameter f 'frame-spec-id))
+                       (frame-list))))
+          (used t)
+          seletion)
+      (while used
+        (setq
+         used (member (setq selection
+                            (fmsession-read-location-internal initial-input))
+                      locations)))
+      sel))
 
   (defun fmsession-store (session-name &optional nframe)
     "Store the elscreen tab configuration."
@@ -595,13 +600,13 @@ return a new alist whose car is the new pair and cdr is ALIST."
 
 
 ;;{{
-(progn ;; "per frame session"
-
+(progn
+  ;; "per frame session"
   ;; (require 'emacs-panel)
 
   (defvar *desktop-vc-read-inprogress* nil "desktop-vc-read-inpgrogress")
 
-  (defun frame-session-set-this-location (nframe &optional not-ask)
+  (defun frame-session-set-this-location (nframe &optional not-ask try-guessing)
     (interactive
      (list (selected-frame)))
     (if nframe (funcall session-unified-utils-select-frame-fn nframe) (error "nframe is nil"))
@@ -641,7 +646,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
   (defvar *frame-session-restore-screen-display-function* #'display-about-screen
     "function to display screen with frame-session-restore, e.g. display-about-screen, spacemacs-buffer/goto-buffer")
 
-  (defun frame-session-restore (nframe &optional not-ask)
+  (defun frame-session-restore (nframe &optional not-ask try-guessing)
     (message "in frame-session-restore")
     (if (and
          *frame-session-restore*
