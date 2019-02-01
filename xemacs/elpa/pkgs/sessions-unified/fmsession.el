@@ -606,7 +606,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
 
   (defvar *desktop-vc-read-inprogress* nil "desktop-vc-read-inpgrogress")
 
-  (defun frame-session-set-this-location (nframe &optional not-ask try-guessing)
+  (defun frame-session-set-this-location (nframe &optional try-guessing not-ask)
     (interactive
      (list (selected-frame)))
     (if nframe (funcall session-unified-utils-select-frame-fn nframe) (error "nframe is nil"))
@@ -620,21 +620,25 @@ return a new alist whose car is the new pair and cdr is ALIST."
                               (cadr (assoc 'current-desktop wm-hints))
                               (cdr (assoc 'desktop-names wm-hints)))))
            (location (if (and
-                          not-ask
+                          try-guessing
                           desktop-name
                           (member desktop-name
                                   (mapcar #'car *frames-elscreen-session*)))
                          (progn
                            (message
-                            "frame-session-set-this-location: NO need to call interactive (fmsession-read-location desktop-name=%s)"
+                            "frame-session-set-this-location: NO need to call interactive (fmsession-read-location desktop-name[%s])"
                             desktop-name)
                            desktop-name)
                        (progn
-                         (message
-                          "frame-session-set-this-location: NEED to call interactive (fmsession-read-location desktop-name=%s)"
-                          desktop-name)
+                         (if not-ask
+                             (message
+                              "frame-session-set-this-location: could not guess will return nil as not-ask set.")
+                           (message
+                            "frame-session-set-this-location: NEED to call interactive (fmsession-read-location desktop-name[%s])"
+                            desktop-name))
                          ;; BUG: causing first emacsclient frame to be jammed which require pkill -USR2 emacs
-                         (fmsession-read-location desktop-name)))))
+                         (unless not-ask
+                           (fmsession-read-location desktop-name))))))
       (if xwin-enabled
           (unless wm-hints
             (message "Some error in wm-hints")))
@@ -646,7 +650,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
   (defvar *frame-session-restore-screen-display-function* #'display-about-screen
     "function to display screen with frame-session-restore, e.g. display-about-screen, spacemacs-buffer/goto-buffer")
 
-  (defun frame-session-restore (nframe &optional not-ask try-guessing)
+  (defun frame-session-restore (nframe &optional try-guessing not-ask)
     (message "in frame-session-restore")
     (if (and
          *frame-session-restore*
@@ -656,7 +660,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
           (if nframe
               (funcall session-unified-utils-select-frame-fn nframe)
             (error "nframe is nil"))
-          (fmsession-restore (frame-session-set-this-location nframe not-ask))
+          (fmsession-restore (frame-session-set-this-location nframe try-guessing not-ask))
           ;; nframe)
 
           (when (and

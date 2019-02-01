@@ -681,7 +681,7 @@ when all buffer were creaed idly."
                     (let ((enable-recursive-minibuffers t))
                       (when t ; (y-or-n-p-with-timeout "Do you wato set session of frame? " 7 t) ;t
                         (let ((*frame-session-restore* t))
-                          (frame-session-restore (selected-frame) t))))
+                          (frame-session-restore (selected-frame) t t))))
                     (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "leaving lotus-desktop-session-restore"))))
 
             (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop-get-desktop-save-filename failed")))
