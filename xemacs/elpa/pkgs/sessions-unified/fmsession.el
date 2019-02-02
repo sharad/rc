@@ -664,9 +664,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
           (if nframe
               (funcall session-unified-utils-select-frame-fn nframe)
             (error "nframe is nil"))
-          (if (and
-               (fboundp 'elscreen-get-conf-list)
-               (elscreen-get-conf-list 'screen-history))
+          (if (fboundp 'elscreen-get-conf-list)
               (fmsession-restore
                (frame-session-set-this-location nframe try-guessing))
             (with-eval-after-load "elscreen"

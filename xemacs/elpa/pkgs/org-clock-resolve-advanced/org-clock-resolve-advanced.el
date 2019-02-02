@@ -113,7 +113,7 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
             (let ((dangling (or (not (org-clock-is-active))
                                 (/= (car clock) org-clock-marker))))
               (when (or (not only-dangling-p) dangling)
-                (org-rl-clock-time
+                (org-rl-clock-resolve-time
                  (org-rl-make-clock (car clock) (cdr clock) (cdr clock))
                  (org-rl-make-clock 'imaginary 'now 'now)))))))))) ;TODO: should not be now ?
 
@@ -124,7 +124,7 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
 (defun org-clock-resolve-clocks (clocks) ;TODO
   (let ((next (pop clocks))
         (prev (pop clocks)))
-    (org-rl-clock-time next prev)))
+    (org-rl-clock-resolve-time next prev)))
 
 ;;;###autoload
 (defun org-clock-resolve-advanced-insinuate ()
