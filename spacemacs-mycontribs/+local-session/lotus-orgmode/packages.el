@@ -65,7 +65,9 @@
     org-mru-clock
     org-noter
     org-repo-todo
-    org-snooze)
+    org-snooze
+    ;; abgaben
+    )
 
   "The list of Lisp packages required by the lotus-orgmode layer.
 
@@ -305,5 +307,13 @@ Each entry is either:
     :defer t
     :config
     (progn)))
+
+;; (defun lotus-orgmode/init-abgaben ()
+;;   (use-package abgaben
+;;     :defer t
+;;     :config
+;;     (progn
+;;       (progn
+;; 	(require 'f)))))
 
 ;;; packages.el ends here

@@ -606,7 +606,11 @@ return a new alist whose car is the new pair and cdr is ALIST."
 
   (defvar *desktop-vc-read-inprogress* nil "desktop-vc-read-inpgrogress")
 
-  (defun frame-session-set-this-location (nframe &optional try-guessing not-ask)
+  (defun frame-session-set-this-location (nframe &optional try-guessing)
+    ;; ask, guess-ask, guess-notask
+    ;; nil ask
+    ;; guess
+    ;; not-ask
     (interactive
      (list (selected-frame)))
     (if nframe (funcall session-unified-utils-select-frame-fn nframe) (error "nframe is nil"))
@@ -630,7 +634,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
                             desktop-name)
                            desktop-name)
                        (progn
-                         (if not-ask
+                         (if (eq try-guessing 'only)
                              (message
                               "frame-session-set-this-location: could not guess will return nil as not-ask set.")
                            (message
@@ -650,7 +654,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
   (defvar *frame-session-restore-screen-display-function* #'display-about-screen
     "function to display screen with frame-session-restore, e.g. display-about-screen, spacemacs-buffer/goto-buffer")
 
-  (defun frame-session-restore (nframe &optional try-guessing not-ask)
+  (defun frame-session-restore (nframe &optional try-guessing)
     (message "in frame-session-restore")
     (if (and
          *frame-session-restore*
@@ -660,7 +664,16 @@ return a new alist whose car is the new pair and cdr is ALIST."
           (if nframe
               (funcall session-unified-utils-select-frame-fn nframe)
             (error "nframe is nil"))
-          (fmsession-restore (frame-session-set-this-location nframe try-guessing not-ask))
+          (if (and
+               (fboundp 'elscreen-get-conf-list)
+               (elscreen-get-conf-list 'screen-history))
+              (fmsession-restore
+               (frame-session-set-this-location nframe try-guessing))
+            (with-eval-after-load 'elscreen
+              ;; see if gets run again and again.
+              (progn
+                (fmsession-restore
+                 (frame-session-set-this-location (or nframe (selected-frame)) try-guessing)))))
           ;; nframe)
 
           (when (and
