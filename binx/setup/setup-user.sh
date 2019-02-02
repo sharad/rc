@@ -92,7 +92,7 @@ DEB_PKG_JAVA1="libreoffice-java-common"
 DEB_PKG_LINT="shellcheck splint splint-data yapf yapf3 foodcritic ansible-lint adlint ansible-lint api-sanity-checker flycheck-doc"
 DEB_PKG_DEB="devscripts revu-tools debaux devscripts dput"
 DEB_PKG_BUILD="elida pbuilder"
-DEB_PKG_VOICE="espeak-ng espeak-ng-espeak"
+DEB_PKG_VOICE="espeak-ng espeak-ng-espeak xmms2 gxmms2 promoe"
 
 PY_PIP_PKG="termdown "
 NODE_PKG="tern "
