@@ -27,7 +27,7 @@
 (provide 'fmsession)
 
 
-(require 'elscreen)
+;; (require 'elscreen)
 (require 'emacs-panel)
 
 
@@ -636,12 +636,12 @@ return a new alist whose car is the new pair and cdr is ALIST."
                        (progn
                          (if (eq try-guessing 'only)
                              (message
-                              "frame-session-set-this-location: could not guess will return nil as not-ask set.")
+                              "frame-session-set-this-location: could not guess will return nil as try-guessing = %s set." try-guessing)
                            (message
                             "frame-session-set-this-location: NEED to call interactive (fmsession-read-location desktop-name[%s])"
                             desktop-name))
                          ;; BUG: causing first emacsclient frame to be jammed which require pkill -USR2 emacs
-                         (unless not-ask
+                         (unless (eq try-guessing 'only)
                            (fmsession-read-location desktop-name))))))
       (if xwin-enabled
           (unless wm-hints
@@ -669,7 +669,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
                (elscreen-get-conf-list 'screen-history))
               (fmsession-restore
                (frame-session-set-this-location nframe try-guessing))
-            (with-eval-after-load 'elscreen
+            (with-eval-after-load "elscreen"
               ;; see if gets run again and again.
               (progn
                 (fmsession-restore
