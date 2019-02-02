@@ -601,6 +601,8 @@ return a new alist whose car is the new pair and cdr is ALIST."
 
 ;;{{
 (progn
+
+
   ;; "per frame session"
   ;; (require 'emacs-panel)
 
@@ -667,11 +669,12 @@ return a new alist whose car is the new pair and cdr is ALIST."
           (if (fboundp 'elscreen-get-conf-list)
               (fmsession-restore
                (frame-session-set-this-location nframe try-guessing))
-            (with-eval-after-load "elscreen"
-              ;; see if gets run again and again.
-              (progn
-                (fmsession-restore
-                 (frame-session-set-this-location (or nframe (selected-frame)) try-guessing)))))
+            (when nil
+              (with-eval-after-load "elscreen"
+                ;; see if gets run again and again.
+                (progn
+                  (fmsession-restore
+                   (frame-session-set-this-location (or nframe (selected-frame)) try-guessing))))))
           ;; nframe)
 
           (when (and
