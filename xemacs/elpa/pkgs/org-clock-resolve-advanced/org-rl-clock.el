@@ -182,7 +182,7 @@
             (org-rl-clock-opt-include-in-next prev next timelen))
 
            ((eq opt 'include-in-other) ;; subtract timelen from timelength
-            (org-rl-clock-opt-include-in-other prev next timelen opt))
+            (org-rl-clock-opt-include-in-other prev next timelen))
 
            ((eq opt 'done)
             (list prev next))
@@ -236,7 +236,7 @@
                (timelen (org-rl-clock-read-timelen
                          org-rl-read-interval
                          #'(lambda ()
-                             (let ((maxtimelen (/ (funcall maxtimelen-fn) 60)))
+                             (let ((maxtimelen-mins (/ (funcall maxtimelen-fn) 60)))
                                (if debug-prompt
                                    (format "%s [%s] how many minutes? [%d] " (org-rl-clock-time-debug-prompt prev next) opt maxtimelen-mins)
                                  (format "[%s] how many minutes? [%d] " opt maxtimelen-mins))))

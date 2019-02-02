@@ -695,7 +695,7 @@
 
 (defun org-rl-clock-read-timelen (interval prompt-fn option-fn maxtimelen-fn)
   "read in mins return secs"
-  (let ((option (if (functionp option-fn) (funcall option-fn) option-fn))
+  (let ((option     (if (functionp option-fn)     (funcall option-fn) option-fn))
         (maxtimelen (if (functionp maxtimelen-fn) (funcall maxtimelen-fn) maxtimelen-fn)))
     (if (or
          (zerop maxtimelen)
