@@ -81,10 +81,13 @@
     (consp time)
     (nth 1 time))))
 
+(defun time-eq (time1 time2)
+  (< (abs (time-to-seconds (time-subtract time1 time2))) 60))
+
 
 (cl-defstruct org-rl-time
   time
-  dirty)
+  clean)
 
 (cl-defstruct org-rl-clock
   marker
@@ -111,8 +114,8 @@
 ;;                                   start-time
 ;;                                   stop-time
 ;;                                   &optional
-;;                                   start-dirty
-;;                                   stop-dirty
+;;                                   start-clean
+;;                                   stop-clean
 ;;                                   active
 ;;                                   cancel))
 
@@ -120,15 +123,15 @@
                                  start-time
                                  stop-time
                                  &optional
-                                 start-dirty
-                                 stop-dirty
+                                 start-clean
+                                 stop-clean
                                  active
                                  cancel)
   ;; (org-rl-debug :warning "calling 2")
   (make-org-rl-clock
    :marker marker
-   :start (make-org-rl-time :time start-time :dirty start-dirty)
-   :stop  (make-org-rl-time :time stop-time  :dirty stop-dirty)
+   :start (make-org-rl-time :time start-time :clean start-clean)
+   :stop  (make-org-rl-time :time stop-time  :clean stop-clean)
    :active active
    :cancel cancel))
 
@@ -136,15 +139,15 @@
                                  start-time
                                  stop-time
                                  &optional
-                                 start-dirty
-                                 stop-dirty
+                                 start-clean
+                                 stop-clean
                                  active
                                  cancel)
   ;; (org-rl-debug :warning "calling 2")
   (make-org-rl-clock
    :marker marker
-   :start (make-org-rl-time :time start-time :dirty start-dirty)
-   :stop  (make-org-rl-time :time stop-time  :dirty stop-dirty)
+   :start (make-org-rl-time :time start-time :clean start-clean)
+   :stop  (make-org-rl-time :time stop-time  :clean stop-clean)
    :active active
    :cancel cancel))
 
@@ -154,11 +157,11 @@
 
 
 
-(defun org-rl-make-time (time &optional dirty)
-  (make-org-rl-time :time time :dirty dirty))
+(defun org-rl-make-time (time &optional clean)
+  (make-org-rl-time :time time :clean clean))
 
-(defun org-rl-make-current-time (&optional dirty)
-  (make-org-rl-time :time 'now :dirty dirty))
+(defun org-rl-make-current-time (&optional clean)
+  (make-org-rl-time :time 'now :clean clean))
 
 
 (defun time-get-time (time)
@@ -184,32 +187,36 @@
 (cl-defmethod org-rl-clock-start-time ((clock org-rl-clock))
   (org-rl-time-get-time
    (org-rl-clock-start clock)))
-(cl-defmethod org-rl-clock-start-set ((clock org-rl-clock)
-                                      time
-                                      &optional
-                                      dirty)
+(cl-defmethod (setf org-rl-clock-start-time) (time (clock org-rl-clock))
   (setf
-   (org-rl-clock-start clock)
-   (org-rl-make-time time dirty)))
+   (org-rl-time-clean (org-rl-clock-start clock))
+   (time-eq (org-rl-clock-start-time clock) time))
+  (setf (org-rl-time-time (org-rl-clock-start clock)) time))
+(cl-defmethod org-rl-clock-start-set ((clock org-rl-clock)
+                                      time)
+  (setf (org-rl-clock-start-time clock) time))
+
 (cl-defmethod org-rl-clock-stop-time ((clock org-rl-clock))
   (org-rl-time-get-time
    (org-rl-clock-stop clock)))
-(cl-defmethod org-rl-clock-stop-set ((clock org-rl-clock)
-                                     time
-                                     &optional
-                                     dirty)
+(cl-defmethod (setf org-rl-clock-stop-time) (time (clock org-rl-clock))
   (setf
-   (org-rl-clock-stop clock)
-   (org-rl-make-time time dirty)))
+   (org-rl-time-clean (org-rl-clock-stop clock))
+   (time-eq (org-rl-clock-stop-time clock) time))
+  (setf (org-rl-time-time (org-rl-clock-stop clock)) time))
+(cl-defmethod org-rl-clock-stop-set ((clock org-rl-clock)
+                                      time)
+  (setf (org-rl-clock-stop-time clock) time))
 
-(cl-defmethod org-rl-clock-start-dirty ((clock org-rl-clock))
-  (org-rl-time-dirty (org-rl-clock-start clock)))
-(cl-defmethod (setf org-rl-clock-start-dirty) (dirty (clock org-rl-clock))
-  (setf (org-rl-time-dirty (org-rl-clock-start clock)) dirty))
-(cl-defmethod org-rl-clock-stop-dirty ((clock org-rl-clock))
-  (org-rl-time-dirty (org-rl-clock-stop clock)))
-(cl-defmethod (setf org-rl-clock-stop-dirty) (dirty (clock org-rl-clock))
-  (setf (org-rl-time-dirty (org-rl-clock-stop clock)) dirty))
+
+(cl-defmethod org-rl-clock-start-clean ((clock org-rl-clock))
+  (org-rl-time-clean (org-rl-clock-start clock)))
+(cl-defmethod (setf org-rl-clock-start-clean) (clean (clock org-rl-clock))
+  (setf (org-rl-time-clean (org-rl-clock-start clock)) clean))
+(cl-defmethod org-rl-clock-stop-clean ((clock org-rl-clock))
+  (org-rl-time-clean (org-rl-clock-stop clock)))
+(cl-defmethod (setf org-rl-clock-stop-clean) (clean (clock org-rl-clock))
+  (setf (org-rl-time-clean (org-rl-clock-stop clock)) clean))
 
 (cl-defmethod org-rl-clock-first-clock-beginning ((clock org-rl-clock))
   (org-clock-get-nth-half-clock-beginning
@@ -422,9 +429,9 @@
                                    &option
                                    resume
                                    fail-quietly)
-  (when (org-rl-clock-start-dirty clock)
+  (when (org-rl-clock-start-clean clock)
     (org-rl-clock-clock-in clock resume fail-quietly))
-  (when (org-rl-clock-start-dirty clock)
+  (when (org-rl-clock-start-clean clock)
     (org-rl-clock-clock-out clock fail-quietly)))
 
 (defun org-rl-clocks-action (resume fail-quietly &rest clocks)
@@ -442,8 +449,8 @@
   ;; do clock in clock out accordingly
   (if (> sec 0)
       (progn
-       (setf (org-rl-clock-stop-time clock) (time-add (org-rl-clock-stop-time clock) sec))
-       (org-rl-clock-clock-out clock))
+        (setf (org-rl-clock-stop-time clock) (time-add (org-rl-clock-stop-time clock) sec))
+        (org-rl-clock-clock-out clock))
     (progn
       (setf (org-rl-clock-start-time clock) (time-subtract (org-rl-clock-stop-time clock) sec))
       (org-rl-clock-replace clock))))

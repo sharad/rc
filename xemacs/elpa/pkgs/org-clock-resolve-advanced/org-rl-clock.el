@@ -60,8 +60,8 @@
   (let ((maxtimelen (org-rl-get-time-gap prev next)))
     (if (= (org-rl-compare-time-gap prev next timelen) 0)
         (progn
-          (org-rl-clock-stop-set prev (time-add
-                                       (org-rl-clock-start-time prev) maxtimelen) t)
+          (setf (org-rl-clock-stop-time prev) (time-add
+                                               (org-rl-clock-start-time prev) maxtimelen))
           (org-rl-clock-clock-out prev resume))
       (if (< (org-rl-compare-time-gap prev next timelen) 0)
           (if (> timelen 0)
@@ -86,8 +86,8 @@
   (let ((maxtimelen (org-rl-get-time-gap prev next)))
     (if (= (org-rl-compare-time-gap prev next timelen) 0)
         (progn
-          (org-rl-clock-stop-set next (time-add
-                                       (org-rl-clock-start-time next) maxtimelen) t)
+          (setf (org-rl-clock-stop-time next) (time-add
+                                               (org-rl-clock-start-time next) maxtimelen))
           (org-rl-clock-clock-out next resume))
       (if (< (org-rl-compare-time-gap next prev timelen) 0)
           (if (< timelen 0)
@@ -111,7 +111,8 @@
 
   (org-rl-debug :warning "begin %s" 'org-rl-clock-opt-include-in-other)
 
-  (let ((maxtimelen (org-rl-get-time-gap prev next)))
+  (let ((maxtimelen   (org-rl-get-time-gap prev next))
+        (other-marker (org-rl-select-other-clock)))
 
     (if (> timelen 0)
         (setq prev (org-rl-make-clock other-marker
@@ -124,31 +125,14 @@
                                      (org-rl-clock-start-time next)
                                      (abs timelen))
                                     (org-rl-clock-stop-time next)))))
-  (org-rl-clock-clock-in-out other-clock)
+  ;; (org-rl-clock-clock-out next resume)
+  ;; (org-rl-clock-clock-out (if (> timelen 0) next prev))
+  (org-rl-clock-clock-in-out (if (> timelen 0)
+                                 prev
+                               next))
   (org-rl-clocks-action nil nil prev next))
 
 
-;; Warning (org-rl-clock): org-clock-last-user-idle-seconds: nil, (org-user-idle-seconds) 0
-;; Warning (org-rl-clock): org-rl-resolve-clocks-if-idle: org-clock-last-user-idle-seconds: nil, (org-user-idle-seconds) 310.001173849
-;; Warning (org-rl-clock): org-rl-clock-resolve-time: going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:10> 30 8] next[<imaginary> <2019-01-31 Thu 23:16>-<2019-01-31 Thu 23:16> 14 14] with maxtimelen 310
-;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:10>] next[<imaginary> <2019-01-31 Thu 23:16>-<2019-01-31 Thu 23:16>] maxtimelen[310] secs
-;; Warning (org-rl-clock): org-rl-resolve-clocks-if-idle: org-clock-last-user-idle-seconds: 310.02600633, (org-user-idle-seconds) 0
-;; Warning (org-rl-clock): org-rl-clock-resolve-time: going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:13> 30 11] next[<imaginary> <2019-01-31 Thu 23:19>-<2019-01-31 Thu 23:19> 17 17] with maxtimelen 310
-;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:13>] next[<imaginary> <2019-01-31 Thu 23:19>-<2019-01-31 Thu 23:19>] maxtimelen[310] secs
-;; Warning (org-rl-clock): org-rl-resolve-clocks-if-idle: org-clock-last-user-idle-seconds: 310.02600633, (org-user-idle-seconds) 310.002479784
-;; Warning (org-rl-clock): org-rl-clock-resolve-time: going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21> 30 19] next[<imaginary> <2019-01-31 Thu 23:26>-<2019-01-31 Thu 23:26> 24 24] with maxtimelen 310
-;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21>] next[<imaginary> <2019-01-31 Thu 23:26>-<2019-01-31 Thu 23:26>] maxtimelen[310] secs
-;; Warning (org-rl-clock): org-rl-resolve-clocks-if-idle: org-clock-last-user-idle-seconds: 310.02600633, (org-user-idle-seconds) 0
-;; Warning (org-rl-clock): org-rl-clock-resolve-time: going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21> 30 19] next[<imaginary> <2019-01-31 Thu 23:27>-<2019-01-31 Thu 23:27> 25 25] with maxtimelen 310
-;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21>] next[<imaginary> <2019-01-31 Thu 23:27>-<2019-01-31 Thu 23:27>] maxtimelen[310] secs
-;; Warning (org-rl-clock): org-rl-resolve-clocks-if-idle: org-clock-last-user-idle-seconds: 310.02600633, (org-user-idle-seconds) 0
-;; Warning (org-rl-clock): org-rl-clock-resolve-time: going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21> 30 19] next[<imaginary> <2019-01-31 Thu 23:27>-<2019-01-31 Thu 23:27> 25 25] with maxtimelen 310
-;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21>] next[<imaginary> <2019-01-31 Thu 23:27>-<2019-01-31 Thu 23:27>] maxtimelen[310] secs
-;; Warning (org-rl-clock): org-rl-resolve-clocks-if-idle: org-clock-last-user-idle-seconds: 310.02600633, (org-user-idle-seconds) 0
-;; Warning (org-rl-clock): org-rl-clock-resolve-time: going to run prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21> 30 19] next[<imaginary> <2019-01-31 Thu 23:27>-<2019-01-31 Thu 23:27> 25 25] with maxtimelen 310
-;; Warning (org-rl-clock): org-rl-clock-build-options: prev[<STARTED Unnamed task 654> <2019-01-31 Thu 13:22>-<2019-01-31 Thu 23:21>] next[<imaginary> <2019-01-31 Thu 23:27>-<2019-01-31 Thu 23:27>] maxtimelen[310] secs
-;; Warning (org-rl-clock): You have selected opt done and timelen 334
-
 (cl-defmethod org-rl-clock-time-process-option ((prev org-rl-clock)
                                                 (next org-rl-clock)
                                                 opt
@@ -222,26 +206,28 @@
                     (org-rl-clock-time-adv-debug-prompt prev next) maxtimelen)
       ;; (assert (> maxtimelen 0))
       (when (> maxtimelen 0)
-        (let* ((maxtimelen-fn #'(lambda () (org-rl-get-time-gap prev next)))
+        (let* ((maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
                (options (org-rl-clock-build-options prev next maxtimelen))
                (opt (org-rl-clock-read-option
                      org-rl-read-interval
                      #'(lambda ()
-                         (let ((maxtimelen-mins (/ (funcall maxtimelen-fn) 60)))
+                         (let ((maxtimelen-mins (funcall maxtimelen-mins-fn)))
                            (if debug-prompt
                                (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen-mins)
                              (format "Select option [%d]: " maxtimelen-mins))))
                      options
-                     maxtimelen-fn))
-               (timelen (org-rl-clock-read-timelen
+                     maxtimelen-mins-fn))
+               (timelen
+                (*
+                 (org-rl-clock-read-timelen
                          org-rl-read-interval
                          #'(lambda ()
-                             (let ((maxtimelen-mins (/ (funcall maxtimelen-fn) 60)))
+                             (let ((maxtimelen-mins (funcall maxtimelen-mins-fn)))
                                (if debug-prompt
                                    (format "%s [%s] how many minutes? [%d] " (org-rl-clock-time-debug-prompt prev next) opt maxtimelen-mins)
                                  (format "[%s] how many minutes? [%d] " opt maxtimelen-mins))))
                          opt
-                         maxtimelen-fn)))
+                         maxtimelen-mins-fn) 60)))
           ;; (barely-started-p (< (- (float-time last-valid)
           ;;                         (float-time (cdr clock))) 45))
           ;; (start-over-p (and subtractp barely-started-p))
