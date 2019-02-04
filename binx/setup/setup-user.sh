@@ -110,7 +110,7 @@ function main()
 
     cd ~/
 
-    running setup_apt_packages
+    # running setup_apt_packages
 
     running setup_ecrypt_private
 
@@ -1802,10 +1802,6 @@ function setup_deps_dirs()
 function setup_org_resource_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local machinedir=${LOCALDIRS_DIR}/org/deps.d/control.d/machine.d/default
-    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
-
-
 
 	  # home/
 	  # org/deps.d/
@@ -1842,8 +1838,6 @@ function setup_org_home_portable_local_dirs()
 {
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR=${USERDIR}/localdirs
-    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
-    local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
     local relhomeprotabledir=org/home.d/portable.d
 
     running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} local.d
@@ -1861,9 +1855,8 @@ function setup_org_home_portable_public_dirs()
 {
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR=${USERDIR}/localdirs
-    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
     local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
-    local relhomeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
+    local relhomeprotabledir=org/home.d/portable.d
 
     running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} Public/Publish/html
 
@@ -1915,8 +1908,6 @@ function setup_org_home_portable_dirs()
 {
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR=${USERDIR}/localdirs
-    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
-    local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
     local rel_homeprotabledir=org/home.d/portable.d
 
     running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} "" ${rel_homeprotabledir}
@@ -1990,8 +1981,6 @@ function setup_org_rc_dirs()
 {
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR=${USERDIR}/localdirs
-    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
-    local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
 
     running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} org/rc.d
 
@@ -2046,8 +2035,6 @@ function setup_manual_dirs()
 function setup_osetup_org_resource_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
-    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
 
     # TODO: add support for git add
     running setup_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
@@ -2057,8 +2044,6 @@ function setup_osetup_org_resource_dirs()
 function setup_osetup_org_home_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
-    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
 
     for folder_link in Desktop Documents Downloads Library Maildir Music Pictures Private Public public_html Scratches Sink Templates tmp Videos Volumes
     do
@@ -2070,8 +2055,6 @@ function setup_osetup_org_home_dirs()
 function setup_osetup_org_misc_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
-    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
 
     for folder_link in offlineimap mailattachments
     do
@@ -2083,8 +2066,8 @@ function setup_osetup_org_misc_dirs()
 function setup_osetup_org_rc_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
-    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
+    # local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
+    # local resourcedir=${LOCALDIRS_DIR}/org/resource.d
 
     for folder_link in HOME localdirs opt osetup repos setup
     do
