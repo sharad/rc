@@ -1849,7 +1849,8 @@ function setup_org_home_portable_local_dirs()
     running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} local.d
 
     # for folder in Desktop Documents Downloads Library Music Pictures Scratches Templates tmp Videos
-    for folder in Desktop Documents Downloads Library Music Pictures Templates tmp Videos
+    # for folder in Desktop Documents Downloads Library Music Pictures Templates tmp Videos
+    for folder in Desktop Downloads Music Pictures Templates tmp Videos Sink
     do
         running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir}/local.d ${folder}
         running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d local.d/${folder} portable.d/${folder}/local

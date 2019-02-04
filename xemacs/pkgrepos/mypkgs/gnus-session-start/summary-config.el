@@ -178,7 +178,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
   ;; Use them:
   (setq gnus-balloon-face-0 'rs-gnus-balloon-0
         gnus-balloon-face-1 'rs-gnus-balloon-1
-        gnus-face-1 'rs-gnus-face-1)
+        gnus-face-1         'rs-gnus-face-1)
   ;; Unbold face for UTF arrows: (FIXME: Doesn't work on marauder.)
   (copy-face 'default 'rs-gnus-face-1)
   (let* (;;(marks "%0{%«%U%R%z %u&score;%u&ct; %4u&size;%»%}")
@@ -195,18 +195,18 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
          (subject "%s")
          (sp " ")
          (nl "\n")
-         ;(bugzilla-who "%4{%-20,20ub%}")
+                                        ;(bugzilla-who "%4{%-20,20ub%}")
          )
     (setq
      lotus-gnus/global-summry-line-format   (concat marks date lines from sp pipe sp thread-mark subject nl)
-   ; lotus-gnus/bugzilla-summry-line-format (concat attachment marks date lines bugzilla-who sp pipe sp thread-mark subject nl)
      lotus-gnus/bugzilla-summry-line-format (concat marks date lines from sp pipe sp thread-mark subject nl)
      lotus-gnus/sent-summry-line-format     (concat marks date lines from sp pipe sp thread-mark subject nl)))
 
+  ;; lotus-gnus/bugzilla-summry-line-format (concat attachment marks date lines bugzilla-who sp pipe sp thread-mark subject nl)
 
 
-;; With a custom date format :
-;; affichage de la date en relatif
+  ;; With a custom date format :
+  ;; affichage de la date en relatif
 
   ;; gnus-user-date-format-alist '((t . "%Y-%b-%d %H:%M"))
 
