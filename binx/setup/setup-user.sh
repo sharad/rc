@@ -102,6 +102,7 @@ function main()
 
     trap setup_finish EXIT SIGINT SIGTERM
 
+    echo process_arg $@
     process_arg $@
 
     mkdir -p $TMPDIR
@@ -440,6 +441,8 @@ function setup_add_to_version_control()
                 running git -C "${base}" add -f "${relfile}"
             fi
         fi
+    else
+        verbose Already present git -C ${base} add ${relfile}
     fi
 }
 
@@ -1482,6 +1485,7 @@ function setup_deps_control_home_dir()
 
 ###}}}
 
+# deps/model
 function setup_deps_model_storage_volumes_dir()
 {
     local storage_path=${1-local}
@@ -1490,6 +1494,7 @@ function setup_deps_model_storage_volumes_dir()
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
     deps_model_storageclass_path="${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/${storage_path}"
+    rel_deps_model_storageclass_path="org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/${storage_path}"
 
     mkdir -p "${deps_model_storageclass_path}"
 
@@ -1510,7 +1515,9 @@ function setup_deps_model_storage_volumes_dir()
                 then
                     sudo chown root.root ${_location}
                 fi
+
                 setup_make_link ${_location} "${deps_model_storageclass_path}/$(basename $vgd)-$(basename $vld)"
+                running setup_add_to_version_control ${LOCALDIRS_DIR} "${rel_deps_model_storageclass_path}/$(basename $vgd)-$(basename $vld)"
             done
         done
 
@@ -1524,6 +1531,19 @@ function setup_deps_model_storage_volumes_dir()
 }
 
 function setup_deps_model_volumes_dirs()
+{
+    local storage_path="${1-local}"
+
+    # use namei to track
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    # check local home model.d directory
+
+    mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d
+
+    setup_deps_model_storage_volumes_dir "$storage_path"
+}
+
+function setup_deps_mode_dir()
 {
     local storage_path="${1-local}"
 
@@ -1541,23 +1561,25 @@ function setup_deps_model_volumes_dirs()
         then
             mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST
 
-            setup_make_link $HOST ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default
-
-            # running setup_make_link "../../../../../../../../../../../../../.."  ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/home
+            running setup_make_link $HOST ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default
+            # running setup_add_to_version_control ${LOCALDIRS_DIR} org/deps.d/model.d/machine.d/default
 
             running setup_make_relative_link ~/ "" ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/$HOST/home
+            running setup_add_to_version_control ${LOCALDIRS_DIR} org/deps.d/model.d/machine.d/$HOST/home
 
             mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d
 
-            setup_deps_model_storage_volumes_dir "$storage_path"
+            running setup_deps_model_volumes_dirs "$storage_path"
 
         else                    # if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
             error Please prepare ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST for your machine >&2
             exit -1
         fi                      # if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
     fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d ]
+
 }
 
+# deps/control
 function setup_deps_control_volumes_dirs()
 {
     # TODO?
@@ -1596,13 +1618,12 @@ function setup_deps_control_volumes_dirs()
             # TODO? STATS
             if ls ${volumedir}/control.d/${sysdatasdirname}/* > /dev/null 2>&1
             then
-            for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/*
-            do
-                # TODO? -sharad
-                volsysdatadirbase=$(basename ${sysdatadir})
-                # mkdir -p  ${volumedir}/control.d/${sysdatasdirname}/view.d/${volsysdatadirbase}/$cdir
-                mkdir -p ${volumedir}/control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir
-            done
+                for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/*
+                do
+                    # TODO? -sharad
+                    volsysdatadirbase=$(basename ${sysdatadir})
+                    mkdir -p ${volumedir}/control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir
+                done
             fi
         fi
     done
@@ -1611,6 +1632,21 @@ function setup_deps_control_volumes_dirs()
     # running running setup_deps_control_home_dir "$storage_path" $position
 }
 
+function setup_deps_control_dir()
+{
+    local storage_path="${1-local}"
+
+    running setup_deps_control_data_dirs "$storage_path"
+    running setup_deps_control_home_dirs "$storage_path"
+
+    for pos in 1 2 3
+    do
+        running setup_deps_control_volumes_dirs "$storage_path" "$pos"
+    done
+
+}
+
+# deps/view
 function setup_deps_view_volumes_dirs()
 {
 
@@ -1625,8 +1661,9 @@ function setup_deps_view_volumes_dirs()
     # logicaldirs=(config deletable longterm preserved shortterm maildata)
 
     # use namei to track
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local machinedir=${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
+    local BASE_DIR=~
+    local LOCALDIRS_DIR=${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local machinedir=org/deps.d/model.d/machine.d
     local hostdir=${machinedir}/$HOST
     local volumedir=${hostdir}/volumes.d
     local sysdataname=sysdata
@@ -1642,27 +1679,29 @@ function setup_deps_view_volumes_dirs()
 
 
 
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/home       view.d/home
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/volumes.d  view.d/volumes.d
+    running setup_make_relative_link ${BASE_DIR}/${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/home       view.d/home
+    running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} org/deps.d/view.d/home
+    running setup_make_relative_link ${BASE_DIR}/${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/volumes.d  view.d/volumes.d
+    running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} org/deps.d/view.d/volumes.d
 
 
 
     # check local home model.d directory
-    if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
+    if [ -d ${BASE_DIR}/${LOCALDIRS_DIR} -a -d ${BASE_DIR}/${LOCALDIRS_DIR}/${machinedir} ]
     then                        # doing for path/volume.d mainly
-        if [ -d ${hostdir} ]
+        if [ -d ${BASE_DIR}/${LOCALDIRS_DIR}/${hostdir} ]
         then
 
-            mkdir -p ${hostdir}
+            mkdir -p ${BASE_DIR}/${LOCALDIRS_DIR}/${hostdir}
 
-            setup_make_link $HOST ${machinedir}/default
+            running setup_make_link $HOST ${BASE_DIR}/${LOCALDIRS_DIR}/${machinedir}/default
+            # running setup_add_to_version_control ${LOCALDIRS_DIR} org/deps.d/model.d/machine.d/default
 
 
-
-            if [ -d ${volumedir}/model.d ]
+            if [ -d ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/model.d ]
             then
 
-                cd ${volumedir}/model.d/
+                cd ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/model.d/
                 local links=( $(find -type l | cut -c3- ) )
                 cd - > /dev/null 2>&1
 
@@ -1670,7 +1709,7 @@ function setup_deps_view_volumes_dirs()
                 for mdir in ${links[*]}
                 do
                     # debug $mdir
-                    if [ -L "${volumedir}/model.d/$mdir" ]
+                    if [ -L "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/model.d/$mdir" ]
                     then
                         modelsymlink=1
                     fi
@@ -1678,10 +1717,10 @@ function setup_deps_view_volumes_dirs()
 
                 if [ "$modelsymlink" -eq 0 ]
                 then
-                    error setup_deps_view_volumes_dirs: No symlink for model dirs exists in ${volumedir}/model.d create it. >&2
+                    error setup_deps_view_volumes_dirs: No symlink for model dirs exists in ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/model.d create it. >&2
                 fi
             else
-                error ${volumedir}/model.d not exists.
+                error ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/model.d not exists.
             fi                  # if [ -d ${volumedir}/model.d ]
 
 
@@ -1693,7 +1732,8 @@ function setup_deps_view_volumes_dirs()
 
 
 
-
+            tocuh ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/.gitignore
+            running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} ${volumedir}/${viewdirname}/.gitignore
 
             # TODO? NOW
 
@@ -1705,26 +1745,26 @@ function setup_deps_view_volumes_dirs()
             rm -f $todopath
             rm -f $missingpath
 
-            mkdir -p ${volumedir}/${viewdirname}
+            mkdir -p ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}
             for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
             do
-                debug "${volumedir}/${viewdirname}/$cdir"
+                debug "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir"
 
-                if [ ! -L "${volumedir}/${viewdirname}/$cdir" -o ! -d "${volumedir}/${viewdirname}/$cdir" ]
+                if [ ! -L "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir" -o ! -d "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir" ]
                 then
-                    if [ ! -L "${volumedir}/${viewdirname}/$cdir" ]
+                    if [ ! -L "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir" ]
                     then
-                        error No symlink exists for "${volumedir}/${viewdirname}/$cdir", prepare it.
+                        error No symlink exists for "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir", prepare it.
                     fi
-                    if [ ! -d "${volumedir}/${viewdirname}/$cdir" ]
+                    if [ ! -d "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir" ]
                     then
-                        error No target directory $(readlink -m $cdir) exist for symlink "${volumedir}/${viewdirname}/$cdir", create it.
+                        error No target directory $(readlink -m $cdir) exist for symlink "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir", create it.
                     fi
 
-                    for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/*
+                    for sysdatadir in ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/control.d/${sysdatasdirname}/*
                     do
                         volsysdatadirbase=$(basename ${sysdatadir})
-                        info ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir"
+                        info ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir"
 
                     done
                 fi
@@ -1733,20 +1773,20 @@ function setup_deps_view_volumes_dirs()
 
 
                 print  >> $todopath
-                print ls ${volumedir}/control.d/${sysdatasdirname}/ >> $todopath
-                ls ${volumedir}/control.d/${sysdatasdirname}/      >> $todopath
+                print ls ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/control.d/${sysdatasdirname}/ >> $todopath
+                ls ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/control.d/${sysdatasdirname}/      >> $todopath
                 print  >> $todopath
-                for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/*
+                for sysdatadir in ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/control.d/${sysdatasdirname}/*
                 do
                     volsysdatadirbase=$(basename ${sysdatadir})
-                    print ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir" >> $todopath
+                    print ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir" >> $todopath
                     print  >> $todopath
                     print ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "$cdir" >> $todopath
                     print  >> $todopath
 
-                    if [ ! -e "${volumedir}/${viewdirname}/$cdir" -o ! -L "${volumedir}/${viewdirname}/$cdir" ]
+                    if [ ! -e "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir" -o ! -L "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir" ]
                     then
-                        print ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir" >> $missingpath
+                        print ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir" >> $missingpath
                         print  >> $missingpath
                         print ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "$cdir" >> $missingpath
                         print  >> $missingpath
@@ -1765,42 +1805,36 @@ function setup_deps_view_volumes_dirs()
             exit -1
         fi                      # if [ -d ${hostdir} ]
     else
-        error ${LOCALDIRS_DIR} or ${machinedir} not exists
+        error ${BASE_DIR}/${LOCALDIRS_DIR} or ${BASE_DIR}/${LOCALDIRS_DIR}/${machinedir} not exists
         exit -1
     fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
 }                               # function setup_deps_view_volumes_dirs()
 
-function setup_deps_dirs()
+function setup_deps_view_dir()
 {
     local storage_path="${1-local}"
 
-    running setup_deps_model_volumes_dirs "$storage_path"
-
-    running setup_deps_control_data_dirs "$storage_path"
-    running setup_deps_control_home_dirs "$storage_path"
-
-    for pos in 1 2 3
-    do
-        running setup_deps_control_volumes_dirs "$storage_path" "$pos"
-    done
-
-
-
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local machinedir=${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
-    local hostdir=${machinedir}/$HOST
-    local volumedir=${hostdir}/volumes.d
-    local viewdirname=view.d
-
-    # rm -f "${volumedir}/${viewdirname}"/TODO
     for pos in 1 2 3
     do
         running setup_deps_view_volumes_dirs "$storage_path" "$pos"
     done
 }
 
+# deps
+function setup_deps_dirs()
+{
+    local storage_path="${1-local}"
+
+    running setup_deps_mode_dir "$storage_path"
+
+    running setup_deps_control_dir "$storage_path"
+
+    running setup_deps_view_dir "$storage_path"
+}
+
 function setup_org_resource_dirs()
 {
+    # TODO: not getting added in version control
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
 	  # home/
@@ -1834,6 +1868,7 @@ function setup_org_resource_dirs()
     running setup_add_to_version_control_recursive_links ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d  .. org/resource.d
 }
 
+# home/portable
 function setup_org_home_portable_local_dirs()
 {
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
@@ -1848,6 +1883,7 @@ function setup_org_home_portable_local_dirs()
     do
         running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir}/local.d ${folder}
         running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d local.d/${folder} portable.d/${folder}/local
+        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/${folder}/local
     done
 }
 
@@ -1860,12 +1896,21 @@ function setup_org_home_portable_public_dirs()
 
     running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} Public/Publish/html
 
+    echo 'Options -Indexes' > ${LOCALDIRS_DIR}/${relhomeprotabledir}/Public/Publish/html/.htaccess
+    running setup_add_to_version_control ${LOCALDIRS_DIR} ${relhomeprotabledir}/Public/Publish/html/.htaccess
+    echo '' > ${LOCALDIRS_DIR}/${relhomeprotabledir}/Public/Publish/html/index.html
+    running setup_add_to_version_control ${LOCALDIRS_DIR} ${relhomeprotabledir}/Public/Publish/html/index.html
+
     for folder in local
     do
         running mkdir -p ${LOCALDIRS_DIR}/org/home.d/portable.d/${folder}.d/Public/Publish/html
         running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d/portable.d/ ${folder}.d/Public              Public/$folder
         running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d/portable.d/ ${folder}.d/Public/Publish      Public/Publish/$folder
         running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d/portable.d/ ${folder}.d/Public/Publish/html Public/Publish/html/$folder
+
+        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/$folder
+        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/Publish/$folder
+        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/Publish/html/$folder
 
         # setup_add_to_version_control
     done
@@ -1880,11 +1925,14 @@ function setup_org_home_portable_public_dirs()
         running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish/html Public/Publish/html/${folder}
 
 
-        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/$folder
-        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/Publish/$folder
-        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/Publish/html/$folder
+        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/$folder
+        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/Publish/$folder
+        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/Publish/html/$folder
 
     done
+
+    echo '*' > ${LOCALDIRS_DIR}/${relhomeprotabledir}/tmp/.gitignore
+    running setup_add_to_version_control ~/.fa/localdirs ${relhomeprotabledir}/tmp/.gitignore
 
 
     # for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
@@ -1897,9 +1945,9 @@ function setup_org_home_portable_public_dirs()
         running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish/html Public/Publish/html/$folder
 
 
-        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/$folder
-        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/Publish/$folder
-        running setup_add_to_version_control ~/.fa/localdirs org/home.d/portable.d/Public/Publish/html/$folder
+        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/$folder
+        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/Publish/$folder
+        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/Publish/html/$folder
     done
 
 }
@@ -1916,13 +1964,17 @@ function setup_org_home_portable_dirs()
 
     running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/default
 
-    cat <<'EOF' > ${LOCALDIRS_DIR}/org/home.d/README
+    cat <<'EOF' > ${LOCALDIRS_DIR}/org/home.d/portable.d/README
 portable.d is for required dir trees while
 
 local.d is to rearrange according to space needs
 EOF
 
-    running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/README
+    running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/README
+
+
+    echo 'add in script' > ${LOCALDIRS_DIR}/org/home.d/portable.d/TODO
+    running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/TODO
 
     # dirs
     for folder in Desktop Downloads Music Pictures Templates tmp
@@ -1954,6 +2006,7 @@ EOF
     running setup_org_home_portable_local_dirs
 } # function setup_org_home_portable_dirs()
 
+# org/misc
 function setup_org_misc_dirs()
 {
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
@@ -1977,6 +2030,7 @@ function setup_org_misc_dirs()
 
 } # function setup_org_misc_dirs()
 
+# org/rc
 function setup_org_rc_dirs()
 {
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
@@ -2001,6 +2055,7 @@ function setup_org_rc_dirs()
     done
 } # function setup_org_rc_dirs()
 
+# org
 function setup_org_dirs()
 {
     running setup_org_resource_dirs
@@ -2011,7 +2066,7 @@ function setup_org_dirs()
 }                               # function setup_org_dirs()
 
 
-
+# manual
 function setup_manual_dirs()
 {
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
@@ -2031,6 +2086,7 @@ function setup_manual_dirs()
 }
 
 
+# osetup
 
 function setup_osetup_org_resource_dirs()
 {
@@ -2048,7 +2104,7 @@ function setup_osetup_org_home_dirs()
     for folder_link in Desktop Documents Downloads Library Maildir Music Pictures Private Public public_html Scratches Sink Templates tmp Videos Volumes
     do
         running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/home.d/portable.d/${folder_link} osetup/dirs.d/org/home.d/${folder_link}
-        # running setup_add_to_version_control ~/.fa/osetup dirs.d/org/home.d/${folder_link}
+        running setup_add_to_version_control ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup dirs.d/org/home.d/${folder_link}
     done
 }
 
@@ -2059,7 +2115,7 @@ function setup_osetup_org_misc_dirs()
     for folder_link in offlineimap mailattachments
     do
         running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/misc.d/${folder_link} osetup/dirs.d/org/misc.d/${folder_link}
-        running setup_add_to_version_control ~/.fa/osetup dirs.d/org/misc.d/${folder_link}
+        running setup_add_to_version_control ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup dirs.d/org/misc.d/${folder_link}
     done
 }
 
@@ -2072,7 +2128,7 @@ function setup_osetup_org_rc_dirs()
     for folder_link in HOME localdirs opt osetup repos setup
     do
         running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/rc.d/${folder_link} osetup/dirs.d/org/rc.d/${folder_link}
-        running setup_add_to_version_control ~/.fa/osetup dirs.d/org/rc.d/${folder_link}
+        running setup_add_to_version_control ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup dirs.d/org/rc.d/${folder_link}
     done
 }
 
@@ -2319,6 +2375,7 @@ function process_arg()
 
     while [ $# -gt 0 ]
     do
+        echo option $1
         case $1 in
             (-r) recursive=1;;
             (-s) stash=1;;
@@ -2410,6 +2467,6 @@ function logger()
 #verbose=1
 
 pgm=$(basename $0)
-main
+main $@
 
 exit
