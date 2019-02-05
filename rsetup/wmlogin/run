@@ -56,6 +56,9 @@ then
     xautolock -detectsleep >>& ~/.logs/wmlogin.log &!
 fi
 
+# may be very much required.
+xdg-autostart &!
+
 if whence -p conky >& /dev/null &&
        ! pgrep conky >& /dev/null
 then

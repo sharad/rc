@@ -1,4 +1,4 @@
-# -*- Mode: shell-script; indent-tabs-mode: nil -*-
+<# -*- Mode: shell-script; indent-tabs-mode: nil -*-
 
 # enable color support of ls and also add handy aliases
 if [ "$TERM" != "dumb" ]; then
@@ -230,3 +230,10 @@ alias viewsoffice='soffice --view'
 alias sofficeview='soffice --view'
 alias viewsppt='soffice --view --show'
 alias spptview='soffice --view --show'
+
+
+# file manager
+alias filemgr-quit='nautilus -q'
+alias filemgr='nautilus --no-default-window --no-desktop'
+alias gfilemgr='nautilus --no-default-window --no-desktop'
+alias xfilemgr='nautilus --no-default-window --no-desktop'

@@ -382,6 +382,8 @@
 ;; Window
 ;; Commands
 
+(defvar *file-manager-map* nil
+  "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
 
 (defvar *window-commands-map* nil
   "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
@@ -401,7 +403,12 @@
 (defvar *browser-commands-map* nil
   "The keymap for terminal emulator commands.")
 
+(fill-keymap *file-manager-map*
+             (kbd "o") "file-manager"
+             (kbd "q") "file-manager-quit")
+
 (fill-keymap *window-commands-map*
+             (kbd "f") '*file-manager-map*
              (kbd "t") '*term-commands-map*
              (kbd "b") '*browser-commands-map*
              (kbd "e") "emacsclient"

@@ -606,20 +606,29 @@
     "killall conky ; conky -d -c ~/.conkyrc/main/conkyrc 2>&1 >/dev/null"))
 
 (stumpwm:defcommand conky () ()
-   (run-shell-command
-    "conky -d -c ~/.conkyrc/main/conkyrc"))
+  (run-shell-command
+   "conky -d -c ~/.conkyrc/main/conkyrc"))
+
+(stumpwm:defcommand file-manager () ()
+  ;; (format "nautilus --no-default-window --no-desktop %s" dir)
+  (stumpwm::run-wcli-command
+   "nautilus --no-default-window --no-desktop"))
+
+(stumpwm:defcommand file-manager-quit () ()
+  (stumpwm:run-shell-command
+   "nautilus -q"))
 
 (stumpwm:defcommand toggle-touchpad () ()
   "Toggle the laptop touchpad on/off.
    Need to have set 'Option SHMConfig' for Synaptics Touchpad
    device in xorg.conf."
   (let ((state (run-shell-command
-		"synclient -l | grep TouchpadOff | awk '{ print $3 }'" t)))
+                "synclient -l | grep TouchpadOff | awk '{ print $3 }'" t)))
     (if (string= (subseq state 0 1) "1")
-      (run-shell-command "synclient TouchpadOff=0")
-      (progn
-        (run-shell-command "synclient TouchpadOff=1")
-        (banish-pointer)))))
+        (run-shell-command "synclient TouchpadOff=0")
+        (progn
+          (run-shell-command "synclient TouchpadOff=1")
+          (banish-pointer)))))
 
 (stumpwm:defcommand refocus-conkeror () ()
   ;; from: http://bc.tech.coop/ubuntu-config/.stumpwmrc
