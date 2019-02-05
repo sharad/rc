@@ -56,8 +56,17 @@ then
     xautolock -detectsleep >>& ~/.logs/wmlogin.log &!
 fi
 
+##{{
 # may be very much required.
 xdg-autostart &!
+systemctl --user start gvfs-daemon.service
+systemctl --user start gvfs-afc-volume-monitor.service
+systemctl --user start gvfs-goa-volume-monitor.service
+systemctl --user start gvfs-gphoto2-volume-monitor.service
+systemctl --user start gvfs-metadata.service
+systemctl --user start gvfs-mtp-volume-monitor.service
+systemctl --user start gvfs-udisks2-volume-monitor.service
+##}}
 
 if whence -p conky >& /dev/null &&
        ! pgrep conky >& /dev/null
