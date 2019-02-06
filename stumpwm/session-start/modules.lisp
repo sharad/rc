@@ -103,8 +103,8 @@
 (when (fboundp 'stumptray:stumptray)
     (stumptray:stumptray))
 
-(defcommand load-all-external-modules () ()
-            (load-all-modules))
+(defcommand load-all-eexternal-modules () ()
+  (load-all-modules))
 
 ;; (load-external-module "wmii-like-stumpwmrc")
 
