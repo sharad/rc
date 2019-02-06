@@ -87,6 +87,20 @@ function update-ssh-agent-unconditionally()
                 fi
             fi
         fi
+    elif [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" -a -S "${SSH_AUTH_SOCK}" ]
+    then
+        if ! ssh-add -l >/dev/null 2>&1
+        then
+            if [ $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' | wc -l ) -ne 0 ]
+            then
+                if [ -t ]
+                then
+                    ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
+                else
+                    ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
+                fi
+            fi
+        fi
     else
         if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
         then

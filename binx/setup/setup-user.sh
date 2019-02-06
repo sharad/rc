@@ -83,7 +83,7 @@ DEB_PKG_TOOL_GUI="lightdm osdsh osd-cat xosd-bin notify-osd notify-osd-icons xos
 DEB_PKG_XWM="compton xcompmgr autocutsel sakura"
 DEB_PKG_XML="libxml2-utils xsltproc docbook5-xml docbook-xsl-ns"
 DEB_PKG_UTILS="gcalcli newsbeuter liblz4-tool tracker gtimelog d-feet"
-# DEB_PKG_GUI_UTILS="libglib2.0-dev-bin" gdbus-codegen
+# DEB_PKG_GUI_DEV_UTILS="libglib2.0-dev-bin" gdbus-codegen
 DEB_PKG_MEDIA="libavcodec-extra pulseeffects pavucontrol pulseaudio-module-gconf pulseaudio-equalizer vokoscreen pulseaudio-utils pulsemixer kodi sox mpg123 mpg321 vlc"
 DEB_PKG_WINDOW="smbclient python3-smbc python-smbc awesome awesome-extra"
 DEB_PKG1_NET="network-manager-fortisslvpn network-manager-fortisslvpn-gnome openfortivpn python-pyftpdlib python3-pyftpdlib whois woof"
@@ -94,6 +94,9 @@ DEB_PKG_LINT="shellcheck splint splint-data yapf yapf3 foodcritic ansible-lint a
 DEB_PKG_DEB="devscripts revu-tools debaux devscripts dput"
 DEB_PKG_BUILD="elida pbuilder"
 DEB_PKG_VOICE="espeak-ng espeak-ng-espeak xmms2 gxmms2 promoe"
+# https://github.com/ryanoasis/nerd-fonts
+# https://www.reddit.com/r/stumpwm/comments/8nywfc/resetting_font_changes/
+DEB_PKG_FONTS="fonts-firacode " # Iosevka
 
 PY_PIP_PKG="termdown "
 NODE_PKG="tern "
@@ -112,7 +115,7 @@ function main()
 
     cd ~/
 
-    # running setup_apt_packages
+    running setup_apt_packages
 
     running setup_ecrypt_private
 
@@ -663,6 +666,7 @@ function setup_apt_packages()
         DEB_PKG_XWM
         DEB_PKG_XML
         DEB_PKG_UTILS
+        DEB_PKG_GUI_DEV_UTILS
         DEB_PKG_MEDIA
         DEB_PKG_WINDOW
         DEB_PKG1_NET
@@ -672,6 +676,8 @@ function setup_apt_packages()
         DEB_PKG_LINT
         DEB_PKG_DEB
         DEB_PKG_BUILD
+        DEB_PKG_VOICE
+        DEB_PKG_FONTS
     )
 
     for pkg in ${deb_pkg_lists[*]}
