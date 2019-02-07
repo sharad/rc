@@ -29,11 +29,11 @@
   (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
-(make-directory (expand-file-name "autoconfig/gnus/" user-emacs-directory) t)
+(make-directory (expand-file-name ".cache/autoconfig/gnus/" user-emacs-directory) t)
 (setq
  mail-user-agent 'gnus-user-agent
- gnus-home-directory (expand-file-name "autoconfig/gnus/" user-emacs-directory)
- gnus-startup-file   (expand-file-name "autoconfig/gnus/newsrc" user-emacs-directory))
+ gnus-home-directory (expand-file-name ".cache/autoconfig/gnus/" user-emacs-directory)
+ gnus-startup-file   (expand-file-name ".cache/autoconfig/gnus/newsrc" user-emacs-directory))
 
 
 (global-set-key-if-unbind (kbd "H-s") 'gnus-group-save-newsrc)
@@ -119,7 +119,7 @@
  ;; If gnus-always-read-dribble-file is non-nil, Gnus will read the
  ;; dribble file on startup without querying the user.
 
- gnus-dribble-directory "~/.gnus-data"
+ gnus-dribble-directory (expand-file-name ".cache/autoconfig/gnus/gnus-data" user-emacs-directory)
  gnus-always-read-dribble-file t
  ;http://sunsite.ualberta.ca/Documentation/Gnu/emacs-20.7/html_chapter/gnus_1.html#SEC12
  ;; You can turn off writing the `.newsrc' file by setting

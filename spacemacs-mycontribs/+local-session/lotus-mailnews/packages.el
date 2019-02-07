@@ -66,27 +66,40 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+
+(defun lotus-mailnews/pre-init-gnus ()
+  (use-package gnus
+    :defer t
+    :config
+    (progn
+      (progn
+        (make-directory (expand-file-name ".cache/autoconfig/gnus/" user-emacs-directory) t)
+        (setq
+         gnus-home-directory (expand-file-name "autoconfig/gnus/" user-emacs-directory))
+        (setq
+         gnus-directory      (concat gnus-home-directory "News/"))))))
+
 (defun lotus-mailnews/post-init-gnus ()
   (use-package gnus
-               :defer t
-               :config
-               (progn
-                 (progn
-                   (add-hook
-                    'gnus-article-prepare-hook
-                    'gnus-treat-mail-gravatar)))))
+    :defer t
+    :config
+    (progn
+      (progn
+        (add-hook
+         'gnus-article-prepare-hook
+         'gnus-treat-mail-gravatar)))))
 
 (defun lotus-mailnews/post-init-lsdb ()
   (use-package lsdb
-               :defer t
-               :config
-               (progn
-                 (progn
-                   (setq
-                    lsdb-file
-                    (auto-config-file "lsdb/lsdb"))
-                   (unless (file-exists-p lsdb-file)
-                     (auto-config-dir
-                      (file-name-directory lsdb-file) t))))))
+    :defer t
+    :config
+    (progn
+      (progn
+        (setq
+         lsdb-file
+         (auto-config-file "lsdb/lsdb"))
+        (unless (file-exists-p lsdb-file)
+          (auto-config-dir
+           (file-name-directory lsdb-file) t))))))
 
 ;;; packages.el ends here

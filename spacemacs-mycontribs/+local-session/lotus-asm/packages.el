@@ -71,7 +71,7 @@ Each entry is either:
   ;; https://asmtutor.com/
   ;; https://www.tutorialspoint.com/compile_assembly_online.php
   ;; https://www.tutorialspoint.com/assembly_programming/
-  (use-package PACKAGE
+  (use-package x86-lookup
     ;; :defer t
     :ensure t
     :config
