@@ -77,13 +77,35 @@ Each entry is either:
         (setq
          gnus-home-directory (expand-file-name "autoconfig/gnus/" user-emacs-directory))
         (setq
-         gnus-directory      (concat gnus-home-directory "News/"))))))
+         gnus-directory      (concat gnus-home-directory "News/"))
+        (setq
+         nndraft-directory (concat gnus-directory "drafts/")))))
+
+
+
+  (progn                                ;unconditionally
+    (progn
+      (make-directory (expand-file-name ".cache/autoconfig/gnus/" user-emacs-directory) t)
+      (setq
+       gnus-home-directory (expand-file-name "autoconfig/gnus/" user-emacs-directory))
+      (setq
+       gnus-directory      (concat gnus-home-directory "News/"))
+      (setq
+       nndraft-directory (concat gnus-directory "drafts/")))))
 
 (defun lotus-mailnews/post-init-gnus ()
   (use-package gnus
     :defer t
     :config
     (progn
+      (progn
+        (make-directory (expand-file-name ".cache/autoconfig/gnus/" user-emacs-directory) t)
+        (setq
+         gnus-home-directory (expand-file-name "autoconfig/gnus/" user-emacs-directory))
+        (setq
+         gnus-directory      (nnheader-concat gnus-home-directory "News/"))
+        (setq
+         nndraft-directory  (nnheader-concat gnus-directory "drafts/")))
       (progn
         (add-hook
          'gnus-article-prepare-hook

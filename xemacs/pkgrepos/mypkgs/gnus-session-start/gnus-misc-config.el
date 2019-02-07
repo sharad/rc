@@ -35,6 +35,10 @@
  gnus-home-directory (expand-file-name ".cache/autoconfig/gnus/" user-emacs-directory)
  gnus-startup-file   (expand-file-name ".cache/autoconfig/gnus/newsrc" user-emacs-directory))
 
+(setq
+ gnus-directory      (nnheader-concat gnus-home-directory "News/"))
+(setq
+ nndraft-directory  (nnheader-concat gnus-directory "drafts/"))
 
 (global-set-key-if-unbind (kbd "H-s") 'gnus-group-save-newsrc)
 
