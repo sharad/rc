@@ -662,13 +662,15 @@
                 maxtimelen)
   (append
    (when (org-rl-clock-null prev)
-     (append
-      (org-rl-clock-opts-prev prev next)
-      (unless (zerop maxtimelen) (org-rl-clock-opts-prev-with-time prev next))))
+     (unless (zerop maxtimelen)
+       (list (org-rl-clock-opts-prev-with-time prev next))))
    (when (org-rl-clock-null next)
-     (append
-      (org-rl-clock-opts-next prev next)
-      (unless (zerop maxtimelen) (org-rl-clock-opts-next-with-time prev next))))
+     (unless (zerop maxtimelen)
+       (list (org-rl-clock-opts-next-with-time prev next))))
+   (when (org-rl-clock-null prev)
+     (list (org-rl-clock-opts-prev prev next)))
+   (when (org-rl-clock-null next)
+     (list (org-rl-clock-opts-next prev next)))
    (unless (zerop maxtimelen) (org-rl-clock-opts-common-with-time prev next))
    (org-rl-clock-opts-common prev next)))
 

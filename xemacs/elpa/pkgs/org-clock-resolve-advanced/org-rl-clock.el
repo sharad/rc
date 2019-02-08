@@ -34,6 +34,7 @@
                                             (next org-rl-clock))
   (setf (org-rl-clock-cancel prev) t)
   (org-rl-clock-clock-cancel prev)
+  (org-rl-debug :warning "cancelled prev, Can not find previous clock presently [todo]")
   (setf (org-rl-clock-start prev) (org-rl-clock-start prev))
   (org-rl-clock-start-set prev nil)
   (org-rl-clocks-action nil nil prev next))
@@ -251,7 +252,9 @@
                     (let ((timegap (org-rl-get-time-gap prev next)))
                       (when (> timegap 0)         ;this solved the assert
                         (org-rl-clock-resolve-time prev next close-p)))))
-              (progn
+              (unless (and
+                       (org-rl-clock-null prev)
+                       (org-rl-clock-null next))
                 (message "Error given time %d can not be greater than %d" timelen maxtimelen)
                 (org-rl-clock-resolve-time prev next force close-p)))))))))
 
