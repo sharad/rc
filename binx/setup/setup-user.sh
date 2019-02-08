@@ -97,6 +97,8 @@ DEB_PKG_VOICE="espeak-ng espeak-ng-espeak xmms2 gxmms2 promoe"
 # https://github.com/ryanoasis/nerd-fonts
 # https://www.reddit.com/r/stumpwm/comments/8nywfc/resetting_font_changes/
 DEB_PKG_FONTS="fonts-firacode " # Iosevka
+DEB_PKG_PROGRAMMING=" " # Iosevka
+DEB_PKG_ASSEMBLY="nasm yasm " # Iosevka
 
 PY_PIP_PKG="termdown "
 NODE_PKG="tern "
@@ -678,6 +680,8 @@ function setup_apt_packages()
         DEB_PKG_BUILD
         DEB_PKG_VOICE
         DEB_PKG_FONTS
+        DEB_PKG_PROGRAMMING
+        DEB_PKG_ASSEMBLY
     )
 
     for pkg in ${deb_pkg_lists[*]}

@@ -73,6 +73,8 @@ Each entry is either:
     :config
     (progn
       (progn
+        (progn
+          (setq gnus-init-file "~/.gnus.el"))
         (make-directory (expand-file-name ".cache/autoconfig/gnus/" user-emacs-directory) t)
         (setq
          gnus-home-directory (expand-file-name "autoconfig/gnus/" user-emacs-directory))
@@ -85,6 +87,8 @@ Each entry is either:
 
   (progn                                ;unconditionally
     (progn
+      (progn
+        (setq gnus-init-file "~/.gnus.el"))
       (make-directory (expand-file-name ".cache/autoconfig/gnus/" user-emacs-directory) t)
       (setq
        gnus-home-directory (expand-file-name "autoconfig/gnus/" user-emacs-directory))
@@ -99,6 +103,8 @@ Each entry is either:
     :config
     (progn
       (progn
+        (progn
+          (setq gnus-init-file "~/.gnus.el"))
         (make-directory (expand-file-name ".cache/autoconfig/gnus/" user-emacs-directory) t)
         (setq
          gnus-home-directory (expand-file-name "autoconfig/gnus/" user-emacs-directory))

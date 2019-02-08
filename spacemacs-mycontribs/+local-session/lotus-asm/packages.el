@@ -76,7 +76,10 @@ Each entry is either:
     :ensure t
     :config
     (progn
-      (setq  x86-lookup-pdf "~/Dropbox/Books/Hacking/64-iA32-Instruction-set-reference-vol2.pdf"))))
+
+      ;; "~/Downloads/64-ia-32-architectures-software-developer-instruction-set-reference-manual-325383.pdf"
+      (setq  x86-lookup-pdf "~/Dropbox/Books/Hacking/64-iA32-Instruction-set-reference-vol2.pdf")
+      (setq  x86-lookup-pdf "~/Downloads/64-ia-32-architectures-software-developer-instruction-set-reference-manual-325383.pdf"))))
 
 
 

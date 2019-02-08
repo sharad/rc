@@ -713,4 +713,22 @@
         maxtimelen
       (* (time-aware-read-number interval prompt-fn maxtimelen-fn) 60))))
 
+
+(defun helm-cand-sel ()
+  (interactive)
+  (let ((retval (helm :sources '((name . "HELM")
+                                 (match (lambda (_candidate) t))
+                                 (candidates . (1 2 3 4))
+                                 (action . (("open" . (lambda (candidate)
+                                                        (list
+                                                         (when (minibufferp (current-buffer))
+                                                           (with-current-buffer "* Minibuffer 1"
+                                                             (minibuffer-contents-no-properties)))
+
+                                                         (with-current-buffer "* Minibuffer 1"
+                                                           (minibuffer-contents-no-properties))
+                                                         candidate
+                                                         (helm-get-selection))))))))))
+    (message "retval %s" retval)))
+
 ;;; org-rl-obj.el ends here
