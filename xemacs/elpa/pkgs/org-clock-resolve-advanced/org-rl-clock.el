@@ -36,7 +36,7 @@
   (org-rl-clock-clock-cancel prev)
   (org-rl-debug :warning "cancelled prev, Can not find previous clock presently [todo]")
   (setf (org-rl-clock-start prev) (org-rl-clock-start prev))
-  (org-rl-clock-start-set prev nil)
+  (setf (org-rl-clock-marker prev) nil)
   (org-rl-clocks-action nil nil prev next))
 
 (cl-defmethod org-rl-clock-opt-cancel-next ((prev org-rl-clock)
@@ -47,7 +47,8 @@
   (setf (org-rl-clock-cancel next) t)
   (org-rl-clock-clock-cancel next)
   (setf (org-rl-clock-start next) (org-rl-clock-stop prev))
-  (org-rl-clock-stop-set  next nil)
+  (setf (org-rl-clock-stop  next) (org-rl-clock-stop prev))
+  (setf (org-rl-clock-marker  next) nil)
   (org-rl-clocks-action nil nil prev next))
 
 (cl-defmethod org-rl-clock-opt-include-in-prev ((prev org-rl-clock)
@@ -251,11 +252,25 @@
                       (org-clock-out))
                     (let ((timegap (org-rl-get-time-gap prev next)))
                       (when (> timegap 0)         ;this solved the assert
-                        (org-rl-clock-resolve-time prev next close-p)))))
-              (unless (and
-                       (org-rl-clock-null prev)
-                       (org-rl-clock-null next))
-                (message "Error given time %d can not be greater than %d" timelen maxtimelen)
-                (org-rl-clock-resolve-time prev next force close-p)))))))))
+                        (if (and
+                             (org-rl-clock-null prev)
+                             (org-rl-clock-null next))
+                            (org-rl-debug :warning "Test1 prev:%s next:%s"
+                                          (org-rl-format-clock prev)
+                                          (org-rl-format-clock next))
+                          (progn
+                            (if (eql (org-rl-clock-marker prev) nil)
+                                (message "equal nil (org-rl-clock-marker prev)")
+                              (message "not equal nil (org-rl-clock-marker prev)"))
+ 
+                            (org-rl-debug :warning "Test2 prev:%s test %s marker %s next:%s test %s marker %s" 
+                                          (org-rl-format-clock prev)
+                                          (org-rl-clock-null prev)
+                                          (org-rl-clock-marker prev)
+                                          (org-rl-format-clock next)
+                                          (org-rl-clock-null next)
+                                          (org-rl-clock-marker next))
+                           (org-rl-clock-resolve-time prev next close-p)))))))
+              (message "Error given time %d can not be greater than %d" timelen maxtimelen))))))))
 
 ;;; org-rl-clock.el ends here

@@ -223,9 +223,16 @@
    (org-rl-clock-marker clock)))
 
 (cl-defmethod org-rl-clock-null ((clock org-rl-clock))
-  (or
-   (eq (org-rl-clock-marker clock) 'imaginary)
-   (null (org-rl-clock-marker clock))))
+  (let ((marker (org-rl-clock-marker clock)))
+    (message "val %s" marker)
+    (or (eq marker 'imaginary)
+        (null marker))))
+
+(let ((prev (org-rl-make-clock nil 'now 'now)))
+  (org-rl-clock-start-set prev nil)
+  (org-rl-clock-null prev))
+
+
 
 
 (defun org-get-heading-from-clock (clock)
@@ -256,14 +263,13 @@
   (concat "<" (org-rl-clock-heading clock) ">"))
 
 
-
 (cl-defmethod org-rl-clock-half-p ((clock org-rl-clock))
   (save-excursion
     (let ((marker (org-rl-clock-marker clock)))
       (with-current-buffer (marker-buffer marker)
         (goto-char marker)
         (let ((clock-reg
-                (concat "^ *CLOCK: *\\[" org-ts-regexp0 "\\]$"))
+               (concat "^ *CLOCK: *\\[" org-ts-regexp0 "\\]$"))
               (beginning (line-beginning-position))
               (end (line-end-position)))
           (when (move-beginning-of-line nil)
