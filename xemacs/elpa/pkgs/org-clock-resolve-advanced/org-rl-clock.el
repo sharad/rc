@@ -46,6 +46,7 @@
   ;; add next clock time
   (setf (org-rl-clock-cancel next) t)
   (org-rl-clock-clock-cancel next)
+  ;;should 'now be used here? todo
   (setf (org-rl-clock-start next) (org-rl-clock-stop prev))
   (setf (org-rl-clock-stop  next) (org-rl-clock-stop prev))
   (setf (org-rl-clock-marker  next) nil)
@@ -55,7 +56,8 @@
                                                 (next org-rl-clock)
                                                 timelen
                                                 &optional
-                                                resume)
+                                                resume
+                                                fail-quietly)
 
   (org-rl-debug :warning "begin %s" 'org-rl-clock-opt-include-in-prev)
 
@@ -64,13 +66,13 @@
         (progn
           (setf (org-rl-clock-stop-time prev) (time-add
                                                (org-rl-clock-start-time prev) maxtimelen))
-          (org-rl-clock-clock-out prev resume))
+          (org-rl-clock-clock-out prev fail-quietly))
       (if (< (org-rl-compare-time-gap prev next timelen) 0)
           (if (> timelen 0)
               (org-rl-clock-expand-time prev (abs timelen))
             (progn
-              (org-rl-clock-clock-out prev)     ;if already not necessary
-              (org-rl-clock-clock-out next)     ;if necessary
+              (org-rl-clock-clock-out prev fail-quietly)     ;if already not necessary
+              (org-rl-clock-clock-out next fail-quietly)     ;if necessary
               (setf next
                     (org-rl-make-clock (org-rl-clock-marker prev)
                                        (time-subtract
@@ -83,26 +85,29 @@
 
 (cl-defmethod org-rl-clock-opt-include-in-next ((prev org-rl-clock)
                                                 (next org-rl-clock)
-                                                timelen)
+                                                timelen
+                                                &optional
+                                                resume
+                                                fail-quietly)
   (org-rl-debug :warning "begin %s" 'org-rl-clock-opt-include-in-next)
   (let ((maxtimelen (org-rl-get-time-gap prev next)))
     (if (= (org-rl-compare-time-gap prev next timelen) 0)
         (progn
           (setf (org-rl-clock-stop-time next) (time-add
                                                (org-rl-clock-start-time next) maxtimelen))
-          (org-rl-clock-clock-out next resume))
+          (org-rl-clock-clock-out next fail-quietly))
       (if (< (org-rl-compare-time-gap next prev timelen) 0)
           (if (< timelen 0)
               (org-rl-clock-expand-time next timelen)
             (progn
-              (org-rl-clock-clock-out prev)     ;if necessary
-              (org-rl-clock-clock-out next)     ;if necessary
+              (org-rl-clock-clock-out prev fail-quietly)     ;if necessary
+              (org-rl-clock-clock-out next fail-quietly)     ;if necessary
               (setf prev (org-rl-make-clock (org-rl-clock-marker next)
                                             (org-rl-clock-stop-time prev)
                                             (time-add
                                              (org-rl-clock-stop-time prev)
                                              (abs timelen))))
-              (org-rl-clock-clock-in-out prev)))
+              (org-rl-clock-clock-in-out prev fail-quietly)))
         (error "timelen %d is greater than time difference %d between clocks" timelen maxtimelen))))
   (org-rl-clocks-action nil nil prev next))
 
