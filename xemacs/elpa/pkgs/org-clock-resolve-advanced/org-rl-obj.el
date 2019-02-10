@@ -59,6 +59,17 @@
       org-clock-marker)))
 
 
+(defun org-rl-debug (level &rest args)
+  (let* ((ts (time-stamp-string))
+         (fmt (format "%s: %s" ts (car args)))
+         (args (append (list fmt) (cdr args))))
+    (apply #'lwarn 'org-rl-clock :warning args)
+    (message
+     (concat
+      (format "org-rl-clock %s: " :warning)
+      (apply #'format args)))))
+
+
 (defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
   (unwind-protect
       (progn
@@ -115,22 +126,12 @@
                                  &optional
                                  active
                                  cancel)
-  ;; (org-rl-debug :warning "calling 1")
   (make-org-rl-clock
    :marker marker
    :start start
    :stop  stop
    :active active
    :cancel cancel))
-
-;; (cl-defgeneric org-rl-make-clock ((marker marker)
-;;                                   start-time
-;;                                   stop-time
-;;                                   &optional
-;;                                   start-clean
-;;                                   stop-clean
-;;                                   active
-;;                                   cancel))
 
 (cl-defmethod org-rl-make-clock ((marker marker)
                                  start-time
@@ -237,7 +238,7 @@
 
 (cl-defmethod org-rl-clock-null ((clock org-rl-clock))
   (let ((marker (org-rl-clock-marker clock)))
-    (message "val %s" marker)
+    (org-rl-debug :warning "val %s" marker)
     (or (eq marker 'imaginary)
         (null marker))))
 
@@ -311,41 +312,41 @@
       (org-update-all-dblocks))))
 
 (cl-defmethod org-rl-clock-replace ((clock org-rl-clock) &optional terminal)
-  (if (org-rl-clock-marker clock)
-    (if (org-rl-clock-full-p clock)
-        (save-excursion
-          (let ((marker (org-rl-clock-marker clock)))
-            (with-current-buffer (marker-buffer marker)
-              (let ((clock-reg
-                     (concat " *CLOCK: *\\["
-                             "\\(" org-ts-regexp0 "\\)"
-                             "\\]\\(?:--\\[\\)?"
-                             "\\(" org-ts-regexp0 "\\)"
-                             "\\(?:\\] *=> *\\([0-9]+:[0-9]\\{2\\}\\)\\)"))
-                    (beginning (line-beginning-position))
-                    (end (line-end-position)))
-               (when (and
-                      (goto-char marker)
-                      (move-beginning-of-line nil))
-                 (when (re-search-forward clock-reg end t)
-                   (let ((file-clock-start (org-time-string-to-time (match-string 1)))
-                         (file-clock-stop  (org-time-string-to-time (match-string 2))))
-                     (cond
-                      ((eq terminal 'start)
-                       (if (= file-clock-stop (org-rl-clock-stop-time clock))
-                           (progn
-                            (kill-line)
-                            (org-rl-clock-insert-range clock))))
-                      ((eq terminal 'stop)
-                       (if (= file-clock-start (org-rl-clock-start-time clock))
-                           (progn
-                             (kill-line)
-                             (org-rl-clock-insert-range clock))))
-                      (t
-                       (kill-line)
-                       (org-rl-clock-insert-range clock))))))))))
-      (error "clock %s is not full" (org-rl-clock-name-bracket clock)))
-    (message "%s clock is null" (org-rl-clock-marker clock))))
+  (if (org-rl-clock-null clock)
+      (org-rl-debug :warning "%s clock is null" (org-rl-clock-marker clock))
+      (if (org-rl-clock-full-p clock)
+          (save-excursion
+            (let ((marker (org-rl-clock-marker clock)))
+              (with-current-buffer (marker-buffer marker)
+                (let ((clock-reg
+                       (concat " *CLOCK: *\\["
+                               "\\(" org-ts-regexp0 "\\)"
+                               "\\]\\(?:--\\[\\)?"
+                               "\\(" org-ts-regexp0 "\\)"
+                               "\\(?:\\] *=> *\\([0-9]+:[0-9]\\{2\\}\\)\\)"))
+                      (beginning (line-beginning-position))
+                      (end (line-end-position)))
+                  (when (and
+                         (goto-char marker)
+                         (move-beginning-of-line nil))
+                    (when (re-search-forward clock-reg end t)
+                      (let ((file-clock-start (org-time-string-to-time (match-string 1)))
+                            (file-clock-stop  (org-time-string-to-time (match-string 2))))
+                        (cond
+                         ((eq terminal 'start)
+                          (if (= file-clock-stop (org-rl-clock-stop-time clock))
+                              (progn
+                                (kill-line)
+                                (org-rl-clock-insert-range clock))))
+                         ((eq terminal 'stop)
+                          (if (= file-clock-start (org-rl-clock-start-time clock))
+                              (progn
+                                (kill-line)
+                                (org-rl-clock-insert-range clock))))
+                         (t
+                          (kill-line)
+                          (org-rl-clock-insert-range clock))))))))))
+        (error "clock %s is not full" (org-rl-clock-name-bracket clock)))))
 
 
 (cl-defmethod org-rl-clock-for-clock-in ((clock org-rl-clock))
@@ -413,15 +414,15 @@
                 (org-rl-format-clock clock)
                 fail-quietly)
   (when (not org-clock-clocking-in)
-    (if (org-rl-clock-marker clock)
-        (if (time-p (org-rl-clock-stop-time clock))
-            (if (org-rl-clock-half-p clock)
-                (org-clock-clock-out (org-rl-clock-for-clock-out clock)
-                  fail-quietly
-                  (org-rl-clock-stop-time clock))
-               (org-rl-clock-replace clock))
-          (error "%s stop time is null" (org-rl-clock-stop-time clock)))
-      (message "%s clock is null" (org-rl-clock-marker clock)))))
+    (if (org-rl-clock-null clock)
+        (org-rl-debug :warning "%s clock is null" (org-rl-clock-marker clock))
+      (if (time-p (org-rl-clock-stop-time clock))
+          (if (org-rl-clock-half-p clock)
+              (org-clock-clock-out (org-rl-clock-for-clock-out clock)
+                                   fail-quietly
+                                   (org-rl-clock-stop-time clock))
+            (org-rl-clock-replace clock))
+        (error "%s stop time is null" (org-rl-clock-stop-time clock))))))
 
 (cl-defmethod org-rl-clock-clock-in-out ((clock org-rl-clock)
                                          &optional
@@ -478,17 +479,6 @@
 
 (cl-defmethod org-rl-clock-contract-time ((clock org-rl-clock) sec)
   "if sec is positive contract from future else contract from past.")
-
-
-(defun org-rl-debug (level &rest args)
-  (let* ((ts (time-stamp-string))
-         (fmt (format "%s: %s" ts (car args)))
-         (args (append (list fmt) (cdr args))))
-    (apply #'lwarn 'org-rl-clock :warning args)
-    (message
-     (concat
-      (format "org-rl-clock %s: " :warning)
-      (apply #'format args)))))
 
 
 (defun org-clock-idle-time-set (mins)
@@ -637,7 +627,7 @@
   (org-rl-debug :warning "timelen %s" timelen)
   (if (eq timelen 'all)
       0
-    (- timelen (float-time (org-rl-get-time-gap prev next)))))
+    (- (float-time (org-rl-get-time-gap prev next)) (abs timelen))))
 
 
 (cl-defmethod org-rl-clock-time-debug-prompt ((prev org-rl-clock)
@@ -747,6 +737,7 @@
         maxtimelen
       (* (time-aware-read-number interval prompt-fn maxtimelen-fn) 60))))
 
+
 
 (defun helm-cand-sel ()
   (interactive)
@@ -763,6 +754,6 @@
                                                            (minibuffer-contents-no-properties))
                                                          candidate
                                                          (helm-get-selection))))))))))
-    (message "retval %s" retval)))
+    (org-rl-debug :warning "retval %s" retval)))
 
 ;;; org-rl-obj.el ends here

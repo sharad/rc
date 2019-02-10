@@ -27,7 +27,6 @@
 (provide 'org-clock-resolve-advanced)
 
 
-
 (require 'org-rl-clock)
 
 
@@ -50,7 +49,7 @@ so long."
                   (if org-clock-last-idle-start-time
                       (time-to-seconds (time-subtract (current-time) org-clock-last-idle-start-time)))
                   (org-user-idle-seconds))
-    ;; (message "(org-user-idle-seconds) %s" (org-user-idle-seconds))
+    ;; (org-rl-debug :warning "(org-user-idle-seconds) %s" (org-user-idle-seconds))
     (when (and
            org-clock-idle-time
            (not org-clock-resolving-clocks)
@@ -100,6 +99,21 @@ so long."
              idle-time idle-time
              'org-rl-resolve-clocks-if-idle)))))
 
+
+(defun org-find-open-clocks (file)
+  "Search through the given file and find all open clocks."
+  (let ((buf (or (get-file-buffer file)
+                 (find-file-noselect file)))
+        (org-clock-re (concat org-clock-string " \\(\\[.*?\\]\\)$"))
+        clocks)
+    (with-current-buffer buf
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward org-clock-re nil t)
+          (push (cons (copy-marker (match-end 1) t)
+                      (org-time-string-to-time (match-string 1))) clocks))))
+    clocks))
+
 ;;;###autoload
 (defun org-rl-resolve-clocks (&optional only-dangling-p prompt-fn last-valid)
   "Resolve all currently open Org clocks.
@@ -128,37 +142,6 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
   (let ((next (pop clocks))
         (prev (pop clocks)))
     (org-rl-clock-resolve-time next prev)))
-
-;;;###autoload
-(defun org-clock-resolve-advanced-insinuate ()
-  (interactive)
-  (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
-  (add-hook 'org-clock-in-hook
-            #'org-rl-clock-set-correct-idle-timer)
-  (defalias 'org-resolve-clocks 'org-rl-resolve-clocks))
-
-;;;###autoload
-(defun org-clock-resolve-advanced-uninsinuate ()
-  (remove-hook 'org-clock-in-hook
-               #'org-rl-clock-set-correct-idle-timer))
-
-
-
-(defun org-find-open-clocks (file)
-  "Search through the given file and find all open clocks."
-  (let ((buf (or (get-file-buffer file)
-                 (find-file-noselect file)))
-        (org-clock-re (concat org-clock-string " \\(\\[.*?\\]\\)$"))
-        clocks)
-    (with-current-buffer buf
-      (save-excursion
-        (goto-char (point-min))
-        (while (re-search-forward org-clock-re nil t)
-          (push (cons (copy-marker (match-end 1) t)
-                      (org-time-string-to-time (match-string 1))) clocks))))
-    clocks))
-
-
 
 
 (defun org-rl-first-clock-started-mins (marker)
@@ -219,11 +202,25 @@ so long."
                      (org-rl-make-clock marker start-time org-clock-user-idle-start)
                      (org-rl-make-clock 'imaginary 'now 'now))
                   (when t
-                    (message "Idle time now min[%d] sec[%d]"
+                    (org-rl-debug :warning "Idle time now min[%d] sec[%d]"
                              (/ org-clock-user-idle-seconds 60)
-                             (% org-clock-user-idle-seconds 60)
-                             )))))
+                             (% org-clock-user-idle-seconds 60))))))
           (org-rl-debug :warning "Selected min[ = %d ] is more than mins-spent[ = %d ]" (/ idle-sec 60) mins-spent))
       (org-rl-debug :warning "Not one min is spent with clock mins-spent = %d" mins-spent))))
+
+
+;;;###autoload
+(defun org-clock-resolve-advanced-insinuate ()
+  (interactive)
+  (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
+  (add-hook 'org-clock-in-hook
+            #'org-rl-clock-set-correct-idle-timer)
+  (defalias 'org-resolve-clocks 'org-rl-resolve-clocks))
+
+;;;###autoload
+(defun org-clock-resolve-advanced-uninsinuate ()
+  (remove-hook 'org-clock-in-hook
+               #'org-rl-clock-set-correct-idle-timer))
+
 
 ;;; org-clock-utils-lotus.el ends here
