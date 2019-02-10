@@ -55,23 +55,36 @@
     (lotus-org-clock-load-only)
     (let ((org-clock-persist               org-rl-org-clock-persist)
           (org-clock-auto-clock-resolution org-rl-org-clock-auto-clock-resolution))
-      (org-clock-clock-in clock resume start-time))))
+      (org-clock-clock-in clock resume start-time)
+      org-clock-marker)))
 
 
 (defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
-  (with-timeout (interval
-                 (time-aware-completing-read interval prompt-fn options-fn default-fn))
-    (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
-          (options (if (functionp options-fn) (funcall options-fn) options-fn))
-          (default (if (functionp default-fn) (funcall default-fn) default-fn)))
-      (completing-read prompt options))))
+  (unwind-protect
+      (progn
+        (when (fboundp 'add-function)
+          (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+        (with-timeout (interval
+                       (time-aware-completing-read interval prompt-fn options-fn default-fn))
+          (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
+                (options (if (functionp options-fn) (funcall options-fn) options-fn))
+                (default (if (functionp default-fn) (funcall default-fn) default-fn)))
+            (completing-read prompt options))))
+    (when (fboundp 'remove-function)
+      (remove-function (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))))
 
 (defun time-aware-read-number (interval prompt-fn default-fn)
-  (with-timeout (interval
-                 (time-aware-read-number interval prompt-fn default-fn))
-    (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
-          (default (if (functionp default-fn) (funcall default-fn) default-fn)))
-      (read-number prompt default))))
+  (unwind-protect
+      (progn
+        (when (fboundp 'add-function)
+          (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+        (with-timeout (interval
+                       (time-aware-read-number interval prompt-fn default-fn))
+          (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
+                (default (if (functionp default-fn) (funcall default-fn) default-fn)))
+            (read-number prompt default))))
+    (when (fboundp 'remove-function)
+      (remove-function (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))))
 
 
 (defun time-p (time)
@@ -425,10 +438,12 @@
 
           (cl-assert (org-rl-clock-start-time clock))
           (cl-assert (org-rl-clock-stop-time clock))
-          (org-rl-clock-clock-in clock resume)
-          (org-rl-debug :warning "org-rl-clock-clock-in-out out")
-          (org-rl-clock-clock-out clock fail-quietly)
-          (org-rl-debug :warning "org-rl-clock-clock-in-out out done"))
+          (let ((marker (org-rl-clock-clock-in clock resume)))
+            (setf (org-rl-clock-marker clock) marker)
+            (org-rl-debug :warning "org-rl-clock-clock-in-out out")
+            (org-rl-clock-clock-out clock fail-quietly)
+            (org-rl-debug :warning "org-rl-clock-clock-in-out out done")
+            clock))
       (error "Clock org-clock-clocking-in is %s" org-clock-clocking-in))))
 
 (cl-defmethod org-rl-clock-action ((clock org-rl-clock)
@@ -466,11 +481,14 @@
 
 
 (defun org-rl-debug (level &rest args)
-  (apply #'lwarn 'org-rl-clock :warning args)
-  (message
-   (concat
-    (format "org-rl-clock %s: " :warning)
-    (apply #'format args))))
+  (let* ((ts (time-stamp-string))
+         (fmt (format "%s: %s" ts (car args)))
+         (args (append (list fmt) (cdr args))))
+    (apply #'lwarn 'org-rl-clock :warning args)
+    (message
+     (concat
+      (format "org-rl-clock %s: " :warning)
+      (apply #'format args)))))
 
 
 (defun org-clock-idle-time-set (mins)
@@ -508,57 +526,27 @@
 
 (cl-defmethod org-rl-clock-opts-prev ((prev org-rl-clock)
                                       (next org-rl-clock))
+  (org-rl-debug :debug "calling org-rl-clock-opts-prev")
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
     (append
-     (list
-      (cons
-       (if (org-rl-clock-null prev)
-           (if (org-rl-clock-null next)
-               "No idea"
-             (format "Subtract all from next %s" next-heading))
-         (format "Cancel prev %s" prev-heading))
-       'cancel-prev-p))
      (unless (org-rl-clock-null prev)
        (list
         (cons
          (format "Jump to prev %s" prev-heading)
-         'jump-prev-p))))))
-
-(cl-defmethod org-rl-clock-opts-prev-with-time ((prev org-rl-clock)
-                                                (next org-rl-clock))
-  (let ((prev-heading (org-rl-clock-heading prev))
-        (next-heading (org-rl-clock-heading next)))
-    (list
-     (cons
-      (if (org-rl-clock-null prev)
-          (if (org-rl-clock-null next)
-              "No idea"
-            (format "Subtract from next %s" next-heading))
-        (format "Include in prev %s" prev-heading))
-      'include-in-prev))))
-
-(cl-defmethod org-rl-clock-opts-next ((prev org-rl-clock)
-                                      (next org-rl-clock))
-  (let ((prev-heading (org-rl-clock-heading prev))
-        (next-heading (org-rl-clock-heading next)))
-    (append
+         'jump-prev-p)))
      (list
       (cons
        (if (org-rl-clock-null next)
            (if (org-rl-clock-null prev)
                "No idea"
-             (format "Subtract all from prev %s" prev-heading))        ;TODO: still only considering resolve-idle not both prev next, prev can also be null ?
-         (format "Cancel next %s" next-heading))
-       'cancel-next-p))
-     (unless (org-rl-clock-null next)
-       (list
-        (cons
-         (format "Jump to next %s" next-heading)
-         'jump-next-p))))))
+             (format "Cancel prev %s" prev-heading))
+         (format "Subtract all from next %s" next-heading))
+       'cancel-prev-p)))))
 
-(cl-defmethod org-rl-clock-opts-next-with-time ((prev org-rl-clock)
+(cl-defmethod org-rl-clock-opts-prev-with-time ((prev org-rl-clock)
                                                 (next org-rl-clock))
+  (org-rl-debug :debug "calling org-rl-clock-opts-prev-with-time")
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
     (list
@@ -566,8 +554,42 @@
       (if (org-rl-clock-null next)
           (if (org-rl-clock-null prev)
               "No idea"
-            (format "Subtract from prev %s" prev-heading))
-        (format "Include in next %s" next-heading))
+            (format "Include in prev %s" prev-heading))
+        (format "Subtract from next %s" next-heading))
+      'include-in-prev))))
+
+(cl-defmethod org-rl-clock-opts-next ((prev org-rl-clock)
+                                      (next org-rl-clock))
+  (org-rl-debug :debug "calling org-rl-clock-opts-next")
+  (let ((prev-heading (org-rl-clock-heading prev))
+        (next-heading (org-rl-clock-heading next)))
+    (append
+     (unless (org-rl-clock-null next)
+       (list
+        (cons
+         (format "Jump to next %s" next-heading)
+         'jump-next-p)))
+     (list
+      (cons
+       (if (org-rl-clock-null prev)
+           (if (org-rl-clock-null next)
+               "No idea"
+             (format "Cancel next %s" next-heading))        ;TODO: still only considering resolve-idle not both prev next, prev can also be null ?
+         (format "Subtract all from prev %s" prev-heading))
+       'cancel-next-p)))))
+
+(cl-defmethod org-rl-clock-opts-next-with-time ((prev org-rl-clock)
+                                                (next org-rl-clock))
+  (org-rl-debug :debug "calling org-rl-clock-opts-next-with-time")
+  (let ((prev-heading (org-rl-clock-heading prev))
+        (next-heading (org-rl-clock-heading next)))
+    (list
+     (cons
+      (if (org-rl-clock-null prev)
+          (if (org-rl-clock-null next)
+              "No idea"
+            (format "Include in next %s" next-heading))
+        (format "Subtract from prev %s" prev-heading))
       'include-in-next))))
 
 
@@ -667,17 +689,21 @@
                 (org-rl-format-clock next)
                 maxtimelen)
   (append
-   (when (org-rl-clock-null prev)
-     (unless (zerop maxtimelen)
-       (list (org-rl-clock-opts-prev-with-time prev next))))
-   (when (org-rl-clock-null next)
-     (unless (zerop maxtimelen)
-       (list (org-rl-clock-opts-next-with-time prev next))))
-   (when (org-rl-clock-null prev)
-     (list (org-rl-clock-opts-prev prev next)))
-   (when (org-rl-clock-null next)
-     (list (org-rl-clock-opts-next prev next)))
-   (unless (zerop maxtimelen) (org-rl-clock-opts-common-with-time prev next))
+   (if (org-rl-clock-null next)
+       (append
+        (org-rl-clock-opts-prev-with-time prev next)
+        (org-rl-clock-opts-next-with-time prev next)
+        (unless (zerop maxtimelen)
+          (org-rl-clock-opts-common-with-time prev next))
+        (org-rl-clock-opts-next prev next)
+        (org-rl-clock-opts-prev prev next))
+     (append
+      (org-rl-clock-opts-next-with-time prev next)
+      (org-rl-clock-opts-prev-with-time prev next)
+      (unless (zerop maxtimelen)
+        (org-rl-clock-opts-common-with-time prev next))
+      (org-rl-clock-opts-prev prev next)
+      (org-rl-clock-opts-next prev next)))
    (org-rl-clock-opts-common prev next)))
 
 

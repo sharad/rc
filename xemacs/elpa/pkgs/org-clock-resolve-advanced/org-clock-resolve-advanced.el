@@ -41,11 +41,12 @@ if the user really wants to stay clocked in after being idle for
 so long."
   ;; last-input-event
   ;; last-event-frame
-  (when nil (message "called org-rl-resolve-clocks-if-idle"))
+
+  (org-rl-debug :warning "org-rl-resolve-clocks-if-idle: begin")
   (lotus-with-other-frame-event-debug "org-rl-resolve-clocks-if-idle" :restart
-    (lwarn 'org-rl-clock :debug "org-rl-resolve-clocks-if-idle: lotus-with-other-frame-event-debug")
+    (org-rl-debug :warning "org-rl-resolve-clocks-if-idle: lotus-with-other-frame-event-debug")
     (org-rl-debug :warning
-                  "org-rl-resolve-clocks-if-idle: org-clock-last-idle-start-time: %s, (org-user-idle-seconds) %s"
+                  "org-rl-resolve-clocks-if-idle: pass1 org-clock-last-idle-start-time: %s, (org-user-idle-seconds) %s"
                   (if org-clock-last-idle-start-time
                       (time-to-seconds (time-subtract (current-time) org-clock-last-idle-start-time)))
                   (org-user-idle-seconds))
@@ -55,6 +56,11 @@ so long."
            (not org-clock-resolving-clocks)
            org-clock-marker
            (marker-buffer org-clock-marker))
+      (org-rl-debug :warning
+                    "org-rl-resolve-clocks-if-idle: pass2 org-clock-last-idle-start-time: %s, (org-user-idle-seconds) %s"
+                    (if org-clock-last-idle-start-time
+                        (time-to-seconds (time-subtract (current-time) org-clock-last-idle-start-time)))
+                    (org-user-idle-seconds))
       (let* ((org-clock-user-idle-seconds
               (if org-clock-last-idle-start-time
                   (time-to-seconds
@@ -67,22 +73,19 @@ so long."
 
         (setq org-clock-last-idle-start-time org-clock-user-idle-start)
 
-        (when nil
-          (message "1. Idle time now min[%d] sec[%d]"
-                   (/ org-clock-user-idle-seconds 60)
-                   (% org-clock-user-idle-seconds 60)))
-
         (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
             (org-rl-clock-resolve-time
              (org-rl-make-clock org-clock-marker
                                 org-clock-start-time
                                 org-clock-user-idle-start) ;TODO: what important.
              (org-rl-make-clock nil 'now 'now))
-          (when nil
-            (message "1. Idle time now min[%d] sec[%d]"
-                     (/ org-clock-user-idle-seconds 60)
-                     (% org-clock-user-idle-seconds 60))))
-        (setq org-clock-last-idle-start-time nil)))))
+          (org-rl-debug :warning
+                        "org-rl-resolve-clocks-if-idle: pass3 not calling resolve time org-clock-last-idle-start-time: %s, (org-user-idle-seconds) %s"
+                        (if org-clock-last-idle-start-time
+                            (time-to-seconds (time-subtract (current-time) org-clock-last-idle-start-time)))
+                        (org-user-idle-seconds)))
+        (setq org-clock-last-idle-start-time nil))))
+  (org-rl-debug :warning "org-rl-resolve-clocks-if-idle: finished"))
 
 (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
 
