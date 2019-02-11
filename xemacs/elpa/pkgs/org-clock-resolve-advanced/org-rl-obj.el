@@ -763,6 +763,8 @@
       (time-aware-completing-read interval prompt-fn options-fn)
       options))))
 
+(defvar org-rl-clock-time-direction-reverse nil)
+
 (defun org-rl-clock-read-timelen (interval prompt-fn option-fn maxtimelen-fn)
   "read in mins return secs"
   (let ((option     (if (functionp option-fn)     (funcall option-fn) option-fn))
@@ -774,7 +776,11 @@
                  cancel-next-p
                  cancel-prev-p)))
         maxtimelen
-      (* (time-aware-read-number interval prompt-fn maxtimelen-fn) 60))))
+      (*
+       (*
+        (if org-rl-clock-time-direction-reverse -1 1)
+        (time-aware-read-number interval prompt-fn maxtimelen-fn))
+       60))))
 
 
 

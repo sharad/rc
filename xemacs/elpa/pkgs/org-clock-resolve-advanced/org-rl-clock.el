@@ -279,10 +279,10 @@
                        (prev (nth 0 clocks))
                        (next (nth 1 clocks)))
 
-                  (org-rl-debug :warning "(org-rl-clock-null prev) %s" (org-rl-clock-null prev))
-                  (org-rl-debug :warning "(org-rl-clock-null next) %s" (org-rl-clock-null next))
-
                   (when clocks
+
+                    (org-rl-debug :warning "(org-rl-clock-null prev) %s" (org-rl-clock-null prev))
+                    (org-rl-debug :warning "(org-rl-clock-null next) %s" (org-rl-clock-null next))
 
                     (unless (eq opt 'done)
                       (when (and
