@@ -720,6 +720,24 @@
     debug))
 
 
+(when nil
+  (cl-defmethod org-rl-clock-build-options-OLD ((prev org-rl-clock)
+                                                (next org-rl-clock)
+                                                maxtimelen)
+    (org-rl-debug "org-rl-clock-build-options: prev[%s] next[%s] maxtimelen[%d] secs"
+                  (org-rl-format-clock prev)
+                  (org-rl-format-clock next)
+                  maxtimelen)
+    (append
+     (append
+      (org-rl-clock-opts-prev prev next)
+      (unless (zerop maxtimelen) (org-rl-clock-opts-prev-with-time prev next)))
+     (append
+      (org-rl-clock-opts-next prev next)
+      (unless (zerop maxtimelen) (org-rl-clock-opts-next-with-time prev next)))
+     (unless (zerop maxtimelen) (org-rl-clock-opts-common-with-time prev next))
+     (org-rl-clock-opts-common prev next))))
+
 (cl-defmethod org-rl-clock-build-options ((prev org-rl-clock)
                                           (next org-rl-clock)
                                           maxtimelen)
@@ -743,24 +761,6 @@
         (org-rl-clock-opts-common-with-time prev next))
       (org-rl-clock-opts-prev prev next)
       (org-rl-clock-opts-next prev next)))
-   (org-rl-clock-opts-common prev next)))
-
-
-(cl-defmethod org-rl-clock-build-options ((prev org-rl-clock)
-                                          (next org-rl-clock)
-                                          maxtimelen)
-  (org-rl-debug "org-rl-clock-build-options: prev[%s] next[%s] maxtimelen[%d] secs"
-                (org-rl-format-clock prev)
-                (org-rl-format-clock next)
-                maxtimelen)
-  (append
-   (append
-    (org-rl-clock-opts-prev prev next)
-    (unless (zerop maxtimelen) (org-rl-clock-opts-prev-with-time prev next)))
-   (append
-    (org-rl-clock-opts-next prev next)
-    (unless (zerop maxtimelen) (org-rl-clock-opts-next-with-time prev next)))
-   (unless (zerop maxtimelen) (org-rl-clock-opts-common-with-time prev next))
    (org-rl-clock-opts-common prev next)))
 
 (defvar org-rl-read-interval 60)
