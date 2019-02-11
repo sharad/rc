@@ -66,14 +66,15 @@
   (let ((maxtimelen (org-rl-get-time-gap prev next)))
     (if (= (org-rl-compare-time-gap prev next timelen) 0)
         (progn
+          (org-rl-debug :warning "compare = %s" 'org-rl-clock-opt-include-in-prev)
           (setf (org-rl-clock-stop-time prev) (time-add
                                                (org-rl-clock-start-time prev) maxtimelen))
           (org-rl-clock-clock-out prev fail-quietly))
       (if (> (org-rl-compare-time-gap prev next timelen) 0)
           (if (> timelen 0)
-              (org-rl-clock-expand-time prev (abs timelen))
+              (setf prev (org-rl-clock-expand-time prev (abs timelen)))
             (progn
-              (org-rl-clock-clock-out prev fail-quietly)     ;if already not necessary
+              (setf prev (org-rl-clock-clock-out prev fail-quietly))     ;if already not necessary
               (org-rl-clock-clock-out next fail-quietly)     ;if necessary
               (setf next
                     (org-rl-make-clock (org-rl-clock-marker prev)
@@ -87,6 +88,7 @@
                maxtimelen
                (float-time (org-rl-get-time-gap prev next))))))
   (org-rl-clocks-action resume fail-quietly prev next)
+  (org-rl-debug :warning "finish %s" 'org-rl-clock-opt-include-in-prev)
   (list prev next))
 
 (cl-defmethod org-rl-clock-opt-include-in-next ((prev org-rl-clock)
@@ -99,15 +101,16 @@
   (let ((maxtimelen (org-rl-get-time-gap prev next)))
     (if (= (org-rl-compare-time-gap prev next timelen) 0)
         (progn
+          (org-rl-debug :warning "compare = %s" 'org-rl-clock-opt-include-in-next)
           (setf (org-rl-clock-stop-time next) (time-add
                                                (org-rl-clock-start-time next) maxtimelen))
           (org-rl-clock-clock-out next fail-quietly))
-      (if (> (org-rl-compare-time-gap next prev timelen) 0)
+      (if (> (org-rl-compare-time-gap prev next timelen) 0)
           (if (< timelen 0)
-              (org-rl-clock-expand-time next timelen)
+              (setf next (org-rl-clock-expand-time next timelen))
             (progn
               (org-rl-clock-clock-out prev fail-quietly)     ;if necessary
-              (org-rl-clock-clock-out next fail-quietly)     ;if necessary
+              (setf next (org-rl-clock-clock-out next fail-quietly))     ;if necessary
               (setf prev (org-rl-make-clock (org-rl-clock-marker next)
                                             (org-rl-clock-stop-time prev)
                                             (time-add
@@ -119,6 +122,7 @@
                maxtimelen
                (float-time (org-rl-get-time-gap prev next))))))
   (org-rl-clocks-action resume fail-quietly prev next)
+  (org-rl-debug :warning "finish %s" 'org-rl-clock-opt-include-in-next)
   (list prev next))
 
 (cl-defmethod org-rl-clock-opt-include-in-other ((prev org-rl-clock)
@@ -134,8 +138,8 @@
   (let ((maxtimelen   (org-rl-get-time-gap prev next))
         (other-marker (org-rl-select-other-clock)))
 
-    (org-rl-clock-clock-out prev fail-quietly)     ;if necessary
-    (org-rl-clock-clock-out next fail-quietly)     ;if necessary
+    (setf prev (org-rl-clock-clock-out prev fail-quietly))     ;if necessary
+    (setf next (org-rl-clock-clock-out next fail-quietly))     ;if necessary
 
     (if (> timelen 0)
         (setq prev
@@ -157,6 +161,7 @@
              resume
              fail-quietly))))
   (org-rl-clocks-action nil nil prev next)
+  (org-rl-debug :warning "finish %s" 'org-rl-clock-opt-include-in-other)
   (list prev next))
 
 
@@ -172,11 +177,13 @@
           (cond
            ((eq opt 'jump-prev-p)
             ;; finish here
-            (org-rl-clock-clock-jump-to prev))
+            (org-rl-clock-clock-jump-to prev)
+            nil)
 
            ((eq opt 'jump-next-p)
             ;; finish here
-            (org-rl-clock-clock-jump-to next))
+            (org-rl-clock-clock-jump-to next)
+            nil)
 
            ((eq opt 'cancel-prev-p)
             (org-rl-clock-opt-cancel-prev prev next))
@@ -197,7 +204,7 @@
             (org-rl-clock-opt-include-in-other prev next timelen))
 
            ((eq opt 'done)
-            (list prev next))
+            nil)
 
            (t (error "Wrong option %s" opt)))))
     (org-rl-debug :warning "org-rl-clock-time-process-option: finished")
@@ -272,33 +279,24 @@
                        (prev (nth 0 clocks))
                        (next (nth 1 clocks)))
 
-                  (unless (eq opt 'done)
-                    (when (and
-                           (zerop maxtimelen)
-                           close-p)
-                      (org-rl-debug :warning "Error2")
-                      (org-clock-out))
+                  (org-rl-debug :warning "(org-rl-clock-null prev) %s" (org-rl-clock-null prev))
+                  (org-rl-debug :warning "(org-rl-clock-null next) %s" (org-rl-clock-null next))
+
+                  (when clocks
+
+                    (unless (eq opt 'done)
+                      (when (and
+                             (zerop maxtimelen)
+                             close-p)
+                        (org-rl-debug :warning "Error2")
+                        (org-clock-out)))
+
                     (let ((timegap (org-rl-get-time-gap prev next)))
                       (if (> timegap 0)         ;this solved the assert
-                        (if (and
-                             (org-rl-clock-null prev)
-                             (org-rl-clock-null next))
-                            (org-rl-debug :warning "Test1 prev:%s next:%s"
-                                          (org-rl-format-clock prev)
-                                          (org-rl-format-clock next))
-                          (progn
-                            (if (eql (org-rl-clock-marker prev) nil)
-                                (org-rl-debug :warning "equal nil (org-rl-clock-marker prev)")
-                              (org-rl-debug :warning "not equal nil (org-rl-clock-marker prev)"))
-
-                            (org-rl-debug :warning "Test2 prev:%s test %s marker %s next:%s test %s marker %s" 
-                                          (org-rl-format-clock prev)
-                                          (org-rl-clock-null prev)
-                                          (org-rl-clock-marker prev)
-                                          (org-rl-format-clock next)
-                                          (org-rl-clock-null next)
-                                          (org-rl-clock-marker next))
-                            (org-rl-clock-resolve-time prev next close-p)))
+                          (unless (and
+                                   (org-rl-clock-null prev)
+                                   (org-rl-clock-null next))
+                            (org-rl-clock-resolve-time prev next close-p))
                         (org-rl-debug :warning "Error1")))))
               (org-rl-debug :warning "Error given time %d can not be greater than %d" timelen maxtimelen)))))))
   (org-rl-debug :warning "org-rl-clock-resolve-time: finished"))
@@ -308,7 +306,7 @@
 (defun org-rl-clock-clock-in-as-it-is (marker)
   (interactive
    (list (point-marker)))
-  (let ((start (org-clock-get-nth-full-clock-start-time marker)))
+  (let ((start (org-clock-get-nth-half-clock-time marker)))
     (if start
         (org-rl-straight-org-clock-clock-in (list marker start) nil start)
       (error "start is null."))))

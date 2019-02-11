@@ -117,52 +117,52 @@
   marker
   start
   stop
-  active
+  current
   cancel)
 
 (cl-defmethod org-rl-make-clock ((marker marker)
                                  (start org-rl-time)
                                  (stop org-rl-time)
                                  &optional
-                                 active
+                                 current
                                  cancel)
   (make-org-rl-clock
    :marker marker
    :start start
    :stop  stop
-   :active active
+   :current current
    :cancel cancel))
 
 (cl-defmethod org-rl-make-clock ((marker marker)
                                  start-time
                                  stop-time
                                  &optional
+                                 current
                                  start-clean
                                  stop-clean
-                                 active
                                  cancel)
   ;; (org-rl-debug :warning "calling 2")
   (make-org-rl-clock
    :marker marker
    :start (make-org-rl-time :time start-time :clean start-clean)
    :stop  (make-org-rl-time :time stop-time  :clean stop-clean)
-   :active active
+   :current current
    :cancel cancel))
 
 (cl-defmethod org-rl-make-clock ((marker symbol)
                                  start-time
                                  stop-time
                                  &optional
+                                 current
                                  start-clean
                                  stop-clean
-                                 active
                                  cancel)
   ;; (org-rl-debug :warning "calling 2")
   (make-org-rl-clock
    :marker marker
    :start (make-org-rl-time :time start-time :clean start-clean)
    :stop  (make-org-rl-time :time stop-time  :clean stop-clean)
-   :active active
+   :current current
    :cancel cancel))
 
 ;; good
@@ -238,13 +238,16 @@
 
 (cl-defmethod org-rl-clock-null ((clock org-rl-clock))
   (let ((marker (org-rl-clock-marker clock)))
-    (org-rl-debug :warning "val %s" marker)
-    (or (eq marker 'imaginary)
-        (null marker))))
+    ;; (org-rl-debug :warning "org-rl-clock-null: clock[%s] =  %s"
+    ;;               (org-rl-format-clock clock)
+    ;;               marker)
+    (or
+     (eq marker 'imaginary)
+     (null marker))))
 
-(let ((prev (org-rl-make-clock nil 'now 'now)))
-  (org-rl-clock-start-set prev nil)
-  (org-rl-clock-null prev))
+;; (let ((prev (org-rl-make-clock nil 'now 'now)))
+;;   (org-rl-clock-start-set prev nil)
+;;   (org-rl-clock-null prev))
 
 
 
@@ -270,7 +273,7 @@
              "imaginary"))
           (start (format-time-string fmt (org-rl-clock-start-time clock)))
           (stop  (format-time-string fmt (org-rl-clock-stop-time clock))))
-      (format "<%s> %s-%s" heading start stop))))
+      (format "<%s> %s-%s %s" heading start stop (org-rl-clock-current clock)))))
 
 (cl-defmethod org-rl-clock-name-bracket ((clock org-rl-clock))
   ;;(org-rl-clock-marker clock)
@@ -306,47 +309,53 @@
   (let ((fmt (cdr org-time-stamp-formats)))
     (let ((start (format-time-string fmt (org-rl-clock-start-time clock)))
           (stop  (format-time-string fmt (org-rl-clock-stop-time clock))))
+      (setf (org-rl-clock-marker clock) (point-marker))
       (org-insert-time-stamp start t t "CLOCK: ")
       (insert "--")
       (org-insert-time-stamp stop t t)
-      (org-update-all-dblocks))))
+      (org-update-all-dblocks)
+      clock)))
 
 (cl-defmethod org-rl-clock-replace ((clock org-rl-clock) &optional terminal)
+  (org-rl-debug :warning "org-rl-clock-replace: clock[%s] resume[%s]"
+                (org-rl-format-clock clock)
+                terminal)
   (if (org-rl-clock-null clock)
-      (org-rl-debug :warning "%s clock is null" (org-rl-clock-marker clock))
-      (if (org-rl-clock-full-p clock)
-          (save-excursion
-            (let ((marker (org-rl-clock-marker clock)))
-              (with-current-buffer (marker-buffer marker)
-                (let ((clock-reg
-                       (concat " *CLOCK: *\\["
-                               "\\(" org-ts-regexp0 "\\)"
-                               "\\]\\(?:--\\[\\)?"
-                               "\\(" org-ts-regexp0 "\\)"
-                               "\\(?:\\] *=> *\\([0-9]+:[0-9]\\{2\\}\\)\\)"))
-                      (beginning (line-beginning-position))
-                      (end (line-end-position)))
-                  (when (and
-                         (goto-char marker)
-                         (move-beginning-of-line nil))
-                    (when (re-search-forward clock-reg end t)
-                      (let ((file-clock-start (org-time-string-to-time (match-string 1)))
-                            (file-clock-stop  (org-time-string-to-time (match-string 2))))
-                        (cond
-                         ((eq terminal 'start)
-                          (if (= file-clock-stop (org-rl-clock-stop-time clock))
-                              (progn
-                                (kill-line)
-                                (org-rl-clock-insert-range clock))))
-                         ((eq terminal 'stop)
-                          (if (= file-clock-start (org-rl-clock-start-time clock))
-                              (progn
-                                (kill-line)
-                                (org-rl-clock-insert-range clock))))
-                         (t
-                          (kill-line)
-                          (org-rl-clock-insert-range clock))))))))))
-        (error "clock %s is not full" (org-rl-clock-name-bracket clock)))))
+      (org-rl-debug :warning "org-rl-clock-replace: %s clock is null" (org-rl-clock-marker clock))
+    (if (org-rl-clock-full-p clock)
+        (save-excursion
+          (let ((marker (org-rl-clock-marker clock)))
+            (with-current-buffer (marker-buffer marker)
+              (let ((clock-reg
+                     (concat " *CLOCK: *\\["
+                             "\\(" org-ts-regexp0 "\\)"
+                             "\\]\\(?:--\\[\\)?"
+                             "\\(" org-ts-regexp0 "\\)"
+                             "\\(?:\\] *=> *\\([0-9]+:[0-9]\\{2\\}\\)\\)"))
+                    (beginning (line-beginning-position))
+                    (end (line-end-position)))
+                (when (and
+                       (goto-char marker)
+                       (move-beginning-of-line nil))
+                  (when (re-search-forward clock-reg end t)
+                    (let ((file-clock-start (org-time-string-to-time (match-string 1)))
+                          (file-clock-stop  (org-time-string-to-time (match-string 2))))
+                      (cond
+                       ((eq terminal 'start)
+                        (if (= file-clock-stop (org-rl-clock-stop-time clock))
+                            (progn
+                              (kill-line)
+                              (setf clock (org-rl-clock-insert-range clock)))))
+                       ((eq terminal 'stop)
+                        (if (= file-clock-start (org-rl-clock-start-time clock))
+                            (progn
+                              (kill-line)
+                              (setf clock (org-rl-clock-insert-range clock)))))
+                       (t
+                        (kill-line)
+                        (setf clock (org-rl-clock-insert-range clock)))))))))))
+      (error "clock %s is not full" (org-rl-clock-name-bracket clock)))
+    clock))
 
 
 (cl-defmethod org-rl-clock-for-clock-in ((clock org-rl-clock))
@@ -378,7 +387,7 @@
             (org-rl-clock-marker clock)
             (org-rl-clock-start-time clock)))
         (error "%s start time is null" (org-rl-clock-start-time clock)))
-    (error "%s clock is null" (org-rl-clock-marker clock))))
+    (error "org-rl-clock-clock-cancel: %s clock is null" (org-rl-clock-marker clock))))
 
 (cl-defmethod org-rl-clock-clock-jump-to ((clock org-rl-clock))
   (org-rl-debug :warning "org-rl-clock-clock-jump-to: clock[%s]"
@@ -387,7 +396,8 @@
       (org-clock-jump-to-current-clock
        (cons
         (org-rl-clock-marker clock)
-        (org-rl-clock-start-time clock)))))
+        (org-rl-clock-start-time clock))))
+  nil)
 
 
 
@@ -405,24 +415,35 @@
              resume
              (org-rl-clock-start-time clock))
           (error "%s start time is null" (org-rl-clock-start-time clock)))
-      (error "%s clock is null" (org-rl-clock-marker clock)))))
+      (error "org-rl-clock-clock-in: %s clock is null" (org-rl-clock-marker clock))))
+  clock)
 
 (cl-defmethod org-rl-clock-clock-out ((clock org-rl-clock)
                                       &optional
                                       fail-quietly)
+  ;;TODO: not updating org-clock-marker
   (org-rl-debug :warning "org-rl-clock-clock-out: clock[%s] fail-quietly[%s]"
                 (org-rl-format-clock clock)
                 fail-quietly)
   (when (not org-clock-clocking-in)
     (if (org-rl-clock-null clock)
-        (org-rl-debug :warning "%s clock is null" (org-rl-clock-marker clock))
+        (org-rl-debug :warning "org-rl-clock-clock-out: %s clock is null" (org-rl-clock-marker clock))
       (if (time-p (org-rl-clock-stop-time clock))
           (if (org-rl-clock-half-p clock)
-              (org-clock-clock-out (org-rl-clock-for-clock-out clock)
-                                   fail-quietly
-                                   (org-rl-clock-stop-time clock))
+              (progn
+                (if (org-rl-clock-current clock)                   ;TODO: check for current clock? find some other way to find active clock like matching with org-clock-marker
+                    (progn
+                      (org-clock-out org-clock-out-switch-to-state
+                                     fail-quietly
+                                     (org-rl-clock-stop-time clock))
+                      (setf (org-rl-clock-current clock) nil)
+                      (setf (org-rl-clock-marker clock) (car org-clock-history)))
+                  (org-clock-clock-out (org-rl-clock-for-clock-out clock)
+                                       fail-quietly
+                                       (org-rl-clock-stop-time clock))))
             (org-rl-clock-replace clock))
-        (error "%s stop time is null" (org-rl-clock-stop-time clock))))))
+        (error "org-rl-clock-clock-out: %s stop time is null" (org-rl-clock-stop-time clock))))
+    clock))
 
 (cl-defmethod org-rl-clock-clock-in-out ((clock org-rl-clock)
                                          &optional
@@ -451,10 +472,11 @@
                                    &option
                                    resume
                                    fail-quietly)
-  (when (org-rl-clock-start-clean clock)
-    (org-rl-clock-clock-in clock resume fail-quietly))
-  (when (org-rl-clock-start-clean clock)
-    (org-rl-clock-clock-out clock fail-quietly)))
+  ;; (when (org-rl-clock-start-clean clock)
+  ;;   (org-rl-clock-clock-in clock resume fail-quietly))
+  ;; (when (org-rl-clock-start-clean clock)
+  ;;   (org-rl-clock-clock-out clock fail-quietly))
+  )
 
 (defun org-rl-clocks-action (resume fail-quietly &rest clocks)
   (dolist (clock clocks)
@@ -469,6 +491,9 @@
 (cl-defmethod org-rl-clock-expand-time ((clock org-rl-clock) sec)
   "if sec is positive expand in future else expand in past."
   ;; do clock in clock out accordingly
+  (org-rl-debug :warning "org-rl-clock-expand-time: clock[%s] org-clock-clocking-in[%s]"
+                (org-rl-format-clock clock)
+                org-clock-clocking-in)
   (if (> sec 0)
       (progn
         (setf (org-rl-clock-stop-time clock) (time-add (org-rl-clock-stop-time clock) sec))
@@ -478,7 +503,10 @@
       (org-rl-clock-replace clock))))
 
 (cl-defmethod org-rl-clock-contract-time ((clock org-rl-clock) sec)
-  "if sec is positive contract from future else contract from past.")
+  "if sec is positive contract from future else contract from past."
+  (org-rl-debug :warning "org-rl-clock-contract-time: clock[%s] org-clock-clocking-in[%s]"
+                (org-rl-format-clock clock)
+                org-clock-clocking-in))
 
 
 (defun org-clock-idle-time-set (mins)
@@ -516,7 +544,7 @@
 
 (cl-defmethod org-rl-clock-opts-prev ((prev org-rl-clock)
                                       (next org-rl-clock))
-  (org-rl-debug :debug "calling org-rl-clock-opts-prev")
+  ;; (org-rl-debug :debug "calling org-rl-clock-opts-prev")
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
     (append
@@ -536,7 +564,7 @@
 
 (cl-defmethod org-rl-clock-opts-prev-with-time ((prev org-rl-clock)
                                                 (next org-rl-clock))
-  (org-rl-debug :debug "calling org-rl-clock-opts-prev-with-time")
+  ;; (org-rl-debug :debug "calling org-rl-clock-opts-prev-with-time")
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
     (list
@@ -550,7 +578,7 @@
 
 (cl-defmethod org-rl-clock-opts-next ((prev org-rl-clock)
                                       (next org-rl-clock))
-  (org-rl-debug :debug "calling org-rl-clock-opts-next")
+  ;; (org-rl-debug :debug "calling org-rl-clock-opts-next")
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
     (append
@@ -570,7 +598,7 @@
 
 (cl-defmethod org-rl-clock-opts-next-with-time ((prev org-rl-clock)
                                                 (next org-rl-clock))
-  (org-rl-debug :debug "calling org-rl-clock-opts-next-with-time")
+  ;; (org-rl-debug :debug "calling org-rl-clock-opts-next-with-time")
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
     (list
@@ -624,10 +652,21 @@
 (cl-defmethod org-rl-compare-time-gap ((prev org-rl-clock)
                                        (next org-rl-clock)
                                        timelen)
-  (org-rl-debug :warning "timelen %s" timelen)
+  ;; (org-rl-debug :warning "org-rl-compare-time-gap: timelen %s" timelen)
+  ;; (org-rl-debug :warning "org-rl-compare-time-gap: (float-time (org-rl-get-time-gap prev next))= %d, (abs timelen) = %s"
+  ;;               (float-time (org-rl-get-time-gap prev next))
+  ;;               (abs timelen))
+  (cl-assert (> (float-time (org-rl-get-time-gap prev next)) 0))
+  ;; (org-rl-debug :warning
+  ;;               "(- (float-time (org-rl-get-time-gap prev next)) (abs timelen)) = %s"
+  ;;               (-
+  ;;                (float-time (org-rl-get-time-gap prev next))
+  ;;                (abs timelen)))
   (if (eq timelen 'all)
       0
-    (- (float-time (org-rl-get-time-gap prev next)) (abs timelen))))
+    (-
+     (float-time (org-rl-get-time-gap prev next))
+     (abs timelen))))
 
 
 (cl-defmethod org-rl-clock-time-debug-prompt ((prev org-rl-clock)

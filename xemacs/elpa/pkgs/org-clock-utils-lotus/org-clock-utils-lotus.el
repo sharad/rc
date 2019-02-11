@@ -167,7 +167,7 @@
     (org-with-narrow-to-marker marker
       (goto-char (point-min))
       (when (re-search-forward org-clock-re nil t n)
-        (list (copy-marker (match-begining 0) t)
+        (list (copy-marker (match-beginning 0) t)
               (copy-marker (match-end 0) t)
               (org-time-string-to-time (match-string 1))
               (org-time-string-to-time (match-string 2)))))))
