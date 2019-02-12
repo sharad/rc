@@ -247,10 +247,10 @@
      (null marker))))
 
 (cl-defmethod org-rl-clock-duration ((clock org-rl-clock))
-  (time-to-seconds
-   (time-subtract
-    (org-rl-clock-stop-time clock)
-    (org-rl-clock-start-time clock))))
+  (let ((start (org-rl-clock-start-time clock))
+        (stop (org-rl-clock-stop-time clock)))
+    (time-to-seconds
+     (time-subtract stop start))))
 
 (cl-defmethod org-rl-clock-assert ((clock org-rl-clock))
   (cl-assert (>= (org-rl-clock-duration clock) 0)))
