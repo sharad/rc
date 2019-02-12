@@ -566,6 +566,7 @@ With prefix arg C-u, copy region instad of killing it."
 (put 'helm-timed 'lisp-indent-function 1)
 
 (defun safe-timed-org-refile-get-location (timeout)
+  ;; TODO: org-fit-window-to-buffer
   ;; TODO: as clean up reset newwin configuration
   (lexical-let* ((current-command (or
                                    (helm-this-command)
@@ -636,6 +637,7 @@ With prefix arg C-u, copy region instad of killing it."
                           ,@body)))
 (put 'org-with-file-loc-timed-refile 'lisp-indent-function 4)
 
+;; TODO: org-fit-window-to-buffer
 ;; (defmacro org-miniwin-file-loc-with-refile (win file pos refile-targets &rest body)
 (defmacro org-with-file-loc-refile-new-win (file pos refile-targets newwin &rest body)
   `(org-file-loc-with-refile
@@ -645,6 +647,7 @@ With prefix arg C-u, copy region instad of killing it."
            ,@body)))
 (put 'org-miniwin-file-loc-with-refile 'lisp-indent-function 4)
 
+;; TODO: org-fit-window-to-buffer
 ;; (defmacro org-timed-miniwin-file-loc-with-refile (win file pos timeout refile-targets &rest body)
 (defmacro org-with-file-loc-timed-refile-new-win (file pos timeout refile-targets newwin &rest body)
   `(org-with-file-loc-timed-refile
@@ -658,6 +661,7 @@ With prefix arg C-u, copy region instad of killing it."
            ,@body)))
 (put 'org-with-file-loc-timed-refile-new-win 'lisp-indent-function 5)
 
+;; TODO: org-fit-window-to-buffer
 ;; (defmacro org-timed-miniwin-file-loc-with-refile (win file pos timeout refile-targets &rest body)
 (defmacro org-with-file-loc-timed-refile-timed-new-win (file pos
                                                         timeout-refile refile-targets

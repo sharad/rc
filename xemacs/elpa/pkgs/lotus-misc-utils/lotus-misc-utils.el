@@ -87,6 +87,7 @@
       -12 -10))
 
 ;; create smaller and proper sized window
+;; TODO: org-fit-window-to-buffer
 (defun lotus-make-new-win ()
   (let ((size (lotus-new-lower-win-size))
         (window-min-height 7))

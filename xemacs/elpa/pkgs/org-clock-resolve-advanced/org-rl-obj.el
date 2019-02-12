@@ -199,6 +199,15 @@
   (let ((rl-time (org-rl-time-time time)))
     (time-get-time rl-time)))
 
+(cl-defmethod org-rl-time-current-delta-secs ((time org-rl-time))
+  (time-subtract
+   (org-rl-time-get-time)
+   (current-time)))
+
+(cl-defmethod org-rl-time-current-min-p ((time org-rl-time))
+  (< (abs (org-rl-time-current-delta-secs time)) 60))
+
+
 (cl-defmethod org-rl-clock-start-time ((clock org-rl-clock))
   (org-rl-time-get-time
    (org-rl-clock-start clock)))
@@ -456,6 +465,16 @@
         (error "org-rl-clock-clock-out: %s stop time is null" (org-rl-clock-stop-time clock))))
     clock))
 
+(cl-defmethod org-rl-clock-ask-to-resume-if-current-min ((clock org-rl-clock) resume)
+  (if (and
+       (org-rl-time-current-min-p (org-rl-clock-stop-time clock))
+       resume)
+      (if (eq resume t)
+          t
+        (y-or-n-p
+         (format "Should resume clock %s: "
+                 (org-rl-format-clock clock))))))
+
 (cl-defmethod org-rl-clock-clock-in-out ((clock org-rl-clock)
                                          &optional
                                          resume
@@ -474,10 +493,20 @@
           (let ((marker (org-rl-clock-clock-in clock resume)))
             (setf (org-rl-clock-marker clock) marker)
             (org-rl-debug "org-rl-clock-clock-in-out out")
-            (org-rl-clock-clock-out clock fail-quietly)
+            (unless (org-rl-clock-ask-to-resume-if-current-min
+                     (org-rl-clock-stop-time clock)
+                     resume)
+              (org-rl-clock-clock-out clock fail-quietly))
             (org-rl-debug "org-rl-clock-clock-in-out out done")
             clock))
       (error "Clock org-clock-clocking-in is %s" org-clock-clocking-in))))
+
+(cl-defmethod org-rl-clock-restart-now ((clock org-rl-clock) resume)
+  (let ((newclock (org-rl-make-clock
+                   (org-rl-clock-marker clock)
+                   'now
+                   nil)))
+    (org-rl-clock-clock-in newclock)))
 
 (cl-defmethod org-rl-clock-action ((clock org-rl-clock)
                                    &option
@@ -546,7 +575,9 @@
 
 (cl-defmethod org-rl-clock-opts-common ((prev org-rl-clock)
                                         (next org-rl-clock))
-  (list (cons "Done" 'done)))
+  (list
+   (cons "Restart" 'restart)
+   (cons "Done" 'done)))
 
 (cl-defmethod org-rl-clock-opts-common-with-time ((prev org-rl-clock)
                                                   (next org-rl-clock))

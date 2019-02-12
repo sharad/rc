@@ -38,6 +38,7 @@
   (setf (org-rl-clock-start prev) (org-rl-clock-start prev))
   (setf (org-rl-clock-marker prev) nil)
   (org-rl-clocks-action nil nil prev next)
+  ;; TODO: add off to restart now (org-rl-clock-restart-now)
   (list prev next))
 
 (cl-defmethod org-rl-clock-opt-cancel-next ((prev org-rl-clock)
@@ -52,6 +53,7 @@
   (setf (org-rl-clock-stop  next) (org-rl-clock-stop prev))
   (setf (org-rl-clock-marker  next) nil)
   (org-rl-clocks-action nil nil prev next)
+  ;; TODO: add off to restart now (org-rl-clock-restart-now)
   (list prev next))
 
 (cl-defmethod org-rl-clock-opt-include-in-prev ((prev org-rl-clock)
@@ -89,6 +91,7 @@
                (float-time (org-rl-get-time-gap prev next))))))
   (org-rl-clocks-action resume fail-quietly prev next)
   (org-rl-debug "finish %s" 'org-rl-clock-opt-include-in-prev)
+  ;; TODO: add off to restart now (org-rl-clock-restart-now)
   (list prev next))
 
 (cl-defmethod org-rl-clock-opt-include-in-next ((prev org-rl-clock)
@@ -123,6 +126,7 @@
                (float-time (org-rl-get-time-gap prev next))))))
   (org-rl-clocks-action resume fail-quietly prev next)
   (org-rl-debug "finish %s" 'org-rl-clock-opt-include-in-next)
+  ;; TODO: add off to restart now (org-rl-clock-restart-now)
   (list prev next))
 
 (cl-defmethod org-rl-clock-opt-include-in-other ((prev org-rl-clock)
@@ -162,6 +166,7 @@
              fail-quietly))))
   (org-rl-clocks-action nil nil prev next)
   (org-rl-debug "finish %s" 'org-rl-clock-opt-include-in-other)
+  ;; TODO: add off to restart now (org-rl-clock-restart-now)
   (list prev next))
 
 
@@ -209,10 +214,11 @@
            (t (error "Wrong option %s" opt)))))
     (org-rl-debug "org-rl-clock-time-process-option: finished")
     clocks))
-  
+
 
 ;; NOTE: Remember here the concept of Positive and Negative and Full time.
 ;; Read time which could be positive or negative or full
+;; TODO: option for restart also required for with active clock.
 (cl-defmethod org-rl-clock-resolve-time ((prev org-rl-clock)
                                          (next org-rl-clock)
                                          &optional
