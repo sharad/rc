@@ -167,7 +167,7 @@
    :cancel cancel))
 
 ;; good
-;; (org-rl-make-clock (point-marker) (current-time) 1)
+;; (org-rl-make-clock (point-marker) (current-time) 1 t)
 ;; (org-rl-make-clock (point-marker) (make-org-rl-time :time (current-time)) (make-org-rl-time :time (current-time)))
 
 

@@ -78,7 +78,8 @@ so long."
                   (org-rl-clock-resolve-time
                    (org-rl-make-clock org-clock-marker
                                       org-clock-start-time
-                                      org-clock-user-idle-start) ;TODO: what important.
+                                      org-clock-user-idle-start
+                                      t) ;TODO: what important.
                    (org-rl-make-clock nil 'now 'now))
                 (org-rl-debug
                  "org-rl-resolve-clocks-if-idle: pass3 not calling resolve time org-clock-last-idle-start-time: %s, (org-user-idle-seconds) %s"
