@@ -243,8 +243,9 @@
     ;;               (org-rl-format-clock clock)
     ;;               marker)
     (or
-     (eq marker 'imaginary)
-     (null marker))))
+     (equal marker 'imaginary)
+     (null marker)
+     (not (markerp marker)))))
 
 (cl-defmethod org-rl-clock-duration ((clock org-rl-clock))
   (let ((start (org-rl-clock-start-time clock))
