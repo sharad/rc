@@ -203,21 +203,58 @@
     (deactivate-fullscreen-if-not (current-window)))
 
   (defcommand fullscreen-on-ungrabbed-pointer-enable () ()
-              (add-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
-              (add-hook *focus-window-hook* 'fullscreen-focus-window))
+    (add-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
+    (add-hook *focus-window-hook* 'fullscreen-focus-window))
 
   (defcommand fullscreen-on-ungrabbed-pointer-disable () ()
-              (remove-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
-              (remove-hook *focus-window-hook* 'fullscreen-focus-window)
-              (deactivate-fullscreen-if-not (current-window)))
+    (remove-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
+    (remove-hook *focus-window-hook* 'fullscreen-focus-window)
+    (deactivate-fullscreen-if-not (current-window)))
 
   (defcommand toggle-fullscreen-on-ungrabbed-pointer () ()
-              (if (member 'fullscreen-focus-window *focus-window-hook*)
-                  (fullscreen-on-ungrabbed-pointer-disable)
-                  (fullscreen-on-ungrabbed-pointer-enable)))
+    (if (member 'fullscreen-focus-window *focus-window-hook*)
+        (fullscreen-on-ungrabbed-pointer-disable)
+        (fullscreen-on-ungrabbed-pointer-enable)))
 
   ;; enable it.
-  (fullscreen-on-ungrabbed-pointer-enable))
+  (fullscreen-on-ungrabbed-pointer-enable)
+
+
+  (let ((fs-idle-time 3))
+
+    (defun my-full-screen ()
+      (when (member 'fullscreen-focus-window *focus-window-hook*)
+        (if (> (stumpwm::idle-time (current-screen)) fs-idle-time)
+            (deactivate-fullscreen-if-not (current-window))
+            ;; (activate-fullscreen-if-not (current-window))
+            )))
+
+    (defun my-stop-newmail-timer ()
+      "Stops the newmail timer."
+      (ignore-errors
+       (cancel-timer *newmail-timer*)))
+
+    (defun my-start-newmail-timer ()
+      "Starts the newmail timer."
+      (my-stop-newmail-timer)
+      (setf *newmail-timer* (run-with-timer 10 10 'my-full-screen)))
+
+    (defcommand mailstart () ()
+      "Starts the newmail timer."
+      (my-start-newmail-timer))
+
+    (defcommand mailstop () ()
+      "Stops the newmail timer."
+      (my-stop-newmail-timer))
+
+    )
+
+
+
+
+
+
+  )
 
 
 ;;}}} mode-line end
