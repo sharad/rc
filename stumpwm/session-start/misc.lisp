@@ -135,24 +135,31 @@
   (toggle-mode-line (current-screen) (current-head) (car *mode-line-fmts*)))
 
 (let ()
- (defun mode-line-when-pointer-grabbed (key key-seq cmd)
-   ;; (declare (ignore key key-seq cmd))
-   (declare (ignore key key-seq))
-   (enable-mode-line
-    (current-screen)
-    (current-head)
-    (kmap-or-kmap-symbol-p cmd)))
+  (defun mode-line-when-pointer-grabbed (key key-seq cmd)
+    ;; (declare (ignore key key-seq cmd))
+    (declare (ignore key key-seq))
+    (enable-mode-line
+     (current-screen)
+     (current-head)
+     (kmap-or-kmap-symbol-p cmd)))
 
- (defcommand toggle-mode-line-enable () ()
-             (add-hook *key-press-hook* 'mode-line-when-pointer-grabbed))
+  (defcommand toggle-mode-line-enable () ()
+    (add-hook *key-press-hook* 'mode-line-when-pointer-grabbed))
 
- (defcommand toggle-mode-line-disable () ()
-             (remove-hook *key-press-hook* 'mode-line-when-pointer-grabbed)))
+  (defcommand toggle-mode-line-disable () ()
+    (remove-hook *key-press-hook* 'mode-line-when-pointer-grabbed)))
+
+
+
+
+
+
 
 
 (let ((deactivate-fullscreen-idle-timeout 10)
       (deactivate-fullscreen-timer nil)
-      (fullscreen-on-ungrabbed-pointer-for-few-mins 7))
+      (toggle-fullscreen-on-ungrabbed-pointer-for-few-mins 7)
+      (toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer nil))
   ;; TODO: disable fullscreen on inactivity
 
   (defun activate-fullscreen-if-not (window)
@@ -255,14 +262,23 @@
         (fullscreen-on-ungrabbed-pointer-disable)
         (fullscreen-on-ungrabbed-pointer-enable)))
 
+  (defun toggle-fullscreen-on-ungrabbed-pointer-after-few-mins ()
+    (when toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer
+      (cancel-timer toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer)
+      (setf toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer nil))
+    (toggle-fullscreen-on-ungrabbed-pointer))
+
   (defcommand toggle-fullscreen-on-ungrabbed-pointer-for-few-mins () ()
     "run toggle-fullscreen-on-ungrabbed-pointer-for-few-mins"
-    (when (> fullscreen-on-ungrabbed-pointer-for-few-mins 1)
-      (stumpwm::run-with-timer
-       (* fullscreen-on-ungrabbed-pointer-for-few-mins 60)
-       nil
-       #'toggle-fullscreen-on-ungrabbed-pointer)
-      (toggle-fullscreen-on-ungrabbed-pointer)))
+    (when (> toggle-fullscreen-on-ungrabbed-pointer-for-few-mins 1)
+      (let (mins
+            (*
+              (if toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer 2 1)
+              toggle-fullscreen-on-ungrabbed-pointer-for-few-mins
+              60))
+        (toggle-fullscreen-on-ungrabbed-pointer-after-few-mins)
+        (setf toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer
+              (stumpwm::run-with-timer mins nil #'toggle-fullscreen-on-ungrabbed-pointer-after-few-mins)))))
 
   ;; enable it.
   (fullscreen-on-ungrabbed-pointer-enable))
