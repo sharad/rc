@@ -219,25 +219,25 @@
   ;; enable it.
   (fullscreen-on-ungrabbed-pointer-enable)
 
-
-  (let ((fs-idle-time 3))
+  (let ((fs-idle-time 3)
+        (newmail-timer nil))
 
     (defun my-full-screen ()
       (when (member 'fullscreen-focus-window *focus-window-hook*)
+        (message "deactivate fs")
         (if (> (stumpwm::idle-time (current-screen)) fs-idle-time)
             (deactivate-fullscreen-if-not (current-window))
-            ;; (activate-fullscreen-if-not (current-window))
-            )))
+            (activate-fullscreen-if-not (current-window)))))
 
     (defun my-stop-newmail-timer ()
       "Stops the newmail timer."
       (ignore-errors
-       (cancel-timer *newmail-timer*)))
+       (cancel-timer newmail-timer)))
 
     (defun my-start-newmail-timer ()
       "Starts the newmail timer."
       (my-stop-newmail-timer)
-      (setf *newmail-timer* (run-with-timer 10 10 'my-full-screen)))
+      (setf newmail-timer (run-with-timer fs-idle-time fs-idle-time 'my-full-screen)))
 
     (defcommand mailstart () ()
       "Starts the newmail timer."
@@ -245,9 +245,7 @@
 
     (defcommand mailstop () ()
       "Stops the newmail timer."
-      (my-stop-newmail-timer))
-
-    )
+      (my-stop-newmail-timer)))
 
 
 
