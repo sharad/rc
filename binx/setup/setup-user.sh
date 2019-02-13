@@ -50,9 +50,10 @@ DEB_PKG_NECESSARY_MORE2="gnu-smalltalk-doc gnu-fdisk gnu-standards gnuit gnulib 
 ##  hello-traditional
 hDEB_PKG_NECESSARY_MORE3="libcommoncpp2-doc libconfig-dev libsocket++-dev licenseutils lookup-el lyskom-server macchanger mboxgrep mit-scheme-doc mmm-mode ocaml-doc oneliner-el org-mode-doc parted-doc pcb-common moreutils nmap zenmap"
 DEB_PKG_NECESSARY_MORE4="pinfo psgml qingy r-doc-info r5rs-doc semi sepia sharutils slime source-highlight spell ssed stow rlwrap teseq time trueprint turnin-ng units vera wcalc gnome-calculator wdiff wizzytex wysihtml-el"
-DEB_PKG_GAME="gnugo"
+DEB_PKG_GAME="gnugo cmatrix cmatrix-xfont wmmatrix"
 DEB_PKGS_BACKUP="bup git-annex tahoe-lafs unison unison-all inotify-tools"
 DEB_PKG_NECESSARY="cvs subversion git git-cvs cvs2svn git-review legit git-extras git-flow git-sh git-extras git-crypt ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server sshpass zssh rcs apt-src flatpak apt-file jargon cutils complexity-doc dejagnu diffutils extract festival ffe gccintro gddrescue geda-doc genparse gpodder gnutls-bin pinentry-gnome3 pinentry-tty pinentry-curses mew-beta mew-beta-bin kwalletcli scdaemon kleopatra pinentry-x2go" # mew-bin
+DEB_PKG_NECESSARY1="fish ondir zsh-syntax-highlighting"
 DEB_PKG_WITH_ERROR="edb"
 DEB_PKG_APPEARANCE="lxappearance gnome-tweak-tool gnome-themes-standard libgtk-3-dev console-data gnome-session gnome-settings-daemon gnome-panel policykit-1-gnome dex"
 DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp virtualbox-dkms virtualbox-guest-x11 vagrant"
@@ -80,8 +81,8 @@ DEB_SYS_MAIL="dovecot-core dovecot-imapd mail-stack-delivery ntpdate postfix aug
 DEB_DEV_GTD="tomboy zim anki mnemosyne mnemosyne-blog sqlitebrowser"
 DEB_PKG_LEARNING="gpodder"
 DEB_PKG_TOOL_GUI="lightdm osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin gpointing-device-settings touchfreeze bash-completion libinput-tools keynav feh geeqie wmaker xserver-xephyr" # xserver-xorg-input-synaptics
-DEB_PKG2_TOOL_GUI="unclutter xscreensaver xscreensaver-gl xss-lock wmmatrix rss-glx  xssproxy xscreensaver-data-extra xscreensaver-gl-extra" # event
-DEB_PKG_XWM="compton xcompmgr autocutsel sakura"
+DEB_PKG2_TOOL_GUI="unclutter xscreensaver xscreensaver-gl xss-lock rss-glx  xssproxy xscreensaver-data-extra xscreensaver-gl-extra" # event
+DEB_PKG_XWM="compton xcompmgr autocutsel sakura wmctrl sawfish"
 DEB_PKG_XML="libxml2-utils xsltproc docbook5-xml docbook-xsl-ns"
 DEB_PKG_UTILS="gcalcli newsbeuter liblz4-tool tracker gtimelog d-feet"
 # DEB_PKG_GUI_DEV_UTILS="libglib2.0-dev-bin" gdbus-codegen
@@ -639,6 +640,7 @@ function setup_apt_packages()
         DEB_PKG_GAME
         DEB_PKGS_BACKUP
         DEB_PKG_NECESSARY
+        DEB_PKG_NECESSARY1
         # DEB_PKG_WITH_ERROR
         DEB_PKG_APPEARANCE
         DEB_PKG_VIRTURALMACHINE

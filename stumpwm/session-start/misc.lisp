@@ -257,11 +257,12 @@
 
   (defcommand toggle-fullscreen-on-ungrabbed-pointer-for-few-mins () ()
     "run toggle-fullscreen-on-ungrabbed-pointer-for-few-mins"
-    (toggle-fullscreen-on-ungrabbed-pointer)
-    (stumpwm::run-with-timer
-     (* fullscreen-on-ungrabbed-pointer-for-few-mins 60)
-     nil
-     #'toggle-fullscreen-on-ungrabbed-pointer))
+    (when (> fullscreen-on-ungrabbed-pointer-for-few-mins 1)
+      (stumpwm::run-with-timer
+       (* fullscreen-on-ungrabbed-pointer-for-few-mins 60)
+       nil
+       #'toggle-fullscreen-on-ungrabbed-pointer)
+      (toggle-fullscreen-on-ungrabbed-pointer)))
 
   ;; enable it.
   (fullscreen-on-ungrabbed-pointer-enable))
