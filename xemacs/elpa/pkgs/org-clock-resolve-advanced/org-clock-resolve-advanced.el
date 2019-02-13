@@ -41,23 +41,23 @@ so long."
   ;; last-input-event
   ;; last-event-frame
 
-  (org-rl-debug "org-rl-resolve-clocks-if-idle: begin")
+  (org-rl-debug nil "org-rl-resolve-clocks-if-idle: begin")
   (lotus-with-other-frame-event-debug "org-rl-resolve-clocks-if-idle" :restart
     (condition-case err
         (progn
-          (org-rl-debug "org-rl-resolve-clocks-if-idle: lotus-with-other-frame-event-debug")
-          (org-rl-debug
+          (org-rl-debug nil "org-rl-resolve-clocks-if-idle: lotus-with-other-frame-event-debug")
+          (org-rl-debug nil
            "org-rl-resolve-clocks-if-idle: pass1 org-clock-last-idle-start-time: %s, (org-user-idle-seconds) %s"
            (if org-clock-last-idle-start-time
                (time-to-seconds (time-subtract (current-time) org-clock-last-idle-start-time)))
            (org-user-idle-seconds))
-          ;; (org-rl-debug "(org-user-idle-seconds) %s" (org-user-idle-seconds))
+          ;; (org-rl-debug nil "(org-user-idle-seconds) %s" (org-user-idle-seconds))
           (when (and
                  org-clock-idle-time
                  (not org-clock-resolving-clocks)
                  org-clock-marker
                  (marker-buffer org-clock-marker))
-            (org-rl-debug
+            (org-rl-debug nil
              "org-rl-resolve-clocks-if-idle: pass2 org-clock-last-idle-start-time: %s, (org-user-idle-seconds) %s"
              (if org-clock-last-idle-start-time
                  (time-to-seconds (time-subtract (current-time) org-clock-last-idle-start-time)))
@@ -81,18 +81,20 @@ so long."
                                       org-clock-user-idle-start
                                       t) ;TODO: what important.
                    (org-rl-make-clock nil 'now 'now))
-                (org-rl-debug
+                (org-rl-debug nil
                  "org-rl-resolve-clocks-if-idle: pass3 not calling resolve time org-clock-last-idle-start-time: %s, (org-user-idle-seconds) %s"
                  (if org-clock-last-idle-start-time
                      (time-to-seconds (time-subtract (current-time) org-clock-last-idle-start-time)))
                  (org-user-idle-seconds)))
-              (org-rl-debug "Resetting org-clock-last-idle-start-time to nil")
-              (setq org-clock-last-idle-start-time nil))))
-      (error
-       (progn
-         (setq org-clock-last-idle-start-time nil)
-         (error "Error: %s" err)))))
-  (org-rl-debug "org-rl-resolve-clocks-if-idle: finished"))
+              (org-rl-debug :warning "Resetting org-clock-last-idle-start-time [= %s] to nil" org-clock-last-idle-start-time)
+              (setq org-clock-last-idle-start-time nil)
+              (org-rl-debug :warning "Reset org-clock-last-idle-start-time to %s" org-clock-last-idle-start-time)q)))))
+      ;; (error
+      ;;  (progn
+      ;;    (setq org-clock-last-idle-start-time nil)
+      ;;    (error "Error: %s" err)))
+
+  (org-rl-debug nil "org-rl-resolve-clocks-if-idle: finished"))
 
 (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
 
@@ -210,11 +212,11 @@ so long."
                      (org-rl-make-clock marker start-time org-clock-user-idle-start t)
                      (org-rl-make-clock 'imaginary 'now 'now))
                   (when t
-                    (org-rl-debug "Idle time now min[%d] sec[%d]"
+                    (org-rl-debug nil "Idle time now min[%d] sec[%d]"
                              (/ org-clock-user-idle-seconds 60)
                              (% org-clock-user-idle-seconds 60))))))
-          (org-rl-debug "Selected min[ = %d ] is more than mins-spent[ = %d ]" (/ idle-sec 60) mins-spent))
-      (org-rl-debug "Not one min is spent with clock mins-spent = %d" mins-spent))))
+          (org-rl-debug nil "Selected min[ = %d ] is more than mins-spent[ = %d ]" (/ idle-sec 60) mins-spent))
+      (org-rl-debug nil "Not one min is spent with clock mins-spent = %d" mins-spent))))
 
 
 ;;;###autoload
