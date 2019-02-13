@@ -337,80 +337,80 @@
                #'(lambda ()
                    (if sel-frame-adviced-p
                        (when (not (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus)))
-                         (message "readfn: add quiet 5 as already was present")
+                         (lwarn :debug "readfn: add quiet 5 as already was present")
                          (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
                      (when (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))
-                       (message "readfn: remove quiet 5 as already was present")
+                       (lwarn :debug "readfn: remove quiet 5 as already was present")
                        (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))))
               (readfn
                #'(lambda ()
                    (progn
                      (setq frame (selected-frame))
-                     (message "readfn: frame %s" frame)
-                     (message "readfn: 1 pre-command-hook %s" pre-command-hook)
+                     (lwarn :debug "readfn: frame %s" frame)
+                     (lwarn :debug "readfn: 1 pre-command-hook %s" pre-command-hook)
                      (add-hook
                       'pre-command-hook
                       (lambda ()
                         (funcall hookfn)))
-                     (message "readfn: 2 pre-command-hook %s" pre-command-hook)
+                     (lwarn :debug "readfn: 2 pre-command-hook %s" pre-command-hook)
                      ;; (unless sel-frame-adviced-p
                      ;;   (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
-                     ;;   (message "readfn: removed quiet-sel-frame"))
+                     ;;   (lwarn :debug "readfn: removed quiet-sel-frame"))
                      (condition-case nil
                          (progn
                            (funcall set-advice-fn)
-                           (message "readfn: 1 running orginal code")
+                           (lwarn :debug "readfn: 1 running orginal code")
                            ,@body
-                           (message "readfn: 1 pre-command-hook %s" pre-command-hook)
+                           (lwarn :debug "readfn: 1 pre-command-hook %s" pre-command-hook)
                            (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                            (funcall set-advice-fn))
                        (quit
-                        (message "quit"))))))
+                        (lwarn :debug "quit"))))))
 
               (hookfn1
                #'(lambda ()
-                   (message "hookfn1: last-input-event: %s last-event-frame: %s frame: %s"
+                   (lwarn :debug "hookfn1: last-input-event: %s last-event-frame: %s frame: %s"
                             last-input-event
                             last-event-frame
                             frame)
-                   (message "hookfn1: removing hook 1")
-                   (message "hookfn1: 1 pre-command-hook %s" pre-command-hook)
+                   (lwarn :debug "hookfn1: removing hook 1")
+                   (lwarn :debug "hookfn1: 1 pre-command-hook %s" pre-command-hook)
                    (remove-hook 'pre-command-hook (lambda () (funcall hookfn1)))
-                   (message "hookfn1: 2 pre-command-hook %s" pre-command-hook)
+                   (lwarn :debug "hookfn1: 2 pre-command-hook %s" pre-command-hook)
                    (if (eql last-event-frame frame)
                        (progn
                          (setq frame nil)
-                         (message "hookfn1: removing hook 2")
+                         (lwarn :debug "hookfn1: removing hook 2")
                          (remove-hook 'pre-command-hook
                                       (lambda ()
                                         (funcall hookfn1))))
                      (progn
                        (setq frame nil)
                        (with-selected-frame last-event-frame
-                         (message "hookfn1: with-selected-frame running timer")
+                         (lwarn :debug "hookfn1: with-selected-frame running timer")
                          (run-with-timer 0 nil #'(lambda () (funcall readfn)))
-                         (message "hookfn1: adding quiet-sel-frame")
+                         (lwarn :debug "hookfn1: adding quiet-sel-frame")
                          (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
-                         (message "hookfn1: going to run abort-recursive-edit")
+                         (lwarn :debug "hookfn1: going to run abort-recursive-edit")
                          (when (active-minibuffer-window)
                            (abort-recursive-edit)
-                           (message "hookfn1: abort-recursive-edit")))))))
+                           (lwarn :debug "hookfn1: abort-recursive-edit")))))))
 
               (hookfn
                #'(lambda ()
-                   (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
+                   (lwarn :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
                             last-input-event
                             last-event-frame
                             frame)
-                   (message "hookfn: removing hook 1")
-                   (message "hookfn: 1 pre-command-hook %s" pre-command-hook)
+                   (lwarn :debug "hookfn: removing hook 1")
+                   (lwarn :debug "hookfn: 1 pre-command-hook %s" pre-command-hook)
                    (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                   (message "hookfn: 2 pre-command-hook %s" pre-command-hook)
+                   (lwarn :debug "hookfn: 2 pre-command-hook %s" pre-command-hook)
                    (if (eql last-event-frame frame)
                        (progn
                          (setq frame nil)
                          ;; (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
-                         ;; (message "hookfn: removing hook 2")
+                         ;; (lwarn :debug "hookfn: removing hook 2")
                          ;; (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                          t)
                      (with-selected-frame last-event-frame
@@ -421,7 +421,7 @@
                                              (progn
                                                ;; (setq frame (selected-frame))
                                                ;; (setq debug-on-quit nil)
-                                               (message "hookfn: with-selected-frame running timer")
+                                               (lwarn :debug "hookfn: with-selected-frame running timer")
                                                ;; (funcall set-advice-fn)
                                                ,@(cond
                                                   ((or
@@ -439,13 +439,13 @@
                                                     (null action))
                                                    nil)))))
                          (progn
-                           (message "hookfn: adding quiet-sel-frame")
+                           (lwarn :debug "hookfn: adding quiet-sel-frame")
                            (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
-                           (message "hookfn: going to run abort-recursive-edit")
+                           (lwarn :debug "hookfn: going to run abort-recursive-edit")
                            (when (active-minibuffer-window)
                              (abort-recursive-edit)
-                             (message "hookfn: abort-recursive-edit")))))))))
-       (message "calling readfn")
+                             (lwarn :debug "hookfn: abort-recursive-edit")))))))))
+       (lwarn :debug "calling readfn")
        (funcall readfn))))
 
 (defmacro lotus-with-other-frame-event (action &rest body)
@@ -456,10 +456,10 @@
                #'(lambda ()
                    (if sel-frame-adviced-p
                        (when (not (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus)))
-                         (message "readfn: add quiet 5 as already was present")
+                         (lwarn :debug "readfn: add quiet 5 as already was present")
                          (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
                      (when (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))
-                       (message "readfn: remove quiet 5 as already was present")
+                       (lwarn :debug "readfn: remove quiet 5 as already was present")
                        (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))))
               (readfn
                #'(lambda ()
@@ -477,7 +477,7 @@
                        (quit nil)))))
               (hookfn
                #'(lambda ()
-                   ;; (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
+                   ;; (lwarn :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
                    ;;          last-input-event
                    ;;          last-event-frame
                    ;;          frame)
@@ -486,7 +486,7 @@
                        (progn
                          (setq frame nil)
                          ;; (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
-                         ;; (message "hookfn: removing hook 2")
+                         ;; (lwarn :debug "hookfn: removing hook 2")
                          ;; (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                          t)
                      (with-selected-frame last-event-frame
@@ -529,10 +529,20 @@
                #'(lambda ()
                    (if sel-frame-adviced-p
                        (when (not (advice-function-member-p #'quiet--select-frame (symbol-function 'select-frame-set-input-focus)))
-                         (message "readfn: %s add quiet 5 as already was present" ,name)
+                         (lwarn :debug "set-advice-fn: %s add quiet 5 as already was present" ,name)
+                         (lwarn :debug "set-advice-fn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s"
+                                last-input-event
+                                last-event-frame
+                                frame
+                                (selected-frame))
                          (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
                      (when (advice-function-member-p #'quiet--select-frame (symbol-function 'select-frame-set-input-focus))
-                       (message "readfn: %s remove quiet 5 as already was present" ,name)
+                       (lwarn :debug "readfn: %s remove quiet 5 as already was present" ,name)
+                       (lwarn :debug "set-advice-fn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s"
+                              last-input-event
+                              last-event-frame
+                              frame
+                              (selected-frame))
                        (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))))
               (readfn
                #'(lambda ()
@@ -541,7 +551,12 @@
                      (add-hook 'pre-command-hook (lambda () (funcall hookfn)))
                      (condition-case nil
                          (progn
-                           (message "readfn: %s inside readfn" ,name)
+                           (lwarn :debug "readfn: %s inside readfn" ,name)
+                           (lwarn :debug "readfn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s"
+                                  last-input-event
+                                  last-event-frame
+                                  frame
+                                  (selected-frame))
                            (funcall set-advice-fn)
                            ,@body
                            (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
@@ -549,28 +564,39 @@
                        (quit nil)))))
               (hookfn
                #'(lambda ()
-                   ;; (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
-                   ;;          last-input-event
-                   ;;          last-event-frame
-                   ;;          frame)
+                   (lwarn :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s"
+                          last-input-event
+                          last-event-frame
+                          frame
+                          (selected-frame))
                    (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                    (if (eql last-event-frame frame)
                        (progn
                          (setq frame nil)
                          ;; (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
-                         ;; (message "hookfn: removing hook 2")
+                         ;; (lwarn :debug "hookfn: removing hook 2")
                          ;; (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                          t)
                      (with-selected-frame last-event-frame
                        (progn
-                         (message "hookfn: %s running readfn from hookfn outside timer" ,name)
+                         (lwarn :debug "hookfn: %s running readfn from hookfn outside timer" ,name)
+                         (lwarn :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s"
+                                last-input-event
+                                last-event-frame
+                                frame
+                                (selected-frame))
                          (setq frame nil)
                          (run-with-timer 0 nil
                                          #'(lambda ()
                                              (progn
                                                ;; (setq frame (selected-frame))
                                                ;; (setq debug-on-quit nil)
-                                               (message "hookfn: %s timer remove quiet 1" ,name)
+                                               (lwarn :debug "hookfn: %s timer remove quiet 1" ,name)
+                                               (lwarn :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s"
+                                                      last-input-event
+                                                      last-event-frame
+                                                      frame
+                                                      (selected-frame))
                                                ;; (funcall set-advice-fn)
                                                (prog1
                                                    ,@(cond
@@ -579,7 +605,12 @@
                                                         (eq t action))
                                                        `(
                                                          (with-selected-frame last-event-frame
-                                                           (message "hookfn: %s running readfn from hookfn inside timer" ,name)
+                                                           (lwarn :debug "hookfn: %s running readfn from hookfn inside timer" ,name)
+                                                           (lwarn :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s"
+                                                                  last-input-event
+                                                                  last-event-frame
+                                                                  frame
+                                                                  (selected-frame))
                                                            (funcall readfn))))
                                                       ((consp action)
                                                        `(
@@ -589,9 +620,19 @@
                                                         (eq :cancel action)
                                                         (null action))
                                                        nil))
-                                                 (message "hookfn: %s finished running %s" ,name ,action)))))
+                                                 (lwarn :debug "hookfn: %s finished running %s frame=%s" ,name ,action (selected-frame))
+                                                 (lwarn :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s"
+                                                        last-input-event
+                                                        last-event-frame
+                                                        frame
+                                                        (selected-frame))))))
                          (progn
-                           (message "hookfn: %s add quiet 2" ,name)
+                           (lwarn :debug "hookfn: %s add quiet 2 frame=%s" ,name (selected-frame))
+                           (lwarn :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s"
+                                  last-input-event
+                                  last-event-frame
+                                  frame
+                                  (selected-frame))
                            (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
                            (when (active-minibuffer-window)
                              (abort-recursive-edit)))))))))
