@@ -150,7 +150,9 @@
              (remove-hook *key-press-hook* 'mode-line-when-pointer-grabbed)))
 
 
-(let ()
+(let ((deactivate-fullscreen-idle-timeout 10)
+      (deactivate-fullscreen-timer nil)
+      (fullscreen-on-ungrabbed-pointer-for-few-mins 7))
   ;; TODO: disable fullscreen on inactivity
 
   (defun activate-fullscreen-if-not (window)
@@ -176,21 +178,16 @@
     (declare (ignore key key-seq))
     (if (kmap-or-kmap-symbol-p cmd)
         (progn
-          (deactivate-fullscreen-if-not (current-window))
-          ;; (let ((w (other-window-in-frame (current-group))))
-          ;;    (deactivate-fullscreen-if-not w)
-          ;;    (deactivate-fullscreen-if-not (current-window))
-          ;;   )
-          )
+          (deactivate-fullscreen-if-not (current-window)))
         (progn
           (let ((win (other-hidden-window (current-group))))
             (unless win
-              (activate-fullscreen-if-not (current-window))))
-          ;; should not be here
-          ;; is required when one window is present in frame.
-          ;; but creates problem with conkeror.
-          ;; (activate-fullscreen-if-not (current-window))
-          )))
+              (activate-fullscreen-if-not (current-window)))))))
+  ;; should not be here
+  ;; is required when one window is present in frame.
+  ;; but creates problem with conkeror.
+  ;; (activate-fullscreen-if-not (current-window))
+  
 
   (defun fullscreen-focus-window (cwin lwin)
     (activate-fullscreen-if-not cwin)
@@ -202,57 +199,71 @@
   (defun unfullscreen-curr-post-command (cmd)
     (deactivate-fullscreen-if-not (current-window)))
 
+
+
+  (progn
+    (defun deactivate-full-screen-on-idle-timeout ()
+      (when (> deactivate-fullscreen-idle-timeout 2)
+        (when (member 'fullscreen-focus-window *focus-window-hook*)
+          ;; (message "deactivate fs")
+          (if (> (stumpwm::idle-time (stumpwm::current-screen)) deactivate-fullscreen-idle-timeout)
+              (deactivate-fullscreen-if-not (stumpwm::current-window))
+              (activate-fullscreen-if-not (stumpwm::current-window))))))
+
+    (defun deactivate-full-screen-on-idle-timer-stop ()
+      "Stops the newmail timer."
+      (ignore-errors
+       (when deactivate-fullscreen-timer
+         (stumpwm::cancel-timer newmail-timer)
+         (setf deactivate-fullscreen-timer nil))))
+
+    (defun deactivate-full-screen-on-idle-timer-start ()
+      "Starts the newmail timer."
+      (deactivate-full-screen-on-idle-timer-stop)
+      (setf deactivate-fullscreen-timer
+            (stumpwm::run-with-timer
+             deactivate-fullscreen-idle-timeout
+             deactivate-fullscreen-idle-timeout
+             'deactivate-full-screen-on-idle-timeout)))
+
+    (defcommand deactivate-full-screen-on-idle-start () ()
+      "Starts the newmail timer."
+      (deactivate-full-screen-on-idle-timer-start))
+
+    (defcommand deactivate-full-screen-on-idle-stop () ()
+      "Stops the newmail timer."
+      (deactivate-full-screen-on-idle-timer-stop)))
+
+
+
+
+
   (defcommand fullscreen-on-ungrabbed-pointer-enable () ()
     (add-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
-    (add-hook *focus-window-hook* 'fullscreen-focus-window))
+    (add-hook *focus-window-hook* 'fullscreen-focus-window)
+    (deactivate-full-screen-on-idle-timer-start))
 
   (defcommand fullscreen-on-ungrabbed-pointer-disable () ()
     (remove-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
     (remove-hook *focus-window-hook* 'fullscreen-focus-window)
-    (deactivate-fullscreen-if-not (current-window)))
+    (deactivate-fullscreen-if-not (current-window))
+    (deactivate-full-screen-on-idle-timer-stop))
 
   (defcommand toggle-fullscreen-on-ungrabbed-pointer () ()
     (if (member 'fullscreen-focus-window *focus-window-hook*)
         (fullscreen-on-ungrabbed-pointer-disable)
         (fullscreen-on-ungrabbed-pointer-enable)))
 
+  (defcommand toggle-fullscreen-on-ungrabbed-pointer-for-few-mins () ()
+    "run toggle-fullscreen-on-ungrabbed-pointer-for-few-mins"
+    (toggle-fullscreen-on-ungrabbed-pointer)
+    (stumpwm::run-with-timer
+     (* fullscreen-on-ungrabbed-pointer-for-few-mins 60)
+     nil
+     #'toggle-fullscreen-on-ungrabbed-pointer))
+
   ;; enable it.
-  (fullscreen-on-ungrabbed-pointer-enable)
-
-  (let ((fs-idle-time 3)
-        (newmail-timer nil))
-
-    (defun my-full-screen ()
-      (when (member 'fullscreen-focus-window *focus-window-hook*)
-        (message "deactivate fs")
-        (if (> (stumpwm::idle-time (current-screen)) fs-idle-time)
-            (deactivate-fullscreen-if-not (current-window))
-            (activate-fullscreen-if-not (current-window)))))
-
-    (defun my-stop-newmail-timer ()
-      "Stops the newmail timer."
-      (ignore-errors
-       (cancel-timer newmail-timer)))
-
-    (defun my-start-newmail-timer ()
-      "Starts the newmail timer."
-      (my-stop-newmail-timer)
-      (setf newmail-timer (run-with-timer fs-idle-time fs-idle-time 'my-full-screen)))
-
-    (defcommand mailstart () ()
-      "Starts the newmail timer."
-      (my-start-newmail-timer))
-
-    (defcommand mailstop () ()
-      "Stops the newmail timer."
-      (my-stop-newmail-timer)))
-
-
-
-
-
-
-  )
+  (fullscreen-on-ungrabbed-pointer-enable))
 
 
 ;;}}} mode-line end
@@ -262,12 +273,12 @@
   (when *desktop-background-image-path*
     (let ((start-screen (car *screen-list*)))
       (loop for i in *screen-list*
-         for j in *mode-line-fmts*
-         do (progn (switch-to-screen i)
-                   ;; Turn on the modeline
-                   (if (not (head-mode-line (current-head)))
-                       (toggle-mode-line (current-screen) (current-head) j))
-                   (setup-random-wallpaper-image)))
+            for j in *mode-line-fmts*
+            do (progn (switch-to-screen i)
+                      ;; Turn on the modeline
+                      (if (not (head-mode-line (current-head)))
+                          (toggle-mode-line (current-screen) (current-head) j))
+                      (setup-random-wallpaper-image)))
       (switch-to-screen start-screen))))
 
 (screen-initilize-decoration)
