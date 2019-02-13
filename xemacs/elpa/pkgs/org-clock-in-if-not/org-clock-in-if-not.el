@@ -27,7 +27,7 @@
 (provide 'org-clock-in-if-not)
 
 
-(rquire 'lotus-misc-utils)
+(require 'lotus-misc-utils)
 
 
 ;; org-refile-targets is set in org-misc-utils-lotus package
@@ -50,6 +50,7 @@
           (message
            "%s: org-clock-in-if-not: not running as minibuffer is already active."
            (time-stamp-string)))
+
       (lwarn 'org-ci-if-not :debug "org-clock-in-if-not: [body] lotus-with-override-minibuffer-if")
       (unless (or
                org-donot-try-to-clock-in
