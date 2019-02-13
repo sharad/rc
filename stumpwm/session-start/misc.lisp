@@ -241,13 +241,14 @@
   (defcommand fullscreen-on-ungrabbed-pointer-enable () ()
     (add-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
     (add-hook *focus-window-hook* 'fullscreen-focus-window)
-    (deactivate-full-screen-on-idle-timer-start))
+    (deactivate-full-screen-on-idle-timer-start)
+    (activate-fullscreen-if-not (current-window)))
 
   (defcommand fullscreen-on-ungrabbed-pointer-disable () ()
     (remove-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
     (remove-hook *focus-window-hook* 'fullscreen-focus-window)
-    (deactivate-fullscreen-if-not (current-window))
-    (deactivate-full-screen-on-idle-timer-stop))
+    (deactivate-full-screen-on-idle-timer-stop)
+    (deactivate-fullscreen-if-not (current-window)))
 
   (defcommand toggle-fullscreen-on-ungrabbed-pointer () ()
     (if (member 'fullscreen-focus-window *focus-window-hook*)
