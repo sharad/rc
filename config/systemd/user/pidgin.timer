@@ -1,7 +1,10 @@
+[Unit]
+Conflicts=stoppidgin.service
+
 [Timer]
 AccuracySec=10
 # OnActiveSec=10
-OnCalendar=Mon..Fri 02:45/5
+OnCalendar=Mon..Fri 08:00/08
 Persistent=true
 
 [Install]
