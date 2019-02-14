@@ -1,0 +1,7 @@
+
+* All key get undefined
+see  https://github.com/syl20bnr/spacemacs/issues/7855
+
+my experience:
+When reading minibuffer (by helm etc)
+some event generate that time this issue occur.

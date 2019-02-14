@@ -1,0 +1,13 @@
+[Unit]
+Description=Pidgin
+Documentation=info:Pidgin
+After=display-manager.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/pidgin
+ExecStop=/usr/bin/pkill pidgin
+Restart=Never
+
+[Install]
+WantedBy=default.target
