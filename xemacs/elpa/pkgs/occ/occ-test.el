@@ -29,10 +29,25 @@
 (require 'ert)
 (require 'ert-x)
 
+
+
+
+;; https://www.gnu.org/software/emacs/manual/html_node/ert/index.html
+
+(ert-deftest ert-occ-test-occ-insinuated ()
+  "Test"
+  :expected-result :passed
+  :tags '(occ)
+  (should
+   (memq #'(lambda (prev curr) (occ-run-curr-ctx-timer))
+           switch-buffer-functions)))
+
+
+
 (ert-deftest ert-occ-test ()
   "Test"
   :expected-result :failed
-  :tags '(sessions-unified)
+  :tags '(occ)
   (should t))
 
 
