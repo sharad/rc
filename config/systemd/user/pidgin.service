@@ -2,12 +2,23 @@
 Description=Pidgin
 Documentation=info:Pidgin
 After=display-manager.service
+After=network.target
+Conflicts=stoppidgin.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/pidgin
+# Type=dbus
+# BusName=im.pidgin.purple.PurpleService
+# BusName=im.pidgin.purple.PurpleInterface
+# https://www.digitalocean.com/community/tutorials/how-to-configure-a-linux-service-to-start-automatically-after-a-crash-or-reboot-part-2-reference
+ExecStart=/usr/bin/dbus-launch pidgin $OPTIONS
 ExecStop=/usr/bin/pkill pidgin
-Restart=Never
+Restart=on-abort
+# ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+# Restart=on-failure
+RestartSec=42s
+# Restart=always
 
 [Install]
-WantedBy=default.target
+WantedBy=graphical.target

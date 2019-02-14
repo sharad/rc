@@ -1,0 +1,6 @@
+[Unit]
+Description=Stop pidgin
+
+[Service]
+Type=oneshot
+ExecStart=/bin/echo ''

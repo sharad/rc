@@ -1,0 +1,8 @@
+[Timer]
+AccuracySec=10
+# OnActiveSec=10
+OnCalendar=Mon..Fri 02:45/5
+Persistent=true
+
+[Install]
+WantedBy=timers.target
