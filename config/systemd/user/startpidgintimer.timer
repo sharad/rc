@@ -1,0 +1,10 @@
+[Timer]
+# https://coreos.com/os/docs/latest/scheduling-tasks-with-systemd-timers.html
+Unit=pidgin.timer
+AccuracySec=1
+# OnActiveSec=10
+# https://unix.stackexchange.com/questions/126786/systemd-timer-every-15-minutes
+OnCalendar=Mon..Fri 22:04/0:30:00
+
+[Install]
+WantedBy=timers.target
