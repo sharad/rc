@@ -891,6 +891,7 @@ variable."
 
 (progn                                  ;debug testing code
   (defvar *test-idle-prints-timer* nil)
+  (defvar *test-idle-prints-report-min-time* 21)
   (defun test-idle-prints (print)
     (if print
         (progn
@@ -901,14 +902,16 @@ variable."
              *test-idle-prints-timer*
              (run-with-timer 1 2
                              #'(lambda ()
-                                 ;; (message "Test: From timer idle for org %d secs emacs %d secs" (org-emacs-idle-seconds) (float-time (current-idle-time)))
                                  (let* (display-last-input-event
                                         (idle (current-idle-time))
                                         (idle (if idle (float-time (current-idle-time)) 0)))
                                    (unless (eq known-last-input-event last-input-event)
                                      (setq display-last-input-event last-input-event
                                            known-last-input-event last-input-event))
-                                   (message "Test: From timer idle for %f secs emacs, and last even is %s" idle display-last-input-event)))))))
+                                   (when (> idle *test-idle-prints-report-min-time*)
+                                     (lwarn 'idle :debug "Test: From timer idle for %f secs emacs, and last even is %s"
+                                            idle
+                                            display-last-input-event))))))))
       (when *test-idle-prints-timer*
         (cancel-timer *test-idle-prints-timer*))))
   (defun toggle-test-idle-prints ()
