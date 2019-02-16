@@ -378,15 +378,16 @@
     clock))
 
 
-(cl-defmethod org-rl-clock-for-clock-in ((clock org-rl-clock))
+(cl-defmethod org-rl-clock-for-clock-op ((clock org-rl-clock))
   (cons
    (org-rl-clock-marker clock)
    (org-rl-clock-start-time clock)))
 
+(cl-defmethod org-rl-clock-for-clock-in ((clock org-rl-clock))
+  (org-rl-clock-for-clock-op clock))
+
 (cl-defmethod org-rl-clock-for-clock-out ((clock org-rl-clock))
-  (cons
-   (org-rl-clock-first-clock-beginning clock)
-   (org-rl-clock-start-time clock)))
+  (org-rl-clock-for-clock-op clock))
 
 
 
@@ -451,7 +452,9 @@
       (if (time-p (org-rl-clock-stop-time clock))
           (if (org-rl-clock-half-p clock)
               (progn
-                (if (org-rl-clock-current clock)                   ;TODO: check for current clock? find some other way to find active clock like matching with org-clock-marker
+                (if (or
+                     (org-is-active-clock (org-rl-clock-for-clock-op clock))
+                     (org-rl-clock-current clock))                   ;TODO: check for current clock? find some other way to find active clock like matching with org-clock-marker
                     (progn
                       (org-clock-out org-clock-out-switch-to-state
                                      fail-quietly
@@ -467,7 +470,7 @@
 
 (cl-defmethod org-rl-clock-resume-if-stop-on-current-min ((clock org-rl-clock) resume)
   (when (and
-         (org-rl-time-current-min-p (org-rl-clock-stop-time clock))
+         (org-rl-time-current-min-p (org-rl-clock-stop clock))
          resume)
     (if (eq resume t)
         t
