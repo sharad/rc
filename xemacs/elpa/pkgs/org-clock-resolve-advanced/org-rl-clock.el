@@ -176,7 +176,8 @@
                                                 timelen
                                                 maxtimelen
                                                 &optional
-                                                close-p)
+                                                resume
+                                                fail-quietly)
   (org-rl-debug nil "org-rl-clock-time-process-option: begin")
   (let* ((clocks
           (cond
@@ -200,13 +201,13 @@
            ((eq opt 'include-in-prev)
             ;; include timelen in prev
             ;; update timelength
-            (org-rl-clock-opt-include-in-prev prev next timelen))
+            (org-rl-clock-opt-include-in-prev prev next timelen resume fail-quietly))
            ;; set org-clock-leftover-time here
            ((eq opt 'include-in-next)
-            (org-rl-clock-opt-include-in-next prev next timelen))
+            (org-rl-clock-opt-include-in-next prev next timelen resume fail-quietly))
 
            ((eq opt 'include-in-other) ;; subtract timelen from timelength
-            (org-rl-clock-opt-include-in-other prev next timelen))
+            (org-rl-clock-opt-include-in-other prev next timelen resume fail-quietly))
 
            ((eq opt 'done)
             nil)
@@ -222,8 +223,8 @@
 (cl-defmethod org-rl-clock-resolve-time ((prev org-rl-clock)
                                          (next org-rl-clock)
                                          &optional
-                                         force
-                                         close-p)
+                                         resume
+                                         fail-quietly)
   "Read time which could be positive or negative or full"
   ;; BUG how to handle current time == 'now
   ;; BUG how to handle when prev == next
@@ -285,34 +286,38 @@
             (if (<= (abs timelen) maxtimelen)
                 (let* ((clocks
                         (org-rl-clock-time-process-option prev next
-                                                          opt timelen maxtimelen close-p))
+                                                          opt timelen
+                                                          maxtimelen
+                                                          resume fail-quietly))
                        (prev (nth 0 clocks))
-                       (next (nth 1 clocks)))
+                       (next (nth 1 clocks))
+                       (resume-clocks
+                        (cddr clocks)))
 
                   (when clocks
 
                     (org-rl-debug nil "(org-rl-clock-null prev) %s" (org-rl-clock-null prev))
                     (org-rl-debug nil "(org-rl-clock-null next) %s" (org-rl-clock-null next))
 
-                    (unless (eq opt 'done)
-                      (when (and
-                             (zerop maxtimelen)
-                             close-p)
-                        (org-rl-debug nil "Error2")
-                        (org-clock-out)))
+                    ;; (unless (eq opt 'done)
+                    ;;   (when (and
+                    ;;          (zerop maxtimelen)
+                    ;;          close-p)
+                    ;;     (org-rl-debug nil "Error2")
+                    ;;     (org-clock-out)))
 
                     (let ((timegap (org-rl-get-time-gap prev next)))
                       (if (> timegap 0)         ;this solved the assert
                           (unless (and
                                    (org-rl-clock-null prev)
                                    (org-rl-clock-null next))
-                            (org-rl-clock-resolve-time prev next close-p))
+                            (org-rl-clock-resolve-time prev next resume fail-quietly))
                         (org-rl-debug nil "Error1")))))
               (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen)))))))
   (org-rl-debug nil "org-rl-clock-resolve-time: finished"))
 
 
-
+o
 (defun org-rl-clock-clock-in-as-it-is (marker)
   (interactive
    (list (point-marker)))

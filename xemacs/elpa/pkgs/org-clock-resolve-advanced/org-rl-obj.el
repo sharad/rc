@@ -465,15 +465,15 @@
         (error "org-rl-clock-clock-out: %s stop time is null" (org-rl-clock-stop-time clock))))
     clock))
 
-(cl-defmethod org-rl-clock-ask-to-resume-if-stop-on-current-min ((clock org-rl-clock) resume)
-  (if (and
-       (org-rl-time-current-min-p (org-rl-clock-stop-time clock))
-       resume)
-      (if (eq resume t)
-          t
-        (y-or-n-p
-         (format "Should resume clock %s: "
-                 (org-rl-format-clock clock))))))
+(cl-defmethod org-rl-clock-resume-if-stop-on-current-min ((clock org-rl-clock) resume)
+  (when (and
+         (org-rl-time-current-min-p (org-rl-clock-stop-time clock))
+         resume)
+    (if (eq resume t)
+        t
+      (y-or-n-p
+       (format "Should resume clock %s: "
+               (org-rl-format-clock clock))))))
 
 (cl-defmethod org-rl-clock-clock-in-out ((clock org-rl-clock)
                                          &optional
@@ -494,7 +494,7 @@
           (let ((marker (org-rl-clock-clock-in clock resume)))
             (setf (org-rl-clock-marker clock) marker)
             (org-rl-debug nil "org-rl-clock-clock-in-out out")
-            (unless (org-rl-clock-ask-to-resume-if-stop-on-current-min
+            (unless (org-rl-clock-resume-if-stop-on-current-min
                      clock
                      resume)
               (org-rl-clock-clock-out clock fail-quietly))
