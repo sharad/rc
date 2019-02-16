@@ -470,8 +470,8 @@
 
 (cl-defmethod org-rl-clock-resume-if-stop-on-current-min ((clock org-rl-clock) resume)
   (when (and
-         (org-rl-time-current-min-p (org-rl-clock-stop clock))
-         resume)
+         resume
+         (org-rl-time-current-min-p (org-rl-clock-stop clock)))
     (if (eq resume t)
         t
       (y-or-n-p
