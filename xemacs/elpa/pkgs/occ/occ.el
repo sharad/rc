@@ -52,6 +52,8 @@
 ;;;###autoload
 (defun occ-insinuate ()
   (interactive)
+  (lwarn 'occ :debug "occ-insinuate: begin")
+  (message "occ-insinuate: begin")
   (progn
     (setq occ-global-tsk-collection        nil)
     ;; (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)
@@ -63,11 +65,16 @@
     (let ((propstr
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)
-        (push propstr org-use-property-inheritance)))))
+        (push propstr org-use-property-inheritance))))
+ (lwarn 'occ :debug "occ-insinuate: finish")
+ (message "occ-insinuate: finish"))
+
 
 ;;;###autoload
 (defun occ-uninsinuate ()
   (interactive)
+  (lwarn 'occ :debug "occ-uninsinuate: begin")
+  (message "occ-uninsinuate: begin")
   (progn
     (setq occ-global-tsk-collection            nil)
     ;; (setq buffer-list-update-hook nil)
@@ -82,6 +89,8 @@
     (let ((propstr
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)
-        (delete propstr org-use-property-inheritance)))))
+        (delete propstr org-use-property-inheritance))))
+ (lwarn 'occ :debug "occ-insinuate: finish")
+ (message "occ-insinuate: finish"))
 
 ;;; occ.el ends here
