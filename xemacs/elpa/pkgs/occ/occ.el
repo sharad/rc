@@ -31,6 +31,13 @@
 
 (provide 'occ)
 
+;;;###autoload
+(defun occ-switch-buffer-run-curr-ctx-timer-function (prev next)
+  (occ-run-curr-ctx-timer))
+
+;;;###autoload
+(defun occ-add-after-save-hook-fun-in-org-mode ()
+  (add-hook 'after-save-hook 'occ-after-save-hook-fun t t))
 
 ;;;###autoload
 (defun occ-set-global-tsk-collection-spec (spec)
@@ -50,10 +57,8 @@
     ;; (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)
     ;; (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer t)
     ;; (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer t)
-    (add-hook 'switch-buffer-functions     #'(lambda (prev curr) (occ-run-curr-ctx-timer)))
-    (add-hook 'org-mode-hook
-              #'(lambda ()
-                  (add-hook 'after-save-hook 'occ-after-save-hook-fun t t))))
+    (add-hook 'switch-buffer-functions #'occ-switch-buffer-run-curr-ctx-timer-function)
+    (add-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode))
   (dolist (prop (cl-method-matched-arg 'occ-readprop nil))
     (let ((propstr
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
@@ -70,12 +75,9 @@
     ;; (remove-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer)
     ;; (remove-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer)
     ;; (remove-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer)
-    (remove-hook 'switch-buffer-functions     #'(lambda (prev curr) (occ-run-curr-ctx-timer)))
-
     ;; (remove-hook 'after-save-hook             'occ-after-save-hook-fun t)
-    (remove-hook 'org-mode-hook
-              #'(lambda ()
-                  (add-hook 'after-save-hook 'occ-after-save-hook-fun t t))))
+    (remove-hook 'switch-buffer-functions #'occ-switch-buffer-run-curr-ctx-timer-function)
+    (remove-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode))
   (dolist (prop (cl-method-matched-arg 'occ-readprop nil))
     (let ((propstr
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
