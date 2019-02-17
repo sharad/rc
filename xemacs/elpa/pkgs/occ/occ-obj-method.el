@@ -474,8 +474,8 @@ pointing to it."
 (cl-defmethod occ-matching-ctxual-tsks ((collection occ-list-tsk-collection)
                                         (ctx occ-ctx))
   ;; (message "occ-matching-ctxual-tsks list")
-  (lexical-let ((tsks (occ-collection collection))
-                (ctx ctx))
+  (let ((tsks (occ-collection collection))
+        (ctx ctx))
     (remove-if-not
      #'(lambda (ctxual-tsk)
          (> (occ-ctxual-tsk-rank ctxual-tsk) 0))
@@ -556,8 +556,8 @@ pointing to it."
       prompt
       default-directory default-directory))))
 
-(cl-defmethod occ-writeprop ((tsk-pair (head subtree)))
-  )
+(cl-defmethod occ-writeprop ((tsk-pair (head subtree))))
+
 
 (when nil
 
@@ -575,9 +575,16 @@ pointing to it."
                           (ctx occ-ctx))
     (message "match occ-rank"))
 
-  (occ-rank (make-occ-tree-tsk) (make-occ-ctx))
-  )
+  (occ-rank (make-occ-tree-tsk) (make-occ-ctx)))
 
+
+;; TODO: Not to run when frame is not open [visible.]
+;; Getting targets...done
+;; Error running timer: (error "Window #<window 12> too small for splitting")
+;; task-projbuffs-base-dir: changing supplied base-dir nil and task-projbuffs-base-dir to /home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/
+;; in occ-clock-in occ-ctx 1
+;; Getting targets...done
+;; Error running timer ‘occ-clock-in-curr-ctx-if-not’: (error "Window #<window 12> too small for splitting")
 
 
 

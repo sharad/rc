@@ -133,9 +133,9 @@
         (lwarn 'occ :debug "occ-add-to-org-heading: [minibuffer-body] lotus-with-no-active-minibuffer-if")
         (occ-debug :debug "add-ctx-to-org-heading: minibuffer already active quitting")
         (occ-debug :debug nil))
-    (lexical-let* ((timeout (or timeout 7))
-                   (ctx (or ctx (occ-make-ctx)))
-                   (buff (occ-ctx-buffer ctx)))
+    (let* ((timeout (or timeout 7))
+           (ctx (or ctx (occ-make-ctx)))
+           (buff (occ-ctx-buffer ctx)))
       (lwarn 'occ :debug "occ-add-to-org-heading: [body] lotus-with-no-active-minibuffer-if")
       (if (and
            (eq (current-buffer) buff)
@@ -148,13 +148,13 @@
               file pos
               timeout '((occ-included-files :maxlevel . 4)) ;heavy task, but present in macro !
 
-            (lexical-let* ((marker (make-marker))
-                           (local-cleanup
-                            #'(lambda ()
-                                (save-excursion ;what to do here
-                                  (org-flag-proprty-drawer-at-marker marker t))
-                                (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
-                                  (abort-recursive-edit)))))
+            (let* ((marker (make-marker))
+                   (local-cleanup
+                    #'(lambda ()
+                        (save-excursion ;what to do here
+                          (org-flag-proprty-drawer-at-marker marker t))
+                        (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
+                          (abort-recursive-edit)))))
 
               (set-marker marker (point))
               ;; (occ-debug :debug "1 marker %s" marker)
