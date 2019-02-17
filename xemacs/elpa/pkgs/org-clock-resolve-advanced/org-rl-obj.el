@@ -55,8 +55,12 @@
     (lotus-org-clock-load-only)
     (let ((org-clock-persist               org-rl-org-clock-persist)
           (org-clock-auto-clock-resolution org-rl-org-clock-auto-clock-resolution))
-      (org-clock-clock-in clock resume start-time)
-      org-clock-marker)))
+      (org-clock-clock-in
+       (org-rl-clock-for-clock-in clock)
+       resume start-time)
+      (setf (org-rl-clock-marker clock) org-clock-marker)
+      (setf (org-rl-clock-current clock) t)
+      clock)))
 
 
 (defun org-rl-debug (level &rest args)
@@ -208,6 +212,10 @@
   (< (abs (org-rl-time-current-delta-secs time)) 60))
 
 
+(cl-defmethod org-rl-clock-current-real ((clock org-rl-clock))
+  (unless (org-rl-clock-null clock)
+    (org-rl-clock-current clock)))
+
 (cl-defmethod org-rl-clock-start-time ((clock org-rl-clock))
   (org-rl-time-get-time
    (org-rl-clock-start clock)))
@@ -255,6 +263,9 @@
      (equal marker 'imaginary)
      (null marker)
      (not (markerp marker)))))
+
+(cl-defmethod org-rl-clock-null (clock)
+  (null clock))
 
 (cl-defmethod org-rl-clock-duration ((clock org-rl-clock))
   (let ((start (org-rl-clock-start-time clock))
@@ -433,11 +444,10 @@
         (org-rl-debug nil "org-rl-clock-clock-out: %s clock is null" (org-rl-clock-marker clock))
       (if (time-p (org-rl-clock-start-time clock))
           (org-rl-straight-org-clock-clock-in
-           (org-rl-clock-for-clock-in clock)
+           clock
            resume
            (org-rl-clock-start-time clock))
-        (error "%s start time is null" (org-rl-clock-start-time clock)))))
-  clock)
+        (error "%s start time is null" (org-rl-clock-start-time clock))))))
 
 (cl-defmethod org-rl-clock-clock-out ((clock org-rl-clock)
                                       &optional
@@ -463,7 +473,8 @@
                       (setf (org-rl-clock-marker clock) (car org-clock-history)))
                   (org-clock-clock-out (org-rl-clock-for-clock-out clock)
                                        fail-quietly
-                                       (org-rl-clock-stop-time clock))))
+                                       (org-rl-clock-stop-time clock)))
+                (setf (org-rl-clock-current clock) nil))
             (org-rl-clock-replace clock))
         (error "org-rl-clock-clock-out: %s stop time is null" (org-rl-clock-stop-time clock))))
     clock))
@@ -494,12 +505,13 @@
           (cl-assert (org-rl-clock-start-time clock))
           (cl-assert (org-rl-clock-stop-time clock))
 
-          (let ((marker (org-rl-clock-clock-in clock resume)))
-            (setf (org-rl-clock-marker clock) marker)
+          (let ((clock (org-rl-clock-clock-in clock resume)))
+            ;; (setf (org-rl-clock-marker clock) marker)
             (org-rl-debug nil "org-rl-clock-clock-in-out out")
             (unless (org-rl-clock-resume-if-stop-on-current-min
                      clock
                      resume)
+              ;; (setf (org-rl-clock-current clock) t)
               (org-rl-clock-clock-out clock fail-quietly))
             (org-rl-debug nil "org-rl-clock-clock-in-out out done")
             clock))

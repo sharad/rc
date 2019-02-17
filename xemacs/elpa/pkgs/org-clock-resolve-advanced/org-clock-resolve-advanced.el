@@ -81,7 +81,7 @@ so long."
                                       org-clock-user-idle-start
                                       t) ;TODO: what important.
                    (org-rl-make-clock nil 'now 'now)
-                   'ask)
+                   'ask nil t)
                 (org-rl-debug nil
                  "org-rl-resolve-clocks-if-idle: pass3 not calling resolve time org-clock-last-idle-start-time: %s, (org-user-idle-seconds) %s"
                  (if org-clock-last-idle-start-time
@@ -143,7 +143,8 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
               (when (or (not only-dangling-p) dangling)
                 (org-rl-clock-resolve-time
                  (org-rl-make-clock (car clock) (cdr clock) (cdr clock))
-                 (org-rl-make-clock 'imaginary 'now 'now)))))))))) ;TODO: should not be now ?
+                 (org-rl-make-clock 'imaginary 'now 'now)
+                 nil nil nil))))))))) ;TODO: should not be now ?
 
 ;;;###autoload
 (defalias 'org-resolve-clocks 'org-rl-resolve-clocks)

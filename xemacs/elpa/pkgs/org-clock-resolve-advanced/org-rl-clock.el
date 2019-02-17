@@ -30,6 +30,22 @@
 (require 'org-rl-obj)
 
 
+(defun org-rl-get-resume-clocks (resume-clocks clock-alist)
+  (or
+   (if resume-clocks
+    (if (cl-notany
+         (lambda (name-clock) (org-rl-clock-current-real (cdr name-clock)))
+         clock-alist)
+      (remove-if
+       (lambda (name-clock)
+         (or
+          (not (consp name-clock))
+          (null (cdr name-clock))
+          (org-rl-clock-null (cdr name-clock))))
+       (append clock-alist resume-clocks))))
+   resume-clocks))
+
+
 (cl-defmethod org-rl-clock-opt-cancel-prev ((prev org-rl-clock)
                                             (next org-rl-clock)
                                             &optional resume-clocks)
@@ -40,7 +56,11 @@
   (setf (org-rl-clock-marker prev) nil)
   (org-rl-clocks-action nil nil prev next)
   ;; TODO: add off to restart now (org-rl-clock-restart-now)
-  (list (list prev next)))
+  (list
+   (list prev next)
+   (org-rl-get-resume-clocks (append
+                              (list (cons :prev prev) (cons :next next))
+                              resume-clocks))))
 
 (cl-defmethod org-rl-clock-opt-cancel-next ((prev org-rl-clock)
                                             (next org-rl-clock)
@@ -56,7 +76,11 @@
   (setf (org-rl-clock-marker  next) nil)
   (org-rl-clocks-action nil nil prev next)
   ;; TODO: add off to restart now (org-rl-clock-restart-now)
-  (list (list prev next)))
+  (list
+   (list prev next)
+   (org-rl-get-resume-clocks resume-clocks
+                             (list (cons :prev prev) (cons :next next)))))
+
 
 (cl-defmethod org-rl-clock-opt-include-in-prev ((prev org-rl-clock)
                                                 (next org-rl-clock)
@@ -95,7 +119,10 @@
   (org-rl-clocks-action resume fail-quietly prev next)
   (org-rl-debug nil "finish %s" 'org-rl-clock-opt-include-in-prev)
   ;; TODO: add off to restart now (org-rl-clock-restart-now)
-  (list (list prev next)))
+  (list
+   (list prev next)
+   (org-rl-get-resume-clocks resume-clocks
+                             (list (cons :prev prev) (cons :next next)))))
 
 (cl-defmethod org-rl-clock-opt-include-in-next ((prev org-rl-clock)
                                                 (next org-rl-clock)
@@ -131,7 +158,10 @@
   (org-rl-clocks-action resume fail-quietly prev next)
   (org-rl-debug nil "finish %s" 'org-rl-clock-opt-include-in-next)
   ;; TODO: add off to restart now (org-rl-clock-restart-now)
-  (list (list prev next)))
+  (list
+   (list prev next)
+   (org-rl-get-resume-clocks resume-clocks
+                             (list (cons :prev prev) (cons :next next)))))
 
 (cl-defmethod org-rl-clock-opt-include-in-other ((prev org-rl-clock)
                                                  (next org-rl-clock)
@@ -145,10 +175,15 @@
   (org-rl-debug nil "begin %s" 'org-rl-clock-opt-include-in-other)
 
   (let ((maxtimelen   (org-rl-get-time-gap prev next))
-        (other-marker (org-rl-select-other-clock)))
+        (other-marker (org-rl-select-other-clock))
+        resume-alist
+        prrev-resume next-resume other-resume)
 
     (setf prev (org-rl-clock-clock-out prev fail-quietly))     ;if necessary
     (setf next (org-rl-clock-clock-out next fail-quietly))     ;if necessary
+
+    (push (cons :prev prev) resume-alist)
+    (push (cons :next next) resume-alist)
 
     (if (> timelen 0)
         (setq prev
@@ -169,10 +204,15 @@
                                 (org-rl-clock-stop-time next))
              resume
              fail-quietly))))
+
+  (push (cons :other (if (> timelen 0) prev next)) resume-alist)
+
   (org-rl-clocks-action nil nil prev next)
   (org-rl-debug nil "finish %s" 'org-rl-clock-opt-include-in-other)
   ;; TODO: add off to restart now (org-rl-clock-restart-now)
-  (list (list prev next)))
+  (list
+   (list prev next)
+   (org-rl-get-resume-clocks resume-clocks resume-alist)))
 
 
 (cl-defmethod org-rl-clock-time-process-option ((prev org-rl-clock)
@@ -222,11 +262,27 @@
     (org-rl-debug nil "org-rl-clock-time-process-option: finished")
     clocks))
 
+
 (defun org-rl-clock-resume-clock (resume-clocks)
   (org-rl-debug :warning "resume clocks %s" resume-clocks)
   (if org-clock-marker
-      (org-rl-debug :warning "already clocking-in not resuming clocks %s" resume-clocks)))
+      (org-rl-debug :warning "already clocking-in not resuming clocks %s" resume-clocks)
+    (let* ((resume-clocks (remove-if-not #'consp resume-clocks))
+           (resume-clocks (append resume-clocks '((:done nil))))
+           (resume-clocks (mapcar
+                           (lambda (el)
+                             (cons
+                              (format "%s %s"
+                                      (car el)
+                                      (if (cdr el) (org-rl-format-clock (cdr el)))) el)
+                             resume-clocks)))
+           (sel
+            (completing-read "resume clock: " resume-clocks)
+            (sel-clock ((assoc sel resume-clocks)))))
+      (if sel-clock
+          (org-rl-clock-clock-in sel-clock)))))
 
+
 ;; NOTE: Remember here the concept of Positive and Negative and Full time.
 ;; Read time which could be positive or negative or full
 ;; TODO: option for restart also required for with active clock.
@@ -318,7 +374,8 @@
                           (org-rl-clock-null next))
                          (> timegap 0))
                         (org-rl-clock-resolve-time prev next resume fail-quietly resume-clocks)
-                      (org-rl-clock-resume-clock resume-clocks)
+                      (if resume-clocks
+                          (org-rl-clock-resume-clock resume-clocks))
                       (org-rl-debug nil "Error1"))))
               (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen)))))))
   (org-rl-debug nil "org-rl-clock-resolve-time: finished"))
