@@ -308,8 +308,10 @@
   (org-rl-clock-assert next)
 
   (org-rl-debug nil "org-rl-clock-resolve-time: begin")
-  (lotus-with-override-minibuffer
-    (org-rl-debug nil "org-rl-clock-resolve-time: [body] lotus-with-override-minibuffer")
+  (lotus-with-override-minibuffer-if
+    (progn
+      (org-rl-debug nil "org-rl-clock-resolve-time: [minibuffer-body] lotus-with-override-minibuffer-if active minibuffer found aborting it."))
+    (org-rl-debug nil "org-rl-clock-resolve-time: [body] lotus-with-override-minibuffer-if")
     (let ((debug-prompt t)
           (maxtimelen (org-rl-get-time-gap prev next)))
       ;;;

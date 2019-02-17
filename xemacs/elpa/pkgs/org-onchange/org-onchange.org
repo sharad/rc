@@ -407,10 +407,11 @@ add note but in this case it is not shown so background word is used.
        ;; (move-marker org-log-note-return-to (point))
        (lotus-with-no-active-minibuffer-if
            (progn                            ;could schedule in little further.
-             (lwarn 'org-onchange :debug "org-add-log-note-with-timed-new-win: [minibuff body] lotus-with-override-minibuffer-if")
+             (lwarn 'org-onchange :debug "org-add-log-note-with-timed-new-win: [minibuff body] lotus-with-no-active-minibuffer-if")
+             (lwarn 'org-onchange :debug "add-log-note-background: minibuffer already active quitting")
              (message "add-log-note-background: minibuffer already active quitting")
              (message nil))
-         (lwarn 'org-onchange :debug "org-add-log-note-with-timed-new-win: [body] lotus-with-override-minibuffer-if")
+         (lwarn 'org-onchange :debug "org-add-log-note-with-timed-new-win: [body] lotus-with-no-active-minibuffer-if")
          (let ((win-timeout (or win-timeout 7))
                (cleanupfn-local nil))
            (setq org-log-note-window-configuration (current-window-configuration))

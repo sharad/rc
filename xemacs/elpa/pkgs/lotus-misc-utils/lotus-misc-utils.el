@@ -315,19 +315,34 @@
 (defmacro lotus-with-no-active-minibuffer-if (minibuffer-body &rest body)
   ;;could schedule in little further.
   `(if (active-minibuffer-window)
-       ,minibuffer-body
+       (progn
+         ,minibuffer-body
+         (lwarn 'active-minibuffer-if :debug "cancelled as active minibuffer found."))
      (progn
+       (lwarn 'active-minibuffer-if :debug "no active minibuffer found.")
        ,@body)))
 (put 'lotus-with-no-active-minibuffer-if 'lisp-indent-function 1)
 
 (defmacro lotus-with-override-minibuffer (&rest body)
   `(progn
      (when (active-minibuffer-window)
+       (lwarn 'active-minibuffer-if :debug "aborting active minibuffer.")
        (abort-recursive-edit))
      (unless (active-minibuffer-window)
        (progn
          ,@body))))
 (put 'lotus-with-override-minibuffer 'lisp-indent-function 0)
+
+(defmacro lotus-with-override-minibuffer-if (minibuffer-body &rest body)
+  `(progn
+     (when (active-minibuffer-window)
+       (lwarn 'active-minibuffer-if :debug "aborting active minibuffer.")
+       ,minibuffer-body
+       (abort-recursive-edit))
+     (unless (active-minibuffer-window)
+       (progn
+         ,@body))))
+(put 'lotus-with-override-minibuffer-if 'lisp-indent-function 1)
 
 (defmacro lotus-with-other-frame-event (action &rest body)
   `(let ((frame nil)
@@ -370,9 +385,9 @@
               (hookfn1
                #'(lambda ()
                    (lwarn 'event-input :debug "hookfn1: last-input-event: %s last-event-frame: %s frame: %s"
-                            last-input-event
-                            last-event-frame
-                            frame)
+                          last-input-event
+                          last-event-frame
+                          frame)
                    (lwarn 'event-input :debug "hookfn1: removing hook 1")
                    (lwarn 'event-input :debug "hookfn1: 1 pre-command-hook %s" pre-command-hook)
                    (remove-hook 'pre-command-hook (lambda () (funcall hookfn1)))
@@ -399,9 +414,9 @@
               (hookfn
                #'(lambda ()
                    (lwarn 'event-input :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
-                            last-input-event
-                            last-event-frame
-                            frame)
+                          last-input-event
+                          last-event-frame
+                          frame)
                    (lwarn 'event-input :debug "hookfn: removing hook 1")
                    (lwarn 'event-input :debug "hookfn: 1 pre-command-hook %s" pre-command-hook)
                    (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
