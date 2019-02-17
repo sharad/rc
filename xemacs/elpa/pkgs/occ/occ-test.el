@@ -39,11 +39,11 @@
   :expected-result :passed
   :tags '(occ)
   (should
-   (memq #'occ-switch-buffer-run-curr-ctx-timer-function
-         switch-buffer-functions))
+   (member #'occ-switch-buffer-run-curr-ctx-timer-function
+           switch-buffer-functions))
   (should
-   (memq #'occ-add-after-save-hook-fun-in-org-mode
-         org-mode-hook)))
+   (member #'occ-add-after-save-hook-fun-in-org-mode
+           org-mode-hook)))
 
 
 
