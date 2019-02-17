@@ -43,25 +43,26 @@
 (defun org-clock-in-if-not ()
   (interactive)
   (message "%s: org-clock-in-if-not: begin" (time-stamp-string))
-  (lotus-with-other-frame-event-debug "org-clock-in-if-not" :restart
-    (lotus-with-no-active-minibuffer-if
-        (progn
-          (lwarn 'org-ci-if-not :debug "org-clock-in-if-not: [minibuff body] lotus-with-override-minibuffer-if")
-          (message
-           "%s: org-clock-in-if-not: not running as minibuffer is already active."
-           (time-stamp-string)))
+  (run-unobtrusively                    ;heavy task
+    (lotus-with-other-frame-event-debug "org-clock-in-if-not" :restart
+      (lotus-with-no-active-minibuffer-if
+          (progn
+            (lwarn 'org-ci-if-not :debug "org-clock-in-if-not: [minibuff body] lotus-with-override-minibuffer-if")
+            (message
+             "%s: org-clock-in-if-not: not running as minibuffer is already active."
+             (time-stamp-string)))
 
-      (lwarn 'org-ci-if-not :debug "org-clock-in-if-not: [body] lotus-with-override-minibuffer-if")
-      (unless (or
-               org-donot-try-to-clock-in
-               (org-clock-is-active))
-        ;; (org-clock-goto t)
-        (message "%s: org-clock-in-if-not: really calling" (time-stamp-string))
-        (if org-clock-history
-            (let (buffer-read-only)
-              (org-clock-in '(4)))
-          ;; with-current-buffer should be some real file
-          (org-clock-in-refile nil)))))
+        (lwarn 'org-ci-if-not :debug "org-clock-in-if-not: [body] lotus-with-override-minibuffer-if")
+        (unless (or
+                 org-donot-try-to-clock-in
+                 (org-clock-is-active))
+          ;; (org-clock-goto t)
+          (message "%s: org-clock-in-if-not: really calling" (time-stamp-string))
+          (if org-clock-history
+              (let (buffer-read-only)
+                (org-clock-in '(4)))
+            ;; with-current-buffer should be some real file
+            (org-clock-in-refile nil))))))
   (message "%s: org-clock-in-if-not: finished" (time-stamp-string)))
 
 (defvar org-clock-in-if-not-at-time-timer nil)

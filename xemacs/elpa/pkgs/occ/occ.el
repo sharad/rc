@@ -54,6 +54,7 @@
   (interactive)
   (lwarn 'occ :debug "occ-insinuate: begin")
   (message "occ-insinuate: begin")
+  (org-clock-load) ;; newly added
   (progn
     (setq occ-global-tsk-collection        nil)
     ;; (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)

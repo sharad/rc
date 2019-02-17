@@ -713,6 +713,16 @@
                       )))
 
 
+
+(defmacro run-unobtrusively (&rest body)
+  `(let ((retval (while-no-input
+                   (redisplay)
+                   ,@body)))
+     (when (eq retval t)
+       (message "user input %s retval %s" last-input-event retval))
+     retval))
+(put 'run-unobtrusively 'lisp-indent-function 0)
+
 (defmacro run-unobtrusively-throw-on-input (&rest body) ;throw
   `(while-no-input
      (redisplay)
