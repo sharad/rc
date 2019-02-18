@@ -140,6 +140,7 @@ using three `C-u' prefix arguments."
              (cons task marker))))))))
 
 (defun replace-org-clock-select-task (&optional prompt)
+  (lwarn 'org-clock-select-task :debug "%s: begin replace-org-clock-select-task" (time-stamp-string))
   (lotus-with-other-frame-event-debug "replace-org-clock-select-task" :restart
     (lwarn 'org-clock-wrapper :debug "replace-org-clock-select-task: lotus-with-other-frame-event-debug")
     (let ((helm-sources nil))
@@ -180,7 +181,8 @@ using three `C-u' prefix arguments."
       (condition-case nil
           (helm
            helm-sources)
-        ((quit error) (message "ignored"))))))
+        ((quit error) (message "ignored")))))
+  (lwarn 'org-clock-select-task :debug "%s: finisha replace-org-clock-select-task" (time-stamp-string)))
 
 
 ;;;###autoload

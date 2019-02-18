@@ -41,7 +41,7 @@ so long."
   ;; last-input-event
   ;; last-event-frame
 
-  (org-rl-debug nil "org-rl-resolve-clocks-if-idle: begin")
+  (org-rl-debug nil "%s: org-rl-resolve-clocks-if-idle: begin" (time-stamp-string))
   (lotus-with-other-frame-event-debug "org-rl-resolve-clocks-if-idle" :restart
     (condition-case err
         (progn
@@ -89,13 +89,13 @@ so long."
                  (org-user-idle-seconds)))
               (org-rl-debug :warning "Resetting org-clock-last-idle-start-time [= %s] to nil" org-clock-last-idle-start-time)
               (setq org-clock-last-idle-start-time nil)
-              (org-rl-debug :warning "Reset org-clock-last-idle-start-time to %s" org-clock-last-idle-start-time)q)))))
+              (org-rl-debug :warning "Reset org-clock-last-idle-start-time to %s" org-clock-last-idle-start-time))))))
       ;; (error
       ;;  (progn
       ;;    (setq org-clock-last-idle-start-time nil)
       ;;    (error "Error: %s" err)))
 
-  (org-rl-debug nil "org-rl-resolve-clocks-if-idle: finished"))
+  (org-rl-debug nil "%s: org-rl-resolve-clocks-if-idle: finished" (time-stamp-string)))
 
 (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
 

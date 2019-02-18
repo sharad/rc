@@ -43,6 +43,7 @@
 (defun org-clock-in-if-not ()
   (interactive)
   (message "%s: org-clock-in-if-not: begin" (time-stamp-string))
+  (lwarn 'org-ci-if-not :debug "%s: org-clock-in-if-not: begin" (time-stamp-string))
   (run-unobtrusively                    ;heavy task
     (lotus-with-other-frame-event-debug "org-clock-in-if-not" :restart
       (lotus-with-no-active-minibuffer-if
@@ -66,7 +67,9 @@
                 (org-clock-in '(4)))
             ;; with-current-buffer should be some real file
             (org-clock-in-refile nil))))))
-  (message "%s: org-clock-in-if-not: finished" (time-stamp-string)))
+  (message "%s: org-clock-in-if-not: finished" (time-stamp-string))
+  (lwarn 'org-ci-if-not :debug "%s: org-clock-in-if-not: finished" (time-stamp-string)))
+
 
 (defvar org-clock-in-if-not-at-time-timer nil)
 

@@ -127,7 +127,7 @@
   "add-ctx-to-org-heading"
   ;; TODO: make helm conditional when it is used than only it should be handled.
   (interactive '((occ-make-ctx) 7))
-
+  (occ-debug :debug "begin occ-add-to-org-heading")
   (lotus-with-other-frame-event-debug "occ-add-to-org-heading" :cancel
     (lwarn 'occ :debug "occ-add-to-org-heading: lotus-with-other-frame-event-debug")
     (lotus-with-no-active-minibuffer-if
@@ -212,7 +212,8 @@
                        (eq (current-buffer) buff)
                        (buffer-live-p buff)
                        (eq buff
-                           (get-buffer "*helm-mode-occ-add-to-org-heading*")))))))))
+                           (get-buffer "*helm-mode-occ-add-to-org-heading*"))))))))
+  (occ-debug :debug "finished occ-add-to-org-heading"))
 
 ;;;###autoload
 (cl-defmethod occ-add-to-org-heading-when-idle ((ctx occ-ctx) timeout)
@@ -226,7 +227,7 @@
 
   "Return value is important to decide next action to (create unnamed tsk.)"
   (occ-debug 6 "called occ-add-to-org-heading-when-idle")
-  (occ-debug :debug "begin: occ-add-to-org-heading-when-idle")
+  (occ-debug :debug "%s: begin: occ-add-to-org-heading-when-idle" (time-stamp-string))
   ;; timed-newwin of occ-add-to-org-heading pass quit
   ;; signal to caller mean here, so need to be handled, else this function can
   ;; not return any value to its caller, which result into no next-action in
@@ -243,7 +244,7 @@
     ;;   (occ-add-to-org-heading ctx timeout))
 
     ((quit)))
-  (occ-debug :debug "end: occ-add-to-org-heading-when-idle")
+  (occ-debug :debug "%s: end: occ-add-to-org-heading-when-idle" (time-stamp-string))
   ;; (run-with-idle-timer-nonobtrusive-simple
   ;;  7 nil
   ;;  #'(lambda (args)
