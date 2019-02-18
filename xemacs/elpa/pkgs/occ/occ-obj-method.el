@@ -54,7 +54,7 @@
   (if (memq prop (cl-class-slots (cl-classname obj)))
       (cl-get-field obj prop)
     (plist-get
-     (cl-struct-slot-value (cl-classname obj) 'plist obj)
+     (cl-obj-plist-value obj)
      (sym2key prop))))
 (cl-defmethod occ-set-property ((obj occ-obj)
                                 prop
@@ -63,16 +63,16 @@
   (if (memq prop (cl-class-slots (cl-classname obj)))
       (setf (cl-struct-slot-value (cl-classname obj) prop obj) val)
     (plist-put
-     (cl-struct-slot-value (cl-classname obj) 'plist obj)
+     (cl-struct-slot-value (cl-classname obj) 'plist obj) ;TODO ??? (cl-obj-plist-value obj)
      (sym2key prop) val)))
 (cl-defmethod occ-class-slots ((obj occ-obj))
-  (let* ((plist (cl-struct-slot-value (cl-classname obj) 'plist obj))
+  (let* ((plist (cl-obj-plist-value obj))
          (plist-keys (plist-get-keys plist))
          (slots (cl-class-slots (cl-classname obj))))
     (append slots
             (mapcar #'key2sym plist-keys))))
 (cl-defmethod occ-obj-defined-slots ((obj occ-obj))
-  (let* ((plist (cl-struct-slot-value (cl-classname obj) 'plist obj))
+  (let* ((plist (cl-obj-plist-value obj))
          (plist-keys (plist-get-keys plist))
          (slots
           (append
@@ -358,11 +358,10 @@ pointing to it."
     (let* ((file (occ-ctx-file ctx))
            (file (if file (file-truename file))))
       (if root
-          (when nil
-            (progn
-              (occ-debug :debug "tsk %s root %s" (occ-tsk-heading (cdr tsk-pair)) root)
-              (occ-debug :debug "tsk %s file %s" (occ-tsk-heading (cdr tsk-pair)) file)))
-        (occ-debug :debug "tsk %s root %s not present."
+          (progn
+            (occ-debug :nodisplay "tsk %s root %s" (occ-tsk-heading (cdr tsk-pair)) root)
+            (occ-debug :nodisplay "tsk %s file %s" (occ-tsk-heading (cdr tsk-pair)) file))
+        (occ-debug :nodisplay "tsk %s root %s not present."
                    (occ-tsk-heading (cdr tsk-pair)) root))
       (if (and root file
                (string-match root file))
@@ -378,11 +377,10 @@ pointing to it."
     (let* ((file (occ-ctx-file ctx))
            (file (if file (file-truename file))))
       (if currfile
-          (when nil
-            (progn
-              (occ-debug :debug "tsk %s currfile %s" (occ-tsk-heading (cdr tsk-pair)) currfile)
-              (occ-debug :debug "tsk %s file %s"     (occ-tsk-heading (cdr tsk-pair)) file)))
-        (occ-debug :debug "tsk %s currfile %s not present."
+          (progn
+            (occ-debug :nodisplay "tsk %s currfile %s" (occ-tsk-heading (cdr tsk-pair)) currfile)
+            (occ-debug :nodisplay "tsk %s file %s"     (occ-tsk-heading (cdr tsk-pair)) file))
+        (occ-debug :nodisplay "tsk %s currfile %s not present."
                    (occ-tsk-heading (cdr tsk-pair)) currfile))
       (if (and currfile file
                (string-match currfile file))
@@ -409,8 +407,7 @@ pointing to it."
   "Predicate funtion to check if ctx matches to tsk's status attribute."
   (let ((sub-tree
          (occ-get-property (cdr tsk-pair) 'subtree)))
-    (when nil
-      (occ-debug :debug "tsk %s subtree %s" (occ-tsk-heading (cdr tsk-pair)) (null (null sub-tree))))
+    (occ-debug :nodisplay "tsk %s subtree %s" (occ-tsk-heading (cdr tsk-pair)) (null (null sub-tree)))
     (if sub-tree -30 0)))
 
 (cl-defmethod occ-rank ((tsk-pair (head key))

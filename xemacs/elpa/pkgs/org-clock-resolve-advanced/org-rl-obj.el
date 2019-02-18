@@ -441,7 +441,9 @@
                 resume)
   (when (not org-clock-clocking-in)
     (if (org-rl-clock-null clock)
-        (org-rl-debug nil "org-rl-clock-clock-out: %s clock is null" (org-rl-clock-marker clock))
+        (progn
+          (org-rl-debug nil "org-rl-clock-clock-in: %s clock is null" (org-rl-clock-marker clock))
+          clock)
       (if (time-p (org-rl-clock-start-time clock))
           (org-rl-straight-org-clock-clock-in
            clock

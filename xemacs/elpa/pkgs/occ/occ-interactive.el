@@ -82,7 +82,7 @@
                        ;; (cl-method-first-arg 'occ-readprop)
                        (cl-method-matched-arg 'occ-readprop ctx)
                        '(edit done)))))
-    (cdr (assoc (occ-completing-read prompt keys  nil t) keys))))
+    (cdr (assoc (occ-completing-read prompt keys nil t) keys))))
 
 (defun org-flag-proprty-drawer-at-marker (marker flag)
   (let ((buff (marker-buffer marker))
