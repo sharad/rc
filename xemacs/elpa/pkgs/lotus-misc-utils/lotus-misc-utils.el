@@ -545,7 +545,8 @@
                    (if sel-frame-adviced-p
                        (when (not (advice-function-member-p #'quiet--select-frame (symbol-function 'select-frame-set-input-focus)))
                          (lwarn 'event-input :debug "set-advice-fn: %s add quiet 5 as already was present" ,name)
-                         (lwarn 'event-input :debug "set-advice-fn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                         (lwarn 'event-input :debug "set-advice-fn: name=%s last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                                ,name
                                 last-input-event
                                 last-event-frame
                                 frame
@@ -553,7 +554,8 @@
                          (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
                      (when (advice-function-member-p #'quiet--select-frame (symbol-function 'select-frame-set-input-focus))
                        (lwarn 'event-input :debug "readfn: %s remove quiet 5 as already was present" ,name)
-                       (lwarn 'event-input :debug "set-advice-fn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                       (lwarn 'event-input :debug "set-advice-fn: name=%s last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                              ,name
                               last-input-event
                               last-event-frame
                               frame
@@ -567,7 +569,8 @@
                      (condition-case nil
                          (progn
                            (lwarn 'event-input :debug "readfn: %s inside readfn" ,name)
-                           (lwarn 'event-input :debug "readfn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                           (lwarn 'event-input :debug "readfn: name=%s last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                                  ,name
                                   last-input-event
                                   last-event-frame
                                   frame
@@ -579,7 +582,8 @@
                        (quit nil)))))
               (hookfn
                #'(lambda ()
-                   (lwarn 'event-input :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                   (lwarn 'event-input :debug "hookfn: name=%s last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                          ,name
                           last-input-event
                           last-event-frame
                           frame
@@ -595,7 +599,8 @@
                      (with-selected-frame last-event-frame
                        (progn
                          (lwarn 'event-input :debug "hookfn: %s running readfn from hookfn outside timer" ,name)
-                         (lwarn 'event-input :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                         (lwarn 'event-input :debug "hookfn: name=%s last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                                ,name
                                 last-input-event
                                 last-event-frame
                                 frame
@@ -607,7 +612,8 @@
                                                ;; (setq frame (selected-frame))
                                                ;; (setq debug-on-quit nil)
                                                (lwarn 'event-input :debug "hookfn: %s timer remove quiet 1" ,name)
-                                               (lwarn 'event-input :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                                               (lwarn 'event-input :debug "hookfn: name=%s last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                                                      ,name
                                                       last-input-event
                                                       last-event-frame
                                                       frame
@@ -622,7 +628,8 @@
                                                        `(
                                                          (with-selected-frame last-event-frame
                                                            (lwarn 'event-input :debug "hookfn: %s running readfn from hookfn inside timer" ,name)
-                                                           (lwarn 'event-input :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                                                           (lwarn 'event-input :debug "hookfn: name=%s last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                                                                  ,name
                                                                   last-input-event
                                                                   last-event-frame
                                                                   frame
@@ -638,7 +645,8 @@
                                                         (null action))
                                                        nil))
                                                  (lwarn 'event-input :debug "hookfn: %s finished running %s frame=%s" ,name ,action (selected-frame))
-                                                 (lwarn 'event-input :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                                                 (lwarn 'event-input :debug "hookfn: name=%s last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                                                        ,name
                                                         last-input-event
                                                         last-event-frame
                                                         frame
@@ -646,7 +654,8 @@
                                                         (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame))))))
                          (progn
                            (lwarn 'event-input :debug "hookfn: %s add quiet 2 frame=%s" ,name (selected-frame))
-                           (lwarn 'event-input :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                           (lwarn 'event-input :debug "hookfn: name=%s last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s"
+                                  ,name
                                   last-input-event
                                   last-event-frame
                                   frame

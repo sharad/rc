@@ -45,8 +45,8 @@
 (defun occ-debug (level &rest args)
   (when (car args)
     (apply #'format args)
-    (lwarn 'occ level args))
-  (message args))
+    (apply #'lwarn 'occ level args))
+  (apply #'message args))
 
 (defun sym2key (sym)
   (if (keywordp sym)

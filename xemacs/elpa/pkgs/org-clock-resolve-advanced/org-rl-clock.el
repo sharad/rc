@@ -368,17 +368,17 @@
                        (next (nth 1 resolve-clocks)))
                   (org-rl-debug nil "(org-rl-clock-null prev) %s" (org-rl-clock-null prev))
                   (org-rl-debug nil "(org-rl-clock-null next) %s" (org-rl-clock-null next))
-                  (let ((timegap (org-rl-get-time-gap prev next)))
-                    (if (and
-                         resolve-clocks
-                         (or
-                          (org-rl-clock-null prev)
-                          (org-rl-clock-null next))
-                         (> timegap 0))
-                        (org-rl-clock-resolve-time prev next resume fail-quietly resume-clocks)
-                      (if resume-clocks
-                          (org-rl-clock-resume-clock resume-clocks))
-                      (org-rl-debug nil "Error1"))))
+                  (if (and
+                       resolve-clocks
+                       (not
+                        (and
+                         (org-rl-clock-null prev)
+                         (org-rl-clock-null next)))
+                       (> (org-rl-get-time-gap prev next) 0))
+                      (org-rl-clock-resolve-time prev next resume fail-quietly resume-clocks)
+                    (if resume-clocks
+                        (org-rl-clock-resume-clock resume-clocks))
+                    (org-rl-debug nil "Error1")))
               (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen)))))))
   (org-rl-debug nil "org-rl-clock-resolve-time: finished"))
 
