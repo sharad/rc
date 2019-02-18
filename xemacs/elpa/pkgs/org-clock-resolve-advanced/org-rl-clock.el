@@ -383,7 +383,6 @@
   (org-rl-debug nil "org-rl-clock-resolve-time: finished"))
 
 
-
 (defun org-rl-clock-clock-in-as-it-is (marker)
   (interactive
    (list (point-marker)))

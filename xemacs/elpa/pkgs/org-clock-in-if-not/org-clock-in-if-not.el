@@ -47,7 +47,7 @@
     (lotus-with-other-frame-event-debug "org-clock-in-if-not" :restart
       (lotus-with-no-active-minibuffer-if
           (progn
-            (lwarn 'org-ci-if-not :debug "org-clock-in-if-not: [minibuff body] lotus-with-no-active-minibuffer-if")
+            (lwarn 'org-ci-if-not :debug "%s: org-clock-in-if-not: [minibuff body] lotus-with-no-active-minibuffer-if" (time-stamp-string))
             (lwarn 'org-ci-if-not :debug
              "%s: org-clock-in-if-not: not running as minibuffer is already active."
              (time-stamp-string))
@@ -55,7 +55,7 @@
              "%s: org-clock-in-if-not: not running as minibuffer is already active."
              (time-stamp-string)))
 
-        (lwarn 'org-ci-if-not :debug "org-clock-in-if-not: [body] lotus-with-no-active-minibuffer-if")
+        (lwarn 'org-ci-if-not :debug "%S: org-clock-in-if-not: [body] lotus-with-no-active-minibuffer-if" (time-stamp-string))
         (unless (or
                  org-donot-try-to-clock-in
                  (org-clock-is-active))

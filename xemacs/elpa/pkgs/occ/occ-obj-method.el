@@ -358,9 +358,10 @@ pointing to it."
     (let* ((file (occ-ctx-file ctx))
            (file (if file (file-truename file))))
       (if root
-          (progn
-            (occ-debug :debug "tsk %s root %s" (occ-tsk-heading (cdr tsk-pair)) root)
-            (occ-debug :debug "tsk %s file %s" (occ-tsk-heading (cdr tsk-pair)) file))
+          (when nil
+            (progn
+              (occ-debug :debug "tsk %s root %s" (occ-tsk-heading (cdr tsk-pair)) root)
+              (occ-debug :debug "tsk %s file %s" (occ-tsk-heading (cdr tsk-pair)) file)))
         (occ-debug :debug "tsk %s root %s not present."
                    (occ-tsk-heading (cdr tsk-pair)) root))
       (if (and root file
@@ -377,9 +378,10 @@ pointing to it."
     (let* ((file (occ-ctx-file ctx))
            (file (if file (file-truename file))))
       (if currfile
-          (progn
-            (occ-debug :debug "tsk %s currfile %s" (occ-tsk-heading (cdr tsk-pair)) currfile)
-            (occ-debug :debug "tsk %s file %s"     (occ-tsk-heading (cdr tsk-pair)) file))
+          (when nil
+            (progn
+              (occ-debug :debug "tsk %s currfile %s" (occ-tsk-heading (cdr tsk-pair)) currfile)
+              (occ-debug :debug "tsk %s file %s"     (occ-tsk-heading (cdr tsk-pair)) file)))
         (occ-debug :debug "tsk %s currfile %s not present."
                    (occ-tsk-heading (cdr tsk-pair)) currfile))
       (if (and currfile file
@@ -407,7 +409,8 @@ pointing to it."
   "Predicate funtion to check if ctx matches to tsk's status attribute."
   (let ((sub-tree
          (occ-get-property (cdr tsk-pair) 'subtree)))
-    (occ-debug :debug "tsk %s subtree %s" (occ-tsk-heading (cdr tsk-pair)) (null (null sub-tree)))
+    (when nil
+      (occ-debug :debug "tsk %s subtree %s" (occ-tsk-heading (cdr tsk-pair)) (null (null sub-tree))))
     (if sub-tree -30 0)))
 
 (cl-defmethod occ-rank ((tsk-pair (head key))

@@ -128,91 +128,93 @@
   ;; TODO: make helm conditional when it is used than only it should be handled.
   (interactive '((occ-make-ctx) 7))
 
-  (lotus-with-no-active-minibuffer-if
-      (progn
-        (lwarn 'occ :debug "occ-add-to-org-heading: [minibuffer-body] lotus-with-no-active-minibuffer-if")
-        (occ-debug :debug "add-ctx-to-org-heading: minibuffer already active quitting")
-        (occ-debug :debug nil))
-    (let* ((timeout (or timeout 7))
-           (ctx (or ctx (occ-make-ctx)))
-           (buff (occ-ctx-buffer ctx)))
-      (lwarn 'occ :debug "occ-add-to-org-heading: [body] lotus-with-no-active-minibuffer-if")
-      (if (and
-           (eq (current-buffer) buff)
-           (buffer-live-p buff)
-           (not
-            (eq buff
-                (get-buffer "*helm-mode-occ-add-to-org-heading*"))))
-
-          (org-with-file-loc-timed-refile
-              file pos
-              timeout '((occ-included-files :maxlevel . 4)) ;heavy task, but present in macro !
-
-            (let* ((marker (make-marker))
-                   (local-cleanup
-                    #'(lambda ()
-                        (save-excursion ;what to do here
-                          (org-flag-proprty-drawer-at-marker marker t))
-                        (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
-                          (abort-recursive-edit)))))
-
-              (set-marker marker (point))
-              ;; (occ-debug :debug "1 marker %s" marker)
-
-              (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
-                  timeout timer cleanup local-cleanup win
-
-                  (let ((target-buffer (find-file-noselect file)))
-
-                    (when target-buffer
-                      (switch-to-buffer target-buffer)
-                      (goto-char pos)
-                      (set-marker marker (point)))
-                    ;; (occ-debug :debug "2 marker %s" marker)
-
-                    (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
-                    (progn
-                      (condition-case err
-                          (let ((buffer-read-only nil))
-                            (occ-debug :debug "timer started for win %s" win)
-
-                            ;; show proptery drawer
-                            (org-flag-proprty-drawer-at-marker marker nil)
-
-                            ;; try to read values of properties.
-                            (let ((prop nil))
-                              (while (not
-                                      (member
-                                       (setq prop (occ-select-propetry ctx))
-                                       '(edit done)))
-                                (when (occ-set-property prop nil ctx)
-                                  (occ-tsk-update-tsks t)))
-                              (cond
-                               ((eql 'done prop)
-                                (funcall cleanup win local-cleanup)
-                                (when timer (cancel-timer timer)))
-                               ((eql 'edit prop)
-                                ;; (funcall cleanup win local-cleanup)
-                                (occ-debug :debug "debug editing")
-                                (when timer (cancel-timer timer))
-                                (when (and win (windowp win) (window-valid-p win))
-                                  (select-window win 'norecord)))
-                               (t
-                                (funcall cleanup win local-cleanup)
-                                (when timer (cancel-timer timer))))))
-                        ((quit)
-                         (progn
-                           (funcall cleanup win local-cleanup)
-                           (if timer (cancel-timer timer))
-                           (signal (car err) (cdr err))))))))))
+  (lotus-with-other-frame-event-debug "occ-add-to-org-heading" :cancel
+    (lwarn 'occ :debug "occ-add-to-org-heading: lotus-with-other-frame-event-debug")
+    (lotus-with-no-active-minibuffer-if
         (progn
-          (occ-debug 6 "not running add-ctx-to-org-heading 1 %s, 2 %s 3 %s"
-                     (eq (current-buffer) buff)
-                     (buffer-live-p buff)
-                     (eq buff
-                         (get-buffer "*helm-mode-occ-add-to-org-heading*"))))))))
+          (lwarn 'occ :debug "occ-add-to-org-heading: [minibuffer-body] lotus-with-no-active-minibuffer-if")
+          (occ-debug :debug "add-ctx-to-org-heading: minibuffer already active quitting")
+          (occ-debug :debug nil))
+      (let* ((timeout (or timeout 7))
+             (ctx (or ctx (occ-make-ctx)))
+             (buff (occ-ctx-buffer ctx)))
+        (lwarn 'occ :debug "occ-add-to-org-heading: [body] lotus-with-no-active-minibuffer-if")
+        (if (and
+             (eq (current-buffer) buff)
+             (buffer-live-p buff)
+             (not
+              (eq buff
+                  (get-buffer "*helm-mode-occ-add-to-org-heading*"))))
 
-;;---------------------------------------------------------------;;;###autoload
+            (org-with-file-loc-timed-refile
+                file pos
+                timeout '((occ-included-files :maxlevel . 4)) ;heavy task, but present in macro !
+
+              (let* ((marker (make-marker))
+                     (local-cleanup
+                      #'(lambda ()
+                          (save-excursion ;what to do here
+                            (org-flag-proprty-drawer-at-marker marker t))
+                          (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
+                            (abort-recursive-edit)))))
+
+                (set-marker marker (point))
+                ;; (occ-debug :debug "1 marker %s" marker)
+
+                (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
+                    timeout timer cleanup local-cleanup win
+
+                    (let ((target-buffer (find-file-noselect file)))
+
+                      (when target-buffer
+                        (switch-to-buffer target-buffer)
+                        (goto-char pos)
+                        (set-marker marker (point)))
+                      ;; (occ-debug :debug "2 marker %s" marker)
+
+                      (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
+                      (progn
+                        (condition-case err
+                            (let ((buffer-read-only nil))
+                              (occ-debug :debug "timer started for win %s" win)
+
+                              ;; show proptery drawer
+                              (org-flag-proprty-drawer-at-marker marker nil)
+
+                              ;; try to read values of properties.
+                              (let ((prop nil))
+                                (while (not
+                                        (member
+                                         (setq prop (occ-select-propetry ctx))
+                                         '(edit done)))
+                                  (when (occ-set-property prop nil ctx)
+                                    (occ-tsk-update-tsks t)))
+                                (cond
+                                 ((eql 'done prop)
+                                  (funcall cleanup win local-cleanup)
+                                  (when timer (cancel-timer timer)))
+                                 ((eql 'edit prop)
+                                  ;; (funcall cleanup win local-cleanup)
+                                  (occ-debug :debug "debug editing")
+                                  (when timer (cancel-timer timer))
+                                  (when (and win (windowp win) (window-valid-p win))
+                                    (select-window win 'norecord)))
+                                 (t
+                                  (funcall cleanup win local-cleanup)
+                                  (when timer (cancel-timer timer))))))
+                          ((quit)
+                           (progn
+                             (funcall cleanup win local-cleanup)
+                             (if timer (cancel-timer timer))
+                             (signal (car err) (cdr err))))))))))
+          (progn
+            (occ-debug 6 "not running add-ctx-to-org-heading 1 %s, 2 %s 3 %s"
+                       (eq (current-buffer) buff)
+                       (buffer-live-p buff)
+                       (eq buff
+                           (get-buffer "*helm-mode-occ-add-to-org-heading*")))))))))
+
+;;;###autoload
 (cl-defmethod occ-add-to-org-heading-when-idle ((ctx occ-ctx) timeout)
 
   ;; either this should also be in occ-obj-method
@@ -232,9 +234,14 @@
   (condition-case nil
       ;; TODO: Add code to which check if only focus present than only trigger
       ;; else postpone it by calling run-with-idle-plus-timer
-      (lotus-with-other-frame-event-debug "occ-add-to-org-heading-when-idle" :cancel
-        (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: lotus-with-other-frame-event-debug")
+      (progn
+        (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: calling occ-add-to-org-heading")
         (occ-add-to-org-heading ctx timeout))
+
+    ;; (lotus-with-other-frame-event-debug "occ-add-to-org-heading-when-idle" :cancel
+    ;;   (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: lotus-with-other-frame-event-debug")
+    ;;   (occ-add-to-org-heading ctx timeout))
+
     ((quit)))
   (occ-debug :debug "end: occ-add-to-org-heading-when-idle")
   ;; (run-with-idle-timer-nonobtrusive-simple
