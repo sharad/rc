@@ -37,6 +37,7 @@
   `(if (has-focus)
        ,focus-body
      ,unfocus-body))
+(put 'eval-if-focus 'lisp-indent-function 1)
 
 (defmacro eval-with-focus (&rest body)
   "Eval BODY with focus"
@@ -44,6 +45,61 @@
      (unless (has-focus)
        (grab-focus))
      ,@body))
+(put 'eval-with-focus 'lisp-indent-function 0)
+
+(defmacro with-no-active-minibuffer (&rest body)
+  ;; https://oremacs.com/2015/07/16/callback-quit/
+  ;; https://emacs.stackexchange.com/questions/20974/exit-minibuffer-and-execute-a-command-afterwards
+  `(progn
+     (put 'quit 'error-message "")
+     (run-at-time nil nil
+                  (lambda ()
+                    (put 'quit 'error-message "Quit")
+                    ,@body))
+     (when (active-minibuffer-window)
+       (abort-recursive-edit))))
+(put 'with-no-active-minibuffer 'lisp-indent-function 0)
+
+(defmacro with-no-active-minibuffer-ensured (&rest body)
+  ;; https://oremacs.com/2015/07/16/callback-quit/
+  ;; https://emacs.stackexchange.com/questions/20974/exit-minibuffer-and-execute-a-command-afterwards
+  `(with-no-active-minibuffer
+    (unless (active-minibuffer-window)
+      ,@body)))
+(put 'with-no-active-minibuffer-ensured 'lisp-indent-function 0)
+
+(defmacro with-no-active-minibuffer-debug (minibuffer-body &rest body)
+  ;; https://oremacs.com/2015/07/16/callback-quit/
+  ;; https://emacs.stackexchange.com/questions/20974/exit-minibuffer-and-execute-a-command-afterwards
+  `(progn
+     (when (active-minibuffer-window)
+       ,minibuffer-body)
+     (put 'quit 'error-message "")
+     (run-at-time nil nil
+                  (lambda ()
+                    (put 'quit 'error-message "Quit")
+                    ,@body))
+     (when (active-minibuffer-window)
+       (abort-recursive-edit))))
+(put 'with-no-active-minibuffer-debug 'lisp-indent-function 1)
+
+(defmacro with-no-active-minibuffer-ensured-debug (minibuffer-body &rest body)
+  ;; https://oremacs.com/2015/07/16/callback-quit/
+  ;; https://emacs.stackexchange.com/questions/20974/exit-minibuffer-and-execute-a-command-afterwards
+  `(with-no-active-minibuffer-debug
+    ,minibuffer-body
+    (unless (active-minibuffer-window)
+      ,@body)))
+(put 'with-no-active-minibuffer-ensured-debug 'lisp-indent-function 1)
+
+(when nil
+  (defun test-minibuffer-quiting ()
+    (with-no-active-minibuffer
+      (message "Hello")))
+
+  (run-with-timer 3 nil 'test-minibuffer-quiting)
+
+  (get 'quit 'error-message))
 
 (defun lotus-new-lower-win-size ()
   ;; TODO: improve it.
@@ -120,10 +176,10 @@
                                              (setq ,temp-win-config nil)))))
        (lotus-with-new-win ,newwin
          (lexical-let* ((,timer (run-with-idle-plus-timer ,timeout
-                                                     nil
-                                                     ,cleanupfn-newwin
-                                                     ,newwin
-                                                     ,cleanupfn-local)))
+                                                          nil
+                                                          ,cleanupfn-newwin
+                                                          ,newwin
+                                                          ,cleanupfn-local)))
            (condition-case err
                (progn
                  ,@body)
@@ -324,24 +380,16 @@
 (put 'lotus-with-no-active-minibuffer-if 'lisp-indent-function 1)
 
 (defmacro lotus-with-override-minibuffer (&rest body)
-  `(progn
-     (when (active-minibuffer-window)
-       (lwarn 'active-minibuffer-if :debug "%s: %s: aborting active minibuffer." (time-stamp-string) 'lotus-with-override-minibuffer)
-       (abort-recursive-edit))
-     (unless (active-minibuffer-window)
-       (progn
-         ,@body))))
+  `(with-no-active-minibuffer-ensured
+    ,@body))
 (put 'lotus-with-override-minibuffer 'lisp-indent-function 0)
 
 (defmacro lotus-with-override-minibuffer-if (minibuffer-body &rest body)
-  `(progn
-     (when (active-minibuffer-window)
-       (lwarn 'active-minibuffer-if :debug "%s: %s: aborting active minibuffer." (time-stamp-string) 'lotus-with-override-minibuffer-if)
-       ,minibuffer-body
-       (abort-recursive-edit))
-     (unless (active-minibuffer-window)
-       (progn
-         ,@body))))
+  `(with-no-active-minibuffer-ensured-debug
+    (progn
+      (lwarn 'active-minibuffer-if :debug "%s: %s: aborting active minibuffer." (time-stamp-string) 'lotus-with-override-minibuffer-if)
+      ,minibuffer-body)
+    ,@body))
 (put 'lotus-with-override-minibuffer-if 'lisp-indent-function 1)
 
 (defmacro lotus-with-other-frame-event (action &rest body)
@@ -410,14 +458,14 @@
                          (add-function :override (symbol-function  'select-frame-set-input-focus ,action) #'quiet--select-frame)
                          (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> going to run abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                          (when (active-minibuffer-window)
-                           (abort-recursive-edit)
-                           (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))))))))
+                           (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> running abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                           (abort-recursive-edit)))))))
 
               (hookfn
                #'(lambda ()
                    (lwarn 'event-input :debug "%s: %s: hookfn: <%s> last-input-event: %s last-event-frame: %s frame: %s minibuffer<%s>"
                           (time-stamp-string)
-                          'lotus-with-other-frame-event ,action 
+                          'lotus-with-other-frame-event ,action
                           last-input-event
                           last-event-frame
                           frame
@@ -463,8 +511,8 @@
                            (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
                            (lwarn 'event-input :debug "%s: %s: hookfn: <%s> going to run abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                            (when (active-minibuffer-window)
-                             (abort-recursive-edit)
-                             (lwarn 'event-input :debug "%s: %s: hookfn: <%s> abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))))))))))
+                             (lwarn 'event-input :debug "%s: %s: hookfn: <%s> running abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                             (abort-recursive-edit)))))))))
        (lwarn 'event-input :debug "%s: %s: <%s> calling readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
        (funcall readfn))))
 
