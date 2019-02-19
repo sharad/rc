@@ -128,13 +128,13 @@
   ;; TODO: make helm conditional when it is used than only it should be handled.
   (interactive '((occ-make-ctx) 7))
   (occ-debug :debug "begin occ-add-to-org-heading")
-  (lotus-with-other-frame-event-debug "occ-add-to-org-heading" :cancel
-    (lwarn 'occ :debug "occ-add-to-org-heading: lotus-with-other-frame-event-debug")
-    (lotus-with-no-active-minibuffer-if
-        (progn
-          (lwarn 'occ :debug "occ-add-to-org-heading: [minibuffer-body] lotus-with-no-active-minibuffer-if")
-          (occ-debug :debug "add-ctx-to-org-heading: minibuffer already active quitting")
-          (occ-debug :debug nil))
+  (lotus-with-no-active-minibuffer-if
+      (progn
+        (lwarn 'occ :debug "occ-add-to-org-heading: [minibuffer-body] lotus-with-no-active-minibuffer-if")
+        (occ-debug :debug "add-ctx-to-org-heading: minibuffer already active quitting")
+        (occ-debug :debug nil))
+    (lotus-with-other-frame-event-debug "occ-add-to-org-heading" :cancel
+      (lwarn 'occ :debug "occ-add-to-org-heading: lotus-with-other-frame-event-debug")
       (let* ((timeout (or timeout 7))
              (ctx (or ctx (occ-make-ctx)))
              (buff (occ-ctx-buffer ctx)))

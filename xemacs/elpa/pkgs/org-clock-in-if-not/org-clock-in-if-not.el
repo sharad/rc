@@ -45,8 +45,8 @@
   (message "%s: org-clock-in-if-not: begin" (time-stamp-string))
   (lwarn 'org-ci-if-not :debug "%s: org-clock-in-if-not: begin" (time-stamp-string))
   (run-unobtrusively                    ;heavy task
-    (lotus-with-other-frame-event-debug "org-clock-in-if-not" :restart
-      (lotus-with-no-active-minibuffer-if
+    (lotus-with-no-active-minibuffer-if
+        (lotus-with-other-frame-event-debug "org-clock-in-if-not" :restart
           (progn
             (lwarn 'org-ci-if-not :debug "%s: org-clock-in-if-not: [minibuff body] lotus-with-no-active-minibuffer-if" (time-stamp-string))
             (lwarn 'org-ci-if-not :debug
