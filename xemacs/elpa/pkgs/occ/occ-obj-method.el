@@ -82,6 +82,12 @@
      #'(lambda (arg) (memq arg slots))
      (cl-method-first-arg method))))
 
+(when nil
+ (cl-method-first-arg 'occ-readprop)
+ (cl-method-matched-arg 'occ-readprop nil)
+ (cl-method-matched-arg 'occ-readprop (occ-make-ctx))
+ (occ-obj-defined-slots-with-value (occ-make-ctx)))
+
 (defun occ-tsk-builder ()
   (if occ-global-tsk-collection
       (let ((classname (cl-classname (occ-collection-object))))
