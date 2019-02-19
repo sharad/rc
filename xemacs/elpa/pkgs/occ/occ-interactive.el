@@ -174,34 +174,34 @@
 
                       (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
                       (progn
-                        (condition-case err
-                            (let ((buffer-read-only nil))
-                              (occ-debug :debug "timer started for win %s" win)
+                        (condition-case-control t err
+                          (let ((buffer-read-only nil))
+                            (occ-debug :debug "timer started for win %s" win)
 
-                              ;; show proptery drawer
-                              (org-flag-proprty-drawer-at-marker marker nil)
+                            ;; show proptery drawer
+                            (org-flag-proprty-drawer-at-marker marker nil)
 
-                              ;; try to read values of properties.
-                              (let ((prop nil))
-                                (while (not
-                                        (member
-                                         (setq prop (occ-select-propetry ctx))
-                                         '(edit done)))
-                                  (when (occ-set-property prop nil ctx)
-                                    (occ-tsk-update-tsks t)))
-                                (cond
-                                 ((eql 'done prop)
-                                  (funcall cleanup win local-cleanup)
-                                  (when timer (cancel-timer timer)))
-                                 ((eql 'edit prop)
-                                  ;; (funcall cleanup win local-cleanup)
-                                  (occ-debug :debug "debug editing")
-                                  (when timer (cancel-timer timer))
-                                  (when (and win (windowp win) (window-valid-p win))
-                                    (select-window win 'norecord)))
-                                 (t
-                                  (funcall cleanup win local-cleanup)
-                                  (when timer (cancel-timer timer))))))
+                            ;; try to read values of properties.
+                            (let ((prop nil))
+                              (while (not
+                                      (member
+                                       (setq prop (occ-select-propetry ctx))
+                                       '(edit done)))
+                                (when (occ-set-property prop nil ctx)
+                                  (occ-tsk-update-tsks t)))
+                              (cond
+                               ((eql 'done prop)
+                                (funcall cleanup win local-cleanup)
+                                (when timer (cancel-timer timer)))
+                               ((eql 'edit prop)
+                                ;; (funcall cleanup win local-cleanup)
+                                (occ-debug :debug "debug editing")
+                                (when timer (cancel-timer timer))
+                                (when (and win (windowp win) (window-valid-p win))
+                                  (select-window win 'norecord)))
+                               (t
+                                (funcall cleanup win local-cleanup)
+                                (when timer (cancel-timer timer))))))
                           ((quit)
                            (progn
                              (funcall cleanup win local-cleanup)
@@ -214,7 +214,6 @@
                        (eq buff
                            (get-buffer "*helm-mode-occ-add-to-org-heading*"))))))))
   (occ-debug :debug "finished occ-add-to-org-heading"))
-
 ;;;###autoload
 (cl-defmethod occ-add-to-org-heading-when-idle ((ctx occ-ctx) timeout)
 
@@ -232,18 +231,20 @@
   ;; signal to caller mean here, so need to be handled, else this function can
   ;; not return any value to its caller, which result into no next-action in
   ;; caller function.
-  (condition-case nil
-      ;; TODO: Add code to which check if only focus present than only trigger
-      ;; else postpone it by calling run-with-idle-plus-timer
-      (progn
-        (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: calling occ-add-to-org-heading")
-        (occ-add-to-org-heading ctx timeout))
+
+  (condition-case-control t nil
+    ;; TODO: Add code to which check if only focus present than only trigger
+    ;; else postpone it by calling run-with-idle-plus-timer
+    (progn
+      (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: calling occ-add-to-org-heading")
+      (occ-add-to-org-heading ctx timeout))
 
     ;; (lotus-with-other-frame-event-debug "occ-add-to-org-heading-when-idle" :cancel
     ;;   (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: lotus-with-other-frame-event-debug")
     ;;   (occ-add-to-org-heading ctx timeout))
 
     ((quit)))
+
   (occ-debug :debug "%s: end: occ-add-to-org-heading-when-idle" (time-stamp-string))
   ;; (run-with-idle-timer-nonobtrusive-simple
   ;;  7 nil

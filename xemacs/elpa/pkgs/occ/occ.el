@@ -54,7 +54,6 @@
   (interactive)
   (lwarn 'occ :debug "occ-insinuate: begin")
   (message "occ-insinuate: begin")
-  (org-clock-load) ;; newly added
   (progn
     (setq occ-global-tsk-collection        nil)
     ;; (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)
@@ -67,6 +66,7 @@
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)
         (push propstr org-use-property-inheritance))))
+  (org-clock-load) ;; newly added
  (lwarn 'occ :debug "occ-insinuate: finish")
  (message "occ-insinuate: finish"))
 

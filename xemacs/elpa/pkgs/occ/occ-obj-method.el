@@ -37,17 +37,6 @@
 (provide 'occ-obj-method)
 
 
-(when nil ;; https://curiousprogrammer.wordpress.com/2010/07/19/emacs-defstruct-vs-other-languages/
-
-  (defun cl-get-field (object field)
-    (cl-struct-slot-value (cl-classname object) field object))
-
-  (defun cl-set-field (object field value)
-    (setf (cl-struct-slot-value (cl-classname object) field object) value))
-
-  (get-field dave 'name)
-  (set-field dave 'name "Simon Smith"))
-
 (cl-defmethod occ-get-property ((obj occ-obj)
                                 prop)
   ;; mainly used by occ-tsk only.
@@ -78,14 +67,17 @@
           (append
            (cl-class-slots (cl-classname obj))
            (mapcar #'key2sym plist-keys))))
+    slots))
+(cl-defmethod occ-obj-defined-slots-with-value ((obj occ-obj))
+  (let* ((slots (occ-obj-defined-slots obj)))
     (remove-if-not
      #'(lambda (slot)
-         (cl-struct-slot-value (cl-classname object) slot object))
+         (occ-get-property obj slot))
      slots)))
 (cl-defmethod cl-method-matched-arg ((method symbol) (ctx symbol))
   (cl-method-first-arg method))
 (cl-defmethod cl-method-matched-arg ((method symbol) (ctx occ-ctx))
-  (let ((slots (occ-obj-defined-slots ctx)))
+  (let ((slots (occ-obj-defined-slots-with-value ctx)))
     (remove-if-not
      #'(lambda (arg) (memq arg slots))
      (cl-method-first-arg method))))
@@ -638,11 +630,11 @@ pointing to it."
             (let ((buffer-read-only nil))
               (when old-heading
                 (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
-              (condition-case err
-                  (progn
-                    (occ-straight-org-clock-clock-in (list new-marker))
-                    (setq retval t)
-                    (push new-ctxask *occ-clocked-ctxual-tsk-ctx-history*))
+              (condition-case-control t err
+                (progn
+                  (occ-straight-org-clock-clock-in (list new-marker))
+                  (setq retval t)
+                  (push new-ctxask *occ-clocked-ctxual-tsk-ctx-history*))
                 ((error)
                  (progn
                    (setq retval nil)

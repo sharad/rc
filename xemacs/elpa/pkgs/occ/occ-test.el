@@ -24,14 +24,15 @@
 
 ;;; Code:
 
+(provide 'occ-test)
 
-
+
 (require 'ert)
 (require 'ert-x)
 
 
 
-
+
 ;; https://www.gnu.org/software/emacs/manual/html_node/ert/index.html
 
 (ert-deftest ert-occ-test-occ-insinuated ()
@@ -53,7 +54,7 @@
   :tags '(occ)
   (should t))
 
-
+
 (when nil                               ;occ-obj-method.el
 
   (occ-add-to-org-heading-when-idle (occ-make-ctx) 7)
@@ -136,9 +137,16 @@
            (occ-included-files))))
      (message "files not in org-mode %s" files))))
 
+
+(defun functions-in-file-test ()
+  ;; https://stackoverflow.com/questions/26330363/how-do-i-get-a-list-of-functions-defined-in-an-emacs-lisp-file
+  (let ((funclist ()))
+    (mapatoms
+     (lambda (x)
+       (when (and (fboundp x)                     ; does x name a function?
+                  (let ((f (symbol-file x)))
+                    (and f (string= (file-name-base f) "occ-main.el"))))
+         (push x funclist))))
+    funclist))
 
-
-
-
-(provide 'occ-test)
 ;;; occ-test.el ends here

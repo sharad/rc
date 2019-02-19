@@ -250,6 +250,15 @@ define_webjump("pin",
                "http://pinboard.in/u:sharad/t:%s",
                $alternative = "http://pinboard.in/u:sharad");
 
+// {{ Keyboard Shortcuts for Often-Used Sites
+// Here is an example of how to bind a key to go to a specific
+// website. Because the command is defined as an alias of the follow
+// command, the prefix key C-u will open the site in a new buffer.
+
+interactive("pin-toread", "To Read", "follow",
+            $browser_object = "http://pinboard.in/u:sharad/t:toread");
+define_key(content_buffer_normal_keymap, "f8", "pin-toread");
+// }}
 
 // webjumps -sharad
 define_webjump("blank",

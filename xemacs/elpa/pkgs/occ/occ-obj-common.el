@@ -50,6 +50,17 @@
   (unless (eq level :nodisplay)
    (apply #'message args)))
 
+(when nil ;; https://curiousprogrammer.wordpress.com/2010/07/19/emacs-defstruct-vs-other-languages/
+
+  (defun cl-get-field (object field)
+    (cl-struct-slot-value (cl-classname object) field object))
+
+  (defun cl-set-field (object field value)
+    (setf (cl-struct-slot-value (cl-classname object) field object) value))
+
+  (get-field dave 'name)
+  (set-field dave 'name "Simon Smith"))
+
 (defun sym2key (sym)
   (if (keywordp sym)
       sym
@@ -75,11 +86,11 @@
 ;; (defun cl-class-slot-value (obj slot)
 ;;   (when (member slot (cl-class-slots (cl-classname obj)))
 ;;     (cl-struct-slot-value (cl-classname obj) slot obj)))
-(defun cl-class-slot-value (class slot obj)
+(defun cl-class-obj-slot-value (class slot obj)
   (when (member slot (cl-class-slots class))
     (cl-struct-slot-value class slot obj)))
 (defun cl-obj-slot-value (obj slot)
-  (cl-class-slot-value (cl-classname obj) slot obj))
+  (cl-class-obj-slot-value (cl-classname obj) slot obj))
 (defun cl-obj-plist-value (obj)
   (cl-obj-slot-value obj 'plist))
 (defun cl-method-first-arg (method)

@@ -42,7 +42,10 @@ so long."
   ;; last-event-frame
 
   (org-rl-debug nil "%s: org-rl-resolve-clocks-if-idle: begin" (time-stamp-string))
-  (lotus-with-other-frame-event-debug "org-rl-resolve-clocks-if-idle" :restart
+  (lotus-with-override-minibuffer-if
+      (progn
+        (org-rl-debug nil "org-rl-resolve-clocks-if-idle: [minibuffer-body] lotus-with-override-minibuffer-if active minibuffer found aborting it."))
+    (lotus-with-other-frame-event-debug "org-rl-resolve-clocks-if-idle" :restart)
     (condition-case err
         (progn
           (org-rl-debug nil "org-rl-resolve-clocks-if-idle: lotus-with-other-frame-event-debug")
@@ -90,6 +93,7 @@ so long."
               (org-rl-debug :warning "Resetting org-clock-last-idle-start-time [= %s] to nil" org-clock-last-idle-start-time)
               (setq org-clock-last-idle-start-time nil)
               (org-rl-debug :warning "Reset org-clock-last-idle-start-time to %s" org-clock-last-idle-start-time))))))
+
       ;; (error
       ;;  (progn
       ;;    (setq org-clock-last-idle-start-time nil)

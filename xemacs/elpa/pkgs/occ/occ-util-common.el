@@ -49,4 +49,18 @@
        (message "user input %s retval %s" last-input-event retval))
      retval))
 
+
+(defmacro condition-case-control (enable var bodyform &rest handlers)
+  (if enable
+      `(condition-case ,var
+           ,bodyform
+         ,@handlers)
+    bodyform))
+(put 'condition-case-control 'lisp-indent-function 2)
+
+
+
+
+
+
 ;;; occ-util-common.el ends here
