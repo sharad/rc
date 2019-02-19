@@ -60,3 +60,19 @@
 (set-variable 'ycmd-server-command '("python" "/usr/bin/ycmd"))
 
 ycmd-server-command
+
+
+
+(progn
+  (string-match "\\(.+\\):\\([0-9]+\\)" "aaa:11")
+  (match-string 2 "aaa:11"))
+
+(defun test-file-find-line (file line)
+  (interactive
+   (let* ((current-word (current-word))
+          (file-line (string-match "(.+):([0-9]+)" current-word))
+          (file (match-string 1 current-word))
+          (line (match-string 2 current-word)))
+     (list file line)))
+  (when (file-exists-p file)
+    (find-file file)))
