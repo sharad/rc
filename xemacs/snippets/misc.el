@@ -76,3 +76,6 @@ ycmd-server-command
      (list file line)))
   (when (file-exists-p file)
     (find-file file)))
+
+
+;; data.log:21

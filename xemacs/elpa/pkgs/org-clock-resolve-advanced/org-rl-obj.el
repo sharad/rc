@@ -269,9 +269,11 @@
 
 (cl-defmethod org-rl-clock-duration ((clock org-rl-clock))
   (let ((start (org-rl-clock-start-time clock))
-        (stop (org-rl-clock-stop-time clock)))
-    (time-to-seconds
-     (time-subtract stop start))))
+        (stop  (org-rl-clock-stop-time  clock)))
+    (let ((duration-sec (time-to-seconds
+                         (time-subtract stop start))))
+      (org-rl-debug nil "org-rl-clock-duration: duration %d" duration-sec)
+      duration-sec)))
 
 (cl-defmethod org-rl-clock-assert ((clock org-rl-clock))
   (cl-assert (>= (org-rl-clock-duration clock) 0)))
