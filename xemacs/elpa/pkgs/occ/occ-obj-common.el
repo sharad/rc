@@ -98,6 +98,14 @@
     (mapcar
      #'(lambda (fspec) (cadar (aref fspec 1)))
      (when methods (aref methods 3)))))
+(defun cl-method-first-arg-with-value (method obj)
+  (let ((methods (cl--generic method)))
+    (mapcar
+     #'(lambda (fspec)
+         (let ((first-arg (cadar (aref fspec 1))))
+           (when (funcall method (cons first-arg obj)) first-arg)))
+     (when methods (aref methods 3)))))
+
 
 (defun occ-chgable-p ()
   "Stay with a clock at least 2 mins."

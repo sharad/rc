@@ -79,8 +79,7 @@
   (let ((prompt (or prompt "proptery: "))
         (keys (mapcar #'(lambda (k) (cons (symbol-name k) k))
                       (append
-                       ;; (cl-method-first-arg 'occ-readprop)
-                       (cl-method-matched-arg 'occ-readprop ctx)
+                       (cl-method-matched-arg 'occ-readprop 'occ-ctx-property-get ctx)
                        '(edit done)))))
     (cdr (assoc (occ-completing-read prompt keys nil t) keys))))
 
@@ -187,7 +186,10 @@
                                       (member
                                        (setq prop (occ-select-propetry ctx))
                                        '(edit done)))
-                                (when (occ-set-property prop nil ctx)
+                                ;; (when (occ-set-property tsk prop nil)
+                                ;;   (occ-tsk-update-tsks t))
+
+                                (when (occ-editprop prop ctx)
                                   (occ-tsk-update-tsks t)))
                               (cond
                                ((eql 'done prop)

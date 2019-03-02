@@ -74,19 +74,28 @@
      #'(lambda (slot)
          (occ-get-property obj slot))
      slots)))
-(cl-defmethod cl-method-matched-arg ((method symbol) (ctx symbol))
+(cl-defmethod cl-method-matched-arg ((method symbol)
+                                     (ctx symbol))
   (cl-method-first-arg method))
-(cl-defmethod cl-method-matched-arg ((method symbol) (ctx occ-ctx))
+(cl-defmethod cl-method-matched-arg ((method symbol)
+                                     (ctx occ-ctx))
   (let ((slots (occ-obj-defined-slots-with-value ctx)))
     (remove-if-not
      #'(lambda (arg) (memq arg slots))
      (cl-method-first-arg method))))
+(cl-defmethod cl-method-matched-arg ((method1 symbol)
+                                     (method2 symbol)
+                                     (ctx occ-ctx))
+  (let ((slots (cl-method-first-arg-with-value method2 ctx)))
+    (remove-if-not
+     #'(lambda (arg) (memq arg slots))
+     (cl-method-first-arg method1))))
 
 (when nil
- (cl-method-first-arg 'occ-readprop)
- (cl-method-matched-arg 'occ-readprop nil)
- (cl-method-matched-arg 'occ-readprop (occ-make-ctx))
- (occ-obj-defined-slots-with-value (occ-make-ctx)))
+  (cl-method-first-arg 'occ-readprop)
+  (cl-method-matched-arg 'occ-readprop nil)
+  (cl-method-matched-arg 'occ-readprop (occ-make-ctx))
+  (occ-obj-defined-slots-with-value (occ-make-ctx)))
 
 (defun occ-tsk-builder ()
   (if occ-global-tsk-collection
