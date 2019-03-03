@@ -93,6 +93,18 @@
   (cl-class-obj-slot-value (cl-classname obj) slot obj))
 (defun cl-obj-plist-value (obj)
   (cl-obj-slot-value obj 'plist))
+
+(defmacro cl-method-param-case (method param-spec val)
+  `(let ((methods (cl--generic ,method)))
+     (remove
+      nil
+      (mapcar
+       #'(lambda (fspec)
+           (pcase (aref fspec 1)
+             (,param-spec ,val)
+             (_ nil)))
+       (when methods (aref methods 3))))))
+
 (defun cl-method-first-arg (method)
   (let ((methods (cl--generic method)))
     (mapcar
@@ -131,4 +143,98 @@
           (org-clock-clock-in clock resume start-time))
       (setq org-clock-loaded t))))
 
+(defmacro occ-find-library-dir (library)
+  `(file-name-directory
+    (or
+     "~/.xemacs/elpa/pkgs/occ/occ.el"
+     (locate-library ,library)
+     "")))
+
+(defun occ-version (&optional here full message)
+  "Show the Org version.
+Interactively, or when MESSAGE is non-nil, show it in echo area.
+With prefix argument, or when HERE is non-nil, insert it at point.
+In non-interactive uses, a reduced version string is output unless
+FULL is given."
+  (interactive (list current-prefix-arg t (not current-prefix-arg)))
+  (let ((occ-dir (ignore-errors (occ-find-library-dir "occ")))
+        (save-load-suffixes (when (boundp 'load-suffixes) load-suffixes))
+        (load-suffixes (list ".el"))
+        (occ-install-dir
+         (ignore-errors (occ-find-library-dir "occ-loaddefs"))))
+    (unless (and
+             (fboundp 'occ-release)
+             (fboundp 'occ-git-version))
+      (org-load-noerror-mustsuffix (concat occ-dir "occ-version")))
+    (let* ((load-suffixes save-load-suffixes)
+           (release (occ-release))
+           (git-version (occ-git-version))
+           (version (format "Org mode version %s (%s @ %s)"
+                            release
+                            git-version
+                            (if occ-install-dir
+                                (if (string= occ-dir occ-install-dir)
+                                    occ-install-dir
+                                  (concat "mixed installation! "
+                                          occ-install-dir
+                                          " and "
+                                          occ-dir))
+                              "org-loaddefs.el can not be found!")))
+           (version1 (if full version release)))
+      (when here (insert version1))
+      (when message (message "%s" version1))
+      version1)))
+
+(defun occ-reload (&optional uncompiled)
+  "Reload all Org Lisp files.
+With prefix arg UNCOMPILED, load the uncompiled versions."
+  (interactive "P")
+  (require 'loadhist)
+  (let* ((occ-dir     (occ-find-library-dir "occ"))
+         ;; (contrib-dir (or (occ-find-library-dir "org-contribdir") occ-dir))
+         ;; (feature-re "^\\(org\\|ob\\|ox\\)\\(-.*\\)?")
+         (feature-re "^\\(occ\\|okk\\)\\(-.*\\)?")
+         (remove-re (format "\\`%s\\'"
+                            (regexp-opt '("org" "org-loaddefs" "occ-version"))))
+         (feats (delete-dups
+                 (mapcar 'file-name-sans-extension
+                         (mapcar 'file-name-nondirectory
+                                 (delq nil
+                                       (mapcar 'feature-file
+                                               features))))))
+         (lfeat (append
+                 (sort
+                  (setq feats
+                        (delq nil (mapcar
+                                   (lambda (f)
+                                     (if (and (string-match feature-re f)
+                                              (not (string-match remove-re f)))
+                                         f nil))
+                                   feats)))
+                  'string-lessp)
+                 (list "occ-version" "occ")))
+         (load-suffixes (when (boundp 'load-suffixes) load-suffixes))
+         (load-suffixes (if uncompiled (reverse load-suffixes) load-suffixes))
+         load-uncore load-misses)
+    (setq load-misses
+          (delq 't
+                (mapcar (lambda (f)
+                          (or (org-load-noerror-mustsuffix (concat occ-dir f))
+                              ;; (and (string= occ-dir contrib-dir)
+                              ;;      (org-load-noerror-mustsuffix (concat contrib-dir f)))
+                              (and (org-load-noerror-mustsuffix (concat (occ-find-library-dir f) f))
+                                   (add-to-list 'load-uncore f 'append)
+                                   't)
+                              f))
+                        lfeat)))
+    (when load-uncore
+      (message "The following feature%s found in load-path, please check if that's correct:\n%s"
+               (if (> (length load-uncore) 1) "s were" " was") load-uncore))
+    (if load-misses
+        (message "Some error occurred while reloading Org feature%s\n%s\nPlease check *Messages*!\n%s"
+                 (if (> (length load-misses) 1) "s" "") load-misses (occ-version nil 'full))
+      (message "Successfully reloaded Org\n%s" (occ-version nil 'full)))))
+
+
+;; (occ-reload)
 ;;; occ-obj-common.el ends here

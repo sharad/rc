@@ -346,9 +346,7 @@ pointing to it."
       ;;            'sacha/helm-org-create-tsk))
       ))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
+
 (cl-defgeneric occ-rank (obj ctx)
   "occ-rank"
   )
@@ -356,102 +354,6 @@ pointing to it."
 (cl-defmethod occ-rank (tsk-pair ctx)
   0)
 
-(cl-defmethod occ-rank ((tsk-pair (head root))
-                        (ctx occ-ctx))
-  "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let* ((root
-          (occ-get-property (cdr tsk-pair) 'root))
-         (root (if root (file-truename root))))
-    (let* ((file (occ-ctx-file ctx))
-           (file (if file (file-truename file))))
-      (if root
-          (progn
-            (occ-debug :nodisplay "tsk %s root %s" (occ-tsk-heading (cdr tsk-pair)) root)
-            (occ-debug :nodisplay "tsk %s file %s" (occ-tsk-heading (cdr tsk-pair)) file))
-        (occ-debug :nodisplay "tsk %s root %s not present."
-                   (occ-tsk-heading (cdr tsk-pair)) root))
-      (if (and root file
-               (string-match root file))
-          (length root)
-        0))))
-
-(cl-defmethod occ-rank ((tsk-pair (head currfile))
-                        (ctx occ-ctx))
-  "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let* ((currfile
-          (occ-get-property (cdr tsk-pair) 'currfile))
-         (currfile (if currfile (file-truename currfile))))
-    (let* ((file (occ-ctx-file ctx))
-           (file (if file (file-truename file))))
-      (if currfile
-          (progn
-            (occ-debug :nodisplay "tsk %s currfile %s" (occ-tsk-heading (cdr tsk-pair)) currfile)
-            (occ-debug :nodisplay "tsk %s file %s"     (occ-tsk-heading (cdr tsk-pair)) file))
-        (occ-debug :nodisplay "tsk %s currfile %s not present."
-                   (occ-tsk-heading (cdr tsk-pair)) currfile))
-      (if (and currfile file
-               (string-match currfile file))
-          (* 2 (length currfile))     ;as exact match to file giving double matching points.
-        0))))
-
-(cl-defmethod occ-rank ((tsk-pair (head status))
-                        (ctx occ-ctx))
-  "Predicate funtion to check if ctx matches to tsk's status attribute."
-  (let ((todo-type
-         (occ-get-property (cdr tsk-pair) 'todo-type))
-        (closed
-         (occ-get-property (cdr tsk-pair) 'closed))
-        (status
-         (occ-get-property (cdr tsk-pair) 'todo-keyword)))
-    (if (or
-         closed
-         (eql todo-type 'done)
-         (string-equal status "HOLD"))
-        -30 0)))
-
-(cl-defmethod occ-rank ((tsk-pair (head subtree))
-                        (ctx occ-ctx))
-  "Predicate funtion to check if ctx matches to tsk's status attribute."
-  (let ((sub-tree
-         (occ-get-property (cdr tsk-pair) 'subtree)))
-    (occ-debug :nodisplay "tsk %s subtree %s" (occ-tsk-heading (cdr tsk-pair)) (null (null sub-tree)))
-    (if sub-tree -30 0)))
-
-(cl-defmethod occ-rank ((tsk-pair (head key))
-                        (ctx occ-ctx))
-  "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let* ((key (occ-get-property (cdr tsk-pair) 'KEY)))
-    (if key (string-to-number key) 0)))
-
-(cl-defmethod occ-rank ((tsk-pair (head heading-level))
-                        (ctx occ-ctx))
-  "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let* ((level
-          (occ-get-property (cdr tsk-pair) 'level)))
-    (if level level 0)))
-
-(cl-defmethod occ-rank ((tsk-pair (head timebeing))
-                        (ctx occ-ctx))
-  (let ((timebeing (occ-get-property (cdr tsk-pair) 'timebeing)))
-    (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
-          (clocked-time   (occ-get-property (cdr tsk-pair) 'clock-sum)))
-      (if (and
-           (numberp clocked-time)
-           (numberp timebeing-time)
-           (> timebeing-time clocked-time))
-          (- timebeing-time clocked-time)
-        0))))
-
-(cl-defmethod occ-rank ((tsk-pair (head current-clock))
-                        (ctx occ-ctx))
-  (let* ((tsk-marker
-          (occ-get-property (cdr tsk-pair) 'marker)))
-    (if (and
-         (markerp org-clock-hd-marker)
-         (markerp tsk-marker)
-         (equal org-clock-hd-marker org-clock-hd-marker))
-        100
-      0)))
 
 ;; ISSUE? should it return rank or occ-ctxual-tsk
 (cl-defmethod occ-rank ((tsk occ-tsk)
@@ -463,6 +365,7 @@ pointing to it."
                       (occ-rank (cons slot tsk) ctx)) ;TODO: check if method exist or not, or use some default method.
                   (occ-class-slots tsk)))))
     rank))
+
 
 (cl-defmethod occ-build-ctxual-tsk ((tsk occ-tsk) ;ctor
                                     (ctx occ-ctx))
@@ -645,7 +548,7 @@ pointing to it."
             (let ((buffer-read-only nil))
               (when old-heading
                 (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
-              (condition-case-control t err
+              (condition-case-control nil err
                 (progn
                   (occ-straight-org-clock-clock-in (list new-marker))
                   (setq retval t)
@@ -668,13 +571,13 @@ pointing to it."
     (let* ((ctx (or ctx (occ-make-ctx)))
            (matched-ctxual-tsks
             (run-unobtrusively           ;heavy task
-             (remove-if-not
-              #'(lambda (ctxual-tsk)
-                  (let* ((marker (occ-ctxual-tsk-marker ctxual-tsk)))
-                    (and
-                     marker
-                     (marker-buffer marker))))
-              (occ-matching-ctxual-tsks (occ-collection-object) ctx)))))
+              (remove-if-not
+               #'(lambda (ctxual-tsk)
+                   (let* ((marker (occ-ctxual-tsk-marker ctxual-tsk)))
+                     (and
+                      marker
+                      (marker-buffer marker))))
+               (occ-matching-ctxual-tsks (occ-collection-object) ctx)))))
       (unless (eq matched-ctxual-tsks t)
         (if matched-ctxual-tsks
             (let* ((sel-ctxual-tsk
@@ -689,12 +592,61 @@ pointing to it."
           (progn
             ;; here create unnamed tsk, no need
             (setq *occ-update-current-ctx-msg* "null clock")
-            (occ-debug 6
+            (occ-debug nil
                        "No clock found please set a match for this ctx %s, add it using M-x occ-add-to-org-heading."
                        ctx)
             (occ-add-to-org-heading-when-idle ctx 7)
             nil))))))
 
+(when nil
+  (defmacro cl-method-first-arg-x (method param-spec val)
+    `(let ((methods (cl--generic ,method)))
+       (mapcar
+        #'(lambda (fspec)
+            (pcase (aref fspec 1)
+              (,param-spec ,val)
+              (_ nil)))
+        (when methods (aref methods 3)))))
+
+  (macroexpand-1
+   '(cl-method-first-arg-x 'occ-readprop `((head ,val) occ-ctx) val))
+
+
+  (let ((methods (cl--generic (quote occ-readprop))))
+    (mapcar
+     (function (lambda (fspec) (pcase fspec ((\` ((head (\, val)) occ-ctx)) val) (_ nil))))
+     (when methods (aref methods 3))))
+
+
+  (let ((methods (cl--generic (quote occ-readprop))))
+    (mapcar
+     (function
+      (lambda (fspec)
+        (pcase (aref fspec 1)
+          (`((head ,val) occ-ctx) val)
+          (_ nil))))
+     (when methods
+       (aref methods 3))))
+
+
+
+  (cl-method-first-arg-x 'occ-readprop `((head ,val) occ-ctx) val)
+
+  '( `(x ))
+
+
+
+
+
+
+
+  (cl-method-first-arg-x 'occ-readprop `((head ,val) occ-ctx) 'val)
+
+
+
+  (setq xxnaaa (aref (cl--generic 'occ-readprop) 3))
+
+  )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Errors

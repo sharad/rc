@@ -173,7 +173,7 @@
 
                       (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
                       (progn
-                        (condition-case-control t err
+                        (condition-case-control nil err
                           (let ((buffer-read-only nil))
                             (occ-debug :debug "timer started for win %s" win)
 
@@ -186,9 +186,6 @@
                                       (member
                                        (setq prop (occ-select-propetry ctx))
                                        '(edit done)))
-                                ;; (when (occ-set-property tsk prop nil)
-                                ;;   (occ-tsk-update-tsks t))
-
                                 (when (occ-editprop prop ctx)
                                   (occ-tsk-update-tsks t)))
                               (cond
@@ -233,8 +230,7 @@
   ;; signal to caller mean here, so need to be handled, else this function can
   ;; not return any value to its caller, which result into no next-action in
   ;; caller function.
-
-  (condition-case-control t nil
+  (condition-case-control nil nil
     ;; TODO: Add code to which check if only focus present than only trigger
     ;; else postpone it by calling run-with-idle-plus-timer
     (progn
