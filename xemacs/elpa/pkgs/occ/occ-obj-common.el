@@ -236,5 +236,55 @@ With prefix arg UNCOMPILED, load the uncompiled versions."
       (message "Successfully reloaded Org\n%s" (occ-version nil 'full)))))
 
 
+
+(when nil
+  (defmacro cl-method-first-arg-x (method param-spec val)
+    `(let ((methods (cl--generic ,method)))
+       (mapcar
+        #'(lambda (fspec)
+            (pcase (aref fspec 1)
+              (,param-spec ,val)
+              (_ nil)))
+        (when methods (aref methods 3)))))
+
+  (macroexpand-1
+   '(cl-method-first-arg-x 'occ-readprop `((head ,val) occ-ctx) val))
+
+
+  (let ((methods (cl--generic (quote occ-readprop))))
+    (mapcar
+     (function (lambda (fspec) (pcase fspec ((\` ((head (\, val)) occ-ctx)) val) (_ nil))))
+     (when methods (aref methods 3))))
+
+
+  (let ((methods (cl--generic (quote occ-readprop))))
+    (mapcar
+     (function
+      (lambda (fspec)
+        (pcase (aref fspec 1)
+          (`((head ,val) occ-ctx) val)
+          (_ nil))))
+     (when methods
+       (aref methods 3))))
+
+
+
+  (cl-method-param-case 'occ-readprop `((head ,val) occ-ctx) val)
+
+  '( `(x))
+
+
+
+
+
+
+
+  (cl-method-first-arg-x 'occ-readprop `((head ,val) occ-ctx) 'val)
+
+
+
+  (setq xxnaaa (aref (cl--generic 'occ-readprop) 3)))
+
+
 ;; (occ-reload)
 ;;; occ-obj-common.el ends here

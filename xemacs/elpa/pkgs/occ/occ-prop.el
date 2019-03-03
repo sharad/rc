@@ -195,9 +195,14 @@
 
 (when nil
   (cl-method-first-arg 'occ-ctx-property-get)
-  (cl-method-first-arg 'occ-readprop)
+  (occ-readprop-props)
   (cl-method-matched-arg 'occ-readprop 'occ-ctx-property-get (occ-make-ctx))
   (funcall 'occ-ctx-property-get (cons 'file (occ-make-ctx))))
 
 
+(defun occ-readprop-props ()
+  (cl-method-param-case 'occ-readprop `((head ,val) occ-ctx) val))
+  
+
+
 ;;; occ-prop.el ends here

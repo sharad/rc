@@ -92,7 +92,7 @@
      (cl-method-first-arg method1))))
 
 (when nil
-  (cl-method-first-arg 'occ-readprop)
+  (occ-readprop-props)
   (cl-method-matched-arg 'occ-readprop nil)
   (cl-method-matched-arg 'occ-readprop (occ-make-ctx))
   (occ-obj-defined-slots-with-value (occ-make-ctx)))
@@ -598,55 +598,7 @@ pointing to it."
             (occ-add-to-org-heading-when-idle ctx 7)
             nil))))))
 
-(when nil
-  (defmacro cl-method-first-arg-x (method param-spec val)
-    `(let ((methods (cl--generic ,method)))
-       (mapcar
-        #'(lambda (fspec)
-            (pcase (aref fspec 1)
-              (,param-spec ,val)
-              (_ nil)))
-        (when methods (aref methods 3)))))
 
-  (macroexpand-1
-   '(cl-method-first-arg-x 'occ-readprop `((head ,val) occ-ctx) val))
-
-
-  (let ((methods (cl--generic (quote occ-readprop))))
-    (mapcar
-     (function (lambda (fspec) (pcase fspec ((\` ((head (\, val)) occ-ctx)) val) (_ nil))))
-     (when methods (aref methods 3))))
-
-
-  (let ((methods (cl--generic (quote occ-readprop))))
-    (mapcar
-     (function
-      (lambda (fspec)
-        (pcase (aref fspec 1)
-          (`((head ,val) occ-ctx) val)
-          (_ nil))))
-     (when methods
-       (aref methods 3))))
-
-
-
-  (cl-method-first-arg-x 'occ-readprop `((head ,val) occ-ctx) val)
-
-  '( `(x ))
-
-
-
-
-
-
-
-  (cl-method-first-arg-x 'occ-readprop `((head ,val) occ-ctx) 'val)
-
-
-
-  (setq xxnaaa (aref (cl--generic 'occ-readprop) 3))
-
-  )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Errors
