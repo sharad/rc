@@ -208,8 +208,9 @@
 
 
 (defun occ-readprop-props ()
-  (cl-method-param-case 'occ-readprop `((head ,val) occ-ctx) val))
-  
+  (cl-method-param-case
+   '(occ-readprop (`((head ,val) occ-ctx) val))))
+
 
 
 ;;; occ-prop.el ends here

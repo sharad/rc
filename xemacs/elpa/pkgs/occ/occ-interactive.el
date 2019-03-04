@@ -64,6 +64,8 @@
 
 ;; (occ-set-property (intern ":root") nil (list :file "/home/s/paradise/git/main/src/wnc/security/authenticator/ieee802_1x.cpp" :buffer (get-buffer "ieee802_1x.cpp")))
 
+
+
 (defun occ-completing-read (prompt collection &optional predicate require-match initial-input hist def inherit-input-method)
   (let ((helm-always-two-windows nil))
     (completing-read prompt
@@ -80,7 +82,10 @@
         (keys (mapcar #'(lambda (k) (cons (symbol-name k) k))
                       (append
 
-                       (cl-method-matched-arg 'occ-readprop 'occ-ctx-property-get ctx)
+                       (cl-method-sigs-matched-arg
+                        '(occ-readprop (`((head ,val) occ-ctx) val))
+                        '(occ-ctx-property-get (`((head ,val)) val))
+                        ctx)
 
                        '(edit done)))))
     (cdr (assoc (occ-completing-read prompt keys nil t) keys))))
