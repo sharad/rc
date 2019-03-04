@@ -79,7 +79,9 @@
   (let ((prompt (or prompt "proptery: "))
         (keys (mapcar #'(lambda (k) (cons (symbol-name k) k))
                       (append
+
                        (cl-method-matched-arg 'occ-readprop 'occ-ctx-property-get ctx)
+
                        '(edit done)))))
     (cdr (assoc (occ-completing-read prompt keys nil t) keys))))
 
@@ -207,7 +209,7 @@
                              (if timer (cancel-timer timer))
                              (signal (car err) (cdr err))))))))))
           (progn
-            (occ-debug 6 "not running add-ctx-to-org-heading 1 %s, 2 %s 3 %s"
+            (occ-debug :debug "not running add-ctx-to-org-heading 1 %s, 2 %s 3 %s"
                        (eq (current-buffer) buff)
                        (buffer-live-p buff)
                        (eq buff

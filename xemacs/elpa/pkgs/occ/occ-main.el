@@ -39,6 +39,7 @@
 (require 'occ-util-common)
 (require 'occ-unnamed)
 (require 'occ-interactive)
+(require 'occ-version)
 
 
 

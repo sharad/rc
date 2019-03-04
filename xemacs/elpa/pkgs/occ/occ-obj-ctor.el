@@ -88,9 +88,13 @@
                        :clock-sum clock-sum
                        :plist tsk-plist))
 
-        (let ((inherited-props (occ-readprop-props)))
+        (let ((inherited-props
+               ;; is it correct ?
+               (occ-readprop-props)))
           (dolist (prop inherited-props)
-            (let* ((propstr (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))
+            (let* ((propstr (if (keywordp prop)
+                                (substring (symbol-name prop) 1)
+                              (symbol-name prop)))
                    (val (org-entry-get nil propstr t)))
               (unless (occ-get-property tsk prop)
                 (occ-set-property tsk prop val))))))

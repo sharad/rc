@@ -198,6 +198,13 @@
   (occ-readprop-props)
   (cl-method-matched-arg 'occ-readprop 'occ-ctx-property-get (occ-make-ctx))
   (funcall 'occ-ctx-property-get (cons 'file (occ-make-ctx))))
+
+(when nil
+  (cl-method-sig-matched-arg
+   (occ-readprop `((head ,val) occ-ctx) val)
+   (occ-ctx-property-get `((head ,val) val))
+   (occ-make-ctx)))
+
 
 
 (defun occ-readprop-props ()

@@ -32,6 +32,7 @@
 (require 'occ-tree)
 (require 'occ-obj-accessor)
 (require 'occ-util-common)
+(require 'occ-prop)
 
 
 (provide 'occ-obj-method)
@@ -96,6 +97,37 @@
   (cl-method-matched-arg 'occ-readprop nil)
   (cl-method-matched-arg 'occ-readprop (occ-make-ctx))
   (occ-obj-defined-slots-with-value (occ-make-ctx)))
+
+(cl-defgeneric cl-method-sig-matched-arg (method-sig
+                                          ctx)
+  "test")
+(cl-defmethod cl-method-sig-matched-arg ((method-sig cons)
+                                         (ctx symbol))
+  (cl-method-param-case method-sig))
+(cl-defmethod cl-method-sig-matched-arg ((method-sig cons)
+                                         (ctx occ-ctx))
+  (let ((slots (occ-obj-defined-slots-with-value ctx)))
+    (remove-if-not
+     #'(lambda (arg) (memq arg slots))
+     (cl-method-param-case method-sig))))
+(cl-defmethod cl-method-sigs-matched-arg ((method-sig1 cons)
+                                          (method-sig2 cons)
+                                          (ctx occ-ctx))
+  (let ((slots (cl-method-param-case-with-value method-sig2 ctx)))
+    (remove-if-not
+     #'(lambda (arg) (memq arg slots))
+     (cl-method-param-case method-sig1))))
+
+
+(when nil
+  (cl-method-sig-matched-arg '(occ-readprop (`((head ,val) occ-ctx) val)) nil)
+
+  (cl-method-param-signs 'occ-ctx-property-get)
+  (cl-method-sigs-matched-arg
+   '(occ-readprop (`((head ,val) occ-ctx) val))
+   '(occ-ctx-property-get (`((head ,val)) val))
+   (occ-make-ctx)))
+
 
 (defun occ-tsk-builder ()
   (if occ-global-tsk-collection
