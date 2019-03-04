@@ -98,7 +98,7 @@
 (cl-defmethod occ-ctx-property-get ((ctx-pair (head root)))
   (let* ((ctx (cdr ctx-pair))
          (file (occ-ctx-file ctx))
-         (root (dirname-of-file file)))
+         (root (and file (dirname-of-file file))))
     root))
 (cl-defmethod occ-readprop ((tsk-pair (head root))
                             (ctx occ-ctx))
