@@ -157,9 +157,13 @@ var bookmark_groups = {
         "http://satellite.imd.gov.in/img/3Dasiasec_vis.jpg",
         "http://satellite.imd.gov.in/img/3Dsnd_lwir6_b1.jpg",
     ],
-    "Tech/SHall": [
+    "Tech/shell": [
         "http://xmodulo.com/",
         "https://www.ostechnix.com/"
+    ],
+    "BlockNews": [
+        "https://blockgeeks.com/articles/",
+        "https://blockgeeks.com/articles/?view=sections",
     ],
 };
 

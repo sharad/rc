@@ -49,21 +49,23 @@
 (cl-defmethod occ-rank ((tsk-pair (head file))
                         (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let* ((currfile
-          (occ-get-property (cdr tsk-pair) 'currfile))
-         (currfile (if currfile (file-truename currfile))))
-    (let* ((file (occ-ctx-file ctx))
-           (file (if file (file-truename file))))
-      (if currfile
-          (progn
-            (occ-debug :nodisplay "tsk %s currfile %s" (occ-tsk-heading (cdr tsk-pair)) currfile)
-            (occ-debug :nodisplay "tsk %s file %s"     (occ-tsk-heading (cdr tsk-pair)) file))
-        (occ-debug :nodisplay "tsk %s currfile %s not present."
-                   (occ-tsk-heading (cdr tsk-pair)) currfile))
-      (if (and currfile file
-               (string-match currfile file))
-          (* 2 (length currfile))     ;as exact match to file giving double matching points.
-        0))))
+  (let ((prop (car tsk-prop))
+        (tsk (cdr tsk-pair)))
+    (let* ((currfile)
+           (occ-get-property tsk 'currfile))
+          (currfile (if currfile (file-truename currfile)))
+     (let* ((file (occ-ctx-file ctx))
+            (file (if file (file-truename file))))
+       (if currfile
+           (progn
+             (occ-debug :nodisplay "tsk %s currfile %s" (occ-tsk-heading tsk) currfile)
+             (occ-debug :nodisplay "tsk %s file %s"     (occ-tsk-heading tsk) file))
+         (occ-debug :nodisplay "tsk %s currfile %s not present."
+                    (occ-tsk-heading tsk) currfile))
+       (if (and currfile file
+                (string-match currfile file))
+           (* 2 (length currfile))     ;as exact match to file giving double matching points.
+         0)))))
 (cl-defmethod occ-ctx-property-get ((ctx-pair (head file)))
   (let* ((ctx (cdr ctx-pair))
          (file (occ-ctx-file ctx)))
@@ -80,21 +82,23 @@
 (cl-defmethod occ-rank ((tsk-pair (head root))
                         (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let* ((root
-          (occ-get-property (cdr tsk-pair) 'root))
-         (root (if root (file-truename root))))
-    (let* ((file (occ-ctx-file ctx))
-           (file (if file (file-truename file))))
-      (if root
-          (progn
-            (occ-debug :nodisplay "tsk %s root %s" (occ-tsk-heading (cdr tsk-pair)) root)
-            (occ-debug :nodisplay "tsk %s file %s" (occ-tsk-heading (cdr tsk-pair)) file))
-        (occ-debug :nodisplay "tsk %s root %s not present."
-                   (occ-tsk-heading (cdr tsk-pair)) root))
-      (if (and root file
-               (string-match root file))
-          (length root)
-        0))))
+  (let ((prop (car tsk-prop))
+        (tsk (cdr tsk-pair)))
+    (let* ((root
+            (occ-get-property tsk 'root)))
+          (root (if root (file-truename root)))
+     (let* ((file (occ-ctx-file ctx))
+            (file (if file (file-truename file))))
+       (if root
+           (progn
+             (occ-debug :nodisplay "tsk %s root %s" (occ-tsk-heading tsk) root)
+             (occ-debug :nodisplay "tsk %s file %s" (occ-tsk-heading tsk) file))
+         (occ-debug :nodisplay "tsk %s root %s not present."
+                    (occ-tsk-heading tsk) root))
+       (if (and root file
+                (string-match root file))
+           (length root)
+         0)))))
 (cl-defmethod occ-ctx-property-get ((ctx-pair (head root)))
   (let* ((ctx (cdr ctx-pair))
          (file (occ-ctx-file ctx))
@@ -111,17 +115,19 @@
 ;;{{ sub-tree
 (cl-defmethod occ-readprop ((tsk-pair (head subtree))
                             (ctx occ-ctx))
-  (let ((prompt (concat (symbol-name (car tsk-pair)) ": ")))
-    (file-relative-name
-     (ido-read-file-name ;; org-iread-file-name
-      prompt
-      default-directory default-directory))))
+  (let ((prop (car tsk-prop))
+        (tsk (cdr tsk-pair)))
+    (let ((prompt (concat (symbol-name (car tsk-pair)) ": ")))
+     (file-relative-name
+       (ido-read-file-name ;; org-iread-file-name
+        prompt
+        default-directory default-directory)))))
 
 (cl-defmethod occ-writeprop ((tsk-pair (head subtree)) value))
 ;;}}
 
 ;;{{ git-branch
-(cl-defmethod occ-ctx-property-get ((ctx-pair (head 'git-branch)))
+(cl-defmethod occ-ctx-property-get ((ctx-pair (head git-branch)))
   (let* ((ctx (cdr ctx-pair))
          (file (occ-ctx-file ctx)))
     file))
@@ -144,53 +150,63 @@
 (cl-defmethod occ-rank ((tsk-pair (head status))
                         (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to tsk's status attribute."
-  (let ((todo-type
-         (occ-get-property (cdr tsk-pair) 'todo-type))
-        (closed
-         (occ-get-property (cdr tsk-pair) 'closed))
-        (status
-         (occ-get-property (cdr tsk-pair) 'todo-keyword)))
-    (if (or
-         closed
-         (eql todo-type 'done)
-         (string-equal status "HOLD"))
-        -30 0)))
+  (let ((prop (car tsk-prop))
+        (tsk (cdr tsk-pair)))
+    (let ((todo-type
+           (occ-get-property tsk 'todo-type))
+          (closed
+           (occ-get-property tsk 'closed))
+          (status
+           (occ-get-property tsk 'todo-keyword)))
+      (if (or
+           closed
+           (eql todo-type 'done)
+           (string-equal status "HOLD"))
+          -30 0))))
 
 (cl-defmethod occ-rank ((tsk-pair (head key))
                         (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let* ((key (occ-get-property (cdr tsk-pair) 'KEY)))
-    (if key (string-to-number key) 0)))
+  (let ((prop (car tsk-prop))
+        (tsk (cdr tsk-pair)))
+    (let* ((key (occ-get-property tsk 'KEY)))
+      (if key (string-to-number key) 0))))
 
 (cl-defmethod occ-rank ((tsk-pair (head heading-level))
                         (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let* ((level
-          (occ-get-property (cdr tsk-pair) 'level)))
-    (if level level 0)))
+  (let ((prop (car tsk-prop))
+        (tsk (cdr tsk-pair)))
+    (let* ((level
+            (occ-get-property tsk 'level)))
+      (if level level 0))))
 
 (cl-defmethod occ-rank ((tsk-pair (head timebeing))
                         (ctx occ-ctx))
-  (let ((timebeing (occ-get-property (cdr tsk-pair) 'timebeing)))
+  (let ((prop (car tsk-prop))
+        (tsk (cdr tsk-pair)))
+   (let ((timebeing (occ-get-property tsk 'timebeing)))
     (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
-          (clocked-time   (occ-get-property (cdr tsk-pair) 'clock-sum)))
+          (clocked-time   (occ-get-property tsk 'clock-sum)))
       (if (and
            (numberp clocked-time)
            (numberp timebeing-time)
            (> timebeing-time clocked-time))
           (- timebeing-time clocked-time)
-        0))))
+        0)))))
 
 (cl-defmethod occ-rank ((tsk-pair (head current-clock))
                         (ctx occ-ctx))
-  (let* ((tsk-marker
-          (occ-get-property (cdr tsk-pair) 'marker)))
-    (if (and
-         (markerp org-clock-hd-marker)
-         (markerp tsk-marker)
-         (equal org-clock-hd-marker org-clock-hd-marker))
-        100
-      0)))
+  (let ((prop (car tsk-prop))
+        (tsk (cdr tsk-pair)))
+    (let* ((tsk-marker)
+           (occ-get-property tsk 'marker))
+      (if (and
+           (markerp org-clock-hd-marker)
+           (markerp tsk-marker)
+           (equal org-clock-hd-marker org-clock-hd-marker))
+          100
+        0))))
 
 
 (when nil
@@ -200,9 +216,9 @@
   (funcall 'occ-ctx-property-get (cons 'file (occ-make-ctx))))
 
 (when nil
-  (cl-method-sig-matched-arg
-   (occ-readprop `((head ,val) occ-ctx) val)
-   (occ-ctx-property-get `((head ,val) val))
+  (cl-method-sigs-matched-arg
+   '(occ-readprop (`((head ,val) occ-ctx) val))
+   '(occ-ctx-property-get (`((head ,val) val)))
    (occ-make-ctx)))
 
 
