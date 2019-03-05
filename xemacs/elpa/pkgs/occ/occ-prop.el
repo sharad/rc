@@ -20,7 +20,7 @@
 
 ;;; Commentary:
 
-;;
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Generic-Functions.html
 
 ;;; Code:
 
@@ -36,7 +36,7 @@
 
 
 (cl-defmethod occ-readprop ((prop symbol) (ctx occ-ctx))
-  (occ-readprop (cons prop (occ-make-tsk-at-point)) ctx))
+  (occ-readprop (cons prop (occ-make-tsk nil)) ctx))
 (cl-defmethod occ-writeprop ((prop symbol) value)
   (if value
       (org-set-property (symbol-name prop) value)
