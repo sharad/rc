@@ -128,19 +128,6 @@
    '(occ-ctx-property-get (`((head ,val)) val))
    (occ-make-ctx)))
 
-
-(defun occ-tsk-builder ()
-  (if occ-global-tsk-collection
-      (let ((classname (cl-classname (occ-collection-object))))
-        ;;let ((classname (cl-classname occ-global-tsk-collection)))
-        (cond
-         ((eq 'occ-list-tsk-collection classname)
-          #'make-occ-list-tsk)
-         ((eq 'occ-tree-tsk-collection classname)
-          #'make-occ-tree-tsk)
-         (t (error "occ-global-tsk-collection is not from occ-list-tsk-collection or occ-tree-tsk-collection class"))))
-    (error "occ-global-tsk-collection is NIL not from occ-list-tsk-collection or occ-tree-tsk-collection class")))
-
 (cl-defmethod occ-fontify-like-in-org-mode ((tsk occ-tsk))
   (let* ((level   (or (occ-get-property tsk 'level) 0))
          (heading (occ-get-property tsk 'heading-prop))

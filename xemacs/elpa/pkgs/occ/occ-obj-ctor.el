@@ -38,6 +38,18 @@
 (defvar occ-global-tsk-collection-change-hook nil
   "run when occ-global-tsk-collection-change-hook get changed.")
 
+(defun occ-tsk-builder ()
+  (if occ-global-tsk-collection
+      (let ((classname (cl-classname (occ-collection-object))))
+        ;;let ((classname (cl-classname occ-global-tsk-collection)))
+        (cond
+         ((eq 'occ-list-tsk-collection classname)
+          #'make-occ-list-tsk)
+         ((eq 'occ-tree-tsk-collection classname)
+          #'make-occ-tree-tsk)
+         (t (error "occ-global-tsk-collection is not from occ-list-tsk-collection or occ-tree-tsk-collection class"))))
+    (error "occ-global-tsk-collection is NIL not from occ-list-tsk-collection or occ-tree-tsk-collection class")))
+
 (defun occ-heading-content-only ()
   (if (org-at-heading-p)
       (save-excursion
@@ -55,53 +67,55 @@
                 (backward-char)
                 (buffer-substring start (point)))))))))
 
-(defun occ-make-tsk-at-point (builder)
-  ;; (org-element-at-point)
-  (let (tsk
-        (heading-with-string-prop
-         (if (org-before-first-heading-p)
-             "empty heading"
-           (org-get-heading 'notags))))
-    (let ((heading (when heading-with-string-prop
-                     (substring-no-properties heading-with-string-prop)))
-          (heading-prop (if heading-with-string-prop
-                            heading-with-string-prop))
-          (marker  (move-marker
-                    (make-marker)
-                    (point)
-                    (org-base-buffer (current-buffer))))
-          (file    (buffer-file-name))
-          (point   (point))
-          (clock-sum (if (org-before-first-heading-p)
-                         0
-                       (org-clock-sum-current-item)))
-          (tsk-plist (cadr (org-element-at-point))))
-      (when heading
-        (setf tsk
-              (funcall builder
-                       :name    heading
-                       :heading heading
-                       :heading-prop heading-prop
-                       :marker  marker
-                       :file file
-                       :point point
-                       :clock-sum clock-sum
-                       :plist tsk-plist))
+(defun occ-make-tsk-at-point (&optional builder)
+   ;; (org-element-at-point)
+   (let ((builder (or builder
+                      (occ-tsk-builder))))
+       (let (tsk
+             (heading-with-string-prop
+              (if (org-before-first-heading-p)
+                  "empty heading"
+                (org-get-heading 'notags))))
+         (let ((heading (when heading-with-string-prop
+                          (substring-no-properties heading-with-string-prop)))
+               (heading-prop (if heading-with-string-prop
+                                 heading-with-string-prop))
+               (marker  (move-marker
+                         (make-marker)
+                         (point)
+                         (org-base-buffer (current-buffer))))
+               (file    (buffer-file-name))
+               (point   (point))
+               (clock-sum (if (org-before-first-heading-p)
+                              0
+                            (org-clock-sum-current-item)))
+               (tsk-plist (cadr (org-element-at-point))))
+           (when heading
+             (setf tsk
+                   (funcall builder
+                            :name    heading
+                            :heading heading
+                            :heading-prop heading-prop
+                            :marker  marker
+                            :file file
+                            :point point
+                            :clock-sum clock-sum
+                            :plist tsk-plist))
 
-        (let ((inherited-props
-               ;; is it correct ?
-               (occ-readprop-props)))
-          (dolist (prop inherited-props)
-            (let* ((propstr (if (keywordp prop)
-                                (substring (symbol-name prop) 1)
-                              (symbol-name prop)))
-                   (val (org-entry-get nil propstr t)))
-              (unless (occ-get-property tsk prop)
-                (occ-set-property tsk prop val))))))
-      tsk)))
+             (let ((inherited-props
+                    ;; is it correct ?
+                    (occ-readprop-props)))
+               (dolist (prop inherited-props)
+                 (let* ((propstr (if (keywordp prop)
+                                     (substring (symbol-name prop) 1)
+                                   (symbol-name prop)))
+                        (val (org-entry-get nil propstr t)))
+                   (unless (occ-get-property tsk prop)
+                     (occ-set-property tsk prop val))))))
+           tsk))))
 
 (cl-defmethod occ-make-tsk ((n number)
-                            builder)
+                            &optional builder)
   (occ-debug :debug "point %s" n)
   (if (<= n (point-max))
       (save-restriction
@@ -110,7 +124,7 @@
           (occ-make-tsk-at-point builder)))))
 
 (cl-defmethod occ-make-tsk ((m marker)
-                            builder)
+                            &optional builder)
   (occ-debug :debug "point %s" m)
   (if (and
        (marker-buffer m)
