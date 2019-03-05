@@ -85,8 +85,8 @@
             (progn
               (when (occ-clock-in-if-not ctx)
                 (setq *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
-            (occ-debug :debug "occ-clock-in-if-chg: ctx %s not suitable to associate" ctx)))
-    (occ-debug :debug "occ-clock-in-if-chg: not enough time passed.")))
+          (occ-debug :nodisplay "occ-clock-in-if-chg: ctx %s not suitable to associate" ctx)))
+    (occ-debug :nodisplay "occ-clock-in-if-chg: not enough time passed.")))
 
 ;;;###autoload
 (defun occ-clock-in-curr-ctx (&optional force)
@@ -100,11 +100,11 @@
   ;; else postpone it by calling run-with-idle-plus-timer
   (occ-debug :debug "begin occ-clock-in-curr-ctx-if-not")
   (lotus-with-other-frame-event-debug "occ-clock-in-curr-ctx-if-not" :cancel
-    (lwarn 'occ :debug "%s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug" (time-stamp-string))
+    (occ-debug :debug "%s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug" (time-stamp-string))
     (if force
         (occ-clock-in-curr-ctx (occ-make-ctx))
       (occ-clock-in-if-chg (occ-make-ctx))))
-  (occ-debug :debug "%s: end occ-clock-in-curr-ctx-if-not" (time-stamp-string)))
+  (occ-debug :nodisplay "%s: end occ-clock-in-curr-ctx-if-not" (time-stamp-string)))
 
 ;;;###autoload
 (defun occ-run-curr-ctx-timer ()

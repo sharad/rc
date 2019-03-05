@@ -49,11 +49,10 @@
 (cl-defmethod occ-rank ((tsk-pair (head file))
                         (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let ((prop (car tsk-prop))
-        (tsk (cdr tsk-pair)))
-    (let* ((currfile)
-           (occ-get-property tsk 'currfile))
-          (currfile (if currfile (file-truename currfile)))
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
+    (let* ((currfile (occ-get-property tsk 'currfile))
+           (currfile (if currfile (file-truename currfile))))
      (let* ((file (occ-ctx-file ctx))
             (file (if file (file-truename file))))
        (if currfile
@@ -82,11 +81,10 @@
 (cl-defmethod occ-rank ((tsk-pair (head root))
                         (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let ((prop (car tsk-prop))
-        (tsk (cdr tsk-pair)))
-    (let* ((root
-            (occ-get-property tsk 'root)))
-          (root (if root (file-truename root)))
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
+    (let* ((root (occ-get-property tsk 'root))
+           (root (if root (file-truename root))))
      (let* ((file (occ-ctx-file ctx))
             (file (if file (file-truename file))))
        (if root
@@ -115,8 +113,8 @@
 ;;{{ sub-tree
 (cl-defmethod occ-readprop ((tsk-pair (head subtree))
                             (ctx occ-ctx))
-  (let ((prop (car tsk-prop))
-        (tsk (cdr tsk-pair)))
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
     (let ((prompt (concat (symbol-name (car tsk-pair)) ": ")))
      (file-relative-name
        (ido-read-file-name ;; org-iread-file-name
@@ -150,8 +148,8 @@
 (cl-defmethod occ-rank ((tsk-pair (head status))
                         (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to tsk's status attribute."
-  (let ((prop (car tsk-prop))
-        (tsk (cdr tsk-pair)))
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
     (let ((todo-type
            (occ-get-property tsk 'todo-type))
           (closed
@@ -167,40 +165,38 @@
 (cl-defmethod occ-rank ((tsk-pair (head key))
                         (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let ((prop (car tsk-prop))
-        (tsk (cdr tsk-pair)))
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
     (let* ((key (occ-get-property tsk 'KEY)))
       (if key (string-to-number key) 0))))
 
 (cl-defmethod occ-rank ((tsk-pair (head heading-level))
                         (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let ((prop (car tsk-prop))
-        (tsk (cdr tsk-pair)))
-    (let* ((level
-            (occ-get-property tsk 'level)))
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
+    (let* ((level (occ-get-property tsk 'level)))
       (if level level 0))))
 
 (cl-defmethod occ-rank ((tsk-pair (head timebeing))
                         (ctx occ-ctx))
-  (let ((prop (car tsk-prop))
-        (tsk (cdr tsk-pair)))
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
    (let ((timebeing (occ-get-property tsk 'timebeing)))
-    (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
-          (clocked-time   (occ-get-property tsk 'clock-sum)))
-      (if (and
-           (numberp clocked-time)
-           (numberp timebeing-time)
-           (> timebeing-time clocked-time))
-          (- timebeing-time clocked-time)
-        0)))))
+     (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
+           (clocked-time   (occ-get-property tsk 'clock-sum)))
+       (if (and
+            (numberp clocked-time)
+            (numberp timebeing-time)
+            (> timebeing-time clocked-time))
+           (- timebeing-time clocked-time)
+         0)))))
 
 (cl-defmethod occ-rank ((tsk-pair (head current-clock))
                         (ctx occ-ctx))
-  (let ((prop (car tsk-prop))
-        (tsk (cdr tsk-pair)))
-    (let* ((tsk-marker)
-           (occ-get-property tsk 'marker))
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
+    (let* ((tsk-marker (occ-get-property tsk 'marker)))
       (if (and
            (markerp org-clock-hd-marker)
            (markerp tsk-marker)

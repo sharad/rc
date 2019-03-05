@@ -77,33 +77,47 @@
      (assoc (occ-completing-read prompt keys nil t) keys))))
 
 (defun org-flag-proprty-drawer-at-marker (marker flag)
+  "NIL to open drawer T to lose drawer"
   (let ((buff (marker-buffer marker))
-        (loc (marker-position marker)))
+        (loc (marker-position marker))
+        (heading (org-get-heading 'notags)))
+    (occ-debug :debug "called to %s drawer of heading `%s' in file %s"
+               (if flag "close" "open")
+               heading
+               (buffer-file-name))
     (when (and buff loc)
       (with-current-buffer buff
         (goto-char loc)
         (let ((range (org-get-property-block (point) 'force)))
-          ;; first show hreading
+          ;; first show heading
           (when (eq org-cycle-subtree-status 'folded)
             (unless flag (org-show-entry)) ; changed from org-show-tsk to org-show-entry
+            (occ-debug :debug
+                       "did %s entry `%s'" (if flag "close" "open") heading)
             (org-unlogged-message "CHILDREN")
             (setq org-cycle-subtree-status 'children))
           ;; show expand property if flag is nil, else hide
           (when range
+            (occ-debug :debug "pos %d before jumping to %s drawer, will jump to pos %d"
+                       (point)
+                       (if flag "close" "open")
+                       (1- (car range)))
             (goto-char (1- (car range)))
-            (occ-debug :debug "reached to drawer")
+            (occ-debug :debug "reached to %s drawer" (if flag "close" "open"))
             (if (org-at-drawer-p)
                 ;; show drawer
                 (let ((drawer (org-element-at-point)))
                   (when (memq (org-element-type drawer) '(node-property drawer property-drawer))
-                    (occ-debug :debug "trying to open drawer %s" drawer)
+                    (occ-debug :debug "trying to %s drawer %s" (if flag "close" "open") drawer)
                     (org-flag-drawer flag drawer)
                     ;; Make sure to skip drawer entirely or we might flag
                     ;; it another time when matching its ending line with
                     ;; `org-drawer-regexp'.
                     (goto-char (org-element-property :end drawer))))
-              (occ-debug :debug "not at drawer"))
-            (occ-debug :debug "reached to drawer1")))))))
+              (occ-debug :debug "not at drawer to %s current pos is %s"
+                         (if flag "close" "open")
+                         (point)))
+            (occ-debug :debug "reached to %s drawer1" (if flag "close" "open"))))))))
 
 (defun org-get-flag-proprty-drawer-at-marker (marker)
   (let ((buff (marker-buffer marker))
@@ -140,9 +154,10 @@
 
             (org-with-file-loc-timed-refile
                 file pos
-                timeout '((occ-included-files :maxlevel . 4)) ;heavy task, but present in macro !
+                timeout '((occ-included-files :maxlevel . 4)) "Refile" ;heavy task, but present in macro !
 
-              (let* ((marker (make-marker))
+              (let* ( ;; (marker (make-marker))
+                     (marker (point-marker))
                      (local-cleanup
                       #'(lambda ()
                           (save-excursion ;what to do here
@@ -150,7 +165,7 @@
                           (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
                             (abort-recursive-edit)))))
 
-                (set-marker marker (point))
+                ;; (set-marker marker (point))
                 ;; (occ-debug :debug "1 marker %s" marker)
 
                 (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
@@ -161,7 +176,8 @@
                       (when target-buffer
                         (switch-to-buffer target-buffer)
                         (goto-char pos)
-                        (set-marker marker (point)))
+                        (set-marker marker (point))
+                        (recenter-top-bottom 0))
                       ;; (occ-debug :debug "2 marker %s" marker)
 
                       (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
@@ -206,7 +222,7 @@
                        (eq buff
                            (get-buffer "*helm-mode-occ-add-to-org-heading*"))))))))
   (occ-debug :debug "finished occ-add-to-org-heading"))
-;;;###autoload
+
 (cl-defmethod occ-add-to-org-heading-when-idle ((ctx occ-ctx) timeout)
 
   ;; either this should also be in occ-obj-method
@@ -224,17 +240,17 @@
   ;; not return any value to its caller, which result into no next-action in
   ;; caller function.
   (condition-case-control nil nil
-    ;; TODO: Add code to which check if only focus present than only trigger
-    ;; else postpone it by calling run-with-idle-plus-timer
-    (progn
-      (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: calling occ-add-to-org-heading")
-      (occ-add-to-org-heading ctx timeout))
+                          ;; TODO: Add code to which check if only focus present than only trigger
+                          ;; else postpone it by calling run-with-idle-plus-timer
+                          (progn
+                            (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: calling occ-add-to-org-heading")
+                            (occ-add-to-org-heading ctx timeout))
 
-    ;; (lotus-with-other-frame-event-debug "occ-add-to-org-heading-when-idle" :cancel
-    ;;   (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: lotus-with-other-frame-event-debug")
-    ;;   (occ-add-to-org-heading ctx timeout))
+                          ;; (lotus-with-other-frame-event-debug "occ-add-to-org-heading-when-idle" :cancel
+                          ;;   (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: lotus-with-other-frame-event-debug")
+                          ;;   (occ-add-to-org-heading ctx timeout))
 
-    ((quit)))
+                          ((quit)))
 
   (occ-debug :debug "%s: end: occ-add-to-org-heading-when-idle" (time-stamp-string))
   ;; (run-with-idle-timer-nonobtrusive-simple

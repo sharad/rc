@@ -33,9 +33,9 @@
 ;; org-refile-targets is set in org-misc-utils-lotus package
 ;;;###autoload
 (defun org-clock-in-refile (refile-targets)
-  (org-with-refile file loc (or refile-targets org-refile-targets)
-    (let ((buffer-read-only nil))
-      (org-clock-in))))
+  (org-with-refile file loc (or refile-targets org-refile-targets) "Refile clock-in"
+                   (let ((buffer-read-only nil))
+                     (org-clock-in))))
 (defvar org-clock-in-if-not-delay 100 "org-clock-in-if-not-delay")
 (defvar org-donot-try-to-clock-in nil
   "Not try to clock-in, require for properly creating frame especially for frame-launcher function.")

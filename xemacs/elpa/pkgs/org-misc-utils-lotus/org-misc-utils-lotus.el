@@ -498,13 +498,17 @@ With prefix arg C-u, copy region instad of killing it."
 (defun safe-org-refile-get-location-p ()
   (member major-mode safe-org-refile-get-location-modes))
 
-(defun safe-org-refile-get-location ()
-  (let ((org-refile-targets
-         (if (safe-org-refile-get-location-p)
-             org-refile-targets
-           (remove-if '(lambda (e) (null (car e))) org-refile-targets))))
-    (org-refile-target-check org-refile-targets)
-    (org-refile-get-location)))
+(defun safe-org-refile-get-location (&optional prompt)
+  (let* ((str-command     (helm-symbol-name current-command))
+         (prompt          (or prompt str-command))
+         (buf-name        (format "*helm-mode-%s*" str-command)))
+    (let ((org-refile-targets
+           (if (safe-org-refile-get-location-p)
+               org-refile-targets
+             (remove-if '(lambda (e) (null (car e))) org-refile-targets))))
+      (org-refile-target-check org-refile-targets)
+      (org-refile-get-location prompt))))
+
 
 ;; TODO (replace-buffer-in-windows)
 
@@ -565,115 +569,118 @@ With prefix arg C-u, copy region instad of killing it."
          (cancel-timer timer)))))
 (put 'helm-timed 'lisp-indent-function 1)
 
-(defun safe-timed-org-refile-get-location (timeout)
+(defun safe-timed-org-refile-get-location (timeout &optional prompt)
   ;; TODO: org-fit-window-to-buffer
   ;; TODO: as clean up reset newwin configuration
-  (lexical-let* ((current-command (or
-                                   (helm-this-command)
-                                   this-command))
-                 (str-command     (helm-symbol-name current-command))
-                 (buf-name        (format "*helm-mode-%s*" str-command))
-                 (timer (run-with-idle-plus-timer timeout nil
-                                             #'(lambda (buffname)
-                                                 (let* ((buff (get-buffer buffname))
-                                                        (w (if buff (get-buffer-window buff))))
-                                                   (message "triggered timer for new-win %s" w)
-                                                   (when (and w
-                                                              (windowp w)
-                                                              (window-valid-p w))
-                                                     (delete-window w)
-                                                     (when (active-minibuffer-window)
-                                                       (abort-recursive-edit)
-                                                       (message nil))
-                                                     (when (fboundp 'remove-function)
-                                                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))))
-                                             buf-name)))
+  (let* ((current-command (or
+                           (helm-this-command)
+                           this-command))
+         (str-command     (helm-symbol-name current-command))
+         (prompt          (or prompt str-command))
+         (buf-name        (format "*helm-mode-%s*" str-command))
+         (timer (run-with-idle-plus-timer timeout nil
+                                     #'(lambda (buffname)
+                                         (let* ((buff (get-buffer buffname))
+                                                (w (if buff (get-buffer-window buff))))
+                                           (message "triggered timer for new-win %s" w)
+                                           (when (and w
+                                                      (windowp w)
+                                                      (window-valid-p w))
+                                             (delete-window w)
+                                             (when (active-minibuffer-window)
+                                               (abort-recursive-edit)
+                                               (message nil))
+                                             (with-no-active-minibuffer
+                                               (when (fboundp 'remove-function)
+                                                 (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame))))))
+                                     buf-name)))
     (unwind-protect
          (progn
            (when (fboundp 'add-function)
              (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
-           (safe-org-refile-get-location))
+           (safe-org-refile-get-location prompt))
       (when (fboundp 'remove-function)
         (remove-function (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
       (cancel-timer timer))))
 
-(defmacro org-with-refile (file pos refile-targets &rest body)
+(defmacro org-with-refile (file pos refile-targets prompt &rest body)
   "Refile the active region.
 If no region is active, refile the current paragraph.
 With prefix arg C-u, copy region instad of killing it."
   ;; mark paragraph if no region is set
   `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
-          (target (save-excursion (safe-org-refile-get-location)))
+          (target (save-excursion (safe-org-refile-get-location ,prompt)))
           (,file (nth 1 target))
           (,pos (nth 3 target)))
      (with-current-buffer (find-file-noselect ,file)
        (save-excursion
          (goto-char ,pos)
          ,@body))))
-(put 'org-with-refile 'lisp-indent-function 3)
+(put 'org-with-refile 'lisp-indent-function 4)
 
-(defmacro org-file-loc-with-refile (file pos refile-targets &rest body)
+(defmacro org-file-loc-with-refile (file pos refile-targets prompt &rest body)
   "Refile run body with file and loc set."
   ;; mark paragraph if no region is set
   `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
-          (target (save-excursion (safe-org-refile-get-location)))
+          (target (save-excursion (safe-org-refile-get-location ,prompt)))
           (,file (nth 1 target))
           (,pos (nth 3 target)))
      (lotus-with-file-pos ,file ,pos
                           ,@body)))
-(put 'org-file-loc-with-refile 'lisp-indent-function 3)
+(put 'org-file-loc-with-refile 'lisp-indent-function 4)
 
-;; (defmacro org-timed-file-loc-with-refile (file pos timeout refile-targets &rest body)
-(defmacro org-with-file-loc-timed-refile (file pos timeout refile-targets &rest body)
+;; (defmacro org-timed-file-loc-with-refile (file pos timeout refile-targets prompt &rest body)
+(defmacro org-with-file-loc-timed-refile (file pos timeout refile-targets prompt &rest body)
   "Refile run body with file and loc set."
   ;; mark paragraph if no region is set
   `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
-          (target (save-excursion (safe-timed-org-refile-get-location ,timeout)))
+          (target (save-excursion (safe-timed-org-refile-get-location ,timeout ,prompt)))
           (,file (nth 1 target))
           (,pos (nth 3 target)))
      (assert ,file)
      (assert ,pos)
      (lotus-with-file-pos ,file ,pos
                           ,@body)))
-(put 'org-with-file-loc-timed-refile 'lisp-indent-function 4)
+(put 'org-with-file-loc-timed-refile 'lisp-indent-function 5)
 
 ;; TODO: org-fit-window-to-buffer
-;; (defmacro org-miniwin-file-loc-with-refile (win file pos refile-targets &rest body)
-(defmacro org-with-file-loc-refile-new-win (file pos refile-targets newwin &rest body)
+;; (defmacro org-miniwin-file-loc-with-refile (win file pos refile-targets prompt &rest body)
+(defmacro org-with-file-loc-refile-new-win (file pos refile-targets newwin prompt &rest body)
   `(org-file-loc-with-refile
-       ,file ,pos ,refile-targets
+       ,file ,pos ,refile-targets ,prompt
        (lotus-with-file-pos-new-win
            ,file ,pos ,newwin
            ,@body)))
-(put 'org-miniwin-file-loc-with-refile 'lisp-indent-function 4)
+(put 'org-miniwin-file-loc-with-refile 'lisp-indent-function 5)
 
 ;; TODO: org-fit-window-to-buffer
-;; (defmacro org-timed-miniwin-file-loc-with-refile (win file pos timeout refile-targets &rest body)
-(defmacro org-with-file-loc-timed-refile-new-win (file pos timeout refile-targets newwin &rest body)
+;; (defmacro org-timed-miniwin-file-loc-with-refile (win file pos timeout refile-targets prompt &rest body)
+(defmacro org-with-file-loc-timed-refile-new-win (file pos timeout refile-targets newwin prompt &rest body)
   `(org-with-file-loc-timed-refile
-       ,file ,pos ,timeout(show-all)
-           (read-only-mode)
-           (org-previous-visible-heading 1)
-           (let ((info (org-context-clock-collect-task)))
-             info) ,refile-targets
+       ,file ,pos ,timeout
+       (show-all
+        (read-only-mode)
+        (org-previous-visible-heading 1)
+        (let ((info (org-context-clock-collect-task))) ;BUG???
+          info) ,refile-targets) ,prompt
        (lotus-with-file-pos-new-win
            ,file ,pos ,newwin
            ,@body)))
-(put 'org-with-file-loc-timed-refile-new-win 'lisp-indent-function 5)
+(put 'org-with-file-loc-timed-refile-new-win 'lisp-indent-function 6)
 
 ;; TODO: org-fit-window-to-buffer
-;; (defmacro org-timed-miniwin-file-loc-with-refile (win file pos timeout refile-targets &rest body)
+;; (defmacro org-timed-miniwin-file-loc-with-refile (win file pos timeout refile-targets prompt &rest body)
 (defmacro org-with-file-loc-timed-refile-timed-new-win (file pos
                                                         timeout-refile refile-targets
                                                         timeout-newwin timer-newwin
                                                         cleanupfn-newwin cleanupfn-local
-                                                        newwin
+                                                        newwin prompt
                                                         &rest body)
   `(org-with-file-loc-timed-refile
-    ,file ,pos ,timeout-refile ,refile-targets
-    (lotus-with-file-pos-timed-new-win
-     ,file ,pos ,timeout-newwin ,timer-newwin ,cleanupfn-newwin ,cleanupfn-local ,newwin ,@body)))
-(put 'org-with-file-loc-timed-refile-timed-new-win 'lisp-indent-function 9)
+     ,file ,pos ,timeout-refile ,refile-targets ,prompt
+     (lotus-with-file-pos-timed-new-win
+      ,file ,pos ,timeout-newwin ,timer-newwin ,cleanupfn-newwin ,cleanupfn-local ,newwin ,@body)))
+(put 'org-with-file-loc-timed-refile-timed-new-win 'lisp-indent-function 10)
 
 ;; e.g.
 ;; (org-miniwin-file-loc-with-refile nil nil)

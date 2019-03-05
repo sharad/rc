@@ -686,10 +686,10 @@
   (interactive)
   (org-rl-debug nil "org-rl-select-other-clock: target[%s]" target)
   (org-with-refile
-      file loc (or target org-refile-targets)
-    (let ((marker (make-marker)))
-      (set-marker marker loc)
-      marker)))
+      file loc (or target org-refile-targets) "Refile other org heading"
+      (let ((marker (make-marker)))
+        (set-marker marker loc)
+        marker)))
 
 (cl-defmethod org-rl-get-time-gap ((prev org-rl-clock)
                                    (next org-rl-clock))
