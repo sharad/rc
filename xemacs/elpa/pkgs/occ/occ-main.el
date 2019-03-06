@@ -59,6 +59,19 @@
       (progn                ;current clock is not matching
         (occ-debug :debug "occ-clock-in-if-not: Now really going to clock.")
         (unless (occ-clock-in ctx)
+
+          ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)
+
+          ;; begin occ-clock-in-curr-ctx-if-not
+          ;; 2019-03-06 22:55:31 s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug
+          ;; occ-clock-in-if-not: Now really going to clock.
+          ;; in occ-clock-in occ-ctx 1
+          ;; user input 111 retval t
+          ;; trying to create unnamed tsk.
+          ;; occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk
+          ;; occ-clock-in-if-not: Now really clock done.
+
+
           ;; not able to find associated, or intentionally not selecting a clock
           (occ-debug :debug "trying to create unnamed tsk.")
           (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))

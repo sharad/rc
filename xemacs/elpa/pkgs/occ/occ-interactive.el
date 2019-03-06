@@ -305,9 +305,9 @@
   ;; not return any value to its caller, which result into no next-action in
   ;; caller function.
   (condition-case-control nil nil
-    ;; TODO: Add code to which check if only focus present than only trigger
-    ;; else postpone it by calling run-with-idle-plus-timer
     (progn
+      ;; TODO: Add code to which check if only focus present than only trigger
+      ;; else postpone it by calling run-with-idle-plus-timer
       (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: calling occ-add-to-org-heading")
       (occ-add-to-org-heading ctx timeout))
 

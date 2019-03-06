@@ -105,7 +105,8 @@
 
               (let ((inherited-props
                      ;; is it correct ?
-                     (occ-readprop-props)))
+                     (cl-method-param-case
+                      '(occ-readprop (`((head ,val) occ-ctx) val)))))
                 (dolist (prop inherited-props)
                   (let* ((propstr (if (keywordp prop)
                                       (substring (symbol-name prop) 1)
