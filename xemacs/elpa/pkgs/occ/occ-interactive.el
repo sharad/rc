@@ -142,7 +142,8 @@
                 (goto-char prop-loc)
                 (occ-debug :debug "reached to %s drawer1 current pos %d"
                            (if flag "close" "open")
-                           (point))))))))))
+                           (point))
+                prop-loc))))))))
 
 (defun org-get-flag-proprty-drawer-at-marker (marker)
   (let ((buff (marker-buffer marker))
@@ -213,7 +214,9 @@
                             (occ-debug :debug "timer started for win %s" win)
 
                             ;; show proptery drawer
-                            (org-flag-proprty-drawer-at-marker marker nil)
+                            (let ((prp-loc (org-flag-proprty-drawer-at-marker marker nil)))
+                              (if (numberp prop-loc)
+                                  (goto-char prop-loc)))
                             ;; (recenter-top-bottom 2)
 
                             ;; try to read values of properties.
