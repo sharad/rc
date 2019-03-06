@@ -216,7 +216,7 @@
                   (get-buffer "*helm-mode-occ-add-to-org-heading*"))))
 
             (org-with-file-loc-timed-refile
-                file pos
+                file pos                                               ;;TODO: ASAP optional to generated helm-source helm-sync-source DOIT
                 timeout '((occ-included-files :maxlevel . 4)) "Refile" ;heavy task, but present in macro !
 
               (let* ( ;; (marker (make-marker))
