@@ -79,6 +79,11 @@
   (cl-struct-slot-value (cl-classname object) field object))
 (defun cl-set-field (object field value)
   (setf (cl-struct-slot-value (cl-classname object) field object) value))
+(defun cl-get-fields (object fields)
+  (mapcar
+   #'(lambda (field)
+       (cons field (cl-get-field object field)))
+   fileds))
 (defun cl-class-slots (class)
   (mapcar
    #'(lambda (slot) (aref slot 1))

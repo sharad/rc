@@ -39,13 +39,14 @@
 
 
 (cl-defmethod occ-get-property ((obj occ-obj)
-                                prop)
+                                (prop symbol))
   ;; mainly used by occ-tsk only.
   (if (memq prop (cl-class-slots (cl-classname obj)))
       (cl-get-field obj prop)
     (plist-get
      (cl-obj-plist-value obj)
      (sym2key prop))))
+
 (cl-defmethod occ-set-property ((obj occ-obj)
                                 prop
                                 val)
@@ -55,6 +56,15 @@
     (plist-put
      (cl-struct-slot-value (cl-classname obj) 'plist obj) ;TODO ??? (cl-obj-plist-value obj)
      (sym2key prop) val)))
+
+(cl-defmethod occ-get-properties ((obj occ-obj)
+                                  (props list))
+  ;; mainly used by occ-tsk only.
+  (mapcar
+   #'(lambda (prop)
+       (cons prop (occ-get-property obj prop)))
+   props))
+
 (cl-defmethod occ-class-slots ((obj occ-obj))
   (let* ((plist (cl-obj-plist-value obj))
          (plist-keys (plist-get-keys plist))
@@ -567,7 +577,7 @@ pointing to it."
             (let ((buffer-read-only nil))
               (when old-heading
                 (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
-              (condition-case-control nil err
+              (condition-case-control t err
                 (progn
                   (occ-straight-org-clock-clock-in (list new-marker))
                   (setq retval t)

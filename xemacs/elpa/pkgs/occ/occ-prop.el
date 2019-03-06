@@ -46,35 +46,64 @@
     (occ-writeprop prop value)))
 
 ;;{{ file
-(cl-defmethod occ-rank ((tsk-pair (head file))
+(when nil                               ;rank calculation for org file name in which tsk aka entry not much useful
+  (cl-defmethod occ-rank ((tsk-pair (head file)))
+                         (ctx occ-ctx)
+   ;; file in which tsk aka org entry exists.
+   "Predicate funtion to check if ctx matches to tsk's file attribute."
+   (let ((prop (car tsk-pair))
+         (tsk  (cdr tsk-pair)))
+     (let* ((currfile (occ-get-property tsk 'currfile))
+            (currfile (if currfile (file-truename currfile))))
+      (let* ((file (occ-ctx-file ctx))
+             (file (if file (file-truename file))))
+        (if currfile
+            (progn
+              (occ-debug :nodisplay "tsk %s currfile %s" (occ-tsk-heading tsk) currfile)
+              (occ-debug :nodisplay "tsk %s file %s"     (occ-tsk-heading tsk) file))
+          (occ-debug :nodisplay "tsk %s currfile %s not present."
+                     (occ-tsk-heading tsk) currfile))
+        (if (and currfile file
+                 (string-match currfile file))
+            (* 2 (length currfile))     ;as exact match to file giving double matching points.
+          0))))))
+;;}}
+
+;;{{ currfile
+(cl-defmethod occ-rank ((tsk-pair (head currfile))
                         (ctx occ-ctx))
+  ;; file in which tsk aka org entry exists.
   "Predicate funtion to check if ctx matches to tsk's file attribute."
   (let ((prop (car tsk-pair))
         (tsk  (cdr tsk-pair)))
     (let* ((currfile (occ-get-property tsk 'currfile))
            (currfile (if currfile (file-truename currfile))))
-     (let* ((file (occ-ctx-file ctx))
-            (file (if file (file-truename file))))
-       (if currfile
-           (progn
-             (occ-debug :nodisplay "tsk %s currfile %s" (occ-tsk-heading tsk) currfile)
-             (occ-debug :nodisplay "tsk %s file %s"     (occ-tsk-heading tsk) file))
-         (occ-debug :nodisplay "tsk %s currfile %s not present."
-                    (occ-tsk-heading tsk) currfile))
-       (if (and currfile file
-                (string-match currfile file))
-           (* 2 (length currfile))     ;as exact match to file giving double matching points.
-         0)))))
-(cl-defmethod occ-ctx-property-get ((ctx-pair (head file)))
+      (let* ((file (occ-ctx-file ctx))
+             (file (if file (file-truename file))))
+        (if currfile
+            (progn
+              (occ-debug :nodisplay "tsk %s currfile %s" (occ-tsk-heading tsk) currfile)
+              (occ-debug :nodisplay "tsk %s file %s"     (occ-tsk-heading tsk) file))
+          (occ-debug :nodisplay "tsk %s currfile %s not present."
+                     (occ-tsk-heading tsk) currfile))
+        (if (and currfile file
+                 (string-match currfile file))
+            (* 2 (length currfile))     ;as exact match to file giving double matching points.
+          0)))))
+
+(cl-defmethod occ-ctx-property-get ((ctx-pair (head currfile)))
+  "file of context"
   (let* ((ctx (cdr ctx-pair))
-         (file (occ-ctx-file ctx)))
-    file))
-(cl-defmethod occ-readprop ((tsk-pair (head file))
+         (currfile (occ-ctx-file ctx)))
+    currfile))
+(cl-defmethod occ-readprop ((tsk-pair (head currfile))
                             (ctx occ-ctx))
-  (let* ((file (if ctx (occ-ctx-file ctx)))
-         (dir (if (stringp file) (file-name-directory file) (dirname-of-file file)))
+  "currfile property for tsk aka org entry"
+  (let* ((currfile (if ctx (occ-ctx-file ctx)))
+         (dir (when (stringp currfile)
+                  (file-name-directory currfile) (dirname-of-file currfile)))
          (prompt (concat (symbol-name (car tsk-pair)) ": ")))
-    (ido-read-file-name prompt dir file)))
+    (ido-read-currfile-name prompt dir currfile)))
 ;;}}
 
 ;;{{ root

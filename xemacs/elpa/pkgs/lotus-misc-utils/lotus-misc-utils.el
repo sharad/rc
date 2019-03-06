@@ -140,7 +140,7 @@
                    (> lh 0))))
            ;; If the mode line has an overline, use 3 lines.
            (plist-get (face-attr-construct 'mode-line) :overline)))))
-      -12 -15))
+      -12 -10))
 
 ;; create smaller and proper sized window
 ;; TODO: org-fit-window-to-buffer

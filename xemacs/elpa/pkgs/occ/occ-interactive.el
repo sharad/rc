@@ -64,18 +64,52 @@
 
 ;; (occ-set-property (intern ":root") nil (list :file "/home/s/paradise/git/main/src/wnc/security/authenticator/ieee802_1x.cpp" :buffer (get-buffer "ieee802_1x.cpp")))
 
-(defun occ-select-propetry (ctx &optional prompt)
+(when nil
+  (defun occ-select-propetry (ctx tsk &optional prompt)
+    (let ((prompt (or prompt "proptery: "))
+          (keys (mapcar #'(lambda (k) (cons (symbol-name k) k))
+                        (append
+                         (cl-method-sigs-matched-arg
+                          '(occ-readprop         (`((head ,val) occ-ctx) val))
+                          '(occ-ctx-property-get (`((head ,val)) val))
+                          ctx)
+                         '(edit done)))))
+      (let ((sel (assoc (occ-completing-read prompt keys nil t) keys)))
+        (occ-debug :debug "selected option")
+        (cdr sel)))))
+
+(cl-defgeneric occ-select-propetry (tsk ctx &optional prompt)
+  "occ-select-propetry")
+
+(cl-defmethod occ-select-propetry ((tsk occ-tsk)
+                                   (ctx occ-ctx)
+                                   &optional prompt)
   (let ((prompt (or prompt "proptery: "))
-        (keys (mapcar #'(lambda (k) (cons (symbol-name k) k))
-                      (append
-                       (cl-method-sigs-matched-arg
-                        '(occ-readprop (`((head ,val) occ-ctx) val))
-                        '(occ-ctx-property-get (`((head ,val)) val))
-                        ctx)
-                       '(edit done)))))
-    (let ((sel (assoc (occ-completing-read prompt keys nil t) keys)))
-      (occ-debug :debug "selected option")
-      (cdr sel))))
+        (keys (append
+               (cl-method-sigs-matched-arg
+                '(occ-readprop         (`((head ,val) occ-ctx) val))
+                '(occ-ctx-property-get (`((head ,val)) val))
+                ctx)
+               '(edit done))))
+    (let ((key-vals (occ-get-properties tsk keys)))
+      (let ((key-val-collection
+             (mapcar
+              #'(lambda (key-val)
+                  (cons
+                   (if (cdr key-val)
+                       (format "%s: %s" (car key-val) (cdr key-val))
+                     (symbol-name (car key-val)))
+                   (car key-val)))
+              key-vals)))
+        (let ((sel
+               (assoc
+                (occ-completing-read prompt
+                                     key-val-collection
+                                     nil
+                                     t)
+                key-val-collection)))
+          (occ-debug :debug "selected option")
+          (cdr sel))))))
 
 (defun org-flag-proprty-drawer-at-marker (marker flag)
   "NIL to open drawer T to close drawer"
@@ -99,6 +133,8 @@
                      (buffer-file-name buff)
                      loc)
           (recenter-top-bottom 2)
+          (unless flag                  ;creating issue in cleanupfn error as display buffer and current buffer is not same.
+            (recenter-top-bottom 2))
           (let ((prop-range (org-get-property-block (point) 'force)))
             ;; first show heading
             (when (eq org-cycle-subtree-status 'folded)
@@ -112,8 +148,8 @@
               (org-unlogged-message "CHILDREN")
               (setq org-cycle-subtree-status 'children))
             ;; show expand property if flag is nil, else hide
-            (let* ((prop-range    (org-get-property-block (point) 'force))
-                   (prop-loc (1- (car prop-range))))
+            (let* ((prop-range (org-get-property-block (point) 'force))
+                   (prop-loc   (1- (car prop-range))))
               (when prop-range
                 (occ-debug :debug "pos %d before jumping to %s drawer, will jump to pos %d"
                            (point)
@@ -124,7 +160,8 @@
                 (if (org-at-drawer-p)
                     ;; show drawer
                     (let ((drawer (org-element-at-point)))
-                      (when (memq (org-element-type drawer) '(node-property drawer property-drawer))
+                      (when (memq (org-element-type drawer)
+                                  '(node-property drawer property-drawer))
                         (occ-debug :debug
                                    "trying to %s drawer %s current pos %d"
                                    (if flag "close" "open")
@@ -213,7 +250,7 @@
 
                             ;; show proptery drawer
                             (let* ((prop-range (org-flag-proprty-drawer-at-marker marker nil))
-                                   (prop-loc (car prop-range)))
+                                   (prop-loc   (1- (car prop-range))))
                               (if (numberp prop-loc)
                                   (goto-char prop-loc)))
 
@@ -221,7 +258,7 @@
                             (let ((prop nil))
                               (while (not
                                       (member
-                                       (setq prop (occ-select-propetry ctx))
+                                       (setq prop (occ-select-propetry (occ-make-tsk nil) ctx))
                                        '(edit done)))
                                 (when (occ-editprop prop ctx)
                                   (occ-tsk-update-tsks t)))
@@ -268,17 +305,17 @@
   ;; not return any value to its caller, which result into no next-action in
   ;; caller function.
   (condition-case-control nil nil
-                          ;; TODO: Add code to which check if only focus present than only trigger
-                          ;; else postpone it by calling run-with-idle-plus-timer
-                          (progn
-                            (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: calling occ-add-to-org-heading")
-                            (occ-add-to-org-heading ctx timeout))
+    ;; TODO: Add code to which check if only focus present than only trigger
+    ;; else postpone it by calling run-with-idle-plus-timer
+    (progn
+      (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: calling occ-add-to-org-heading")
+      (occ-add-to-org-heading ctx timeout))
 
-                          ;; (lotus-with-other-frame-event-debug "occ-add-to-org-heading-when-idle" :cancel
-                          ;;   (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: lotus-with-other-frame-event-debug")
-                          ;;   (occ-add-to-org-heading ctx timeout))
+    ;; (lotus-with-other-frame-event-debug "occ-add-to-org-heading-when-idle" :cancel
+    ;;   (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: lotus-with-other-frame-event-debug")
+    ;;   (occ-add-to-org-heading ctx timeout))
 
-                          ((quit)))
+    ((quit)))
 
   (occ-debug :debug "%s: end: occ-add-to-org-heading-when-idle" (time-stamp-string))
   ;; (run-with-idle-timer-nonobtrusive-simple
