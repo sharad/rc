@@ -140,7 +140,7 @@
                    (> lh 0))))
            ;; If the mode line has an overline, use 3 lines.
            (plist-get (face-attr-construct 'mode-line) :overline)))))
-      -12 -10))
+      -12 -15))
 
 ;; create smaller and proper sized window
 ;; TODO: org-fit-window-to-buffer
@@ -149,6 +149,7 @@
         (window-min-height 7))
     (prog1
         (split-window-below size)
+      (lwarn 'lotus-new-win :debug "newwin size %d" size)
       (message "size %d" size))))
 
 

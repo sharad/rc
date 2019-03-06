@@ -47,6 +47,7 @@
    occ-global-tsk-collection-spec spec))
 
 (defun occ-reset-global-tsk-collection ()
+  (occ-debug :debug "resetting global-tsk-collection")
   (occ-reset-collection-object))
 
 ;;;###autoload

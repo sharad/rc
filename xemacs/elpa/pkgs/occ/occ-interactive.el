@@ -82,15 +82,23 @@
   (let ((buff (marker-buffer marker))
         (loc (marker-position marker))
         (heading (org-get-heading 'notags)))
-    (occ-debug :debug "%s: called to %s drawer of heading `%s' in file %s"
-               (time-stamp-string)
-               (if flag "close" "open")
-               heading
-               (buffer-file-name))
+    ;; (occ-debug :debug "%s: called to %s drawer of heading `%s' in file %s loc %d"
+    ;;            (time-stamp-string)
+    ;;            (if flag "close" "open")
+    ;;            heading
+    ;;            (buffer-file-name buff)
+    ;;            loc)
     (when (and buff loc)
       (with-current-buffer buff
         (let ((currloc (point)))
           (goto-char loc)
+          (occ-debug :debug "%s: called to %s drawer of heading `%s' in file %s loc %d"
+                     (time-stamp-string)
+                     (if flag "close" "open")
+                     heading
+                     (buffer-file-name buff)
+                     loc)
+          (recenter-top-bottom 2)
           (let ((range (org-get-property-block (point) 'force)))
             ;; first show heading
             (when (eq org-cycle-subtree-status 'folded)
@@ -104,27 +112,34 @@
               (org-unlogged-message "CHILDREN")
               (setq org-cycle-subtree-status 'children))
             ;; show expand property if flag is nil, else hide
-            (when range
-              (occ-debug :debug "pos %d before jumping to %s drawer, will jump to pos %d"
-                         (point)
-                         (if flag "close" "open")
-                         (1- (car range)))
-              (goto-char (1- (car range)))
-              (occ-debug :debug "reached to %s drawer" (if flag "close" "open"))
-              (if (org-at-drawer-p)
-                  ;; show drawer
-                  (let ((drawer (org-element-at-point)))
-                    (when (memq (org-element-type drawer) '(node-property drawer property-drawer))
-                      (occ-debug :debug "trying to %s drawer %s" (if flag "close" "open") drawer)
-                      (org-flag-drawer flag drawer)
-                      ;; Make sure to skip drawer entirely or we might flag
-                      ;; it another time when matching its ending line with
-                      ;; `org-drawer-regexp'.
-                      (goto-char (org-element-property :end drawer))))
-                (occ-debug :debug "not at drawer to %s current pos is %s"
+            (let ((range (org-get-property-block (point) 'force)))
+              (when range
+                (occ-debug :debug "pos %d before jumping to %s drawer, will jump to pos %d"
+                           (point)
                            (if flag "close" "open")
-                           (point)))
-              (occ-debug :debug "reached to %s drawer1" (if flag "close" "open")))))))))
+                           (1- (car range)))
+                (goto-char (1- (car range)))
+                (occ-debug :debug "reached to %s drawer" (if flag "close" "open"))
+                (if (org-at-drawer-p)
+                    ;; show drawer
+                    (let ((drawer (org-element-at-point)))
+                      (when (memq (org-element-type drawer) '(node-property drawer property-drawer))
+                        (occ-debug :debug
+                                   "trying to %s drawer %s current pos %d"
+                                   (if flag "close" "open")
+                                   drawer
+                                   (point))
+                        (org-flag-drawer flag drawer)
+                        ;; Make sure to skip drawer entirely or we might flag
+                        ;; it another time when matching its ending line with
+                        ;; `org-drawer-regexp'.
+                        (goto-char (org-element-property :end drawer))))
+                  (occ-debug :debug "not at drawer to %s current pos is %s"
+                             (if flag "close" "open")
+                             (point)))
+                (occ-debug :debug "reached to %s drawer1 current pos %d"
+                           (if flag "close" "open")
+                           (point))))))))))
 
 (defun org-get-flag-proprty-drawer-at-marker (marker)
   (let ((buff (marker-buffer marker))
@@ -184,7 +199,8 @@
                         (switch-to-buffer target-buffer)
                         (goto-char pos)
                         (set-marker marker (point))
-                        (recenter-top-bottom 0))
+                        ;; (recenter-top-bottom 1)
+                        )
                       ;; (occ-debug :debug "2 marker %s" marker)
 
                       (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
@@ -195,6 +211,7 @@
 
                             ;; show proptery drawer
                             (org-flag-proprty-drawer-at-marker marker nil)
+                            ;; (recenter-top-bottom 2)
 
                             ;; try to read values of properties.
                             (let ((prop nil))
