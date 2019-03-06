@@ -78,7 +78,7 @@
       (cdr sel))))
 
 (defun org-flag-proprty-drawer-at-marker (marker flag)
-  "NIL to open drawer T to lose drawer"
+  "NIL to open drawer T to close drawer"
   (let ((buff (marker-buffer marker))
         (loc (marker-position marker))
         (heading (org-get-heading 'notags)))

@@ -47,8 +47,7 @@
    occ-global-tsk-collection-spec spec))
 
 (defun occ-reset-global-tsk-collection ()
-  (setq
-   occ-global-tsk-collection      nil))
+  (occ-reset-collection-object))
 
 ;;;###autoload
 (defun occ-insinuate ()

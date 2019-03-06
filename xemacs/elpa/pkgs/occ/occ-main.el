@@ -139,11 +139,4 @@
         ;; TODO update existing occ-collection.tree or occ-collection.list
         (occ-reset-global-tsk-collection)))))
 
-
-
-
-
-
-
-
 ;;; occ-main.el ends here

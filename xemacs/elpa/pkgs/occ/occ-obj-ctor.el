@@ -39,6 +39,7 @@
   "run when occ-global-tsk-collection-change-hook get changed.")
 
 (defun occ-tsk-builder ()
+  (unless occ-global-tsk-collection (occ-collection-object))
   (if occ-global-tsk-collection
       (let ((classname (cl-classname (occ-collection-object))))
         ;;let ((classname (cl-classname occ-global-tsk-collection)))
@@ -283,6 +284,13 @@
     (add-hook
      'occ-global-tsk-collection-change-hook
      fn)))
+
+;;;###autoload
+(defun occ-reset-collection-object ()
+  (interactive)
+  (setq occ-global-tsk-collection nil)
+  occ-global-tsk-collection)
+
 
 (when nil
   (progn
