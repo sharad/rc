@@ -99,7 +99,7 @@
                      (buffer-file-name buff)
                      loc)
           (recenter-top-bottom 2)
-          (let ((range (org-get-property-block (point) 'force)))
+          (let ((prop-range (org-get-property-block (point) 'force)))
             ;; first show heading
             (when (eq org-cycle-subtree-status 'folded)
               (unless flag
@@ -112,9 +112,9 @@
               (org-unlogged-message "CHILDREN")
               (setq org-cycle-subtree-status 'children))
             ;; show expand property if flag is nil, else hide
-            (let* ((range    (org-get-property-block (point) 'force))
-                   (prop-loc (1- (car range))))
-              (when range
+            (let* ((prop-range    (org-get-property-block (point) 'force))
+                   (prop-loc (1- (car prop-range))))
+              (when prop-range
                 (occ-debug :debug "pos %d before jumping to %s drawer, will jump to pos %d"
                            (point)
                            (if flag "close" "open")
@@ -143,7 +143,7 @@
                 (occ-debug :debug "reached to %s drawer1 current pos %d"
                            (if flag "close" "open")
                            (point))
-                prop-loc))))))))
+                prop-range))))))))
 
 (defun org-get-flag-proprty-drawer-at-marker (marker)
   (let ((buff (marker-buffer marker))
@@ -202,9 +202,7 @@
                       (when target-buffer
                         (switch-to-buffer target-buffer)
                         (goto-char pos)
-                        (set-marker marker (point))
-                        ;; (recenter-top-bottom 1)
-                        )
+                        (set-marker marker (point)))
                       ;; (occ-debug :debug "2 marker %s" marker)
 
                       (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
@@ -214,10 +212,10 @@
                             (occ-debug :debug "timer started for win %s" win)
 
                             ;; show proptery drawer
-                            (let ((prp-loc (org-flag-proprty-drawer-at-marker marker nil)))
+                            (let* ((prop-range (org-flag-proprty-drawer-at-marker marker nil))
+                                   (prop-loc (car prop-range)))
                               (if (numberp prop-loc)
                                   (goto-char prop-loc)))
-                            ;; (recenter-top-bottom 2)
 
                             ;; try to read values of properties.
                             (let ((prop nil))
