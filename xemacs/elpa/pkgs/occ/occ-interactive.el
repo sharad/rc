@@ -112,13 +112,14 @@
               (org-unlogged-message "CHILDREN")
               (setq org-cycle-subtree-status 'children))
             ;; show expand property if flag is nil, else hide
-            (let ((range (org-get-property-block (point) 'force)))
+            (let* ((range    (org-get-property-block (point) 'force))
+                   (prop-loc (1- (car range))))
               (when range
                 (occ-debug :debug "pos %d before jumping to %s drawer, will jump to pos %d"
                            (point)
                            (if flag "close" "open")
-                           (1- (car range)))
-                (goto-char (1- (car range)))
+                           prop-loc)
+                (goto-char prop-loc)
                 (occ-debug :debug "reached to %s drawer" (if flag "close" "open"))
                 (if (org-at-drawer-p)
                     ;; show drawer
@@ -133,10 +134,12 @@
                         ;; Make sure to skip drawer entirely or we might flag
                         ;; it another time when matching its ending line with
                         ;; `org-drawer-regexp'.
-                        (goto-char (org-element-property :end drawer))))
+                        (when nil       ;;BUG ?? what
+                          (goto-char (org-element-property :end drawer)))))
                   (occ-debug :debug "not at drawer to %s current pos is %s"
                              (if flag "close" "open")
                              (point)))
+                (goto-char prop-loc)
                 (occ-debug :debug "reached to %s drawer1 current pos %d"
                            (if flag "close" "open")
                            (point))))))))))
