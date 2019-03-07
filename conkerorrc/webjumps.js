@@ -1329,3 +1329,7 @@ define_webjump("company/in/tofler", "https://www.google.com/search?hl=en&&q=tofl
 //                        function(url) { getBrowser().newBrowser("http://yubnub.org/parser/parse?command=" + url); }); // callback
 // }
 // add_command("y", yubnub, [["p"]]);
+
+
+define_webjump("quora", "https://www.quora.com/search?q=%s");
+define_webjump("search/quora", "https://www.quora.com/search?q=%s");

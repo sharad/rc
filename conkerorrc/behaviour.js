@@ -248,8 +248,14 @@ interactive("tinyurl",
 
 //{{ searchfollow
 function searchfollow (I, target) {
-    var searchUrl = "http://google.com/search?btnI=I%27m+Feeling+Lucky&q=";
-    var navclient = "&sourceid=navclient";
+    // var searchUrl = "http://google.com/search?btnI=I%27m+Feeling+Lucky&q=";
+    // var navclient = "";// "&sourceid=navclient";
+
+    // https://webapps.stackexchange.com/questions/10699/url-format-for-googles-im-feeling-lucky/10700
+    var searchUrl = "http://www.google.com/search?btnI&q=";
+    var navclient = "";
+
+
     if (target == null)
         target = FOLLOW_DEFAULT;
     I.target = target;
@@ -268,12 +274,16 @@ function searchfollow (I, target) {
     browser_object_follow(I.buffer, target, selement);
 }
 
-// var searchUrl = "http://google.com/search?btnI=I%27m+Feeling+Lucky&q=";
-// var navclient = "";// "&sourceid=navclient";
 
 function searchfollow (I, target) {
+    // var searchUrl = "http://google.com/search?btnI=I%27m+Feeling+Lucky&q=";
+    // var navclient = "";// "&sourceid=navclient";
+
+    // https://webapps.stackexchange.com/questions/10699/url-format-for-googles-im-feeling-lucky/10700
     var searchUrl = "http://www.google.com/search?btnI&q=";
     var navclient = "";
+
+
     if (target == null)
         target = FOLLOW_DEFAULT;
     I.target = target;

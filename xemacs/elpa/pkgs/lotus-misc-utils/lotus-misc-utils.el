@@ -29,6 +29,7 @@
 
 (require 'timer)
 (require 'timer-utils-lotus)
+(require 'lotus-idle-utils)
 ;; timer
 
 
