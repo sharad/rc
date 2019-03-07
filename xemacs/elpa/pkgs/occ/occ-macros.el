@@ -34,4 +34,6 @@
      (progn
        ,@body)))
 
+(defun occ-get-location ())
+
 ;;; occ-macros.el ends here
