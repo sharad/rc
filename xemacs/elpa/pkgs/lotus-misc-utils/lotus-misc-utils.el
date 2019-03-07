@@ -755,50 +755,6 @@
 (put 'lotus-cancel-with-other-frame-event 'lisp-indent-function 1)
 
 
-;; *Messages*
-
-;; (No changes need to be saved)
-;; Saving file /home/s/hell/.emacs.d/autoconfig/gnus/newsrc.eld...
-;; Wrote /home/s/hell/.emacs.d/autoconfig/gnus/newsrc.eld
-;; next-line: End of buffer [3 times]
-;; readfn: occ-clock-in-curr-ctx-if-not inside readfn
-;; readfn: occ-add-to-org-heading-when-idle inside readfn
-;; Getting targets...done
-;; readfn: occ-clock-in-curr-ctx-if-not inside readfn
-;; triggered timer for new-win #<window 1073 on *helm-mode-occ-clock-in-curr-ctx-if-not*>
-;; readfn: occ-clock-in-curr-ctx-if-not add quiet 5 as already was present
-;; readfn: occ-clock-in-curr-ctx-if-not inside readfn [15 times]
-;; readfn: org-rl-resolve-clocks-if-idle inside readfn
-;; org-clock-last-user-idle-seconds: nil
-;; lotus-with-file-pos-new-win: selecting buf Unnamed.org [3 times]
-;; readfn: occ-clock-in-curr-ctx-if-not inside readfn [13 times]
-;; gnus-demon-scan-mail-and-news-now: current time Wed 17:05:00, idle time 600
-;; gnus-demon-scan-mail-and-news-now 3
-;; readfn: occ-clock-in-curr-ctx-if-not inside readfn
-;; Saving file /home/s/hell/.emacs.d/.cache/autoconfig/recentf/recentf...
-;; Wrote /home/s/hell/.emacs.d/.cache/autoconfig/recentf/recentf
-;; readfn: occ-clock-in-curr-ctx-if-not inside readfn [4 times]
-;; gnus demon timeout
-;; readfn: occ-clock-in-curr-ctx-if-not inside readfn [45 times]
-;; hookfn: org-rl-resolve-clocks-if-idle running readfn from hookfn outside timer
-;; hookfn: org-rl-resolve-clocks-if-idle add quiet 2
-;; hookfn: org-rl-resolve-clocks-if-idle timer remove quiet 1
-;; hookfn: org-rl-resolve-clocks-if-idle running readfn from hookfn inside timer
-;; readfn: org-rl-resolve-clocks-if-idle inside readfn
-;; org-clock-last-user-idle-seconds: 310.001730628
-;; lotus-with-file-pos-new-win: selecting buf Unnamed.org [3 times]
-;; hookfn: occ-add-to-org-heading-when-idle running readfn from hookfn outside timer
-;; hookfn: occ-add-to-org-heading-when-idle add quiet 2
-;; hookfn: org-rl-resolve-clocks-if-idle finished running :restart
-;; hookfn: occ-add-to-org-heading-when-idle timer remove quiet 1
-;; hookfn: occ-add-to-org-heading-when-idle finished running :cancel
-;; ElScreen version 20180321
-;; Mark set
-;; Mark saved where search started
-;; Mark set [2 times]
-
-
-
 (defmacro run-when-idle (secs &rest body)
   `(letrec ((timer nil)
             (fn
@@ -814,8 +770,6 @@
                            ))
      `(while-no-input (redisplay)
                       )))
-
-
 
 (defmacro run-unobtrusively (&rest body)
   `(let ((retval (while-no-input

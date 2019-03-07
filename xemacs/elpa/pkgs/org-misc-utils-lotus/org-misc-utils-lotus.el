@@ -512,26 +512,6 @@ With prefix arg C-u, copy region instad of killing it."
 
 ;; TODO (replace-buffer-in-windows)
 
-(defun quiet--select-frame (frame &optional norecord)
-  ;; (select-frame frame norecord)
-  ;; select-frame-set-input-focus should not be used as it will pull window if hidden.
-  (select-frame frame norecord)
-  ;; (raise-frame frame)
-  ;; Ensure, if possible, that FRAME gets input focus.
-  ;; (when (memq (window-system frame) '(x w32 ns))
-  ;;   (x-focus-frame frame))
-  ;; Move mouse cursor if necessary.
-  (cond
-    (mouse-autoselect-window
-     (let ((edges (window-inside-edges (frame-selected-window frame))))
-       ;; Move mouse cursor into FRAME's selected window to avoid that
-       ;; Emacs mouse-autoselects another window.
-       (set-mouse-position frame (nth 2 edges) (nth 1 edges))))
-    (focus-follows-mouse
-     ;; Move mouse cursor into FRAME to avoid that another frame gets
-     ;; selected by the window manager.
-     (set-mouse-position frame (1- (frame-width frame)) 0))))
-
 (defmacro helm-timed (timeout &rest body)
   (let ((temp-win-config (make-symbol "test-helm-timed")))
     `(let* ((,temp-win-config (current-window-configuration))
