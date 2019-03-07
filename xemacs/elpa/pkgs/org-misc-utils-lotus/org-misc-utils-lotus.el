@@ -533,39 +533,37 @@ With prefix arg C-u, copy region instad of killing it."
      (set-mouse-position frame (1- (frame-width frame)) 0))))
 
 (defmacro helm-timed (timeout &rest body)
-  (lexical-let ((temp-win-config (make-symbol "test-helm-timed")))
-    `(lexical-let* ((,temp-win-config (current-window-configuration))
-                    (current-command (or
-                                      (helm-this-command)
-                                      this-command))
-                    (str-command     (helm-symbol-name current-command))
-                    (buf-name        (format "*helm-mode-%s*" str-command))
-                    (timer (run-with-idle-plus-timer ,timeout nil
-                                                #'(lambda (buffname)
-                                                    (let* ((buff (or
-                                                                  (get-buffer buffname)
-                                                                  (get-buffer "*helm*")))
-                                                           (w (if buff (get-buffer-window buff))))
-                                                      (message "triggered timer for new-win %s" w)
-                                                      (when (and w (windowp w) (window-valid-p w))
-                                                        (delete-window w)
-                                                        (when (active-minibuffer-window)
-                                                          (abort-recursive-edit)
-                                                          (message nil))
-                                                        (when (fboundp 'remove-function)
-                                                          (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame))
-                                                        (when ,temp-win-config
-                                                          (set-window-configuration ,temp-win-config)
-                                                          (setq ,temp-win-config nil)))))
-                                                buf-name)))
+  (let ((temp-win-config (make-symbol "test-helm-timed")))
+    `(let* ((,temp-win-config (current-window-configuration))
+            (current-command (or
+                              (helm-this-command)
+                              this-command))
+            (str-command     (helm-symbol-name current-command))
+            (buf-name        (format "*helm-mode-%s*" str-command))
+            (timer (run-with-idle-plus-timer ,timeout nil
+                                        #'(lambda (buffname)
+                                            (let* ((buff (or
+                                                          (get-buffer buffname)
+                                                          (get-buffer "*helm*")))
+                                                   (w (if buff (get-buffer-window buff))))
+                                              (message "triggered timer for new-win %s" w)
+                                              (when (and w (windowp w) (window-valid-p w))
+                                                (delete-window w)
+                                                (when (active-minibuffer-window)
+                                                  (abort-recursive-edit)
+                                                  (message nil))
+                                                (when (fboundp 'remove-function)
+                                                  (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame))
+                                                (when ,temp-win-config
+                                                  (set-window-configuration ,temp-win-config)
+                                                  (setq ,temp-win-config nil)))))
+                                        buf-name)))
        (unwind-protect
             (progn
-              (when (fboundp 'add-function)
-                (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+              (select-frame-set-input-focus-raise-enable)
               (progn
                 ,@body))
-         (when (fboundp 'remove-function)
-           (remove-function (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+         (select-frame-set-input-focus-raise-disable)
          (cancel-timer timer)))))
 (put 'helm-timed 'lisp-indent-function 1)
 
@@ -596,11 +594,9 @@ With prefix arg C-u, copy region instad of killing it."
                                      buf-name)))
     (unwind-protect
          (progn
-           (when (fboundp 'add-function)
-             (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+           (select-frame-set-input-focus-raise-enable)
            (safe-org-refile-get-location prompt))
-      (when (fboundp 'remove-function)
-        (remove-function (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+      (select-frame-set-input-focus-raise-disable)
       (cancel-timer timer))))
 
 (defmacro org-with-refile (file pos refile-targets prompt &rest body)

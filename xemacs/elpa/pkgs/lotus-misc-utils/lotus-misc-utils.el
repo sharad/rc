@@ -47,6 +47,7 @@
        (grab-focus))
      ,@body))
 (put 'eval-with-focus 'lisp-indent-function 0)
+
 
 (defmacro with-no-active-minibuffer (&rest body)
   ;; https://oremacs.com/2015/07/16/callback-quit/
@@ -101,6 +102,7 @@
   (run-with-timer 3 nil 'test-minibuffer-quiting)
 
   (get 'quit 'error-message))
+
 
 (defun lotus-new-lower-win-size ()
   ;; TODO: improve it.
@@ -153,41 +155,41 @@
       (lwarn 'lotus-new-win :debug "newwin size %d" size)
       (message "size %d" size))))
 
-
 (defmacro lotus-with-new-win (newwin &rest body)
-  `(lexical-let* ((,newwin (lotus-make-new-win)))
-       ;; maybe leave two lines for our window because of the
-       ;; normal `raised' mode line
-       (select-window ,newwin 'norecord)
-       (progn
-         ,@body)))
+  `(let* ((,newwin (lotus-make-new-win)))
+     ;; maybe leave two lines for our window because of the
+     ;; normal `raised' mode line
+     (select-window ,newwin 'norecord)
+     (progn
+       ,@body)))
 (put 'lotus-with-new-win 'lisp-indent-function 1)
 
 (defmacro lotus-with-timed-new-win (timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
-  (lexical-let ((temp-win-config (make-symbol "test-lotus-with-timed-new-win-config")))
-    `(lexical-let* ((,temp-win-config (current-window-configuration))
-                    (,cleanupfn-newwin #'(lambda (w localfn)
-                                           ;; (message "cleaning up newwin and triggered timer for newwin %s" w)
-                                           (when localfn (funcall localfn))
-                                           ;; (when (active-minibuffer-window) ;not required here. it is just creating timed new-win
-                                           ;;   (abort-recursive-edit))
-                                           (when (and w (windowp w) (window-valid-p w))
-                                             (delete-window w))
-                                           (when ,temp-win-config
-                                             (set-window-configuration ,temp-win-config)
-                                             (setq ,temp-win-config nil)))))
+  (let ((temp-win-config (make-symbol "test-lotus-with-timed-new-win-config")))
+    `(let* ((,temp-win-config (current-window-configuration))
+            (,cleanupfn-newwin #'(lambda (w localfn)
+                                   ;; (message "cleaning up newwin and triggered timer for newwin %s" w)
+                                   (when localfn (funcall localfn))
+                                   ;; (when (active-minibuffer-window) ;not required here. it is just creating timed new-win
+                                   ;;   (abort-recursive-edit))
+                                   (when (and w (windowp w) (window-valid-p w))
+                                     (delete-window w))
+                                   (when ,temp-win-config
+                                     (set-window-configuration ,temp-win-config)
+                                     (setq ,temp-win-config nil)))))
        (lotus-with-new-win ,newwin
-         (lexical-let* ((,timer (run-with-idle-plus-timer ,timeout
-                                                          nil
-                                                          ,cleanupfn-newwin
-                                                          ,newwin
-                                                          ,cleanupfn-local)))
+         (let* ((,timer (run-with-idle-plus-timer ,timeout
+                                                  nil
+                                                  ,cleanupfn-newwin
+                                                  ,newwin
+                                                  ,cleanupfn-local)))
            (condition-case err
                (progn
                  ,@body)
              ((quit)
               (funcall ,cleanupfn-newwin ,newwin ,cleanupfn-local))))))))
 (put 'lotus-with-timed-new-win 'lisp-indent-function 1)
+
 
 ;; Marker Macros Starts
 (defmacro lotus-with-marker-alt (marker &rest body)
@@ -362,6 +364,7 @@
 (put 'lotus-with-file-pos-timed-new-win 'lisp-indent-function 1)
 ;; move out
 ;; Misc Macros Ends
+
 
 (defmacro lotus-with-no-active-minibuffer (&rest body)
   ;;could schedule in little further.
@@ -393,6 +396,7 @@
       ,minibuffer-body)
     ,@body))
 (put 'lotus-with-override-minibuffer-if 'lisp-indent-function 1)
+
 
 (defmacro lotus-with-other-frame-event (action &rest body)
   `(let ((frame nil)
@@ -510,7 +514,7 @@
                                                    nil)))))
                          (progn
                            (lwarn 'event-input :debug "%s: %s: hookfn: <%s> adding quiet-sel-frame minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
-                           (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
+                           (select-frame-set-input-focus-raise-enable)
                            (lwarn 'event-input :debug "%s: %s: hookfn: <%s> going to run abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                            (when (active-minibuffer-window)
                              (lwarn 'event-input :debug "%s: %s: hookfn: <%s> running abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
@@ -527,17 +531,17 @@
                    (if sel-frame-adviced-p
                        (when (not (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus)))
                          (lwarn 'event-input :debug "%s: %s: readfn: <%s> add quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
-                         (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+                         (select-frame-set-input-focus-raise-enable))
                      (when (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))
                        (lwarn 'event-input :debug "%s: %s: readfn: <%s> remove quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
-                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))))
+                       (select-frame-set-input-focus-raise-disable)))))
               (readfn
                #'(lambda ()
                    (progn
                      (setq frame (selected-frame))
                      (add-hook 'pre-command-hook (lambda () (funcall hookfn)))
                      ;; (unless sel-frame-adviced-p
-                     ;;   (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame))
+                     ;;   (select-frame-set-input-focus-raise-disable))
                      (condition-case nil
                          (progn
                            (funcall set-advice-fn)
@@ -555,7 +559,7 @@
                    (if (eql last-event-frame frame)
                        (progn
                          (setq frame nil)
-                         ;; (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                         ;; (select-frame-set-input-focus-raise-disable)
                          ;; (lwarn 'event-input :debug "hookfn: removing hook 2")
                          ;; (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                          t)
@@ -584,12 +588,11 @@
                                                     (null action))
                                                    nil)))))
                          (progn
-                           (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
+                           (select-frame-set-input-focus-raise-enable)
                            (when (active-minibuffer-window)
                              (abort-recursive-edit)))))))))
        (funcall readfn))))
 (put 'lotus-with-other-frame-event 'lisp-indent-function 1)
-
 
 (defmacro lotus-with-other-frame-event-debug (name action &rest body)
   `(let ((frame nil)
@@ -607,7 +610,7 @@
                                 last-event-frame
                                 frame
                                 (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
-                         (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+                         (select-frame-set-input-focus-raise-enable))
                      (when (advice-function-member-p #'quiet--select-frame (symbol-function 'select-frame-set-input-focus))
                        (lwarn 'event-input :debug "%s: %s: readfn: %s <%s> remove quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
                        (lwarn 'event-input :debug "%s: %s: set-advice-fn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
@@ -617,7 +620,7 @@
                               last-event-frame
                               frame
                               (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
-                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))))
+                       (select-frame-set-input-focus-raise-disable)))))
               (readfn
                #'(lambda ()
                    (progn
@@ -651,7 +654,7 @@
                    (if (eql last-event-frame frame)
                        (progn
                          (setq frame nil)
-                         ;; (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                         ;; (select-frame-set-input-focus-raise-disable)
                          ;; (lwarn 'event-input :debug "hookfn: removing hook 2")
                          ;; (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                          t)
@@ -733,7 +736,7 @@
                                   frame
                                   (selected-frame)
                                   (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
-                           (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
+                           (select-frame-set-input-focus-raise-enable)
                            (when (active-minibuffer-window)
                              (abort-recursive-edit)))))))))
        (funcall readfn))))
@@ -750,7 +753,7 @@
 (defmacro lotus-run-with-other-frame-event (action &rest body)
   `(lotus-with-other-frame-event ,action ,@body))
 (put 'lotus-cancel-with-other-frame-event 'lisp-indent-function 1)
-
+
 
 ;; *Messages*
 
@@ -948,9 +951,9 @@
 
 (when nil
 
-  (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+  (select-frame-set-input-focus-raise-disable)
 
-  (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
+  (select-frame-set-input-focus-raise-enable)
 
   (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))
 

@@ -65,10 +65,10 @@ this macro intended to be used with or in idle timer functions."
            (select-frame-set-input-focus-raise-enable)
            ,@body)
        (progn
-        (select-frame-set-input-focus-raise-disable)
-        (when timer
-         (cancel-timer timer)
-         (setq timer nil))))))
+         (select-frame-set-input-focus-raise-disable)
+         (when timer
+           (cancel-timer timer)
+           (setq timer nil))))))
 (put 'lotus-idle-timed-window 'lisp-indent-function 2)
 
 (defmacro lotus-idle-timed-transient-buffer-window (timeout buffer &rest body)
