@@ -85,22 +85,26 @@
                                    (ctx occ-ctx)
                                    &optional prompt)
   (let ((prompt (or prompt "proptery: "))
-        (keys (append
-               (cl-method-sigs-matched-arg
-                '(occ-readprop         (`((head ,val) occ-ctx) val))
-                '(occ-ctx-property-get (`((head ,val)) val))
-                ctx)
-               '(edit done))))
-    (let ((key-vals (occ-get-properties tsk keys)))
-      (let ((key-val-collection
-             (mapcar
-              #'(lambda (key-val)
-                  (cons
-                   (if (cdr key-val)
-                       (format "%s: %s" (car key-val) (cdr key-val))
-                     (symbol-name (car key-val)))
-                   (car key-val)))
-              key-vals)))
+        (keys   (cl-method-sigs-matched-arg
+                 '(occ-readprop         (`((head ,val) occ-ctx) val))
+                 '(occ-ctx-property-get (`((head ,val)) val))
+                 ctx)))
+    (let ((maxkeylen (max (mapcar #'(lambda (sym) ;https://www.gnu.org/software/emacs/manual/html_node/elisp/Formatting-Strings.html
+                                      (length (symbol-name sym)))
+                                  keys)))
+          (key-vals  (occ-get-properties tsk keys)))
+      (let* ((key-val-collection
+              (mapcar
+               #'(lambda (key-val)
+                   (cons
+                    (if (cdr key-val)
+                        (format "%s: %s" (car key-val) (cdr key-val))
+                      (symbol-name (car key-val)))
+                    (car key-val)))
+               key-vals))
+             (key-val-collection (append
+                                  key-val-collection
+                                  '(("edit" . edit) ("done" . done)))))
         (let ((sel
                (assoc
                 (occ-completing-read prompt
@@ -116,12 +120,6 @@
   (let ((buff (marker-buffer marker))
         (loc (marker-position marker))
         (heading (org-get-heading 'notags)))
-    ;; (occ-debug :debug "%s: called to %s drawer of heading `%s' in file %s loc %d"
-    ;;            (time-stamp-string)
-    ;;            (if flag "close" "open")
-    ;;            heading
-    ;;            (buffer-file-name buff)
-    ;;            loc)
     (when (and buff loc)
       (with-current-buffer buff
         (let ((currloc (point)))
@@ -133,20 +131,24 @@
                      (buffer-file-name buff)
                      loc)
           (recenter-top-bottom 2)
-          (unless flag                  ;creating issue in cleanupfn error as display buffer and current buffer is not same.
+          (unless flag                  ;; creating issue in cleanupfn error as display buffer and current buffer is not same.
             (recenter-top-bottom 2))
           (let ((prop-range (org-get-property-block (point) 'force)))
             ;; first show heading
             (when (eq org-cycle-subtree-status 'folded)
               (unless flag
+                ;;https://lists.gnu.org/archive/html/emacs-orgmode/2015-02/msg00573.html
                 (progn
-                  (when (or (org-invisible-p) (org-invisible-p2))
+                  (when (or
+                         (org-invisible-p)
+                         (org-invisible-p2))
                     (org-show-context 'org-goto)))
-                (org-show-entry)) ; changed from org-show-tsk to org-show-entry
-              (occ-debug :debug
-                         "did %s entry `%s'" (if flag "close" "open") heading)
-              (org-unlogged-message "CHILDREN")
-              (setq org-cycle-subtree-status 'children))
+                (progn                                        ; changed from org-show-tsk to org-show-entry
+                  (org-show-entry)
+                  (occ-debug :debug
+                             "did %s entry `%s'" (if flag "close" "open") heading)
+                  (org-unlogged-message "CHILDREN")
+                  (setq org-cycle-subtree-status 'children))))
             ;; show expand property if flag is nil, else hide
             (let* ((prop-range (org-get-property-block (point) 'force))
                    (prop-loc   (1- (car prop-range))))

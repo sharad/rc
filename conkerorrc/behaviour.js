@@ -241,6 +241,127 @@ interactive("tinyurl",
             },
             $browser_object = browser_object_links);
 
+//}}
 
+
+
+
+//{{ searchfollow
+function searchfollow (I, target) {
+    var searchUrl = "http://google.com/search?btnI=I%27m+Feeling+Lucky&q=";
+    var navclient = "&sourceid=navclient";
+    if (target == null)
+        target = FOLLOW_DEFAULT;
+    I.target = target;
+    if (target == OPEN_CURRENT_BUFFER)
+        check_buffer(I.buffer, content_buffer);
+    var element = yield read_browser_object(I);
+    try {
+        element = load_spec(element);
+        if (I.forced_charset)
+            element.forced_charset = I.forced_charset;
+    } catch (e) {}
+    var text = browser_element_text(I.buffer, element);
+    let createurl = searchUrl + encodeURIComponent( text ) + navclient;
+    var selement  = load_spec({uri: createurl});
+
+    browser_object_follow(I.buffer, target, selement);
+}
+
+// var searchUrl = "http://google.com/search?btnI=I%27m+Feeling+Lucky&q=";
+// var navclient = "";// "&sourceid=navclient";
+
+function searchfollow (I, target) {
+    var searchUrl = "http://www.google.com/search?btnI&q=";
+    var navclient = "";
+    if (target == null)
+        target = FOLLOW_DEFAULT;
+    I.target = target;
+    if (target == OPEN_CURRENT_BUFFER)
+        check_buffer(I.buffer, content_buffer);
+    var element = yield read_browser_object(I);
+    var text     = browser_element_text(I.buffer, element);
+    let createurl = searchUrl + encodeURIComponent( text ) + navclient;
+    var selement  = load_spec({uri: createurl});
+
+    browser_object_follow(I.buffer, target, selement);
+}
+
+function searchfollow_new_buffer (I) {
+    yield searchfollow(I, OPEN_NEW_BUFFER);
+}
+
+function searchfollow_new_buffer_background (I) {
+    yield searchfollow(I, OPEN_NEW_BUFFER_BACKGROUND);
+}
+
+function searchfollow_new_window (I) {
+    yield searchfollow(I, OPEN_NEW_WINDOW);
+}
+
+function searchfollow_current_frame (I) {
+    yield searchfollow(I, FOLLOW_CURRENT_FRAME);
+}
+
+function searchfollow_current_buffer (I) {
+    yield searchfollow(I, OPEN_CURRENT_BUFFER);
+}
+interactive("searchfollow", null,
+    alternates(searchfollow, searchfollow_new_buffer, searchfollow_new_window),
+    $browser_object = browser_object_links);
+
+interactive("searchfollow-top", null,
+    alternates(searchfollow_current_buffer, searchfollow_current_frame),
+    $browser_object = browser_object_frames,
+    $prompt = "Searchfollow");
+
+interactive("searchfollow-new-buffer",
+    "Searchfollow a link in a new buffer",
+    alternates(searchfollow_new_buffer, searchfollow_new_window),
+    $browser_object = browser_object_links,
+    $prompt = "Searchfollow");
+
+interactive("searchfollow-new-buffer-background",
+    "Searchfollow a link in a new buffer in the background",
+    alternates(searchfollow_new_buffer_background, searchfollow_new_window),
+    $browser_object = browser_object_links,
+    $prompt = "Searchfollow");
+
+interactive("searchfollow-new-window",
+    "Searchfollow a link in a new window",
+    searchfollow_new_window,
+    $browser_object = browser_object_links,
+    $prompt = "Searchfollow");
+
+interactive("searchfind-url", "Open a URL in the current buffer",
+    alternates(searchfollow_current_buffer, searchfollow_new_buffer, searchfollow_new_window),
+    $browser_object = browser_object_url);
+
+interactive("searchfind-url-new-buffer",
+    "Open a URL in a new buffer",
+    alternates(searchfollow_new_buffer, searchfollow_new_window),
+    $browser_object = browser_object_url,
+    $prompt = "Searchfind url");
+
+interactive("searchfind-url-new-window", "Open a URL in a new window",
+    searchfollow_new_window,
+    $browser_object = browser_object_url,
+    $prompt = "Searchfind url");
+
+interactive("searchfind-alternate-url", "Edit the current URL in the minibuffer",
+    "searchfind-url",
+    $browser_object =
+        define_browser_object_class("alternate-url", null,
+            function (I, prompt) {
+                check_buffer(I.buffer, content_buffer);
+                var result = yield I.buffer.window.minibuffer.read_url(
+                    $prompt = prompt,
+                    $initial_value = I.buffer.display_uri_string);
+                yield co_return(result);
+            }),
+            $prompt = "Searchfind url");
+
+define_key(content_buffer_normal_keymap, "S", "searchfollow");
+// define_key(content_buffer_normal_keymap, "H", "searchfollow");
 
 //}}
