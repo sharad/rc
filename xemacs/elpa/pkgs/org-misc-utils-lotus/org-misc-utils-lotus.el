@@ -565,12 +565,8 @@ With prefix arg C-u, copy region instad of killing it."
                                                       (windowp w)
                                                       (window-valid-p w))
                                              (delete-window w)
-                                             (when (active-minibuffer-window)
-                                               (abort-recursive-edit)
-                                               (message nil))
                                              (with-no-active-minibuffer
-                                               (when (fboundp 'remove-function)
-                                                 (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame))))))
+                                               (select-frame-set-input-focus-raise-disable)))))
                                      buf-name)))
     (unwind-protect
          (progn
@@ -578,6 +574,19 @@ With prefix arg C-u, copy region instad of killing it."
            (safe-org-refile-get-location prompt))
       (select-frame-set-input-focus-raise-disable)
       (cancel-timer timer))))
+
+(defun safe-timed-org-refile-get-location (timeout &optional prompt)
+  ;; TODO: org-fit-window-to-buffer
+  ;; TODO: as clean up reset newwin configuration
+  (let* ((current-command (or
+                           (helm-this-command)
+                           this-command))
+         (str-command     (helm-symbol-name current-command))
+         (prompt          (or prompt str-command))
+         (buf-name        (format "*helm-mode-%s*" str-command)))
+    (lotus-with-idle-timed-transient-buffer-window timeout buf-name
+      (safe-org-refile-get-location prompt))))
+
 
 (defmacro org-with-refile (file pos refile-targets prompt &rest body)
   "Refile the active region.
