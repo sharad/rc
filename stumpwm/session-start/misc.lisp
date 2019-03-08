@@ -194,7 +194,7 @@
   ;; is required when one window is present in frame.
   ;; but creates problem with conkeror.
   ;; (activate-fullscreen-if-not (current-window))
-  
+
 
   (defun fullscreen-focus-window (cwin lwin)
     (activate-fullscreen-if-not cwin)
@@ -442,34 +442,164 @@
 ;; ;;}}
 
 (when nil
-  ;; DONE in stumpwm-contrib media/amixer/amixer.lisp
-;;;{{ volume
-;;; A command to create volume-control commands
- (defun def-volcontrol (channel amount)
-   "Commands for controling the volume"
-   (defcommand (intern (concat "amixer-" channel "-" (or amount "toggle"))) () ()
-     (echo-string
-      (current-screen)
-      (concat channel " " (or amount "toggled") "
+  ;;; DONE in stumpwm-contrib media/amixer/amixer.lisp
+  ;;;{{ volume
+  ;;; A command to create volume-control commands
+  (defun def-volcontrol (channel amount)
+    "Commands for controling the volume"
+    (defcommand (intern (concat "amixer-" channel "-" (or amount "toggle"))) () ()
+      (echo-string
+       (current-screen)
+       (concat channel " " (or amount "toggled") "
 "
-              (run-shell-command
-               (concat "amixer sset " channel " " (or amount "toggle") "| grep '^[ ]*Front'") t)))))
+               (run-shell-command
+                (concat "amixer sset " channel " " (or amount "toggle") "| grep '^[ ]*Front'") t)))))
 
- (defvar amixer-channels '("PCM" "Master" "Headphone"))
- (defvar amixer-options '(nil "1+" "1-"))
+  (defvar amixer-channels '("PCM" "Master" "Headphone"))
+  (defvar amixer-options '(nil "1+" "1-"))
 
- (let ((channels amixer-channels))
-   (loop while channels do
-        (let ((options amixer-options))
-          (loop while options do
-               (def-volcontrol (car channels) (car options))
-               (setq options (cdr options))))
-        (setq channels (cdr channels))))
+  (let ((channels amixer-channels))
+    (loop while channels do
+      (let ((options amixer-options))
+        (loop while options do
+          (def-volcontrol (car channels) (car options))
+          (setq options (cdr options))))
+      (setq channels (cdr channels))))
 
- (defcommand "amixer-sense-toggle" () ()
-   (echo-string
-    (current-screen)
-    (concat "Headphone Jack Sense toggled
+  (defcommand "amixer-sense-toggle" () ()
+    (echo-string
+     (current-screen)
+     (concat "Headphone Jack Sense toggled
 "
-            (run-shell-command "amixer sset 'Headphone Jack Sense' toggle" t)))))
+             (run-shell-command "amixer sset 'Headphone Jack Sense' toggle" t)))))
 ;;;}}
+
+
+;;;{{{
+(defun local-window-matches-properties-p (window &key class instance type role title)
+  "Returns T if window matches all the given properties"
+  (and
+   (if class (string-match (window-class window) class) t)
+   (if instance (string-match (window-res window) instance) t)
+   (if type (string-match (window-type window) type) t)
+   (if role (string-match (window-role window) role) t)
+   (if title (string-match (window-title window) title) t)))
+
+(progn                                  ;;option macro
+
+  (defun mkstr (&rest args)
+    (with-output-to-string (s)
+      (dolist (a args) (princ a s))))
+
+  (defun symb (&rest args)
+    (values (intern (apply #'mkstr args))))
+
+  (defmacro gen-binary-option-commands (name)
+    (let* ((option  (symb name '-p))
+           (enable-fun  (symb 'enable- name '-function))
+           (disable-fun (symb 'disable- name '-function))
+           (enable  (symb 'disable- name))
+           (disable (symb 'disable- name))
+           (toggle  (symb 'toggle- name)))
+      `(progn                            ;autoselect-if-only-p
+         (stumpwm::defcommand ,enable () ()
+           (setf ,option t)
+           (if ,option
+               (if (fboundp ',enable-fun) (funcall #',enable-fun))
+               (if (fboundp ',disable-fun) (funcall #',disable-fun))))
+
+         (stumpwm::defcommand ,disable () ()
+           (setf ,option nil)
+           (if ,option
+               (if (fboundp ',enable-fun) (funcall #',enable-fun))
+               (if (fboundp ',disable-fun) (funcall #',disable-fun))))
+
+         (stumpwm::defcommand ,toggle () ()
+           (setf ,option (not ,option))
+           (if ,option
+               (if (fboundp ',enable-fun) (funcall #',enable-fun))
+               (if (fboundp ',disable-fun) (funcall #',disable-fun))))))))
+
+
+(progn
+  (let ((focus-window-match-rules-p t)
+        (focus-window-match-rules '()))
+
+    (defun define-focus-window-match (name &rest rule)
+      (push
+       (cons name rule)
+       focus-window-match-rules))
+
+    (defun matche-window-on-rules (window)
+      (let ((rules focus-window-match-rules))
+        (some
+         #'(lambda (rule)
+             (apply #'window-matches-properties-p window (cdr rule)))
+         rules)))
+
+    (defun set-focus-on-matched-window (window &optional force)
+      ;; TODO pending trying to add code to resolve case when wcli window not get focus
+      ;; make it toggle-able.
+      (when (or
+             force
+             (matche-window-on-rules window))
+        ;; TODO: how to detect if window did not get focus
+        (let ((frame (stumpwm::window-frame window)))
+          (stumpwm::focus-frame (stumpwm::window-group window) frame))))
+
+    (defun focus-matched-window (&optional (window (current-window)))
+      (when focus-window-match-rules-p
+        (set-focus-on-matched-window window nil)))
+
+    (defcommand test-focus-matched-window (&optional (win (current-window))) ()
+      (when win
+        (message "match ~a" (matche-window-on-rules win))))
+
+    (progn
+      (gen-binary-option-commands focus-window-match-rules)
+
+      (defun disable-focus-window-match-rules-function ()
+        (remove-hook *new-window-hook* #'focus-matched-window))
+      (defun enable-focus-window-match-rules-function ()
+        (add-hook *new-window-hook* #'focus-matched-window)))
+
+    (enable-focus-window-match-rules)))
+
+  (define-focus-window-match
+      "pinentry-gtk"
+    :class "Gcr-prompter"
+    :instance  "gcr-prompter")
+
+  (define-focus-window-match
+      "gnome-keyring"
+    :class "Gcr-prompter"
+    :instance  "gcr-prompter"
+    :title "Unlock Login Keyring"))
+
+
+
+
+(let ((show-win-prop t))
+  (defun sh-win-prop (&optional (window (current-window)))
+    (let ((w (or window (current-window))))
+      (if (not w)
+          (message "No active window!")
+          (message-no-timeout "class: ~A~%instance: ~A~%type: :~A~%role: ~A~%title: ~A"
+                              (window-class w)
+                              (window-res w)
+                              (string (window-type w))
+                              (window-role w)
+                              (window-title w)))))
+
+  (progn
+    (gen-binary-option-commands show-win-prop)
+
+    (defun disable-show-win-prop-function ()
+      (remove-hook *new-window-hook* #'sh-win-prop))
+    (defun enable-show-win-prop-function ()
+      (setf *new-window-hook*
+            (append *new-window-hook* (list #'sh-win-prop)))))
+
+  (disable-show-win-prop))
+
+;;;}}}

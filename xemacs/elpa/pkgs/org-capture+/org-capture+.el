@@ -530,9 +530,9 @@ of the day at point (if any) or the current HH:MM time."
   "Refile goto."
   ;; mark paragraph if no region is set
   (let* ((org-refile-targets (or refile-targets org-refile-targets))
-         (target (save-excursion (safe-org-refile-get-location)))
-         (file (nth 1 target))
-         (pos (nth 3 target)))
+         (target             (save-excursion (safe-org-refile-get-location)))
+         (file               (nth 1 target))
+         (pos                (nth 3 target)))
     (when (set-buffer (find-file-noselect file)) ;; (switch-to-buffer (find-file-noselect file) 'norecord)
       (goto-char pos))))
 
