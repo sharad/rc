@@ -498,7 +498,7 @@
     (let* ((option  (symb name '-p))
            (enable-fun  (symb 'enable- name '-function))
            (disable-fun (symb 'disable- name '-function))
-           (enable  (symb 'disable- name))
+           (enable  (symb 'enable- name))
            (disable (symb 'disable- name))
            (toggle  (symb 'toggle- name)))
       `(progn                            ;autoselect-if-only-p
@@ -563,7 +563,7 @@
       (defun enable-focus-window-match-rules-function ()
         (add-hook *new-window-hook* #'focus-matched-window)))
 
-    (enable-focus-window-match-rules)))
+    (enable-focus-window-match-rules))
 
   (define-focus-window-match
       "pinentry-gtk"
@@ -580,7 +580,7 @@
 
 
 (let ((show-win-prop t))
-  (defun sh-win-prop (&optional (window (current-window)))
+  (defun show-win-prop (&optional (window (current-window)))
     (let ((w (or window (current-window))))
       (if (not w)
           (message "No active window!")
@@ -595,10 +595,10 @@
     (gen-binary-option-commands show-win-prop)
 
     (defun disable-show-win-prop-function ()
-      (remove-hook *new-window-hook* #'sh-win-prop))
+      (remove-hook *new-window-hook* #'show-win-prop))
     (defun enable-show-win-prop-function ()
       (setf *new-window-hook*
-            (append *new-window-hook* (list #'sh-win-prop)))))
+            (append *new-window-hook* (list #'show-win-prop)))))
 
   (disable-show-win-prop))
 
