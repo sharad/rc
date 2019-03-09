@@ -151,6 +151,13 @@
 
 
 
+(progn                                  ;method
+  (when nil
+    (occ-tree-tsk-collection-included-files (occ-collection-object))
+
+    (occ-tree-tsk-collection-included-files (make-occ-tree-tsk-collection))))
+
+
 
 
 (progn                                  ;from method

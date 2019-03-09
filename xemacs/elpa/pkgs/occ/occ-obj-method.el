@@ -58,7 +58,19 @@
          (marker (occ-tsk-marker tsk)))
     marker))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(cl-defmethod occ-print ((tsk occ-tsk))
+  ;; (format "[%4d] %s"
+  ;;         0
+  ;;         (occ-fontify-like-in-org-mode tsk))
+  (format "%s"
+          (occ-fontify-like-in-org-mode tsk)))
+
+(cl-defmethod occ-print ((ctxask occ-ctxual-tsk))
+  (let ((tsk (occ-ctxual-tsk-tsk ctxask)))
+    (format "[%4d] %s"
+            (occ-ctxual-tsk-rank ctxask)
+            (occ-fontify-like-in-org-mode tsk))))
+
 
 ;; could be handled with
 ;;
@@ -98,20 +110,7 @@
 (cl-defmethod occ-current-associated-p ((ctx occ-ctx))
   (let ((tsk (occ-tsk-current-tsk)))
     (when tsk (occ-rank tsk ctx))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(cl-defmethod occ-print ((tsk occ-tsk))
-  ;; (format "[%4d] %s"
-  ;;         0
-  ;;         (occ-fontify-like-in-org-mode tsk))
-  (format "%s"
-          (occ-fontify-like-in-org-mode tsk)))
-
-(cl-defmethod occ-print ((ctxask occ-ctxual-tsk))
-  (let ((tsk (occ-ctxual-tsk-tsk ctxask)))
-    (format "[%4d] %s"
-            (occ-ctxual-tsk-rank ctxask)
-            (occ-fontify-like-in-org-mode tsk))))
+
 
 (cl-defgeneric occ-sacha-selection-line (obj)
   )
@@ -141,35 +140,6 @@ pointing to it."
              ;; mrk
              (cons tsk mrk))))))))
 
-;; deprecated
-;; (cl-defmethod occ-sacha-selection-line ((ctxask occ-ctxual-tsk))
-;;   "Insert a line for the clock selection menu.
-;; And return a cons cell with the selection character integer and the marker
-;; pointing to it."
-;;   (let ((marker (occ-ctxual-tsk-marker ctxask))
-;;         (rank   (occ-ctxual-tsk-rank   ctxask)))
-;;     (when (marker-buffer marker)
-;;       (with-current-buffer (org-base-buffer (marker-buffer marker))
-;;         (org-with-wide-buffer
-;;          (progn ;; ignore-errors
-;;            (goto-char marker)
-;;            (let* ((cat (org-get-category))
-;;                   (heading (org-get-heading 'notags))
-;;                   (prefix (save-excursion
-;;                             (org-back-to-heading t)
-;;                             (looking-at org-outline-regexp)
-;;                             (match-string 0)))
-;;                   (tsk (substring
-;;                         (org-fontify-like-in-org-mode
-;;                          (concat prefix heading)
-;;                          org-odd-levels-only)
-;;                         (length prefix))))
-;;              (when tsk ;; (and cat tsk)
-;;                ;; (insert (format "[%c] %-12s  %s\n" i cat tsk))
-;;                ;; marker
-;;                (cons (occ-print ctxask) ctxask))))))))) ;TODO
-
-
 (cl-defmethod occ-sacha-selection-line ((tsk occ-tsk))
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
@@ -182,6 +152,7 @@ And return a cons cell with the selection character integer and the marker
 pointing to it."
   (cons (occ-print ctxask) ctxask))
 ;; function to setup ctx clock timer:2 ends here
+
 
 (cl-defgeneric occ-goto (obj)
   )
@@ -308,7 +279,6 @@ pointing to it."
 (cl-defmethod occ-rank (tsk-pair ctx)
   0)
 
-
 ;; ISSUE? should it return rank or occ-ctxual-tsk
 (cl-defmethod occ-rank ((tsk occ-tsk)
                         (ctx occ-ctx))
@@ -323,10 +293,7 @@ pointing to it."
 
 (cl-defmethod occ-included-files ()
   (occ-collection-included-files (occ-collection-object)))
-
-;; (occ-tree-tsk-collection-included-files (occ-collection-object))
-
-(occ-tree-tsk-collection-included-files (make-occ-tree-tsk-collection))
+
 
 ;; ISSUE? should it return rank or occ-ctxual-tsks list
 (cl-defmethod occ-matching-ctxual-tsks ((collection occ-list-tsk-collection)
@@ -367,53 +334,37 @@ pointing to it."
     matched))
 
 ;;TODO: make it after method
-(cl-defmethod occ-matching-ctxual-tsks :around ((collection occ-tsk-collection)
-                                                (ctx occ-ctx)) ;TODO: make it after method
-              ;; TODO Here do variance based filtering.
-              ;; (message "occ-matching-ctxual-tsks :around start")
-              (if (occ-collection-object)
-                  (let* ((ctxual-tsks (cl-call-next-method))
-                         (rankslist  (mapcar
-                                      #'(lambda (ctxual-tsk)
-                                          (occ-ctxual-tsk-rank ctxual-tsk))
-                                      ctxual-tsks))
-                         (avgrank    (if (= 0 (length rankslist))
-                                         0
-                                       (/
-                                        (reduce #'+ rankslist)
-                                        (length rankslist))))
-                         (varirank   (if (= 0 (length rankslist))
-                                         0
-                                       (sqrt
-                                        (/
-                                         (reduce #'+
-                                                 (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
-                                         (length rankslist))))))
-                    ;; (message "occ-matching-ctxual-tsks :around finish")
-                    (occ-debug :debug "matched ctxtsks %s" (length ctxual-tsks))
-                    (remove-if-not
-                     #'(lambda (ctxual-tsk)
-                         (>= (occ-ctxual-tsk-rank ctxual-tsk) avgrank))
-                     ctxual-tsks))
-                (error "(occ-collection-object) returned nil")))
+(cl-defmethod occ-matching-ctxual-tsks :around
+
+  ((collection occ-tsk-collection)
+   (ctx occ-ctx)) ;TODO: make it after method
+
+  (if (occ-collection-object)
+      (let* ((ctxual-tsks (cl-call-next-method))
+             (rankslist  (mapcar
+                          #'(lambda (ctxual-tsk)
+                              (occ-ctxual-tsk-rank ctxual-tsk))
+                          ctxual-tsks))
+             (avgrank    (if (= 0 (length rankslist))
+                             0
+                           (/
+                            (reduce #'+ rankslist)
+                            (length rankslist))))
+             (varirank   (if (= 0 (length rankslist))
+                             0
+                           (sqrt
+                            (/
+                             (reduce #'+
+                                     (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
+                             (length rankslist))))))
+        ;; (message "occ-matching-ctxual-tsks :around finish")
+        (occ-debug :debug "matched ctxtsks %s" (length ctxual-tsks))
+        (remove-if-not
+         #'(lambda (ctxual-tsk)
+             (>= (occ-ctxual-tsk-rank ctxual-tsk) avgrank))
+         ctxual-tsks))
+    (error "(occ-collection-object) returned nil")))
 
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (cl-defmethod occ-readprop ((tsk-pair (head root))
-;;                             (ctx occ-ctx))
-;;   (let* ((file (if ctx (occ-ctx-file ctx)))
-;;          (dir (if (stringp file) (file-name-directory file) (dirname-of-file file)))
-;;          (prompt (concat (symbol-name (car tsk-pair)) ": ")))
-;;     (ido-read-directory-name prompt dir dir)))
-;; (cl-defmethod occ-readprop ((tsk-pair (head subtree))
-;;                             (ctx occ-ctx))
-;;   (let ((prompt (concat (symbol-name (car tsk-pair)) ": ")))
-;;     (file-relative-name
-;;      (ido-read-file-name ;; org-iread-file-name
-;;       prompt
-;;       default-directory default-directory))))
-;; (cl-defmethod occ-writeprop ((tsk-pair (head subtree))))
 
 ;; TODO: Not to run when frame is not open [visible.]
 ;; Getting targets...done
