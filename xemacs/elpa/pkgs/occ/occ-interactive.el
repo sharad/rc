@@ -64,20 +64,6 @@
 
 ;; (occ-set-property (intern ":root") nil (list :file "/home/s/paradise/git/main/src/wnc/security/authenticator/ieee802_1x.cpp" :buffer (get-buffer "ieee802_1x.cpp")))
 
-(when nil
-  (defun occ-select-propetry (ctx tsk &optional prompt)
-    (let ((prompt (or prompt "proptery: "))
-          (keys (mapcar #'(lambda (k) (cons (symbol-name k) k))
-                        (append
-                         (cl-method-sigs-matched-arg
-                          '(occ-readprop         (`((head ,val) occ-ctx) val))
-                          '(occ-ctx-property-get (`((head ,val)) val))
-                          ctx)
-                         '(edit done)))))
-      (let ((sel (assoc (occ-completing-read prompt keys nil t) keys)))
-        (occ-debug :debug "selected option")
-        (cdr sel)))))
-
 (cl-defgeneric occ-select-propetry (tsk ctx &optional prompt)
   "occ-select-propetry")
 
@@ -319,12 +305,16 @@
 
     ((quit)))
 
-  (occ-debug :debug "%s: end: occ-add-to-org-heading-when-idle" (time-stamp-string))
+  (occ-debug :debug "%s: end: occ-add-to-org-heading-when-idle" (time-stamp-string)))
   ;; (run-with-idle-timer-nonobtrusive-simple
   ;;  7 nil
   ;;  #'(lambda (args)
   ;;      (apply 'occ-add-to-org-heading args)) (list ctx timeout))
-  )
+  
+
+
+
+;;; Selectors
 
 ;;;###autoload
 (defun occ-helm-select-tsk (selector
@@ -387,8 +377,7 @@
        helm-sources))
 
     (funcall action (helm helm-sources))))
-
-
+
 
 ;;;###autoload
 (defun occ-set-to-ctxual-tsk ()
@@ -405,36 +394,33 @@
 ;;;###autoload
 (defun occ-create-child-tsk ()
   (interactive)
-  (org-capture-alt
-   'entry
-   '(function occ-set-to-ctxual-tsk)
-   (org-capture+-helm-select-template) 
-   :empty-lines 1))
+  (occ-helm-select-ctxual-tsk
+   #'identity
+   #'occ-capture))
+
+(defun occ-create-child-tsk ()
+  (interactive)
+  (occ-helm-select-tsk
+   #'identity
+   #'occ-capture))
 
 (push "Nothing to complete" debug-ignored-errors)
 
-;;;###autoload
-(defun occ-create-child-tsk ()
-  (interactive)
-  (org-capture-immediate                ;TODO
-   'entry
-   '(function occ-set-to-ctxual-tsk)
-   "* TODO %? %^g\n %i\n [%a]\n"
-   :empty-lines 1))
 
 (defun occ-goto-test ()
   (interactive)
   (occ-goto-tsk))
+
 
 ;; testing verification
 (defun occ-files-with-null-regex ()
   (interactive)
   (let ((files
-          (remove-if
-            #'(lambda (f)
-                (with-current-buffer (find-file-noselect f)
-                  org-complex-heading-regexp))
-            (occ-included-files))))
+         (remove-if
+          #'(lambda (f)
+              (with-current-buffer (find-file-noselect f)
+                org-complex-heading-regexp))
+          (occ-included-files))))
     (message "files with null regex %s" files)))
 
 ;; testing verification;; testing verification
@@ -447,13 +433,7 @@
                 (eq major-mode 'org-mode)))
           (occ-included-files))))
     (message "files not in org-mode %s" files)))
-
-
-
-;; TODO
-;; check about org-clock-save-markers-for-cut-and-paste
-;;
-
+
 
 
 ;;; occ-interactive.el ends here

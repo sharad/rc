@@ -149,4 +149,30 @@
          (push x funclist))))
     funclist))
 
+
+
+
+
+(progn                                  ;from method
+
+  (when nil
+
+    (cl-defmethod occ-rank (tsk-pair ctx)
+      0)
+
+    (cl-defmethod occ-rank ((tsk-pair (head root)) (ctx list))
+      (message "%s" tsk-pair))
+
+    (occ-rank '(root  1) nil)
+
+    (occ-rank '(n  1) nil)
+
+    (cl-defmethod occ-rank ((tsk occ-tsk)
+                            (ctx occ-ctx))
+      (message "match occ-rank"))
+
+    (occ-rank (make-occ-tree-tsk) (make-occ-ctx))))
+
+
+
 ;;; occ-test.el ends here

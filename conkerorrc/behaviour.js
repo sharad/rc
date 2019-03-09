@@ -204,14 +204,6 @@ read_url_handler_list = [read_url_make_default_webjump_handler("lucky")];
 // http://www.surf-proxy.de/index.php?q=http%3A%2F%2Fconkeror.org%2FContentHandlers
 content_handlers.set("application/pdf", content_handler_prompt);
 
-
-//http://conkeror.org/NoScript
-require("noscript");
-// After performing the above require, a function M-x ns-toggle-temp
-// is defined, which will enable/disable javascript for the current
-// site/page after prompting for confirmation.
-
-
 //{{ Using Esc key in Conkeror [https://truongtx.me/2013/08/08/using-esc-key-in-conkeror/]
 require("global-overlay-keymap");
 define_key_alias("C-o", "escape");
@@ -374,4 +366,13 @@ interactive("searchfind-alternate-url", "Edit the current URL in the minibuffer"
 define_key(content_buffer_normal_keymap, "S", "searchfollow");
 // define_key(content_buffer_normal_keymap, "H", "searchfollow");
 
+//}}
+
+
+//{{ Error
+//http://conkeror.org/NoScript
+require("noscript");
+// After performing the above require, a function M-x ns-toggle-temp
+// is defined, which will enable/disable javascript for the current
+// site/page after prompting for confirmation.
 //}}

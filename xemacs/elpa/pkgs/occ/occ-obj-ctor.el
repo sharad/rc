@@ -158,15 +158,24 @@
   (occ-debug :debug "current pos %s" (point-marker))
   (occ-make-tsk (point-marker) builder))
 
+(cl-defgeneric occ-make-ctxual-tsk (tsk ctx rank)
+  "occ-make-ctxual-tsk")
+
 (cl-defmethod occ-make-ctxual-tsk ((tsk occ-tsk)
                                    (ctx occ-ctx)
-                                   (rank number))
+                                   rank)
   ;; use occ-build-ctxual-tsk
   (make-occ-ctxual-tsk
    :name    nil
    :tsk     tsk
    :ctx     ctx
    :rank    rank))
+
+(cl-defmethod occ-build-ctxual-tsk ((tsk occ-tsk) ;ctor
+                                    (ctx occ-ctx))
+  (occ-make-ctxual-tsk tsk
+                       ctx
+                       (occ-rank tsk ctx)))
 
 (cl-defmethod occ-make-tsk-collection ((file-spec (head :tree)))
   (unless occ-global-tsk-collection
