@@ -399,7 +399,7 @@
 (defun occ-goto-tsk ()
   (occ-helm-select-tsk
    #'occ-tsk-marker
-   #'occ-goto-marker))
+   #'occ-goto))
 
 
 ;;;###autoload
