@@ -886,7 +886,13 @@ variable."
     ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
     ;; http://www.modernemacs.com/post/outline-ivy/
     ;; https://orgmode.org/worg/org-tutorials/org-outside-org.html
-    ))
+    )
+
+  (progn
+
+    (let ((ignore-errstr "Nothing to complete"))
+      (unless (member ignore-errstr debug-ignored-errors)
+        (push ignore-errstr debug-ignored-errors)))))
 
 
 (progn                                  ;debug testing code

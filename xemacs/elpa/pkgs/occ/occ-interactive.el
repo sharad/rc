@@ -394,7 +394,7 @@
 (defun occ-set-to-ctxual-tsk ()
   (occ-helm-select-ctxual-tsk
    #'occ-ctxual-tsk-marker
-   #'occ-set-to-marker))
+   #'occ-set-to))
 
 (defun occ-goto-tsk ()
   (occ-helm-select-tsk
@@ -408,8 +408,10 @@
   (org-capture-alt
    'entry
    '(function occ-set-to-ctxual-tsk)
-   "* TODO %? %^g\n %i\n [%a]\n"
+   (org-capture+-helm-select-template) 
    :empty-lines 1))
+
+(push "Nothing to complete" debug-ignored-errors)
 
 ;;;###autoload
 (defun occ-create-child-tsk ()
