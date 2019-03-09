@@ -177,13 +177,14 @@
 
 ;;;###autoload
 (defun occ-straight-org-clock-clock-in (clock &optional resume start-time)
-  (progn
-    (lotus-org-clock-load-only)
-    (prog1
-        (let ((org-clock-persist               occ-org-clock-persist)
-              (org-clock-auto-clock-resolution occ-org-clock-auto-clock-resolution))
-          (org-clock-clock-in clock resume start-time))
-      (setq org-clock-loaded t))))
+  (let ((org-log-note-clock-out nil))
+    (progn
+     (lotus-org-clock-load-only)
+     (prog1
+         (let ((org-clock-persist               occ-org-clock-persist)
+               (org-clock-auto-clock-resolution occ-org-clock-auto-clock-resolution))
+           (org-clock-clock-in clock resume start-time))
+       (setq org-clock-loaded t)))))
 
 
 (cl-defmethod occ-get-property ((obj occ-obj)

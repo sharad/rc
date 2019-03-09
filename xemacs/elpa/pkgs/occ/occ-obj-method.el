@@ -106,7 +106,7 @@
 ;; Test if TSK is associate to CTX:1 ends here
 
 ;; Collect and return tsk matching to CTX
-;;---------------------------------------------------------------;;;###autoload
+;;;###autoload
 (cl-defmethod occ-current-associated-p ((ctx occ-ctx))
   (let ((tsk (occ-tsk-current-tsk)))
     (when tsk (occ-rank tsk ctx))))
@@ -175,7 +175,7 @@ pointing to it."
          (markerp mrk)
          (marker-buffer mrk))
         (occ-goto mrk)
-      (error "mrk %s invalid." mrk))))
+      (error "marker %s invalid." mrk))))
 
 (cl-defmethod occ-goto (ctxask occ-ctxual-tsk)
   (occ-goto (occ-ctxual-tsk-marker)))
@@ -366,6 +366,82 @@ pointing to it."
     (error "(occ-collection-object) returned nil")))
 
 
+(cl-defmethod occ-list ((collection occ-tree-tsk-collection)
+                        (ctx occ-ctx))
+  "return CTXUAL-TSKs list"
+  (occ-matching-ctxual-tsks collection ctx))
+
+(cl-defmethod occ-list ((collection occ-tree-tsk-collection)
+                        (ctx null))
+  "return TSKs list"
+  (occ-collect-tsk-list collection))
+
+;; (occ-list (occ-collection-object) nil)
+
+
+;;;###autoload
+(defun occ-helm-select-tsk (selector
+                            action)
+  ;; here
+  ;; (occ-debug :debug "sacha marker %s" (car tsks))
+  (let ()
+    (let ((tsks
+           (occ-list (occ-collection-object) nil)))
+      (push
+       (helm-build-sync-source "Select tsk"
+         :candidates (mapcar
+                      'occ-sacha-selection-line
+                      tsks)
+         :action (list
+                  (cons "Clock in and track" selector))
+         :history 'org-refile-history)
+       helm-sources))
+
+    (when (and
+           (org-clocking-p)
+           (marker-buffer org-clock-marker))
+      (push
+       (helm-build-sync-source "Current Clocking Tsk"
+         :candidates (list (occ-sacha-selection-line (occ-current-tsk)))
+         :action (list
+                  (cons "Clock in and track" selector)))
+       helm-sources))
+
+    (funcall action (helm helm-sources))))
+
+;;;###autoload
+(defun occ-helm-select-ctxual-tsk (selector
+                                   action)
+  ;; here
+  ;; (occ-debug :debug "sacha marker %s" (car ctxasks))
+  (let (helm-sources
+        (ctx (occ-make-ctx)))
+    (let ((ctxasks
+           (occ-list (occ-collection-object) ctx)))
+      (push
+       (helm-build-sync-source "Select matching tsk"
+         :candidates (mapcar
+                      'occ-sacha-selection-line
+                      ctxasks)
+         :action (list
+                  (cons "Clock in and track" selector))
+         :history 'org-refile-history)
+       helm-sources))
+
+    (when (and
+           (org-clocking-p)
+           (marker-buffer org-clock-marker))
+      (push
+       (helm-build-sync-source "Current Clocking Tsk"
+         :candidates (list (occ-sacha-selection-line
+                            (occ-build-ctxual-tsk (occ-current-tsk) ctx)))
+         :action (list
+                  (cons "Clock in and track" selector)))
+       helm-sources))
+
+    (funcall action (helm helm-sources))))
+
+
 ;; TODO: Not to run when frame is not open [visible.]
 ;; Getting targets...done
 ;; Error running timer: (error "Window #<window 12> too small for splitting")
@@ -374,9 +450,6 @@ pointing to it."
 ;; Getting targets...done
 ;; Error running timer ‘occ-clock-in-curr-ctx-if-not’: (error "Window #<window 12> too small for splitting")
 
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar *occ-clocked-ctxual-tsk-ctx-history* nil)
 (defvar occ-clock-in-hooks nil "Hook to run on clockin with previous and next markers.")
 
@@ -407,7 +480,7 @@ pointing to it."
                      (and
                       marker
                       (marker-buffer marker))))
-               (occ-matching-ctxual-tsks (occ-collection-object) ctx)))))
+               (occ-list (occ-collection-object) ctx)))))
       (unless (eq matched-ctxual-tsks t)
         (when matched-ctxual-tsks
           (let* ((sel-ctxual-tsk
@@ -420,9 +493,21 @@ pointing to it."
             sel-ctxual-tsk))))))
 
 
-(cl-defmethod occ-clock-in ((mrk marker)))
+(cl-defmethod occ-clock-in ((mrk marker))
+  (let ((org-log-note-clock-out nil))
+    (when (marker-buffer new-marker)
+      (with-current-buffer (marker-buffer mrk)
+        (let ((buffer-read-only nil))
+          (condition-case-control t err
+            (progn
+              (occ-straight-org-clock-clock-in (list mrk)))
+            ((error)
+             (progn
+               (setq retval nil)
+               (signal (car err) (cdr err))))))))))
 
-(cl-defmethod occ-clock-in ((tsk occ-tsk)))
+(cl-defmethod occ-clock-in ((tsk occ-tsk))
+  (occ-clock-in (occ-tsk-marker tsk)))
 
 (cl-defmethod occ-clock-in ((new-ctxask occ-ctxual-tsk))
   ;;TODO add org-insert-log-not
@@ -465,20 +550,15 @@ pointing to it."
                  old-marker
                  (marker-buffer old-marker))
             (org-insert-log-note old-marker (format "clocking out to clockin to <%s>" new-heading)))
+          (when old-heading
+            (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
 
-          (with-current-buffer (marker-buffer new-marker)
-            (let ((buffer-read-only nil))
-              (when old-heading
-                (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
-              (condition-case-control t err
-                (progn
-                  (occ-straight-org-clock-clock-in (list new-marker))
-                  (setq retval t)
-                  (push new-ctxask *occ-clocked-ctxual-tsk-ctx-history*))
-                ((error)
-                 (progn
-                   (setq retval nil)
-                   (signal (car err) (cdr err)))))))
+          (occ-clock-in new-tsk)
+          (setq retval t)
+
+          (push new-ctxask *occ-clocked-ctxual-tsk-ctx-history*)
+
+
           (if old-buff
               (with-current-buffer old-buff
                 (setq buffer-read-only old-buff-read-only)))

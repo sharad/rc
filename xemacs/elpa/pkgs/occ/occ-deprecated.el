@@ -115,7 +115,67 @@
                          "No clock found please set a match for this ctx %s, add it using M-x occ-add-to-org-heading."
                          ctx)
               (occ-add-to-org-heading-when-idle ctx 7)
-              nil)))))))
+              nil))))))
+  (cl-defmethod occ-clock-in ((new-ctxask occ-ctxual-tsk))
+    ;;TODO add org-insert-log-not
+    (occ-debug :debug "occ-clock-in-marker %s" new-ctxask)
+    (let* (retval
+           (old-ctxual-tsk     (car *occ-clocked-ctxual-tsk-ctx-history*))
+           (old-tsk            (when old-ctxual-tsk (occ-ctxual-tsk-tsk old-ctxual-tsk)))
+           (old-marker         (or (if old-tsk (occ-tsk-marker old-tsk)) org-clock-hd-marker))
+           (old-heading        (if old-tsk (occ-tsk-heading old-tsk)))
+           (new-tsk            (occ-ctxual-tsk-tsk new-ctxask))
+           (new-marker         (if new-tsk (occ-tsk-marker new-tsk)))
+           (new-heading        (if new-tsk (occ-tsk-heading new-tsk))))
+      (when (and
+             new-marker
+             (marker-buffer new-marker))
+
+        (let* ((org-log-note-clock-out nil)
+               (old-marker org-clock-marker)
+               (old-buff   (marker-buffer old-marker)))
+
+          (occ-debug :debug "clocking in %s" new-marker)
+
+          (let ((old-buff-read-only
+                 (if old-buff
+                     (with-current-buffer (marker-buffer old-marker)
+                       buffer-read-only))))
+
+            (if old-buff
+                (with-current-buffer old-buff
+                  (setq buffer-read-only nil)))
+
+            (setq *occ-update-current-ctx-msg* old-marker)
+
+            (run-hook-with-args 'occ-clock-in-hooks
+                                old-marker
+                                new-marker)
+
+            (when (and
+                   new-heading
+                   old-marker
+                   (marker-buffer old-marker))
+              (org-insert-log-note old-marker (format "clocking out to clockin to <%s>" new-heading)))
+
+            (with-current-buffer (marker-buffer new-marker)
+              (let ((buffer-read-only nil))
+                (when old-heading
+                  (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
+                (condition-case-control t err
+                  (progn
+                    (occ-straight-org-clock-clock-in (list new-marker))
+                    (setq retval t)
+                    (push new-ctxask *occ-clocked-ctxual-tsk-ctx-history*))
+                  ((error)
+                   (progn
+                     (setq retval nil)
+                     (signal (car err) (cdr err)))))))
+
+            (if old-buff
+                (with-current-buffer old-buff
+                  (setq buffer-read-only old-buff-read-only)))
+            retval))))))
 
 
 (provide 'occ-deprecated)
