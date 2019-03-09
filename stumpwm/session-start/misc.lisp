@@ -525,7 +525,7 @@
   (let ((focus-window-match-rules-p t)
         (focus-window-match-rules '()))
 
-    (defun define-focus-window-match (name &rest rule)
+    (defun define-focus-window-match-rule (name &rest rule)
       (push
        (cons name rule)
        focus-window-match-rules))
@@ -565,12 +565,12 @@
 
     (enable-focus-window-match-rules))
 
-  (define-focus-window-match
+  (define-focus-window-match-rule
       "pinentry-gtk"
     :class "Gcr-prompter"
     :instance  "gcr-prompter")
 
-  (define-focus-window-match
+  (define-focus-window-match-rule
       "gnome-keyring"
     :class "Gcr-prompter"
     :instance  "gcr-prompter"

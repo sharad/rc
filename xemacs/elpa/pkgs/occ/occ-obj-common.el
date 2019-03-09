@@ -184,6 +184,108 @@
               (org-clock-auto-clock-resolution occ-org-clock-auto-clock-resolution))
           (org-clock-clock-in clock resume start-time))
       (setq org-clock-loaded t))))
+
+
+(cl-defmethod occ-get-property ((obj occ-obj)
+                                (prop symbol))
+  ;; mainly used by occ-tsk only.
+  (if (memq prop (cl-class-slots (cl-classname obj)))
+      (cl-get-field obj prop)
+    (plist-get
+     (cl-obj-plist-value obj)
+     (sym2key prop))))
+
+(cl-defmethod occ-set-property ((obj occ-obj)
+                                prop
+                                val)
+  ;; mainly used by occ-tsk only
+  (if (memq prop (cl-class-slots (cl-classname obj)))
+      (setf (cl-struct-slot-value (cl-classname obj) prop obj) val)
+    (plist-put
+     (cl-struct-slot-value (cl-classname obj) 'plist obj) ;TODO ??? (cl-obj-plist-value obj)
+     (sym2key prop) val)))
+
+(cl-defmethod occ-get-properties ((obj occ-obj)
+                                  (props list))
+  ;; mainly used by occ-tsk only.
+  (mapcar
+   #'(lambda (prop)
+       (cons prop (occ-get-property obj prop)))
+   props))
+
+(cl-defmethod occ-class-slots ((obj occ-obj))
+  (let* ((plist (cl-obj-plist-value obj))
+         (plist-keys (plist-get-keys plist))
+         (slots (cl-class-slots (cl-classname obj))))
+    (append slots
+            (mapcar #'key2sym plist-keys))))
+(cl-defmethod occ-obj-defined-slots ((obj occ-obj))
+  (let* ((plist (cl-obj-plist-value obj))
+         (plist-keys (plist-get-keys plist))
+         (slots
+          (append
+           (cl-class-slots (cl-classname obj))
+           (mapcar #'key2sym plist-keys))))
+    slots))
+(cl-defmethod occ-obj-defined-slots-with-value ((obj occ-obj))
+  (let* ((slots (occ-obj-defined-slots obj)))
+    (remove-if-not
+     #'(lambda (slot)
+         (occ-get-property obj slot))
+     slots)))
+(cl-defmethod cl-method-matched-arg ((method symbol)
+                                     (ctx symbol))
+  (cl-method-first-arg method))
+(cl-defmethod cl-method-matched-arg ((method symbol)
+                                     (ctx occ-ctx))
+  (let ((slots (occ-obj-defined-slots-with-value ctx)))
+    (remove-if-not
+     #'(lambda (arg) (memq arg slots))
+     (cl-method-first-arg method))))
+(cl-defmethod cl-method-matched-arg ((method1 symbol)
+                                     (method2 symbol)
+                                     (ctx occ-ctx))
+  (let ((slots (cl-method-first-arg-with-value method2 ctx)))
+    (remove-if-not
+     #'(lambda (arg) (memq arg slots))
+     (cl-method-first-arg method1))))
+
+(when nil
+  (occ-readprop-props)
+  (cl-method-matched-arg 'occ-readprop nil)
+  (cl-method-matched-arg 'occ-readprop (occ-make-ctx))
+  (occ-obj-defined-slots-with-value (occ-make-ctx)))
+
+(cl-defgeneric cl-method-sig-matched-arg (method-sig
+                                          ctx)
+  "test")
+(cl-defmethod cl-method-sig-matched-arg ((method-sig cons)
+                                         (ctx symbol))
+  (cl-method-param-case method-sig))
+(cl-defmethod cl-method-sig-matched-arg ((method-sig cons)
+                                         (ctx occ-ctx))
+  (let ((slots (occ-obj-defined-slots-with-value ctx)))
+    (remove-if-not
+     #'(lambda (arg) (memq arg slots))
+     (cl-method-param-case method-sig))))
+(cl-defmethod cl-method-sigs-matched-arg ((method-sig1 cons)
+                                          (method-sig2 cons)
+                                          (ctx occ-ctx))
+  (let ((slots (cl-method-param-case-with-value method-sig2 ctx)))
+    (remove-if-not
+     #'(lambda (arg) (memq arg slots))
+     (cl-method-param-case method-sig1))))
+
+
+(when nil
+  (cl-method-sig-matched-arg '(occ-readprop (`((head ,val) occ-ctx) val)) nil)
+
+  (cl-method-param-signs 'occ-ctx-property-get)
+  (cl-method-sigs-matched-arg
+   '(occ-readprop (`((head ,val) occ-ctx) val))
+   '(occ-ctx-property-get (`((head ,val)) val))
+   (occ-make-ctx)))
+
 
 (when nil
   (defmacro cl-method-first-arg-x (method param-spec val)

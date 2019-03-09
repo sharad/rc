@@ -30,20 +30,21 @@
 (require 'helm)
 
 
-(setq org-capture+-helm-templates-alist
+(defvar org-capture+-helm-templates-alist
   '(("TODO"
      "* TODO %? %^g\n %i\n [%a]\n"
      "* MILESTONE %? %^g\n %i\n [%a]\n")
     ("MEETING"
      "* MEETING %? %^g\n %i\n [%a]\n")))
 
-
+;;;###autoload
 (defun org-capture+-build-helm-template-source (name attrib-list &rest templates)
   `((name . ,name)
     (multiline)
     (candidates ,@templates)
     ,@attrib-list))
 
+;;;###autoload
 (defun org-capture+-build-helm-template-sources (attrib-list alist)
   (mapcar
    #'(lambda (e)
@@ -53,14 +54,15 @@
         (cdr e)))
    alist))
 
+;;;###autoload
 (defun org-capture+-helm-select-template (&optional attrib-list alist)
   (let ((attrib-list (or attrib-list '((action . identity))))
         (alist       (or alist org-capture+-helm-templates-alist)))
     (helm :sources
           (org-capture+-build-helm-template-sources attrib-list alist))))
 
-(org-capture+-helm-select-template)
-
+;; (org-capture+-helm-select-template)
+
 
 
 ;;; org-capture+-helm.el ends here
