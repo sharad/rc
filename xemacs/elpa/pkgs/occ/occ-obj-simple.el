@@ -229,46 +229,6 @@ pointing to it."
     (occ-capture mrk)))
 
 
-(defun occ-sacha-helm-select (ctxasks)
-  ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
-  (message "Running occ-sacha-helm-select")
-  (helm
-   (list
-    (helm-build-sync-source "Select matching tsks"
-      :candidates (mapcar 'occ-sacha-selection-line ctxasks)
-      :action (list ;; (cons "Select" 'identity)
-               (cons "Clock in and track" #'identity))
-      :history 'org-refile-history))))
-    ;; (helm-build-dummy-source "Create tsk"
-    ;;   :action (helm-make-actions
-    ;;            "Create tsk"
-    ;;            'sacha/helm-org-create-tsk))
-
-
-(defun occ-sacha-helm-select-timed (ctxasks)
-  (helm-timed 7
-    (message "running sacha/helm-select-clock")
-    (occ-sacha-helm-select ctxasks)))
-
-(cl-defgeneric occ-sacha-helm-action (ctxask clockin-fn)
-  "occ-sacha-helm-action")
-
-(cl-defmethod occ-sacha-helm-action ((ctxask occ-ctxual-tsk) clockin-fn)
-  ;; (message "sacha marker %s" (car dyntskpls))
-  ;; (setq sacha/helm-org-refile-locations tbl)
-  (progn
-    (helm
-     (list
-      (helm-build-sync-source "Select matching tsks"
-        :candidates (mapcar 'occ-sacha-selection-line ctxask)
-        :action (list ;; (cons "Select" 'identity)
-                 (cons "Clock in and track" #'(lambda (c) (funcall clockin-fn c))))
-        :history 'org-refile-history)))))
-      ;; (helm-build-dummy-source "Create tsk"
-      ;;   :action (helm-make-actions
-      ;;            "Create tsk"
-      ;;            'sacha/helm-org-create-tsk))
-
 (cl-defgeneric occ-rank (obj ctx)
   "occ-rank")
 

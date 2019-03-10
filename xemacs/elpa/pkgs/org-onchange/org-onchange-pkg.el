@@ -4,8 +4,6 @@
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchnage-pkg.org][No heading:1]]
 (define-package "org-onchange" "20171222.128" "org-onchange"
-                '((timer-utils-lotus "1")
-                  (org-misc-utils-lotus "1")
-                  (lotus-misc-utils "1")
-                  (s "1")))
+  '((lotus-utils "1")
+    (s "1")))
 ;; No heading:1 ends here

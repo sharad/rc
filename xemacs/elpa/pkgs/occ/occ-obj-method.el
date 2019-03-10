@@ -44,7 +44,7 @@
                                         (ctx occ-ctx))
   ;; (message "occ-matching-ctxual-tsks list")
   (let ((tsks (occ-collection collection))
-        (ctx ctx))
+        (ctx  ctx))
     (remove-if-not
      #'(lambda (ctxual-tsk)
          (> (occ-ctxual-tsk-rank ctxual-tsk) 0))
@@ -122,6 +122,46 @@
 
 ;; (occ-list (occ-collection-object) nil)
 
+(defun occ-sacha-helm-select (ctxasks)
+  ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
+  (message "Running occ-sacha-helm-select")
+  (helm
+   (list
+    (helm-build-sync-source "Select matching tsks"
+      :candidates (mapcar 'occ-sacha-selection-line ctxasks)
+      :action (list ;; (cons "Select" 'identity)
+               (cons "Clock in and track" #'identity))
+      :history 'org-refile-history))))
+    ;; (helm-build-dummy-source "Create tsk"
+    ;;   :action (helm-make-actions
+    ;;            "Create tsk"
+    ;;            'sacha/helm-org-create-tsk))
+
+
+(defun occ-sacha-helm-select-timed (ctxasks)
+  (helm-timed 7
+    (message "running sacha/helm-select-clock")
+    (occ-sacha-helm-select ctxasks)))
+
+(cl-defgeneric occ-sacha-helm-action (ctxask clockin-fn)
+  "occ-sacha-helm-action")
+
+(cl-defmethod occ-sacha-helm-action ((ctxask occ-ctxual-tsk) clockin-fn)
+  ;; (message "sacha marker %s" (car dyntskpls))
+  ;; (setq sacha/helm-org-refile-locations tbl)
+  (progn
+    (helm
+     (list
+      (helm-build-sync-source "Select matching tsks"
+        :candidates (mapcar 'occ-sacha-selection-line ctxask)
+        :action (list ;; (cons "Select" 'identity)
+                 (cons "Clock in and track" #'(lambda (c) (funcall clockin-fn c))))
+        :history 'org-refile-history)))))
+      ;; (helm-build-dummy-source "Create tsk"
+      ;;   :action (helm-make-actions
+      ;;            "Create tsk"
+      ;;            'sacha/helm-org-create-tsk))
+
 
 ;;;###autoload
 (defun occ-helm-select-tsk (selector
@@ -185,30 +225,5 @@
 
     (funcall action (helm helm-sources))))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Errors
-
-;; Mark set
-;; begin occ-clock-in-curr-ctx-if-not
-;; readfn: occ-clock-in-curr-ctx-if-not inside readfn
-;; occ-clock-in-if-chg: ctx [cl-struct-occ-ctx *Messages* *Messages* nil] not suitable to associate
-;; end occ-clock-in-curr-ctx-if-not
-;; begin occ-clock-in-curr-ctx-if-not
-;; readfn: occ-clock-in-curr-ctx-if-not inside readfn
-;; occ-clock-in-if-not: Now really going to clock.
-;; in occ-clock-in occ-ctx 1
-;; Error running timer ‘occ-clock-in-curr-ctx-if-not’: (wrong-type-argument symbolp ((closure ((start-file . "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/start.org") (party-base-dir . "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/") t) nil (setq org-agenda-files (occ-included-files)))))
-;; Mark set
-;; Mark saved where search started
-;; Mark set
-;; begin occ-clock-in-curr-ctx-if-not
-;; readfn: occ-clock-in-curr-ctx-if-not inside readfn
-;; occ-clock-in-if-not: Now really going to clock.
-;; in occ-clock-in occ-ctx 1
-;; occ-matching-ctxual-tsks BEFORE matched nil[0]
-;; tsk empty heading subtree t
-;; tsk empty heading root nil not present.
 
 ;;; occ-obj-method.el ends here
