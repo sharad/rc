@@ -26,6 +26,8 @@
 
 ;; ORG here is issue of naming heading vs headline
 
+(require 'lotus-idle-utils)
+
 (eval-when-compile
   (require 'lotus-misc-utils))
 

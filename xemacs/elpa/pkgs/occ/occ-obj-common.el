@@ -26,9 +26,7 @@
 (provide 'occ-obj-common)
 
 
-(require 'cl-macs)
-(require 'cl-generic)
-
+(require 'occ-obj)
 
 
 ;; TODO org-base-buffer
@@ -36,149 +34,6 @@
 ;; https://stackoverflow.com/questions/12262220/add-created-date-property-to-todos-in-org-mode
 
 ;; "org tsks accss common api"
-(defvar occ-verbose 0)
-
-(defvar occ-org-clock-persist nil "Control org-clock-persist at time of occ clock-in")
-(defvar occ-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of occ clock-in")
-
-(defun occ-debug (level &rest args)
-  (when (car args)
-    (apply #'format args)
-    (when (member level '(:emergency :error :warning :debug))
-      ;; (apply #'lwarn 'occ level args)
-      (apply #'lwarn 'occ level args)))
-  (unless (eq level :nodisplay)
-   (apply #'message args)))
-
-(when nil ;; https://curiousprogrammer.wordpress.com/2010/07/19/emacs-defstruct-vs-other-languages/
-
-  (defun cl-get-field (object field)
-    (cl-struct-slot-value (cl-classname object) field object))
-
-  (defun cl-set-field (object field value)
-    (setf (cl-struct-slot-value (cl-classname object) field object) value))
-
-  (get-field dave 'name)
-  (set-field dave 'name "Simon Smith"))
-
-(defun sym2key (sym)
-  (if (keywordp sym)
-      sym
-    (intern-soft (concat ":" (symbol-name sym)))))
-(defun key2sym (sym)
-  (if (keywordp sym)
-      (intern-soft (substring (symbol-name sym) 1))
-    sym))
-(defun cl-classname (inst)
-  (intern
-   (substring
-    (symbol-name (aref inst 0))
-    (length "cl-struct-"))))
-(defun cl-get-field (object field)
-  (cl-struct-slot-value (cl-classname object) field object))
-(defun cl-set-field (object field value)
-  (setf (cl-struct-slot-value (cl-classname object) field object) value))
-(defun cl-get-fields (object fields)
-  (mapcar
-   #'(lambda (field)
-       (cons field (cl-get-field object field)))
-   fileds))
-(defun cl-class-slots (class)
-  (mapcar
-   #'(lambda (slot) (aref slot 1))
-   (cl--struct-class-slots
-    (cl--struct-get-class class))))
-;; (defun cl-class-slot-value (obj slot)
-;;   (when (member slot (cl-class-slots (cl-classname obj)))
-;;     (cl-struct-slot-value (cl-classname obj) slot obj)))
-(defun cl-class-obj-slot-value (class slot obj)
-  (when (member slot (cl-class-slots class))
-    (cl-struct-slot-value class slot obj)))
-(defun cl-obj-slot-value (obj slot)
-  (cl-class-obj-slot-value (cl-classname obj) slot obj))
-(defun cl-obj-plist-value (obj)
-  (cl-obj-slot-value obj 'plist))
-
-(defun cl-method-param-signs (method)
-  "Get params signatures for all defined methods"
-  (let ((method-instances (cl--generic method)))
-   (mapcar
-    #'(lambda (x) (aref x 1))
-    (if method-instances
-        (aref method-instances 3)))))
-
-(defun cl-method-param-case (signature-val-spec)
-   "signature-val-spec = (METHOD (PARAMS VAL))"
-   (cl-destructuring-bind (method (param-spec val)) signature-val-spec
-     (remove
-      nil
-      (mapcar
-       #'(lambda (fspec)
-           (eval
-            `(pcase ',fspec
-               (,param-spec ,val)
-               (_ nil))))
-       (cl-method-param-signs method)))))
-
-(defun cl-method-param-case-with-value (signature-val-spec obj)
- "signature-val-spec = (METHOD PARAMS VAL)"
- (cl-destructuring-bind (method (param-spec val)) signature-val-spec
-   (remove
-    nil
-    (mapcar
-     #'(lambda (fspec)
-         (let ((first-arg
-                (eval
-                 `(pcase ',fspec
-                    (,param-spec ,val)
-                    (_ nil)))))
-           (when (and
-                  first-arg
-                  (funcall method (cons first-arg obj)))
-             first-arg)))
-     (cl-method-param-signs method)))))
-
-(defun cl-method-first-arg (method)
-  (let ((methods (cl--generic method)))
-    (mapcar
-     #'(lambda (fspec) (cadar fspec))
-     (cl-method-param-signs method))))
-
-(defun cl-method-first-arg-with-value (method obj)
-  (let ((methods (cl--generic method)))
-    (mapcar
-     #'(lambda (fspec)
-         (let ((first-arg (cadar fspec)))
-           (when (funcall method (cons first-arg obj)) first-arg)))
-     (cl-method-param-signs method))))
-
-
-(defun occ-chgable-p ()
-  "Stay with a clock at least 2 mins."
-  (if org-clock-start-time
-      (let ((clock-duration
-             (if (and
-                  (stringp org-clock-start-time)
-                  (string-equal "" org-clock-start-time))
-                 0
-               (float-time (time-since org-clock-start-time)))))
-        (or
-         (< clock-duration 60)
-         (> clock-duration 120)))
-    t))
-
-;;;###autoload
-(defun occ-straight-org-clock-clock-in (clock &optional resume start-time)
-  (let ((org-log-note-clock-out nil))
-    (progn
-     (lotus-org-clock-load-only)
-     (prog1
-         (let ((org-clock-persist               occ-org-clock-persist)
-               (org-clock-auto-clock-resolution occ-org-clock-auto-clock-resolution))
-           (org-clock-clock-in clock resume start-time))
-       (setq org-clock-loaded t)))))
-
-
 (cl-defmethod occ-get-property ((obj occ-obj)
                                 (prop symbol))
   ;; mainly used by occ-tsk only.

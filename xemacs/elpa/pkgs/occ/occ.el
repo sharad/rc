@@ -138,6 +138,7 @@ FULL is given."
       (when message (message "%s" version1))
       version1)))
 
+;;;###autoload
 (defun occ-reload (&optional uncompiled)
   "Reload all Occ Lisp files.
 With prefix arg UNCOMPILED, load the uncompiled versions."

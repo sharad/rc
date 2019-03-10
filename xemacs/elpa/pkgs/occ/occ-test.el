@@ -182,7 +182,18 @@
 
 
 
-(progn                                  ;; from common
+(progn                                  ;; from obj common
+
+  (when nil ;; https://curiousprogrammer.wordpress.com/2010/07/19/emacs-defstruct-vs-other-languages/
+
+    (defun cl-get-field (object field)
+      (cl-struct-slot-value (cl-classname object) field object))
+
+    (defun cl-set-field (object field value)
+      (setf (cl-struct-slot-value (cl-classname object) field object) value))
+
+    (get-field dave 'name)
+    (set-field dave 'name "Simon Smith"))
 
   (progn
     (when nil

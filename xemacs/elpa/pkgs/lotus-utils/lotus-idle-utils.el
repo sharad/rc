@@ -167,7 +167,7 @@ this macro intended to be used with or in idle timer functions."
                               (lwarn 'lotus-idle-timed-window :debug "triggered timer for new-win %s" window)
                               (with-no-active-minibuffer
                                 (select-frame-set-input-focus-raise-disable))))))
-          (timer       (run-with-idle-plus-timer timeout nil cleanup-fun buffer)))
+          (timer       (run-with-idle-plus-timer timeout nil cleanup-fun ,buffer)))
      (unwind-protect
          (progn
            (with-post-command

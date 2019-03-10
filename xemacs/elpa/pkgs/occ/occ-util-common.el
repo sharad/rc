@@ -30,6 +30,55 @@
 (provide 'occ-util-common)
 
 
+(defvar occ-verbose 0)
+
+(defvar occ-org-clock-persist nil "Control org-clock-persist at time of occ clock-in")
+(defvar occ-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of occ clock-in")
+
+(defun occ-debug (level &rest args)
+  (when (car args)
+    (apply #'format args)
+    (when (member level '(:emergency :error :warning :debug))
+      ;; (apply #'lwarn 'occ level args)
+      (apply #'lwarn 'occ level args)))
+  (unless (eq level :nodisplay)
+   (apply #'message args)))
+
+(defun sym2key (sym)
+  (if (keywordp sym)
+      sym
+    (intern-soft (concat ":" (symbol-name sym)))))
+(defun key2sym (sym)
+  (if (keywordp sym)
+      (intern-soft (substring (symbol-name sym) 1))
+    sym))
+
+
+(defun occ-chgable-p ()
+  "Stay with a clock at least 2 mins."
+  (if org-clock-start-time
+      (let ((clock-duration
+             (if (and
+                  (stringp org-clock-start-time)
+                  (string-equal "" org-clock-start-time))
+                 0
+               (float-time (time-since org-clock-start-time)))))
+        (or
+         (< clock-duration 60)
+         (> clock-duration 120)))
+    t))
+
+;;;###autoload
+(defun occ-straight-org-clock-clock-in (clock &optional resume start-time)
+  (let ((org-log-note-clock-out nil))
+    (progn
+     (lotus-org-clock-load-only)
+     (prog1
+         (let ((org-clock-persist               occ-org-clock-persist)
+               (org-clock-auto-clock-resolution occ-org-clock-auto-clock-resolution))
+           (org-clock-clock-in clock resume start-time))
+       (setq org-clock-loaded t)))))
+
 
 (defun occ-completing-read (prompt collection &optional predicate require-match initial-input hist def inherit-input-method)
   (let ((helm-always-two-windows nil))

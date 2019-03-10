@@ -30,6 +30,7 @@
 (require 'lotus-misc-utils)
 (eval-when-compile
   (require 'lotus-misc-utils))
+(require 'org-capture+-helm)
 
 
 (require 'occ-obj-common)

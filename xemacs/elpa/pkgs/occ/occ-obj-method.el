@@ -30,7 +30,7 @@
 (eval-when-compile
   (require 'lotus-misc-utils))
 
-
+(require 'occ-cl-utils)
 (require 'occ-obj-common)
 (require 'occ-tree)
 (require 'occ-obj-accessor)
