@@ -182,4 +182,31 @@
 
 
 
+(progn                                  ;; from common
+
+  (progn
+    (when nil
+      (occ-readprop-props)
+      (cl-method-matched-arg 'occ-readprop nil)
+      (cl-method-matched-arg 'occ-readprop (occ-make-ctx))
+      (occ-obj-defined-slots-with-value (occ-make-ctx))))
+
+  (progn
+    (cl-method-sig-matched-arg '(occ-readprop (`((head ,val) occ-ctx) val)) nil)
+
+    (cl-method-param-signs 'occ-ctx-property-get)
+    (cl-method-sigs-matched-arg
+     '(occ-readprop (`((head ,val) occ-ctx) val))
+     '(occ-ctx-property-get (`((head ,val)) val))
+     (occ-make-ctx)))
+
+  ;; (cl-method-param-case '(occ-readprop (`((head ,val) occ-ctx) val)))
+  (setq xxnaaa
+        (mapcar
+         #'(lambda (x) (aref x 1))
+         (aref (cl--generic 'occ-readprop) 3)))
+
+  (setq xxnaaa
+        (aref (cl--generic 'occ-readprop) 3)))
+
 ;;; occ-test.el ends here

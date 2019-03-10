@@ -36,7 +36,6 @@
 ;; https://stackoverflow.com/questions/12262220/add-created-date-property-to-todos-in-org-mode
 
 ;; "org tsks accss common api"
-;; (defvar org-)
 (defvar occ-verbose 0)
 
 (defvar occ-org-clock-persist nil "Control org-clock-persist at time of occ clock-in")
@@ -108,9 +107,7 @@
     (if method-instances
         (aref method-instances 3)))))
 
-(progn
-
-  (defun cl-method-param-case (signature-val-spec)
+(defun cl-method-param-case (signature-val-spec)
    "signature-val-spec = (METHOD (PARAMS VAL))"
    (cl-destructuring-bind (method (param-spec val)) signature-val-spec
      (remove
@@ -123,28 +120,23 @@
                (_ nil))))
        (cl-method-param-signs method)))))
 
-
-  ;; (cl-method-param-case '(occ-readprop (`((head ,val) occ-ctx) val)))
-
-  (defun cl-method-param-case-with-value (signature-val-spec obj)
-   "signature-val-spec = (METHOD PARAMS VAL)"
-   (cl-destructuring-bind (method (param-spec val)) signature-val-spec
-     (remove
-      nil
-      (mapcar
-       #'(lambda (fspec)
-           (let ((first-arg
-                  (eval
-                   `(pcase ',fspec
-                      (,param-spec ,val)
-                      (_ nil)))))
-             (when (and
-                    first-arg
-                    (funcall method (cons first-arg obj)))
-               first-arg)))
-       (cl-method-param-signs method))))))
-
-
+(defun cl-method-param-case-with-value (signature-val-spec obj)
+ "signature-val-spec = (METHOD PARAMS VAL)"
+ (cl-destructuring-bind (method (param-spec val)) signature-val-spec
+   (remove
+    nil
+    (mapcar
+     #'(lambda (fspec)
+         (let ((first-arg
+                (eval
+                 `(pcase ',fspec
+                    (,param-spec ,val)
+                    (_ nil)))))
+           (when (and
+                  first-arg
+                  (funcall method (cons first-arg obj)))
+             first-arg)))
+     (cl-method-param-signs method)))))
 
 (defun cl-method-first-arg (method)
   (let ((methods (cl--generic method)))
@@ -213,6 +205,7 @@
    #'(lambda (prop)
        (cons prop (occ-get-property obj prop)))
    props))
+
 
 (cl-defmethod occ-class-slots ((obj occ-obj))
   (let* ((plist (cl-obj-plist-value obj))
@@ -250,12 +243,7 @@
     (remove-if-not
      #'(lambda (arg) (memq arg slots))
      (cl-method-first-arg method1))))
-
-(when nil
-  (occ-readprop-props)
-  (cl-method-matched-arg 'occ-readprop nil)
-  (cl-method-matched-arg 'occ-readprop (occ-make-ctx))
-  (occ-obj-defined-slots-with-value (occ-make-ctx)))
+
 
 (cl-defgeneric cl-method-sig-matched-arg (method-sig
                                           ctx)
@@ -277,89 +265,6 @@
      #'(lambda (arg) (memq arg slots))
      (cl-method-param-case method-sig1))))
 
-
-(when nil
-  (cl-method-sig-matched-arg '(occ-readprop (`((head ,val) occ-ctx) val)) nil)
-
-  (cl-method-param-signs 'occ-ctx-property-get)
-  (cl-method-sigs-matched-arg
-   '(occ-readprop (`((head ,val) occ-ctx) val))
-   '(occ-ctx-property-get (`((head ,val)) val))
-   (occ-make-ctx)))
 
 
-(when nil
-  (defmacro cl-method-first-arg-x (method param-spec val)
-    `(let ((methods (cl--generic ,method)))
-       (mapcar
-        #'(lambda (fspec)
-            (pcase (aref fspec 1)
-              (,param-spec ,val)
-              (_ nil)))
-        (when methods (aref methods 3)))))
-
-  (macroexpand-1
-   '(cl-method-first-arg-x 'occ-readprop `((head ,val) occ-ctx) val))
-
-
-  (let ((methods (cl--generic (quote occ-readprop))))
-    (mapcar
-     (function (lambda (fspec) (pcase fspec ((\` ((head (\, val)) occ-ctx)) val) (_ nil))))
-     (when methods (aref methods 3))))
-
-
-  (let ((methods (cl--generic (quote occ-readprop))))
-    (mapcar
-     (function
-      (lambda (fspec)
-        (pcase (aref fspec 1)
-          (`((head ,val) occ-ctx) val)
-          (_ nil))))
-     (when methods
-       (aref methods 3))))
-
-
-
-  (cl-method-param-case 'occ-readprop `((head ,val) occ-ctx) val)
-
-  (cl-method-param-case '(occ-readprop `(((head ,val) occ-ctx) val)))
-
-
-  (cl-destructuring-bind (method param-spec val) '(occ-readprop `((head ,val) occ-ctx) val)
-    (message "%s" (list method param-spec val)))
-
-  '( `(x))
-
-
-
-
-
-
-
-  (cl-method-first-arg-x 'occ-readprop `((head ,val) occ-ctx) 'val)
-
-
-
-  (setq xxnaaa
-        (mapcar
-         #'(lambda (x) (aref x 1))
-         (aref (cl--generic 'occ-readprop) 3)))
-
-  (setq xxnaaa
-        (aref (cl--generic 'occ-readprop) 3))
-
-
-  (let ((param-spec '`((head ,val)))
-        (val        ',val))
-    (mapcar
-     #'(lambda (fspec)
-         (pcase--expand fspec
-                        (list
-                         (list param-spec val)
-                         (list '_ nil))))
-     xxnaaa)))
-
-
-
-;; (occ-reload)
 ;;; occ-obj-common.el ends here
