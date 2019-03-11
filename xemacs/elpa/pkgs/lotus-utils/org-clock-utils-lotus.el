@@ -1,4 +1,4 @@
-;;; org-clock-utils-lotus.el --- copy config
+;;; org-clock-utils-lotus.el --- copy config         -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012  Sharad Pratap
 

@@ -29,6 +29,10 @@
 (require 'frame)
 (require 'timer)
 (require 'timer-utils-lotus)
+
+(eval-when-compile
+  '(require 'lotus-misc-utils))
+(require 'lotus-misc-utils)
 
 (defun quiet--select-frame (frame &optional norecord)
   ;; (select-frame frame norecord)
@@ -163,14 +167,15 @@ this macro intended to be used with or in idle timer functions."
                              (when (and window
                                        (windowp window)
                                        (window-valid-p window))
-                              (delete-window window)
-                              (lwarn 'lotus-idle-timed-window :debug "triggered timer for new-win %s" window)
-                              (with-no-active-minibuffer
-                                (select-frame-set-input-focus-raise-disable))))))
+                               (delete-window window)
+                               (lwarn 'lotus-idle-timed-window :debug "triggered timer for new-win %s" window)
+                               (with-no-active-minibuffer
+                                 (select-frame-set-input-focus-raise-disable))))))
           (timer       (run-with-idle-plus-timer timeout nil cleanup-fun ,buffer)))
      (unwind-protect
          (progn
            (with-post-command
+             (lwarn 'lotus-idle-timed-window :debug "cancelling timer for buffer %s" buffer)
              (cancel-timer timer)
              (setq timer nil))
            (progn

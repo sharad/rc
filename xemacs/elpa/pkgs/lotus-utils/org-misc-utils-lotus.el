@@ -1,4 +1,4 @@
-;;; org-misc-utils-lotus.el --- copy config
+;;; org-misc-utils-lotus.el --- copy config         -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -507,7 +507,10 @@ With prefix arg C-u, copy region instad of killing it."
   (member major-mode safe-org-refile-get-location-modes))
 
 (defun safe-org-refile-get-location (&optional prompt)
-  (let* ((str-command     (helm-symbol-name current-command))
+  (let* ((current-command (or
+                           (helm-this-command)
+                           this-command))
+         (str-command     (helm-symbol-name current-command))
          (prompt          (or prompt str-command))
          (buf-name        (format "*helm-mode-%s*" str-command)))
     (let ((org-refile-targets

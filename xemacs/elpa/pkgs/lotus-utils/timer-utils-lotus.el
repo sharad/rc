@@ -1,4 +1,4 @@
-;;; timer-utils-lotus.el --- copy config  -*- lexical-binding: t; -*-
+;;; timer-utils-lotus.el --- copy config         -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012  Sharad Pratap
 
