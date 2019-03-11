@@ -304,7 +304,7 @@ pointing to it."
 
 (cl-defmethod occ-clock-in ((mrk marker))
   (let ((org-log-note-clock-out nil))
-    (when (marker-buffer new-marker)
+    (when (marker-buffer mrk)
       (with-current-buffer (marker-buffer mrk)
         (let ((buffer-read-only nil))
           (condition-case-control t err

@@ -29,12 +29,18 @@
 (require 'timer-utils-lotus)
 (eval-when-compile
   (require 'timer-utils-lotus))
-(require 'org-misc-utils-lotus)
+(require 'lotus-utils)
 (eval-when-compile
-  (require 'org-misc-utils-lotus))
+  (require 'lotus-utils))
+(require 'lotus-idle-utils)
+(eval-when-compile
+  (require 'lotus-idle-utils))
 (require 'lotus-misc-utils)
 (eval-when-compile
   (require 'lotus-misc-utils))
+(require 'org-misc-utils-lotus)
+(eval-when-compile
+  (require 'org-misc-utils-lotus))
 
 (require 'occ-obj-method)
 
