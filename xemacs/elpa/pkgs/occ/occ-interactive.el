@@ -77,6 +77,7 @@
                                    (ctx occ-ctx)
                                    &optional prompt)
   (let ((prompt (or prompt "proptery: "))
+        (fixed-keys '(edit done))
         (keys   (cl-method-sigs-matched-arg
                  '(occ-readprop         (`((head ,val) occ-ctx) val))
                  '(occ-ctx-property-get (`((head ,val)) val))
@@ -85,7 +86,7 @@
                       #'max
                       (mapcar #'(lambda (sym) ;https://www.gnu.org/software/emacs/manual/html_node/elisp/Formatting-Strings.html
                                   (length (symbol-name sym)))
-                              keys)))
+                              (append keys fixed-keys))))
           (key-vals  (occ-get-properties tsk keys)))
       (let* ((key-val-collection
               (mapcar
@@ -98,7 +99,8 @@
                key-vals))
              (key-val-collection (append
                                   key-val-collection
-                                  '(("edit" . edit) ("done" . done)))))
+                                  (mapcar #'(lambda (fk) (cons (symbol-name fk) fk))
+                                          fixed-keys))))
         (let ((sel
                (assoc
                 (occ-completing-read prompt
