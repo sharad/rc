@@ -24,12 +24,18 @@
 
 ;;; Code:
 
+(provide 'org-clock-unnamed-task)
+
+
+(require 'org-misc-utils-lotus)
+
 
 ;;;{{{ Emacs tasks https://emacs.stackexchange.com/questions/29128/programmatically-setting-an-org-mode-heading
 ;; https://emacs.stackexchange.com/questions/21713/how-to-get-property-values-from-org-file-headers
 
 ;; BUG org-global-get-property and org-global-put-property are not defined.
 
+
 
 (defvar *lotus-org-unnamed-task-file*        "~/Unnamed.org")
 (defvar *lotus-org-unnamed-parent-task-name* "Unnamed tasks")
@@ -37,7 +43,7 @@
 (defvar *lotus-org-unnamed-task-clock-marker* nil)
 (defvar lotus-org-unnamed-task-org-clock-persist nil "Control org-clock-persist at time of unnamed task clock-in")
 (defvar lotus-org-unnamed-task-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of unnamed task clock-in")
-
+
 ;;;###autoload
 (defun lotus-org-unnamed-task-straight-org-clock-clock-in (clock &optional resume start-time)
   (let ((org-clock-persist               lotus-org-unnamed-task-org-clock-persist)
@@ -78,6 +84,7 @@
            (tasknum (string-to-number tasknumstr)))
       (org-global-put-property "TASKNUM" (number-to-string (1+ tasknum)))
       tasknum)))
+
 
 ;;;###autoload
 (defun lotus-org-create-unnamed-task (&optional file task)
@@ -206,6 +213,6 @@
 
 (defun lotus-org-clockin-last-time (min)
   )
+
 
-(provide 'org-clock-unnamed-task)
 ;;; org-clock-unnamed-task.el ends here
