@@ -75,9 +75,11 @@
                  '(occ-readprop         (`((head ,val) occ-ctx) val))
                  '(occ-ctx-property-get (`((head ,val)) val))
                  ctx)))
-    (let ((maxkeylen (max (mapcar #'(lambda (sym) ;https://www.gnu.org/software/emacs/manual/html_node/elisp/Formatting-Strings.html
-                                      (length (symbol-name sym)))
-                                  keys)))
+    (let ((maxkeylen (apply
+                      #'max
+                      (mapcar #'(lambda (sym) ;https://www.gnu.org/software/emacs/manual/html_node/elisp/Formatting-Strings.html
+                                  (length (symbol-name sym)))
+                              keys)))
           (key-vals  (occ-get-properties tsk keys)))
       (let* ((key-val-collection
               (mapcar
@@ -434,6 +436,5 @@
           (occ-included-files))))
     (message "files not in org-mode %s" files)))
 
-
 
 ;;; occ-interactive.el ends here
