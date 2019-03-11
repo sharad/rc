@@ -23,6 +23,9 @@
 
 ;;; Code:
 
+(provide 'occ-interactive)
+
+
 (require 'timer-utils-lotus)
 (eval-when-compile
   (require 'timer-utils-lotus))
@@ -32,13 +35,10 @@
 (require 'lotus-misc-utils)
 (eval-when-compile
   (require 'lotus-misc-utils))
-
 
 (require 'occ-obj-method)
 
 
-(provide 'occ-interactive)
-
 
 ;; (defun org-get-property (prop-key)
 ;;   (org-entry-get nil prop-key))

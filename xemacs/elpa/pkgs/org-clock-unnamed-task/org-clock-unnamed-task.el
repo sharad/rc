@@ -28,6 +28,8 @@
 
 
 (require 'org-misc-utils-lotus)
+(eval-when-compile
+  (require 'org-misc-utils-lotus))
 
 
 ;;;{{{ Emacs tasks https://emacs.stackexchange.com/questions/29128/programmatically-setting-an-org-mode-heading

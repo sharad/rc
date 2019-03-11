@@ -24,19 +24,25 @@
 
 ;;; Code:
 
+
+(provide 'org-misc-utils-lotus)
+
+
 ;; ORG here is issue of naming heading vs headline
 
+(eval-when-compile
+  (require 'lotus-idle-utils))
 (require 'lotus-idle-utils)
 
 (eval-when-compile
   (require 'lotus-misc-utils))
-
 (require 'lotus-misc-utils)
 
 (eval-when-compile
   (require 'cl))
 
 (require 'cl)
+
 
 (defvar safe-org-refile-get-location-modes
   '(emacs-lisp-mode org-mode))
@@ -891,6 +897,6 @@ With prefix arg C-u, copy region instad of killing it."
           (when (outline-invisible-p)
             (show-entry))                 ; display invisible text
           (run-hooks 'org-agenda-after-show-hook))))))
+
 
-(provide 'org-misc-utils-lotus)
 ;;; org-misc-utils-lotus.el ends here
