@@ -175,7 +175,7 @@ this macro intended to be used with or in idle timer functions."
      (unwind-protect
          (progn
            (with-post-command
-             (lwarn 'lotus-idle-timed-window :debug "cancelling timer for buffer %s" buffer)
+             (lwarn 'lotus-idle-timed-window :debug "cancelling timer for buffer %s for last-input-event %s" ,buffer last-input-event)
              (cancel-timer timer)
              (setq timer nil))
            (progn
@@ -219,7 +219,7 @@ this macro intended to be used with or in idle timer functions."
                  ,@body)
              ((quit)
               (funcall ,cleanupfn-newwin ,newwin ,cleanupfn-local))))))))
-(put 'lotus-with-idle-timed-transient-win 'lisp-indent-function 1)
+(put 'lotus-with-idle-timed-transient-win 'lisp-indent-function 5)
 
 
 ;;; lotus-idle-utils.el ends here
