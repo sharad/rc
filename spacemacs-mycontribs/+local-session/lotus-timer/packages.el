@@ -36,7 +36,8 @@
 
 (defconst lotus-timer-packages
   '(
-    timer-utils-lotus
+    lotus-utils
+    ;; timer-utils-lotus
     (time :location local))
   "The list of Lisp packages required by the lotus-timer layer.
 
@@ -65,12 +66,12 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-timer/init-timer-utils-lotus ()
+(defun lotus-timer/post-init-lotus-utils ()
   (use-package timer-utils-lotus
-      :defer t
-      :config
-      (progn
-        )))
+    :defer t
+    :config
+    (progn
+      )))
 
 (defun lotus-timer/init-time ()
   (use-package time

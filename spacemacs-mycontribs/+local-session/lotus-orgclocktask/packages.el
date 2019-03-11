@@ -38,12 +38,13 @@
   '(
     ;; (PACKAGE :location local)
     org-doing
-    org-misc-utils-lotus
+    lotus-utils
+    ;; org-misc-utils-lotus
     org-clock-unnamed-task
     org-clock-hooks
     org-clock-check
     org-clock-in-if-not
-    org-clock-utils-lotus
+    ;; org-clock-utils-lotus
     org-clock-wrapper
     org-clock-daysummary
     org-clock-table-misc-lotus
@@ -55,8 +56,8 @@
     task-manager
     startup-hooks
     counsel-org-clock
-    org-clock-split
-    )
+    org-clock-split)
+
 
   "The list of Lisp packages required by the lotus-orgclocktask layer.
 
@@ -92,35 +93,66 @@ Each entry is either:
       (progn
         )))
 
-(defun lotus-orgclocktask/init-org-misc-utils-lotus ()
+(defun lotus-orgclocktask/init-lotus-utils ()
   (use-package org-misc-utils-lotus
-      :defer t
-      :config
+    :defer t
+    :config
+    (progn
+
+      (progn                          ;settings
+        (setq
+         ;; https://stackoverflow.com/questions/8281604/remove-done-tasks-from-agenda-view
+         org-agenda-skip-scheduled-if-done t))
+
       (progn
-
-        (progn                          ;settings
-          (setq
-           ;; https://stackoverflow.com/questions/8281604/remove-done-tasks-from-agenda-view
-           org-agenda-skip-scheduled-if-done t))
-
-        (progn
-          (setq org-refile-targets
-                '((nil :maxlevel . 3)           ; only the current file
-                  (org-agenda-files :maxlevel . 3) ; all agenda files, 1st/2nd level
-                  (org-files-list :maxlevel . 4)   ; all agenda and all open files
-                  (lotus-org-files-list :maxlevel . 4))))
-        (progn
-          (add-hook
-           'kill-emacs-hook
-           #'(lambda ()
+        (setq org-refile-targets
+              '((nil :maxlevel . 3)           ; only the current file
+                (org-agenda-files :maxlevel . 3) ; all agenda files, 1st/2nd level
+                (org-files-list :maxlevel . 4)   ; all agenda and all open files
+                (lotus-org-files-list :maxlevel . 4))))
+      (progn
+        (add-hook
+         'kill-emacs-hook
+         #'(lambda ()
              (if (and
                   (org-clock-is-active)
                   ;; (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil)
                   )
                  (org-with-clock-writeable
-                  (let (org-log-note-clock-out)
-                    (if (org-clock-is-active)
-                        (org-clock-out)))))))))))
+                   (let (org-log-note-clock-out)
+                     (if (org-clock-is-active)
+                         (org-clock-out))))))))))
+
+
+
+  (progn
+    (progn
+      (use-package org-clock-utils-lotus
+        :defer t
+        :config
+        (progn
+          (progn
+            (use-package task-manager
+              :defer t
+              :config
+              (progn)))
+
+          (progn))))
+
+    (progn
+      (progn
+        (use-package org
+          :defer t
+          :config
+          (progn
+            (use-package sessions-unified
+              :defer t
+              :config
+              (add-to-enable-desktop-restore-interrupting-feature-hook
+               #'(lambda ()
+                   (if (fboundp 'org-clock-persistence-insinuate)
+                       (org-clock-persistence-insinuate)
+                     (message "Error: Org Clock function org-clock-persistence-insinuate not available.")))))))))))
 
 
 (defun lotus-orgclocktask/init-org-clock-unnamed-task ()
