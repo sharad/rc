@@ -1,29 +1,51 @@
 // -*- mode: js -*-
 
 
-// {{ Remember the last save directory for downloads
-
+//{{ Remember the last save directory for downloads
 // Add the following code to your rc:
-
-function update_save_path(info)
 {
-  _save_path = info.target_file.parent.path;
-}
+    let _save_path = get_home_directory();
+    // let _save_path = make_file("/home/s");
 
-{
-  let _save_path = get_home_directory();
 
-  add_hook("download_added_hook", update_save_path);
-
-  suggest_save_path_from_file_name =
-    function (filename, buffer)
+    let added_update_save_path = function (info)
     {
-      let file = make_file(_save_path);
-      file.append(filename);
-      return file.path;
-    }
+        // var w = get_recent_conkeror_window();
+        // w.alert(info.target_file.parent.path);
+        _save_path.initWithPath( info.target_file.parent.path );
+    };
+
+    let finish_update_save_path = function (info)
+    {
+        // var w = get_recent_conkeror_window();
+        // w.alert(info.target_file.parent.path);
+        _save_path.initWithPath( info.target_file.parent.path );
+    };
+
+    let state_change_update_save_path = function (info)
+    {
+        // var w = get_recent_conkeror_window();
+        // w.alert(info.target_file.parent.path);
+        _save_path.initWithPath( info.target_file.parent.path );
+    };
+
+    // add_hook("download_added_hook", added_update_save_path);
+    add_hook("download_finished_hook", finish_update_save_path);
+    // add_hook("download_state_change_hook", state_change_update_save_path);
+
+
+    suggest_save_path_from_file_name =
+        function (filename, buffer) {
+            // var w = get_recent_conkeror_window();
+            // w.alert(_save_path.path);
+
+            let file = make_file(_save_path.clone());
+            file.append(filename);
+            return file.path;
+    };
 }
-// }}
+
+//}}
 
 // {{ If you are using Conkeror with multiple profiles, you may find
 // the following code handy.  It puts the name of your current profile

@@ -644,7 +644,10 @@ This function is called at the very end of Spacemacs initialization."
  '(psc-ide-rebuild-on-save nil t)
  '(safe-local-variable-values
    (quote
-    ((major-mode . emacs-lisp)
+    ((ee-line-start . "/+_? *. ")
+     (ee-comment-prefix . "/")
+     (ee-anchor-format . "«%s»")
+     (major-mode . emacs-lisp)
      (default-tab-width . 3)
      (major-mode . sh)
      (ee-comment-prefix . ";;")

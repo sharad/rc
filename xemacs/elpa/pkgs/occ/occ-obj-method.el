@@ -30,6 +30,7 @@
 (eval-when-compile
   (require 'lotus-misc-utils))
 
+
 (require 'occ-cl-utils)
 (require 'occ-obj-common)
 (require 'occ-tree)
@@ -57,6 +58,7 @@
 (cl-defmethod occ-matching-ctxual-tsks ((collection occ-tree-tsk-collection)
                                         (ctx occ-ctx))
   ;; (message "occ-matching-ctxual-tsks tree")
+  "Return matched CTXUAL-TSKs for context CTX"
   (let ((tsks (occ-collection collection))
         (matched '()))
     (when tsks
@@ -82,7 +84,7 @@
 
   ((collection occ-tsk-collection)
    (ctx occ-ctx)) ;TODO: make it after method
-
+  "Return matched CTXUAL-TSKs for context CTX"
   (if (occ-collection-object)
       (let* ((ctxual-tsks (cl-call-next-method))
              (rankslist  (mapcar

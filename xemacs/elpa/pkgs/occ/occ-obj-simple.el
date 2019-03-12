@@ -380,15 +380,17 @@ pointing to it."
       (progn
         ;; here create unnamed tsk, no need
         (setq *occ-update-current-ctx-msg* "null clock")
-        (occ-debug nil
+        (occ-debug :debug
                    "No clock found please set a match for this ctx %s, add it using M-x occ-add-to-org-heading."
                    ctx)
+        (lwarn 'occ
+               (if this-command :debug :warning)
+               "occ-clock-in(ctx):  with this-command=%s" this-command)
         (occ-add-to-org-heading-when-idle ctx 7)
         nil))))
 
 (cl-defmethod occ-clock-in ((ctx null))
   (error "Can not clock in NIL"))
 
-
 
 ;;; occ-obj-simple.el ends here

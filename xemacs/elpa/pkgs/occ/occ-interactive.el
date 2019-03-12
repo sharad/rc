@@ -203,8 +203,8 @@
     (lotus-with-other-frame-event-debug "occ-add-to-org-heading" :cancel
       (lwarn 'occ :debug "occ-add-to-org-heading: lotus-with-other-frame-event-debug")
       (let* ((timeout (or timeout 7))
-             (ctx (or ctx (occ-make-ctx)))
-             (buff (occ-ctx-buffer ctx)))
+             (ctx     (or ctx (occ-make-ctx)))
+             (buff    (occ-ctx-buffer ctx)))
         (lwarn 'occ :debug "occ-add-to-org-heading: [body] lotus-with-no-active-minibuffer-if")
         (if (and
              (eq (current-buffer) buff)
@@ -306,7 +306,9 @@
     (progn
       ;; TODO: Add code to which check if only focus present than only trigger
       ;; else postpone it by calling run-with-idle-plus-timer
-      (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: calling occ-add-to-org-heading")
+      (lwarn 'occ
+             (if this-command :debug :warning)
+             "occ-add-to-org-heading-when-idle: calling occ-add-to-org-heading with this-command=%s" this-command)
       (occ-add-to-org-heading ctx timeout))
 
     ;; (lotus-with-other-frame-event-debug "occ-add-to-org-heading-when-idle" :cancel
