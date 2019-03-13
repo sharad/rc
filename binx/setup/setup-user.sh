@@ -1751,15 +1751,15 @@ function setup_deps_view_volumes_dirs()
 
 
 
-            tocuh ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/.gitignore
+            touch ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/.gitignore
             running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} ${volumedir}/${viewdirname}/.gitignore
 
             # TODO? NOW
 
             local sysdatasdirname=$(setup_make_path_by_position "${dataclassname}" "$storage_path" "${sysdataname}s.d" "$position")
 
-            local todopath="${volumedir}/${viewdirname}/TODO-${sysdatasdirname//\//_}"
-            local missingpath="${volumedir}/${viewdirname}/MISSING_TODO-${sysdatasdirname//\//_}"
+            local todopath="${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/TODO-${sysdatasdirname//\//_}"
+            local missingpath="${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/MISSING_TODO-${sysdatasdirname//\//_}"
 
             rm -f $todopath
             rm -f $missingpath
