@@ -19,89 +19,60 @@
 
 ;; (add-to-load-path #p"~/.stumpwm.d/modules")
 
-;; ;;{{{ Load module
+;;{{{ Load module
+(defun list-directory-resursively (dir &key (predicate t))
+  (flatten
+   (mapcar
+    #'(lambda (e)
+        (append
+         (when (or
+                (eq predicate t)
+                (funcall predicate e))
+           (list e))
+         (list-directory-resursively e :predicate predicate)))
+    (when (cl-fad:directory-pathname-p dir)
+      (cl-fad:list-directory dir)))))
 
-(when nil
- (load-external-module "amixer")
- (load-external-module "aumix")
- (load-external-module "battery")
- (load-external-module "battery-portable")
- (load-external-module "cpu")
- (load-external-module "disk")
- (load-external-module "g15-keysyms")
- (load-external-module "maildir")
- (load-external-module "mem")
- (load-external-module "mpd")
- ;; (load-external-module "net")
- (load-external-module "notifications")
- (load-external-module "productivity")
- #+sbcl (load-external-module "sbclfix")
- ;; (load-external-module "surfraw")
- (load-external-module "wifi")
- (load-external-module "window-tags"))
+(defun stumpwm-contrib-modules (dir)
+  (reverse
+   (mapcar
+    #'(lambda (asd-path) (car (last (pathname-directory asd-path))))
+    (list-directory-resursively
+     dir
+     :predicate
+     #'(lambda (path)
+         (string-equal (pathname-type path) "asd"))))))
+
+(defvar stumpwm-contrib-exclude-modules '("notify ""qubes"))
+
+(defun stumpwm-contrib-included-modules (dir)
+  (set-difference
+   (stumpwm-contrib-modules dir)
+   stumpwm-contrib-exclude-modules
+   :test #'string-equal))
 
 (defun load-all-modules ()
   (dolist
       (mod
-        '(
-          ;; media
-          "amixer"
-          "aumix"
-
-          ;; minor-mode
-          "mpd"
-          "notification"
-
-          ;; modelines
-          "battery"
-          "battery-portable"
-          "cpu"
-          "disk"
-          "hostname"
-          "maildir"
-          "mem"
-          "net"
-          "wifi"
-
-          ;; util
-          "alert-me"
-          "app-menu"
-          "debian"
-          "globalwindows"
-          "kbd-layouts"
-          "logitech-g15-keysyms"
-          ;; "notify"
-          "numpad-layouts"
-          "passwd"
-          "perwindowlayout"
-          "productivity"
-          ;; "qubes"
-          #+sbcl
-          "sbclfix"
-          "screenshot"
-          "searchengines"
-          "stumpish"
-          "stumptray"
-          "surfraw"
-          "swm-emacs"
-          "ttf-fonts"
-          "undocumented"
-          "urgentwindows"
-          "windowtags"
-          "winner-mode"
-          "notify"
-          ;; "stumpwm.contrib.dbus"
-          ))
+       (append
+        (stumpwm-contrib-included-modules #p"/usr/local/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib/")
+        '(list "notify")))
     (stumpwm::message "loading ~a" mod)
     (ignore-errors
-      (stumpwm::load-external-module mod))))
+     (stumpwm::load-external-module mod))))
 
 (load-all-modules)
 
 ;; enable
 #+stumptray
 (when (fboundp 'stumptray:stumptray)
-    (stumptray:stumptray))
+  (stumptray:stumptray))
+
+#+clipboard-history
+(progn
+  (define-key *root-map* (kbd "C-y") "show-clipboard-history")
+  ;; start the polling timer process
+  (clipboard-history:start-clipboard-manager))
 
 (defcommand load-all-eexternal-modules () ()
   (load-all-modules))
