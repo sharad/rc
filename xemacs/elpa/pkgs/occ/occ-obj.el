@@ -80,17 +80,15 @@
   tsk
   rank)
 
-(cl-defstruct (occ-tsk-collection (:include occ-obj))
-  root-files
-  included-files)
+(cl-defstruct (occ-collection (:include occ-obj))
+  roots
+  files)
 
-(cl-defstruct (occ-tree-tsk-collection (:include occ-tsk-collection))
+(cl-defstruct (occ-tree-collection (:include occ-collection))
   tree)
 
-(cl-defstruct (occ-list-tsk-collection (:include occ-tsk-collection))
+(cl-defstruct (occ-list-collection (:include occ-collection))
   list)
-
-
 
 ;; (when nil
 

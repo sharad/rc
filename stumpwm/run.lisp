@@ -55,10 +55,8 @@
 (vgroups)
 (message "vgroups")
 
-
-
-
 
+
 ;; enable
 #+stumptray
 (when (fboundp 'stumptray:stumptray)

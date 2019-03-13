@@ -123,7 +123,7 @@
            #'(lambda (f)
                (with-current-buffer (find-file-noselect f)
                  org-complex-heading-regexp))
-           (occ-included-files))))
+           (occ-files))))
      (message "files with null regex %s" files)))
 
  ;; testing verification;; testing verification
@@ -134,7 +134,7 @@
            #'(lambda (f)
                (with-current-buffer (find-file-noselect f)
                  (eq major-mode 'org-mode)))
-           (occ-included-files))))
+           (occ-files))))
      (message "files not in org-mode %s" files))))
 
 
@@ -153,9 +153,9 @@
 
 (progn                                  ;method
   (when nil
-    (occ-tree-tsk-collection-included-files (occ-collection-object))
+    (occ-tree-collection-files (occ-collection-object))
 
-    (occ-tree-tsk-collection-included-files (make-occ-tree-tsk-collection))))
+    (occ-tree-collection-files (make-occ-tree-collection))))
 
 
 

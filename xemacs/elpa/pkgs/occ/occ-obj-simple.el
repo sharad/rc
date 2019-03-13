@@ -248,8 +248,8 @@ pointing to it."
     rank))
 
 
-(cl-defmethod occ-included-files ()
-  (occ-collection-included-files (occ-collection-object)))
+(cl-defmethod occ-files ()
+  (occ-collection-files (occ-collection-object)))
 
 
 ;; TODO: Not to run when frame is not open [visible.]

@@ -215,7 +215,7 @@
 
             (org-with-file-loc-timed-refile
                 file pos                                               ;;TODO: ASAP optional to generated helm-source helm-sync-source DOIT
-                timeout '((occ-included-files :maxlevel . 4)) "Refile" ;heavy task, but present in macro !
+                timeout '((occ-files :maxlevel . 4)) "Refile" ;heavy task, but present in macro !
 
               (let* ( ;; (marker (make-marker))
                      (marker (point-marker))
@@ -322,7 +322,7 @@
   ;;  7 nil
   ;;  #'(lambda (args)
   ;;      (apply 'occ-add-to-org-heading args)) (list ctx timeout))
-  
+
 
 
 
@@ -335,7 +335,7 @@
   ;; (occ-debug :debug "sacha marker %s" (car tsks))
   (let ()
     (let ((tsks
-           (occ-collect-tsk-list (occ-collection-object))))
+           (occ-collect-list (occ-collection-object))))
       (push
        (helm-build-sync-source "Select tsk"
          :candidates (mapcar
@@ -365,8 +365,7 @@
   ;; (occ-debug :debug "sacha marker %s" (car ctxasks))
   (let (helm-sources
         (ctx (occ-make-ctx)))
-    (let ((ctxasks
-           (occ-matching-ctxual-tsks (occ-collection-object) ctx)))
+    (let ((ctxasks (occ-list ctx)))
       (push
        (helm-build-sync-source "Select matching tsk"
          :candidates (mapcar
@@ -432,7 +431,7 @@
           #'(lambda (f)
               (with-current-buffer (find-file-noselect f)
                 org-complex-heading-regexp))
-          (occ-included-files))))
+          (occ-files))))
     (message "files with null regex %s" files)))
 
 ;; testing verification;; testing verification
@@ -443,7 +442,7 @@
           #'(lambda (f)
               (with-current-buffer (find-file-noselect f)
                 (eq major-mode 'org-mode)))
-          (occ-included-files))))
+          (occ-files))))
     (message "files not in org-mode %s" files)))
 
 

@@ -141,7 +141,7 @@
            (eq major-mode 'org-mode))
       (if (member*
              file
-             (occ-included-files)
+             (occ-files)
              :test #'(lambda (f1 f2)
                        (string-equal
                         (file-truename f1)

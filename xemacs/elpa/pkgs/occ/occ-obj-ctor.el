@@ -44,12 +44,12 @@
       (let ((classname (cl-classname (occ-collection-object))))
         ;;let ((classname (cl-classname occ-global-tsk-collection)))
         (cond
-         ((eq 'occ-list-tsk-collection classname)
+         ((eq 'occ-list-collection classname)
           #'make-occ-list-tsk)
-         ((eq 'occ-tree-tsk-collection classname)
+         ((eq 'occ-tree-collection classname)
           #'make-occ-tree-tsk)
-         (t (error "occ-global-tsk-collection is not from occ-list-tsk-collection or occ-tree-tsk-collection class"))))
-    (error "occ-global-tsk-collection is NIL not from occ-list-tsk-collection or occ-tree-tsk-collection class")))
+         (t (error "occ-global-tsk-collection is not from occ-list-collection or occ-tree-collection class"))))
+    (error "occ-global-tsk-collection is NIL not from occ-list-collection or occ-tree-collection class")))
 
 (defun occ-heading-content-only ()
   (if (org-at-heading-p)
@@ -179,40 +179,40 @@
 
 (cl-defmethod occ-make-tsk-collection ((file-spec (head :tree)))
   (unless occ-global-tsk-collection
-    (let ((collection (make-occ-tree-tsk-collection
+    (let ((collection (make-occ-tree-collection
                        :name "tsk collection tree"
-                       :root-files (cdr file-spec))))
+                       :roots (cdr file-spec))))
       (setf occ-global-tsk-collection collection))))
 
 (cl-defmethod occ-make-tsk-collection ((file-spec (head :list)))
   (unless occ-global-tsk-collection
-    (let ((collection (make-occ-list-tsk-collection
+    (let ((collection (make-occ-list-collection
                        :name "tsk collection list"
-                       :root-files (cdr dir-spec))))
+                       :roots (cdr dir-spec))))
       (setf occ-global-tsk-collection collection))))
 
 (cl-defmethod occ-collect-tsks (collection
                                 force)
-  (error "first argument should be of type (or occ-tree-tsk-collection occ-list-tsk-collection)"))
+  (error "first argument should be of type (or occ-tree-collection occ-list-collection)"))
 
-(cl-defmethod occ-collect-tsks ((collection occ-tree-tsk-collection)
+(cl-defmethod occ-collect-tsks ((collection occ-tree-collection)
                                 force)
-  (unless (occ-tree-tsk-collection-tree collection)
+  (unless (occ-tree-collection-tree collection)
     (setf
-     (occ-tree-tsk-collection-tree collection)
+     (occ-tree-collection-tree collection)
      (occ-tree-tsk-build
       #'(lambda ()
           (or
            (occ-make-tsk-at-point #'make-occ-tree-tsk)
-           (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of root-files
-      (car (occ-tree-tsk-collection-root-files collection))))))
+           (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of roots
+      (car (occ-tree-collection-roots collection))))))
 
-(cl-defmethod occ-collect-included-files ((collection occ-tree-tsk-collection)
-                                          force)
-  (unless (occ-tree-tsk-collection-included-files collection)
+(cl-defmethod occ-collect-files ((collection occ-tree-collection)
+                                 force)
+  (unless (occ-tree-collection-files collection)
     (occ-collect-tsks collection nil)
     (setf
-     (occ-tree-tsk-collection-included-files collection)
+     (occ-tree-collection-files collection)
      (remove nil
              (delete-dups
               (let ((tsks (occ-collection collection))
@@ -224,7 +224,7 @@
                  nil)
                 files))))))
 
-(cl-defmethod occ-collect-tsk-list ((collection occ-tree-tsk-collection))
+(cl-defmethod occ-collect-list ((collection occ-tree-collection))
   (let ((tsks (occ-collection collection))
         (tsk-list '()))
     (occ-mapc-tree-tsks
@@ -234,15 +234,15 @@
      nil)
     tsk-list))
 
-(cl-defmethod occ-collect-tsk-list ((collection occ-list-tsk-collection))
+(cl-defmethod occ-collect-list ((collection occ-list-collection))
   (let ((tsks (occ-collection collection)))
     tsks))
 
-(cl-defmethod occ-collect-tsks ((collection occ-list-tsk-collection)
+(cl-defmethod occ-collect-tsks ((collection occ-list-collection)
                                 force)
-  (unless (occ-list-tsk-collection-list collection)
+  (unless (occ-list-collection-list collection)
     (setf
-     (occ-list-tsk-collection-list collection)
+     (occ-list-collection-list collection)
      (remove nil
              (org-map-entries
               #'(lambda ()
@@ -250,31 +250,31 @@
                    (occ-make-tsk-at-point #'make-occ-list-tsk)
                    (make-occ-list-tsk :name "empty list tsk")))
               t
-              (occ-list-tsk-collection-root-files collection))))))
+              (occ-list-collection-roots collection))))))
 
-(cl-defmethod occ-collect-included-files ((collection occ-list-tsk-collection)
-                                          force)
-  (unless (occ-list-tsk-collection-included-files collection)
+(cl-defmethod occ-collect-files ((collection occ-list-collection)
+                                 force)
+  (unless (occ-list-collection-files collection)
     (setf
-     (occ-list-tsk-collection-included-files collection)
-     (occ-list-tsk-collection-root-files collection))))
+     (occ-list-collection-files collection)
+     (occ-list-collection-roots collection))))
 
-(cl-defmethod occ-collection ((collection occ-tree-tsk-collection))
-  (unless (occ-tree-tsk-collection-tree occ-global-tsk-collection)
+(cl-defmethod occ-collection ((collection occ-tree-collection))
+  (unless (occ-tree-collection-tree occ-global-tsk-collection)
     (occ-collect-tsks occ-global-tsk-collection nil)
     (run-hooks 'occ-global-tsk-collection-change-hook))
-  (occ-tree-tsk-collection-tree occ-global-tsk-collection))
+  (occ-tree-collection-tree occ-global-tsk-collection))
 
-(cl-defmethod occ-collection ((collection occ-list-tsk-collection))
-  (unless (occ-list-tsk-collection-list occ-global-tsk-collection)
+(cl-defmethod occ-collection ((collection occ-list-collection))
+  (unless (occ-list-collection-list occ-global-tsk-collection)
     (occ-collect-tsks occ-global-tsk-collection nil)
     (run-hooks 'occ-global-tsk-collection-change-hook))
-  (occ-list-tsk-collection-list occ-global-tsk-collection))
+  (occ-list-collection-list occ-global-tsk-collection))
 
-(cl-defmethod occ-collection-included-files ((collection occ-tree-tsk-collection))
-  (unless (occ-tree-tsk-collection-included-files occ-global-tsk-collection)
-    (occ-collect-included-files occ-global-tsk-collection nil))
-  (occ-tree-tsk-collection-included-files occ-global-tsk-collection))
+(cl-defmethod occ-collection-files ((collection occ-tree-collection))
+  (unless (occ-tree-collection-files occ-global-tsk-collection)
+    (occ-collect-files occ-global-tsk-collection nil))
+  (occ-tree-collection-files occ-global-tsk-collection))
 
 (defun occ-collection-object ()
   (unless occ-global-tsk-collection
@@ -306,11 +306,11 @@
   (progn
     (setq occ-global-tsk-collection nil)
     (occ-make-tsk-collection occ-global-tsk-collection-spec)
-    (occ-tree-tsk-collection-tree occ-global-tsk-collection)
+    (occ-tree-collection-tree occ-global-tsk-collection)
     (occ-collect-tsks occ-global-tsk-collection t)
-    (occ-tree-tsk-collection-root-files occ-global-tsk-collection)
+    (occ-tree-collection-roots occ-global-tsk-collection)
     (setf occ-gtree
-          (occ-tree-tsk-collection-tree occ-global-tsk-collection)))
+          (occ-tree-collection-tree occ-global-tsk-collection)))
 
 
   (cl-get-field occ-gtree 'subtree)
@@ -330,7 +330,7 @@
     #'(lambda ()
         (or
          (occ-make-tsk-at-point #'make-occ-tree-tsk)
-         (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of root-files
+         (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of roots
     "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tsks/xx.org"))
 
   (setq occ-test-gtree
@@ -338,7 +338,7 @@
          #'(lambda ()
              (or
               (occ-make-tsk-at-point #'make-occ-tree-tsk)
-              (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of root-files
+              (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of roots
          ;; todo: occ-global-tsk-collection-spec
          org-ctx-clock-tsk-tree-tsk-root-org-file))
 
