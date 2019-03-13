@@ -1,5 +1,4 @@
 
-
 (in-package :stumpwm)
 
 ;; Turn off initially
@@ -26,8 +25,11 @@
   (pa-fnstumpwm::initpa)
   (pa-fnstumpwm::select-plan-task))
 
+(message "Loaded.... pa")
+
 (if (scratchpad)
     (dotimes (c 2) (hsplit)))
+(message "Loaded.... scratchpad")
 
 ;; (let ((sg (find-group (current-screen) ".scratchpad"))) **
 ;;   (if sg (switch-to-group sg))) **
@@ -35,16 +37,20 @@
 (sleep 2)
 
 (start-wm-components)
+(message "Loaded.... start-wm-components")
 
 (sleep 2)
-
 
 (cd
  (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
    (or
     (probe-file paradise)
     (probe-file (getenv "HOME")))))
+(message "cd to paradise")
 
 (set-profile :myprofile)
+(message "set myprofile")
+
 
 (vgroups)
+(message "vgroups")
