@@ -2,8 +2,8 @@
 
 (in-package :stumpwm)
 
-#-quicklisp
-(defvar *contrib-dir* nil)
+;;  #-quicklisp
+(defvar *contrib-dir* #p"/usr/local/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib/")
 
 (defun load-external-module (module)
   #+quicklisp
@@ -55,7 +55,7 @@
   (dolist
       (mod
        (append
-        (stumpwm-contrib-included-modules #p"/usr/local/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib/")
+        (stumpwm-contrib-included-modules *contrib-dir*)
         '(list "notify")))
     (stumpwm::message "loading ~a" mod)
     (ignore-errors
