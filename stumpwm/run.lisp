@@ -54,3 +54,19 @@
 
 (vgroups)
 (message "vgroups")
+
+
+
+
+
+;; enable
+#+stumptray
+(when (fboundp 'stumptray:stumptray)
+  (stumptray:stumptray))
+
+#+clipboard-history
+(progn
+  (define-key *root-map* (kbd "C-y") "show-clipboard-history")
+  ;; start the polling timer process
+  (clipboard-history:start-clipboard-manager))
+
