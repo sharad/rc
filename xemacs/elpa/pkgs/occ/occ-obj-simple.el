@@ -249,7 +249,9 @@ pointing to it."
 
 
 (cl-defmethod occ-files ()
-  (occ-collection-files (occ-collection-object)))
+  (occ-collect-files (occ-collection-object)))
+
+;; (occ-tree-collection-files (occ-collection-object))
 
 
 ;; TODO: Not to run when frame is not open [visible.]

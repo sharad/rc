@@ -192,10 +192,12 @@
       (setf occ-global-tsk-collection collection))))
 
 (cl-defmethod occ-collect-tsks (collection
+                                &optional
                                 force)
   (error "first argument should be of type (or occ-tree-collection occ-list-collection)"))
 
 (cl-defmethod occ-collect-tsks ((collection occ-tree-collection)
+                                &optional
                                 force)
   (unless (occ-tree-collection-tree collection)
     (setf
@@ -208,6 +210,7 @@
       (car (occ-tree-collection-roots collection))))))
 
 (cl-defmethod occ-collect-files ((collection occ-tree-collection)
+                                 &optional
                                  force)
   (unless (occ-tree-collection-files collection)
     (occ-collect-tsks collection nil)
@@ -222,7 +225,8 @@
                      (push (occ-tsk-file tsk) files))
                  tsks
                  nil)
-                files))))))
+                files)))))
+  (occ-tree-collection-files collection))
 
 (cl-defmethod occ-collect-list ((collection occ-tree-collection))
   (let ((tsks (occ-collection collection))
@@ -253,11 +257,13 @@
               (occ-list-collection-roots collection))))))
 
 (cl-defmethod occ-collect-files ((collection occ-list-collection)
+                                 &optional
                                  force)
   (unless (occ-list-collection-files collection)
     (setf
      (occ-list-collection-files collection)
-     (occ-list-collection-roots collection))))
+     (occ-list-collection-roots collection)))
+  (occ-list-collection-files collection))
 
 (cl-defmethod occ-collection ((collection occ-tree-collection))
   (unless (occ-tree-collection-tree occ-global-tsk-collection)
@@ -271,10 +277,10 @@
     (run-hooks 'occ-global-tsk-collection-change-hook))
   (occ-list-collection-list occ-global-tsk-collection))
 
-(cl-defmethod occ-collection-files ((collection occ-tree-collection))
-  (unless (occ-tree-collection-files occ-global-tsk-collection)
-    (occ-collect-files occ-global-tsk-collection nil))
-  (occ-tree-collection-files occ-global-tsk-collection))
+;; (cl-defmethod occ-collection-files ((collection occ-tree-collection))
+;;   (unless (occ-tree-collection-files occ-global-tsk-collection)
+;;     (occ-collect-files occ-global-tsk-collection nil))
+;;   (occ-tree-collection-files occ-global-tsk-collection))
 
 (defun occ-collection-object ()
   (unless occ-global-tsk-collection
