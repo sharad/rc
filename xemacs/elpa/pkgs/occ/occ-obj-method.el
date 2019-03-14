@@ -131,6 +131,9 @@
   (occ-collect-list collection))
 
 
+(cl-defgeneric occ-list (ctx)
+  "occ-list")
+
 (cl-defmethod occ-list ((ctx occ-ctx))
   "return CTXUAL-TSKs list"
   (occ-collection-obj-list (occ-collection-object) ctx))
