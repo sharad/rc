@@ -292,7 +292,7 @@ pointing to it."
                      (and
                       marker
                       (marker-buffer marker))))
-               (occ-list (occ-collection-object) ctx)))))
+               (occ-list ctx)))))
       (unless (eq matched-ctxual-tsks t)
         (when matched-ctxual-tsks
           (let* ((sel-ctxual-tsk
