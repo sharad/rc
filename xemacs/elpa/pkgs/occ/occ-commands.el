@@ -30,6 +30,38 @@
 (require 'occ-main)
 
 
+;;; Selectors
 
+;;;###autoload
+(defun occ-set-to-ctxual-tsk ()
+  (occ-helm-select-ctxual-tsk
+   #'occ-ctxual-tsk-marker
+   #'occ-set-to))
+
+(defun occ-goto-tsk ()
+  (occ-helm-select-tsk
+   #'occ-tsk-marker
+   #'occ-goto))
+
+
+;;;###autoload
+(defun occ-create-child-tsk ()
+  (interactive)
+  (occ-helm-select-ctxual-tsk
+   #'identity
+   #'occ-capture))
+
+(defun occ-create-child-tsk ()
+  (interactive)
+  (occ-helm-select-tsk
+   #'identity
+   #'occ-capture))
+
+;; (push "Nothing to complete" debug-ignored-errors)
+
+(defun occ-goto-test ()
+  (interactive)
+  (occ-goto-tsk))
 
+
 ;;; occ-commands.el ends here

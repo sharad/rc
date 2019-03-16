@@ -45,31 +45,6 @@
 (require 'occ-obj-method)
 
 
-
-;; (defun org-get-property (prop-key)
-;;   (org-entry-get nil prop-key))
-
-;; (defun occ-get-property (prop-key)
-;;   (org-get-property prop-key))
-
-;; (defun occ-set-property (prop-key value ctx &rest args)
-;;   (let ((prop-key-str (if (eq (elt prop-key 0 ) ?\:) (substring prop-key 1))))
-;;     (org-set-property prop-key
-;;                       (if value
-;;                           value
-;;                           (funcall
-;;                            (occ-key-fun prop-key :getter)
-;;                            prop-key nil ctx args))))
-;;   t)
-
-;; (eq (elt ":root" 0) ?\:)
-
-;; (occ-select-propetry nil)
-
-;; (occ-keys-with-operation :getter nil)
-
-;; (occ-set-property (intern ":root") nil (list :file "/home/s/paradise/git/main/src/wnc/security/authenticator/ieee802_1x.cpp" :buffer (get-buffer "ieee802_1x.cpp")))
-
 (cl-defgeneric occ-select-propetry (tsk ctx &optional prompt)
   "occ-select-propetry")
 
@@ -322,128 +297,6 @@
   ;;  7 nil
   ;;  #'(lambda (args)
   ;;      (apply 'occ-add-to-org-heading args)) (list ctx timeout))
-
-
-
-
-;;; Selectors
-
-;;;###autoload
-(defun occ-helm-select-tsk (selector
-                            action)
-  ;; here
-  ;; (occ-debug :debug "sacha marker %s" (car tsks))
-  (let ()
-    (let ((tsks
-           (occ-collect-list (occ-collection-object))))
-      (push
-       (helm-build-sync-source "Select tsk"
-         :candidates (mapcar
-                      'occ-sacha-selection-line
-                      tsks)
-         :action (list
-                  (cons "Clock in and track" selector))
-         :history 'org-refile-history)
-       helm-sources))
-
-    (when (and
-           (org-clocking-p)
-           (marker-buffer org-clock-marker))
-      (push
-       (helm-build-sync-source "Current Clocking Tsk"
-         :candidates (list (occ-sacha-selection-line (occ-current-tsk)))
-         :action (list
-                  (cons "Clock in and track" selector)))
-       helm-sources))
-
-    (funcall action (helm helm-sources))))
-
-;;;###autoload
-(defun occ-helm-select-ctxual-tsk (selector
-                                   action)
-  ;; here
-  ;; (occ-debug :debug "sacha marker %s" (car ctxasks))
-  (let (helm-sources
-        (ctx (occ-make-ctx)))
-    (let ((ctxasks (occ-list ctx)))
-      (push
-       (helm-build-sync-source "Select matching tsk"
-         :candidates (mapcar
-                      'occ-sacha-selection-line
-                      ctxasks)
-         :action (list
-                  (cons "Clock in and track" selector))
-         :history 'org-refile-history)
-       helm-sources))
-
-    (when (and
-           (org-clocking-p)
-           (marker-buffer org-clock-marker))
-      (push
-       (helm-build-sync-source "Current Clocking Tsk"
-         :candidates (list (occ-sacha-selection-line
-                            (occ-build-ctxual-tsk (occ-current-tsk) ctx)))
-         :action (list
-                  (cons "Clock in and track" selector)))
-       helm-sources))
-
-    (funcall action (helm helm-sources))))
-
-
-;;;###autoload
-(defun occ-set-to-ctxual-tsk ()
-  (occ-helm-select-ctxual-tsk
-   #'occ-ctxual-tsk-marker
-   #'occ-set-to))
-
-(defun occ-goto-tsk ()
-  (occ-helm-select-tsk
-   #'occ-tsk-marker
-   #'occ-goto))
-
-
-;;;###autoload
-(defun occ-create-child-tsk ()
-  (interactive)
-  (occ-helm-select-ctxual-tsk
-   #'identity
-   #'occ-capture))
-
-(defun occ-create-child-tsk ()
-  (interactive)
-  (occ-helm-select-tsk
-   #'identity
-   #'occ-capture))
-
-(push "Nothing to complete" debug-ignored-errors)
-
-
-(defun occ-goto-test ()
-  (interactive)
-  (occ-goto-tsk))
-
-
-;; testing verification
-(defun occ-files-with-null-regex ()
-  (interactive)
-  (let ((files
-         (remove-if
-          #'(lambda (f)
-              (with-current-buffer (find-file-noselect f)
-                org-complex-heading-regexp))
-          (occ-files))))
-    (message "files with null regex %s" files)))
-
-;; testing verification;; testing verification
-(defun occ-files-not-in-org-mode ()
-  (interactive)
-  (let ((files
-         (remove-if
-          #'(lambda (f)
-              (with-current-buffer (find-file-noselect f)
-                (eq major-mode 'org-mode)))
-          (occ-files))))
-    (message "files not in org-mode %s" files)))
 
 
 ;;; occ-interactive.el ends here

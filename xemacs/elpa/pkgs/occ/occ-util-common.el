@@ -119,9 +119,30 @@
     bodyform))
 (put 'condition-case-control 'lisp-indent-function 2)
 
+
 
+;; testing verification
+(defun occ-files-with-null-regex ()
+  (interactive)
+  (let ((files
+         (remove-if
+          #'(lambda (f)
+              (with-current-buffer (find-file-noselect f)
+                org-complex-heading-regexp))
+          (occ-files))))
+    (message "files with null regex %s" files)))
 
-
+;; testing verification;; testing verification
+(defun occ-files-not-in-org-mode ()
+  (interactive)
+  (let ((files
+         (remove-if
+          #'(lambda (f)
+              (with-current-buffer (find-file-noselect f)
+                (eq major-mode 'org-mode)))
+          (occ-files))))
+    (message "files not in org-mode %s" files)))
+
 
 
 ;;; occ-util-common.el ends here

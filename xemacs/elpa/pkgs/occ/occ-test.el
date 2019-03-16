@@ -55,6 +55,30 @@
   (should t))
 
 
+
+;; testing verification
+(defun occ-files-with-null-regex ()
+  (interactive)
+  (let ((files
+         (remove-if
+          #'(lambda (f)
+              (with-current-buffer (find-file-noselect f)
+                org-complex-heading-regexp))
+          (occ-files))))
+    (message "files with null regex %s" files)))
+
+;; testing verification;; testing verification
+(defun occ-files-not-in-org-mode ()
+  (interactive)
+  (let ((files
+         (remove-if
+          #'(lambda (f)
+              (with-current-buffer (find-file-noselect f)
+                (eq major-mode 'org-mode)))
+          (occ-files))))
+    (message "files not in org-mode %s" files)))
+
+
 (when nil                               ;occ-obj-method.el
 
   (occ-add-to-org-heading-when-idle (occ-make-ctx) 7)

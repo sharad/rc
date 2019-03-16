@@ -225,5 +225,4 @@
 
     (funcall action (helm helm-sources))))
 
-
 ;;; occ-obj-method.el ends here

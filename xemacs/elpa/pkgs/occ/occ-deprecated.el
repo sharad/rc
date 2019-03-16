@@ -267,6 +267,33 @@
 
 
 
+;; (defun org-get-property (prop-key)
+;;   (org-entry-get nil prop-key))
+
+;; (defun occ-get-property (prop-key)
+;;   (org-get-property prop-key))
+
+;; (defun occ-set-property (prop-key value ctx &rest args)
+;;   (let ((prop-key-str (if (eq (elt prop-key 0 ) ?\:) (substring prop-key 1))))
+;;     (org-set-property prop-key
+;;                       (if value
+;;                           value
+;;                           (funcall
+;;                            (occ-key-fun prop-key :getter)
+;;                            prop-key nil ctx args))))
+;;   t)
+
+;; (eq (elt ":root" 0) ?\:)
+
+;; (occ-select-propetry nil)
+
+;; (occ-keys-with-operation :getter nil)
+
+;; (occ-set-property (intern ":root") nil (list :file "/home/s/paradise/git/main/src/wnc/security/authenticator/ieee802_1x.cpp" :buffer (get-buffer "ieee802_1x.cpp")))
+
+
+
+
 
 (provide 'occ-deprecated)
 ;;; occ-deprecated.el ends here
