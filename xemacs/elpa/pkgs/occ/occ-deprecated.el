@@ -175,7 +175,97 @@
             (if old-buff
                 (with-current-buffer old-buff
                   (setq buffer-read-only old-buff-read-only)))
-            retval))))))
+            retval)))))
+
+
+
+
+
+
+  (cl-defgeneric occ-sacha-selection-line (obj))
+
+
+  (cl-defmethod occ-sacha-selection-line ((mrk marker))
+    "Insert a line for the clock selection menu.
+  And return a cons cell with the selection character integer and the mrk
+  pointing to it."
+    (when (mrk-buffer mrk)
+      (with-current-buffer (org-base-buffer (mrk-buffer mrk))
+        (org-with-wide-buffer
+         (progn ;; ignore-errors
+           (goto-char mrk)
+           (let* ((cat (org-get-category))
+                  (heading (org-get-heading 'notags))
+                  (prefix (save-excursion
+                            (org-back-to-heading t)
+                            (looking-at org-outline-regexp)
+                            (match-string 0)))
+                  (tsk (substring
+                        (org-fontify-like-in-org-mode
+                         (concat prefix heading)
+                         org-odd-levels-only)
+                        (length prefix))))
+             (when tsk ;; (and cat tsk)
+               ;; (insert (format "[%c] %-12s  %s\n" i cat tsk))
+               ;; mrk
+               (cons tsk mrk))))))))
+
+  (cl-defmethod occ-sacha-selection-line ((tsk occ-tsk))
+    "Insert a line for the clock selection menu.
+  And return a cons cell with the selection character integer and the marker
+  pointing to it."
+    (cons (occ-print tsk) tsk))
+
+  (cl-defmethod occ-sacha-selection-line ((ctxask occ-ctxual-tsk))
+    "Insert a line for the clock selection menu.
+  And return a cons cell with the selection character integer and the marker
+  pointing to it."
+    (cons (occ-print ctxask) ctxask))
+
+  (defun occ-sacha-helm-select (ctxasks)
+    ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
+    (message "Running occ-sacha-helm-select")
+    (helm
+     (list
+      (helm-build-sync-source "Select matching tsks"
+        :candidates (mapcar 'occ-sacha-selection-line ctxasks)
+        :action (list ;; (cons "Select" 'identity)
+                 (cons "Clock in and track" #'identity))
+        :history 'org-refile-history))))
+  ;; (helm-build-dummy-source "Create tsk"
+  ;;   :action (helm-make-actions
+  ;;            "Create tsk"
+  ;;            'sacha/helm-org-create-tsk))
+
+
+  (defun occ-sacha-helm-select-timed (ctxasks)
+    (helm-timed 7
+      (message "running sacha/helm-select-clock")
+      (occ-sacha-helm-select ctxasks))))
+
+
+
+(cl-defgeneric occ-sacha-helm-action (ctxask clockin-fn)
+  "occ-sacha-helm-action")
+
+(cl-defmethod occ-sacha-helm-action ((ctxask occ-ctxual-tsk) clockin-fn)
+  ;; (message "sacha marker %s" (car dyntskpls))
+  ;; (setq sacha/helm-org-refile-locations tbl)
+  (progn
+    (helm
+     (list
+      (helm-build-sync-source "Select matching tsks"
+        :candidates (mapcar 'occ-sacha-selection-line ctxask)
+        :action (list ;; (cons "Select" 'identity)
+                 (cons "Clock in and track" #'(lambda (c) (funcall clockin-fn c))))
+        :history 'org-refile-history)))))
+;; (helm-build-dummy-source "Create tsk"
+;;   :action (helm-make-actions
+;;            "Create tsk"
+;;            'sacha/helm-org-create-tsk))
+
+
+
 
 
 (provide 'occ-deprecated)

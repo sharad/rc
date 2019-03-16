@@ -31,3 +31,12 @@
        :role "conversation")
     (2 nil t :class "Skype" :instance "skype" :title    nil ;"skypeid - Skype? Beta"
        :role "MainWindow"))
+
+
+
+(setf
+ stumpwm::*new-window-preferred-frame*
+ '(:focused
+   :last
+   :empty
+   :unfocused))

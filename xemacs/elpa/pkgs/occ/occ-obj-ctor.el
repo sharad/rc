@@ -33,8 +33,8 @@
 (provide 'occ-obj-ctor)
 
 
-(defvar occ-global-tsk-collection-spec nil)
-(defvar occ-global-tsk-collection nil)
+(defvar occ-global-tsk-collection-spec        nil)
+(defvar occ-global-tsk-collection             nil)
 (defvar occ-global-tsk-collection-change-hook nil
   "run when occ-global-tsk-collection-change-hook get changed.")
 

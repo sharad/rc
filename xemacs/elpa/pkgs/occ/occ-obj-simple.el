@@ -113,49 +113,6 @@
   (let ((tsk (occ-tsk-current-tsk)))
     (when tsk (occ-rank tsk ctx))))
 
-
-(cl-defgeneric occ-sacha-selection-line (obj))
-
-
-(cl-defmethod occ-sacha-selection-line ((mrk marker))
-  "Insert a line for the clock selection menu.
-And return a cons cell with the selection character integer and the mrk
-pointing to it."
-  (when (mrk-buffer mrk)
-    (with-current-buffer (org-base-buffer (mrk-buffer mrk))
-      (org-with-wide-buffer
-       (progn ;; ignore-errors
-         (goto-char mrk)
-         (let* ((cat (org-get-category))
-                (heading (org-get-heading 'notags))
-                (prefix (save-excursion
-                          (org-back-to-heading t)
-                          (looking-at org-outline-regexp)
-                          (match-string 0)))
-                (tsk (substring
-                      (org-fontify-like-in-org-mode
-                       (concat prefix heading)
-                       org-odd-levels-only)
-                      (length prefix))))
-           (when tsk ;; (and cat tsk)
-             ;; (insert (format "[%c] %-12s  %s\n" i cat tsk))
-             ;; mrk
-             (cons tsk mrk))))))))
-
-(cl-defmethod occ-sacha-selection-line ((tsk occ-tsk))
-  "Insert a line for the clock selection menu.
-And return a cons cell with the selection character integer and the marker
-pointing to it."
-  (cons (occ-print tsk) tsk))
-
-(cl-defmethod occ-sacha-selection-line ((ctxask occ-ctxual-tsk))
-  "Insert a line for the clock selection menu.
-And return a cons cell with the selection character integer and the marker
-pointing to it."
-  (cons (occ-print ctxask) ctxask))
-;; function to setup ctx clock timer:2 ends here
-
-
 (cl-defgeneric occ-goto (obj))
 
 
@@ -254,6 +211,72 @@ pointing to it."
 ;; (occ-tree-collection-files (occ-collection-object))
 
 
+(cl-defgeneric occ-candidate (obj)
+  "occ-candidate")
+
+(cl-defmethod occ-candidate ((mrk marker))
+  "Insert a line for the clock selection menu.
+And return a cons cell with the selection character integer and the mrk
+pointing to it."
+  (when (mrk-buffer mrk)
+    (with-current-buffer (org-base-buffer (mrk-buffer mrk))
+      (org-with-wide-buffer
+       (progn ;; ignore-errors
+         (goto-char mrk)
+         (let* ((cat (org-get-category))
+                (heading (org-get-heading 'notags))
+                (prefix (save-excursion
+                          (org-back-to-heading t)
+                          (looking-at org-outline-regexp)
+                          (match-string 0)))
+                (tsk (substring
+                      (org-fontify-like-in-org-mode
+                       (concat prefix heading)
+                       org-odd-levels-only)
+                      (length prefix))))
+           (when tsk ;; (and cat tsk)
+             ;; (insert (format "[%c] %-12s  %s\n" i cat tsk))
+             ;; mrk
+             (cons tsk mrk))))))))
+
+(cl-defmethod occ-candidate ((tsk occ-tsk))
+  "Insert a line for the clock selection menu.
+And return a cons cell with the selection character integer and the marker
+pointing to it."
+  (cons (occ-print tsk) tsk))
+
+(cl-defmethod occ-candidate ((ctxask occ-ctxual-tsk))
+  "Insert a line for the clock selection menu.
+And return a cons cell with the selection character integer and the marker
+pointing to it."
+  (cons (occ-print ctxask) ctxask))
+
+;; function to setup ctx clock timer:2 ends here
+
+
+(defun occ-list-select (candidates)
+  ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
+  (message "Running occ-sacha-helm-select")
+  (helm
+   (list
+    (helm-build-sync-source "Select matching tsks"
+      :candidates (mapcar 'occ-candidate candidates)
+      :action (list ;; (cons "Select" 'identity)
+               (cons "Clock in and track" #'identity))
+      :history 'org-refile-history))))
+;; (helm-build-dummy-source "Create tsk"
+;;   :action (helm-make-actions
+;;            "Create tsk"
+;;            'sacha/helm-org-create-tsk))
+
+
+(defun occ-list-select-timed (candidates)
+  (helm-timed 7
+    (message "running sacha/helm-select-clock")
+    (occ-sacha-helm-select candidates)))
+
+
+
 ;; TODO: Not to run when frame is not open [visible.]
 ;; Getting targets...done
 ;; Error running timer: (error "Window #<window 12> too small for splitting")
@@ -297,7 +320,7 @@ pointing to it."
         (when matched-ctxual-tsks
           (let* ((sel-ctxual-tsk
                   (if (> (length matched-ctxual-tsks) 1)
-                      (occ-sacha-helm-select-timed matched-ctxual-tsks)
+                      (occ-list-select-timed matched-ctxual-tsks)
                     (car matched-ctxual-tsks))))
             ;; (sel-tsk   (if sel-ctxual-tsk (plist-get sel-ctxual-tsk :tsk)))
             ;; (sel-marker (if sel-tsk      (plist-get sel-tsk      :tsk-clock-marker)))
