@@ -38,6 +38,7 @@
 (require 'occ-obj-accessor)
 (require 'occ-util-common)
 (require 'occ-prop)
+(require 'occ-helm)
 
 
 (cl-defmethod occ-fontify-like-in-org-mode ((tsk occ-tsk))
@@ -213,8 +214,8 @@
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the obj
 pointing to it."
-  (when (obj-buffer obj)
-    (with-current-buffer (org-base-buffer (obj-buffer obj))
+  (when (marker-buffer obj)
+    (with-current-buffer (org-base-buffer (marker-buffer obj))
       (org-with-wide-buffer
        (progn ;; ignore-errors
          (goto-char obj)
@@ -224,15 +225,16 @@ pointing to it."
                           (org-back-to-heading t)
                           (looking-at org-outline-regexp)
                           (match-string 0)))
-                (tsk (substring
-                      (org-fontify-like-in-org-mode
-                       (concat prefix heading)
-                       org-odd-levels-only)
-                      (length prefix))))
-           (when tsk ;; (and cat tsk)
-             ;; (insert (format "[%c] %-12s  %s\n" i cat tsk))
+                (org-heading
+                 (substring
+                  (org-fontify-like-in-org-mode
+                   (concat prefix heading)
+                   org-odd-levels-only)
+                  (length prefix))))
+           (when org-heading ;; (and cat org-heading)
+             ;; (insert (format "[%c] %-12s  %s\n" i cat org-heading))
              ;; obj
-             (cons tsk obj))))))))
+             (cons org-heading obj))))))))
 
 (cl-defmethod occ-candidate ((obj occ-tsk))
   "Insert a line for the clock selection menu.
@@ -459,9 +461,9 @@ pointing to it."
          (old-tsk            (when old-ctxual-tsk (occ-ctxual-tsk-tsk old-ctxual-tsk)))
          (old-marker         (or (if old-tsk (occ-tsk-marker old-tsk)) org-clock-hd-marker))
          (old-heading        (if old-tsk (occ-tsk-heading old-tsk)))
-         (new-tsk            (occ-ctxual-tsk-tsk obj))
-         (new-marker         (if new-tsk (occ-tsk-marker new-tsk)))
-         (new-heading        (if new-tsk (occ-tsk-heading new-tsk))))
+         (obj-tsk            (occ-ctxual-tsk-tsk obj))
+         (new-marker         (if obj-tsk (occ-tsk-marker obj-tsk)))
+         (new-heading        (if obj-tsk (occ-tsk-heading obj-tsk))))
     (when (and
            new-marker
            (marker-buffer new-marker))
@@ -495,7 +497,7 @@ pointing to it."
           (when old-heading
             (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
 
-          (occ-clock-in new-tsk)
+          (occ-clock-in obj-tsk)
           (setq retval t)
 
           (push obj *occ-clocked-ctxual-tsk-ctx-history*)
@@ -524,7 +526,6 @@ pointing to it."
         nil))))
 
 (cl-defmethod occ-clock-in ((obj null))
-
   (error "Can not clock in NIL"))
 
 
