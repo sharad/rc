@@ -179,7 +179,7 @@
 
 
 (cl-defmethod occ-build-obj ((tsk occ-tsk) (obj occ-ctx))
-   (occ-build-ctxual-tsk tsk ctx))
+   (occ-build-ctxual-tsk tsk obj))
 
 (cl-defmethod occ-build-obj ((tsk occ-tsk) (obj null))
   tsk)

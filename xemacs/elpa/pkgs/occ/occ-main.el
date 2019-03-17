@@ -55,7 +55,7 @@
        (>= 0 (occ-associated-p (occ-current-tsk) ctx)))
 
       (progn                ;current clock is not matching
-        (occ-debug (if this-command :debug :warning) "occ-clock-in-if-not: Now really going to clock with this-command=%s" this-command)
+        (occ-debug :debug "occ-clock-in-if-not: Now really going to clock with this-command=%s" this-command)
         (unless (occ-clock-in ctx)
 
           ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)

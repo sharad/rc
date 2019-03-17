@@ -54,6 +54,7 @@
       (org-fontify-like-in-org-mode
        (concat prefix heading)
        org-odd-levels-only))))
+
 
 (cl-defmethod occ-print ((obj occ-tsk))
   ;; (format "[%4d] %s"
@@ -424,6 +425,7 @@ pointing to it."
             ;; (occ-debug :debug "sel-ctxual-tsk %s sel-tsk %s sel-marker %s" sel-ctxual-tsk sel-tsk sel-marker)
             sel-ctxual-tsk))))))
 
+
 (cl-defmethod occ-clock-in ((obj marker))
   (let ((org-log-note-clock-out nil))
     (when (marker-buffer obj)
@@ -496,9 +498,10 @@ pointing to it."
           retval)))))
 
 (cl-defmethod occ-clock-in ((obj occ-ctx))
-  (let ((tsk (occ-select obj)))
-    (if tsk
-        (occ-clock-in tsk)
+  "Clock-in selected CTXUAL-TSK for occ-ctx OBJ or open interface for adding properties to heading."
+  (let ((ctxual-tsk (occ-select obj)))
+    (if ctxual-tsk
+        (occ-clock-in ctxual-tsk)
       (progn
         ;; here create unnamed tsk, no need
         (setq *occ-update-current-ctx-msg* "null clock")
@@ -506,12 +509,13 @@ pointing to it."
                    "No clock found please set a match for this ctx %s, add it using M-x occ-add-to-org-heading."
                    obj)
         (lwarn 'occ
-               (if this-command :debug :warning)
+               :debug
                "occ-clock-in(ctx):  with this-command=%s" this-command)
         (occ-add-to-org-heading-when-idle obj 7)
         nil))))
 
 (cl-defmethod occ-clock-in ((obj null))
+
   (error "Can not clock in NIL"))
 
 

@@ -282,7 +282,7 @@
       ;; TODO: Add code to which check if only focus present than only trigger
       ;; else postpone it by calling run-with-idle-plus-timer
       (lwarn 'occ
-             (if this-command :debug :warning)
+             :debug
              "occ-add-to-org-heading-when-idle: calling occ-add-to-org-heading with this-command=%s" this-command)
       (occ-add-to-org-heading ctx timeout))
 
