@@ -265,7 +265,7 @@ pointing to it."
 
 
 (defun occ-helm-build-obj-source (obj &optional name-action-cons)
-  (occ-helm-build-source
+  (occ-helm-build-candidates-source
    (occ-list obj)
    name-action-cons))
 
