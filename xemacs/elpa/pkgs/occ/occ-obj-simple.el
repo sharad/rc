@@ -249,28 +249,38 @@ pointing to it."
 
 ;; function to setup ctx clock timer:2 ends here
 
-
-(defun occ-list-select (candidates)
-  ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
-  (message "Running occ-sacha-helm-select")
-  (helm
-   (list
-    (helm-build-sync-source "Select matching tsks"
-      :candidates (mapcar 'occ-candidate candidates)
-      :action (list ;; (cons "Select" 'identity)
-               (cons "Clock in and track" #'identity))
-      :history 'org-refile-history))))
+(defun occ-helm-build-candidates-source (candidates &optional name-action-cons)
+  (when candidates
+    (helm-build-sync-source (concat "Select matching " (symbol-name
+                                                        (cl-classname (car candidates))))
+      :candidates (mapcar #'occ-candidate candidates)
+      :action (list (or name-action-cons
+                        (cons "Select" #'identity)))
+      :history 'org-refile-history)))
 ;; (helm-build-dummy-source "Create tsk"
 ;;   :action (helm-make-actions
 ;;            "Create tsk"
 ;;            'sacha/helm-org-create-tsk))
 
 
+(defun occ-helm-build-obj-source (obj &optional name-action-cons)
+  (occ-helm-build-source
+   (occ-list obj)
+   name-action-cons))
+
+
+(defun occ-list-select (candidates)
+  ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
+  (message "Running occ-sacha-helm-select")
+  (helm
+   (occ-helm-build-candidates-source
+    candidates
+    (cons "Clock in and track" #'identity))))
+
 (defun occ-list-select-timed (candidates)
   (helm-timed 7
     (message "running sacha/helm-select-clock")
-    (occ-sacha-helm-select candidates)))
-
+    (occ-list-select candidates)))
 
 ;; ISSUE? should it return rank or occ-ctxual-tsks list
 (cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
@@ -387,7 +397,7 @@ pointing to it."
 (defvar occ-clock-in-hooks nil "Hook to run on clockin with previous and next markers.")
 
 (cl-defmethod occ-select ((obj occ-ctx))
-  "return CTXUAL-TSK or NIL, marker and ranked version"
+  "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
   (interactive
    (list (occ-make-ctx)))
   (progn

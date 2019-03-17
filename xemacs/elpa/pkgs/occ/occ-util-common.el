@@ -23,10 +23,6 @@
 
 ;;; Code:
 
-
-
-
-
 (provide 'occ-util-common)
 
 

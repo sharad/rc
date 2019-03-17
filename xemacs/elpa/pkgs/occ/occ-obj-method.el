@@ -60,16 +60,6 @@
       ;;            'sacha/helm-org-create-tsk))
 
 
-(defun occ-helm-build-source (obj &optional name-action-cons)
-  (let ((candidates (occ-list obj)))
-    (when candidates
-      (helm-build-sync-source (concat "Select matching " (symbol-name
-                                                          (cl-classname (car candidates))))
-        :candidates (mapcar #'occ-candidate (occ-list obj))
-        :action (list (or name-action-cons
-                          (cons "Select" #'identity)))
-        :history 'org-refile-history))))
-
 (defun occ-helm-select (obj
                         selector
                         action)
@@ -77,7 +67,7 @@
   ;; (occ-debug :debug "sacha marker %s" (car ctxasks))
   (let (helm-sources)
     (push
-     (occ-helm-build-source obj (cons "Clock in and track" selector))
+     (occ-helm-build-obj-source obj (cons "Clock in and track" selector))
      helm-sources)
 
     (when (and
