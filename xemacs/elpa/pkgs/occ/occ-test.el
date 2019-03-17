@@ -244,4 +244,58 @@
   (setq xxnaaa
         (aref (cl--generic 'occ-readprop) 3)))
 
+
+;; ctor
+(when nil
+  (progn
+    (setq occ-global-tsk-collection nil)
+    (occ-make-tsk-collection occ-global-tsk-collection-spec)
+    (occ-tree-collection-tree occ-global-tsk-collection)
+    (occ-collect-tsks occ-global-tsk-collection t)
+    (occ-tree-collection-roots occ-global-tsk-collection)
+    (setf occ-gtree
+          (occ-tree-collection-tree occ-global-tsk-collection)))
+
+
+  (cl-get-field occ-gtree 'subtree)
+
+  (cl-get-field occ-gtree 'plist)
+
+  (cl-get-field (make-occ-tree-tsk :name "empty tree tsk" :subtree nil) 'subtree)
+
+  (cl-set-field occ-gtree 'subtree 1)
+
+  (cl-class-slots (cl-classname occ-gtree))
+  ;; (type-of occ-gtree)
+
+  (setf
+   occ-test-gtree
+   (occ-tsk-tree-build
+    #'(lambda ()
+        (or
+         (occ-make-tsk-at-point #'make-occ-tree-tsk)
+         (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of roots
+    "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tsks/xx.org"))
+
+  (setq occ-test-gtree
+        (occ-tsk-tree-build
+         #'(lambda ()
+             (or
+              (occ-make-tsk-at-point #'make-occ-tree-tsk)
+              (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of roots
+         ;; todo: occ-global-tsk-collection-spec
+         org-ctx-clock-tsk-tree-tsk-root-org-file))
+
+  (with-current-buffer (find-file-noselect "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tsks/xx.org")
+    (goto-char (point-min))
+    (setf occ-file-subtree
+          (occ-org-map-subheading
+           #'(lambda ()
+               (occ-tsk-tree-collect-tsk
+                #'(lambda ()
+                    (or
+                     (occ-make-tsk-at-point #'make-occ-tree-tsk)
+                     (make-occ-tree-tsk :name "empty tree tsk" :subtree nil)))))))))
+;; ctor
+
 ;;; occ-test.el ends here

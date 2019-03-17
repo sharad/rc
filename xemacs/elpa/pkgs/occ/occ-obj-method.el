@@ -40,109 +40,6 @@
 (require 'occ-obj-simple)
 
 
-;; ISSUE? should it return rank or occ-ctxual-tsks list
-(cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
-                                          (ctx occ-ctx))
-  "Return matched CTXUAL-TSKs for context CTX"
-  ;; (message "occ-collection-obj-matches list")
-  (let ((tsks (occ-collection collection))
-        (ctx  ctx))
-    (remove-if-not
-     #'(lambda (ctxual-tsk)
-         (> (occ-ctxual-tsk-rank ctxual-tsk) 0))
-     (mapcar
-      #'(lambda (tsk)
-          (occ-build-ctxual-tsk tsk ctx))
-      tsks))))
-
-;; ISSUE? should it return rank or occ-ctxual-tsks map
-(cl-defmethod occ-collection-obj-matches ((collection occ-tree-collection)
-                                          (ctx occ-ctx))
-  ;; (message "occ-collection-obj-matches tree")
-  "Return matched CTXUAL-TSKs for context CTX"
-  (let ((tsks (occ-collection collection))
-        (matched '()))
-    (when tsks
-      (occ-debug :debug "occ-collection-obj-matches BEFORE matched %s[%d]" matched (length matched))
-      (occ-mapc-tree-tsks
-       #'(lambda (tsk args)
-           ;; (occ-debug :debug "occ-rank heading = %s" (occ-tsk-heading tsk))
-           (let* ((ctxual-tsk (occ-build-ctxual-tsk tsk args))
-                  (rank (occ-ctxual-tsk-rank ctxual-tsk)))
-             (unless rank (error "occ-entries-associated-to-ctx-by-keys[lambda]: rank is null"))
-             (when (> (occ-ctxual-tsk-rank ctxual-tsk) 0)
-               (push ctxual-tsk matched)
-               (occ-debug :debug "occ-entries-associated-to-ctx-by-keys[lambda]: tsk %s MATCHED RANK %d"
-                          (occ-tsk-heading tsk)
-                          (length matched)))))
-       tsks
-       ctx))
-    (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: AFTER matched %s[%d]" "matched" (length matched))
-    matched))
-
-;;TODO: make it after method
-(cl-defmethod occ-collection-obj-matches :around  ((collection occ-collection)
-                                                   (ctx occ-ctx)) ;TODO: make it after method
-  "Return matched CTXUAL-TSKs for context CTX"
-  (if (occ-collection-object)
-      (let* ((ctxual-tsks (cl-call-next-method))
-             (rankslist  (mapcar
-                          #'(lambda (ctxual-tsk)
-                              (occ-ctxual-tsk-rank ctxual-tsk))
-                          ctxual-tsks))
-             (avgrank    (if (= 0 (length rankslist))
-                             0
-                           (/
-                            (reduce #'+ rankslist)
-                            (length rankslist))))
-             (varirank   (if (= 0 (length rankslist))
-                             0
-                           (sqrt
-                            (/
-                             (reduce #'+
-                                     (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
-                             (length rankslist))))))
-        ;; (message "occ-collection-obj-matches :around finish")
-        (occ-debug :debug "matched ctxtsks %s" (length ctxual-tsks))
-        (remove-if-not
-         #'(lambda (ctxual-tsk)
-             (>= (occ-ctxual-tsk-rank ctxual-tsk) avgrank))
-         ctxual-tsks))
-    (error "(occ-collection-object) returned nil")))
-
-
-(cl-defmethod occ-matches ((ctx occ-ctx))
-  "return CTXUAL-TSKs matches"
-  (occ-collection-obj-matches (occ-collection-object) ctx))
-
-(cl-defmethod occ-matches ((ctx null))
-  "return TSKs matches"
-  (occ-collection-obj-matches (occ-collection-object) ctx))
-
-
-(cl-defmethod occ-collection-obj-list ((collection occ-collection)
-                                       (ctx occ-ctx))
-  "return CTXUAL-TSKs list"
-  (occ-collection-obj-matches collection ctx))
-
-(cl-defmethod occ-collection-obj-list ((collection occ-collection)
-                                       (ctx null))
-  "return TSKs list"
-  (occ-collect-list collection))
-
-
-(cl-defgeneric occ-list (ctx)
-  "occ-list")
-
-(cl-defmethod occ-list ((ctx occ-ctx))
-  "return CTXUAL-TSKs list"
-  (occ-collection-obj-list (occ-collection-object) ctx))
-
-(cl-defmethod occ-list ((ctx null))
-  "return TSKs list"
-  (occ-collection-obj-list (occ-collection-object) ctx))
-
-
 (cl-defgeneric occ-sacha-helm-action (ctxask clockin-fn)
   "occ-sacha-helm-action")
 
@@ -153,7 +50,7 @@
     (helm
      (list
       (helm-build-sync-source "Select matching tsks"
-        :candidates (mapcar 'occ-sacha-selection-line ctxask)
+        :candidates (mapcar 'occ-candidate ctxask)
         :action (list ;; (cons "Select" 'identity)
                  (cons "Clock in and track" #'(lambda (c) (funcall clockin-fn c))))
         :history 'org-refile-history)))))
@@ -163,66 +60,48 @@
       ;;            'sacha/helm-org-create-tsk))
 
 
-;;;###autoload
-(defun occ-helm-select-tsk (selector
-                            action)
+(defun occ-helm-build-source (obj &optional name-action-cons)
+  (let ((candidates (occ-list obj)))
+    (when candidates
+      (helm-build-sync-source (concat "Select matching " (symbol-name
+                                                          (cl-classname (car candidates))))
+        :candidates (mapcar #'occ-candidate (occ-list obj))
+        :action (list (or name-action-cons
+                          (cons "Select" #'identity)))
+        :history 'org-refile-history))))
+
+(defun occ-helm-select (obj
+                        selector
+                        action)
   ;; here
-  ;; (occ-debug :debug "sacha marker %s" (car tsks))
-  (let ()
-    (let ((tsks
-           (occ-list nil)))
-      (push
-       (helm-build-sync-source "Select tsk"
-         :candidates (mapcar
-                      'occ-sacha-selection-line
-                      tsks)
-         :action (list
-                  (cons "Clock in and track" selector))
-         :history 'org-refile-history)
-       helm-sources))
+  ;; (occ-debug :debug "sacha marker %s" (car ctxasks))
+  (let (helm-sources)
+    (push
+     (occ-helm-build-source obj (cons "Clock in and track" selector))
+     helm-sources)
 
     (when (and
            (org-clocking-p)
            (marker-buffer org-clock-marker))
       (push
        (helm-build-sync-source "Current Clocking Tsk"
-         :candidates (list (occ-sacha-selection-line (occ-current-tsk)))
+         :candidates (list (occ-candidate
+                            (occ-build-obj (occ-current-tsk) obj)))
          :action (list
                   (cons "Clock in and track" selector)))
        helm-sources))
-
     (funcall action (helm helm-sources))))
+
+
+;;;###autoload
+(defun occ-helm-select-tsk (selector
+                            action)
+  (occ-helm-select nil selector action))
 
 ;;;###autoload
 (defun occ-helm-select-ctxual-tsk (selector
                                    action)
-  ;; here
-  ;; (occ-debug :debug "sacha marker %s" (car ctxasks))
-  (let (helm-sources
-        (ctx (occ-make-ctx)))
-    (let ((ctxasks
-           (occ-list (occ-collection-object) ctx)))
-      (push
-       (helm-build-sync-source "Select matching tsk"
-         :candidates (mapcar
-                      'occ-sacha-selection-line
-                      ctxasks)
-         :action (list
-                  (cons "Clock in and track" selector))
-         :history 'org-refile-history)
-       helm-sources))
+  (occ-helm-select (occ-make-ctx) selector action))
 
-    (when (and
-           (org-clocking-p)
-           (marker-buffer org-clock-marker))
-      (push
-       (helm-build-sync-source "Current Clocking Tsk"
-         :candidates (list (occ-sacha-selection-line
-                            (occ-build-ctxual-tsk (occ-current-tsk) ctx)))
-         :action (list
-                  (cons "Clock in and track" selector)))
-       helm-sources))
-
-    (funcall action (helm helm-sources))))
 
 ;;; occ-obj-method.el ends here

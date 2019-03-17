@@ -43,7 +43,6 @@
    #'occ-tsk-marker
    #'occ-goto))
 
-
 ;;;###autoload
 (defun occ-create-child-tsk ()
   (interactive)

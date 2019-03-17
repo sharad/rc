@@ -55,22 +55,17 @@
        (concat prefix heading)
        org-odd-levels-only))))
 
-(cl-defmethod occ-ctxual-tsk-marker ((ctxask occ-ctxual-tsk))
-  (let* ((tsk    (occ-ctxual-tsk-tsk ctxask))
-         (marker (occ-tsk-marker tsk)))
-    marker))
-
-(cl-defmethod occ-print ((tsk occ-tsk))
+(cl-defmethod occ-print ((obj occ-tsk))
   ;; (format "[%4d] %s"
   ;;         0
   ;;         (occ-fontify-like-in-org-mode tsk))
   (format "%s"
-          (occ-fontify-like-in-org-mode tsk)))
+          (occ-fontify-like-in-org-mode obj)))
 
-(cl-defmethod occ-print ((ctxask occ-ctxual-tsk))
-  (let ((tsk (occ-ctxual-tsk-tsk ctxask)))
+(cl-defmethod occ-print ((obj occ-ctxual-tsk))
+  (let ((tsk (occ-ctxual-tsk-tsk obj)))
     (format "[%4d] %s"
-            (occ-ctxual-tsk-rank ctxask)
+            (occ-ctxual-tsk-rank obj)
             (occ-fontify-like-in-org-mode tsk))))
 
 
@@ -116,9 +111,9 @@
 (cl-defgeneric occ-goto (obj))
 
 
-(cl-defmethod occ-goto ((mrk marker))
+(cl-defmethod occ-goto ((obj marker))
   (progn
-    (switch-to-buffer (marker-buffer mrk))
+    (switch-to-buffer (marker-buffer obj))
     ;; TODO find about "org-overview"
     ;; https://stackoverflow.com/questions/25161792/emacs-org-mode-how-can-i-fold-everything-but-the-current-headline
     ;; https://emacs.stackexchange.com/questions/26827/test-whether-org-mode-heading-or-list-is-folded
@@ -126,22 +121,22 @@
     ;; https://stackoverflow.com/questions/6198339/show-org-mode-outline-up-to-a-certain-heading-level
     ;; (outline-show-all)
     (org-content 10)
-    (goto-char mrk)))
+    (goto-char obj)))
 
-(cl-defmethod occ-goto ((tsk occ-tsk))
-  (let ((mrk (occ-tsk-marker tsk)))
+(cl-defmethod occ-goto ((obj occ-tsk))
+  (let ((mrk (occ-tsk-marker obj)))
     (if (and
          (markerp mrk)
          (marker-buffer mrk))
         (occ-goto mrk)
       (error "marker %s invalid." mrk))))
 
-(cl-defmethod occ-goto (ctxask occ-ctxual-tsk)
-  (occ-goto (occ-ctxual-tsk-marker)))
+(cl-defmethod occ-goto ((obj occ-ctxual-tsk))
+  (occ-goto (occ-ctxual-tsk-marker obj)))
 
-(cl-defmethod occ-set-to ((mrk marker))
+(cl-defmethod occ-set-to ((obj marker))
   (progn
-    (set-buffer (marker-buffer mrk))
+    (set-buffer (marker-buffer obj))
     ;; TODO find about "org-overview"
     ;; https://stackoverflow.com/questions/25161792/emacs-org-mode-how-can-i-fold-everything-but-the-current-headline
     ;; https://emacs.stackexchange.com/questions/26827/test-whether-org-mode-heading-or-list-is-folded
@@ -149,18 +144,18 @@
     ;; https://stackoverflow.com/questions/6198339/show-org-mode-outline-up-to-a-certain-heading-level
     ;; (outline-show-all)
     ;; (org-content 10)
-    (goto-char mrk)))
+    (goto-char obj)))
 
-(cl-defmethod occ-set-to ((tsk occ-tsk))
-  (let ((mrk (occ-tsk-marker tsk)))
+(cl-defmethod occ-set-to ((obj occ-tsk))
+  (let ((mrk (occ-tsk-marker obj)))
     (if (and
          (markerp mrk)
          (marker-buffer mrk))
         (occ-set-to mrk)
       (error "marker %s invalid." mrk))))
 
-(cl-defmethod occ-set-to (ctxask occ-ctxual-tsk)
-  (occ-set-to (occ-ctxual-tsk-marker)))
+(cl-defmethod occ-set-to ((obj occ-ctxual-tsk))
+  (occ-set-to (occ-ctxual-tsk-marker obj)))
 
 
 (defvar occ-capture+-helm-templates-alist org-capture+-helm-templates-alist)
@@ -171,19 +166,19 @@
 (cl-defgeneric occ-capture (obj)
   "occ-capture")
 
-(cl-defmethod occ-capture ((mrk marker))
+(cl-defmethod occ-capture ((obj marker))
   (org-capture+                ;TODO
    'entry
-   `(marker ,mrk)
+   `(marker ,obj)
    'occ-capture+-helm-select-template
    :empty-lines 1))
 
-(cl-defmethod occ-capture ((tsk occ-tsk))
-  (let ((mrk (occ-tsk-marker tsk)))
+(cl-defmethod occ-capture ((obj occ-tsk))
+  (let ((mrk (occ-tsk-marker obj)))
     (occ-capture mrk)))
 
-(cl-defmethod occ-capture ((ctxual-tsk occ-ctxual-tsk))
-  (let ((mrk (occ-ctxual-tsk-marker ctxual-tsk)))
+(cl-defmethod occ-capture ((obj occ-ctxual-tsk))
+  (let ((mrk (occ-ctxual-tsk-marker obj)))
     (occ-capture mrk)))
 
 
@@ -214,15 +209,15 @@
 (cl-defgeneric occ-candidate (obj)
   "occ-candidate")
 
-(cl-defmethod occ-candidate ((mrk marker))
+(cl-defmethod occ-candidate ((obj marker))
   "Insert a line for the clock selection menu.
-And return a cons cell with the selection character integer and the mrk
+And return a cons cell with the selection character integer and the obj
 pointing to it."
-  (when (mrk-buffer mrk)
-    (with-current-buffer (org-base-buffer (mrk-buffer mrk))
+  (when (obj-buffer obj)
+    (with-current-buffer (org-base-buffer (obj-buffer obj))
       (org-with-wide-buffer
        (progn ;; ignore-errors
-         (goto-char mrk)
+         (goto-char obj)
          (let* ((cat (org-get-category))
                 (heading (org-get-heading 'notags))
                 (prefix (save-excursion
@@ -236,20 +231,20 @@ pointing to it."
                       (length prefix))))
            (when tsk ;; (and cat tsk)
              ;; (insert (format "[%c] %-12s  %s\n" i cat tsk))
-             ;; mrk
-             (cons tsk mrk))))))))
+             ;; obj
+             (cons tsk obj))))))))
 
-(cl-defmethod occ-candidate ((tsk occ-tsk))
+(cl-defmethod occ-candidate ((obj occ-tsk))
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
-  (cons (occ-print tsk) tsk))
+  (cons (occ-print obj) obj))
 
-(cl-defmethod occ-candidate ((ctxask occ-ctxual-tsk))
+(cl-defmethod occ-candidate ((obj occ-ctxual-tsk))
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
-  (cons (occ-print ctxask) ctxask))
+  (cons (occ-print obj) obj))
 
 ;; function to setup ctx clock timer:2 ends here
 
@@ -276,6 +271,108 @@ pointing to it."
     (occ-sacha-helm-select candidates)))
 
 
+;; ISSUE? should it return rank or occ-ctxual-tsks list
+(cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
+                                          (ctx occ-ctx))
+  "Return matched CTXUAL-TSKs for context CTX"
+  ;; (message "occ-collection-obj-matches list")
+  (let ((tsks (occ-collection collection))
+        (ctx  ctx))
+    (remove-if-not
+     #'(lambda (ctxual-tsk)
+         (> (occ-ctxual-tsk-rank ctxual-tsk) 0))
+     (mapcar
+      #'(lambda (tsk)
+          (occ-build-ctxual-tsk tsk ctx))
+      tsks))))
+
+;; ISSUE? should it return rank or occ-ctxual-tsks map
+(cl-defmethod occ-collection-obj-matches ((collection occ-tree-collection)
+                                          (ctx occ-ctx))
+  ;; (message "occ-collection-obj-matches tree")
+  "Return matched CTXUAL-TSKs for context CTX"
+  (let ((tsks (occ-collection collection))
+        (matched '()))
+    (when tsks
+      (occ-debug :debug "occ-collection-obj-matches BEFORE matched %s[%d]" matched (length matched))
+      (occ-mapc-tree-tsks
+       #'(lambda (tsk args)
+           ;; (occ-debug :debug "occ-rank heading = %s" (occ-tsk-heading tsk))
+           (let* ((ctxual-tsk (occ-build-ctxual-tsk tsk args))
+                  (rank (occ-ctxual-tsk-rank ctxual-tsk)))
+             (unless rank (error "occ-entries-associated-to-ctx-by-keys[lambda]: rank is null"))
+             (when (> (occ-ctxual-tsk-rank ctxual-tsk) 0)
+               (push ctxual-tsk matched)
+               (occ-debug :debug "occ-entries-associated-to-ctx-by-keys[lambda]: tsk %s MATCHED RANK %d"
+                          (occ-tsk-heading tsk)
+                          (length matched)))))
+       tsks
+       ctx))
+    (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: AFTER matched %s[%d]" "matched" (length matched))
+    matched))
+
+;;TODO: make it after method
+(cl-defmethod occ-collection-obj-matches :around  ((collection occ-collection)
+                                                   (ctx occ-ctx)) ;TODO: make it after method
+  "Return matched CTXUAL-TSKs for context CTX"
+  (if (occ-collection-object)
+      (let* ((ctxual-tsks (cl-call-next-method))
+             (rankslist  (mapcar
+                          #'(lambda (ctxual-tsk)
+                              (occ-ctxual-tsk-rank ctxual-tsk))
+                          ctxual-tsks))
+             (avgrank    (if (= 0 (length rankslist))
+                             0
+                           (/
+                            (reduce #'+ rankslist)
+                            (length rankslist))))
+             (varirank   (if (= 0 (length rankslist))
+                             0
+                           (sqrt
+                            (/
+                             (reduce #'+
+                                     (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
+                             (length rankslist))))))
+        ;; (message "occ-collection-obj-matches :around finish")
+        (occ-debug :debug "matched ctxtsks %s" (length ctxual-tsks))
+        (remove-if-not
+         #'(lambda (ctxual-tsk)
+             (>= (occ-ctxual-tsk-rank ctxual-tsk) avgrank))
+         ctxual-tsks))
+    (error "(occ-collection-object) returned nil")))
+
+
+(cl-defmethod occ-matches ((obj occ-ctx))
+  "return CTXUAL-TSKs matches"
+  (occ-collection-obj-matches (occ-collection-object) obj))
+
+(cl-defmethod occ-matches ((obj null))
+  "return TSKs matches"
+  (occ-collection-obj-matches (occ-collection-object) obj))
+
+
+(cl-defmethod occ-collection-obj-list ((collection occ-collection)
+                                       (obj occ-ctx))
+  "return CTXUAL-TSKs list"
+  (occ-collection-obj-matches collection obj))
+
+(cl-defmethod occ-collection-obj-list ((collection occ-collection)
+                                       (obj null))
+  "return TSKs list"
+  (occ-collect-list collection))
+
+
+(cl-defgeneric occ-list (obj)
+  "occ-list")
+
+(cl-defmethod occ-list ((obj occ-ctx))
+  "return CTXUAL-TSKs list"
+  (occ-collection-obj-list (occ-collection-object) obj))
+
+(cl-defmethod occ-list ((obj null))
+  "return TSKs list"
+  (occ-collection-obj-list (occ-collection-object) obj))
+
 
 ;; TODO: Not to run when frame is not open [visible.]
 ;; Getting targets...done
@@ -288,13 +385,13 @@ pointing to it."
 (defvar *occ-clocked-ctxual-tsk-ctx-history* nil)
 (defvar occ-clock-in-hooks nil "Hook to run on clockin with previous and next markers.")
 
-(cl-defmethod occ-select ((ctx occ-ctx))
+(cl-defmethod occ-select ((obj occ-ctx))
   "return CTXUAL-TSK or NIL, marker and ranked version"
   (interactive
    (list (occ-make-ctx)))
   (progn
     (message "in occ-clock-in occ-ctx 1")
-    (let* ((ctx (or ctx (occ-make-ctx)))
+    (let* ((obj (or obj (occ-make-ctx)))
            (matched-ctxual-tsks
             (run-unobtrusively           ;heavy task
 
@@ -311,11 +408,11 @@ pointing to it."
 
               (remove-if-not
                #'(lambda (ctxual-tsk)
-                   (let* ((marker (occ-ctxual-tsk-marker ctxual-tsk)))
+                   (let* ((mrk (occ-ctxual-tsk-marker ctxual-tsk)))
                      (and
-                      marker
-                      (marker-buffer marker))))
-               (occ-list ctx)))))
+                      mrk
+                      (marker-buffer mrk))))
+               (occ-list obj)))))
       (unless (eq matched-ctxual-tsks t)
         (when matched-ctxual-tsks
           (let* ((sel-ctxual-tsk
@@ -327,31 +424,31 @@ pointing to it."
             ;; (occ-debug :debug "sel-ctxual-tsk %s sel-tsk %s sel-marker %s" sel-ctxual-tsk sel-tsk sel-marker)
             sel-ctxual-tsk))))))
 
-(cl-defmethod occ-clock-in ((mrk marker))
+(cl-defmethod occ-clock-in ((obj marker))
   (let ((org-log-note-clock-out nil))
-    (when (marker-buffer mrk)
-      (with-current-buffer (marker-buffer mrk)
+    (when (marker-buffer obj)
+      (with-current-buffer (marker-buffer obj)
         (let ((buffer-read-only nil))
           (condition-case-control t err
             (progn
-              (occ-straight-org-clock-clock-in (list mrk)))
+              (occ-straight-org-clock-clock-in (list obj)))
             ((error)
              (progn
                (setq retval nil)
                (signal (car err) (cdr err))))))))))
 
-(cl-defmethod occ-clock-in ((tsk occ-tsk))
-  (occ-clock-in (occ-tsk-marker tsk)))
+(cl-defmethod occ-clock-in ((obj occ-tsk))
+  (occ-clock-in (occ-tsk-marker obj)))
 
-(cl-defmethod occ-clock-in ((new-ctxask occ-ctxual-tsk))
+(cl-defmethod occ-clock-in ((obj occ-ctxual-tsk))
   ;;TODO add org-insert-log-not
-  (occ-debug :debug "occ-clock-in-marker %s" new-ctxask)
+  (occ-debug :debug "occ-clock-in-marker %s" obj)
   (let* (retval
          (old-ctxual-tsk     (car *occ-clocked-ctxual-tsk-ctx-history*))
          (old-tsk            (when old-ctxual-tsk (occ-ctxual-tsk-tsk old-ctxual-tsk)))
          (old-marker         (or (if old-tsk (occ-tsk-marker old-tsk)) org-clock-hd-marker))
          (old-heading        (if old-tsk (occ-tsk-heading old-tsk)))
-         (new-tsk            (occ-ctxual-tsk-tsk new-ctxask))
+         (new-tsk            (occ-ctxual-tsk-tsk obj))
          (new-marker         (if new-tsk (occ-tsk-marker new-tsk)))
          (new-heading        (if new-tsk (occ-tsk-heading new-tsk))))
     (when (and
@@ -390,7 +487,7 @@ pointing to it."
           (occ-clock-in new-tsk)
           (setq retval t)
 
-          (push new-ctxask *occ-clocked-ctxual-tsk-ctx-history*)
+          (push obj *occ-clocked-ctxual-tsk-ctx-history*)
 
 
           (if old-buff
@@ -398,8 +495,8 @@ pointing to it."
                 (setq buffer-read-only old-buff-read-only)))
           retval)))))
 
-(cl-defmethod occ-clock-in ((ctx occ-ctx))
-  (let ((tsk (occ-select ctx)))
+(cl-defmethod occ-clock-in ((obj occ-ctx))
+  (let ((tsk (occ-select obj)))
     (if tsk
         (occ-clock-in tsk)
       (progn
@@ -407,14 +504,14 @@ pointing to it."
         (setq *occ-update-current-ctx-msg* "null clock")
         (occ-debug :debug
                    "No clock found please set a match for this ctx %s, add it using M-x occ-add-to-org-heading."
-                   ctx)
+                   obj)
         (lwarn 'occ
                (if this-command :debug :warning)
                "occ-clock-in(ctx):  with this-command=%s" this-command)
-        (occ-add-to-org-heading-when-idle ctx 7)
+        (occ-add-to-org-heading-when-idle obj 7)
         nil))))
 
-(cl-defmethod occ-clock-in ((ctx null))
+(cl-defmethod occ-clock-in ((obj null))
   (error "Can not clock in NIL"))
 
 
