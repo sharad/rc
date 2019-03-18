@@ -206,7 +206,7 @@
 
 (defmacro lotus-with-marker (marker &rest body)
   `(let ((marker ,marker))
-     (when (marker-buffer marker)
+     (when (and marker (marker-buffer marker))
        (let ((target-buffer (marker-buffer   marker))
              (pos           (marker-position marker)))
          (if target-buffer

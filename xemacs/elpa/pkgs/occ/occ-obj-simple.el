@@ -441,7 +441,11 @@ pointing to it."
 
 (cl-defmethod occ-select ((obj null))
   "return interactively selected TSK or NIL"
-  (occ-list-select-timed (occ-list obj)))
+  (occ-list-select (occ-list obj)))
+
+(cl-defmethod occ-select-timed ((obj null))
+  "return interactively selected TSK or NIL"
+  (occ-list-select-timed (reverse (occ-list obj))))
 
 
 (cl-defmethod occ-clock-in ((obj marker))

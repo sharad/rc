@@ -84,11 +84,11 @@
   roots
   files)
 
-(cl-defstruct (occ-tree-collection (:include occ-collection))
-  tree)
-
 (cl-defstruct (occ-list-collection (:include occ-collection))
   list)
+
+(cl-defstruct (occ-tree-collection (:include occ-list-collection))
+  tree)
 
 ;; (when nil
 
