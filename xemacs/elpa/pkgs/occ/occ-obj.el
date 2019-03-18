@@ -90,30 +90,4 @@
 (cl-defstruct (occ-tree-collection (:include occ-list-collection))
   tree)
 
-;; (when nil
-
-;;   (cl-defstruct xpoint
-;;     x y)
-
-;;   (setf zpoint (make-xpoint :x 5 :y 3))
-
-;;   (setf (cl-struct-slot-value 'xpoint 'x point) 3)
-
-;;   (cl--find-class 'xpoint)
-
-;;   (cl-defstruct base
-;;     baseattr)
-
-;;   (cl-defstruct (drived (:include base))
-;;     drivedattr)
-
-;;   (setf baseobj1 (make-base :baseattr "xbaseattr"))
-
-
-
-;;   (setf drivedobj1
-;;         (make-drived
-;;          :baseattr "xbaseattr"
-;;          :drivedattr "xdrivedattr")))
-
 ;;; occ-obj.el ends here

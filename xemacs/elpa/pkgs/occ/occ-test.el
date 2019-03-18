@@ -245,7 +245,7 @@
         (aref (cl--generic 'occ-readprop) 3)))
 
 
-;; ctor
+;; ctor.el
 (when nil
   (progn
     (setq occ-global-tsk-collection nil)
@@ -296,6 +296,37 @@
                     (or
                      (occ-make-tsk-at-point #'make-occ-tree-tsk)
                      (make-occ-tree-tsk :name "empty tree tsk" :subtree nil)))))))))
-;; ctor
+;; ctor.el
+
+
+
+
+;; obj.el
+;; (when nil
+
+;;   (cl-defstruct xpoint
+;;     x y)
+
+;;   (setf zpoint (make-xpoint :x 5 :y 3))
+
+;;   (setf (cl-struct-slot-value 'xpoint 'x point) 3)
+
+;;   (cl--find-class 'xpoint)
+
+;;   (cl-defstruct base
+;;     baseattr)
+
+;;   (cl-defstruct (drived (:include base))
+;;     drivedattr)
+
+;;   (setf baseobj1 (make-base :baseattr "xbaseattr"))
+
+
+
+;;   (setf drivedobj1
+;;         (make-drived
+;;          :baseattr "xbaseattr"
+;;          :drivedattr "xdrivedattr")))
+;; obj.el
 
 ;;; occ-test.el ends here

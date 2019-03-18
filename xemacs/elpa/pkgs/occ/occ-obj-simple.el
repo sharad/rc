@@ -400,7 +400,11 @@ pointing to it."
 (defvar *occ-clocked-ctxual-tsk-ctx-history* nil)
 (defvar occ-clock-in-hooks nil "Hook to run on clockin with previous and next markers.")
 
-(cl-defmethod occ-select ((obj occ-ctx))
+(cl-defmethod occ-select-internal ((obj null) list-selector-fun)
+  "return interactively selected TSK or NIL"
+  (funcall list-selector-fun (occ-list obj)))
+
+(cl-defmethod occ-select-internal ((obj occ-ctx) list-selector-fun)
   "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
   (interactive
    (list (occ-make-ctx)))
@@ -432,7 +436,7 @@ pointing to it."
         (when matched-ctxual-tsks
           (let* ((sel-ctxual-tsk
                   (if (> (length matched-ctxual-tsks) 1)
-                      (occ-list-select-timed matched-ctxual-tsks)
+                      (funcall list-selector-fun matched-ctxual-tsks)
                     (car matched-ctxual-tsks))))
             ;; (sel-tsk   (if sel-ctxual-tsk (plist-get sel-ctxual-tsk :tsk)))
             ;; (sel-marker (if sel-tsk      (plist-get sel-tsk      :tsk-clock-marker)))
@@ -441,11 +445,23 @@ pointing to it."
 
 (cl-defmethod occ-select ((obj null))
   "return interactively selected TSK or NIL"
-  (occ-list-select (occ-list obj)))
+  (occ-select-internal (occ-list obj) #'occ-list-select))
+
+(cl-defmethod occ-select ((obj occ-ctx))
+  "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
+  (interactive
+   (list (occ-make-ctx)))
+  (occ-select-internal obj  #'occ-list-select))
 
 (cl-defmethod occ-select-timed ((obj null))
   "return interactively selected TSK or NIL"
-  (occ-list-select-timed (reverse (occ-list obj))))
+  (occ-select-internal (occ-list obj) #'occ-list-select-timed))
+
+(cl-defmethod occ-select-timed ((obj occ-ctx))
+  "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
+  (interactive
+   (list (occ-make-ctx)))
+  (occ-select-internal obj  #'occ-list-select-timed))
 
 
 (cl-defmethod occ-clock-in ((obj marker))

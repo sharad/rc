@@ -74,17 +74,16 @@
 
 (cl-defmethod occ-collect-list ((collection occ-tree-collection))
   (unless (occ-tree-collection-list collection)
-    (setf
-     (occ-tree-collection-list collection)
-     (let ((tsks (occ-collection collection))
-           (tsk-list '()))
-       (occ-mapc-tree-tsks
-        #'(lambda (tsk args) (push tsk tsk-list))
-        ;; (nconc tsk-list (list tsk))
-        ;; (push tsk tsk-list)
-        tsks
-        nil)
-       (nreverse tsk-list))))
+    (let ((tsks (occ-collection collection))
+          (tsk-list '()))
+      (occ-mapc-tree-tsks
+       #'(lambda (tsk args) (push tsk tsk-list))
+       ;; (nconc tsk-list (list tsk))
+       ;; (push tsk tsk-list)
+       tsks
+       nil)
+      (setf (occ-tree-collection-list collection)
+            (nreverse tsk-list))))
   (occ-tree-collection-list collection))
 
 
