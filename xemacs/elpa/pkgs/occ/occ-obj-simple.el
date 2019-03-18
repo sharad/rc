@@ -376,6 +376,7 @@ pointing to it."
   "return TSKs list"
   (occ-collect-list collection))
 
+;; http://sachachua.com/blog/2015/03/getting-helm-org-refile-clock-create-tasks/
 
 (cl-defgeneric occ-list (obj)
   "occ-list")
@@ -455,7 +456,7 @@ pointing to it."
 
 (cl-defmethod occ-select-timed ((obj null))
   "return interactively selected TSK or NIL"
-  (occ-select-internal (occ-list obj) #'occ-list-select-timed))
+  (occ-select-internal obj #'occ-list-select-timed))
 
 (cl-defmethod occ-select-timed ((obj occ-ctx))
   "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
