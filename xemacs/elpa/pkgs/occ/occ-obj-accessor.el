@@ -75,16 +75,17 @@
 (cl-defmethod occ-collect-list ((collection occ-tree-collection))
   (unless (occ-tree-collection-list collection)
     (setf
-      (occ-tree-collection-list collection)
-      (let ((tsks (occ-collection collection))
-            (tsk-list '()))
-        (occ-mapc-tree-tsks
-         #'(lambda (tsk args) (push tsk tsk-list))
-         ;; (nconc tsk-list (list tsk))
-         ;; (push tsk tsk-list)
-         tsks
-         nil)
-        (nreverse tsk-list)))))
+     (occ-tree-collection-list collection)
+     (let ((tsks (occ-collection collection))
+           (tsk-list '()))
+       (occ-mapc-tree-tsks
+        #'(lambda (tsk args) (push tsk tsk-list))
+        ;; (nconc tsk-list (list tsk))
+        ;; (push tsk tsk-list)
+        tsks
+        nil)
+       (nreverse tsk-list))))
+  (occ-tree-collection-list collection))
 
 
 (cl-defmethod occ-collect-list ((collection occ-list-collection))
@@ -141,6 +142,9 @@
         (message "occ-global-tsk-collection-spec is nil, set using occ-set-global-tsk-collection-spec")
         (error "occ-global-tsk-collection-spec is nil"))))
   occ-global-tsk-collection)
+
+;; (occ-collect-list occ-global-tsk-collection)
+;; (occ-tree-collection-list occ-global-tsk-collection)
 
 
 ;;; occ-obj-accessor.el ends here

@@ -173,7 +173,7 @@
 
 (cl-defmethod occ-add-to-heading-internal ((ctx occ-ctx) timeout)
   (let* (;; (marker (safe-timed-org-refile-get-marker timeout))
-         (tsk (occ-select nil))
+         (tsk (occ-select-timed nil))
          (mrk (if tsk (occ-tsk-marker tsk))))
     (when mrk
       (lotus-with-marker mrk
