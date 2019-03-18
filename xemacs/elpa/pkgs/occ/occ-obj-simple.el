@@ -445,7 +445,7 @@ pointing to it."
 
 (cl-defmethod occ-select ((obj null))
   "return interactively selected TSK or NIL"
-  (occ-select-internal (occ-list obj) #'occ-list-select))
+  (occ-select-internal obj #'occ-list-select))
 
 (cl-defmethod occ-select ((obj occ-ctx))
   "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
