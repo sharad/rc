@@ -193,39 +193,41 @@
 
 ;; Marker Macros Starts
 (defmacro lotus-with-marker-alt (marker &rest body)
-  `(let ((buffer (marker-buffer ,marker)))
+  `(let* ((marker ,marker)
+          (buffer (marker-buffer marker)))
      (save-excursion ; Do not replace this with `with-current-buffer'.
        (with-no-warnings (set-buffer buffer))
        (save-restriction
          (widen)
-         (goto-char ,marker)
+         (goto-char marker)
          (progn
            ,@body)))))
 ;; Marker Macros Ends
 
 (defmacro lotus-with-marker (marker &rest body)
-  `(when (marker-buffer ,marker)
-     (let ((target-buffer (marker-buffer   ,marker))
-           (pos           (marker-position ,marker)))
-       (if target-buffer
-           (with-current-buffer target-buffer
-             (message "lotus-with-file-pos-new-win: selecting buf %s" target-buffer)
-             (if (<= pos (point-max))
-                 (progn
-                   (goto-char pos)
-                   ,@body)
+  `(let ((marker ,marker))
+     (when (marker-buffer marker)
+       (let ((target-buffer (marker-buffer   marker))
+             (pos           (marker-position marker)))
+         (if target-buffer
+             (with-current-buffer target-buffer
+               (message "lotus-with-file-pos-new-win: selecting buf %s" target-buffer)
+               (if (<= pos (point-max))
+                   (progn
+                     (goto-char pos)
+                     ,@body)
                  (error "position %d greater than point max %d" pos (point-max))))
-           (error "No buffer")))))
+           (error "No buffer"))))))
 (put 'lotus-with-marker 'lisp-indent-function 1)
 
 (defmacro lotus-with-pos (pos &rest body)
-  `(progn
+  `(let ((pos ,pos))
      (message "lotus-with-buffer-pos-new-win: selecting buf %s" (current-buffer))
-     (if (<= ,pos (point-max))
+     (if (<= pos (point-max))
          (progn
-           (goto-char ,pos)
+           (goto-char pos)
            ,@body)
-         (error "position %d greater than point max %d" ,pos (point-max)))))
+       (error "position %d greater than point max %d" pos (point-max)))))
 (put 'lotus-with-pos 'lisp-indent-function 1)
 
 ;; (defmacro lotus-with-buffer-pos (buffer pos &rest body)
@@ -246,50 +248,53 @@
 
 
 (defmacro lotus-with-marker-new-win (marker newwin &rest body)
-  `(when (marker-buffer ,marker)
-     (let ((target-buffer (marker-buffer   ,marker))
-           (pos           (marker-position ,marker)))
-       (if target-buffer
-           (lotus-with-new-win ,newwin
-             (message "lotus-with-file-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
-             ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
-             (switch-to-buffer target-buffer)
-             (if (<= pos (point-max))
-                 (progn
-                   (goto-char pos)
-                   ,@body)
+  `(let ((marker ,marker))
+     (when (marker-buffer marker)
+       (let ((target-buffer (marker-buffer   marker))
+             (pos           (marker-position marker)))
+         (if target-buffer
+             (lotus-with-new-win ,newwin
+               (message "lotus-with-file-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
+               ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
+               (switch-to-buffer target-buffer)
+               (if (<= pos (point-max))
+                   (progn
+                     (goto-char pos)
+                     ,@body)
                  (error "position %d greater than point max %d" pos (point-max))))
-           (error "No buffer")))))
+           (error "No buffer"))))))
 (put 'org-with-marker-new-win 'lisp-indent-function 1)
 
 (defmacro lotus-with-pos-new-win (pos newwin &rest body)
-  `(let ((target-buffer (current-buffer)))
+  `(let ((pos ,pos)
+         (target-buffer (current-buffer)))
      (if target-buffer
          (lotus-with-new-win ,newwin
            (message "lotus-with-file-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
            ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
            (switch-to-buffer target-buffer)
-           (if (<= ,pos (point-max))
+           (if (<= pos (point-max))
                (progn
-                 (goto-char ,pos)
+                 (goto-char pos)
                  ,@body)
-               (error "position %d greater than point max %d" ,pos (point-max))))
-         (error "No buffer"))))
+             (error "position %d greater than point max %d" pos (point-max))))
+       (error "No buffer"))))
 (put 'lotus-with-pos-new-win 'lisp-indent-function 1)
 
 (defmacro lotus-with-buffer-pos-new-win (buffer pos newwin &rest body)
-  `(let ((target-buffer (if ,buffer ,buffer (current-buffer))))
+  `(let ((pos ,pos)
+         (target-buffer (if ,buffer ,buffer (current-buffer))))
      (if target-buffer
          (lotus-with-new-win ,newwin
            (message "lotus-with-file-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
            ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
            (switch-to-buffer target-buffer)
-           (if (<= ,pos (point-max))
+           (if (<= pos (point-max))
                (progn
-                 (goto-char ,pos)
+                 (goto-char pos)
                  ,@body)
-               (error "position %d greater than point max %d" ,pos (point-max))))
-         (error "No buffer"))))
+             (error "position %d greater than point max %d" pos (point-max))))
+       (error "No buffer"))))
 (put 'lotus-with-buffer-pos-new-win 'lisp-indent-function 1)
 
 (defmacro lotus-with-file-pos-new-win (file pos newwin &rest body)
@@ -308,49 +313,52 @@
 
 ;; TODO: newwin clean should be done here
 (defmacro lotus-with-marker-timed-new-win (marker timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
-  `(when (marker-buffer ,marker)
-     (let ((target-buffer (marker-buffer   ,marker))
-           (pos           (marker-position ,marker)))
-       (lotus-with-timed-new-win
-           ,timeout ,timer ,cleanupfn-newwin ,cleanupfn-local ,newwin
-           (message "lotus-with-marker-timed-new-win: selecting buf %s in %s win" target-buffer ,newwin)
-           ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
-           (switch-to-buffer target-buffer)
-           (if (<= pos (point-max))
-               (progn
-                 (goto-char pos)
-                 ,@body)
-               (error "position %d greater than point max %d" pos (point-max)))))))
+  `(let ((marker ,marker))
+     (when (marker-buffer marker)
+       (let ((target-buffer (marker-buffer   marker))
+             (pos           (marker-position marker)))
+         (lotus-with-timed-new-win
+             ,timeout ,timer ,cleanupfn-newwin ,cleanupfn-local ,newwin
+             (message "lotus-with-marker-timed-new-win: selecting buf %s in %s win" target-buffer ,newwin)
+             ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
+             (switch-to-buffer target-buffer)
+             (if (<= pos (point-max))
+                 (progn
+                   (goto-char pos)
+                   ,@body)
+               (error "position %d greater than point max %d" pos (point-max))))))))
 (put 'lotus-with-marker-timed-new-win 'lisp-indent-function 1)
 
 (defmacro lotus-with-pos-timed-new-win (pos timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
-  `(let ((target-buffer (current-buffer)))
+  `(let ((pos ,pos)
+         (target-buffer (current-buffer)))
      (lotus-with-timed-new-win
          ,timeout ,timer ,cleanupfn-newwin ,cleanupfn-local ,newwin
          (message "lotus-with-buffer-pos-timed-new-win: selecting buf %s in %s win" target-buffer ,newwin)
          ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
          (switch-to-buffer target-buffer)
-         (if (<= ,pos (point-max))
+         (if (<= pos (point-max))
              (progn
-               (goto-char ,pos)
+               (goto-char pos)
                ,@body)
-             (error "position %d greater than point max %d" ,pos (point-max))))))
+           (error "position %d greater than point max %d" pos (point-max))))))
 (put 'lotus-with-pos-timed-new-win 'lisp-indent-function 1)
 
 (defmacro lotus-with-buffer-pos-timed-new-win (buffer pos timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
-  `(let ((target-buffer (if ,buffer ,buffer (current-buffer))))
+  `(let ((pos ,pos)
+         (target-buffer (if ,buffer ,buffer (current-buffer))))
      (if target-buffer
          (lotus-with-timed-new-win
              ,timeout ,timer ,cleanupfn-newwin ,cleanupfn-local ,newwin
              (message "lotus-with-buffer-pos-timed-new-win: selecting buf %s in %s win" target-buffer ,newwin)
              ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
              (switch-to-buffer target-buffer)
-             (if (<= ,pos (point-max))
+             (if (<= pos (point-max))
                  (progn
-                   (goto-char ,pos)
+                   (goto-char pos)
                    ,@body)
-                 (error "position %d greater than point max %d" ,pos (point-max))))
-         (error "No buffer"))))
+               (error "position %d greater than point max %d" pos (point-max))))
+       (error "No buffer"))))
 (put 'lotus-with-buffer-pos-timed-new-win 'lisp-indent-function 1)
 
 (defmacro lotus-with-file-pos-timed-new-win (file pos timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)

@@ -23,6 +23,9 @@
 
 ;;; Code:
 
+(provide 'occ-obj-accessor)
+
+
 (require 'occ-obj-ctor)
 
 
@@ -133,9 +136,6 @@
         (message "occ-global-tsk-collection-spec is nil, set using occ-set-global-tsk-collection-spec")
         (error "occ-global-tsk-collection-spec is nil"))))
   occ-global-tsk-collection)
-
-
-(provide 'occ-obj-accessor)
 
 
 ;;; occ-obj-accessor.el ends here

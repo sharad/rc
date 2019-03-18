@@ -63,4 +63,11 @@
   (occ-goto-tsk))
 
 
+;;;###autoload
+(defun occ-reset-collection-object ()
+  (interactive)
+  (setq occ-global-tsk-collection nil)
+  occ-global-tsk-collection)
+
+
 ;;; occ-commands.el ends here

@@ -23,14 +23,14 @@
 
 ;;; Code:
 
+(provide 'occ-obj-ctor)
+
+
 
 
 (require 'occ-obj-common)
 (require 'occ-tree)
 (require 'occ-obj)
-
-
-(provide 'occ-obj-ctor)
 
 
 (defvar occ-global-tsk-collection-spec        nil)
@@ -75,7 +75,7 @@
         (let (tsk
               (heading-with-string-prop
                (if (org-before-first-heading-p)
-                   "empty heading"
+                   (format "file: %s" (buffer-file-name))
                  (org-get-heading 'notags))))
           (let ((heading (when heading-with-string-prop
                            (substring-no-properties heading-with-string-prop)))
@@ -198,20 +198,6 @@
                        :name "tsk collection list"
                        :roots (cdr dir-spec))))
       (setf occ-global-tsk-collection collection))))
-
-;;;###autoload
-(defun occ-run-with-global-tsk-collection (fn)
-  (if occ-global-tsk-collection
-      (funcall fn)
-    (add-hook
-     'occ-global-tsk-collection-change-hook
-     fn)))
-
-;;;###autoload
-(defun occ-reset-collection-object ()
-  (interactive)
-  (setq occ-global-tsk-collection nil)
-  occ-global-tsk-collection)
 
 
 ;;; occ-obj-ctor.el ends here

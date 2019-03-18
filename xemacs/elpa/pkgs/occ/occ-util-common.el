@@ -159,4 +159,13 @@
         (occ-debug :debug "file %s not resetting global-tsk-collection" file)))))
 
 
+;;;###autoload
+(defun occ-run-with-global-tsk-collection (fn)
+  (if occ-global-tsk-collection
+      (funcall fn)
+    (add-hook
+     'occ-global-tsk-collection-change-hook
+     fn)))
+
+
 ;;; occ-util-common.el ends here
