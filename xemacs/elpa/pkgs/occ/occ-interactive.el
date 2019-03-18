@@ -88,6 +88,7 @@
 
 (defun org-flag-proprty-drawer-at-marker (marker flag)
   "NIL to open drawer T to close drawer"
+  ;; https://orgmode.org/worg/org-hacks.html#org6d4906f
   (let ((buff (marker-buffer marker))
         (loc (marker-position marker))
         (heading (org-get-heading 'notags)))
@@ -108,7 +109,7 @@
             ;; first show heading
             (when (eq org-cycle-subtree-status 'folded)
               (unless flag
-                ;;https://lists.gnu.org/archive/html/emacs-orgmode/2015-02/msg00573.html
+                ;; https://lists.gnu.org/archive/html/emacs-orgmode/2015-02/msg00573.html
                 (progn
                   (when (or
                          (org-invisible-p)
