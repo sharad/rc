@@ -88,6 +88,7 @@
 
 (defun org-flag-proprty-drawer-at-marker (marker flag)
   "NIL to open drawer T to close drawer"
+  ;; https://orgmode.org/worg/org-hacks.html
   ;; https://orgmode.org/worg/org-hacks.html#org6d4906f
   (let ((buff (marker-buffer marker))
         (loc (marker-position marker))
@@ -177,7 +178,7 @@
          (tsk (occ-select-timed nil))
          (mrk (if tsk (occ-tsk-marker tsk))))
     (when mrk
-      (lotus-with-marker mrk
+      (org-with-cloned-marker mrk "<proptree>"
        (let* ((marker (point-marker))
               (local-cleanup
                #'(lambda ()

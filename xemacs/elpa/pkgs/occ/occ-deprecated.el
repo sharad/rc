@@ -297,6 +297,147 @@
 
 
 ;; occ-interactive.el
+
+
+
+(defun org-flag-proprty-drawer-at-marker (marker flag)
+  "NIL to open drawer T to close drawer"
+  ;; https://orgmode.org/worg/org-hacks.html
+  ;; https://orgmode.org/worg/org-hacks.html#org6d4906f
+  (let ((buff (marker-buffer marker))
+        (loc (marker-position marker))
+        (heading (org-get-heading 'notags)))
+    (when (and buff loc)
+      (with-current-buffer buff
+        (let ((currloc (point)))
+          (goto-char loc)
+          (occ-debug :debug "%s: called to %s drawer of heading `%s' in file %s loc %d"
+                     (time-stamp-string)
+                     (if flag "close" "open")
+                     heading
+                     (buffer-file-name buff)
+                     loc)
+          (recenter-top-bottom 2)
+          (unless flag                  ;; creating issue in cleanupfn error as display buffer and current buffer is not same.
+            (recenter-top-bottom 2))
+          (let ((prop-range (org-get-property-block (point) 'force)))
+            ;; first show heading
+            (when (eq org-cycle-subtree-status 'folded)
+              (unless flag
+                ;; https://lists.gnu.org/archive/html/emacs-orgmode/2015-02/msg00573.html
+                (progn
+                  (when (or
+                         (org-invisible-p)
+                         (org-invisible-p2))
+                    (org-show-context 'org-goto)))
+                (progn                                        ; changed from org-show-tsk to org-show-entry
+                  (org-show-entry)
+                  (occ-debug :debug
+                             "did %s entry `%s'" (if flag "close" "open") heading)
+                  (org-unlogged-message "CHILDREN")
+                  (setq org-cycle-subtree-status 'children))))
+            ;; show expand property if flag is nil, else hide
+            (let* ((prop-range (org-get-property-block (point) 'force))
+                   (prop-loc   (1- (car prop-range))))
+              (when prop-range
+                (occ-debug :debug "pos %d before jumping to %s drawer, will jump to pos %d"
+                           (point)
+                           (if flag "close" "open")
+                           prop-loc)
+                (goto-char prop-loc)
+                (occ-debug :debug "reached to %s drawer" (if flag "close" "open"))
+                (if (org-at-drawer-p)
+                    ;; show drawer
+                    (let ((drawer (org-element-at-point)))
+                      (when (memq (org-element-type drawer)
+                                  '(node-property drawer property-drawer))
+                        (occ-debug :debug
+                                   "trying to %s drawer %s current pos %d"
+                                   (if flag "close" "open")
+                                   drawer
+                                   (point))
+                        (org-flag-drawer flag drawer)
+                        ;; Make sure to skip drawer entirely or we might flag
+                        ;; it another time when matching its ending line with
+                        ;; `org-drawer-regexp'.
+                        (when nil       ;;BUG ?? what
+                          (goto-char (org-element-property :end drawer)))))
+                  (occ-debug :debug "not at drawer to %s current pos is %s"
+                             (if flag "close" "open")
+                             (point)))
+                (goto-char prop-loc)
+                (occ-debug :debug "reached to %s drawer1 current pos %d"
+                           (if flag "close" "open")
+                           (point))
+                prop-range))))))))
+
+
+(cl-defmethod occ-add-to-heading-internal ((ctx occ-ctx) timeout)
+  (let* (;; (marker (safe-timed-org-refile-get-marker timeout))
+         (tsk (occ-select-timed nil))
+         (mrk (if tsk (occ-tsk-marker tsk))))
+    (when mrk
+      (lotus-with-marker mrk
+       (let* ((marker (point-marker))
+              (local-cleanup
+               #'(lambda ()
+                   (save-excursion ;what to do here
+                     (org-flag-proprty-drawer-at-marker marker t))
+                   (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
+                     (abort-recursive-edit)))))
+
+           (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
+               timeout timer cleanup local-cleanup win
+
+               (let ((target-buffer (marker-buffer marker))
+                     (pos           (marker-position marker)))
+
+                 (when target-buffer
+                   (switch-to-buffer target-buffer)
+                   (goto-char pos)
+                   (set-marker marker (point)))
+
+                 (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
+
+                 (progn
+                   (condition-case-control nil err
+                     (let ((buffer-read-only nil))
+                       (occ-debug :debug "timer started for win %s" win)
+
+                       ;; show proptery drawer
+                       (let* ((prop-range (org-flag-proprty-drawer-at-marker marker nil))
+                              (prop-loc   (1- (car prop-range))))
+                         (if (numberp prop-loc)
+                             (goto-char prop-loc)))
+
+                       ;; try to read values of properties.
+                       (let ((prop nil))
+                         (while (not
+                                 (member
+                                  (setq prop (occ-select-propetry (occ-make-tsk nil) ctx))
+                                  '(edit done)))
+                           (when (occ-editprop prop ctx)
+                             (occ-tsk-update-tsks t)))
+                         (cond
+                          ((eql 'done prop)
+                           (funcall cleanup win local-cleanup)
+                           (when timer (cancel-timer timer)))
+                          ((eql 'edit prop)
+                           ;; (funcall cleanup win local-cleanup)
+                           (occ-debug :debug "debug editing")
+                           (when timer (cancel-timer timer))
+                           (when (and win (windowp win) (window-valid-p win))
+                             (select-window win 'norecord)))
+                          (t
+                           (funcall cleanup win local-cleanup)
+                           (when timer (cancel-timer timer))))))
+                     ((quit)
+                      (progn
+                        (funcall cleanup win local-cleanup)
+                        (if timer (cancel-timer timer))
+                        (signal (car err) (cdr err)))))))))))))
+
+
 (cl-defmethod occ-add-to-org-heading ((ctx occ-ctx) timeout)
   "add-ctx-to-org-heading"
   ;; TODO: make helm conditional when it is used than only it should be handled.
