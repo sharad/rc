@@ -27,8 +27,6 @@
 (provide 'occ-scratch-space)
 
 
-
-
 (progn  ;; http://sachachua.com/blog/2015/03/getting-helm-org-refile-clock-create-tasks/
   (progn
     (ert-deftest sacha/org-capture-prefill-template ()
@@ -198,7 +196,6 @@ this is used for the GOTO interface."
 
     (fset 'org-refile-get-location 'sacha/org-refile-get-location)
     ))
-
 
 
 ;;; occ-scratch-space.el ends here
