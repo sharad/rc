@@ -133,22 +133,4 @@
            nil
            'occ-clock-in-curr-ctx-if-not))))
 
-;;;###autoload
-(defun occ-after-save-hook-fun ()
-  (let ((file (buffer-file-name)))
-    (when (and
-           file
-           (eq major-mode 'org-mode))
-      (if (member*
-             file
-             (occ-files)
-             :test #'(lambda (f1 f2)
-                       (string-equal
-                        (file-truename f1)
-                        (file-truename f2))))
-          ;; TODO workaround do complete nil, later change it to optimized.
-          ;; TODO update existing occ-collection.tree or occ-collection.list
-          (occ-reset-global-tsk-collection)
-        (occ-debug :debug "file %s not resetting global-tsk-collection" file)))))
-
 ;;; occ-main.el ends here

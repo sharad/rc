@@ -29,12 +29,16 @@
 
 (defun occ-helm-build-candidates-source (candidates &optional name-action-cons)
   (when candidates
-    (helm-build-sync-source (concat
-                             "Select matching "
-                             (symbol-name (cl-classname (car candidates))))
+    (helm-build-sync-source
+        (concat
+         "Select matching "
+         (symbol-name (cl-classname (car candidates))))
       :candidates (mapcar #'occ-candidate candidates)
-      :action (list (or name-action-cons
-                        (cons "Select" #'identity)))
+      :action (append
+               (if (consp (car name-action-cons))
+                   name-action-cons
+                 (list name-action-cons))
+               (list (cons "Select" #'identity)))
       :history 'org-refile-history)))
 ;; (helm-build-dummy-source "Create tsk"
 ;;   :action (helm-make-actions
@@ -48,6 +52,30 @@
    name-action-cons))
 
 
+
+(defun occ-helm-select (obj
+                        selector
+                        action)
+  ;; here
+  ;; (occ-debug :debug "sacha marker %s" (car ctxasks))
+  (let (helm-sources)
+    (push
+     (occ-helm-build-obj-source obj (list (cons "Clock in and track" selector)))
+     helm-sources)
+
+    (when (and
+           (org-clocking-p)
+           (marker-buffer org-clock-marker))
+      (push
+       (helm-build-sync-source "Current Clocking Tsk"
+         :candidates (list (occ-candidate
+                            (occ-build-obj (occ-current-tsk) obj)))
+         :action (list
+                  (cons "Clock in and track" selector)))
+       helm-sources))
+    (funcall action (helm helm-sources))))
+
+
 (cl-defgeneric occ-sacha-helm-action (ctxask clockin-fn)
   "occ-sacha-helm-action")
 
@@ -62,33 +90,10 @@
         :action (list ;; (cons "Select" 'identity)
                  (cons "Clock in and track" #'(lambda (c) (funcall clockin-fn c))))
         :history 'org-refile-history)))))
-      ;; (helm-build-dummy-source "Create tsk"
-      ;;   :action (helm-make-actions
-      ;;            "Create tsk"
-      ;;            'sacha/helm-org-create-tsk))
-
-
-(defun occ-helm-select (obj
-                        selector
-                        action)
-  ;; here
-  ;; (occ-debug :debug "sacha marker %s" (car ctxasks))
-  (let (helm-sources)
-    (push
-     (occ-helm-build-obj-source obj (cons "Clock in and track" selector))
-     helm-sources)
-
-    (when (and
-           (org-clocking-p)
-           (marker-buffer org-clock-marker))
-      (push
-       (helm-build-sync-source "Current Clocking Tsk"
-         :candidates (list (occ-candidate
-                            (occ-build-obj (occ-current-tsk) obj)))
-         :action (list
-                  (cons "Clock in and track" selector)))
-       helm-sources))
-    (funcall action (helm helm-sources))))
+;; (helm-build-dummy-source "Create tsk"
+;;   :action (helm-make-actions
+;;            "Create tsk"
+;;            'sacha/helm-org-create-tsk))
 
 
 ;;; occ-helm.el ends here

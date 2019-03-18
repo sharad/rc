@@ -30,7 +30,6 @@
   (let* ((tsk    (occ-ctxual-tsk-tsk ctxask))
          (marker (occ-tsk-marker tsk)))
     marker))
-
 
 
 (cl-defmethod occ-collect-tsks (collection

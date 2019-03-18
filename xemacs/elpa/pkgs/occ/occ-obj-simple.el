@@ -255,8 +255,11 @@ pointing to it."
     (helm-build-sync-source (concat "Select matching " (symbol-name
                                                         (cl-classname (car candidates))))
       :candidates (mapcar #'occ-candidate candidates)
-      :action (list (or name-action-cons
-                        (cons "Select" #'identity)))
+      :action (append
+               (if (consp (car name-action-cons))
+                   name-action-cons
+                 (list name-action-cons))
+               (list (cons "Select" #'identity)))
       :history 'org-refile-history)))
 ;; (helm-build-dummy-source "Create tsk"
 ;;   :action (helm-make-actions
@@ -276,7 +279,7 @@ pointing to it."
   (helm
    (occ-helm-build-candidates-source
     candidates
-    (cons "Clock in and track" #'identity))))
+    (list (cons "Clock in and track" #'identity)))))
 
 (defun occ-list-select-timed (candidates)
   (helm-timed 7
