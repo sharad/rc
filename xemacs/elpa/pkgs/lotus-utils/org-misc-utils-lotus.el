@@ -520,6 +520,27 @@ With prefix arg C-u, copy region instad of killing it."
       (org-refile-target-check org-refile-targets)
       (org-refile-get-location prompt))))
 
+(defun safe-org-refile-get-marker (&optional prompt)
+  (let* ((current-command (or
+                           (helm-this-command)
+                           this-command))
+         (str-command     (helm-symbol-name current-command))
+         (prompt          (or prompt str-command))
+         (buf-name        (format "*helm-mode-%s*" str-command)))
+    (let ((org-refile-targets
+           (if (safe-org-refile-get-location-p)
+               org-refile-targets
+             (remove-if '(lambda (e) (null (car e))) org-refile-targets))))
+      (org-refile-target-check org-refile-targets)
+      (let* ((marker (make-marker))
+             (target (org-refile-get-location prompt))
+             (file (nth 1 target))
+             (pos  (nth 3 target)))
+        (when (file-exists-p file)
+          (set-marker marker pos (find-file-noselect file))
+          marker)))))
+
+
 
 ;; TODO (replace-buffer-in-windows)
 
@@ -598,6 +619,17 @@ With prefix arg C-u, copy region instad of killing it."
     (lotus-with-idle-timed-transient-buffer-window timeout buf-name
       (safe-org-refile-get-location prompt))))
 
+(defun safe-timed-org-refile-get-marker (timeout &optional prompt)
+  ;; TODO: org-fit-window-to-buffer
+  ;; TODO: as clean up reset newwin configuration
+  (let* ((current-command (or
+                           (helm-this-command)
+                           this-command))
+         (str-command     (helm-symbol-name current-command))
+         (prompt          (or prompt str-command))
+         (buf-name        (format "*helm-mode-%s*" str-command))
+         (marker          (safe-org-refile-get-marker prompt)))
+    (lotus-with-idle-timed-transient-buffer-window timeout buf-name marker)))
 
 (defmacro org-with-refile (file pos refile-targets prompt &rest body)
   "Refile the active region.
@@ -682,7 +714,18 @@ With prefix arg C-u, copy region instad of killing it."
 ;; (org-miniwin-file-loc-with-refile nil nil)
 ;;)
 ;; Refile macros Ends
+
 
+(defmacro org-with-file-loc-timed-refile (marker timeout &rest body)
+  "Refile run body with file and loc set."
+  ;; mark paragraph if no region is set
+  `(let* ((marker ,marker))
+     (lotus-with-marker marker
+       ,@body)))
+(put 'org-with-file-loc-timed-refile 'lisp-indent-function 5)
+
+
+
 
 
 

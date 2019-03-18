@@ -438,6 +438,10 @@ pointing to it."
             ;; (sel-marker (if sel-tsk      (plist-get sel-tsk      :tsk-clock-marker)))
             ;; (occ-debug :debug "sel-ctxual-tsk %s sel-tsk %s sel-marker %s" sel-ctxual-tsk sel-tsk sel-marker)
             sel-ctxual-tsk))))))
+
+(cl-defmethod occ-select ((obj null))
+  "return interactively selected TSK or NIL"
+  (occ-list-select-timed (occ-list obj)))
 
 
 (cl-defmethod occ-clock-in ((obj marker))

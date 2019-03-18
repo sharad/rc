@@ -164,11 +164,15 @@
           (let ((range (org-get-property-block (point) 'force)))
             org-cycle-subtree-status))))))
 
-(defun occ-add-to-heading-internal (timeout)
-  (org-with-file-loc-timed-refile
-      file pos                                               ;;TODO: ASAP optional to generated helm-source helm-sync-source DOIT
-      timeout '((occ-files :maxlevel . 4)) "Refile" ;heavy task, but present in macro !
+;; (safe-timed-org-refile-get-marker 7)
 
+(cl-defgeneric occ-add-to-heading-internal (ctx timeout)
+  "occ-add-to-heading-internal")
+
+(cl-defmethod occ-add-to-heading-internal ((ctx occ-ctx) timeout)
+  (let (;; (marker (safe-timed-org-refile-get-marker timeout))
+        (marker (occ-tsk-marker (occ-select nil))))
+    (lotus-with-marker marker
       (let* ((marker (point-marker))
              (local-cleanup
               #'(lambda ()
@@ -177,55 +181,56 @@
                   (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
                     (abort-recursive-edit)))))
 
-        (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
-            timeout timer cleanup local-cleanup win
+          (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
+              timeout timer cleanup local-cleanup win
 
-            (let ((target-buffer (find-file-noselect file)))
+              (let ((target-buffer (marker-buffer marker))
+                    (pos           (marker-position marker)))
 
-              (when target-buffer
-                (switch-to-buffer target-buffer)
-                (goto-char pos)
-                (set-marker marker (point)))
+                (when target-buffer
+                  (switch-to-buffer target-buffer)
+                  (goto-char pos)
+                  (set-marker marker (point)))
 
-              (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
+                (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
 
-              (progn
-                (condition-case-control nil err
-                  (let ((buffer-read-only nil))
-                    (occ-debug :debug "timer started for win %s" win)
+                (progn
+                  (condition-case-control nil err
+                    (let ((buffer-read-only nil))
+                      (occ-debug :debug "timer started for win %s" win)
 
-                    ;; show proptery drawer
-                    (let* ((prop-range (org-flag-proprty-drawer-at-marker marker nil))
-                           (prop-loc   (1- (car prop-range))))
-                      (if (numberp prop-loc)
-                          (goto-char prop-loc)))
+                      ;; show proptery drawer
+                      (let* ((prop-range (org-flag-proprty-drawer-at-marker marker nil))
+                             (prop-loc   (1- (car prop-range))))
+                        (if (numberp prop-loc)
+                            (goto-char prop-loc)))
 
-                    ;; try to read values of properties.
-                    (let ((prop nil))
-                      (while (not
-                              (member
-                               (setq prop (occ-select-propetry (occ-make-tsk nil) ctx))
-                               '(edit done)))
-                        (when (occ-editprop prop ctx)
-                          (occ-tsk-update-tsks t)))
-                      (cond
-                       ((eql 'done prop)
-                        (funcall cleanup win local-cleanup)
-                        (when timer (cancel-timer timer)))
-                       ((eql 'edit prop)
-                        ;; (funcall cleanup win local-cleanup)
-                        (occ-debug :debug "debug editing")
-                        (when timer (cancel-timer timer))
-                        (when (and win (windowp win) (window-valid-p win))
-                          (select-window win 'norecord)))
-                       (t
-                        (funcall cleanup win local-cleanup)
-                        (when timer (cancel-timer timer))))))
-                  ((quit)
-                   (progn
-                     (funcall cleanup win local-cleanup)
-                     (if timer (cancel-timer timer))
-                     (signal (car err) (cdr err)))))))))))
+                      ;; try to read values of properties.
+                      (let ((prop nil))
+                        (while (not
+                                (member
+                                 (setq prop (occ-select-propetry (occ-make-tsk nil) ctx))
+                                 '(edit done)))
+                          (when (occ-editprop prop ctx)
+                            (occ-tsk-update-tsks t)))
+                        (cond
+                         ((eql 'done prop)
+                          (funcall cleanup win local-cleanup)
+                          (when timer (cancel-timer timer)))
+                         ((eql 'edit prop)
+                          ;; (funcall cleanup win local-cleanup)
+                          (occ-debug :debug "debug editing")
+                          (when timer (cancel-timer timer))
+                          (when (and win (windowp win) (window-valid-p win))
+                            (select-window win 'norecord)))
+                         (t
+                          (funcall cleanup win local-cleanup)
+                          (when timer (cancel-timer timer))))))
+                    ((quit)
+                     (progn
+                       (funcall cleanup win local-cleanup)
+                       (if timer (cancel-timer timer))
+                       (signal (car err) (cdr err))))))))))))
 
 ;;;###autoload
 (cl-defmethod occ-add-to-org-heading ((ctx occ-ctx) timeout)
@@ -249,8 +254,8 @@
              (buffer-live-p buff)
              (not
               (eq buff (get-buffer "*helm-mode-occ-add-to-org-heading*"))))
-            (occ-add-to-heading-internal timeout)
-          (occ-debug :debug "not running add-ctx-to-org-heading 1 %s, 2 %s 3 %s"
+            (occ-add-to-heading-internal ctx timeout)
+          (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s 3 %s"
                      (eq (current-buffer) buff)
                      (buffer-live-p buff)
                      (eq buff
