@@ -183,6 +183,19 @@
     (occ-capture mrk)))
 
 
+(cl-defgeneric occ-child (obj)
+  "occ-child")
+
+(cl-defmethod occ-child ((obj marker))
+  (occ-capture obj))
+
+(cl-defmethod occ-child ((obj occ-tsk))
+  (occ-capture obj))
+
+(cl-defmethod occ-child ((obj occ-ctxual-tsk))
+  (occ-capture obj))
+
+
 (cl-defgeneric occ-rank (obj ctx)
   "occ-rank")
 
@@ -259,13 +272,21 @@ pointing to it."
                (if (consp (car name-action-cons))
                    name-action-cons
                  (list name-action-cons))
-               (list (cons "Select" #'identity)))
+               (list
+                (cons "Select" #'identity)
+                (cons "Clock-in" #'occ-clock-in)
+                (cons "Child" #'occ-child)))
       :history 'org-refile-history)))
 ;; (helm-build-dummy-source "Create tsk"
 ;;   :action (helm-make-actions
 ;;            "Create tsk"
 ;;            'sacha/helm-org-create-tsk))
 
+(defun occ-helm-dummy-source ()
+  (helm-build-dummy-source "Create tsk"
+    :action (helm-make-actions
+             "Create tsk"
+             'sacha/helm-org-create-tsk)))
 
 (defun occ-helm-build-obj-source (obj &optional name-action-cons)
   (occ-helm-build-candidates-source
@@ -474,9 +495,7 @@ pointing to it."
             (progn
               (occ-straight-org-clock-clock-in (list obj)))
             ((error)
-             (progn
-               (setq retval nil)
-               (signal (car err) (cdr err))))))))))
+             (signal (car err) (cdr err)))))))))
 
 (cl-defmethod occ-clock-in ((obj occ-tsk))
   (occ-clock-in (occ-tsk-marker obj)))
