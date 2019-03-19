@@ -39,6 +39,12 @@
   (occ-readprop (cons prop (occ-make-tsk nil)) ctx))
 (cl-defmethod occ-writeprop ((prop symbol) value)
   (if value
+      (unless (org-get-property-block)
+        ;;create property drawer
+        (let ((range (org-get-property-block (point) 'force))
+              (start (when (consp range) (1- (car range)))))
+          (when (numberp start)
+            (goto-char start))))
       (org-set-property (symbol-name prop) value)
     (error "occ-writeprop value is nil")))
 (cl-defmethod occ-editprop ((prop symbol) (ctx occ-ctx))

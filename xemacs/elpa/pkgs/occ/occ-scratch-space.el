@@ -33,7 +33,91 @@
 
 
 (progn
+  ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgd593b27
+  ;; Self-tracking, statistics, and other data transformations
+  ;; Quantified Awesome
 
+  (defmacro my/org-with-current-task (&rest body)
+    "Execute BODY with the point at the subtree of the current task."
+    `(if (derived-mode-p 'org-agenda-mode)
+         (save-window-excursion
+           (org-agenda-switch-to)
+           ,@body)
+       ,@body))
+
+  (defun my/org-clock-in-and-track ()
+    "Start the clock running. Clock into Quantified Awesome."
+    (interactive)
+    (my/org-with-current-task
+     (org-clock-in)
+     (call-interactively 'my/org-quantified-track)
+     (when (org-entry-get (point) "AUTO")
+       (org-open-link-from-string (org-entry-get (point) "AUTO")))))
+  (bind-key "!" 'my/org-clock-in-and-track org-agenda-mode-map)
+
+  (defmacro my/with-org-task (&rest body)
+    "Run BODY within the current agenda task, clocked task, or cursor task."
+    `(cond
+      ((derived-mode-p 'org-agenda-mode)
+       (let* ((marker (org-get-at-bol 'org-marker))
+              (buffer (marker-buffer marker))
+              (pos (marker-position marker)))
+         (with-current-buffer buffer
+           (save-excursion
+             (save-restriction
+               (widen)
+               (goto-char pos)
+               ,@body)))))
+      ((and (derived-mode-p 'org-mode) (org-at-heading-p)) (save-excursion ,@body))
+      ((org-clocking-p) (save-excursion (org-clock-goto) ,@body))
+      ((derived-mode-p 'org-mode) ,@body)))
+
+  (defun my/org-quantified-track (&optional category note)
+    "Create a tracking record using CATEGORY and NOTE.
+Default to the current task in the agenda, the currently-clocked
+entry, or the current subtree in Org."
+    (interactive (list nil nil))
+    (unless (and category note)
+      (my/with-org-task
+       (setq category (or category
+                          (org-entry-get-with-inheritance "QUANTIFIED")))
+       (cond
+        ((null category)
+         (setq category (read-string "Category: "))
+         (org-set-property "QUANTIFIED" category))
+        ((string= category "ask")
+         (setq category (read-string "Category: "))))
+       (setq note
+             (concat
+              (if (string= (or (org-entry-get-with-inheritance "QUANTIFIEDQUIET") "") "t")
+                  "!private "
+                "")
+              (or note (elt (org-heading-components) 4) (read-string "Note: "))))))
+    (quantified-track (concat category " | " note)))
+
+  (defun my/org-quick-clock-in-task (location jump)
+    "Track and clock in on the specified task.
+If JUMP is non-nil or the function is called with the prefix argument, jump to that location afterwards."
+    (interactive (list (save-excursion (my/org-refile-get-location "Location")) current-prefix-arg))
+    (when location
+      (if jump
+          (progn (org-refile 4 nil location) (my/org-clock-in-and-track))
+        (save-window-excursion
+          (org-refile 4 nil location)
+          (my/org-clock-in-and-track)))))
+  (bind-key "C-c q" 'my/org-quick-clock-in-task)
+
+  (require 'quantified nil t)
+
+
+
+  )
+
+
+(progn
+
+  ;;http://pages.sachachua.com/.emacs.d/Sacha.html
+  ;;http://sachachua.com/blog/2015/03/getting-helm-org-refile-clock-create-tasks/
 
   (defun my/org-contacts-template-email (&optional return-value)
     "Try to return the contact email for a template.
@@ -140,18 +224,18 @@ Captured %<%Y-%m-%d %H:%M>
   %a
   %U"
            :clock-in :clock-resume)
-           ("C" "Contact" entry (file "~/personal/contacts.org")
-            "* %(org-contacts-template-name)
+          ("C" "Contact" entry (file "~/personal/contacts.org")
+           "* %(org-contacts-template-name)
   :PROPERTIES:
   :EMAIL: %(my/org-contacts-template-email)
   :END:")
-           ("n" "Daily note" table-line (file+olp "~/personal/organizer.org" "Inbox")
-            "| %u | %^{Note} |"
-            :immediate-finish t)
-           ("r" "Notes" entry
-            (file+datetree "~/personal/organizer.org")
-            "* %?\n\n%i\n%U\n"
-            )))
+          ("n" "Daily note" table-line (file+olp "~/personal/organizer.org" "Inbox")
+           "| %u | %^{Note} |"
+           :immediate-finish t)
+          ("r" "Notes" entry
+           (file+datetree "~/personal/organizer.org")
+           "* %?\n\n%i\n%U\n"
+           )))
   (bind-key "C-M-r" 'org-capture)
 
   ;; Allow refiling in the middle(ish) of a capture
@@ -162,14 +246,14 @@ Captured %<%Y-%m-%d %H:%M>
   ;; Beeminder-related properties too), but I also wanted to be able to clock in
   ;; on them.
 
-    (defun my/org-refile-and-jump ()
-      (interactive)
-      (if (derived-mode-p 'org-capture-mode)
-          (org-capture-refile)
-        (call-interactively 'org-refile))
-      (org-refile-goto-last-stored))
-    (eval-after-load 'org-capture
-     '(bind-key "C-c C-r" 'my/org-refile-and-jump org-capture-mode-map))
+  (defun my/org-refile-and-jump ()
+    (interactive)
+    (if (derived-mode-p 'org-capture-mode)
+        (org-capture-refile)
+      (call-interactively 'org-refile))
+    (org-refile-goto-last-stored))
+  (eval-after-load 'org-capture
+    '(bind-key "C-c C-r" 'my/org-refile-and-jump org-capture-mode-map))
 
 
   )

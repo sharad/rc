@@ -63,6 +63,10 @@
   (occ-goto-tsk))
 
 
+(defun occ-proprty-edit ()
+  (interactive)
+  (occ-obj-prop-edit (point) nil))
+
 ;;;###autoload
 (defun occ-clock-in-curr-ctx (&optional force)
   (interactive "P")

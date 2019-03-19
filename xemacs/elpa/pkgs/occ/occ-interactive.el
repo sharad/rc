@@ -96,65 +96,59 @@
   "NIL to open drawer T to close drawer"
   ;; https://orgmode.org/worg/org-hacks.html
   ;; https://orgmode.org/worg/org-hacks.html#org6d4906f
-  (occ-debug :debug "%s: called to %s drawer of heading `%s' in file %s loc %d"
-                     (time-stamp-string)
-                     (if flag "close" "open")
-                     heading
-                     (buffer-file-name buff)
-                     loc
-          (recenter-top-bottom 2)
-          (unless flag                  ;; creating issue in cleanupfn error as display buffer and current buffer is not same.
-            (recenter-top-bottom 2))
-          (let ((prop-range (org-get-property-block (point) force)))
-            ;; first show heading
-            (when (eq org-cycle-subtree-status 'folded)
-              (unless flag
-                ;; https://lists.gnu.org/archive/html/emacs-orgmode/2015-02/msg00573.html
-                (progn
-                  (when (or
-                         (org-invisible-p)
-                         (org-invisible-p2))
-                    (org-show-context 'org-goto)))
-                (progn                                        ; changed from org-show-tsk to org-show-entry
-                  (org-show-entry)
-                  (occ-debug :debug
-                             "did %s entry `%s'" (if flag "close" "open") heading)
-                  (org-unlogged-message "CHILDREN")
-                  (setq org-cycle-subtree-status 'children))))
-            ;; show expand property if flag is nil, else hide
-            (let* ((prop-range (org-get-property-block (point) force))
-                   (prop-loc   (1- (car prop-range))))
-              (when prop-range
-                (occ-debug :debug "pos %d before jumping to %s drawer, will jump to pos %d"
-                           (point)
+  ;; (recenter-top-bottom 2)
+  ;; (unless flag                  ;; creating issue in cleanupfn error as display buffer and current buffer is not same.
+  ;;   (recenter-top-bottom 2))
+  (let ((prop-range (org-get-property-block (point) force)))
+    ;; first show heading
+    (when (eq org-cycle-subtree-status 'folded)
+      (unless flag
+        ;; https://lists.gnu.org/archive/html/emacs-orgmode/2015-02/msg00573.html
+        (progn
+          (when (or
+                 (org-invisible-p)
+                 (org-invisible-p2))
+            (org-show-context 'org-goto)))
+        (progn                                        ; changed from org-show-tsk to org-show-entry
+          (org-show-entry)
+          (occ-debug :debug
+                     "did %s entry `%s'" (if flag "close" "open") heading)
+          (org-unlogged-message "CHILDREN")
+          (setq org-cycle-subtree-status 'children))))
+    ;; show expand property if flag is nil, else hide
+    (let* ((prop-range (org-get-property-block (point) force))
+           (prop-loc   (when (consp prop-range) (1- (car prop-range)))))
+      (when prop-range
+        (occ-debug :debug "pos %d before jumping to %s drawer, will jump to pos %d"
+                   (point)
+                   (if flag "close" "open")
+                   prop-loc)
+        (goto-char prop-loc)
+        (occ-debug :debug "reached to %s drawer" (if flag "close" "open"))
+        (if (org-at-drawer-p)
+            ;; show drawer
+            (let ((drawer (org-element-at-point)))
+              (when (memq (org-element-type drawer)
+                          '(node-property drawer property-drawer))
+                (occ-debug :debug
+                           "trying to %s drawer %s current pos %d"
                            (if flag "close" "open")
-                           prop-loc)
-                (goto-char prop-loc)
-                (occ-debug :debug "reached to %s drawer" (if flag "close" "open"))
-                (if (org-at-drawer-p)
-                    ;; show drawer
-                    (let ((drawer (org-element-at-point)))
-                      (when (memq (org-element-type drawer)
-                                  '(node-property drawer property-drawer))
-                        (occ-debug :debug
-                                   "trying to %s drawer %s current pos %d"
-                                   (if flag "close" "open")
-                                   drawer
-                                   (point))
-                        (org-flag-drawer flag drawer)
-                        ;; Make sure to skip drawer entirely or we might flag
-                        ;; it another time when matching its ending line with
-                        ;; `org-drawer-regexp'.
-                        (when nil       ;;BUG ?? what
-                          (goto-char (org-element-property :end drawer)))))
-                  (occ-debug :debug "not at drawer to %s current pos is %s"
-                             (if flag "close" "open")
-                             (point)))
-                (goto-char prop-loc)
-                (occ-debug :debug "reached to %s drawer1 current pos %d"
-                           (if flag "close" "open")
+                           drawer
                            (point))
-                prop-range)))))
+                (org-flag-drawer flag drawer)
+                ;; Make sure to skip drawer entirely or we might flag
+                ;; it another time when matching its ending line with
+                ;; `org-drawer-regexp'.
+                (when nil       ;;BUG ?? what
+                  (goto-char (org-element-property :end drawer)))))
+          (occ-debug :debug "not at drawer to %s current pos is %s"
+                     (if flag "close" "open")
+                     (point)))
+        (goto-char prop-loc)
+        (occ-debug :debug "reached to %s drawer1 current pos %d"
+                   (if flag "close" "open")
+                   (point))
+        prop-range))))
 
 
 (defun org-get-flag-proprty-drawer-at-marker (marker &optional force)
@@ -176,115 +170,144 @@
       (with-current-buffer buff
         (let ((currloc (point)))
           (goto-char loc)
+          (occ-debug :debug "%s: called to %s drawer of heading `%s' in file %s loc %d"
+                     (time-stamp-string)
+                     (if flag "close" "open")
+                     heading
+                     (buffer-file-name buff)
+                     loc)
           (org-flag-proprty-drawer flag force))))))
+
+
+
+;; (safe-timed-org-refile-get-marker 7)
+
+;; q(defun occ-select-marker)
+
+(cl-defgeneric occ-obj-prop-edit (ctx timeout)
+  "occ-prop-edit")
+
+(cl-defmethod occ-obj-prop-edit ((obj occ-tsk) (ctx occ-ctx) timeout)
+  (let* ((timeout (or timeout 0))
+         (mrk     (occ-tsk-marker obj)))
+    (when mrk
+      (org-with-cloned-marker mrk "<proptree>"
+        (let* ((marker (point-marker))
+               (local-cleanup
+                #'(lambda ()
+                    (save-excursion ;what to do here
+                      (org-flag-proprty-drawer-at-marker mrk t))
+                    (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
+                      (abort-recursive-edit)))))
+
+          (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
+              timeout timer cleanup local-cleanup win
+
+              (let ((target-buffer (marker-buffer marker))
+                    (pos           (marker-position marker)))
+
+                (when target-buffer
+                  (progn
+                    (progn
+                      (switch-to-buffer target-buffer)
+                      (goto-char pos)
+                      (set-marker marker (point))
+                      (recenter-top-bottom 2))
+                    (progn
+                      (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
+                      (condition-case-control nil err
+                        (let ((buffer-read-only nil))
+                          (occ-debug :debug "timer started for win %s" win)
+
+                          ;; show proptery drawer
+                          (let* ((prop-range (org-flag-proprty-drawer-at-marker marker nil))
+                                 (prop-loc   (when (consp prop-range) (1- (car prop-range)))))
+                            (if (numberp prop-loc)
+                                (goto-char prop-loc)))
+
+                          ;; try to read values of properties.
+                          (let ((prop nil))
+                            (while (not
+                                    (member
+                                     (setq prop (occ-select-propetry tsk ctx))
+                                     '(edit done)))
+                              (when (occ-editprop prop ctx)
+                                (occ-tsk-update-tsks t)))
+                            (cond
+                             ((eql 'done prop)
+                              (funcall cleanup win local-cleanup)
+                              (when timer (cancel-timer timer)))
+                             ((eql 'edit prop)
+                              ;; (funcall cleanup win local-cleanup)
+                              (occ-debug :debug "debug editing")
+                              (when timer (cancel-timer timer))
+                              (when (and win (windowp win) (window-valid-p win))
+                                (select-window win 'norecord)))
+                             (t
+                              (funcall cleanup win local-cleanup)
+                              (when timer (cancel-timer timer))))))
+                        ((quit)
+                         (progn
+                           (funcall cleanup win local-cleanup)
+                           (if timer (cancel-timer timer))
+                           (signal (car err) (cdr err)))))))))))))))
+
+(cl-defmethod occ-obj-prop-edit ((obj marker) (ctx occ-ctx) timeout)
+  (occ-obj-prop-edit-internal (occ-make-tsk obj) ctx timeout))
+
+(cl-defmethod occ-obj-prop-edit ((obj null) (ctx occ-ctx) timeout)
+  (occ-obj-prop-edit-internal nil ctx timeout))
 
 
 ;; (safe-timed-org-refile-get-marker 7)
 
 ;; q(defun occ-select-marker)
 
-(cl-defgeneric occ-prop-edit (ctx timeout)
+(cl-defgeneric occ-select-obj-prop-edit (obj ctx timeout)
   "occ-prop-edit")
 
-(cl-defmethod occ-prop-edit ((ctx occ-ctx) timeout)
-  (let* ((timeout (or timeout 0))
-         (tsk     (occ-select-timed nil))
-         (mrk     (if tsk (occ-tsk-marker tsk))))
-    (when mrk
-      (org-with-cloned-marker mrk "<proptree>"
-       (let* ((marker (point-marker))
-              (local-cleanup
-               #'(lambda ()
-                   (save-excursion ;what to do here
-                     (org-flag-proprty-drawer-at-marker marker t))
-                   (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
-                     (abort-recursive-edit)))))
+(cl-defmethod occ-select-obj-prop-edit ((obj null) (ctx occ-ctx) timeout)
+  (occ-obj-prop-edit (occ-select-timed obj timeout) ctx timeout))
 
-           (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
-               timeout timer cleanup local-cleanup win
-
-               (let ((target-buffer (marker-buffer marker))
-                     (pos           (marker-position marker)))
-
-                 (when target-buffer
-                   (switch-to-buffer target-buffer)
-                   (goto-char pos)
-                   (set-marker marker (point)))
-
-                 (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
-
-                 (progn
-                   (condition-case-control nil err
-                     (let ((buffer-read-only nil))
-                       (occ-debug :debug "timer started for win %s" win)
-
-                       ;; show proptery drawer
-                       (let* ((prop-range (org-flag-proprty-drawer-at-marker marker nil))
-                              (prop-loc   (1- (car prop-range))))
-                         (if (numberp prop-loc)
-                             (goto-char prop-loc)))
-
-                       ;; try to read values of properties.
-                       (let ((prop nil))
-                         (while (not
-                                 (member
-                                  (setq prop (occ-select-propetry (occ-make-tsk nil) ctx))
-                                  '(edit done)))
-                           (when (occ-editprop prop ctx)
-                             (occ-tsk-update-tsks t)))
-                         (cond
-                          ((eql 'done prop)
-                           (funcall cleanup win local-cleanup)
-                           (when timer (cancel-timer timer)))
-                          ((eql 'edit prop)
-                           ;; (funcall cleanup win local-cleanup)
-                           (occ-debug :debug "debug editing")
-                           (when timer (cancel-timer timer))
-                           (when (and win (windowp win) (window-valid-p win))
-                             (select-window win 'norecord)))
-                          (t
-                           (funcall cleanup win local-cleanup)
-                           (when timer (cancel-timer timer))))))
-                     ((quit)
-                      (progn
-                        (funcall cleanup win local-cleanup)
-                        (if timer (cancel-timer timer))
-                        (signal (car err) (cdr err)))))))))))))
-
-(cl-defmethod occ-prop-edit ((ctx marker) timeout)
-  (occ-prop-edit (occ-make-ctx marker)))
+(cl-defmethod occ-select-obj-prop-edit ((obj occ-ctx) (ctx occ-ctx) timeout)
+  (occ-obj-prop-edit (occ-select-timed obj timeout) ctx timeout))
+
 
 ;;;###autoload
-(cl-defmethod occ-add-to-org-heading ((ctx occ-ctx) timeout)
+(cl-defmethod occ-delayed-select-obj-prop-edit (obj (ctx occ-ctx) timeout)
   "add-ctx-to-org-heading"
   ;; TODO: make helm conditional when it is used than only it should be handled.
   (interactive '((occ-make-ctx-at-point) 7))
-  (occ-debug :debug "begin occ-add-to-org-heading")
+  (occ-debug :debug "begin occ-delayed-select-obj-prop-edit")
   (lotus-with-no-active-minibuffer-if
       (progn
-        (lwarn 'occ :debug "occ-add-to-org-heading: [minibuffer-body] lotus-with-no-active-minibuffer-if")
+        (lwarn 'occ :debug "occ-delayed-select-obj-prop-edit: [minibuffer-body] lotus-with-no-active-minibuffer-if")
         (occ-debug :debug "add-ctx-to-org-heading: minibuffer already active quitting")
         (occ-debug :debug nil))
-    (lotus-with-other-frame-event-debug "occ-add-to-org-heading" :cancel
-      (lwarn 'occ :debug "occ-add-to-org-heading: lotus-with-other-frame-event-debug")
+    (lotus-with-other-frame-event-debug "occ-delayed-select-obj-prop-edit" :cancel
+      (lwarn 'occ :debug "occ-delayed-select-obj-prop-edit: lotus-with-other-frame-event-debug")
       (let* ((timeout (or timeout 7))
              (ctx     (or ctx (occ-make-ctx-at-point)))
              (buff    (occ-ctx-buffer ctx)))
-        (lwarn 'occ :debug "occ-add-to-org-heading: [body] lotus-with-no-active-minibuffer-if")
+        (lwarn 'occ :debug "occ-delayed-select-obj-prop-edit: [body] lotus-with-no-active-minibuffer-if")
         (if (and
              (eq (current-buffer) buff)
              (buffer-live-p buff)
              (not
-              (eq buff (get-buffer "*helm-mode-occ-add-to-org-heading*"))))
-            (occ-prop-edit ctx timeout)
+              (eq buff (get-buffer "*helm-mode-occ-delayed-select-obj-prop-edit*"))))
+            (occ-select-obj-prop-edit obj ctx timeout)
           (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s 3 %s"
                      (eq (current-buffer) buff)
                      (buffer-live-p buff)
                      (eq buff
-                         (get-buffer "*helm-mode-occ-add-to-org-heading*")))))))
-  (occ-debug :debug "finished occ-add-to-org-heading"))
+                         (get-buffer "*helm-mode-occ-delayed-select-obj-prop-edit*")))))))
+  (occ-debug :debug "finished occ-delayed-select-obj-prop-edit"))
 
-(cl-defmethod occ-add-to-org-heading-when-idle ((ctx occ-ctx) timeout)
+
+(cl-defmethod occ-delayed-select-obj-prop-edit (obj (ctx marker) timeout)
+  (occ-delayed-select-obj-prop-edit obj (occ-make-ctx marker)))
+
+(cl-defmethod occ-delayed-select-obj-prop-edit-when-idle (obj (ctx occ-ctx) timeout)
 
   ;; either this should also be in occ-obj-method
   ;; or (cl-defmethod occ-clock-in ((ctx occ-ctx))
@@ -294,9 +317,9 @@
   ;; NOTE: presently it is not running on idle time, it simply runs immediately
 
   "Return value is important to decide next action to (create unnamed tsk.)"
-  (occ-debug 6 "called occ-add-to-org-heading-when-idle")
-  (occ-debug :debug "%s: begin: occ-add-to-org-heading-when-idle" (time-stamp-string))
-  ;; timed-newwin of occ-add-to-org-heading pass quit
+  (occ-debug 6 "called occ-delayed-select-obj-prop-edit-when-idle")
+  (occ-debug :debug "%s: begin: occ-delayed-select-obj-prop-edit-when-idle" (time-stamp-string))
+  ;; timed-newwin of occ-delayed-select-obj-prop-edit pass quit
   ;; signal to caller mean here, so need to be handled, else this function can
   ;; not return any value to its caller, which result into no next-action in
   ;; caller function.
@@ -306,20 +329,20 @@
       ;; else postpone it by calling run-with-idle-plus-timer
       (lwarn 'occ
              :debug
-             "occ-add-to-org-heading-when-idle: calling occ-add-to-org-heading with this-command=%s" this-command)
-      (occ-add-to-org-heading ctx timeout))
+             "occ-delayed-select-obj-prop-edit-when-idle: calling occ-delayed-select-obj-prop-edit with this-command=%s" this-command)
+      (occ-delayed-select-obj-prop-edit obj ctx timeout))
 
-    ;; (lotus-with-other-frame-event-debug "occ-add-to-org-heading-when-idle" :cancel
-    ;;   (lwarn 'occ :debug "occ-add-to-org-heading-when-idle: lotus-with-other-frame-event-debug")
-    ;;   (occ-add-to-org-heading ctx timeout))
+    ;; (lotus-with-other-frame-event-debug "occ-delayed-select-obj-prop-edit-when-idle" :cancel
+    ;;   (lwarn 'occ :debug "occ-delayed-select-obj-prop-edit-when-idle: lotus-with-other-frame-event-debug")
+    ;;   (occ-delayed-select-obj-prop-edit ctx timeout))
 
     ((quit)))
 
-  (occ-debug :debug "%s: end: occ-add-to-org-heading-when-idle" (time-stamp-string)))
+  (occ-debug :debug "%s: end: occ-delayed-select-obj-prop-edit-when-idle" (time-stamp-string)))
   ;; (run-with-idle-timer-nonobtrusive-simple
   ;;  7 nil
   ;;  #'(lambda (args)
-  ;;      (apply 'occ-add-to-org-heading args)) (list ctx timeout))
+  ;;      (apply 'occ-delayed-select-obj-prop-edit args)) (list ctx timeout))
 
 
 ;;; occ-interactive.el ends here

@@ -264,7 +264,7 @@ pointing to it."
 ;; function to setup ctx clock timer:2 ends here
 
 
-(defun occ-list-select (candidates)
+(defun occ-list-select (candidates &optional timeout)
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
   (message "Running occ-sacha-helm-select")
   (helm
@@ -272,9 +272,12 @@ pointing to it."
     candidates
     (list (cons "Select" #'identity)))))
 
-(defun occ-list-select-timed (candidates)
-  (helm-timed 7
-    (message "running sacha/helm-select-clock")
+(defun occ-list-select-timed (candidates &optional timeout)
+  (if timeout
+      (let ((timeout (or timeout 0)))
+        (helm-timed timeout
+          (message "running sacha/helm-select-clock")
+          (occ-list-select candidates)))
     (occ-list-select candidates)))
 
 ;; ISSUE? should it return rank or occ-ctxual-tsks list
@@ -392,11 +395,15 @@ pointing to it."
 (defvar *occ-clocked-ctxual-tsk-ctx-history* nil)
 (defvar occ-clock-in-hooks nil "Hook to run on clockin with previous and next markers.")
 
-(cl-defmethod occ-select-internal ((obj null) list-selector-fun)
+(cl-defmethod occ-select-internal ((obj null) list-selector-fun &optional timeout)
   "return interactively selected TSK or NIL"
   (funcall list-selector-fun (occ-list obj)))
 
-(cl-defmethod occ-select-internal ((obj occ-ctx) list-selector-fun)
+(cl-defmethod occ-select-timed-internal ((obj null) list-selector-fun &optional timeout)
+  "return interactively selected TSK or NIL"
+  (funcall list-selector-fun (occ-list obj) timeout))
+
+(cl-defmethod occ-select-timed-internal ((obj occ-ctx) list-selector-fun &optional timeout)
   "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
   (interactive
    (list (occ-make-ctx-at-point)))
@@ -428,11 +435,8 @@ pointing to it."
         (when matched-ctxual-tsks
           (let* ((sel-ctxual-tsk
                   (if (> (length matched-ctxual-tsks) 1)
-                      (funcall list-selector-fun matched-ctxual-tsks)
+                      (funcall list-selector-fun matched-ctxual-tsks timeout)
                     (car matched-ctxual-tsks))))
-            ;; (sel-tsk   (if sel-ctxual-tsk (plist-get sel-ctxual-tsk :tsk)))
-            ;; (sel-marker (if sel-tsk      (plist-get sel-tsk      :tsk-clock-marker)))
-            ;; (occ-debug :debug "sel-ctxual-tsk %s sel-tsk %s sel-marker %s" sel-ctxual-tsk sel-tsk sel-marker)
             sel-ctxual-tsk))))))
 
 (cl-defmethod occ-select ((obj null))
@@ -443,17 +447,17 @@ pointing to it."
   "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
   (interactive
    (list (occ-make-ctx-at-point)))
-  (occ-select-internal obj  #'occ-list-select))
+  (occ-select-timed-internal obj  #'occ-list-select))
 
-(cl-defmethod occ-select-timed ((obj null))
+(cl-defmethod occ-select-timed ((obj null) &optional timeout)
   "return interactively selected TSK or NIL"
-  (occ-select-internal obj #'occ-list-select-timed))
+  (occ-select-timed-internal obj #'occ-list-select-timed timeout))
 
-(cl-defmethod occ-select-timed ((obj occ-ctx))
+(cl-defmethod occ-select-timed ((obj occ-ctx) &optional timeout)
   "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
   (interactive
    (list (occ-make-ctx-at-point)))
-  (occ-select-internal obj  #'occ-list-select-timed))
+  (occ-select-timed-internal obj  #'occ-list-select-timed timeout))
 
 
 (cl-defmethod occ-clock-in ((obj marker))
@@ -527,19 +531,19 @@ pointing to it."
 
 (cl-defmethod occ-clock-in ((obj occ-ctx))
   "Clock-in selected CTXUAL-TSK for occ-ctx OBJ or open interface for adding properties to heading."
-  (let ((ctxual-tsk (occ-select obj)))
+  (let ((ctxual-tsk (occ-select-timed obj)))
     (if ctxual-tsk
         (occ-clock-in ctxual-tsk)
       (progn
         ;; here create unnamed tsk, no need
         (setq *occ-update-current-ctx-msg* "null clock")
         (occ-debug :debug
-                   "No clock found please set a match for this ctx %s, add it using M-x occ-add-to-org-heading."
+                   "No clock found please set a match for this ctx %s, add it using M-x occ-prop-edit-safe."
                    obj)
         (lwarn 'occ
                :debug
                "occ-clock-in(ctx):  with this-command=%s" this-command)
-        (occ-add-to-org-heading-when-idle obj 7)
+        (occ-delayed-select-obj-prop-edit-when-idle nil obj 7)
         nil))))
 
 (cl-defmethod occ-clock-in ((obj null))
