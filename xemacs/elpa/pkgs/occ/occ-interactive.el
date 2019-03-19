@@ -189,6 +189,7 @@
 
 (cl-defmethod occ-obj-prop-edit ((obj occ-tsk) (ctx occ-ctx) timeout)
   (let* ((timeout (or timeout 0))
+         (tsk     obj)
          (mrk     (occ-tsk-marker obj)))
     (when mrk
       (org-with-cloned-marker mrk "<proptree>"
@@ -253,10 +254,10 @@
                            (signal (car err) (cdr err)))))))))))))))
 
 (cl-defmethod occ-obj-prop-edit ((obj marker) (ctx occ-ctx) timeout)
-  (occ-obj-prop-edit-internal (occ-make-tsk obj) ctx timeout))
+  (occ-obj-prop-edit (occ-make-tsk obj) ctx timeout))
 
-(cl-defmethod occ-obj-prop-edit ((obj null) (ctx occ-ctx) timeout)
-  (occ-obj-prop-edit-internal nil ctx timeout))
+(cl-defmethod occ-obj-prop-edit ((obj null) (ctx occ-ctx) timeout))
+
 
 
 ;; (safe-timed-org-refile-get-marker 7)
@@ -267,13 +268,39 @@
   "occ-prop-edit")
 
 (cl-defmethod occ-select-obj-prop-edit ((obj null) (ctx occ-ctx) timeout)
-  (occ-obj-prop-edit (occ-select-timed obj timeout) ctx timeout))
+  (let* ((timeout (or timeout 7))
+         (buff    (occ-ctx-buffer ctx)))
+    (lwarn 'occ :debug "occ-select-obj-prop-edit: [body] lotus-with-no-active-minibuffer-if")
+    (if (and
+         (eq (current-buffer) buff)
+         (buffer-live-p buff)
+         (not
+          (eq buff (get-buffer "*helm-mode-occ-select-obj-prop-edit*"))))
+        (occ-obj-prop-edit (occ-select-timed obj timeout) ctx timeout)
+      (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s 3 %s"
+                 (eq (current-buffer) buff)
+                 (buffer-live-p buff)
+                 (eq buff
+                     (get-buffer "*helm-mode-occ-select-obj-prop-edit*"))))))
+
 
 (cl-defmethod occ-select-obj-prop-edit ((obj occ-ctx) (ctx occ-ctx) timeout)
-  (occ-obj-prop-edit (occ-select-timed obj timeout) ctx timeout))
+  (let* ((timeout (or timeout 7))
+         (buff    (occ-ctx-buffer ctx)))
+    (lwarn 'occ :debug "occ-select-obj-prop-edit: [body] lotus-with-no-active-minibuffer-if")
+    (if (and
+         (eq (current-buffer) buff)
+         (buffer-live-p buff)
+         (not
+          (eq buff (get-buffer "*helm-mode-occ-select-obj-prop-edit*"))))
+        (occ-obj-prop-edit (occ-select-timed obj timeout) ctx timeout)
+      (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s 3 %s"
+                 (eq (current-buffer) buff)
+                 (buffer-live-p buff)
+                 (eq buff
+                     (get-buffer "*helm-mode-occ-select-obj-prop-edit*"))))))
 
 
-;;;###autoload
 (cl-defmethod occ-delayed-select-obj-prop-edit (obj (ctx occ-ctx) timeout)
   "add-ctx-to-org-heading"
   ;; TODO: make helm conditional when it is used than only it should be handled.
@@ -286,21 +313,7 @@
         (occ-debug :debug nil))
     (lotus-with-other-frame-event-debug "occ-delayed-select-obj-prop-edit" :cancel
       (lwarn 'occ :debug "occ-delayed-select-obj-prop-edit: lotus-with-other-frame-event-debug")
-      (let* ((timeout (or timeout 7))
-             (ctx     (or ctx (occ-make-ctx-at-point)))
-             (buff    (occ-ctx-buffer ctx)))
-        (lwarn 'occ :debug "occ-delayed-select-obj-prop-edit: [body] lotus-with-no-active-minibuffer-if")
-        (if (and
-             (eq (current-buffer) buff)
-             (buffer-live-p buff)
-             (not
-              (eq buff (get-buffer "*helm-mode-occ-delayed-select-obj-prop-edit*"))))
-            (occ-select-obj-prop-edit obj ctx timeout)
-          (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s 3 %s"
-                     (eq (current-buffer) buff)
-                     (buffer-live-p buff)
-                     (eq buff
-                         (get-buffer "*helm-mode-occ-delayed-select-obj-prop-edit*")))))))
+      (occ-select-obj-prop-edit obj ctx timeout)))
   (occ-debug :debug "finished occ-delayed-select-obj-prop-edit"))
 
 

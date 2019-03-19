@@ -65,7 +65,9 @@
 
 (defun occ-proprty-edit ()
   (interactive)
-  (occ-obj-prop-edit (point) nil))
+  (occ-obj-prop-edit (point-marker)
+                     (occ-make-ctx (get-buffer (read-buffer-to-switch "buffer: ")))
+                     7))
 
 ;;;###autoload
 (defun occ-clock-in-curr-ctx (&optional force)
