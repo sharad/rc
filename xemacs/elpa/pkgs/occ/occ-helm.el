@@ -27,6 +27,35 @@
 (provide 'occ-helm)
 
 
+(defun occ-helm-build-candidates-source (candidates &optional name-action-cons)
+  (when candidates
+    (helm-build-sync-source (concat "Select matching " (symbol-name
+                                                        (cl-classname (car candidates))))
+      :candidates (mapcar #'occ-candidate candidates)
+      :action (append
+               (if (consp (car name-action-cons))
+                   name-action-cons
+                 (list name-action-cons))
+               (list
+                (cons "Select" #'identity)
+                (cons "Clock-in" #'occ-clock-in)
+                (cons "Child" #'occ-child)))
+      :history 'org-refile-history)))
+;; (helm-build-dummy-source "Create tsk"
+;;   :action (helm-make-actions
+;;            "Create tsk"
+;;            'sacha/helm-org-create-tsk))
+
+(defun occ-helm-dummy-source ()
+  (helm-build-dummy-source "Create tsk"
+    :action (helm-make-actions
+             "Create tsk"
+             'sacha/helm-org-create-tsk)))
+
+(defun occ-helm-build-obj-source (obj &optional name-action-cons)
+  (occ-helm-build-candidates-source
+   (occ-list obj)
+   name-action-cons))
 
 
 (defun occ-helm-select (obj

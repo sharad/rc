@@ -99,38 +99,4 @@
           (occ-debug :nodisplay "occ-clock-in-if-chg: ctx %s not suitable to associate" ctx)))
     (occ-debug :nodisplay "occ-clock-in-if-chg: not enough time passed.")))
 
-;;;###autoload
-(defun occ-clock-in-curr-ctx (&optional force)
-  (interactive "P")
-  (occ-clock-in-if-not (occ-make-ctx)))
-
-;;;###autoload
-(defun occ-clock-in-curr-ctx-if-not (&optional force)
-  (interactive "P")
-  ;; TODO: Add code to which check if only focus present than only trigger
-  ;; else postpone it by calling run-with-idle-plus-timer
-  (occ-debug :debug "begin occ-clock-in-curr-ctx-if-not")
-  (lotus-with-other-frame-event-debug "occ-clock-in-curr-ctx-if-not" :cancel
-    (occ-debug :debug "%s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug" (time-stamp-string))
-    (if force
-        (occ-clock-in-curr-ctx (occ-make-ctx))
-      (occ-clock-in-if-chg (occ-make-ctx))))
-  (occ-debug :nodisplay "%s: end occ-clock-in-curr-ctx-if-not" (time-stamp-string)))
-
-;;;###autoload
-(defun occ-run-curr-ctx-timer ()
-  (interactive)
-  (progn
-    (setq *occ-last-buff-sel-time* (current-time))
-    (when *occ-buff-sel-timer*
-      (cancel-timer *occ-buff-sel-timer*)
-      (setq *occ-buff-sel-timer* nil))
-    (setq *occ-buff-sel-timer*
-          ;; distrubing while editing.
-          ;; run-with-timer
-          (run-with-idle-timer
-           (1+ *occ-tsk-current-ctx-time-interval*)
-           nil
-           'occ-clock-in-curr-ctx-if-not))))
-
 ;;; occ-main.el ends here

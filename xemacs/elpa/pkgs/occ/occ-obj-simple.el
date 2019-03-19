@@ -263,36 +263,6 @@ pointing to it."
 
 ;; function to setup ctx clock timer:2 ends here
 
-(defun occ-helm-build-candidates-source (candidates &optional name-action-cons)
-  (when candidates
-    (helm-build-sync-source (concat "Select matching " (symbol-name
-                                                        (cl-classname (car candidates))))
-      :candidates (mapcar #'occ-candidate candidates)
-      :action (append
-               (if (consp (car name-action-cons))
-                   name-action-cons
-                 (list name-action-cons))
-               (list
-                (cons "Select" #'identity)
-                (cons "Clock-in" #'occ-clock-in)
-                (cons "Child" #'occ-child)))
-      :history 'org-refile-history)))
-;; (helm-build-dummy-source "Create tsk"
-;;   :action (helm-make-actions
-;;            "Create tsk"
-;;            'sacha/helm-org-create-tsk))
-
-(defun occ-helm-dummy-source ()
-  (helm-build-dummy-source "Create tsk"
-    :action (helm-make-actions
-             "Create tsk"
-             'sacha/helm-org-create-tsk)))
-
-(defun occ-helm-build-obj-source (obj &optional name-action-cons)
-  (occ-helm-build-candidates-source
-   (occ-list obj)
-   name-action-cons))
-
 
 (defun occ-list-select (candidates)
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
@@ -300,7 +270,7 @@ pointing to it."
   (helm
    (occ-helm-build-candidates-source
     candidates
-    (list (cons "Clock in and track" #'identity)))))
+    (list (cons "Select" #'identity)))))
 
 (defun occ-list-select-timed (candidates)
   (helm-timed 7
@@ -429,7 +399,7 @@ pointing to it."
 (cl-defmethod occ-select-internal ((obj occ-ctx) list-selector-fun)
   "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
   (interactive
-   (list (occ-make-ctx)))
+   (list (occ-make-ctx-at-point)))
   (progn
     (message "in occ-clock-in occ-ctx 1")
     (let* ((obj (or obj (occ-make-ctx)))
@@ -472,7 +442,7 @@ pointing to it."
 (cl-defmethod occ-select ((obj occ-ctx))
   "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
   (interactive
-   (list (occ-make-ctx)))
+   (list (occ-make-ctx-at-point)))
   (occ-select-internal obj  #'occ-list-select))
 
 (cl-defmethod occ-select-timed ((obj null))
@@ -482,7 +452,7 @@ pointing to it."
 (cl-defmethod occ-select-timed ((obj occ-ctx))
   "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
   (interactive
-   (list (occ-make-ctx)))
+   (list (occ-make-ctx-at-point)))
   (occ-select-internal obj  #'occ-list-select-timed))
 
 

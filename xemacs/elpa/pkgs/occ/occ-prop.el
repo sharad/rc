@@ -237,14 +237,14 @@
 (when nil
   (cl-method-first-arg 'occ-ctx-property-get)
   (occ-readprop-props)
-  (cl-method-matched-arg 'occ-readprop 'occ-ctx-property-get (occ-make-ctx))
-  (funcall 'occ-ctx-property-get (cons 'file (occ-make-ctx))))
+  (cl-method-matched-arg 'occ-readprop 'occ-ctx-property-get (occ-make-ctx-at-point))
+  (funcall 'occ-ctx-property-get (cons 'file (occ-make-ctx-at-point))))
 
 (when nil
   (cl-method-sigs-matched-arg
    '(occ-readprop (`((head ,val) occ-ctx) val))
    '(occ-ctx-property-get (`((head ,val) val)))
-   (occ-make-ctx)))
+   (occ-make-ctx-at-point)))
 
 
 

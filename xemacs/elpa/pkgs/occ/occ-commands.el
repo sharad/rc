@@ -64,6 +64,25 @@
 
 
 ;;;###autoload
+(defun occ-clock-in-curr-ctx (&optional force)
+  (interactive "P")
+  (occ-clock-in-if-not (occ-make-ctx-at-point)))
+
+;;;###autoload
+(defun occ-clock-in-curr-ctx-if-not (&optional force)
+  (interactive "P")
+  ;; TODO: Add code to which check if only focus present than only trigger
+  ;; else postpone it by calling run-with-idle-plus-timer
+  (occ-debug :debug "begin occ-clock-in-curr-ctx-if-not")
+  (lotus-with-other-frame-event-debug "occ-clock-in-curr-ctx-if-not" :cancel
+    (occ-debug :debug "%s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug" (time-stamp-string))
+    (if force
+        (occ-clock-in-curr-ctx (occ-make-ctx-at-point))
+      (occ-clock-in-if-chg (occ-make-ctx-at-point))))
+  (occ-debug :nodisplay "%s: end occ-clock-in-curr-ctx-if-not" (time-stamp-string)))
+
+
+;;;###autoload
 (defun occ-reset-collection-object ()
   (interactive)
   (setq occ-global-tsk-collection nil)

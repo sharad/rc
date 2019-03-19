@@ -49,7 +49,7 @@
 ;;;###autoload
 (defun occ-helm-select-ctxual-tsk (selector
                                    action)
-  (occ-helm-select (occ-make-ctx) selector action))
+  (occ-helm-select (occ-make-ctx-at-point) selector action))
 
 
 ;;; occ-obj-method.el ends here

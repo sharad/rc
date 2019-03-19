@@ -37,6 +37,7 @@
 (defvar occ-global-tsk-collection             nil)
 (defvar occ-global-tsk-collection-change-hook nil
   "run when occ-global-tsk-collection-change-hook get changed.")
+
 
 (defun occ-tsk-builder ()
   (unless occ-global-tsk-collection (occ-collection-object))
@@ -50,6 +51,7 @@
           #'make-occ-tree-tsk)
          (t (error "occ-global-tsk-collection is not from occ-list-collection or occ-tree-collection class"))))
     (error "occ-global-tsk-collection is NIL not from occ-list-collection or occ-tree-collection class")))
+
 
 (defun occ-heading-content-only ()
   (if (org-at-heading-p)
@@ -67,6 +69,7 @@
                 ;; (outline-next-visible-heading 1)
                 (backward-char)
                 (buffer-substring start (point)))))))))
+
 
 (defun occ-make-tsk-at-point (&optional builder)
     ;; (org-element-at-point)
@@ -135,8 +138,16 @@
         (if (<= (marker-position m) (point-max))
             (occ-make-tsk (marker-position m) builder)))))
 
-(defun occ-make-ctx (&optional buff)
-  (let* ((buff (if buff
+(cl-defmethod occ-make-tsk ((m null)
+                            &optional builder)
+  (occ-debug :debug "current pos %s" (point-marker))
+  (occ-make-tsk (point-marker) builder))
+
+
+(cl-defmethod occ-make-ctx-at-point (&optional marker)
+  (let* ((marker (or marker (point-marker)))
+         (buff (marker-buffer marker))
+         (buff (if buff
                    (if (bufferp buff)
                        buff
                      (if (stringp buff)
@@ -153,10 +164,17 @@
                :buffer buff)))
     ctx))
 
-(cl-defmethod occ-make-tsk ((m null)
-                            &optional builder)
-  (occ-debug :debug "current pos %s" (point-marker))
-  (occ-make-tsk (point-marker) builder))
+(cl-defgeneric occ-make-ctx (obj)
+  "occ-make-ctx")
+
+(cl-defmethod occ-make-ctx ((buff buffer))
+  (let ((mrk (make-marker)))
+    (set-marker mrk 0 buff)
+    (occ-make-ctx-at-point mrk)))
+
+(cl-defmethod occ-make-ctx ((mrk marker))
+  (occ-make-ctx-at-point mrk))
+
 
 (cl-defgeneric occ-make-ctxual-tsk (tsk ctx rank)
   "occ-make-ctxual-tsk")
@@ -183,7 +201,6 @@
 
 (cl-defmethod occ-build-obj ((tsk occ-tsk) (obj null))
   tsk)
-
 
 (cl-defmethod occ-make-tsk-collection ((file-spec (head :tree)))
   (unless occ-global-tsk-collection

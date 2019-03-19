@@ -23,12 +23,10 @@
 
 ;;; Code:
 
-;; (require 'eieio)
-
-(require 'occ-obj-common)
+(provide 'occ-obj)
 
 
-(provide 'occ-obj)
+(require 'occ-obj-common)
 
 
 ;; TODO org-base-buffer
@@ -41,6 +39,7 @@
 ;; (defvar org-)
 
 (defvar occ-verbose 0)
+
 
 (cl-defstruct occ-obj
   name)
@@ -89,5 +88,5 @@
 
 (cl-defstruct (occ-tree-collection (:include occ-list-collection))
   tree)
-
+
 ;;; occ-obj.el ends here

@@ -23,6 +23,9 @@
 
 ;;; Code:
 
+(provide 'occ)
+
+
 (require 'switch-buffer-functions)
 
 
@@ -30,8 +33,6 @@
 (require 'occ-test)
 
 
-(provide 'occ)
-
 ;;;###autoload
 (defun occ-switch-buffer-run-curr-ctx-timer-function (prev next)
   (occ-run-curr-ctx-timer))
@@ -39,6 +40,7 @@
 ;;;###autoload
 (defun occ-add-after-save-hook-fun-in-org-mode ()
   (add-hook 'after-save-hook 'occ-after-save-hook-fun t t))
+
 
 ;;;###autoload
 (defun occ-set-global-tsk-collection-spec (spec)
@@ -49,7 +51,24 @@
 (defun occ-reset-global-tsk-collection ()
   (occ-debug :debug "resetting global-tsk-collection")
   (occ-reset-collection-object))
+
 
+;;;###autoload
+(defun occ-run-curr-ctx-timer ()
+  (interactive)
+  (progn
+    (setq *occ-last-buff-sel-time* (current-time))
+    (when *occ-buff-sel-timer*
+      (cancel-timer *occ-buff-sel-timer*)
+      (setq *occ-buff-sel-timer* nil))
+    (setq *occ-buff-sel-timer*
+          ;; distrubing while editing.
+          ;; run-with-timer
+          (run-with-idle-timer
+           (1+ *occ-tsk-current-ctx-time-interval*)
+           nil
+           'occ-clock-in-curr-ctx-if-not))))
+
 ;;;###autoload
 (defun occ-insinuate ()
   (interactive)
@@ -189,4 +208,5 @@ With prefix arg UNCOMPILED, load the uncompiled versions."
                  (if (> (length load-misses) 1) "s" "") load-misses (occ-version nil 'full))
       (message "Successfully reloaded Org\n%s" (occ-version nil 'full)))))
 
+
 ;;; occ.el ends here

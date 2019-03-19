@@ -81,7 +81,7 @@
 
 (when nil                               ;occ-obj-method.el
 
-  (occ-add-to-org-heading-when-idle (occ-make-ctx) 7)
+  (occ-add-to-org-heading-when-idle (occ-make-ctx-at-point) 7)
 
   (length
    (occ-matching-ctxual-tsks
@@ -223,8 +223,8 @@
     (when nil
       (occ-readprop-props)
       (cl-method-matched-arg 'occ-readprop nil)
-      (cl-method-matched-arg 'occ-readprop (occ-make-ctx))
-      (occ-obj-defined-slots-with-value (occ-make-ctx))))
+      (cl-method-matched-arg 'occ-readprop (occ-make-ctx-at-point))
+      (occ-obj-defined-slots-with-value (occ-make-ctx-at-point))))
 
   (progn
     (cl-method-sig-matched-arg '(occ-readprop (`((head ,val) occ-ctx) val)) nil)
@@ -233,7 +233,7 @@
     (cl-method-sigs-matched-arg
      '(occ-readprop (`((head ,val) occ-ctx) val))
      '(occ-ctx-property-get (`((head ,val)) val))
-     (occ-make-ctx)))
+     (occ-make-ctx-at-point)))
 
   ;; (cl-method-param-case '(occ-readprop (`((head ,val) occ-ctx) val)))
   (setq xxnaaa

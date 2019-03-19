@@ -72,10 +72,10 @@
   (cl-defmethod occ-clock-in ((ctx occ-ctx))
     "marker and ranked version"
     (interactive
-     (list (occ-make-ctx)))
+     (list (occ-make-ctx-at-point)))
     (progn
       (message "in occ-clock-in occ-ctx 1")
-      (let* ((ctx (or ctx (occ-make-ctx)))
+      (let* ((ctx (or ctx (occ-make-ctx-at-point)))
              (matched-ctxual-tsks
               (run-unobtrusively           ;heavy task
 
@@ -441,7 +441,7 @@
 (cl-defmethod occ-add-to-org-heading ((ctx occ-ctx) timeout)
   "add-ctx-to-org-heading"
   ;; TODO: make helm conditional when it is used than only it should be handled.
-  (interactive '((occ-make-ctx) 7))
+  (interactive '((occ-make-ctx-at-point) 7))
   (occ-debug :debug "begin occ-add-to-org-heading")
   (lotus-with-no-active-minibuffer-if
       (progn
@@ -451,7 +451,7 @@
     (lotus-with-other-frame-event-debug "occ-add-to-org-heading" :cancel
       (lwarn 'occ :debug "occ-add-to-org-heading: lotus-with-other-frame-event-debug")
       (let* ((timeout (or timeout 7))
-             (ctx     (or ctx (occ-make-ctx)))
+             (ctx     (or ctx (occ-make-ctx-at-point)))
              (buff    (occ-ctx-buffer ctx)))
         (lwarn 'occ :debug "occ-add-to-org-heading: [body] lotus-with-no-active-minibuffer-if")
         (if (and
