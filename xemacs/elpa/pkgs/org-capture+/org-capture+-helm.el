@@ -65,4 +65,14 @@
 
 
 
+(defmacro with-org-capture-plus (type target template plist &rest body)
+  `(progn
+     (org-capture-plus ,type ,target ,template ,plist)
+     ,@body))
+
+(defmacro with-org-capture+ (type target template plist &rest body)
+  `(progn
+     (org-capture-plus ,type ,target ,template ,plist)
+     ,@body))
+
 ;;; org-capture+-helm.el ends here

@@ -195,6 +195,23 @@
 (cl-defmethod occ-child ((obj occ-ctxual-tsk))
   (occ-capture obj))
 
+;; (with-org-capture+)
+
+(cl-defgeneric occ-child-with-prop-edit (obj)
+  "occ-child")
+
+(cl-defmethod occ-child-with-prop-edit ((obj marker) (ctx occ-ctx))
+  (occ-capture obj)
+  (occ-obj-prop-edit obj ctx))
+
+(cl-defmethod occ-child-with-prop-edit ((obj occ-tsk) (ctx occ-ctx))
+  (occ-capture obj)
+  (occ-obj-prop-edit obj ctx))
+
+(cl-defmethod occ-child-with-prop-edit ((obj occ-ctxual-tsk))
+  (occ-capture obj)
+  (occ-obj-prop-edit (occ-ctxual-tsk-tsk obj) (occ-ctxual-tsk-ctx obj)))
+
 
 (cl-defgeneric occ-rank (obj ctx)
   "occ-rank")
