@@ -260,7 +260,8 @@ Each entry is either:
         ;;https://www.emacswiki.org/emacs/CleanBufferList
         (setq
          clean-buffer-list-delay-general 1       ;day
-         clean-buffer-list-delay-special (* 3 60 60)) ;hour min sec
+         ;; clean-buffer-list-delay-special (* 3 60 60)
+         clean-buffer-list-delay-special (* 1 60 60)) ;hour min sec
 
         (dolist (el lotus-clean-buffer-list-kill-buffer-names)
           (add-to-list 'clean-buffer-list-kill-buffer-names el))
@@ -282,8 +283,8 @@ Each entry is either:
            (lambda (re str)
              (if (functionp re)
                  (funcall re str) (string-match re str)))
-           clean-buffer-list-delay-special))
-        )
+           clean-buffer-list-delay-special)))
+
 
       (progn
         (use-package "planner"

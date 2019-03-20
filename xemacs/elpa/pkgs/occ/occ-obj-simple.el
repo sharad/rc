@@ -61,8 +61,10 @@
   ;; (format "[%4d] %s"
   ;;         0
   ;;         (occ-fontify-like-in-org-mode tsk))
-  (format "%s"
-          (occ-fontify-like-in-org-mode obj)))
+  (let* (heading (occ-fontify-like-in-org-mode obj)
+         (tags   (occ-get-property tsk 'tags))
+         (tagstr (mapconcat #'identity tags ":")))
+    (format "%s         %-30s" heading tagstr)))
 
 (cl-defmethod occ-print ((obj occ-ctxual-tsk))
   (let ((tsk (occ-ctxual-tsk-tsk obj)))

@@ -119,34 +119,34 @@
                       (occ-set-property tsk prop val))))))
             tsk))))
 
-(cl-defmethod occ-make-tsk ((n number)
+(cl-defmethod occ-make-tsk ((obj number)
                             &optional builder)
-  (occ-debug :debug "point %s" n)
-  (if (<= n (point-max))
+  (occ-debug :debug "point %s" obj)
+  (if (<= obj (point-max))
       (save-restriction
         (save-excursion
-          (goto-char n)
+          (goto-char obj)
           (occ-make-tsk-at-point builder)))))
 
-(cl-defmethod occ-make-tsk ((m marker)
+(cl-defmethod occ-make-tsk ((obj marker)
                             &optional builder)
-  (occ-debug :debug "point %s" m)
+  (occ-debug :debug "point %s" obj)
   (if (and
-       (marker-buffer m)
-       (numberp (marker-position m)))
-      (with-current-buffer (marker-buffer m)
-        (if (<= (marker-position m) (point-max))
-            (occ-make-tsk (marker-position m) builder)))))
+       (marker-buffer obj)
+       (numberp (marker-position obj)))
+      (with-current-buffer (marker-buffer obj)
+        (if (<= (marker-position obj) (point-max))
+            (occ-make-tsk (marker-position obj) builder)))))
 
-(cl-defmethod occ-make-tsk ((m null)
+(cl-defmethod occ-make-tsk ((obj null)
                             &optional builder)
   (occ-debug :debug "current pos %s" (point-marker))
   (occ-make-tsk (point-marker) builder))
 
 
-(cl-defmethod occ-make-ctx-at-point (&optional marker)
-  (let* ((marker (or marker (point-marker)))
-         (buff (marker-buffer marker))
+(cl-defmethod occ-make-ctx-at-point (&optional mrk)
+  (let* ((mrk (or mrk (point-marker)))
+         (buff (marker-buffer mrk))
          (buff (if buff
                    (if (bufferp buff)
                        buff
@@ -167,13 +167,16 @@
 (cl-defgeneric occ-make-ctx (obj)
   "occ-make-ctx")
 
-(cl-defmethod occ-make-ctx ((buff buffer))
+(cl-defmethod occ-make-ctx ((obj buffer))
   (let ((mrk (make-marker)))
-    (set-marker mrk 0 buff)
+    (set-marker mrk 0 obj)
     (occ-make-ctx-at-point mrk)))
 
-(cl-defmethod occ-make-ctx ((mrk marker))
-  (occ-make-ctx-at-point mrk))
+(cl-defmethod occ-make-ctx ((obj marker))
+  (occ-make-ctx-at-point obj))
+
+(cl-defmethod occ-make-ctx ((obj null))
+  (occ-make-ctx-at-point (point-marker)))
 
 
 (cl-defgeneric occ-make-ctxual-tsk (tsk ctx rank)

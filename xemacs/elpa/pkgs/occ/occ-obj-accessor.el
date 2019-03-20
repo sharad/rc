@@ -39,6 +39,7 @@
                                 &optional
                                 force)
   (error "first argument should be of type (or occ-tree-collection occ-list-collection)"))
+
 
 (cl-defmethod occ-collect-tsks ((collection occ-tree-collection)
                                 &optional
@@ -49,7 +50,8 @@
      (occ-tree-tsk-build
       #'(lambda ()
           (or
-           (occ-make-tsk-at-point #'make-occ-tree-tsk)
+           ;; (occ-make-tsk-at-point #'make-occ-tree-tsk)
+           (occ-make-tsk-at-point (occ-tsk-builder))
            (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of roots
       (car (occ-tree-collection-roots collection))))))
 
@@ -85,7 +87,7 @@
       (setf (occ-tree-collection-list collection)
             (nreverse tsk-list))))
   (occ-tree-collection-list collection))
-
+
 
 (cl-defmethod occ-collect-list ((collection occ-list-collection))
   (let ((tsks (occ-collection collection)))
@@ -100,7 +102,8 @@
              (org-map-entries
               #'(lambda ()
                   (or
-                   (occ-make-tsk-at-point #'make-occ-list-tsk)
+                   ;; (occ-make-tsk-at-point #'make-occ-list-tsk)
+                   (occ-make-tsk-at-point (occ-tsk-builder))
                    (make-occ-list-tsk :name "empty list tsk")))
               t
               (occ-list-collection-roots collection))))))
@@ -113,12 +116,14 @@
      (occ-list-collection-files collection)
      (occ-list-collection-roots collection)))
   (occ-list-collection-files collection))
+
 
 (cl-defmethod occ-collection ((collection occ-tree-collection))
   (unless (occ-tree-collection-tree occ-global-tsk-collection)
     (occ-collect-tsks occ-global-tsk-collection nil)
     (run-hooks 'occ-global-tsk-collection-change-hook))
   (occ-tree-collection-tree occ-global-tsk-collection))
+
 
 (cl-defmethod occ-collection ((collection occ-list-collection))
   (unless (occ-list-collection-list occ-global-tsk-collection)
@@ -130,6 +135,7 @@
 ;;   (unless (occ-tree-collection-files occ-global-tsk-collection)
 ;;     (occ-collect-files occ-global-tsk-collection nil))
 ;;   (occ-tree-collection-files occ-global-tsk-collection))
+
 
 (defun occ-collection-object ()
   (unless occ-global-tsk-collection
