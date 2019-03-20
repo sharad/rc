@@ -248,7 +248,7 @@ With prefix arg C-u, copy region instad of killing it."
 (put 'org-with-cloned-buffer 'lisp-indent-function 2)
 
 
-(defmacro org-with-cloned-marker (marker clone &rest body)
+(defmacro org-with-cloned-marker-widen (marker clone &rest body)
   `(with-current-buffer (marker-buffer ,marker)
      (let ((clone-name (concat (or ,clone "<clone>") "-" (buffer-name)))
            (marker ,marker)
@@ -271,7 +271,58 @@ With prefix arg C-u, copy region instad of killing it."
              (set-buffer buff)
              (goto-char pos))
            (kill-buffer clone-name))))))
+(put 'org-with-cloned-marker-widen 'lisp-indent-function 2)
+
+
+(defmacro org-with-cloned-marker (marker clone &rest body)
+  `(with-current-buffer (marker-buffer ,marker)
+     (let ((clone-name (concat (or ,clone "<clone>") "-" (buffer-name)))
+           (marker ,marker)
+           (buff (marker-buffer ,marker)))
+       (let ((pos (point)))
+         (unwind-protect
+             (progn
+               (clone-indirect-buffer clone-name nil t)
+               ;; (set-buffer clone-name)
+               (with-current-buffer (get-buffer clone-name)
+                 (goto-char (point-min))
+                 (widen)
+                 (show-all)
+                 (goto-char (marker-position-nonil marker))
+                 ;; (org-mode)
+                 ,@body))
+           (setq pos (point))
+           (when buff
+             (setq pos (point))
+             (set-buffer buff)
+             (goto-char pos))
+           (kill-buffer clone-name))))))
 (put 'org-with-cloned-marker 'lisp-indent-function 2)
+
+(defmacro org-with-cloned-marker-plain (marker clone &rest body)
+  `(with-current-buffer (marker-buffer ,marker)
+     (let ((clone-name (concat (or ,clone "<clone>") "-" (buffer-name)))
+           (marker ,marker)
+           (buff (marker-buffer ,marker)))
+       (let ((pos (point)))
+         (unwind-protect
+             (progn
+               (clone-indirect-buffer clone-name nil t)
+               ;; (set-buffer clone-name)
+               (with-current-buffer (get-buffer clone-name)
+                 ;; (goto-char (point-min))
+                 ;; (widen)
+                 ;; (show-all)
+                 ;; (goto-char (marker-position-nonil marker))
+                 ;; (org-mode)
+                 ,@body))
+           (setq pos (point))
+           (when buff
+             (setq pos (point))
+             (set-buffer buff)
+             (goto-char pos))
+           (kill-buffer clone-name))))))
+(put 'org-with-cloned-marker-plain 'lisp-indent-function 2)
 
 (defun org-heading-has-child-p ()
   (save-excursion

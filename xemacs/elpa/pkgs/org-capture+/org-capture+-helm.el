@@ -69,10 +69,12 @@
   `(progn
      (org-capture-plus ,type ,target ,template ,plist)
      ,@body))
+(put 'with-org-capture-plus 'lisp-indent-function 4)
 
 (defmacro with-org-capture+ (type target template plist &rest body)
   `(progn
      (org-capture-plus ,type ,target ,template ,plist)
      ,@body))
+(put 'with-org-capture+ 'lisp-indent-function 4)
 
 ;;; org-capture+-helm.el ends here

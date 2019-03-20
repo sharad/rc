@@ -168,7 +168,7 @@
   "occ-capture")
 
 (cl-defmethod occ-capture ((obj marker))
-  (org-capture+                ;TODO
+  (org-capture+
    'entry
    `(marker ,obj)
    'occ-capture+-helm-select-template
@@ -180,7 +180,9 @@
 
 (cl-defmethod occ-capture ((obj occ-ctxual-tsk))
   (let ((mrk (occ-ctxual-tsk-marker obj)))
-    (occ-capture mrk)))
+    (with-org-capture+ 'entry `(marker ,mrk) 'occ-capture+-helm-select-template '(:empty-lines 1)
+      (when (marker-buffer org-capture-last-stored-marker)
+        (occ-obj-prop-edit org-capture-last-stored-marker (occ-ctxual-tsk-ctx obj))))))
 
 
 (cl-defgeneric occ-child (obj)
@@ -281,21 +283,21 @@ pointing to it."
 ;; function to setup ctx clock timer:2 ends here
 
 
-(defun occ-list-select (candidates &optional timeout)
+(defun occ-list-select (candidates actions &optional timeout)
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
   (message "Running occ-sacha-helm-select")
   (helm
    (occ-helm-build-candidates-source
     candidates
-    (list (cons "Select" #'identity)))))
+    actions)))
 
-(defun occ-list-select-timed (candidates &optional timeout)
+(defun occ-list-select-timed (candidates actions &optional timeout)
   (if timeout
       (let ((timeout (or timeout 0)))
         (helm-timed timeout
           (message "running sacha/helm-select-clock")
-          (occ-list-select candidates)))
-    (occ-list-select candidates)))
+          (occ-list-select candidates actions)))
+    (occ-list-select candidates actions)))
 
 ;; ISSUE? should it return rank or occ-ctxual-tsks list
 (cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
@@ -416,11 +418,11 @@ pointing to it."
   "return interactively selected TSK or NIL"
   (funcall list-selector-fun (occ-list obj)))
 
-(cl-defmethod occ-select-timed-internal ((obj null) list-selector-fun &optional timeout)
+(cl-defmethod occ-select-timed-internal ((obj null) list-selector-fun actions &optional timeout)
   "return interactively selected TSK or NIL"
-  (funcall list-selector-fun (occ-list obj) timeout))
+  (funcall list-selector-fun (occ-list obj) actions timeout))
 
-(cl-defmethod occ-select-timed-internal ((obj occ-ctx) list-selector-fun &optional timeout)
+(cl-defmethod occ-select-timed-internal ((obj occ-ctx) list-selector-fun actions &optional timeout)
   "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
   (interactive
    (list (occ-make-ctx-at-point)))
@@ -452,29 +454,29 @@ pointing to it."
         (when matched-ctxual-tsks
           (let* ((sel-ctxual-tsk
                   (if (> (length matched-ctxual-tsks) 1)
-                      (funcall list-selector-fun matched-ctxual-tsks timeout)
+                      (funcall list-selector-fun matched-ctxual-tsks actions timeout)
                     (car matched-ctxual-tsks))))
             sel-ctxual-tsk))))))
 
 (cl-defmethod occ-select ((obj null))
   "return interactively selected TSK or NIL"
-  (occ-select-internal obj #'occ-list-select))
+  (occ-select-internal obj #'occ-list-select (occ-helm-actions obj)))
 
 (cl-defmethod occ-select ((obj occ-ctx))
   "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
   (interactive
    (list (occ-make-ctx-at-point)))
-  (occ-select-timed-internal obj  #'occ-list-select))
+  (occ-select-timed-internal obj  #'occ-list-select (occ-helm-actions obj)))
 
 (cl-defmethod occ-select-timed ((obj null) &optional timeout)
   "return interactively selected TSK or NIL"
-  (occ-select-timed-internal obj #'occ-list-select-timed timeout))
+  (occ-select-timed-internal obj #'occ-list-select-timed (occ-helm-actions obj) timeout))
 
 (cl-defmethod occ-select-timed ((obj occ-ctx) &optional timeout)
   "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
   (interactive
    (list (occ-make-ctx-at-point)))
-  (occ-select-timed-internal obj  #'occ-list-select-timed timeout))
+  (occ-select-timed-internal obj #'occ-list-select-timed (occ-helm-actions obj) timeout))
 
 
 (cl-defmethod occ-clock-in ((obj marker))

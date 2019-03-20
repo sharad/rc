@@ -193,65 +193,66 @@
          (mrk     (occ-tsk-marker obj)))
     (when mrk
       (org-with-cloned-marker mrk "<proptree>"
-        (let* ((marker (point-marker))
-               (local-cleanup
-                #'(lambda ()
-                    (save-excursion ;what to do here
-                      (org-flag-proprty-drawer-at-marker mrk t))
-                    (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
-                      (abort-recursive-edit)))))
+        (org-with-narrow-to-marker mrk
+          (let* ((marker (point-marker))
+                 (local-cleanup
+                  #'(lambda ()
+                      (save-excursion ;what to do here
+                        (org-flag-proprty-drawer-at-marker mrk t))
+                      (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
+                        (abort-recursive-edit)))))
+            (show-all)
+            (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
+                timeout timer cleanup local-cleanup win
 
-          (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
-              timeout timer cleanup local-cleanup win
+                (let ((target-buffer (marker-buffer marker))
+                      (pos           (marker-position marker)))
 
-              (let ((target-buffer (marker-buffer marker))
-                    (pos           (marker-position marker)))
-
-                (when target-buffer
-                  (progn
+                  (when target-buffer
                     (progn
-                      (switch-to-buffer target-buffer)
-                      (goto-char pos)
-                      (set-marker marker (point))
-                      (recenter-top-bottom 2))
-                    (progn
-                      (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
-                      (condition-case-control nil err
-                        (let ((buffer-read-only nil))
-                          (occ-debug :debug "timer started for win %s" win)
+                      (progn
+                        (switch-to-buffer target-buffer)
+                        (goto-char pos)
+                        (set-marker marker (point))
+                        (recenter-top-bottom 2))
+                      (progn
+                        (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
+                        (condition-case-control nil err
+                          (let ((buffer-read-only nil))
+                            (occ-debug :debug "timer started for win %s" win)
 
-                          ;; show proptery drawer
-                          (let* ((prop-range (org-flag-proprty-drawer-at-marker marker nil))
-                                 (prop-loc   (when (consp prop-range) (1- (car prop-range)))))
-                            (if (numberp prop-loc)
-                                (goto-char prop-loc)))
+                            ;; show proptery drawer
+                            (let* ((prop-range (org-flag-proprty-drawer-at-marker marker nil))
+                                   (prop-loc   (when (consp prop-range) (1- (car prop-range)))))
+                              (if (numberp prop-loc)
+                                  (goto-char prop-loc)))
 
-                          ;; try to read values of properties.
-                          (let ((prop nil))
-                            (while (not
-                                    (member
-                                     (setq prop (occ-select-propetry tsk ctx))
-                                     '(edit done)))
-                              (when (occ-editprop prop ctx)
-                                (occ-tsk-update-tsks t)))
-                            (cond
-                             ((eql 'done prop)
-                              (funcall cleanup win local-cleanup)
-                              (when timer (cancel-timer timer)))
-                             ((eql 'edit prop)
-                              ;; (funcall cleanup win local-cleanup)
-                              (occ-debug :debug "debug editing")
-                              (when timer (cancel-timer timer))
-                              (when (and win (windowp win) (window-valid-p win))
-                                (select-window win 'norecord)))
-                             (t
-                              (funcall cleanup win local-cleanup)
-                              (when timer (cancel-timer timer))))))
-                        ((quit)
-                         (progn
-                           (funcall cleanup win local-cleanup)
-                           (if timer (cancel-timer timer))
-                           (signal (car err) (cdr err)))))))))))))))
+                            ;; try to read values of properties.
+                            (let ((prop nil))
+                              (while (not
+                                      (member
+                                       (setq prop (occ-select-propetry tsk ctx))
+                                       '(edit done)))
+                                (when (occ-editprop prop ctx)
+                                  (occ-tsk-update-tsks t)))
+                              (cond
+                               ((eql 'done prop)
+                                (funcall cleanup win local-cleanup)
+                                (when timer (cancel-timer timer)))
+                               ((eql 'edit prop)
+                                ;; (funcall cleanup win local-cleanup)
+                                (occ-debug :debug "debug editing")
+                                (when timer (cancel-timer timer))
+                                (when (and win (windowp win) (window-valid-p win))
+                                  (select-window win 'norecord)))
+                               (t
+                                (funcall cleanup win local-cleanup)
+                                (when timer (cancel-timer timer))))))
+                          ((quit)
+                           (progn
+                             (funcall cleanup win local-cleanup)
+                             (if timer (cancel-timer timer))
+                             (signal (car err) (cdr err))))))))))))))))
 
 (cl-defmethod occ-obj-prop-edit ((obj marker) (ctx occ-ctx) timeout)
   (occ-obj-prop-edit (occ-make-tsk obj) ctx timeout))
@@ -272,10 +273,8 @@
          (buff    (occ-ctx-buffer ctx)))
     (lwarn 'occ :debug "occ-select-obj-prop-edit: [body] lotus-with-no-active-minibuffer-if")
     (if (and
-         (eq (current-buffer) buff)
          (buffer-live-p buff)
-         (not
-          (eq buff (get-buffer "*helm-mode-occ-select-obj-prop-edit*"))))
+         (not (string-match "^*helm" (buffer-name buff))))
         (occ-obj-prop-edit (occ-select-timed obj timeout) ctx timeout)
       (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s 3 %s"
                  (eq (current-buffer) buff)
@@ -289,16 +288,12 @@
          (buff    (occ-ctx-buffer ctx)))
     (lwarn 'occ :debug "occ-select-obj-prop-edit: [body] lotus-with-no-active-minibuffer-if")
     (if (and
-         (eq (current-buffer) buff)
          (buffer-live-p buff)
-         (not
-          (eq buff (get-buffer "*helm-mode-occ-select-obj-prop-edit*"))))
+         (not (string-match "^*helm" (buffer-name buff))))
         (occ-obj-prop-edit (occ-select-timed obj timeout) ctx timeout)
-      (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s 3 %s"
-                 (eq (current-buffer) buff)
+      (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s"
                  (buffer-live-p buff)
-                 (eq buff
-                     (get-buffer "*helm-mode-occ-select-obj-prop-edit*"))))))
+                 (not (string-match "^*helm" (buffer-name buff)))))))
 
 
 (cl-defmethod occ-delayed-select-obj-prop-edit (obj (ctx occ-ctx) timeout)
@@ -313,7 +308,9 @@
         (occ-debug :debug nil))
     (lotus-with-other-frame-event-debug "occ-delayed-select-obj-prop-edit" :cancel
       (lwarn 'occ :debug "occ-delayed-select-obj-prop-edit: lotus-with-other-frame-event-debug")
-      (occ-select-obj-prop-edit obj ctx timeout)))
+      (if (eq (current-buffer) buff)
+          (occ-select-obj-prop-edit obj ctx timeout)
+        (occ-debug :debug "context is not for current buffer."))))
   (occ-debug :debug "finished occ-delayed-select-obj-prop-edit"))
 
 
