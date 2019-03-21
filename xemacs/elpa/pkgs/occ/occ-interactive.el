@@ -153,7 +153,7 @@
 
 (defun org-get-flag-proprty-drawer-at-marker (marker &optional force)
   (let ((buff (marker-buffer marker))
-        (loc (marker-position marker)))
+        (loc  (marker-position marker)))
     (when (and buff loc)
       (with-current-buffer buff
         (when (goto-char loc)
@@ -308,9 +308,10 @@
         (occ-debug :debug nil))
     (lotus-with-other-frame-event-debug "occ-delayed-select-obj-prop-edit" :cancel
       (lwarn 'occ :debug "occ-delayed-select-obj-prop-edit: lotus-with-other-frame-event-debug")
-      (if (eq (current-buffer) buff)
-          (occ-select-obj-prop-edit obj ctx timeout)
-        (occ-debug :debug "context is not for current buffer."))))
+      (let ((buff    (occ-ctx-buffer ctx)))
+        (if (eq (current-buffer) buff)
+            (occ-select-obj-prop-edit obj ctx timeout)
+          (occ-debug :debug "context is not for current buffer.")))))
   (occ-debug :debug "finished occ-delayed-select-obj-prop-edit"))
 
 

@@ -61,10 +61,16 @@
   ;; (format "[%4d] %s"
   ;;         0
   ;;         (occ-fontify-like-in-org-mode tsk))
-  (let* (heading (occ-fontify-like-in-org-mode obj)
-         (tags   (occ-get-property tsk 'tags))
-         (tagstr (mapconcat #'identity tags ":")))
-    (format "%s         %-30s" heading tagstr)))
+  (let* ((align      80)
+         (heading    (occ-fontify-like-in-org-mode obj))
+         (headinglen (length heading))
+         (tags       (occ-get-property obj 'tags))
+         (tagstr     (if tags (concat ":" (mapconcat #'identity tags ":") ":"))))
+    (if tags
+        (format
+         (format "-30%%s         %%%ds" (if (< headinglen align) (- align headinglen) 0))
+         heading tagstr)
+      (format "%s" heading))))
 
 (cl-defmethod occ-print ((obj occ-ctxual-tsk))
   (let ((tsk (occ-ctxual-tsk-tsk obj)))
@@ -288,10 +294,12 @@ pointing to it."
 (defun occ-list-select (candidates actions &optional timeout)
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
   (message "Running occ-sacha-helm-select")
-  (helm
-   (occ-helm-build-candidates-source
-    candidates
-    actions)))
+  (prog1
+      (helm
+       (occ-helm-build-candidates-source
+        candidates
+        actions))
+    (message "Running occ-sacha-helm-select1")))
 
 (defun occ-list-select-timed (candidates actions &optional timeout)
   (if timeout

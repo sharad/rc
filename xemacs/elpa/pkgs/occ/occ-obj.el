@@ -74,9 +74,11 @@
   buffer
   file)
 
-(cl-defstruct (occ-ctxual-tsk (:include occ-obj))
+(cl-defstruct (occ-ctsk (:include occ-obj))
   ctx
-  tsk
+  tsk)
+
+(cl-defstruct (occ-ctxual-tsk (:include occ-ctsk))
   rank)
 
 (cl-defstruct (occ-collection (:include occ-obj))
