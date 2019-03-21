@@ -179,6 +179,21 @@
   (occ-make-ctx-at-point (point-marker)))
 
 
+(cl-defgeneric occ-make-ctsk (tsk ctx)
+  "occ-make-ctsk")
+
+(cl-defmethod occ-make-ctsk ((tsk occ-tsk)
+                             (ctx occ-ctx))
+  ;; use occ-build-ctsk
+  (make-occ-ctsk
+   :name    nil
+   :tsk     tsk
+   :ctx     ctx))
+
+(cl-defmethod occ-build-ctsk ((tsk occ-tsk) ;ctor
+                              (ctx occ-ctx))
+  (occ-make-ctsk tsk ctx))
+
 (cl-defgeneric occ-make-ctxual-tsk (tsk ctx rank)
   "occ-make-ctxual-tsk")
 
@@ -204,6 +219,17 @@
 
 (cl-defmethod occ-build-obj ((tsk occ-tsk) (obj null))
   tsk)
+
+
+(defun occ-make-tsk-container (objs)
+  (make-occ-tsk-container :list objs))
+
+(defun occ-make-ctsk-container (objs)
+  (make-occ-ctsk-container :list objs))
+
+(defun occ-make-ctxual-tsk-container (objs)
+  (make-occ-ctxual-tsk-container :list objs))
+
 
 (cl-defmethod occ-make-tsk-collection ((file-spec (head :tree)))
   (unless occ-global-tsk-collection

@@ -80,7 +80,21 @@
 
 (cl-defstruct (occ-ctxual-tsk (:include occ-ctsk))
   rank)
+
 
+(cl-defstruct (occ-container (:include occ-obj))
+  list)
+
+(cl-defstruct (occ-tsk-container (:include occ-container))
+  )
+
+(cl-defstruct (occ-ctsk-container (:include occ-container))
+  )
+
+(cl-defstruct (occ-ctxual-tsk-container (:include occ-container))
+  )
+
+
 (cl-defstruct (occ-collection (:include occ-obj))
   roots
   files)

@@ -39,7 +39,6 @@
                                 &optional
                                 force)
   (error "first argument should be of type (or occ-tree-collection occ-list-collection)"))
-
 
 (cl-defmethod occ-collect-tsks ((collection occ-tree-collection)
                                 &optional
@@ -54,6 +53,22 @@
            (occ-make-tsk-at-point (occ-tsk-builder))
            (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of roots
       (car (occ-tree-collection-roots collection))))))
+
+(cl-defmethod occ-collect-tsks ((collection occ-list-collection)
+                                force)
+  (unless (occ-list-collection-list collection)
+    (setf
+     (occ-list-collection-list collection)
+     (remove nil
+             (org-map-entries
+              #'(lambda ()
+                  (or
+                   ;; (occ-make-tsk-at-point #'make-occ-list-tsk)
+                   (occ-make-tsk-at-point (occ-tsk-builder))
+                   (make-occ-list-tsk :name "empty list tsk")))
+              t
+              (occ-list-collection-roots collection))))))
+
 
 (cl-defmethod occ-collect-files ((collection occ-tree-collection)
                                  &optional
@@ -74,6 +89,16 @@
                 files)))))
   (occ-tree-collection-files collection))
 
+(cl-defmethod occ-collect-files ((collection occ-list-collection)
+                                 &optional
+                                 force)
+  (unless (occ-list-collection-files collection)
+    (setf
+     (occ-list-collection-files collection)
+     (occ-list-collection-roots collection)))
+  (occ-list-collection-files collection))
+
+
 (cl-defmethod occ-collect-list ((collection occ-tree-collection))
   (unless (occ-tree-collection-list collection)
     (let ((tsks (occ-collection collection))
@@ -87,35 +112,11 @@
       (setf (occ-tree-collection-list collection)
             (nreverse tsk-list))))
   (occ-tree-collection-list collection))
-
 
 (cl-defmethod occ-collect-list ((collection occ-list-collection))
   (let ((tsks (occ-collection collection)))
     tsks))
 
-(cl-defmethod occ-collect-tsks ((collection occ-list-collection)
-                                force)
-  (unless (occ-list-collection-list collection)
-    (setf
-     (occ-list-collection-list collection)
-     (remove nil
-             (org-map-entries
-              #'(lambda ()
-                  (or
-                   ;; (occ-make-tsk-at-point #'make-occ-list-tsk)
-                   (occ-make-tsk-at-point (occ-tsk-builder))
-                   (make-occ-list-tsk :name "empty list tsk")))
-              t
-              (occ-list-collection-roots collection))))))
-
-(cl-defmethod occ-collect-files ((collection occ-list-collection)
-                                 &optional
-                                 force)
-  (unless (occ-list-collection-files collection)
-    (setf
-     (occ-list-collection-files collection)
-     (occ-list-collection-roots collection)))
-  (occ-list-collection-files collection))
 
 
 (cl-defmethod occ-collection ((collection occ-tree-collection))

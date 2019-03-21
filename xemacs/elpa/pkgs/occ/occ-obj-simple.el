@@ -61,14 +61,14 @@
   ;; (format "[%4d] %s"
   ;;         0
   ;;         (occ-fontify-like-in-org-mode tsk))
-  (let* ((align      80)
+  (let* ((align      100)
          (heading    (occ-fontify-like-in-org-mode obj))
          (headinglen (length heading))
          (tags       (occ-get-property obj 'tags))
          (tagstr     (if tags (concat ":" (mapconcat #'identity tags ":") ":"))))
     (if tags
         (format
-         (format "-30%%s         %%%ds" (if (< headinglen align) (- align headinglen) 0))
+         (format "%%-%ds         %%s" align (if (< headinglen align) (- align headinglen) 0))
          heading tagstr)
       (format "%s" heading))))
 
@@ -117,8 +117,8 @@
   (let ((tsk (occ-tsk-current-tsk)))
     (when tsk (occ-rank tsk ctx))))
 
-(cl-defgeneric occ-goto (obj))
-
+(cl-defgeneric occ-goto (obj)
+  "occ-goto")
 
 (cl-defmethod occ-goto ((obj marker))
   (progn
@@ -142,6 +142,10 @@
 
 (cl-defmethod occ-goto ((obj occ-ctxual-tsk))
   (occ-goto (occ-ctxual-tsk-marker obj)))
+
+
+(cl-defgeneric occ-set-to (obj)
+  "occ-set-to")
 
 (cl-defmethod occ-set-to ((obj marker))
   (progn
@@ -243,8 +247,6 @@
 
 (cl-defmethod occ-files ()
   (occ-collect-files (occ-collection-object)))
-
-;; (occ-tree-collection-files (occ-collection-object))
 
 
 (cl-defgeneric occ-candidate (obj)
@@ -309,24 +311,32 @@ pointing to it."
           (occ-list-select candidates actions)))
     (occ-list-select candidates actions)))
 
+
+(cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
+                                          (obj null))
+  "Return all TSKs for context nil OBJ"
+  ;; (message "occ-collection-obj-matches list")
+  (occ-collection-list collection))
+
+
 ;; ISSUE? should it return rank or occ-ctxual-tsks list
 (cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
-                                          (ctx occ-ctx))
+                                          (obj occ-ctx))
   "Return matched CTXUAL-TSKs for context CTX"
   ;; (message "occ-collection-obj-matches list")
   (let ((tsks (occ-collection collection))
-        (ctx  ctx))
+        (obj obj))
     (remove-if-not
      #'(lambda (ctxual-tsk)
          (> (occ-ctxual-tsk-rank ctxual-tsk) 0))
      (mapcar
       #'(lambda (tsk)
-          (occ-build-ctxual-tsk tsk ctx))
+          (occ-build-ctxual-tsk tsk obj))
       tsks))))
 
 ;; ISSUE? should it return rank or occ-ctxual-tsks map
 (cl-defmethod occ-collection-obj-matches ((collection occ-tree-collection)
-                                          (ctx occ-ctx))
+                                          (obj occ-ctx))
   ;; (message "occ-collection-obj-matches tree")
   "Return matched CTXUAL-TSKs for context CTX"
   (let ((tsks (occ-collection collection))
@@ -345,13 +355,13 @@ pointing to it."
                           (occ-tsk-heading tsk)
                           (length matched)))))
        tsks
-       ctx))
+       obj))
     (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: AFTER matched %s[%d]" "matched" (length matched))
     matched))
 
 ;;TODO: make it after method
 (cl-defmethod occ-collection-obj-matches :around  ((collection occ-collection)
-                                                   (ctx occ-ctx)) ;TODO: make it after method
+                                                   (obj occ-ctx)) ;TODO: make it after method
   "Return matched CTXUAL-TSKs for context CTX"
   (if (occ-collection-object)
       (let* ((ctxual-tsks (cl-call-next-method))
@@ -389,15 +399,34 @@ pointing to it."
   (occ-collection-obj-matches (occ-collection-object) obj))
 
 
+;; (cl-defmethod occ-collection-obj-list ((collection occ-collection)
+;;                                        (obj occ-ctx))
+;;   "return CTXUAL-TSKs list"
+;;   (occ-collection-obj-matches collection obj))
+
+;; (cl-defmethod occ-collection-obj-list ((collection occ-collection)
+;;                                        (obj null))
+;;   "return TSKs list"
+;;   (occ-collect-list collection))
+
 (cl-defmethod occ-collection-obj-list ((collection occ-collection)
                                        (obj occ-ctx))
-  "return CTXUAL-TSKs list"
-  (occ-collection-obj-matches collection obj))
+  "return CTSKs list"
+  (let ((tsks (occ-collection-list collection)))
+    (when tsks
+      (occ-debug :debug "occ-collection-obj-list BEFORE matched %s[%d]" matched (length matched))
+      (mapcar
+       #'(lambda (tsk) (occ-build-ctsk tsk obj))
+       tsks))
+    (occ-debug :debug "occ-collection-obj-list: AFTER matched %s[%d]" "matched" (length matched))
+    (occ-make-ctsk-container matched)))
 
 (cl-defmethod occ-collection-obj-list ((collection occ-collection)
                                        (obj null))
   "return TSKs list"
-  (occ-collect-list collection))
+  (occ-make-tsk-container
+   (occ-collect-list collection)))
+
 
 ;; http://sachachua.com/blog/2015/03/getting-helm-org-refile-clock-create-tasks/
 
@@ -405,11 +434,11 @@ pointing to it."
   "occ-list")
 
 (cl-defmethod occ-list ((obj occ-ctx))
-  "return CTXUAL-TSKs list"
+  "return CTXUAL-TSKs container"
   (occ-collection-obj-list (occ-collection-object) obj))
 
 (cl-defmethod occ-list ((obj null))
-  "return TSKs list"
+  "return TSKs container"
   (occ-collection-obj-list (occ-collection-object) obj))
 
 
