@@ -234,35 +234,36 @@ Each entry is either:
 
       (progn
 
-        (setq
-         lotus-clean-buffer-list-kill-never-buffer-names '(
-                                                           ;; "\\`\\*tramp/.*\\*\\`"
-                                                           ;; "\\`\\*ftp .*\\*\\`"
-                                                           "*eshell*"
-                                                           "*ielm*"
-                                                           "*mail*"
-                                                           "*w3m*"
-                                                           "*w3m-cache*"
-                                                           "Unnamed.org"
-                                                           """\\`*.org\\'")      ;all org files TODO only required.
+        (progn
+          (setq                           ;;never kill these
+           lotus-clean-buffer-list-kill-never-regexps      '("\\` \\*Minibuf-.*\\*\\'")
+           lotus-clean-buffer-list-kill-never-buffer-names '(
+                                                             "\\`\\*tramp/.*\\*\\`"
+                                                             "\\`\\*ftp .*\\*\\`"
+                                                             "*eshell*"
+                                                             "*ielm*"
+                                                             "*mail*"
+                                                             "*w3m*"
+                                                             "*w3m-cache*"
+                                                             "Unnamed.org"
+                                                             ;;all org files TODO only required.
+                                                             "\\`*.org\\'"))
 
-         lotus-clean-buffer-list-kill-buffer-names '("*buffer-selection*"
-                                                     "*Finder*"
-                                                     "*Finder Category*"
-                                                     "*Finder-package*"
-                                                     "*RE-Builder*"
-                                                     "*vc-change-log*")
-
-         lotus-clean-buffer-list-kill-regexps '("\\`\\*Customize .*\\*\\'"
-                                                "\\`\\*\\(Wo\\)?Man .*\\*\\'")))
+          (setq                           ;;do kill these
+           lotus-clean-buffer-list-kill-regexps '("\\`\\*Customize .*\\*\\'"
+                                                  "\\`\\*\\(Wo\\)?Man .*\\*\\'"
+                                                  "\.*.cpp\\'"
+                                                  "\.*.h\\'"
+                                                  "\.*.js\\'"
+                                                  "\.*.el\\'")
+           lotus-clean-buffer-list-kill-buffer-names '("*buffer-selection*"
+                                                       "*Finder*"
+                                                       "*Finder Category*"
+                                                       "*Finder-package*"
+                                                       "*RE-Builder*"
+                                                       "*vc-change-log*"))))
 
       (progn
-        ;;https://www.emacswiki.org/emacs/CleanBufferList
-        (setq
-         clean-buffer-list-delay-general 1       ;day
-         ;; clean-buffer-list-delay-special (* 3 60 60)
-         clean-buffer-list-delay-special (* 1 60 60)) ;hour min sec
-
         (dolist (el lotus-clean-buffer-list-kill-buffer-names)
           (add-to-list 'clean-buffer-list-kill-buffer-names el))
 
@@ -272,7 +273,20 @@ Each entry is either:
           (add-to-list 'clean-buffer-list-kill-regexps el))
 
         (dolist (el lotus-clean-buffer-list-kill-never-buffer-names)
-          (add-to-list 'clean-buffer-list-kill-never-buffer-names el)))
+          (add-to-list 'clean-buffer-list-kill-never-buffer-names el))
+
+        (dolist (el lotus-clean-buffer-list-kill-never-regexps)
+          (add-to-list 'clean-buffer-list-kill-never-regexps el)))
+
+      (progn
+        ;;https://www.emacswiki.org/emacs/CleanBufferList
+        (setq
+         clean-buffer-list-delay-general 1       ;day
+         ;; clean-buffer-list-delay-special (* 3 60 60)
+         clean-buffer-list-delay-special (* 1 60 60)) ;hour min sec
+
+        )
+
 
 
       (progn                            ;testing

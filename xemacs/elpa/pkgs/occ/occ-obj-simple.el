@@ -203,8 +203,17 @@
 (cl-defmethod occ-child ((obj marker))
   (occ-capture obj))
 
-(cl-defmethod occ-child ((obj occ-tsk))
-  (occ-capture obj))
+(cl-defmethod occ-child ((obj occ-tree-tsk))
+  (occ-capture obj)
+  (when nil
+    (let ((newchild-tsk x))
+      (push newchild-tsk (occ-tree-tsk-tree tsk)))))
+
+(cl-defmethod occ-child ((obj occ-list-tsk))
+  (occ-capture obj)
+  (when nil
+    (let ((newchild-tsk x))
+      (push newchild-tsk (occ-collection-object)))))
 
 (cl-defmethod occ-child ((obj occ-ctxual-tsk))
   (occ-capture obj))
