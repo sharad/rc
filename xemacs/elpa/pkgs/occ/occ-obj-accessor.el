@@ -52,7 +52,9 @@
            ;; (occ-make-tsk-at-point #'make-occ-tree-tsk)
            (occ-make-tsk-at-point (occ-tsk-builder))
            (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of roots
-      (car (occ-tree-collection-roots collection))))))
+      (car (occ-tree-collection-roots collection)))))
+
+  (occ-tree-collection-tree collection))
 
 (cl-defmethod occ-collect-tsks ((collection occ-list-collection)
                                 force)

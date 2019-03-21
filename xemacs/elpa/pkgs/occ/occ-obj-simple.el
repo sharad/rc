@@ -72,6 +72,10 @@
          heading tagstr)
       (format "%s" heading))))
 
+(cl-defmethod occ-print ((obj occ-ctsk))
+  (let ((tsk (occ-ctsk-tsk obj)))
+    (occ-fontify-like-in-org-mode tsk)))
+
 (cl-defmethod occ-print ((obj occ-ctxual-tsk))
   (let ((tsk (occ-ctxual-tsk-tsk obj)))
     (format "[%4d] %s"
@@ -140,6 +144,9 @@
         (occ-goto mrk)
       (error "marker %s invalid." mrk))))
 
+(cl-defmethod occ-goto ((obj occ-ctsk))
+  (occ-goto (occ-ctsk-tsk obj)))
+
 (cl-defmethod occ-goto ((obj occ-ctxual-tsk))
   (occ-goto (occ-ctxual-tsk-marker obj)))
 
@@ -167,6 +174,9 @@
         (occ-set-to mrk)
       (error "marker %s invalid." mrk))))
 
+(cl-defmethod occ-set-to ((obj occ-ctsk))
+  (occ-set-to (occ-ctsk-tsk obj)))
+
 (cl-defmethod occ-set-to ((obj occ-ctxual-tsk))
   (occ-set-to (occ-ctxual-tsk-marker obj)))
 
@@ -189,6 +199,12 @@
 (cl-defmethod occ-capture ((obj occ-tsk))
   (let ((mrk (occ-tsk-marker obj)))
     (occ-capture mrk)))
+
+(cl-defmethod occ-capture ((obj occ-ctsk))
+  (let ((mrk (occ-ctsk-marker obj)))
+    (with-org-capture+ 'entry `(marker ,mrk) 'occ-capture+-helm-select-template '(:empty-lines 1)
+      (when (marker-buffer org-capture-last-stored-marker)
+        (occ-obj-prop-edit org-capture-last-stored-marker (occ-ctsk-ctx obj))))))
 
 (cl-defmethod occ-capture ((obj occ-ctxual-tsk))
   (let ((mrk (occ-ctxual-tsk-marker obj)))
@@ -287,6 +303,12 @@ pointing to it."
              ;; obj
              (cons org-heading obj))))))))
 
+(cl-defmethod occ-candidate ((obj occ-obj))
+  "Insert a line for the clock selection menu.
+And return a cons cell with the selection character integer and the marker
+pointing to it."
+  (cons (occ-print obj) obj))
+
 (cl-defmethod occ-candidate ((obj occ-tsk))
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
@@ -302,7 +324,7 @@ pointing to it."
 ;; function to setup ctx clock timer:2 ends here
 
 
-(defun occ-list-select (candidates actions &optional timeout)
+(defun occ-list-select-internal (candidates actions &optional timeout)
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
   (message "Running occ-sacha-helm-select")
   (prog1
@@ -312,13 +334,11 @@ pointing to it."
         actions))
     (message "Running occ-sacha-helm-select1")))
 
-(defun occ-list-select-timed (candidates actions &optional timeout)
-  (if timeout
-      (let ((timeout (or timeout 0)))
-        (helm-timed timeout
-          (message "running sacha/helm-select-clock")
-          (occ-list-select candidates actions)))
-    (occ-list-select candidates actions)))
+(defun occ-list-select (candidates actions &optional timeout)
+  (let ((timeout (or timeout 7)))
+    (helm-timed timeout
+      (message "running sacha/helm-select-clock")
+      (occ-list-select-internal candidates actions))))
 
 
 (cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
@@ -421,22 +441,24 @@ pointing to it."
 (cl-defmethod occ-collection-obj-list ((collection occ-collection)
                                        (obj occ-ctx))
   "return CTSKs list"
-  (let ((tsks (occ-collection-list collection)))
-    (when tsks
-      (occ-debug :debug "occ-collection-obj-list BEFORE matched %s[%d]" matched (length matched))
-      (mapcar
-       #'(lambda (tsk) (occ-build-ctsk tsk obj))
-       tsks))
-    (occ-debug :debug "occ-collection-obj-list: AFTER matched %s[%d]" "matched" (length matched))
-    (occ-make-ctsk-container matched)))
+  (let ((ctsks
+         (run-unobtrusively
+           (let ((tsks (occ-collect-list collection))) ;;????TODO
+             (when tsks
+               (mapcar
+                #'(lambda (tsk) (occ-build-ctsk tsk obj))
+                tsks))))))
+    (unless (eq t ctsks) ctsks)))
+
 
 (cl-defmethod occ-collection-obj-list ((collection occ-collection)
                                        (obj null))
   "return TSKs list"
-  (occ-make-tsk-container
-   (occ-collect-list collection)))
-
+  ;; (occ-make-tsk-container
+  ;;  (occ-collect-list collection))
+ (occ-collect-list collection))
 
+
 ;; http://sachachua.com/blog/2015/03/getting-helm-org-refile-clock-create-tasks/
 
 (cl-defgeneric occ-list (obj)
@@ -449,6 +471,11 @@ pointing to it."
 (cl-defmethod occ-list ((obj null))
   "return TSKs container"
   (occ-collection-obj-list (occ-collection-object) obj))
+
+;; (occ-list (occ-make-ctx nil))
+;; (occ-select (occ-make-ctx nil) #'occ-list 10)
+;; (length (occ-collect-list (occ-collection-object)))
+;; (length (occ-collect-tsks (occ-collection-object)))
 
 
 ;; TODO: Not to run when frame is not open [visible.]
@@ -459,73 +486,54 @@ pointing to it."
 ;; Getting targets...done
 ;; Error running timer ‘occ-clock-in-curr-ctx-if-not’: (error "Window #<window 12> too small for splitting")
 
+(cl-defmethod occ-select ((obj null) collector &optional timeout)
+  "return interactively selected TSK or NIL"
+  (let ((candidates (funcall collector obj)))
+    (when candidates
+      (occ-list-select candidates (occ-helm-actions obj) timeout))))
+
+(cl-defmethod occ-select ((obj occ-ctx) collector &optional timeout)
+  "return interactively selected TSK or NIL"
+  (let ((candidates (funcall collector obj)))
+    (when candidates
+      (occ-list-select candidates (occ-helm-actions obj) timeout))))
+
+;; (cl-defmethod occ-select ((obj occ-ctx) collector &optional timeout)
+;;   "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
+;;   (interactive
+;;    (list (occ-make-ctx-at-point)))
+;;   (progn
+;;     (message "in occ-clock-in occ-ctx 1")
+;;     (let* ((obj (or obj (occ-make-ctx)))
+;;            (matched-ctxual-tsks
+;;             (run-unobtrusively           ;heavy task
+;;               ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)
+;;               ;; begin occ-clock-in-curr-ctx-if-not
+;;               ;; 2019-03-06 22:55:31 s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug
+;;               ;; occ-clock-in-if-not: Now really going to clock.
+;;               ;; in occ-clock-in occ-ctx 1
+;;               ;; user input 111 retval t
+;;               ;; trying to create unnamed tsk.
+;;               ;; occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk
+;;               ;; occ-clock-in-if-not: Now really clock done.
+;;               (remove-if-not
+;;                #'(lambda (ctxual-tsk)
+;;                    (let* ((mrk (occ-ctxual-tsk-marker ctxual-tsk)))
+;;                      (and
+;;                       mrk
+;;                       (marker-buffer mrk))))
+;;                (funcall collector obj)))))
+;;       (unless (eq matched-ctxual-tsks t)
+;;         (when matched-ctxual-tsks
+;;           (let* ((sel-ctxual-tsk
+;;                   (if (> (length matched-ctxual-tsks) 1)
+;;                       (occ-list-select matched-ctxual-tsks (occ-helm-actions obj) timeout)
+;;                     (car matched-ctxual-tsks))))
+;;             sel-ctxual-tsk))))))
+
+
 (defvar *occ-clocked-ctxual-tsk-ctx-history* nil)
 (defvar occ-clock-in-hooks nil "Hook to run on clockin with previous and next markers.")
-
-(cl-defmethod occ-select-internal ((obj null) list-selector-fun &optional timeout)
-  "return interactively selected TSK or NIL"
-  (funcall list-selector-fun (occ-list obj)))
-
-(cl-defmethod occ-select-timed-internal ((obj null) list-selector-fun actions &optional timeout)
-  "return interactively selected TSK or NIL"
-  (funcall list-selector-fun (occ-list obj) actions timeout))
-
-(cl-defmethod occ-select-timed-internal ((obj occ-ctx) list-selector-fun actions &optional timeout)
-  "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
-  (interactive
-   (list (occ-make-ctx-at-point)))
-  (progn
-    (message "in occ-clock-in occ-ctx 1")
-    (let* ((obj (or obj (occ-make-ctx)))
-           (matched-ctxual-tsks
-            (run-unobtrusively           ;heavy task
-
-              ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)
-
-              ;; begin occ-clock-in-curr-ctx-if-not
-              ;; 2019-03-06 22:55:31 s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug
-              ;; occ-clock-in-if-not: Now really going to clock.
-              ;; in occ-clock-in occ-ctx 1
-              ;; user input 111 retval t
-              ;; trying to create unnamed tsk.
-              ;; occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk
-              ;; occ-clock-in-if-not: Now really clock done.
-
-              (remove-if-not
-               #'(lambda (ctxual-tsk)
-                   (let* ((mrk (occ-ctxual-tsk-marker ctxual-tsk)))
-                     (and
-                      mrk
-                      (marker-buffer mrk))))
-               (occ-list obj)))))
-      (unless (eq matched-ctxual-tsks t)
-        (when matched-ctxual-tsks
-          (let* ((sel-ctxual-tsk
-                  (if (> (length matched-ctxual-tsks) 1)
-                      (funcall list-selector-fun matched-ctxual-tsks actions timeout)
-                    (car matched-ctxual-tsks))))
-            sel-ctxual-tsk))))))
-
-(cl-defmethod occ-select ((obj null))
-  "return interactively selected TSK or NIL"
-  (occ-select-internal obj #'occ-list-select (occ-helm-actions obj)))
-
-(cl-defmethod occ-select ((obj occ-ctx))
-  "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
-  (interactive
-   (list (occ-make-ctx-at-point)))
-  (occ-select-timed-internal obj  #'occ-list-select (occ-helm-actions obj)))
-
-(cl-defmethod occ-select-timed ((obj null) &optional timeout)
-  "return interactively selected TSK or NIL"
-  (occ-select-timed-internal obj #'occ-list-select-timed (occ-helm-actions obj) timeout))
-
-(cl-defmethod occ-select-timed ((obj occ-ctx) &optional timeout)
-  "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
-  (interactive
-   (list (occ-make-ctx-at-point)))
-  (occ-select-timed-internal obj #'occ-list-select-timed (occ-helm-actions obj) timeout))
-
 
 (cl-defmethod occ-clock-in ((obj marker))
   (let ((org-log-note-clock-out nil))
@@ -598,7 +606,7 @@ pointing to it."
 
 (cl-defmethod occ-clock-in ((obj occ-ctx))
   "Clock-in selected CTXUAL-TSK for occ-ctx OBJ or open interface for adding properties to heading."
-  (let ((ctxual-tsk (occ-select-timed obj)))
+  (let ((ctxual-tsk (occ-select obj #'occ-matches)))
     (if ctxual-tsk
         (occ-clock-in ctxual-tsk)
       (progn
@@ -610,11 +618,14 @@ pointing to it."
         (lwarn 'occ
                :debug
                "occ-clock-in(ctx):  with this-command=%s" this-command)
-        (occ-delayed-select-obj-prop-edit-when-idle nil obj 7)
+        (occ-delayed-select-obj-prop-edit-when-idle obj obj 7)
         nil))))
 
 (cl-defmethod occ-clock-in ((obj null))
   (error "Can not clock in NIL"))
+
+;; (occ-delayed-select-obj-prop-edit-when-idle (occ-make-ctx nil) (occ-make-ctx nil) 7)
+;; (occ-delayed-select-obj-prop-edit-when-idle nil (occ-make-ctx nil) 7)
 
 
 ;;; occ-obj-simple.el ends here

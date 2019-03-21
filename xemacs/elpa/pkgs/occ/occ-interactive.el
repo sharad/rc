@@ -263,7 +263,7 @@
 
 ;; (safe-timed-org-refile-get-marker 7)
 
-;; q(defun occ-select-marker)
+;; (defun occ-select-marker)
 
 (cl-defgeneric occ-select-obj-prop-edit (obj ctx timeout)
   "occ-prop-edit")
@@ -275,13 +275,12 @@
     (if (and
          (buffer-live-p buff)
          (not (string-match "^*helm" (buffer-name buff))))
-        (occ-obj-prop-edit (occ-select-timed obj timeout) ctx timeout)
+        (occ-obj-prop-edit (occ-select obj #'occ-list timeout) ctx timeout)
       (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s 3 %s"
                  (eq (current-buffer) buff)
                  (buffer-live-p buff)
                  (eq buff
                      (get-buffer "*helm-mode-occ-select-obj-prop-edit*"))))))
-
 
 (cl-defmethod occ-select-obj-prop-edit ((obj occ-ctx) (ctx occ-ctx) timeout)
   (let* ((timeout (or timeout 7))
@@ -290,7 +289,7 @@
     (if (and
          (buffer-live-p buff)
          (not (string-match "^*helm" (buffer-name buff))))
-        (occ-obj-prop-edit (occ-select-timed obj timeout) ctx timeout)
+        (occ-obj-prop-edit (occ-select obj #'occ-list timeout) ctx timeout)
       (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s"
                  (buffer-live-p buff)
                  (not (string-match "^*helm" (buffer-name buff)))))))
@@ -328,7 +327,7 @@
   ;; NOTE: presently it is not running on idle time, it simply runs immediately
 
   "Return value is important to decide next action to (create unnamed tsk.)"
-  (occ-debug 6 "called occ-delayed-select-obj-prop-edit-when-idle")
+  (occ-debug :debug "called occ-delayed-select-obj-prop-edit-when-idle")
   (occ-debug :debug "%s: begin: occ-delayed-select-obj-prop-edit-when-idle" (time-stamp-string))
   ;; timed-newwin of occ-delayed-select-obj-prop-edit pass quit
   ;; signal to caller mean here, so need to be handled, else this function can

@@ -106,16 +106,17 @@
                 ;; (sel-tsk   (if sel-ctxual-tsk (plist-get sel-ctxual-tsk :tsk)))
                 ;; (sel-marker (if sel-tsk      (plist-get sel-tsk      :tsk-clock-marker)))
 
-                ;; (occ-debug 6 "sel-ctxual-tsk %s sel-tsk %s sel-marker %s" sel-ctxual-tsk sel-tsk sel-marker)
+                ;; (occ-debug :debug "sel-ctxual-tsk %s sel-tsk %s sel-marker %s" sel-ctxual-tsk sel-tsk sel-marker)
                 (if sel-ctxual-tsk (occ-clock-in sel-ctxual-tsk)))
             (progn
               ;; here create unnamed tsk, no need
               (setq *occ-update-current-ctx-msg* "null clock")
-              (occ-debug nil
+              (occ-debug :debug
                          "No clock found please set a match for this ctx %s, add it using M-x occ-add-to-org-heading."
                          ctx)
               (occ-add-to-org-heading-when-idle ctx 7)
               nil))))))
+
   (cl-defmethod occ-clock-in ((new-ctxask occ-ctxual-tsk))
     ;;TODO add org-insert-log-not
     (occ-debug :debug "occ-clock-in-marker %s" new-ctxask)
@@ -374,7 +375,7 @@
 
 (cl-defmethod occ-add-to-heading-internal ((ctx occ-ctx) timeout)
   (let* (;; (marker (safe-timed-org-refile-get-marker timeout))
-         (tsk (occ-select-timed nil))
+         (tsk (occ-select nil #'occ-list))
          (mrk (if tsk (occ-tsk-marker tsk))))
     (when mrk
       (lotus-with-marker mrk
@@ -533,6 +534,45 @@
                            (get-buffer "*helm-mode-occ-add-to-org-heading*"))))))))
   (occ-debug :debug "finished occ-add-to-org-heading"))
 ;; occ-interactive.el
+
+
+;; occ-simple
+(cl-defmethod occ-select ((obj occ-ctx) collector &optional timeout)
+  "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
+  (interactive
+   (list (occ-make-ctx-at-point)))
+  (progn
+    (message "in occ-clock-in occ-ctx 1")
+    (let* ((obj (or obj (occ-make-ctx)))
+           (matched-ctxual-tsks
+            (run-unobtrusively           ;heavy task
+
+              ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)
+
+              ;; begin occ-clock-in-curr-ctx-if-not
+              ;; 2019-03-06 22:55:31 s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug
+              ;; occ-clock-in-if-not: Now really going to clock.
+              ;; in occ-clock-in occ-ctx 1
+              ;; user input 111 retval t
+              ;; trying to create unnamed tsk.
+              ;; occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk
+              ;; occ-clock-in-if-not: Now really clock done.
+
+              (remove-if-not
+               #'(lambda (ctxual-tsk)
+                   (let* ((mrk (occ-ctxual-tsk-marker ctxual-tsk)))
+                     (and
+                      mrk
+                      (marker-buffer mrk))))
+               (funcall collector obj)))))
+      (unless (eq matched-ctxual-tsks t)
+        (when matched-ctxual-tsks
+          (let* ((sel-ctxual-tsk
+                  (if (> (length matched-ctxual-tsks) 1)
+                      (occ-list-select matched-ctxual-tsks (occ-helm-actions obj) timeout)
+                    (car matched-ctxual-tsks))))
+            sel-ctxual-tsk))))))
+;; occ-simple
 
 (provide 'occ-deprecated)
 ;;; occ-deprecated.el ends here
