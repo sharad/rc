@@ -202,16 +202,21 @@
 
 (cl-defmethod occ-capture ((obj occ-ctsk))
   (let* ((tsk (occ-ctsk-tsk obj))
+         (ctx (occ-ctsk-ctx obj))
          (mrk (occ-tsk-marker tsk)))
     (with-org-capture+ 'entry `(marker ,mrk) 'occ-capture+-helm-select-template '(:empty-lines 1)
-      (when (marker-buffer org-capture-last-stored-marker)
-        (occ-obj-prop-edit org-capture-last-stored-marker (occ-ctsk-ctx obj))))))
+      (if (marker-buffer org-capture-last-stored-marker)
+          (occ-obj-prop-edit org-capture-last-stored-marker ctx)
+        (occ-debug :debug
+                   "occ-capture(ctsk) org-capture-last-stored-marker: %s"
+                   org-capture-last-stored-marker)))))
 
 (cl-defmethod occ-capture ((obj occ-ctxual-tsk))
-  (let ((mrk (occ-ctxual-tsk-marker obj)))
+  (let ((mrk (occ-ctxual-tsk-marker obj))
+        (ctx (occ-ctxual-tsk-ctx obj)))
     (with-org-capture+ 'entry `(marker ,mrk) 'occ-capture+-helm-select-template '(:empty-lines 1)
       (when (marker-buffer org-capture-last-stored-marker)
-        (occ-obj-prop-edit org-capture-last-stored-marker (occ-ctxual-tsk-ctx obj))))))
+        (occ-obj-prop-edit org-capture-last-stored-marker ctx)))))
 
 
 (cl-defgeneric occ-child (obj)
