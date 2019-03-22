@@ -37,17 +37,47 @@
    (cons "Child"    #'occ-child)))
 
 
+(cl-defmethod occ-helm-action-transformer ((obj null) actions)
+  (list
+   (cons "Child"  #'occ-child)))
+
+(cl-defmethod occ-helm-action-transformer ((obj occ-tsk) actions)
+  (list
+   (cons "Select"   #'identity)
+   (cons "Clock-in" #'occ-clock-in)
+   (cons "Child"    #'occ-child)))
+
+;; (cl-defmethod occ-helm-action-transformer ((obj occ-ctx) actions)
+;;   (list
+;;    (cons "Clock-in" #'occ-clock-in)
+;;    (cons "Child"    #'occ-child)))
+
+(cl-defmethod occ-helm-action-transformer ((obj occ-ctsk) actions)
+  (list
+   ;; (cons "Clock-in" #'occ-clock-in)
+   (cons "Select"   #'identity)
+   (cons "Child"    #'occ-child)))
+
+(cl-defmethod occ-helm-action-transformer ((obj occ-ctxual-tsk) actions)
+  (list
+   (cons "Select"   #'identity)
+   (cons "Clock-in" #'occ-clock-in)
+   (cons "Child"    #'occ-child)))
+
+
 (defun occ-helm-build-candidates-source (candidates &optional name-action-cons)
   (when candidates
-    (helm-build-sync-source (concat "Select matching " (symbol-name
-                                                        (cl-classname (car candidates))))
+    (helm-build-sync-source (concat
+                             "Select matching "
+                             (symbol-name (cl-classname (car candidates))))
       :candidates (mapcar #'occ-candidate candidates)
-      :action (append
-               (list
-                (cons "Select" #'identity))
-               (if (consp (car name-action-cons))
-                   name-action-cons
-                 (list name-action-cons)))
+      ;; :action (append
+      ;;          (list
+      ;;           (cons "Select" #'identity))
+      ;;          (if (consp (car name-action-cons))
+      ;;              name-action-cons
+      ;;            (list name-action-cons)))
+      :action-transformer (lambda (actions candidate) (occ-helm-action-transformer candidate actions))
       :history 'org-refile-history)))
 ;; (helm-build-dummy-source "Create tsk"
 ;;   :action (helm-make-actions

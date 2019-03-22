@@ -201,7 +201,8 @@
     (occ-capture mrk)))
 
 (cl-defmethod occ-capture ((obj occ-ctsk))
-  (let ((mrk (occ-ctsk-marker obj)))
+  (let* ((tsk (occ-ctsk-tsk obj))
+         (mrk (occ-tsk-marker tsk)))
     (with-org-capture+ 'entry `(marker ,mrk) 'occ-capture+-helm-select-template '(:empty-lines 1)
       (when (marker-buffer org-capture-last-stored-marker)
         (occ-obj-prop-edit org-capture-last-stored-marker (occ-ctsk-ctx obj))))))
@@ -230,6 +231,9 @@
   (when nil
     (let ((newchild-tsk x))
       (push newchild-tsk (occ-collection-object)))))
+
+(cl-defmethod occ-child ((obj occ-ctsk))
+  (occ-capture obj))
 
 (cl-defmethod occ-child ((obj occ-ctxual-tsk))
   (occ-capture obj))
@@ -309,17 +313,17 @@ And return a cons cell with the selection character integer and the marker
 pointing to it."
   (cons (occ-print obj) obj))
 
-(cl-defmethod occ-candidate ((obj occ-tsk))
-  "Insert a line for the clock selection menu.
-And return a cons cell with the selection character integer and the marker
-pointing to it."
-  (cons (occ-print obj) obj))
+;; (cl-defmethod occ-candidate ((obj occ-tsk))
+;;   "Insert a line for the clock selection menu.
+;; And return a cons cell with the selection character integer and the marker
+;; pointing to it."
+;;   (cons (occ-print obj) obj))
 
-(cl-defmethod occ-candidate ((obj occ-ctxual-tsk))
-  "Insert a line for the clock selection menu.
-And return a cons cell with the selection character integer and the marker
-pointing to it."
-  (cons (occ-print obj) obj))
+;; (cl-defmethod occ-candidate ((obj occ-ctxual-tsk))
+;;   "Insert a line for the clock selection menu.
+;; And return a cons cell with the selection character integer and the marker
+;; pointing to it."
+;;   (cons (occ-print obj) obj))
 
 ;; function to setup ctx clock timer:2 ends here
 
@@ -448,7 +452,8 @@ pointing to it."
                (mapcar
                 #'(lambda (tsk) (occ-build-ctsk tsk obj))
                 tsks))))))
-    (unless (eq t ctsks) ctsks)))
+    (unless (eq t ctsks)
+      ctsks)))
 
 
 (cl-defmethod occ-collection-obj-list ((collection occ-collection)
@@ -598,7 +603,6 @@ pointing to it."
 
           (push obj *occ-clocked-ctxual-tsk-ctx-history*)
 
-
           (if old-buff
               (with-current-buffer old-buff
                 (setq buffer-read-only old-buff-read-only)))
@@ -628,4 +632,60 @@ pointing to it."
 ;; (occ-delayed-select-obj-prop-edit-when-idle nil (occ-make-ctx nil) 7)
 
 
+(defcustom *occ-last-buff-sel-time*            (current-time) "*occ-last-buff-sel-time*")
+(defvar    *occ-buff-sel-timer*                nil)
+(defvar    *occ-tsk-current-ctx-time-interval* 7)
+(defvar    *occ-tsk-previous-ctx*              nil)
+(defvar    *occ-tsk-current-ctx*               nil)
+
+(cl-defmethod occ-clock-in-if-not ((ctx occ-ctx))
+  (if (or
+       (occ-clock-marker-is-unnamed-clock-p)
+       (>= 0 (occ-associated-p (occ-current-tsk) ctx)))
+
+      (progn                ;current clock is not matching
+        (occ-debug :debug "occ-clock-in-if-not: Now really going to clock with this-command=%s" this-command)
+        (unless (occ-clock-in ctx)
+
+          ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)
+
+          ;; begin occ-clock-in-curr-ctx-if-not
+          ;; 2019-03-06 22:55:31 s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug
+          ;; occ-clock-in-if-not: Now really going to clock.
+          ;; in occ-clock-in occ-ctx 1
+          ;; user input 111 retval t
+          ;; trying to create unnamed tsk.
+          ;; occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk
+          ;; occ-clock-in-if-not: Now really clock done.
+
+
+          ;; not able to find associated, or intentionally not selecting a clock
+          (occ-debug :debug "trying to create unnamed tsk.")
+          (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))
+        (occ-debug :debug "occ-clock-in-if-not: Now really clock done.")
+        t)
+
+      (progn
+        (occ-debug :debug "occ-clock-in-if-not: Current tsk already associate to %s" ctx)
+        nil)))
+
+(cl-defmethod occ-clock-in-if-chg ((ctx occ-ctx))
+  (if (>
+       (float-time (time-since *occ-last-buff-sel-time*))
+       *occ-tsk-current-ctx-time-interval*)
+      (let* ((buff    (occ-ctx-buffer ctx)))
+        (setq *occ-tsk-current-ctx* ctx)
+        (if (and
+             (occ-chgable-p)
+             buff (buffer-live-p buff)
+             (not (minibufferp buff))
+             (not (ignore-p buff))
+             (not              ;BUG: Reconsider whether it is catching case after some delay.
+              (equal *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
+            (progn
+              (when (occ-clock-in-if-not ctx)
+                (setq *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
+          (occ-debug :nodisplay "occ-clock-in-if-chg: ctx %s not suitable to associate" ctx)))
+    (occ-debug :nodisplay "occ-clock-in-if-chg: not enough time passed.")))
+
 ;;; occ-obj-simple.el ends here
