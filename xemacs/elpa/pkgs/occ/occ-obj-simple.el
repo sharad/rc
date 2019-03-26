@@ -230,8 +230,19 @@
                       :empty-lines 1)))
 
 (macroexpand-1
- '(with-org-capture-plus 'entry `(marker ,mrk) 'occ-capture+-helm-select-template '(:empty-lines 1)
-    (occ-obj-prop-edit tsk ctx)))
+ '(with-org-capture-plus 'entry `(marker ,org-clock-marker) 'occ-capture+-helm-select-template '(:empty-lines 1)
+    t))
+
+(let* ((finalize (function (lambda nil t))))
+  (org-capture-plus 'entry
+                    (\` (marker (\, org-clock-marker)))
+                    'occ-capture+-helm-select-template
+                    :finalize nil
+                    quote (:empty-lines 1)))
+
+
+(with-org-capture-plus 'entry `(marker org-clock-marker) 'occ-capture+-helm-select-template '(:empty-lines 1)
+  t)
 
 
 

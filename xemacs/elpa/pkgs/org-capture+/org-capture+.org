@@ -5,8 +5,8 @@
 * Org capture plus
 
 ** Preamble
-#+BEGIN_SRC emacs-lisp
-;;; org-capture+.el --- org capture plus
+#+BEGIN_SRC emacs-lisp :padline no :comments no :noweb no
+;;; org-capture+.el --- org capture plus         -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012  Sharad Pratap
 

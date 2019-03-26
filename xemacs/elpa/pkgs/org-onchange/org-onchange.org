@@ -1,10 +1,10 @@
 #+TITLE Org on change
-#+PROPERTY: header-args :tangle yes :padline yes :comments both :noweb yes
+#+PROPERTY: header-args :tangle yes :padline yes :comments both :noweb yes :cmd  ";;; org-onchange.el --- copy config         -*- lexical-binding: t; -*-"
 
 * Org on change
 ** Preamble
- #+BEGIN_SRC emacs-lisp
-;;; org-onchange.el --- copy config
+ #+BEGIN_SRC emacs-lisp :padline no :comments no :noweb no
+;;; org-onchange.el --- copy config         -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012  Sharad Pratap
 

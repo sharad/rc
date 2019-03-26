@@ -1,4 +1,4 @@
-;;; package-dev-utils-lotus.el --- package-dev-utils-lotus
+;;; package-dev-utils-lotus.el --- package-dev-utils-lotus         -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -295,8 +295,10 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
             (copy-file pkg-tar
                        package-archive-upload-base
                        t))
-          (error "package-archive-upload-base not exists."))
-      (package-refresh-contents))
+        (error "package-archive-upload-base not exists."))
+      (let ((package-archives (list
+                               (cons package-local-dev-archive package-archive-upload-base))))
+        (package-refresh-contents)))
     (message "uploaded package %s" pkg-name)
     (package-make-package-desc pkg-name (or archive package-local-dev-archive))))
 

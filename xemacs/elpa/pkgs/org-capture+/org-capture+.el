@@ -1,7 +1,4 @@
-;; Preamble
-
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Preamble][Preamble:1]]
-;;; org-capture+.el --- org capture plus
+;;; org-capture+.el --- org capture plus         -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -24,7 +21,6 @@
 ;;; Commentary:
 
 ;;; Code:
-;; Preamble:1 ends here
 
 ;; Required libraries
 

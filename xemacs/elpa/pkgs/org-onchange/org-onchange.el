@@ -1,7 +1,4 @@
-;; Preamble
-
-;; [[file:~/.xemacs/elpa/pkgs/org-onchange/org-onchange.org::*Preamble][Preamble:1]]
-;;; org-onchange.el --- copy config
+;;; org-onchange.el --- copy config         -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -24,7 +21,6 @@
 ;;; Commentary:
 
 ;;; Code:
-;; Preamble:1 ends here
 
 ;; Libraries required
 
