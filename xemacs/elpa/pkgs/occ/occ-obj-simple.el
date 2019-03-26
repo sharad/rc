@@ -121,6 +121,7 @@
   (let ((tsk (occ-tsk-current-tsk)))
     (when tsk (occ-rank tsk ctx))))
 
+
 (cl-defgeneric occ-goto (obj)
   "occ-goto")
 
@@ -218,11 +219,9 @@
   (occ-capture obj)
   nil)
 
-(cl-defmethod occ-child ((obj occ-tree-tsk))
+(cl-defmethod occ-child ((obj occ-tree-tsk) (child occ-tree-tsk))
   (occ-capture obj)
-  (when nil
-    (let ((newchild-tsk x))
-      (push newchild-tsk (occ-tree-tsk-tree tsk))))
+  (push child (occ-tree-tsk-tree obj))
   nil)
 
 (cl-defmethod occ-child ((obj occ-list-tsk))
