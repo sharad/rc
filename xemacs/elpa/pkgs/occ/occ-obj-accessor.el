@@ -133,11 +133,6 @@
     (occ-collect-tsks occ-global-tsk-collection nil)
     (run-hooks 'occ-global-tsk-collection-change-hook))
   (occ-list-collection-list occ-global-tsk-collection))
-
-;; (cl-defmethod occ-collection-files ((collection occ-tree-collection))
-;;   (unless (occ-tree-collection-files occ-global-tsk-collection)
-;;     (occ-collect-files occ-global-tsk-collection nil))
-;;   (occ-tree-collection-files occ-global-tsk-collection))
 
 
 (defun occ-collection-object ()
@@ -150,9 +145,6 @@
         (message "occ-global-tsk-collection-spec is nil, set using occ-set-global-tsk-collection-spec")
         (error "occ-global-tsk-collection-spec is nil"))))
   occ-global-tsk-collection)
-
-;; (occ-collect-list occ-global-tsk-collection)
-;; (occ-tree-collection-list occ-global-tsk-collection)
 
 
 ;;; occ-obj-accessor.el ends here

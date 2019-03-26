@@ -70,12 +70,18 @@ ycmd-server-command
 (defun test-file-find-line (file line)
   (interactive
    (let* ((current-word (current-word))
-          (file-line (string-match "(.+):([0-9]+)" current-word))
+          (file-line (string-match "\\(.+\\):\\([0-9]+\\)" current-word))
           (file (match-string 1 current-word))
-          (line (match-string 2 current-word)))
+          (line-str (match-string 2 current-word))
+          (line (string-to-number line-str)))
      (list file line)))
   (when (file-exists-p file)
-    (find-file file)))
+    (find-file file)
+    (message "Hello")
+    (goto-line line)))
 
+(string-match "\\(.+\\):\\([0-9]+\\)" "misc.el:100")
+
+misc.el:100
 
 ;; data.log:21

@@ -336,10 +336,10 @@
 
   (progn
     (setq h-data '((:num 1 :key "apple")
-                  (:num 9 :key "berry")
-                  (:num 2 :key "cactus")
-                  (:num 5 :key "dog")
-                  (:num 4 :key "frog")))
+                   (:num 9 :key "berry")
+                   (:num 2 :key "cactus")
+                   (:num 5 :key "dog")
+                   (:num 4 :key "frog")))
 
     (defun h-candidates ()
       "Returns candidates for the helm source."
@@ -421,6 +421,9 @@
 
 
 
+
+;; (occ-collect-list occ-global-tsk-collection)
+;; (occ-tree-collection-list occ-global-tsk-collection)
 
 
 

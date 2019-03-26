@@ -65,9 +65,9 @@
     org-mru-clock
     org-noter
     org-repo-todo
-    org-snooze
-    ;; abgaben
-    )
+    org-snooze)
+  ;; abgaben
+
 
   "The list of Lisp packages required by the lotus-orgmode layer.
 
@@ -103,27 +103,32 @@ Each entry is either:
 
 (defun lotus-orgmode/post-init-org ()
   (use-package org
-      :defer t
-      :config
-      (progn
-        (lotus-orgmode-config/post-init-org)))
+    :defer t
+    :config
+    (progn
+      (lotus-orgmode-config/post-init-org)))
+  (use-package org-tempo
+    :defer t
+    :config
+    (progn))
+  ;; (lotus-orgmode-config/init-org-tempo)
   (use-package task-manager
-      :defer t
-      :config
+    :defer t
+    :config
+    (progn
       (progn
-        (progn
-          (use-package occ
-              :defer t
-              :config
-              (progn
-                (lotus-orgmode-config/post-init-org-task-manager-occ)))))))
+        (use-package occ
+          :defer t
+          :config
+          (progn
+            (lotus-orgmode-config/post-init-org-task-manager-occ)))))))
 
 (defun lotus-orgmode/post-init-org-agenda ()
   (use-package org-agenda
-      :defer t
-      :config
-      (progn
-        (lotus-orgmode-config/post-init-org-agenda))))
+    :defer t
+    :config
+    (progn
+      (lotus-orgmode-config/post-init-org-agenda))))
 
 (defun lotus-orgmode/post-init-ob-tangle ()
   (use-package org-notmuch

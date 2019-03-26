@@ -179,7 +179,47 @@
           (org-flag-proprty-drawer flag force))))))
 
 
+(defun org-prop-edit-at-point ()
+  ;;experimental
+  (progn
+    (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
+    (condition-case-control nil err
+      (let ((buffer-read-only nil))
+        (occ-debug :debug "timer started for win %s" win)
 
+        ;; show proptery drawer
+        (let* ((prop-range (org-flag-proprty-drawer-at-marker marker nil))
+               (prop-loc   (when (consp prop-range) (1- (car prop-range)))))
+          (if (numberp prop-loc)
+              (goto-char prop-loc)))
+
+        ;; try to read values of properties.
+        (let ((prop nil))
+          (while (not
+                  (member
+                   (setq prop (occ-select-propetry tsk ctx))
+                   '(edit done)))
+            (when (occ-editprop prop ctx)
+              (occ-tsk-update-tsks t)))
+          (cond
+           ((eql 'done prop)
+            (funcall cleanup win local-cleanup)
+            (when timer (cancel-timer timer)))
+           ((eql 'edit prop)
+            ;; (funcall cleanup win local-cleanup)
+            (occ-debug :debug "debug editing")
+            (when timer (cancel-timer timer))
+            (when (and win (windowp win) (window-valid-p win))
+              (select-window win 'norecord)))
+           (t
+            (funcall cleanup win local-cleanup)
+            (when timer (cancel-timer timer))))))
+      ((quit)
+       (progn
+         (funcall cleanup win local-cleanup)
+         (if timer (cancel-timer timer))
+         (signal (car err) (cdr err)))))))
+
 ;; (safe-timed-org-refile-get-marker 7)
 
 ;; q(defun occ-select-marker)
@@ -253,6 +293,11 @@
                              (funcall cleanup win local-cleanup)
                              (if timer (cancel-timer timer))
                              (signal (car err) (cdr err))))))))))))))))
+
+
+
+(cl-defmethod occ-obj-prop-edit ((obj occ-ctsk) (ctx occ-ctx) timeout)
+  (occ-obj-prop-edit (occ-ctsk-tsk obj) ctx timeout))
 
 (cl-defmethod occ-obj-prop-edit ((obj marker) (ctx occ-ctx) timeout)
   (occ-obj-prop-edit (occ-make-tsk obj) ctx timeout))

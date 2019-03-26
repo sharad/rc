@@ -205,43 +205,67 @@
          (ctx (occ-ctsk-ctx obj))
          (mrk (occ-tsk-marker tsk)))
     (with-org-capture+ 'entry `(marker ,mrk) 'occ-capture+-helm-select-template '(:empty-lines 1)
-      (if (marker-buffer org-capture-last-stored-marker)
-          (occ-obj-prop-edit org-capture-last-stored-marker ctx)
-        (occ-debug :debug
-                   "occ-capture(ctsk) org-capture-last-stored-marker: %s"
-                   org-capture-last-stored-marker)))))
+      (occ-obj-prop-edit tsk ctx 7)
+      t)))
 
-(cl-defmethod occ-capture ((obj occ-ctxual-tsk))
-  (let ((mrk (occ-ctxual-tsk-marker obj))
-        (ctx (occ-ctxual-tsk-ctx obj)))
-    (with-org-capture+ 'entry `(marker ,mrk) 'occ-capture+-helm-select-template '(:empty-lines 1)
-      (when (marker-buffer org-capture-last-stored-marker)
-        (occ-obj-prop-edit org-capture-last-stored-marker ctx)))))
+(defun occ-capture-test ()
+  (interactive)
+  (let* ((ctsk (occ-select (occ-make-ctx nil) #'occ-list))
+         (tsk  (if ctsk (occ-ctsk-tsk ctsk)))
+         (mrk  (if tsk (occ-tsk-marker tsk))))
+    (with-org-capture-plus 'entry `(marker ,mrk) 'occ-capture+-helm-select-template '(:empty-lines 1)
+      (occ-obj-prop-edit tsk ctx))))
+
+
+(defun occ-capture-test ()
+  (interactive)
+  (let* ((ctsk (occ-select (occ-make-ctx nil) #'occ-list))
+         (ctx  (if ctsk (occ-ctsk-ctx ctsk)))
+         (tsk  (if ctsk (occ-ctsk-tsk ctsk)))
+         (mrk  (if tsk (occ-tsk-marker tsk))))
+    (org-capture-plus 'entry `(marker ,mrk) 'occ-capture+-helm-select-template
+                      :finalize (lambda ()
+                                  (occ-obj-prop-edit tsk ctx 7)
+                                  t)
+                      :empty-lines 1)))
+
+(macroexpand-1
+ '(with-org-capture-plus 'entry `(marker ,mrk) 'occ-capture+-helm-select-template '(:empty-lines 1)
+    (occ-obj-prop-edit tsk ctx)))
+
+
+
+
 
 
 (cl-defgeneric occ-child (obj)
   "occ-child")
 
 (cl-defmethod occ-child ((obj marker))
-  (occ-capture obj))
+  (occ-capture obj)
+  nil)
 
 (cl-defmethod occ-child ((obj occ-tree-tsk))
   (occ-capture obj)
   (when nil
     (let ((newchild-tsk x))
-      (push newchild-tsk (occ-tree-tsk-tree tsk)))))
+      (push newchild-tsk (occ-tree-tsk-tree tsk))))
+  nil)
 
 (cl-defmethod occ-child ((obj occ-list-tsk))
   (occ-capture obj)
   (when nil
     (let ((newchild-tsk x))
-      (push newchild-tsk (occ-collection-object)))))
+      (push newchild-tsk (occ-collection-object))))
+  nil)
 
 (cl-defmethod occ-child ((obj occ-ctsk))
-  (occ-capture obj))
+  (occ-capture obj)
+  nil)
 
 (cl-defmethod occ-child ((obj occ-ctxual-tsk))
-  (occ-capture obj))
+  (occ-capture obj)
+  nil)
 
 ;; (with-org-capture+)
 

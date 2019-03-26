@@ -49,9 +49,9 @@
   (mapcar
    #'(lambda (e)
        (apply #'org-capture+-build-helm-template-source
-        (car e)
-        attrib-list
-        (cdr e)))
+              (car e)
+              attrib-list
+              (cdr e)))
    alist))
 
 ;;;###autoload
@@ -66,15 +66,17 @@
 
 
 (defmacro with-org-capture-plus (type target template plist &rest body)
-  `(progn
-     (org-capture-plus ,type ,target ,template ,plist)
-     ,@body))
+  `(let* ((finalize #'(lambda () ,@body)))
+     (org-capture-plus ,type
+                       ,target
+                       ,template
+                       :finalize finalize
+                       ,@plist)))
 (put 'with-org-capture-plus 'lisp-indent-function 4)
 
 (defmacro with-org-capture+ (type target template plist &rest body)
-  `(progn
-     (org-capture-plus ,type ,target ,template ,plist)
-     ,@body))
+  `(with-org-capture-plus ,type ,target ,template ,plist ,@body))
 (put 'with-org-capture+ 'lisp-indent-function 4)
+
 
 ;;; org-capture+-helm.el ends here

@@ -32,6 +32,49 @@
 (require 'org-capture)
 ;; Required libraries:1 ends here
 
+;; Mode definition
+
+
+;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Mode%20definition][Mode definition:1]]
+(defvar org-capture-plus-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map "\C-c\C-c" #'org-capture-plus-finalize)
+    (define-key map "\C-c\C-k" #'org-capture-kill)
+    (define-key map "\C-c\C-w" #'org-capture-refile)
+    map)
+  "Keymap for `org-capture-plus-mode', a minor mode.
+Use this map to set additional keybindings for when Org mode is used
+for a capture buffer.")
+
+(defvar org-capture-plus-mode-hook nil
+  "Hook for the `org-capture-plus-mode' minor mode.")
+
+(define-minor-mode org-capture-plus-mode
+  "Minor mode for special key bindings in a capture buffer.
+
+Turning on this mode runs the normal hook `org-capture-plus-mode-hook'."
+  nil " Cap" org-capture-plus-mode-map
+  (setq-local org-capture-mode t)
+  (setq-local
+   header-line-format
+   (substitute-command-keys
+    "\\<org-capture-plus-mode-map>Capture buffer.  Finish \
+`\\[org-capture-plus-finalize]', refile `\\[org-capture-refile]', \
+abort `\\[org-capture-kill]'.")))
+;; Mode definition:1 ends here
+
+;; org-capture-plus-finalize
+
+
+;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*org-capture-plus-finalize][org-capture-plus-finalize:1]]
+(defun org-capture-plus-finalize (&optional stay-with-capture)
+  (interactive "P")
+  (let ((finalize (org-capture-get :finalize)))
+    (when (or (null finalize)
+              (funcall finalize))
+      (org-capture-finalize stay-with-capture))))
+;; org-capture-plus-finalize:1 ends here
+
 ;; Overriding org-capture-place-template function
 
 
@@ -56,7 +99,7 @@ may have been stored before."
     (`item            (org-capture-place-item))
     (`checkitem       (org-capture-place-item))
     (`log-note        (org-capture-place-log-note)))
-  (org-capture-mode 1)
+  (org-capture-plus-mode 1)
   (setq-local org-capture-current-plist org-capture-plist))
 ;; Overriding org-capture-place-template function:1 ends here
 
@@ -394,11 +437,11 @@ Store them in the capture property list."
 ;;;###autoload
 (defun org-capture-plus (type target template &rest plist)
   "Capture something.
-\\<org-capture-mode-map>
+\\<org-capture-plus-mode-map>
 This will let you select a template from `org-capture-templates', and
 then file the newly captured information.  The text is immediately
 inserted at the target location, and an indirect buffer is shown where
-you can edit it.  Pressing `\\[org-capture-finalize]' brings you back to the \
+you can edit it.  Pressing `\\[org-capture-plus-finalize]' brings you back to the \
 previous
 state of Emacs, so that you can continue your work.
 
@@ -526,7 +569,7 @@ of the day at point (if any) or the current HH:MM time."
             (error
              "Could not start the clock in this capture buffer")))
       (if (org-capture-get :immediate-finish)
-          (org-capture-finalize)))))
+          (org-capture-plus-finalize)))))
 
 (defalias 'org-capture+ 'org-capture-plus)
 ;; new capture:1 ends here
