@@ -1,6 +1,7 @@
 
 (in-package :stumpwm)
 
+
 ;;{{ Pointer
 (setq *grab-pointer-timeout* 4
       ;; change window numbers
@@ -12,6 +13,7 @@
       *disk-usage-paths* '("/" "/home" "/usr" "/pacific"))
 ;;}}
 
+
 ;;{{{ Background
 (defparameter *desktop-background-image-path* (concat *home-dir* "/.share/backgrounds"))
 
@@ -68,6 +70,8 @@
 
 ;;}}} Background
 
+
+
 ;;{{ Pointer
 (defcommand show-pointer () ()
   "Show pointer"
@@ -88,7 +92,7 @@
                       pointer-y
                       pointer-x)))))
 ;;}}
-
+
 ;; Default layout
 ;;{{{ mode-line
 (defvar *mode-line-fmts* '(
@@ -125,164 +129,6 @@
 ;; created a "hook" that runs whenever the Stumpwm "escape key" (by
 ;; default - "C-t") is pressed. Now, I only see the mode line when I
 ;; actually need to see it:
-
-(defun toggle-mode-line-on-key-press (key key-seq cmd)
-  (declare (ignore key key-seq cmd))
-  (mode-line))
-
-(defun toggle-mode-line-on-key-press (key key-seq cmd)
-  (declare (ignore key key-seq cmd))
-  (toggle-mode-line (current-screen) (current-head) (car *mode-line-fmts*)))
-
-(let ()
-  (defun mode-line-when-pointer-grabbed (key key-seq cmd)
-    ;; (declare (ignore key key-seq cmd))
-    (declare (ignore key key-seq))
-    (enable-mode-line
-     (current-screen)
-     (current-head)
-     (kmap-or-kmap-symbol-p cmd)))
-
-  (defcommand toggle-mode-line-enable () ()
-    (add-hook *key-press-hook* 'mode-line-when-pointer-grabbed))
-
-  (defcommand toggle-mode-line-disable () ()
-    (remove-hook *key-press-hook* 'mode-line-when-pointer-grabbed)))
-
-
-
-
-
-
-
-
-(let ((deactivate-fullscreen-idle-timeout 10)
-      (deactivate-fullscreen-timer nil)
-      (toggle-fullscreen-on-ungrabbed-pointer-for-few-mins 7)
-      (toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer nil))
-  ;; TODO: disable fullscreen on inactivity
-
-  (defun activate-fullscreen-if-not (window)
-    (when window
-      (unless (window-fullscreen window)
-        ;; (activate-fullscreen window)
-        (dformat 2 "client requests to go fullscreen~%")
-        (add-wm-state (window-xwin window) :_NET_WM_STATE_FULLSCREEN)
-        (setf (window-fullscreen window) t)
-        (focus-window window)
-        (update-mode-lines (current-screen)))))
-
-  (defun deactivate-fullscreen-if-not (window)
-    (when window
-      (when (window-fullscreen window)
-        (setf (window-fullscreen window) nil)
-        (dformat 2 "client requests to leave fullscreen~%")
-        (remove-wm-state (window-xwin window) :_NET_WM_STATE_FULLSCREEN)
-        (update-decoration window)
-        (update-mode-lines (current-screen)))))
-
-  (defun fullscreen-pointer-not-grabbed (key key-seq cmd)
-    (declare (ignore key key-seq))
-    (if (kmap-or-kmap-symbol-p cmd)
-        (progn
-          (deactivate-fullscreen-if-not (current-window)))
-        (progn
-          (let ((win (other-hidden-window (current-group))))
-            (unless win
-              (activate-fullscreen-if-not (current-window)))))))
-  ;; should not be here
-  ;; is required when one window is present in frame.
-  ;; but creates problem with conkeror.
-  ;; (activate-fullscreen-if-not (current-window))
-
-
-  (defun fullscreen-focus-window (cwin lwin)
-    (activate-fullscreen-if-not cwin)
-    (deactivate-fullscreen-if-not lwin))
-
-  (defun fullscreen-curr-post-command (cmd)
-    (activate-fullscreen-if-not (current-window)))
-
-  (defun unfullscreen-curr-post-command (cmd)
-    (deactivate-fullscreen-if-not (current-window)))
-
-
-
-  (progn
-    (defun deactivate-full-screen-on-idle-timeout ()
-      (when (> deactivate-fullscreen-idle-timeout 2)
-        (when (member 'fullscreen-focus-window *focus-window-hook*)
-          ;; (message "deactivate fs")
-          (if (> (stumpwm::idle-time (stumpwm::current-screen)) deactivate-fullscreen-idle-timeout)
-              (deactivate-fullscreen-if-not (stumpwm::current-window))
-              (activate-fullscreen-if-not (stumpwm::current-window))))))
-
-    (defun deactivate-full-screen-on-idle-timer-stop ()
-      "Stops the newmail timer."
-      (ignore-errors
-       (when deactivate-fullscreen-timer
-         (stumpwm::cancel-timer newmail-timer)
-         (setf deactivate-fullscreen-timer nil))))
-
-    (defun deactivate-full-screen-on-idle-timer-start ()
-      "Starts the newmail timer."
-      (deactivate-full-screen-on-idle-timer-stop)
-      (setf deactivate-fullscreen-timer
-            (stumpwm::run-with-timer
-             deactivate-fullscreen-idle-timeout
-             deactivate-fullscreen-idle-timeout
-             'deactivate-full-screen-on-idle-timeout)))
-
-    (defcommand deactivate-full-screen-on-idle-start () ()
-      "Starts the newmail timer."
-      (deactivate-full-screen-on-idle-timer-start))
-
-    (defcommand deactivate-full-screen-on-idle-stop () ()
-      "Stops the newmail timer."
-      (deactivate-full-screen-on-idle-timer-stop)))
-
-
-
-
-
-  (defcommand fullscreen-on-ungrabbed-pointer-enable () ()
-    (add-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
-    (add-hook *focus-window-hook* 'fullscreen-focus-window)
-    (deactivate-full-screen-on-idle-timer-start)
-    (activate-fullscreen-if-not (current-window)))
-
-  (defcommand fullscreen-on-ungrabbed-pointer-disable () ()
-    (remove-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
-    (remove-hook *focus-window-hook* 'fullscreen-focus-window)
-    (deactivate-full-screen-on-idle-timer-stop)
-    (deactivate-fullscreen-if-not (current-window)))
-
-  (defcommand toggle-fullscreen-on-ungrabbed-pointer () ()
-    (if (member 'fullscreen-focus-window *focus-window-hook*)
-        (fullscreen-on-ungrabbed-pointer-disable)
-        (fullscreen-on-ungrabbed-pointer-enable)))
-
-  (defun toggle-fullscreen-on-ungrabbed-pointer-after-few-mins ()
-    (when toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer
-      (cancel-timer toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer)
-      (setf toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer nil))
-    (toggle-fullscreen-on-ungrabbed-pointer))
-
-  (defcommand toggle-fullscreen-on-ungrabbed-pointer-for-few-mins () ()
-    "run toggle-fullscreen-on-ungrabbed-pointer-for-few-mins"
-    (when (> toggle-fullscreen-on-ungrabbed-pointer-for-few-mins 1)
-      (let (mins
-            (*
-              (if toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer 2 1)
-              toggle-fullscreen-on-ungrabbed-pointer-for-few-mins
-              60))
-        (toggle-fullscreen-on-ungrabbed-pointer-after-few-mins)
-        (setf toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer
-              (stumpwm::run-with-timer mins nil #'toggle-fullscreen-on-ungrabbed-pointer-after-few-mins)))))
-
-  ;; enable it.
-  (fullscreen-on-ungrabbed-pointer-enable))
-
 
 ;;}}} mode-line end
 
@@ -328,12 +174,12 @@
                                              (declare (ignore str))
                                              matches)
                              when matches
-                             ;; matches[0] = output name
-                             ;; matches[1] = current mode (if connected)
-                             collect (cons (svref matches 0)
-                                           (if (string= (svref matches 1) "")
-                                               :OFF
-                                               :ON))))
+                               ;; matches[0] = output name
+                               ;; matches[1] = current mode (if connected)
+                               collect (cons (svref matches 0)
+                                             (if (string= (svref matches 1) "")
+                                                 :OFF
+                                                 :ON))))
              (vga (find "VGA" displays :test #'ppcre:scan :key #'car))
              (lvds (find "LVDS" displays :test #'ppcre:scan :key #'car)))
         (when vga
@@ -348,6 +194,7 @@
                (format nil "xrandr --output ~A --off --output ~A --auto"
                        (car vga)
                        (car lvds)))))))))
+
 
 ;;{{(find-package (symbol-value (intern "stumpwm" :keyword)))
 ;; (define-stumpwm-type :package (input prompt)
@@ -379,6 +226,7 @@
           (setf *package* pkg))
         (message "current package ~a" *package*))))
 ;;}}
+
 
 ;;{{
 (defun head-force-refresh (screen new-heads)
@@ -439,8 +287,10 @@
 
 (define-key *root-map* (kbd "R") "smarty right")
 
-;; ;;}}
+;;;}}
+
 
+;;;{{{
 (when nil
   ;;; DONE in stumpwm-contrib media/amixer/amixer.lisp
   ;;;{{ volume
@@ -473,17 +323,7 @@
 "
              (run-shell-command "amixer sset 'Headphone Jack Sense' toggle" t)))))
 ;;;}}
-
-
-;;;{{{
-(defun local-window-matches-properties-p (window &key class instance type role title)
-  "Returns T if window matches all the given properties"
-  (and
-   (if class (string-match (window-class window) class) t)
-   (if instance (string-match (window-res window) instance) t)
-   (if type (string-match (window-type window) type) t)
-   (if role (string-match (window-role window) role) t)
-   (if title (string-match (window-title window) title) t)))
+
 
 (progn                                  ;;option macro
 
@@ -519,9 +359,208 @@
            (if ,option
                (if (fboundp ',enable-fun) (funcall #',enable-fun))
                (if (fboundp ',disable-fun) (funcall #',disable-fun))))))))
+
+
+;;;{{{
+(let ((show-key-binding-p nil))
+
+  (defun show-key-binding-if-incomplete (key key-seq cmd)
+    (declare (ignore key))
+    (when (and
+           (not (eq cmd '*root-map*))
+           (kmap-or-kmap-symbol-p cmd))
+      (display-bindings-for-keymaps key-seq (symbol-value cmd))))
+
+  (progn
+    (gen-binary-option-commands show-key-binding)
+
+    (defun disable-show-key-binding-function ()
+      (remove-hook *key-press-hook* #'show-key-binding-if-incomplete))
+
+    (defun enable-show-key-binding-function ()
+      (add-hook *key-press-hook* #'show-key-binding-if-incomplete)))
+
+  (enable-show-key-binding))
+;;;}}}
+
+
+;;;{{{
+(let ((mode-line-on-key-press-p nil))
+
+  (defun mode-line-when-pointer-grabbed (key key-seq cmd)
+    ;; (declare (ignore key key-seq cmd))
+    (declare (ignore key key-seq))
+    (enable-mode-line
+     (current-screen)
+     (current-head)
+     (kmap-or-kmap-symbol-p cmd)))
+
+  (progn
+    (gen-binary-option-commands mode-line-on-key-press)
+
+    (defun disable-mode-line-on-key-press-function ()
+      (remove-hook *key-press-hook* #'mode-line-when-pointer-grabbed))
+
+    (defun enable-mode-line-on-key-press-function ()
+      (add-hook *key-press-hook* #'mode-line-when-pointer-grabbed)))
+
+  (enable-mode-line-on-key-press))
+
+;; (defun toggle-mode-line-on-key-press (key key-seq cmd)
+;;   (declare (ignore key key-seq cmd))
+;;   (toggle-mode-line (current-screen) (current-head) (car *mode-line-fmts*)))
+;;
+;; (let ()
+;;   (defun mode-line-when-pointer-grabbed (key key-seq cmd)
+;;     ;; (declare (ignore key key-seq cmd))
+;;     (declare (ignore key key-seq))
+;;     (enable-mode-line
+;;      (current-screen)
+;;      (current-head)
+;;      (kmap-or-kmap-symbol-p cmd)))
+;;
+;;   (defcommand toggle-mode-line-enable () ()
+;;     (add-hook *key-press-hook* 'mode-line-when-pointer-grabbed))
+;;
+;;   (defcommand toggle-mode-line-disable () ()
+;;     (remove-hook *key-press-hook* 'mode-line-when-pointer-grabbed)))
+;;;}}
+
+
+;;;{{{
+(let ((deactivate-fullscreen-idle-timeout 10)
+      (deactivate-fullscreen-timer nil)
+      (toggle-fullscreen-on-ungrabbed-pointer-for-few-mins 7)
+      (toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer nil))
+  ;; TODO: disable fullscreen on inactivity
+
+  (defun activate-fullscreen-if-not (window)
+    (when window
+      (unless (window-fullscreen window)
+        ;; (activate-fullscreen window)
+        (dformat 2 "client requests to go fullscreen~%")
+        (add-wm-state (window-xwin window) :_NET_WM_STATE_FULLSCREEN)
+        (setf (window-fullscreen window) t)
+        (focus-window window)
+        (update-mode-lines (current-screen)))))
+
+  (defun deactivate-fullscreen-if-not (window)
+    (when window
+      (when (window-fullscreen window)
+        (setf (window-fullscreen window) nil)
+        (dformat 2 "client requests to leave fullscreen~%")
+        (remove-wm-state (window-xwin window) :_NET_WM_STATE_FULLSCREEN)
+        (update-decoration window)
+        (update-mode-lines (current-screen)))))
+
+  (defun fullscreen-pointer-not-grabbed (key key-seq cmd)
+    (declare (ignore key key-seq))
+    (if (kmap-or-kmap-symbol-p cmd)
+        (progn
+          (deactivate-fullscreen-if-not (current-window)))
+        (progn
+          (let ((win (other-hidden-window (current-group))))
+            (unless win
+              (activate-fullscreen-if-not (current-window)))))))
+  ;; should not be here
+  ;; is required when one window is present in frame.
+  ;; but creates problem with conkeror.
+  ;; (activate-fullscreen-if-not (current-window))
 
 
+  (defun fullscreen-focus-window (cwin lwin)
+    (activate-fullscreen-if-not cwin)
+    (deactivate-fullscreen-if-not lwin))
+
+  (defun fullscreen-curr-post-command (cmd)
+    (activate-fullscreen-if-not (current-window)))
+
+  (defun unfullscreen-curr-post-command (cmd)
+    (deactivate-fullscreen-if-not (current-window)))
+
+  (progn
+    (defun deactivate-full-screen-on-idle-timeout ()
+      (when (> deactivate-fullscreen-idle-timeout 2)
+        (when (member 'fullscreen-focus-window *focus-window-hook*)
+          ;; (message "deactivate fs")
+          (if (> (stumpwm::idle-time (stumpwm::current-screen)) deactivate-fullscreen-idle-timeout)
+              (deactivate-fullscreen-if-not (stumpwm::current-window))
+              (activate-fullscreen-if-not (stumpwm::current-window))))))
+
+    (defun deactivate-full-screen-on-idle-timer-stop ()
+      "Stops the newmail timer."
+      (ignore-errors
+       (when deactivate-fullscreen-timer
+         (stumpwm::cancel-timer newmail-timer)
+         (setf deactivate-fullscreen-timer nil))))
+
+    (defun deactivate-full-screen-on-idle-timer-start ()
+      "Starts the newmail timer."
+      (deactivate-full-screen-on-idle-timer-stop)
+      (setf deactivate-fullscreen-timer
+            (stumpwm::run-with-timer
+             deactivate-fullscreen-idle-timeout
+             deactivate-fullscreen-idle-timeout
+             'deactivate-full-screen-on-idle-timeout)))
+
+    (defcommand deactivate-full-screen-on-idle-start () ()
+      "Starts the newmail timer."
+      (deactivate-full-screen-on-idle-timer-start))
+
+    (defcommand deactivate-full-screen-on-idle-stop () ()
+      "Stops the newmail timer."
+      (deactivate-full-screen-on-idle-timer-stop)))
+
+  (defcommand fullscreen-on-ungrabbed-pointer-enable () ()
+    (add-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
+    (add-hook *focus-window-hook* 'fullscreen-focus-window)
+    (deactivate-full-screen-on-idle-timer-start)
+    (activate-fullscreen-if-not (current-window)))
+
+  (defcommand fullscreen-on-ungrabbed-pointer-disable () ()
+    (remove-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
+    (remove-hook *focus-window-hook* 'fullscreen-focus-window)
+    (deactivate-full-screen-on-idle-timer-stop)
+    (deactivate-fullscreen-if-not (current-window)))
+
+  (defcommand toggle-fullscreen-on-ungrabbed-pointer () ()
+    (if (member 'fullscreen-focus-window *focus-window-hook*)
+        (fullscreen-on-ungrabbed-pointer-disable)
+        (fullscreen-on-ungrabbed-pointer-enable)))
+
+  (defun toggle-fullscreen-on-ungrabbed-pointer-after-few-mins ()
+    (when toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer
+      (cancel-timer toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer)
+      (setf toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer nil))
+    (toggle-fullscreen-on-ungrabbed-pointer))
+
+  (defcommand toggle-fullscreen-on-ungrabbed-pointer-for-few-mins () ()
+    "run toggle-fullscreen-on-ungrabbed-pointer-for-few-mins"
+    (when (> toggle-fullscreen-on-ungrabbed-pointer-for-few-mins 1)
+      (let (mins
+            (*
+              (if toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer 2 1)
+              toggle-fullscreen-on-ungrabbed-pointer-for-few-mins
+              60))
+        (toggle-fullscreen-on-ungrabbed-pointer-after-few-mins)
+        (setf toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer
+              (stumpwm::run-with-timer mins nil #'toggle-fullscreen-on-ungrabbed-pointer-after-few-mins)))))
+
+  ;; enable it.
+  (fullscreen-on-ungrabbed-pointer-enable))
+;;;}}
+
+;;;{{{
 (progn
+  (defun local-window-matches-properties-p (window &key class instance type role title)
+    "Returns T if window matches all the given properties"
+    (and
+     (if class (string-match (window-class window) class) t)
+     (if instance (string-match (window-res window) instance) t)
+     (if type (string-match (window-type window) type) t)
+     (if role (string-match (window-role window) role) t)
+     (if title (string-match (window-title window) title) t)))
+
   (let ((focus-window-match-rules-p t)
         (focus-window-match-rules '()))
 
@@ -576,10 +615,11 @@
     :instance  "gcr-prompter"
     :title "Unlock Login Keyring"))
 
+;;;}}}
+
 
-
-
-(let ((show-win-prop t))
+;;;{{{
+(let ((show-win-prop-p t))
   (defun show-win-prop (&optional (window (current-window)))
     (let ((w (or window (current-window))))
       (if (not w)
@@ -601,5 +641,5 @@
             (append *new-window-hook* (list #'show-win-prop)))))
 
   (disable-show-win-prop))
-
 ;;;}}}
+

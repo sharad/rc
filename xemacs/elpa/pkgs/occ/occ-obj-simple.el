@@ -185,7 +185,10 @@
 (defvar occ-capture+-helm-templates-alist org-capture+-helm-templates-alist)
 
 (defun occ-capture+-helm-select-template ()
-  (org-capture+-helm-select-template nil occ-capture+-helm-templates-alist))
+  (org-capture+-helm-select-template
+   nil
+   occ-capture+-helm-templates-alist))
+
 
 (cl-defgeneric occ-capture (obj)
   "occ-capture")
@@ -208,8 +211,19 @@
          (template (occ-capture+-helm-select-template)))
     (when template
      (with-org-capture+ 'entry `(marker ,mrk) template '(:empty-lines 1)
-      (occ-obj-prop-edit tsk ctx 7)
-      t))))
+       (progn
+         (occ-obj-prop-edit tsk ctx 7)
+         (let ((newchild (occ-make-tsk nil)))
+           (when newchild
+             (occ-induct-child tsk newchild)))
+         t)))))
+
+
+(cl-defmethod occ-induct-child ((obj occ-tree-tsk) (child occ-tree-tsk))
+  (push child (occ-tree-tsk-tree obj)))
+
+(cl-defmethod occ-induct-child ((obj occ-list-tsk) (child occ-list-tsk))
+  (push child (occ-list-tsk-list obj)))
 
 
 (cl-defgeneric occ-child (obj)
@@ -219,16 +233,8 @@
   (occ-capture obj)
   nil)
 
-(cl-defmethod occ-child ((obj occ-tree-tsk) (child occ-tree-tsk))
+(cl-defmethod occ-child ((obj occ-tsk))
   (occ-capture obj)
-  (push child (occ-tree-tsk-tree obj))
-  nil)
-
-(cl-defmethod occ-child ((obj occ-list-tsk))
-  (occ-capture obj)
-  (when nil
-    (let ((newchild-tsk x))
-      (push newchild-tsk (occ-collection-object))))
   nil)
 
 (cl-defmethod occ-child ((obj occ-ctsk))
