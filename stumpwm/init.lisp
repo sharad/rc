@@ -36,6 +36,3 @@
 
 
 ;; (setq *debug-level* 0)
-
-
-

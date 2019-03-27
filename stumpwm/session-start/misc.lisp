@@ -384,7 +384,7 @@
 ;;;}}}
 
 
-;;;{{{
+;;;{{{ mode-line-on-key-press
 (let ((mode-line-on-key-press-p nil))
 
   (defun mode-line-when-pointer-grabbed (key key-seq cmd)
@@ -404,7 +404,7 @@
     (defun enable-mode-line-on-key-press-function ()
       (add-hook *key-press-hook* #'mode-line-when-pointer-grabbed)))
 
-  (enable-mode-line-on-key-press))
+  (disable-mode-line-on-key-press))
 
 ;; (defun toggle-mode-line-on-key-press (key key-seq cmd)
 ;;   (declare (ignore key key-seq cmd))
@@ -427,7 +427,98 @@
 ;;;}}
 
 
-;;;{{{
+;;;{{{ focus-window-match-rules
+(progn
+  (defun local-window-matches-properties-p (window &key class instance type role title)
+    "Returns T if window matches all the given properties"
+    (and
+     (if class (string-match (window-class window) class) t)
+     (if instance (string-match (window-res window) instance) t)
+     (if type (string-match (window-type window) type) t)
+     (if role (string-match (window-role window) role) t)
+     (if title (string-match (window-title window) title) t)))
+
+  (let ((focus-window-match-rules-p t)
+        (focus-window-match-rules '()))
+
+    (defun define-focus-window-match-rule (name &rest rule)
+      (push
+       (cons name rule)
+       focus-window-match-rules))
+
+    (defun matche-window-on-rules (window)
+      (let ((rules focus-window-match-rules))
+        (some
+         #'(lambda (rule)
+             (apply #'window-matches-properties-p window (cdr rule)))
+         rules)))
+
+    (defun set-focus-on-matched-window (window &optional force)
+      ;; TODO pending trying to add code to resolve case when wcli window not get focus
+      ;; make it toggle-able.
+      (when (or
+             force
+             (matche-window-on-rules window))
+        ;; TODO: how to detect if window did not get focus
+        (let ((frame (stumpwm::window-frame window)))
+          (stumpwm::focus-frame (stumpwm::window-group window) frame))))
+
+    (defun focus-matched-window (&optional (window (current-window)))
+      (when focus-window-match-rules-p
+        (set-focus-on-matched-window window nil)))
+
+    (defcommand test-focus-matched-window (&optional (win (current-window))) ()
+      (when win
+        (message "match ~a" (matche-window-on-rules win))))
+
+    (progn
+      (gen-binary-option-commands focus-window-match-rules)
+
+      (defun disable-focus-window-match-rules-function ()
+        (remove-hook *new-window-hook* #'focus-matched-window))
+      (defun enable-focus-window-match-rules-function ()
+        (add-hook *new-window-hook* #'focus-matched-window)))
+
+    (enable-focus-window-match-rules))
+
+  (define-focus-window-match-rule
+      "pinentry-gtk"
+    :class "Gcr-prompter"
+    :instance  "gcr-prompter")
+
+  (define-focus-window-match-rule
+      "gnome-keyring"
+    :class "Gcr-prompter"
+    :instance  "gcr-prompter"
+    :title "Unlock Login Keyring"))
+;;;}}}
+
+
+;;;{{{ show-win-prop
+(let ((show-win-prop-p t))
+  (defun show-win-prop (&optional (window (current-window)))
+    (let ((w (or window (current-window))))
+      (if (not w)
+          (message "No active window!")
+          (message-no-timeout "class: ~A~%instance: ~A~%type: :~A~%role: ~A~%title: ~A"
+                              (window-class w)
+                              (window-res w)
+                              (string (window-type w))
+                              (window-role w)
+                              (window-title w)))))
+
+  (progn
+    (gen-binary-option-commands show-win-prop)
+    (defun disable-show-win-prop-function ()
+      (remove-hook *new-window-hook* #'show-win-prop))
+    (defun enable-show-win-prop-function ()
+      (setf *new-window-hook*
+            (append *new-window-hook* (list #'show-win-prop)))))
+  (disable-show-win-prop))
+;;;}}}
+
+
+;;;{{{ fullscreen-on-ungrabbed-pointer
 (let ((deactivate-fullscreen-idle-timeout 10)
       (deactivate-fullscreen-timer nil)
       (toggle-fullscreen-on-ungrabbed-pointer-for-few-mins 7)
@@ -549,97 +640,4 @@
   ;; enable it.
   (fullscreen-on-ungrabbed-pointer-enable))
 ;;;}}
-
-;;;{{{
-(progn
-  (defun local-window-matches-properties-p (window &key class instance type role title)
-    "Returns T if window matches all the given properties"
-    (and
-     (if class (string-match (window-class window) class) t)
-     (if instance (string-match (window-res window) instance) t)
-     (if type (string-match (window-type window) type) t)
-     (if role (string-match (window-role window) role) t)
-     (if title (string-match (window-title window) title) t)))
-
-  (let ((focus-window-match-rules-p t)
-        (focus-window-match-rules '()))
-
-    (defun define-focus-window-match-rule (name &rest rule)
-      (push
-       (cons name rule)
-       focus-window-match-rules))
-
-    (defun matche-window-on-rules (window)
-      (let ((rules focus-window-match-rules))
-        (some
-         #'(lambda (rule)
-             (apply #'window-matches-properties-p window (cdr rule)))
-         rules)))
-
-    (defun set-focus-on-matched-window (window &optional force)
-      ;; TODO pending trying to add code to resolve case when wcli window not get focus
-      ;; make it toggle-able.
-      (when (or
-             force
-             (matche-window-on-rules window))
-        ;; TODO: how to detect if window did not get focus
-        (let ((frame (stumpwm::window-frame window)))
-          (stumpwm::focus-frame (stumpwm::window-group window) frame))))
-
-    (defun focus-matched-window (&optional (window (current-window)))
-      (when focus-window-match-rules-p
-        (set-focus-on-matched-window window nil)))
-
-    (defcommand test-focus-matched-window (&optional (win (current-window))) ()
-      (when win
-        (message "match ~a" (matche-window-on-rules win))))
-
-    (progn
-      (gen-binary-option-commands focus-window-match-rules)
-
-      (defun disable-focus-window-match-rules-function ()
-        (remove-hook *new-window-hook* #'focus-matched-window))
-      (defun enable-focus-window-match-rules-function ()
-        (add-hook *new-window-hook* #'focus-matched-window)))
-
-    (enable-focus-window-match-rules))
-
-  (define-focus-window-match-rule
-      "pinentry-gtk"
-    :class "Gcr-prompter"
-    :instance  "gcr-prompter")
-
-  (define-focus-window-match-rule
-      "gnome-keyring"
-    :class "Gcr-prompter"
-    :instance  "gcr-prompter"
-    :title "Unlock Login Keyring"))
-
-;;;}}}
-
-
-;;;{{{
-(let ((show-win-prop-p t))
-  (defun show-win-prop (&optional (window (current-window)))
-    (let ((w (or window (current-window))))
-      (if (not w)
-          (message "No active window!")
-          (message-no-timeout "class: ~A~%instance: ~A~%type: :~A~%role: ~A~%title: ~A"
-                              (window-class w)
-                              (window-res w)
-                              (string (window-type w))
-                              (window-role w)
-                              (window-title w)))))
-
-  (progn
-    (gen-binary-option-commands show-win-prop)
-
-    (defun disable-show-win-prop-function ()
-      (remove-hook *new-window-hook* #'show-win-prop))
-    (defun enable-show-win-prop-function ()
-      (setf *new-window-hook*
-            (append *new-window-hook* (list #'show-win-prop)))))
-
-  (disable-show-win-prop))
-;;;}}}
 
