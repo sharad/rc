@@ -350,6 +350,7 @@
         (lwarn 'occ :debug "occ-delayed-select-obj-prop-edit: [minibuffer-body] lotus-with-no-active-minibuffer-if")
         (occ-debug :debug "add-ctx-to-org-heading: minibuffer already active quitting")
         (occ-debug :debug nil))
+    ;;; TODO: extend lotus-with-other-frame-event-debug it to include elscreen change also.
     (lotus-with-other-frame-event-debug "occ-delayed-select-obj-prop-edit" :cancel
       (lwarn 'occ :debug "occ-delayed-select-obj-prop-edit: lotus-with-other-frame-event-debug")
       (let ((buff    (occ-ctx-buffer ctx)))

@@ -406,6 +406,9 @@
 (put 'lotus-with-override-minibuffer-if 'lisp-indent-function 1)
 
 
+
+
+;;; TODO: extend it to include elscreen change also.
 (defmacro lotus-with-other-frame-event (action &rest body)
   `(let ((frame nil)
          (sel-frame-adviced-p
