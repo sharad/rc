@@ -286,7 +286,8 @@
 ;; NOTE: Remember here the concept of Positive and Negative and Full time.
 ;; Read time which could be positive or negative or full
 ;; TODO: option for restart also required for with active clock.
-(cl-defmethod org-rl-clock-resolve-time ((prev org-rl-clock)                                       (next org-rl-clock)
+(cl-defmethod org-rl-clock-resolve-time ((prev org-rl-clock)
+                                         (next org-rl-clock)
                                          &optional
                                          resume
                                          fail-quietly
