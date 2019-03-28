@@ -286,8 +286,7 @@
 ;; NOTE: Remember here the concept of Positive and Negative and Full time.
 ;; Read time which could be positive or negative or full
 ;; TODO: option for restart also required for with active clock.
-(cl-defmethod org-rl-clock-resolve-time ((prev org-rl-clock)
-                                         (next org-rl-clock)
+(cl-defmethod org-rl-clock-resolve-time ((prev org-rl-clock)                                       (next org-rl-clock)
                                          &optional
                                          resume
                                          fail-quietly
@@ -325,15 +324,16 @@
       (when (> maxtimelen 0)
         (let* ((maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
                (options (org-rl-clock-build-options prev next maxtimelen))
-               (opt (org-rl-clock-read-option
-                     org-rl-read-interval
-                     #'(lambda ()
-                         (let ((maxtimelen-mins (funcall maxtimelen-mins-fn)))
-                           (if debug-prompt
-                               (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen-mins)
-                             (format "Select option [%d]: " maxtimelen-mins))))
-                     options
-                     maxtimelen-mins-fn))
+               (opt
+                (org-rl-clock-read-option
+                 org-rl-read-interval
+                 #'(lambda ()
+                     (let ((maxtimelen-mins (funcall maxtimelen-mins-fn)))
+                       (if debug-prompt
+                           (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen-mins)
+                         (format "Select option [%d]: " maxtimelen-mins))))
+                 options
+                 maxtimelen-mins-fn))
                (timelen
                 (org-rl-clock-read-timelen
                  org-rl-read-interval

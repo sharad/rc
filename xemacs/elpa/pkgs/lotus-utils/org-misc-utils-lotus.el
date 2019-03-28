@@ -615,8 +615,7 @@ With prefix arg C-u, copy region instad of killing it."
                                                 (when (active-minibuffer-window)
                                                   (abort-recursive-edit)
                                                   (message nil))
-                                                (when (fboundp 'remove-function)
-                                                  (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame))
+                                                (select-frame-set-input-focus-raise-disable)
                                                 (when ,temp-win-config
                                                   (set-window-configuration ,temp-win-config)
                                                   (setq ,temp-win-config nil)))))

@@ -78,29 +78,38 @@
 (defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
   (unwind-protect
       (progn
-        (when (fboundp 'add-function)
-          (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+        (select-frame-set-input-focus-raise-enable)
         (with-timeout (interval
                        (time-aware-completing-read interval prompt-fn options-fn default-fn))
           (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
                 (options (if (functionp options-fn) (funcall options-fn) options-fn))
                 (default (if (functionp default-fn) (funcall default-fn) default-fn)))
             (completing-read prompt options))))
-    (when (fboundp 'remove-function)
-      (remove-function (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))))
+    (select-frame-set-input-focus-raise-disable)))
 
 (defun time-aware-read-number (interval prompt-fn default-fn)
   (unwind-protect
       (progn
-        (when (fboundp 'add-function)
-          (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+        (select-frame-set-input-focus-raise-enable)
         (with-timeout (interval
                        (time-aware-read-number interval prompt-fn default-fn))
           (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
                 (default (if (functionp default-fn) (funcall default-fn) default-fn)))
             (read-number prompt default))))
-    (when (fboundp 'remove-function)
-      (remove-function (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))))
+    (select-frame-set-input-focus-raise-disable)))
+
+
+(defun time-aware-cps-completing-read (interval prompt-fn options-fn &optional default-fn)
+  (unwind-protect
+      (progn
+        (select-frame-set-input-focus-raise-enable)
+        (with-timeout (interval
+                       (time-aware-completing-read interval prompt-fn options-fn default-fn))
+          (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
+                (options (if (functionp options-fn) (funcall options-fn) options-fn))
+                (default (if (functionp default-fn) (funcall default-fn) default-fn)))
+            (completing-read prompt options))))
+    (select-frame-set-input-focus-raise-disable)))
 
 
 (defun time-p (time)
@@ -818,6 +827,16 @@
 (defvar org-rl-read-interval 60)
 
 (defun org-rl-clock-read-option (interval prompt-fn options-fn default-fn)
+  (let ((options (if (functionp options-fn) (funcall options-fn) options-fn)))
+    (cdr
+     (assoc
+      ;; (time-aware-completing-read interval prompt-fn options-fn default-fn)
+      (time-aware-completing-read interval prompt-fn options-fn)
+      options))))
+
+
+
+(defun org-rl-clock-cps-process-option (interval prompt-fn options-fn default-fn)
   (let ((options (if (functionp options-fn) (funcall options-fn) options-fn)))
     (cdr
      (assoc

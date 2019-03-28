@@ -341,24 +341,51 @@
            (enable  (symb 'enable- name))
            (disable (symb 'disable- name))
            (toggle  (symb 'toggle- name)))
-      `(progn                            ;autoselect-if-only-p
+      `(let ((impl
+               #'(lambda ()
+                   (if ,option
+                       (if (fboundp ',enable-fun) (funcall #',enable-fun))
+                       (if (fboundp ',disable-fun) (funcall #',disable-fun))))))                            ;autoselect-if-only-p
          (stumpwm::defcommand ,enable () ()
            (setf ,option t)
-           (if ,option
-               (if (fboundp ',enable-fun) (funcall #',enable-fun))
-               (if (fboundp ',disable-fun) (funcall #',disable-fun))))
+           (funcall impl))
 
          (stumpwm::defcommand ,disable () ()
            (setf ,option nil)
-           (if ,option
-               (if (fboundp ',enable-fun) (funcall #',enable-fun))
-               (if (fboundp ',disable-fun) (funcall #',disable-fun))))
+           (funcall impl))
 
          (stumpwm::defcommand ,toggle () ()
            (setf ,option (not ,option))
-           (if ,option
-               (if (fboundp ',enable-fun) (funcall #',enable-fun))
-               (if (fboundp ',disable-fun) (funcall #',disable-fun))))))))
+           (funcall impl)))))
+
+
+(defmacro gen-binary-option-body (name &rest body)
+  (let* ((option  (symb name '-p))
+         (enable-fun  (symb 'enable- name '-function))
+         (disable-fun (symb 'disable- name '-function))
+         (enable  (symb 'enable- name))
+         (disable (symb 'disable- name))
+         (toggle  (symb 'toggle- name)))
+    `(let (,option
+           (impl
+             #'(lambda ()
+                 (if ,option
+                     (if (fboundp ',enable-fun) (funcall #',enable-fun))
+                     (if (fboundp ',disable-fun) (funcall #',disable-fun))))))
+       (stumpwm::defcommand ,enable () ()
+         (setf ,option t)
+         (funcall impl))
+
+       (stumpwm::defcommand ,disable () ()
+         (setf ,option nil)
+         (funcall impl))
+
+       (stumpwm::defcommand ,toggle () ()
+         (setf ,option (not ,option))
+         (funcall impl))
+
+       (progn
+         ,@body)))))
 
 
 ;;;{{{
