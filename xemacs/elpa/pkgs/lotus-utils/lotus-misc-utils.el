@@ -412,16 +412,16 @@
 (defmacro lotus-with-other-frame-event (action &rest body)
   `(let ((frame nil)
          (sel-frame-adviced-p
-          (select-frame-set-input-focus-raise-p)))
+          (select-frame-set-input-focus-no-raise-p)))
      (letrec ((set-advice-fn
                #'(lambda ()
                    (if sel-frame-adviced-p
-                       (unless (select-frame-set-input-focus-raise-p)
+                       (unless (select-frame-set-input-focus-no-raise-p)
                          (lwarn 'event-input :debug "%s: %s: readfn: <%s> add quiet 5 as already was present" (time-stamp-string) 'lotus-with-other-frame-event ,action)
-                         (select-frame-set-input-focus-raise-enable))
-                     (when (select-frame-set-input-focus-raise-p)
+                         (select-frame-set-input-focus-no-raise-enable))
+                     (when (select-frame-set-input-focus-no-raise-p)
                        (lwarn 'event-input :debug "%s: %s: readfn: <%s> remove quiet 5 as already was present" (time-stamp-string) 'lotus-with-other-frame-event ,action)
-                       (select-frame-set-input-focus-raise-disable)))))
+                       (select-frame-set-input-focus-no-raise-disable)))))
               (readfn
                #'(lambda ()
                    (progn
@@ -434,7 +434,7 @@
                         (funcall hookfn)))
                      (lwarn 'event-input :debug "%s: %s: readfn: <%s> 2 pre-command-hook %s" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook)
                      ;; (unless sel-frame-adviced-p
-                     ;;   (select-frame-set-input-focus-raise-disable)
+                     ;;   (select-frame-set-input-focus-no-raise-disable)
                      ;;   (lwarn 'event-input :debug "readfn: removed quiet-sel-frame"))
                      (condition-case nil
                          (progn
@@ -472,7 +472,7 @@
                          (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> with-selected-frame running timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                          (run-with-timer 0 nil #'(lambda () (funcall readfn)))
                          (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> adding quiet-sel-frame minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
-                         (select-frame-set-input-focus-raise-enable)
+                         (select-frame-set-input-focus-no-raise-enable)
                          (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> going to run abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                          (when (active-minibuffer-window)
                            (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> running abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
@@ -494,7 +494,7 @@
                    (if (eql last-event-frame frame)
                        (progn
                          (setq frame nil)
-                         ;; (select-frame-set-input-focus-raise-disable)
+                         ;; (select-frame-set-input-focus-no-raise-disable)
                          ;; (lwarn 'event-input :debug "hookfn: removing hook 2")
                          ;; (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                          t)
@@ -525,7 +525,7 @@
                                                    nil)))))
                          (progn
                            (lwarn 'event-input :debug "%s: %s: hookfn: <%s> adding quiet-sel-frame minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
-                           (select-frame-set-input-focus-raise-enable)
+                           (select-frame-set-input-focus-no-raise-enable)
                            (lwarn 'event-input :debug "%s: %s: hookfn: <%s> going to run abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                            (when (active-minibuffer-window)
                              (lwarn 'event-input :debug "%s: %s: hookfn: <%s> running abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
@@ -536,23 +536,23 @@
 (defmacro lotus-with-other-frame-event (action &rest body)
   `(let ((frame nil)
          (sel-frame-adviced-p
-          (select-frame-set-input-focus-raise-p)))
+          (select-frame-set-input-focus-no-raise-p)))
      (letrec ((set-advice-fn
                #'(lambda ()
                    (if sel-frame-adviced-p
-                       (unless (select-frame-set-input-focus-raise-p)
+                       (unless (select-frame-set-input-focus-no-raise-p)
                          (lwarn 'event-input :debug "%s: %s: readfn: <%s> add quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
-                         (select-frame-set-input-focus-raise-enable))
-                     (when (select-frame-set-input-focus-raise-p)
+                         (select-frame-set-input-focus-no-raise-enable))
+                     (when (select-frame-set-input-focus-no-raise-p)
                        (lwarn 'event-input :debug "%s: %s: readfn: <%s> remove quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
-                       (select-frame-set-input-focus-raise-disable)))))
+                       (select-frame-set-input-focus-no-raise-disable)))))
               (readfn
                #'(lambda ()
                    (progn
                      (setq frame (selected-frame))
                      (add-hook 'pre-command-hook (lambda () (funcall hookfn)))
                      ;; (unless sel-frame-adviced-p
-                     ;;   (select-frame-set-input-focus-raise-disable))
+                     ;;   (select-frame-set-input-focus-no-raise-disable))
                      (condition-case nil
                          (progn
                            (funcall set-advice-fn)
@@ -570,7 +570,7 @@
                    (if (eql last-event-frame frame)
                        (progn
                          (setq frame nil)
-                         ;; (select-frame-set-input-focus-raise-disable)
+                         ;; (select-frame-set-input-focus-no-raise-disable)
                          ;; (lwarn 'event-input :debug "hookfn: removing hook 2")
                          ;; (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                          t)
@@ -599,7 +599,7 @@
                                                     (null action))
                                                    nil)))))
                          (progn
-                           (select-frame-set-input-focus-raise-enable)
+                           (select-frame-set-input-focus-no-raise-enable)
                            (when (active-minibuffer-window)
                              (abort-recursive-edit)))))))))
        (funcall readfn))))
@@ -608,11 +608,11 @@
 (defmacro lotus-with-other-frame-event-debug (name action &rest body)
   `(let ((frame nil)
          (sel-frame-adviced-p
-          (select-frame-set-input-focus-raise-p)))
+          (select-frame-set-input-focus-no-raise-p)))
      (letrec ((set-advice-fn
                #'(lambda ()
                    (if sel-frame-adviced-p
-                       (unless (select-frame-set-input-focus-raise-p)
+                       (unless (select-frame-set-input-focus-no-raise-p)
                          (lwarn 'event-input :debug "%s: %s: set-advice-fn: %s <%s> add quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
                          (lwarn 'event-input :debug "%s: %s: set-advice-fn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                                 (time-stamp-string) 'lotus-with-other-frame-event-debug
@@ -621,8 +621,8 @@
                                 last-event-frame
                                 frame
                                 (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
-                         (select-frame-set-input-focus-raise-enable))
-                     (when (select-frame-set-input-focus-raise-p)
+                         (select-frame-set-input-focus-no-raise-enable))
+                     (when (select-frame-set-input-focus-no-raise-p)
                        (lwarn 'event-input :debug "%s: %s: readfn: %s <%s> remove quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
                        (lwarn 'event-input :debug "%s: %s: set-advice-fn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                               (time-stamp-string) 'lotus-with-other-frame-event-debug
@@ -631,7 +631,7 @@
                               last-event-frame
                               frame
                               (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
-                       (select-frame-set-input-focus-raise-disable)))))
+                       (select-frame-set-input-focus-no-raise-disable)))))
               (readfn
                #'(lambda ()
                    (progn
@@ -665,7 +665,7 @@
                    (if (eql last-event-frame frame)
                        (progn
                          (setq frame nil)
-                         ;; (select-frame-set-input-focus-raise-disable)
+                         ;; (select-frame-set-input-focus-no-raise-disable)
                          ;; (lwarn 'event-input :debug "hookfn: removing hook 2")
                          ;; (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                          t)
@@ -747,7 +747,7 @@
                                   frame
                                   (selected-frame)
                                   (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
-                           (select-frame-set-input-focus-raise-enable)
+                           (select-frame-set-input-focus-no-raise-enable)
                            (when (active-minibuffer-window)
                              (abort-recursive-edit)))))))))
        (funcall readfn))))
@@ -916,11 +916,11 @@
 
 (when nil
 
-  (select-frame-set-input-focus-raise-disable)
+  (select-frame-set-input-focus-no-raise-disable)
 
-  (select-frame-set-input-focus-raise-enable)
+  (select-frame-set-input-focus-no-raise-enable)
 
-  (select-frame-set-input-focus-raise-p)
+  (select-frame-set-input-focus-no-raise-p)
 
   )
 

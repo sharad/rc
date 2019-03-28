@@ -78,38 +78,38 @@
 (defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
   (unwind-protect
       (progn
-        (select-frame-set-input-focus-raise-enable)
+        (select-frame-set-input-focus-no-raise-enable)
         (with-timeout (interval
                        (time-aware-completing-read interval prompt-fn options-fn default-fn))
           (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
                 (options (if (functionp options-fn) (funcall options-fn) options-fn))
                 (default (if (functionp default-fn) (funcall default-fn) default-fn)))
             (completing-read prompt options))))
-    (select-frame-set-input-focus-raise-disable)))
+    (select-frame-set-input-focus-no-raise-disable)))
 
 (defun time-aware-read-number (interval prompt-fn default-fn)
   (unwind-protect
       (progn
-        (select-frame-set-input-focus-raise-enable)
+        (select-frame-set-input-focus-no-raise-enable)
         (with-timeout (interval
                        (time-aware-read-number interval prompt-fn default-fn))
           (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
                 (default (if (functionp default-fn) (funcall default-fn) default-fn)))
             (read-number prompt default))))
-    (select-frame-set-input-focus-raise-disable)))
+    (select-frame-set-input-focus-no-raise-disable)))
 
 
 (defun time-aware-cps-completing-read (interval prompt-fn options-fn &optional default-fn)
   (unwind-protect
       (progn
-        (select-frame-set-input-focus-raise-enable)
+        (select-frame-set-input-focus-no-raise-enable)
         (with-timeout (interval
                        (time-aware-completing-read interval prompt-fn options-fn default-fn))
           (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
                 (options (if (functionp options-fn) (funcall options-fn) options-fn))
                 (default (if (functionp default-fn) (funcall default-fn) default-fn)))
             (completing-read prompt options))))
-    (select-frame-set-input-focus-raise-disable)))
+    (select-frame-set-input-focus-no-raise-disable)))
 
 
 (defun time-p (time)
