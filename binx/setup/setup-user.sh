@@ -334,6 +334,7 @@ function setup_make_relative_link()
 
 function setup_recursive_links_container_dirs()
 {
+    # create all leaf dirs symlinks recursively.
     basepath=$1
     linktopdir=$2
     targetdir=$3
@@ -346,6 +347,8 @@ function setup_recursive_links_container_dirs()
     then
         cd ${basepath}/${linktopdir}
         # debug SHARAD TEST
+        # https://stackoverflow.com/questions/4269798/use-gnu-find-to-show-only-the-leaf-directories
+        # https://stackoverflow.com/a/4269862
         local linkdirs=( $(find -type d -links 2 | cut -c3- ) )
         cd - > /dev/null 2>&1
 
@@ -365,6 +368,7 @@ function setup_recursive_links_container_dirs()
 
 function setup_recursive_links()
 {
+    # create all symlinks mirrors symlinks recursively
     basepath=$1
     linkdir=$2
     targetdir=$3
@@ -1977,7 +1981,7 @@ EOF
     running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/TODO
 
     # dirs
-    for folder in Desktop Downloads Music Pictures Templates tmp
+    for folder in Desktop Downloads Music Pictures Scratches Templates tmp Volumes VolRes
     do
         running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${rel_homeprotabledir} ${folder}/Public/Publish/html
     done
@@ -1991,13 +1995,18 @@ EOF
     running setup_make_relative_link ${LOCALDIRS_DIR}/${rel_homeprotabledir}     Public/Publish/html public_html
     running setup_make_relative_link ${LOCALDIRS_DIR}/${rel_homeprotabledir}     Documents/Library   Library
 
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/control.d/class/data/storage/local/container/scratches.d home.d/portable.d/Scratches
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/model.d                                                  home.d/portable.d/Volumes
+    running setup_recursive_links    ${LOCALDIRS_DIR}/org                        resource.d/control.d/class/data/storage/local/container/scratches.d home.d/portable.d/Scratches
+    running setup_recursive_links    ${LOCALDIRS_DIR}/org                        resource.d/model.d                                                  home.d/portable.d/Volumes
+
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/model.d                                                  home.d/portable.d/VolRes/model
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/control.d                                                home.d/portable.d/VolRes/control
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/view.d                                                   home.d/portable.d/VolRes/view
+
+
     running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/view.d/maildata/mail-and-metadata/maildir                home.d/portable.d/Maildir
 
     # links
-    # for lnk in org/home.d/portable.d org/home.d/portable.d/Documents org/home.d/portable.d/Private org/home.d/portable.d/Library org/home.d/portable.d/public_html org/home.d/portable.d/Scratches org/home.d/portable.d/Maildir org/home.d/portable.d/Volumes
-    for lnk in org/home.d/portable.d/Documents org/home.d/portable.d/Private org/home.d/portable.d/Library org/home.d/portable.d/public_html org/home.d/portable.d/Scratches org/home.d/portable.d/Maildir org/home.d/portable.d/Volumes
+    for lnk in org/home.d/portable.d/Documents org/home.d/portable.d/Private org/home.d/portable.d/Library org/home.d/portable.d/public_html org/home.d/portable.d/Maildir
     do
         running setup_add_to_version_control ~/.fa/localdirs $lnk
     done
@@ -2101,7 +2110,7 @@ function setup_osetup_org_home_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
-    for folder_link in Desktop Documents Downloads Library Maildir Music Pictures Private Public public_html Scratches Sink Templates tmp Videos Volumes
+    for folder_link in Desktop Documents Downloads Library Maildir Music Pictures Private Public public_html Scratches Sink Templates tmp Videos Volumes VolRes
     do
         running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/home.d/portable.d/${folder_link} osetup/dirs.d/org/home.d/${folder_link}
         running setup_add_to_version_control ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup dirs.d/org/home.d/${folder_link}
