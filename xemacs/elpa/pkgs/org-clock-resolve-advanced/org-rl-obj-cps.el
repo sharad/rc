@@ -33,7 +33,7 @@
         (select-frame-set-input-focus-no-raise-enable)
         (with-timeout (interval
                        (time-aware-completing-read interval prompt-fn options-fn default-fn))
-          (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
+          (let ((prompt  (if (functionp prompt-fn)  (funcall prompt-fn) prompt-fn))
                 (options (if (functionp options-fn) (funcall options-fn) options-fn))
                 (default (if (functionp default-fn) (funcall default-fn) default-fn)))
             (completing-read prompt options))))

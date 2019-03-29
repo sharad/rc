@@ -61,58 +61,55 @@
     :empty-lines 1)))
 
 
-
-(let ((collection
-       '("* TODO %? %^g\n %i\n [%a]\n"
-         "* TODO %? %^g\n %i\n Test [%a]\n")))
-  (helm :sources
-        `(((name . "Templates: ")
-           (multiline)
-           (candidates ,@collection)
-           (action . identity)))))
-
-
+(when nil
+  (let ((collection
+         '("* TODO %? %^g\n %i\n [%a]\n"
+           "* TODO %? %^g\n %i\n Test [%a]\n")))
+    (helm :sources
+          `(((name . "Templates: ")
+             (multiline)
+             (candidates ,@collection)
+             (action . identity))))))
 
 
 
 
 
-;; https://code.orgmode.org/bzg/org-mode/commit/e2bdc488ee071ea9743b00424db28fce3505fe5d
-;; Refiling: Allow to create new nodes.
 
-;; When refiling, you can now create new parent nodes on the fly.  To do
-;; this, set the variable `org-refile-allow-creating-parent-nodes' to
-;; `confirm'.  Then, at a refiling prompt, proceed with completion until
-;; you have an existing heading, and then add "/new heading", i.e. a
-;; slash followed by the new heading.  That heading will be created as a
-;; child of the existing heading, and the entry to be refiled will end up
-;; under that new heading.
+(when nil
+  ;; https://code.orgmode.org/bzg/org-mode/commit/e2bdc488ee071ea9743b00424db28fce3505fe5d
+  ;; Refiling: Allow to create new nodes.
 
-;;; occ-macros.el ends here
+  ;; When refiling, you can now create new parent nodes on the fly.  To do
+  ;; this, set the variable `org-refile-allow-creating-parent-nodes' to
+  ;; `confirm'.  Then, at a refiling prompt, proceed with completion until
+  ;; you have an existing heading, and then add "/new heading", i.e. a
+  ;; slash followed by the new heading.  That heading will be created as a
+  ;; child of the existing heading, and the entry to be refiled will end up
+  ;; under that new heading.
 
-
-(org-refile-get-location)
-
-
-(org-capture+
- 'entry
- '(marker org-clock-marker)
- "* Hello %^{PROMPT}"
- ;; :immediate-finish t
- :empty-lines 1)
+  ;;; occ-macros.el ends here
 
 
+  (org-refile-get-location)
 
-;; https://stackoverflow.com/questions/3811448/can-call-with-current-continuation-be-implemented-only-with-lambdas-and-closures
-(lambda (f k)
-  (f (lambda (v k0) (k v)) k))
 
-;; https://stackoverflow.com/questions/612761/what-is-call-cc
-(defvar x 0)
-
-(+ 2 (call/cc (lambda (cc) (setq x cc) 3)))
-
-(x 4)
+  (org-capture+
+   'entry
+   '(marker org-clock-marker)
+   "* Hello %^{PROMPT}"
+   ;; :immediate-finish t
+   :empty-lines 1)
 
 
 
+  ;; https://stackoverflow.com/questions/3811448/can-call-with-current-continuation-be-implemented-only-with-lambdas-and-closures
+  (lambda (f k)
+    (f (lambda (v k0) (k v)) k))
+
+  ;; https://stackoverflow.com/questions/612761/what-is-call-cc
+  (defvar x 0)
+
+  (+ 2 (call/cc (lambda (cc) (setq x cc) 3)))
+
+  (x 4))

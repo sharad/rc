@@ -430,7 +430,9 @@
 
 ;; Handling
 (fill-keymap *window-handling-map*
-             (kbd "d") "disappear-window")
+             (kbd "d") "disappear-window"
+             (kbd "s") "pause-win"
+             (kbd "c") "continue-win")
 
 (define-key *top-map* (kbd "s-w") '*window-map*)
 (setf *window-map*

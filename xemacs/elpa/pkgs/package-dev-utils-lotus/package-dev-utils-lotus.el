@@ -154,6 +154,24 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
                 `(define-package ,pkg-name ,version ,(format "%s" pkg-name) nil)))))
     (cadr (nth 4 pkg-def))))
 
+
+
+
+
+
+
+;;;###autoload
+(defun package-load-package-from-dir (dir)
+  (message "loading file from %s" dir)
+  (let ((default-directory dir))
+    (dolist (file (directory-files-recursively dir ".el$"))
+      (unless (or
+               (string-match "^.*-pkg.el$" file)
+               (string-match "^#.*-pkg.el$" file)
+               (string-match "^\..*-pkg.el$" file))
+        (message "loading file %s" file)
+        (load-file file)))))
+
 ;;;###autoload
 (defun package-build-package-from-dir (dir &optional update-source-pkg-desc)
   (interactive
@@ -188,13 +206,14 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
                                (buffer-string)
                              ('end-of-file nil))))
                       contents))))
-                `(define-package ,pkg-name ,version ,(format "%s" pkg-name) nil))))
+              `(define-package ,pkg-name ,version ,(format "%s" pkg-name) nil))))
          (tmp-dir (expand-file-name "elpa" (getenv "TMP")))
          (pkg-dir
           (expand-file-name
            (format "%s-%s" pkg-name version)
            tmp-dir)))
 
+    (package-load-package-from-dir dir)
     (message "building package %s" pkg-name)
     (when (or (file-exists-p currdir-pkg-def-file)
               (y-or-n-p
@@ -206,6 +225,7 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
         (dolist (org-file (directory-files dir-of-current-file t "'\*\.org$"))
           (org-babel-tangle-file org-file)))
       (copy-directory dir-of-current-file pkg-dir nil t t)
+      (package-load-package-from-dir pkg-dir)
       ;; delete unnecessary files
       (let ((default-directory pkg-dir))
         (dolist (del-file (directory-files-recursively pkg-dir "'\*~$\\|'RCS$"))
@@ -221,7 +241,7 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
              dir-of-current-file
              (expand-file-name pkg-name package-source-path)
              nil t t))
-          (error "package-source-path do ot exists."))
+        (error "package-source-path do ot exists."))
       (setcar (nthcdr 2 pkg-def) version)
       (unless pkg-def-exists ;; version exist mean file -pkg.el was there presently, so need to ask any question.
         (progn
@@ -244,7 +264,7 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
           (set-buffer-file-coding-system
            (if (coding-system-p 'utf-8-emacs)
                'utf-8-emacs
-               'emacs-mule))
+             'emacs-mule))
           (erase-buffer)
           (insert (pp-to-string pkg-def))
           (write-file pkgdir-def-file))
@@ -257,6 +277,7 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
 
         (let ((pkgdir-def-file-buff (find-buffer-visiting pkgdir-def-file)))
           (when pkgdir-def-file-buff (kill-buffer pkgdir-def-file-buff))))
+
       (let ((default-directory tmp-dir))
         (prog1
             (if (shell-command

@@ -37,9 +37,9 @@
 
 (defun occ-select-template ())
 
-(org-capture+-build-helm-template-sources)
+;; (org-capture+-build-helm-template-sources)
 
-(org-capture+-helm-select-template)
+;; (org-capture+-helm-select-template)
 
 
 
