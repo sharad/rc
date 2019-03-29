@@ -695,4 +695,5 @@ pointing to it."
           (occ-debug :nodisplay "occ-clock-in-if-chg: ctx %s not suitable to associate" ctx)))
     (occ-debug :nodisplay "occ-clock-in-if-chg: not enough time passed.")))
 
+
 ;;; occ-obj-simple.el ends here
