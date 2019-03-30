@@ -121,7 +121,7 @@ function main()
 
     cd ~/
 
-    # running setup_apt_packages
+    running setup_apt_packages
 
     running setup_ecrypt_private
 
