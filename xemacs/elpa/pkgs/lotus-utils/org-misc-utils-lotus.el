@@ -615,17 +615,17 @@ With prefix arg C-u, copy region instad of killing it."
                                                 (when (active-minibuffer-window)
                                                   (abort-recursive-edit)
                                                   (message nil))
-                                                (select-frame-set-input-focus-no-raise-disable)
+                                                (select-frame-set-input-enable-raise)
                                                 (when ,temp-win-config
                                                   (set-window-configuration ,temp-win-config)
                                                   (setq ,temp-win-config nil)))))
                                         buf-name)))
        (unwind-protect
             (progn
-              (select-frame-set-input-focus-no-raise-enable)
+              (select-frame-set-input-disable-raise)
               (progn
                 ,@body))
-         (select-frame-set-input-focus-no-raise-disable)
+         (select-frame-set-input-enable-raise)
          (cancel-timer timer)))))
 (put 'helm-timed 'lisp-indent-function 1)
 
@@ -648,13 +648,13 @@ With prefix arg C-u, copy region instad of killing it."
                                                       (window-valid-p w))
                                              (delete-window w)
                                              (with-no-active-minibuffer
-                                               (select-frame-set-input-focus-no-raise-disable)))))
+                                               (select-frame-set-input-enable-raise)))))
                                      buf-name)))
     (unwind-protect
          (progn
-           (select-frame-set-input-focus-no-raise-enable)
+           (select-frame-set-input-disable-raise)
            (safe-org-refile-get-location prompt))
-      (select-frame-set-input-focus-no-raise-disable)
+      (select-frame-set-input-enable-raise)
       (cancel-timer timer))))
 
 (defun safe-timed-org-refile-get-location (timeout &optional prompt)

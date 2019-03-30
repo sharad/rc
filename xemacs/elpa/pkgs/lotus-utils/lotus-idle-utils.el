@@ -62,14 +62,14 @@
     #'quiet--select-frame
     (advice--symbol-function 'select-frame-set-input-focus))))
 
-(defun select-frame-set-input-focus-no-raise-disable ()
+(defun select-frame-set-input-enable-raise ()
   "Disable raising of frame by function select-frame-set-input-focus used by helm."
   (when (fboundp 'remove-function)
     (remove-function
      (symbol-function 'select-frame-set-input-focus)
      #'quiet--select-frame)))
 
-(defun select-frame-set-input-focus-no-raise-enable ()
+(defun select-frame-set-input-disable-raise ()
   "Enable raising of frame by function select-frame-set-input-focus used by helm."
   (when (fboundp 'add-function)
     (add-function
@@ -138,7 +138,7 @@ this macro intended to be used with or in idle timer functions."
                              (delete-window w)
                              (lwarn 'lotus-idle-timed-window :debug "triggered timer for new-win %s" w)
                              (with-no-active-minibuffer
-                               (select-frame-set-input-focus-no-raise-disable)))))
+                               (select-frame-set-input-enable-raise)))))
           (timer      (run-with-idle-plus-timer timeout nil cleanup-fun window)))
      (unwind-protect
          (progn
@@ -146,11 +146,11 @@ this macro intended to be used with or in idle timer functions."
              (cancel-timer timer)
              (setq timer nil))
            (progn
-             (select-frame-set-input-focus-no-raise-enable)
+             (select-frame-set-input-disable-raise)
              (progn
                ,@body)))
        (progn
-         (select-frame-set-input-focus-no-raise-disable)
+         (select-frame-set-input-enable-raise)
          (when timer
            (cancel-timer timer)
            (setq timer nil))))))
@@ -170,7 +170,7 @@ this macro intended to be used with or in idle timer functions."
                                (delete-window window)
                                (lwarn 'lotus-idle-timed-window :debug "triggered timer for new-win %s" window)
                                (with-no-active-minibuffer
-                                 (select-frame-set-input-focus-no-raise-disable))))))
+                                 (select-frame-set-input-enable-raise))))))
           (timer       (run-with-idle-plus-timer timeout nil cleanup-fun ,buffer)))
      (unwind-protect
          (progn
@@ -179,11 +179,11 @@ this macro intended to be used with or in idle timer functions."
              (cancel-timer timer)
              (setq timer nil))
            (progn
-             (select-frame-set-input-focus-no-raise-enable)
+             (select-frame-set-input-disable-raise)
              (progn
                ,@body)))
        (progn
-         (select-frame-set-input-focus-no-raise-disable)
+         (select-frame-set-input-enable-raise)
          (when timer
            (cancel-timer timer)
            (setq timer nil))))))
