@@ -60,8 +60,20 @@
 
 
 (defun org-rl-helm-build-options (interval prompt-fn options-fn default-fn)
-  (helm
-   :source ))
+  (helm-build-sync-source (if (fboundp prompt-fn)
+                              (funcall prompt-fn)
+                            prompt-fn)
+    :candidates (if (functionp options-fn)
+                    (funcall options-fn)
+                  options-fn)
+    ;; :action (append
+    ;;          (list
+    ;;           (cons "Select" #'identity))
+    ;;          (if (consp (car name-action-cons))
+    ;;              name-action-cons
+    ;;            (list name-action-cons)))
+    :action-transformer (lambda (actions candidate) (list (cons "select" #'identity)))
+    ))
 
 
 (defun org-rl-clock-cps-read-option (interval prompt-fn options-fn default-fn)

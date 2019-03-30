@@ -1829,8 +1829,6 @@ function setup_deps_view_volumes_dirs()
 
             done
 
-            # ZZ
-            echo running setup_add_to_version_control "${BASE_DIR}/${LOCALDIRS_DIR}" ${volumedir}/${viewdirname}/.gitignore
             running setup_add_to_version_control "${BASE_DIR}/${LOCALDIRS_DIR}" ${volumedir}/${viewdirname}/.gitignore
 
         else                    # if [ -d ${hostdir} ]
