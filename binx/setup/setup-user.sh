@@ -56,7 +56,7 @@ DEB_PKG_NECESSARY="cvs subversion git git-cvs cvs2svn git-review legit git-extra
 DEB_PKG_NECESSARY1="fish ondir zsh-syntax-highlighting doc-base snooze"
 DEB_PKG_WITH_ERROR="edb"
 DEB_PKG_APPEARANCE="lxappearance gnome-tweak-tool gnome-themes-standard libgtk-3-dev console-data gnome-session gnome-settings-daemon gnome-panel policykit-1-gnome dex"
-DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp virtualbox-dkms virtualbox-guest-x11 vagrant libvirt-clients"
+DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp virtualbox-dkms virtualbox-guest-x11 vagrant libvirt-clients docker-compose"
 DEB_PKGS1="vim emacs25-lucid emacs emacs-goodies-el org-mode develock-el dash-el s-el zile keychain undistract-me rpm sosreport"
 
 DEB_PKGS2="rxvt-unicode-256color elscreen planner-el p7zip-full pdftk golang gocode gparted"
@@ -97,7 +97,7 @@ DEB_PKG_JAVA1="libreoffice-java-common"
 DEB_PKG_LINT="shellcheck splint splint-data yapf yapf3 foodcritic ansible-lint adlint ansible-lint api-sanity-checker flycheck-doc"
 DEB_PKG_DEB="devscripts revu-tools debaux devscripts dput"
 DEB_PKG_BUILD="elida pbuilder"
-DEB_PKG_VOICE="espeak-ng espeak-ng-espeak xmms2 gxmms2 promoe"
+DEB_PKG_VOICE="espeak-ng espeak-ng-espeak xmms2 gxmms2 promoe gmpc mpd mpc"
 # https://github.com/ryanoasis/nerd-fonts
 # https://www.reddit.com/r/stumpwm/comments/8nywfc/resetting_font_changes/
 DEB_PKG_FONTS="fonts-firacode " # Iosevka
@@ -121,7 +121,7 @@ function main()
 
     cd ~/
 
-    running setup_apt_packages
+    # running setup_apt_packages
 
     running setup_ecrypt_private
 
@@ -442,6 +442,7 @@ function setup_add_to_version_control()
 {
     local base="$1"
     local relfile=$2
+
     if ! git -C "${base}" ls-files --error-unmatch "${relfile}" >/dev/null 2>&1
     then
         info do   git -C "${base}" add -f "${relfile}"
@@ -463,22 +464,18 @@ function setup_add_to_version_control()
 function setup_add_to_version_control_recursive_links_container_dirs() # NOT REQUIRED
 {
     basepath=$1
-    linktopdir=$2
+    targetdir=$2
 
-    gitrelbase=$3
-    targetdir=$4
-
-    linkbasepath=${basepath}${basepath:+/}${linktopdir}
+    targettopleafdir=${basepath}${basepath:+/}${targetdir}
 
     debug basepath=$basepath
-    debug linktopdir=$linktopdir
     debug targetdir=$targetdir
 
 
 
-    if [ -d ${linkbasepath} ]
+    if [ -d ${targettopleafdir} ]
     then
-        cd ${linkbasepath}
+        cd ${targettopleafdir}
         # debug SHARAD TEST
         # https://unix.stackexchange.com/questions/68577/find-directories-that-do-not-contain-subdirectories
         local linkdirs=( $(find -type d -links 2 | cut -c3- ) )
@@ -493,10 +490,11 @@ function setup_add_to_version_control_recursive_links_container_dirs() # NOT REQ
             # git -C ${basepath}/${gitrelbase} rm ${targetdir}/${lnkdir}/*
             # rm -f ${basepath}/${gitrelbase}/${targetdir}/${lnkdir}/*
             # echo '*' > ${basepath}/${gitrelbase}/${targetdir}/${lnkdir}/.gitignore
-            running setup_add_to_version_control ${basepath}/${gitrelbase} ${targetdir}/${lnkdir}/.gitignore
+            echo '*' > ${basepath}/${targetdir}/${lnkdir}/.gitignore
+            running setup_add_to_version_control ${basepath} ${targetdir}/${lnkdir}/.gitignore
         done
     else
-        error dir ${basepath}/${linktopdir} not exists
+        error dir ${targettopleafdir} not exists
     fi
 
 }                               # function setup_add_to_version_control_recursive_links_container_dirs()
@@ -543,6 +541,7 @@ function setup_vc_mkdirpath_ensure()
     local vcbase="$1"
     local base="$2"
     local path="$3"
+    local all=$4
 
     mkdir -p ${vcbase}/${base}/${path}
     local dirpath=$path
@@ -550,6 +549,10 @@ function setup_vc_mkdirpath_ensure()
     while [ "$dirpath" != "." -a "x$dirpath" != "x" ]
     do
         running touch ${vcbase}/${base}${base:+/}${dirpath}/.gitignore
+        if [ "$all" ]
+        then
+            echo '*' > ${vcbase}/${base}${base:+/}${dirpath}/.gitignore
+        fi
         running setup_add_to_version_control ${vcbase} ${base}${base:+/}${dirpath}/.gitignore
         dirpath="$(dirname $dirpath)"
     done
@@ -1707,6 +1710,7 @@ function setup_deps_view_volumes_dirs()
     running setup_make_relative_link ${BASE_DIR}/${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/volumes.d  view.d/volumes.d
     running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} org/deps.d/view.d/volumes.d
 
+    running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default
 
 
     # check local home model.d directory
@@ -1718,7 +1722,7 @@ function setup_deps_view_volumes_dirs()
             mkdir -p ${BASE_DIR}/${LOCALDIRS_DIR}/${hostdir}
 
             running setup_make_link $HOST ${BASE_DIR}/${LOCALDIRS_DIR}/${machinedir}/default
-            # running setup_add_to_version_control ${LOCALDIRS_DIR} org/deps.d/model.d/machine.d/default
+            running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} org/deps.d/model.d/machine.d/default
 
 
             if [ -d ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/model.d ]
@@ -1755,8 +1759,9 @@ function setup_deps_view_volumes_dirs()
 
 
 
-            touch ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/.gitignore
-            running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} ${volumedir}/${viewdirname}/.gitignore
+            # touch ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/.gitignore
+            # echo running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} ${volumedir}/${viewdirname}/.gitignore
+            # running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} ${volumedir}/${viewdirname}/.gitignore
 
             # TODO? NOW
 
@@ -1769,9 +1774,13 @@ function setup_deps_view_volumes_dirs()
             rm -f $missingpath
 
             mkdir -p ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}
+            rm -f ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/.gitignore
+
             for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
             do
                 debug "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir"
+
+                echo $cdir >> ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/.gitignore
 
                 if [ ! -L "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir" -o ! -d "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir" ]
                 then
@@ -1818,10 +1827,11 @@ function setup_deps_view_volumes_dirs()
                 print  >> $todopath
                 print  >> $todopath
 
-
-
             done
 
+            # ZZ
+            echo running setup_add_to_version_control "${BASE_DIR}/${LOCALDIRS_DIR}" ${volumedir}/${viewdirname}/.gitignore
+            running setup_add_to_version_control "${BASE_DIR}/${LOCALDIRS_DIR}" ${volumedir}/${viewdirname}/.gitignore
 
         else                    # if [ -d ${hostdir} ]
             error Please prepare ${hostdir} for your machine >&2
@@ -1864,12 +1874,21 @@ function setup_org_resource_dirs()
     # org/resource.d/control.d/class/data/storage/local/container/scratches.d/Public/
 	  # org/resource.d/control.d/class/data/storage/local/container/scratches.d/local
 
+    running setup_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
+    running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup dirs.d/org/resource.d
 
     # TODO: add support for git add
-    running setup_recursive_links_container_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d/model.d resource.d/model.d
-    running setup_recursive_links_container_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d/control.d resource.d/control.d
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org   deps.d/control.d/machine.d/default/volumes.d/view.d resource.d/view.d
-    running setup_add_to_version_control_recursive_links ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d  .. org/resource.d
+    running setup_recursive_links_container_dirs                        ${LOCALDIRS_DIR}/org deps.d/control.d/machine.d/default/volumes.d/model.d resource.d/model.d
+    running setup_add_to_version_control_recursive_links_container_dirs ${LOCALDIRS_DIR} org/resource.d/model.d
+
+    running setup_recursive_links_container_dirs                        ${LOCALDIRS_DIR}/org deps.d/control.d/machine.d/default/volumes.d/control.d resource.d/control.d
+    running setup_add_to_version_control_recursive_links_container_dirs ${LOCALDIRS_DIR} org/resource.d/control.d
+
+    running setup_make_relative_link     ${LOCALDIRS_DIR}/org deps.d/control.d/machine.d/default/volumes.d/view.d resource.d/view.d
+    running setup_add_to_version_control ${LOCALDIRS_DIR} org/resource.d/view.d
+
+    # running setup_add_to_version_control_recursive_links ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d  .. org/resource.d
+    # running setup_add_to_version_control_recursive_links ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/$HOST/volumes.d  .. org/resource.d
 }
 
 # home/portable
@@ -1919,10 +1938,13 @@ function setup_org_home_portable_public_dirs()
         # setup_add_to_version_control
     done
 
+    local linkdirs=(Documents Library)
+    local plaindirs=(Downloads Music Pictures Templates tmp Videos Scratches Sink VolRes)
+
     # for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
-    for folder in Documents Downloads Library Music Pictures Templates tmp Videos Sink
+    for folder in ${plaindirs[*]}
     do
-        running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} ${folder}/Public/Publish/html
+        running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} ${folder}/Public/Publish/html ignoreall
 
         running setup_make_relative_link ${homeprotabledir} ${folder}/Public              Public/${folder}
         running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish      Public/Publish/${folder}
@@ -1934,15 +1956,9 @@ function setup_org_home_portable_public_dirs()
         running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/Publish/html/$folder
 
     done
-
-    echo '*' > ${LOCALDIRS_DIR}/${relhomeprotabledir}/tmp/.gitignore
-    running setup_add_to_version_control ~/.fa/localdirs ${relhomeprotabledir}/tmp/.gitignore
-
-
-    # for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
-    for folder in Documents Library Scratches
+    for folder in ${linkdirs[*]}
     do
-        running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} ${folder}/Public/Publish/html
+        # running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} ${folder}/Public/Publish/html
 
         running setup_make_relative_link ${homeprotabledir} ${folder}/Public              Public/$folder
         running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish      Public/Publish/$folder
@@ -1953,6 +1969,9 @@ function setup_org_home_portable_public_dirs()
         running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/Publish/$folder
         running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/Publish/html/$folder
     done
+
+    echo '*' > ${LOCALDIRS_DIR}/${relhomeprotabledir}/tmp/.gitignore
+    running setup_add_to_version_control ~/.fa/localdirs ${relhomeprotabledir}/tmp/.gitignore
 
 }
 
@@ -1980,11 +1999,11 @@ EOF
     echo 'add in script' > ${LOCALDIRS_DIR}/org/home.d/portable.d/TODO
     running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/TODO
 
-    # dirs
-    for folder in Desktop Downloads Music Pictures Scratches Templates tmp Volumes VolRes
-    do
-        running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${rel_homeprotabledir} ${folder}/Public/Publish/html
-    done
+    # # dirs
+    # for folder in Desktop Downloads Music Pictures Scratches Templates tmp Volumes VolRes
+    # do
+    #     running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${rel_homeprotabledir} ${folder}/Public/Publish/html
+    # done
 
 
 

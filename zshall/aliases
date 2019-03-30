@@ -237,3 +237,6 @@ alias filemgr-quit='nautilus -q'
 alias filemgr='nautilus --no-default-window --no-desktop'
 alias gfilemgr='nautilus --no-default-window --no-desktop'
 alias xfilemgr='nautilus --no-default-window --no-desktop'
+
+# music
+alias xmms="promoe"

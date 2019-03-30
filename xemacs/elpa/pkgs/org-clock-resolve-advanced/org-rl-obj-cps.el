@@ -59,11 +59,17 @@
       options))))
 
 
+(defun org-rl-helm-build-options (interval prompt-fn options-fn default-fn)
+  (helm
+   :source ))
+
+
 (defun org-rl-clock-cps-read-option (interval prompt-fn options-fn default-fn)
   (let ((options (if (functionp options-fn) (funcall options-fn) options-fn)))
     (cdr
      (assoc
-      (time-aware-completing-read interval prompt-fn options-fn)
+      (helm
+       interval prompt-fn options-fn)
       options))))
 
 
