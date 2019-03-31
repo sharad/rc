@@ -324,7 +324,7 @@
       ;; (assert (> maxtimelen 0))
       (when (> maxtimelen 0)
         (let* ((maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
-               (options (org-rl-clock-build-options prev next maxtimelen))
+               (options (org-rl-clock-build-options prev next maxtimelen resume fail-quietly resume-clocks))
                (opt
                 (org-rl-clock-read-option
                  org-rl-read-interval

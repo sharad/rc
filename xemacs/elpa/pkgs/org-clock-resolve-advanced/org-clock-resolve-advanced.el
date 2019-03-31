@@ -237,6 +237,6 @@ so long."
 (defun org-clock-resolve-advanced-uninsinuate ()
   (remove-hook 'org-clock-in-hook
                #'org-rl-clock-set-correct-idle-timer))
-
+
 
 ;;; org-clock-utils-lotus.el ends here

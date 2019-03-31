@@ -76,27 +76,21 @@
 
 
 (defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
-  (unwind-protect
-      (progn
-        (select-frame-set-input-disable-raise)
-        (with-timeout (interval
-                       (time-aware-completing-read interval prompt-fn options-fn default-fn))
-          (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
-                (options (if (functionp options-fn) (funcall options-fn) options-fn))
-                (default (if (functionp default-fn) (funcall default-fn) default-fn)))
-            (completing-read prompt options))))
-    (select-frame-set-input-enable-raise)))
+  (with-select-frame-set-input-disable-raise
+    (with-timeout (interval
+                   (time-aware-completing-read interval prompt-fn options-fn default-fn))
+      (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
+            (options (if (functionp options-fn) (funcall options-fn) options-fn))
+            (default (if (functionp default-fn) (funcall default-fn) default-fn)))
+        (completing-read prompt options)))))
 
 (defun time-aware-read-number (interval prompt-fn default-fn)
-  (unwind-protect
-      (progn
-        (select-frame-set-input-disable-raise)
-        (with-timeout (interval
-                       (time-aware-read-number interval prompt-fn default-fn))
-          (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
-                (default (if (functionp default-fn) (funcall default-fn) default-fn)))
-            (read-number prompt default))))
-    (select-frame-set-input-enable-raise)))
+  (with-select-frame-set-input-disable-raise
+    (with-timeout (interval
+                   (time-aware-read-number interval prompt-fn default-fn))
+      (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
+            (default (if (functionp default-fn) (funcall default-fn) default-fn)))
+        (read-number prompt default)))))
 
 
 (defun time-p (time)
@@ -590,18 +584,30 @@
  '(("Done" . done)))
 
 (cl-defmethod org-rl-clock-opts-common ((prev org-rl-clock)
-                                        (next org-rl-clock))
+                                        (next org-rl-clock)
+                                        maxtimelen
+                                        resume
+                                        fail-quietly
+                                        resume-clocks)
   (list
    (cons "Restart" 'restart)
    (cons "Done" 'done)))
 
 (cl-defmethod org-rl-clock-opts-common-with-time ((prev org-rl-clock)
-                                                  (next org-rl-clock))
+                                                  (next org-rl-clock)
+                                                  maxtimelen
+                                                  resume
+                                                  fail-quietly
+                                                  resume-clocks)
   (list
    (cons "Include in other" 'include-in-other)))
 
 (cl-defmethod org-rl-clock-opts-prev ((prev org-rl-clock)
-                                      (next org-rl-clock))
+                                      (next org-rl-clock)
+                                      maxtimelen
+                                      resume
+                                      fail-quietly
+                                      resume-clocks)
   ;; (org-rl-debug nil :debug "calling org-rl-clock-opts-prev")
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
@@ -621,7 +627,11 @@
        'cancel-prev-p)))))
 
 (cl-defmethod org-rl-clock-opts-prev-with-time ((prev org-rl-clock)
-                                                (next org-rl-clock))
+                                                (next org-rl-clock)
+                                                maxtimelen
+                                                resume
+                                                fail-quietly
+                                                resume-clocks)
   ;; (org-rl-debug nil :debug "calling org-rl-clock-opts-prev-with-time")
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
@@ -635,7 +645,11 @@
       'include-in-prev))))
 
 (cl-defmethod org-rl-clock-opts-next ((prev org-rl-clock)
-                                      (next org-rl-clock))
+                                      (next org-rl-clock)
+                                      maxtimelen
+                                      resume
+                                      fail-quietly
+                                      resume-clocks)
   ;; (org-rl-debug nil :debug "calling org-rl-clock-opts-next")
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
@@ -655,7 +669,11 @@
        'cancel-next-p)))))
 
 (cl-defmethod org-rl-clock-opts-next-with-time ((prev org-rl-clock)
-                                                (next org-rl-clock))
+                                                (next org-rl-clock)
+                                                maxtimelen
+                                                resume
+                                                fail-quietly
+                                                resume-clocks)
   ;; (org-rl-debug nil :debug "calling org-rl-clock-opts-next-with-time")
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
@@ -771,7 +789,10 @@
 (when nil
   (cl-defmethod org-rl-clock-build-options-OLD ((prev org-rl-clock)
                                                 (next org-rl-clock)
-                                                maxtimelen)
+                                                maxtimelen
+                                                resume
+                                                fail-quietly
+                                                resume-clocks)
     (org-rl-debug nil "org-rl-clock-build-options: prev[%s] next[%s] maxtimelen[%d] secs"
                   (org-rl-format-clock prev)
                   (org-rl-format-clock next)
@@ -788,7 +809,10 @@
 
 (cl-defmethod org-rl-clock-build-options ((prev org-rl-clock)
                                           (next org-rl-clock)
-                                          maxtimelen)
+                                          maxtimelen
+                                          resume
+                                          fail-quietly
+                                          resume-clocks)
   (org-rl-debug nil "org-rl-clock-build-options: prev[%s] next[%s] maxtimelen[%d] secs"
                 (org-rl-format-clock prev)
                 (org-rl-format-clock next)

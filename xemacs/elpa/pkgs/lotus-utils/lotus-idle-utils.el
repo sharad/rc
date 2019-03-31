@@ -75,6 +75,15 @@
     (add-function
      :override (symbol-function  'select-frame-set-input-focus)
      #'quiet--select-frame)))
+
+(defmacro with-select-frame-set-input-disable-raise (&rest body)
+  `(unwind-protect
+       (progn
+         (select-frame-set-input-disable-raise)
+         (progn
+           ,@body))
+     (select-frame-set-input-enable-raise)))
+(put 'with-select-frame-set-input-disable-raise 'lisp-indent-function 0)
 
 
 (defmacro with-pre-command (&rest body)
