@@ -225,7 +225,8 @@
                                                 fail-quietly
                                                 resume-clocks)
   (org-rl-debug nil "org-rl-clock-time-process-option: begin")
-  (let* ((clocks
+  (let* ((opt (car opt))
+         (clocks
           (cond
            ((eq opt 'jump-prev-p)
             ;; finish here
