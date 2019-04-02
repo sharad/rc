@@ -799,15 +799,22 @@
                   (org-rl-format-clock prev)
                   (org-rl-format-clock next)
                   maxtimelen)
-    (append
-     (append
-      (org-rl-clock-opts-prev prev next)
-      (unless (zerop maxtimelen) (org-rl-clock-opts-prev-with-time prev next)))
-     (append
-      (org-rl-clock-opts-next prev next)
-      (unless (zerop maxtimelen) (org-rl-clock-opts-next-with-time prev next)))
-     (unless (zerop maxtimelen) (org-rl-clock-opts-common-with-time prev next))
-     (org-rl-clock-opts-common prev next))))
+
+    (let ((args (list prev
+                      next
+                      maxtimelen
+                      resume
+                      fail-quietly
+                      resume-clocks)))
+      (append
+       (append
+        (apply #'org-rl-clock-opts-prev args)
+        (unless (zerop maxtimelen) (apply #'org-rl-clock-opts-prev-with-time args)))
+       (append
+        (apply #'org-rl-clock-opts-next args)
+        (unless (zerop maxtimelen) (apply #'org-rl-clock-opts-next-with-time args)))
+       (unless (zerop maxtimelen) (apply #'org-rl-clock-opts-common-with-time args))
+       (apply #'org-rl-clock-opts-common args)))))
 
 (cl-defmethod org-rl-clock-build-options ((prev org-rl-clock)
                                           (next org-rl-clock)
@@ -820,25 +827,30 @@
                 (org-rl-format-clock next)
                 maxtimelen)
 
-  (let((args (list prev next maxtimelen resume fail-quietly resume-clocks))
-       (options
-        (append
-         (if (org-rl-clock-null next)
-             (append
-              (org-rl-clock-opts-prev-with-time prev next nextmaxtimelen)
-              (org-rl-clock-opts-next-with-time prev next maxtimelen)
-              (unless (zerop maxtimelen)
-                (org-rl-clock-opts-common-with-time prev nextmaxtimelen))
-              (org-rl-clock-opts-next prev next maxtimelen)
-              (org-rl-clock-opts-prev prev next maxtimelen))
-           (append
-            (org-rl-clock-opts-next-with-time prev next maxtimelen)
-            (org-rl-clock-opts-prev-with-time prev next maxtimelen)
-            (unless (zerop maxtimelen)
-              (org-rl-clock-opts-common-with-time prev next maxtimelen))
-            (org-rl-clock-opts-prev prev next maxtimelen)
-            (org-rl-clock-opts-next prev next maxtimelen)))
-         (org-rl-clock-opts-common prev next maxtimelen))))
+  (let ((args (list prev
+                    next
+                    maxtimelen
+                    resume
+                    fail-quietly
+                    resume-clocks))
+        (options
+         (append
+          (if (org-rl-clock-null next)
+              (append
+               (apply #'org-rl-clock-opts-prev-with-time args)
+               (apply #'org-rl-clock-opts-next-with-time args)
+               (unless (zerop maxtimelen)
+                 (apply #'org-rl-clock-opts-common-with-time args))
+               (apply #'org-rl-clock-opts-next args)
+               (apply #'org-rl-clock-opts-prev args))
+            (append
+             (apply #'org-rl-clock-opts-next-with-time args)
+             (apply #'org-rl-clock-opts-prev-with-time args)
+             (unless (zerop maxtimelen)
+               (apply #'org-rl-clock-opts-common-with-time args))
+             (apply #'org-rl-clock-opts-prev args)
+             (apply #'org-rl-clock-opts-next args)))
+          (apply #'org-rl-clock-opts-common args))))
     (mapcar
      #'(lambda (opt)
          (append
