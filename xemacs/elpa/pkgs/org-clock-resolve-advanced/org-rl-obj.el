@@ -579,9 +579,9 @@
 
 ;; TODO: Re-org here.
 
-(setq
- org-rl-clock-opts-common
- '(("Done" . done)))
+;; (setq
+;;  org-rl-clock-opts-common
+;;  '(("Done" . done)))
 
 (cl-defmethod org-rl-clock-opts-common ((prev org-rl-clock)
                                         (next org-rl-clock)
@@ -600,7 +600,7 @@
                                                   fail-quietly
                                                   resume-clocks)
   (let ((args
-         (list prev next maxtime resume fail-quietly resume-clocks)))
+         (list prev next maxtimelen resume fail-quietly resume-clocks)))
     (list
      (cons "Include in other" 'include-in-other))))
 
@@ -827,30 +827,30 @@
                 (org-rl-format-clock next)
                 maxtimelen)
 
-  (let ((args (list prev
-                    next
-                    maxtimelen
-                    resume
-                    fail-quietly
-                    resume-clocks))
-        (options
-         (append
-          (if (org-rl-clock-null next)
-              (append
-               (apply #'org-rl-clock-opts-prev-with-time args)
-               (apply #'org-rl-clock-opts-next-with-time args)
-               (unless (zerop maxtimelen)
-                 (apply #'org-rl-clock-opts-common-with-time args))
-               (apply #'org-rl-clock-opts-next args)
-               (apply #'org-rl-clock-opts-prev args))
-            (append
-             (apply #'org-rl-clock-opts-next-with-time args)
-             (apply #'org-rl-clock-opts-prev-with-time args)
-             (unless (zerop maxtimelen)
-               (apply #'org-rl-clock-opts-common-with-time args))
-             (apply #'org-rl-clock-opts-prev args)
-             (apply #'org-rl-clock-opts-next args)))
-          (apply #'org-rl-clock-opts-common args))))
+  (let* ((args (list prev
+                     next
+                     maxtimelen
+                     resume
+                     fail-quietly
+                     resume-clocks))
+         (options
+          (append
+           (if (org-rl-clock-null next)
+               (append
+                (apply #'org-rl-clock-opts-prev-with-time args)
+                (apply #'org-rl-clock-opts-next-with-time args)
+                (unless (zerop maxtimelen)
+                  (apply #'org-rl-clock-opts-common-with-time args))
+                (apply #'org-rl-clock-opts-next args)
+                (apply #'org-rl-clock-opts-prev args))
+             (append
+              (apply #'org-rl-clock-opts-next-with-time args)
+              (apply #'org-rl-clock-opts-prev-with-time args)
+              (unless (zerop maxtimelen)
+                (apply #'org-rl-clock-opts-common-with-time args))
+              (apply #'org-rl-clock-opts-prev args)
+              (apply #'org-rl-clock-opts-next args)))
+           (apply #'org-rl-clock-opts-common args))))
     (mapcar
      #'(lambda (opt)
          (append
@@ -891,19 +891,22 @@
 
 (defun helm-cand-sel ()
   (interactive)
-  (let ((retval (helm :sources '((name . "HELM")
-                                 (match (lambda (_candidate) t))
-                                 (candidates . (1 2 3 4))
-                                 (action . (("open" . (lambda (candidate)
-                                                        (list
-                                                         (when (minibufferp (current-buffer))
-                                                           (with-current-buffer "* Minibuffer 1"
-                                                             (minibuffer-contents-no-properties)))
+  (let ((retval
+         (helm :sources '((name . "HELM")
+                          (match (lambda (_candidate)
+                                   (lwarn 'test :warning "_candidate %s (helm-get-selection) %s" _candidate (helm-get-selection))
+                                   (evenp (string-to-number _candidate))))
+                          (candidates . (1 2 3 4))
+                          (action . (("open" . (lambda (candidate)
+                                                 (list
+                                                  (when (minibufferp (current-buffer))
+                                                    (with-current-buffer "* Minibuffer 1"
+                                                      (minibuffer-contents-no-properties)))
 
-                                                         (with-current-buffer "* Minibuffer 1"
-                                                           (minibuffer-contents-no-properties))
-                                                         candidate
-                                                         (helm-get-selection))))))))))
+                                                  (with-current-buffer "* Minibuffer 1"
+                                                    (minibuffer-contents-no-properties))
+                                                  candidate
+                                                  (helm-get-selection))))))))))
     (org-rl-debug nil "retval %s" retval)))
 
 ;;; org-rl-obj.el ends here

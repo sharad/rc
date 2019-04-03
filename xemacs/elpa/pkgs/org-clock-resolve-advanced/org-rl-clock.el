@@ -213,8 +213,8 @@
   (list
    (list prev next)
    (org-rl-get-resume-clocks resume-clocks resume-alist)))
-
 
+
 (cl-defmethod org-rl-clock-time-process-option ((prev org-rl-clock)
                                                 (next org-rl-clock)
                                                 opt

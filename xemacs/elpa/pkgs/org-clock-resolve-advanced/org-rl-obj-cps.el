@@ -98,22 +98,25 @@
          (next (org-rl-make-clock 'imaginary 'now 'now))
          (maxtimelen (org-rl-get-time-gap prev next)))
     (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-        ;; (let ((maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
-        ;;       (options (org-rl-clock-build-options prev next maxtimelen)))
-        ;;   (progn
-        ;;     (org-rl-clock-cps-read-option
-        ;;      org-rl-read-interval
-        ;;      #'(lambda ()
-        ;;          (let ((maxtimelen-mins (funcall maxtimelen-mins-fn)))
-        ;;            (if debug-prompt
-        ;;              (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen-mins)
-        ;;              (format "Select option [%d]: " maxtimelen-mins))))
-        ;;      options
-        ;;      maxtimelen-mins-fn)))
-      (org-rl-clock-cps-resolve-time
-       (org-rl-make-clock marker start-time org-clock-user-idle-start t)
-       (org-rl-make-clock 'imaginary 'now 'now))
+        (let ((maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
+              (options (org-rl-clock-build-options prev next maxtimelen nil nil nil)))
+          (progn
+            (message "options %s" options)
+            (org-rl-clock-cps-read-option
+             org-rl-read-interval
+             #'(lambda ()
+                 (let ((maxtimelen-mins (funcall maxtimelen-mins-fn)))
+                   (if debug-prompt
+                     (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen-mins)
+                     (format "Select option [%d]: " maxtimelen-mins))))
+             options
+             maxtimelen-mins-fn)))
+
+      ;; (org-rl-clock-cps-resolve-time
+      ;;  (org-rl-make-clock marker start-time org-clock-user-idle-start t)
+      ;;  (org-rl-make-clock 'imaginary 'now 'now))
       (when t
+        (message "options %s" "x")
         (org-rl-debug nil "Idle time now min[%d] sec[%d]"
                       (/ org-clock-user-idle-seconds 60)
                       (% org-clock-user-idle-seconds 60))))))
@@ -159,14 +162,15 @@
         (let* ((maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
                ;; (options (org-rl-clock-build-options prev next maxtimelen))
                (options (org-rl-clock-build-options prev next maxtimelen resume fail-quietly resume-clocks))
+               (ret (message "org-rl-clock-cps-resolve-time: options %s" options))
                (opt
                 (org-rl-clock-cps-read-option
                  org-rl-read-interval
                  #'(lambda ()
                      (let ((maxtimelen-mins (funcall maxtimelen-mins-fn)))
                        (if debug-prompt
-                           (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen-mins)
-                         (format "Select option [%d]: " maxtimelen-mins))))
+                           (format "%s Select XX option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen-mins)
+                         (format "Select XX option [%d]: " maxtimelen-mins))))
                  options
                  maxtimelen-mins-fn))
                (timelen
@@ -199,7 +203,7 @@
                                                             fail-quietly
                                                             resume-clocks))
                          (resolve-clocks (nth 1 clocks))
-                         (resume-clocks (nth 2 clocks))
+                         (resume-clocks  (nth 2 clocks))
                          (prev (nth 0 resolve-clocks))
                          (next (nth 1 resolve-clocks)))
                     (org-rl-debug nil "(org-rl-clock-null prev) %s" (org-rl-clock-null prev))
@@ -261,7 +265,7 @@ so long."
                                      (seconds-to-time org-clock-user-idle-seconds)))
                      (org-clock-resolving-clocks-due-to-idleness t))
                 (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-                    (org-rl-clock-resolve-time
+                    (org-rl-clock-cps-resolve-time
                      (org-rl-make-clock marker start-time org-clock-user-idle-start t)
                      (org-rl-make-clock 'imaginary 'now 'now))
                   (when t
