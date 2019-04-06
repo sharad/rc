@@ -609,21 +609,23 @@ function setup_apt_repo()
 
 function setup_apt_upgrade_system()
 {
-    sudo apt -y clean
+    # sudo apt -y clean
     sudo apt -y autoremove
     sudo apt -y autoclean
     sudo apt -y update
     sudo apt-file update
-    sudo apt -y clean
+    # sudo apt -y clean
     sudo apt -y autoremove
     sudo apt -y autoclean
     sudo apt -y upgrade
-    sudo apt -y clean
+    # sudo apt -y clean
     sudo apt -y autoremove
     sudo apt -y autoclean
-    sudo apt -y clean
+    # sudo apt -y clean
     sudo apt -y autoremove
     sudo apt -y autoclean
+
+    sudo apt -y clean
 }
 
 function setup_apt_packages()
@@ -1223,7 +1225,8 @@ function setup_machine_dir()
         running setup_make_link $HOST ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default
         # debug SHARAD TEST
         debug running setup_make_relative_link ${LOCALDIRS_DIR}/org/deps.d  model.d/machine.d/default  control.d/machine.d/default
-        running setup_make_relative_link ${LOCALDIRS_DIR}/org/deps.d  model.d/machine.d/default  control.d/machine.d/default
+        # default can not be version controlled as used on different hosts.
+        # running setup_make_relative_link ${LOCALDIRS_DIR}/org/deps.d  model.d/machine.d/default  control.d/machine.d/default
     fi
 }
 
