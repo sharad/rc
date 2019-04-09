@@ -93,6 +93,12 @@ else
     ps >> ~/.logs/gitwatch.log
 fi
 
+
+
+
+# git annex
+git annex assistant --autostart
+
 __comp=login
 __subcomp=run
 
