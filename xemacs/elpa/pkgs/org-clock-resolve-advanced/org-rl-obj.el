@@ -687,8 +687,8 @@
             (format "Include in next %s" next-heading))
         (format "Subtract from prev %s" prev-heading))
       'include-in-next))))
-
 
+
 (defun time-get-rl-time (time)
   (cond
    ((eq time 'now)

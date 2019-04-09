@@ -1225,8 +1225,6 @@ function setup_machine_dir()
         running setup_make_link $HOST ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default
         # debug SHARAD TEST
         debug running setup_make_relative_link ${LOCALDIRS_DIR}/org/deps.d  model.d/machine.d/default  control.d/machine.d/default
-        # default can not be version controlled as used on different hosts.
-        # running setup_make_relative_link ${LOCALDIRS_DIR}/org/deps.d  model.d/machine.d/default  control.d/machine.d/default
     fi
 }
 
@@ -1591,7 +1589,6 @@ function setup_deps_mode_dir()
             mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST
 
             running setup_make_link $HOST ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default
-            # running setup_add_to_version_control ${LOCALDIRS_DIR} org/deps.d/model.d/machine.d/default
 
             running setup_make_relative_link ~/ "" ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/$HOST/home
             running setup_add_to_version_control ${LOCALDIRS_DIR} org/deps.d/model.d/machine.d/$HOST/home
@@ -1713,7 +1710,6 @@ function setup_deps_view_volumes_dirs()
     running setup_make_relative_link ${BASE_DIR}/${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/volumes.d  view.d/volumes.d
     running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} org/deps.d/view.d/volumes.d
 
-    running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default
 
 
     # check local home model.d directory
@@ -1725,7 +1721,6 @@ function setup_deps_view_volumes_dirs()
             mkdir -p ${BASE_DIR}/${LOCALDIRS_DIR}/${hostdir}
 
             running setup_make_link $HOST ${BASE_DIR}/${LOCALDIRS_DIR}/${machinedir}/default
-            running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} org/deps.d/model.d/machine.d/default
 
 
             if [ -d ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/model.d ]
