@@ -1974,6 +1974,15 @@ function setup_org_home_portable_public_dirs()
     echo '*' > ${LOCALDIRS_DIR}/${relhomeprotabledir}/tmp/.gitignore
     running setup_add_to_version_control ~/.fa/localdirs ${relhomeprotabledir}/tmp/.gitignore
 
+    # private
+    # Music Videos Pictures
+    collection=private
+    for folder in Music Videos Pictures
+    do
+        running setup_make_relative_link     ${RESOURCEPATH}  data/multimedia/orgs/$collection/media/collection/$folder ${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/$collection
+        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/$folder/$collection
+    done
+
 }
 
 function setup_org_home_portable_dirs()
