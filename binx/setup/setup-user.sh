@@ -904,6 +904,39 @@ function setup_git_tree_repo()
     fi
 }
 
+function setup_git_annex_repo()
+{
+    # if .git is plain file than make it symlink
+    local modulepath=$1
+    running setup_git_tree_repo "${gittreeurl}" "${treedir}"
+    if [ -e "${modulepath}/.git" ]
+    then
+        if [ ! -d ${modulepath}/.git ]
+        then
+            local modulegitpath="$(cat ${modulepath}/.git)"
+            rm -f ${modulepath}/.git
+            ln -s "${modulegitpath}" "${modulepath}/.git"
+        fi
+
+        modbasename="$(basename $modulepath)"
+        git -C ${modulepath} annex init "$modbasename on ${HOST}"
+    fi
+}
+
+function setup_git_tree_annex_repo()
+{
+    # if .git is plain file than make it symlink
+    local gittreeurl=$1
+    local treedir=$2
+    local module=$3
+    local modulepath=${treedir}/${module}
+    running setup_git_tree_repo "${gittreeurl}" "${treedir}"
+    if [ -d "${treedir}" ]
+    then
+        running setup_git_annex_repo "${modulepath}"
+    fi
+}
+
 function setup_git_repos()
 {
     # TODO [ISSUE] add code to handle upstream remote branch changes and merging to origin branch
@@ -912,12 +945,14 @@ function setup_git_repos()
     # USERORGMAIN="userorg/main"
 
     running setup_git_tree_repo git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
+    running setup_git_annex_repo ~/${RESOURCEPATH}/userorg/main/readwrite/public/user/doc/Library
 
-    if false                    # decide through command line arguments
+    if true                    # decide through command line arguments
     then
         running setup_git_tree_repo git@bitbucket.org:sh4r4d/docorg.git ~/${RESOURCEPATH}/info/doc/orgs/private/doc
 
         running setup_git_tree_repo git@bitbucket.org:sh4r4d/mediaorg.git ~/${RESOURCEPATH}/data/multimedia/orgs/private/media/
+        running setup_git_annex_repo ~/${RESOURCEPATH}/data/multimedia/orgs/private/media/collection
     fi
 }
 
