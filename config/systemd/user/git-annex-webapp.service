@@ -1,0 +1,11 @@
+
+
+[Unit]
+Description=git-annex webapp daemon
+
+[Service]
+ExecStart=/usr/bin/git-annex webapp
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
