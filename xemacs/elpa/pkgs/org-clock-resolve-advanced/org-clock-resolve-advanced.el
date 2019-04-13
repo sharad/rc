@@ -223,7 +223,6 @@ so long."
                              (% org-clock-user-idle-seconds 60))))))
           (org-rl-debug nil "Selected min[ = %d ] is more than mins-spent[ = %d ]" (/ idle-sec 60) mins-spent))
       (org-rl-debug nil "Not one min is spent with clock mins-spent = %d" mins-spent))))
-
 
 ;;;###autoload
 (defun org-clock-resolve-advanced-insinuate ()
