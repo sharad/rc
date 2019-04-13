@@ -507,7 +507,7 @@
         (add-hook *new-window-hook* #'focus-matched-window)))
 
     (enable-focus-window-match-rules))
-
+  
   (define-focus-window-match-rule
       "pinentry-gtk"
     :class "Gcr-prompter"
@@ -517,7 +517,13 @@
       "gnome-keyring"
     :class "Gcr-prompter"
     :instance  "gcr-prompter"
-    :title "Unlock Login Keyring"))
+    :title "Unlock Login Keyring")
+
+  (define-focus-window-match-rule
+      "ssh"
+    :class "Gcr-prompter"
+    :instance "gcr-prompter"
+    :title "pinentry-gnome3"))
 ;;;}}}
 
 
@@ -541,7 +547,8 @@
     (defun enable-show-win-prop-function ()
       (setf *new-window-hook*
             (append *new-window-hook* (list #'show-win-prop)))))
-  (disable-show-win-prop))
+  (disable-show-win-prop)
+  (enable-show-win-prop))
 ;;;}}}
 
 

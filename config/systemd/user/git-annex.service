@@ -1,9 +1,9 @@
-
 [Unit]
 Description=git-annex assistant daemon
 
 [Service]
 ExecStart=/usr/bin/git-annex assistant --autostart --foreground
+ExecStop=/usr/bin/git-annex assistant --autostop
 Restart=on-failure
 
 [Install]
