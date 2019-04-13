@@ -34,7 +34,7 @@
 (defvar org-clock-last-idle-start-time nil)
 
 (defun org-rl-resolve-clocks-if-idle ()
-  "Resolve all currently open Org clocks.
+  "Resolve all currently open Org clock.
 This is performed after `org-clock-idle-time' minutes, to check
 if the user really wants to stay clocked in after being idle for
 so long."

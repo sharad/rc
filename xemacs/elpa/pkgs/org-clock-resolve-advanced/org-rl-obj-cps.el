@@ -169,8 +169,8 @@
                  #'(lambda ()
                      (let ((maxtimelen-mins (funcall maxtimelen-mins-fn)))
                        (if debug-prompt
-                           (format "%s Select XX option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen-mins)
-                         (format "Select XX option [%d]: " maxtimelen-mins))))
+                           (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen-mins)
+                         (format "Select option [%d]: " maxtimelen-mins))))
                  options
                  maxtimelen-mins-fn))
                (timelen
