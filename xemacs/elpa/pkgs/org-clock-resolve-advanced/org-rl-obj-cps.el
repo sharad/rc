@@ -49,6 +49,40 @@
   ())
 
 
+(defun org-rl-clock-cps-process-option (prev next timelen maxtime resume fail-quietly resume-clocks)
+  (let ((maxtimelen (org-rl-get-time-gap prev next))) ;get maxtimelen time again
+    (if (<=
+         (abs timelen)
+         maxtimelen)
+        (let* ((clocks
+                (org-rl-clock-time-process-option prev next
+                                                  opt timelen
+                                                  maxtimelen
+                                                  resume
+                                                  fail-quietly
+                                                  resume-clocks))
+               (resolve-clocks (nth 1 clocks))
+               (resume-clocks  (nth 2 clocks))
+               (prev (nth 0 resolve-clocks))
+               (next (nth 1 resolve-clocks)))
+          (org-rl-debug nil "(org-rl-clock-null prev) %s" (org-rl-clock-null prev))
+          (org-rl-debug nil "(org-rl-clock-null next) %s" (org-rl-clock-null next))
+          (if (and
+               resolve-clocks
+               (not
+                (and
+                 (org-rl-clock-null prev)
+                 (org-rl-clock-null next)))
+               (> (org-rl-get-time-gap prev next) 0))
+              (org-rl-clock-cps-resolve-time prev next resume fail-quietly resume-clocks)
+            (if resume-clocks
+                (org-rl-clock-resume-clock resume-clocks))
+            (org-rl-debug nil "Error1")))
+      (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen))))
+
+(defun org-rl-clock-cps-process-helm-option (opt)
+  (apply org-rl-clock-cps-process-option option))
+
 (defun org-rl-helm-build-options (interval prompt-fn options-fn default-fn)
   (let ((name (if (functionp prompt-fn)
                   (funcall prompt-fn)
@@ -59,8 +93,8 @@
                   options-fn)
     :action (append
              (list
-              (cons "Select" #'identity)))
-    :action-transformer (lambda (actions candidate) (list (cons "select" #'identity))))))
+              (cons "Select" #'org-rl-clock-cps-process-helm-option)))
+    :action-transformer (lambda (actions candidate) (list (cons "select" #'org-rl-clock-cps-process-helm-option))))))
 
 (defun org-rl-clock-cps-read-option (interval prompt-fn options-fn default-fn)
   (let ((options (if (functionp options-fn) (funcall options-fn) options-fn)))
