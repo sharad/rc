@@ -36,6 +36,7 @@
 
 (defconst lotus-demo-packages
   '(
+    eev
     ;; (eev-all :location local)
     )
   "The list of Lisp packages required by the lotus-demo layer.
@@ -65,8 +66,25 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-demo/init-eev-all ()
+(defun lotus-demo/init-eev ()
   (use-package eev-all
+    :commands 'eev
+    :defer t
+    :config
+    (progn))
+
+
+  ;; Beginning of the eev block:
+  ;; See: (find-eev "eev-rctool" "new_block_emacs")
+  ;;      (find-eev-update-links)
+  ;;
+  (eev-mode 1))
+  ;;
+  ;; End of the eev block.
+
+(when nil
+  (defun lotus-demo/init-eev-all ()
+    (use-package eev-all
       :load-path "~/.xemacs/pkgrepos/world/misc/eev-current"
       :commands 'eev-mode
       :defer t
@@ -74,13 +92,13 @@ Each entry is either:
       (progn
         ))
 
-  ;; Beginning of the eev block:
-  ;; See: (find-eev "eev-rctool" "new_block_emacs")
-  ;;      (find-eev-update-links)
-  ;;
-  (eev-mode 1)
-  ;;
-  ;; End of the eev block.
+    ;; Beginning of the eev block:
+    ;; See: (find-eev "eev-rctool" "new_block_emacs")
+    ;;      (find-eev-update-links)
+    ;;
+    (eev-mode 1)
+    ;;
+    ;; End of the eev block.
+    )
   )
-
 ;;; packages.el ends here
