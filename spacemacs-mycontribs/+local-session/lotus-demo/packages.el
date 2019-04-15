@@ -67,38 +67,21 @@ Each entry is either:
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
 (defun lotus-demo/init-eev ()
-  (use-package eev-all
-    :commands 'eev
+  (use-package eev
     :defer t
     :config
     (progn))
 
+  (use-package eev-mode
+    :commands (eev-mode)
+    :defer t
+    :config
+    (progn))
 
   ;; Beginning of the eev block:
   ;; See: (find-eev "eev-rctool" "new_block_emacs")
   ;;      (find-eev-update-links)
   ;;
   (eev-mode 1))
-  ;;
-  ;; End of the eev block.
 
-(when nil
-  (defun lotus-demo/init-eev-all ()
-    (use-package eev-all
-      :load-path "~/.xemacs/pkgrepos/world/misc/eev-current"
-      :commands 'eev-mode
-      :defer t
-      :config
-      (progn
-        ))
-
-    ;; Beginning of the eev block:
-    ;; See: (find-eev "eev-rctool" "new_block_emacs")
-    ;;      (find-eev-update-links)
-    ;;
-    (eev-mode 1)
-    ;;
-    ;; End of the eev block.
-    )
-  )
 ;;; packages.el ends here
