@@ -287,7 +287,7 @@
 ;; NOTE: Remember here the concept of Positive and Negative and Full time.
 ;; Read time which could be positive or negative or full
 ;; TODO: option for restart also required for with active clock.
-(cl-defmethod org-rl-clock-resolve-time ((prev org-rl-clock)
+(cl-defmethod org-rl-clock-simple-resolve-time ((prev org-rl-clock)
                                          (next org-rl-clock)
                                          &optional
                                          resume
@@ -308,11 +308,11 @@
   (org-rl-clock-assert prev)
   (org-rl-clock-assert next)
 
-  (org-rl-debug nil "org-rl-clock-resolve-time: begin")
+  (org-rl-debug nil "org-rl-clock-simple-resolve-time: begin")
   (lotus-with-override-minibuffer-if
     (progn
-      (org-rl-debug nil "org-rl-clock-resolve-time: [minibuffer-body] lotus-with-override-minibuffer-if active minibuffer found aborting it."))
-    (org-rl-debug nil "org-rl-clock-resolve-time: [body] lotus-with-override-minibuffer-if")
+      (org-rl-debug nil "org-rl-clock-simple-resolve-time: [minibuffer-body] lotus-with-override-minibuffer-if active minibuffer found aborting it."))
+    (org-rl-debug nil "org-rl-clock-simple-resolve-time: [body] lotus-with-override-minibuffer-if")
     (let ((debug-prompt t)
           (maxtimelen (org-rl-get-time-gap prev next)))
       ;;;
@@ -320,7 +320,7 @@
       ;; Warning (org-rl-clock): You have selected opt subtract and timelen 9
       ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 5 5] with maxtimelen 0
       (org-rl-debug nil
-                    "org-rl-clock-resolve-time: going to run %s with maxtimelen %d"
+                    "org-rl-clock-simple-resolve-time: going to run %s with maxtimelen %d"
                     (org-rl-clock-time-adv-debug-prompt prev next) maxtimelen)
       ;; (assert (> maxtimelen 0))
       (when (> maxtimelen 0)
@@ -377,12 +377,12 @@
                          (org-rl-clock-null prev)
                          (org-rl-clock-null next)))
                        (> (org-rl-get-time-gap prev next) 0))
-                      (org-rl-clock-resolve-time prev next resume fail-quietly resume-clocks)
+                      (org-rl-clock-simple-resolve-time prev next resume fail-quietly resume-clocks)
                     (if resume-clocks
                         (org-rl-clock-resume-clock resume-clocks))
                     (org-rl-debug nil "Error1")))
               (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen)))))))
-  (org-rl-debug nil "org-rl-clock-resolve-time: finished"))
+  (org-rl-debug nil "org-rl-clock-simple-resolve-time: finished"))
 
 
 (defun org-rl-clock-clock-in-as-it-is (marker)

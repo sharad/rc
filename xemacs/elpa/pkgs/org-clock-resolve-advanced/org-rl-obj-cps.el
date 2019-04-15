@@ -45,10 +45,6 @@
         (read-number prompt default)))))
 
 
-(defun org-rl-helm-process-option (opt)
-  ())
-
-
 (defun org-rl-clock-cps-process-option (prev next timelen maxtime resume fail-quietly resume-clocks)
   (let ((maxtimelen (org-rl-get-time-gap prev next))) ;get maxtimelen time again
     (if (<=
@@ -81,7 +77,22 @@
       (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen))))
 
 (defun org-rl-clock-cps-process-helm-option (opt)
-  (apply org-rl-clock-cps-process-option option))
+  (let* ((prev (nth 1 opt))
+         (next (nth 2 opt))
+         (maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
+         (timelen
+          (org-rl-clock-read-timelen
+           org-rl-read-interval
+           #'(lambda ()
+               (let ((maxtimelen-mins (funcall maxtimelen-mins-fn)))
+                 (if debug-prompt
+                     (format "%s [%s] how many minutes? [%d] " (org-rl-clock-time-debug-prompt prev next) opt maxtimelen-mins)
+                   (format "[%s] how many minutes? [%d] " opt maxtimelen-mins))))
+           opt
+           maxtimelen-mins-fn)))
+    (apply org-rl-clock-cps-process-option option)))
+
+
 
 (defun org-rl-helm-build-options (interval prompt-fn options-fn default-fn)
   (let ((name (if (functionp prompt-fn)
@@ -118,42 +129,6 @@
                        'sacha/helm-org-create-tsk))
             helm-sources)
       (helm helm-sources))))
-
-(when nil
-  (let* ((debug-prompt t)
-         (marker org-clock-marker)
-         (start-time (org-clock-get-nth-half-clock-time marker 1))
-         (org-clock-user-idle-seconds (abs (* 7 60)))
-         (org-clock-user-idle-start
-          (time-subtract (current-time)
-                         (seconds-to-time org-clock-user-idle-seconds)))
-         (org-clock-resolving-clocks-due-to-idleness t)
-         (prev (org-rl-make-clock marker start-time org-clock-user-idle-start t))
-         (next (org-rl-make-clock 'imaginary 'now 'now))
-         (maxtimelen (org-rl-get-time-gap prev next)))
-    (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-        (let ((maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
-              (options (org-rl-clock-build-options prev next maxtimelen nil nil nil)))
-          (progn
-            (message "options %s" options)
-            (org-rl-clock-cps-read-option
-             org-rl-read-interval
-             #'(lambda ()
-                 (let ((maxtimelen-mins (funcall maxtimelen-mins-fn)))
-                   (if debug-prompt
-                     (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen-mins)
-                     (format "Select option [%d]: " maxtimelen-mins))))
-             options
-             maxtimelen-mins-fn)))
-
-      ;; (org-rl-clock-cps-resolve-time
-      ;;  (org-rl-make-clock marker start-time org-clock-user-idle-start t)
-      ;;  (org-rl-make-clock 'imaginary 'now 'now))
-      (when t
-        (message "options %s" "x")
-        (org-rl-debug nil "Idle time now min[%d] sec[%d]"
-                      (/ org-clock-user-idle-seconds 60)
-                      (% org-clock-user-idle-seconds 60))))))
 
 
 (cl-defmethod org-rl-clock-cps-resolve-time ((prev org-rl-clock)
@@ -177,11 +152,11 @@
   (org-rl-clock-assert prev)
   (org-rl-clock-assert next)
 
-  (org-rl-debug nil "org-rl-clock-resolve-time: begin")
+  (org-rl-debug nil "org-rl-clock-cps-resolve-time: begin")
   (lotus-with-override-minibuffer-if
       (progn
-        (org-rl-debug nil "org-rl-clock-resolve-time: [minibuffer-body] lotus-with-override-minibuffer-if active minibuffer found aborting it."))
-    (org-rl-debug nil "org-rl-clock-resolve-time: [body] lotus-with-override-minibuffer-if")
+        (org-rl-debug nil "org-rl-clock-cps-resolve-time: [minibuffer-body] lotus-with-override-minibuffer-if active minibuffer found aborting it."))
+    (org-rl-debug nil "org-rl-clock-cps-resolve-time: [body] lotus-with-override-minibuffer-if")
     (let ((debug-prompt t)
           (maxtimelen (org-rl-get-time-gap prev next)))
       ;;;
@@ -189,7 +164,7 @@
       ;; Warning (org-rl-clock): You have selected opt subtract and timelen 9
       ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 5 5] with maxtimelen 0
       (org-rl-debug nil
-                    "org-rl-clock-resolve-time: going to run %s with maxtimelen %d"
+                    "org-rl-clock-cps-resolve-time: going to run %s with maxtimelen %d"
                     (org-rl-clock-time-adv-debug-prompt prev next) maxtimelen)
       ;; (assert (> maxtimelen 0))
       (when (> maxtimelen 0)
@@ -206,55 +181,17 @@
                            (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen-mins)
                          (format "Select option [%d]: " maxtimelen-mins))))
                  options
-                 maxtimelen-mins-fn))
-               (timelen
-                (org-rl-clock-read-timelen
-                 org-rl-read-interval
-                 #'(lambda ()
-                     (let ((maxtimelen-mins (funcall maxtimelen-mins-fn)))
-                       (if debug-prompt
-                           (format "%s [%s] how many minutes? [%d] " (org-rl-clock-time-debug-prompt prev next) opt maxtimelen-mins)
-                         (format "[%s] how many minutes? [%d] " opt maxtimelen-mins))))
-                 opt
                  maxtimelen-mins-fn)))
+
           ;; (barely-started-p (< (- (float-time last-valid)
           ;;                         (float-time (cdr clock))) 45))
           ;; (start-over-p (and subtractp barely-started-p))
           ;; cancel prev and add to time
 
 
-          (org-rl-debug nil "You have selected opt %s and timelen %d" opt timelen)
-          (when nil
-            (let ((maxtimelen (org-rl-get-time-gap prev next))) ;get maxtimelen time again
-              (if (<=
-                   (abs timelen)
-                   maxtimelen)
-                  (let* ((clocks
-                          (org-rl-clock-time-process-option prev next
-                                                            opt timelen
-                                                            maxtimelen
-                                                            resume
-                                                            fail-quietly
-                                                            resume-clocks))
-                         (resolve-clocks (nth 1 clocks))
-                         (resume-clocks  (nth 2 clocks))
-                         (prev (nth 0 resolve-clocks))
-                         (next (nth 1 resolve-clocks)))
-                    (org-rl-debug nil "(org-rl-clock-null prev) %s" (org-rl-clock-null prev))
-                    (org-rl-debug nil "(org-rl-clock-null next) %s" (org-rl-clock-null next))
-                    (if (and
-                         resolve-clocks
-                         (not
-                          (and
-                           (org-rl-clock-null prev)
-                           (org-rl-clock-null next)))
-                         (> (org-rl-get-time-gap prev next) 0))
-                        (org-rl-clock-cps-resolve-time prev next resume fail-quietly resume-clocks)
-                      (if resume-clocks
-                          (org-rl-clock-resume-clock resume-clocks))
-                      (org-rl-debug nil "Error1")))
-                (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen))))))))
-  (org-rl-debug nil "org-rl-clock-resolve-time: finished"))
+          (org-rl-debug nil "You have selected opt %s and timelen %d" opt timelen)))))
+
+  (org-rl-debug nil "org-rl-clock-cps-resolve-time: finished"))
 
 
 
@@ -309,4 +246,45 @@ so long."
           (org-rl-debug nil "Selected min[ = %d ] is more than mins-spent[ = %d ]" (/ idle-sec 60) mins-spent))
       (org-rl-debug nil "Not one min is spent with clock mins-spent = %d" mins-spent))))
 
+
+
+
+
+
+
+(when nil
+  (let* ((debug-prompt t)
+         (marker org-clock-marker)
+         (start-time (org-clock-get-nth-half-clock-time marker 1))
+         (org-clock-user-idle-seconds (abs (* 7 60)))
+         (org-clock-user-idle-start
+          (time-subtract (current-time)
+                         (seconds-to-time org-clock-user-idle-seconds)))
+         (org-clock-resolving-clocks-due-to-idleness t)
+         (prev (org-rl-make-clock marker start-time org-clock-user-idle-start t))
+         (next (org-rl-make-clock 'imaginary 'now 'now))
+         (maxtimelen (org-rl-get-time-gap prev next)))
+    (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
+        (let ((maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
+              (options (org-rl-clock-build-options prev next maxtimelen nil nil nil)))
+          (progn
+            (message "options %s" options)
+            (org-rl-clock-cps-read-option
+             org-rl-read-interval
+             #'(lambda ()
+                 (let ((maxtimelen-mins (funcall maxtimelen-mins-fn)))
+                   (if debug-prompt
+                     (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen-mins)
+                     (format "Select option [%d]: " maxtimelen-mins))))
+             options
+             maxtimelen-mins-fn)))
+
+      ;; (org-rl-clock-cps-resolve-time
+      ;;  (org-rl-make-clock marker start-time org-clock-user-idle-start t)
+      ;;  (org-rl-make-clock 'imaginary 'now 'now))
+      (when t
+        (message "options %s" "x")
+        (org-rl-debug nil "Idle time now min[%d] sec[%d]"
+                      (/ org-clock-user-idle-seconds 60)
+                      (% org-clock-user-idle-seconds 60))))))
 ;;; org-rl-obj-cps.el ends here

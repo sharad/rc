@@ -30,6 +30,9 @@
 (require 'org-rl-clock)
 
 
+
+(defvar org-rl-clock-resolve-time #'org-rl-clock-cps-resolve-time "org clock resolver.")
+
 ;;;###autoload
 (defvar org-clock-last-idle-start-time nil)
 
@@ -78,7 +81,7 @@ so long."
               (setq org-clock-last-idle-start-time org-clock-user-idle-start)
 
               (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-                  (org-rl-clock-resolve-time
+                  (funcall org-rl-clock-resolve-time
                    (org-rl-make-clock org-clock-marker
                                       org-clock-start-time
                                       org-clock-user-idle-start
@@ -145,7 +148,7 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
             (let ((dangling (or (not (org-clock-is-active))
                                 (/= (car clock) org-clock-marker))))
               (when (or (not only-dangling-p) dangling)
-                (org-rl-clock-resolve-time
+                (funcall org-rl-clock-resolve-time
                  (org-rl-make-clock (car clock) (cdr clock) (cdr clock))
                  (org-rl-make-clock 'imaginary 'now 'now)
                  nil nil nil))))))))) ;TODO: should not be now ?
@@ -157,7 +160,7 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
 (defun org-clock-resolve-clocks (clocks) ;TODO
   (let ((next (pop clocks))
         (prev (pop clocks)))
-    (org-rl-clock-resolve-time next prev)))
+    (funcall org-rl-clock-resolve-time next prev)))
 
 
 (defun org-rl-first-clock-started-mins (marker)
@@ -214,7 +217,7 @@ so long."
                                      (seconds-to-time org-clock-user-idle-seconds)))
                      (org-clock-resolving-clocks-due-to-idleness t))
                 (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-                    (org-rl-clock-resolve-time
+                    (funcall org-rl-clock-resolve-time
                      (org-rl-make-clock marker start-time org-clock-user-idle-start t)
                      (org-rl-make-clock 'imaginary 'now 'now))
                   (when t
