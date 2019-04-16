@@ -393,12 +393,4 @@
         (org-rl-straight-org-clock-clock-in (list marker start) nil start)
       (error "start is null."))))
 
-
-
-(when nil
- (org-rl-clock-build-options
-  (org-rl-make-clock org-clock-marker 'now 'now)
-  (org-rl-make-clock 'imaginary 'now 'now)
-  10))
-
 ;;; org-rl-clock.el ends here

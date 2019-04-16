@@ -82,7 +82,7 @@
       (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen))))
 
 (defun org-rl-clock-cps-process-helm-option (option)
-  (org-rl-debug :warning "started org-rl-clock-cps-process-helm-option opt: %s" opt)
+  (org-rl-debug :warning "started org-rl-clock-cps-process-helm-option opt: %s" option)
   (let* ((debug-prompt t)
          (opt           (nth 0 option))
          (prev          (nth 1 option))
@@ -170,17 +170,11 @@
     (org-rl-debug nil "org-rl-clock-cps-resolve-time: [body] lotus-with-override-minibuffer-if")
     (let ((debug-prompt t)
           (maxtimelen (org-rl-get-time-gap prev next)))
-      ;;;
-      ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 10 5] with maxtimelen 5
-      ;; Warning (org-rl-clock): You have selected opt subtract and timelen 9
-      ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 5 5] with maxtimelen 0
       (org-rl-debug nil
                     "org-rl-clock-cps-resolve-time: going to run %s with maxtimelen %d"
                     (org-rl-clock-time-adv-debug-prompt prev next) maxtimelen)
-      ;; (assert (> maxtimelen 0))
       (when (> maxtimelen 0)
         (let* ((maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
-               ;; (options (org-rl-clock-build-options prev next maxtimelen))
                (options (org-rl-clock-build-options prev next maxtimelen resume fail-quietly resume-clocks))
                (ret (message "org-rl-clock-cps-resolve-time: options %s" options))
                (opt
@@ -192,7 +186,7 @@
                            (format "%s Select option [%d]: " (org-rl-clock-time-debug-prompt prev next) maxtimelen-mins)
                          (format "Select option [%d]: " maxtimelen-mins))))
                  options
-                 maxtimelen-mins-fn)))
+                 maxtimelen-mins-fn)))))))
 
           ;; (barely-started-p (< (- (float-time last-valid)
           ;;                         (float-time (cdr clock))) 45))
@@ -200,7 +194,8 @@
           ;; cancel prev and add to time
 
 
-          (org-rl-debug nil "You have selected opt %s and timelen %d" opt timelen)))))
+          ;; (org-rl-debug nil "You have selected opt %s and timelen %d" opt timelen)
+
 
   (org-rl-debug nil "org-rl-clock-cps-resolve-time: finished"))
 
