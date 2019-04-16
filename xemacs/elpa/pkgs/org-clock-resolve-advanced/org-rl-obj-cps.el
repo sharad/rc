@@ -49,7 +49,7 @@
         (read-number prompt default)))))
 
 
-(defun org-rl-clock-cps-process-option (prev next timelen maxtime resume fail-quietly resume-clocks)
+(defun org-rl-clock-cps-process-option (timelen opt prev next maxtime resume fail-quietly resume-clocks)
   (org-rl-debug :warning "started org-rl-clock-cps-process-option")
   (let ((maxtimelen (org-rl-get-time-gap prev next))) ;get maxtimelen time again
     (if (<=
@@ -90,13 +90,14 @@
 
 (defun org-rl-clock-cps-process-helm-option (opt)
   (org-rl-debug :warning "started org-rl-clock-cps-process-helm-option opt: %s" opt)
-  (let* ((option        (nth 0 opt))
-         (prev          (nth 1 option))
-         (next          (nth 2 option))
-         (maxtimelen    (nth 3 option))
-         (resume        (nth 4 option))
-         (fail-quietly  (nth 5 option))
-         (resume-clocks (nth 6 option))
+  (let* ((debug-prompt t)
+         (option        (nth 0 opt))
+         (prev          (nth 1 opt))
+         (next          (nth 2 opt))
+         ;; (maxtime       (nth 3 opt))
+         ;; (resume        (nth 4 opt))
+         ;; (fail-quietly  (nth 5 opt))
+         ;; (resume-clocks (nth 6 opt))
          (maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
          (timelen
           (org-rl-clock-read-timelen
@@ -109,7 +110,7 @@
            opt
            maxtimelen-mins-fn)))
     (org-rl-debug :warning "in org-rl-clock-cps-process-helm-option")
-    (org-rl-clock-cps-process-option prev next timelen maxtime resume fail-quietly resume-clocks)))
+    (apply #'org-rl-clock-cps-process-option timelen opt)))
 
 (defun org-rl-helm-build-options (interval prompt-fn options-fn default-fn)
   (let ((name (if (functionp prompt-fn)
