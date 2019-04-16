@@ -225,8 +225,7 @@
                                                 fail-quietly
                                                 resume-clocks)
   (org-rl-debug nil "org-rl-clock-time-process-option: begin")
-  (let* (;; (opt (car opt))
-         (clocks
+  (let* ((clocks
           (cond
            ((eq opt 'jump-prev-p)
             ;; finish here
@@ -288,11 +287,11 @@
 ;; Read time which could be positive or negative or full
 ;; TODO: option for restart also required for with active clock.
 (cl-defmethod org-rl-clock-simple-resolve-time ((prev org-rl-clock)
-                                         (next org-rl-clock)
-                                         &optional
-                                         resume
-                                         fail-quietly
-                                         resume-clocks)
+                                                (next org-rl-clock)
+                                                &optional
+                                                resume
+                                                fail-quietly
+                                                resume-clocks)
   "Read time which could be positive or negative or full"
   ;; BUG how to handle current time == 'now
   ;; BUG how to handle when prev == next
@@ -310,8 +309,8 @@
 
   (org-rl-debug nil "org-rl-clock-simple-resolve-time: begin")
   (lotus-with-override-minibuffer-if
-    (progn
-      (org-rl-debug nil "org-rl-clock-simple-resolve-time: [minibuffer-body] lotus-with-override-minibuffer-if active minibuffer found aborting it."))
+      (progn
+        (org-rl-debug nil "org-rl-clock-simple-resolve-time: [minibuffer-body] lotus-with-override-minibuffer-if active minibuffer found aborting it."))
     (org-rl-debug nil "org-rl-clock-simple-resolve-time: [body] lotus-with-override-minibuffer-if")
     (let ((debug-prompt t)
           (maxtimelen (org-rl-get-time-gap prev next)))
@@ -325,8 +324,8 @@
       ;; (assert (> maxtimelen 0))
       (when (> maxtimelen 0)
         (let* ((maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
-               (options (org-rl-clock-build-options prev next maxtimelen resume fail-quietly resume-clocks))
-               (opt
+               (options (org-rl-clock-build-options prev next maxtimelen resume fail-quiete-clocks))
+               (option
                 (org-rl-clock-read-option
                  org-rl-read-interval
                  #'(lambda ()
@@ -336,6 +335,7 @@
                          (format "Select option [%d]: " maxtimelen-mins))))
                  options
                  maxtimelen-mins-fn))
+               (opt (car option))
                (timelen
                 (org-rl-clock-read-timelen
                  org-rl-read-interval

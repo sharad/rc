@@ -88,12 +88,12 @@
 ;; [cl-struct-org-rl-clock nil [cl-struct-org-rl-time now nil]
 ;; [cl-struct-org-rl-time now nil] nil nil] 310 ask nil t)
 
-(defun org-rl-clock-cps-process-helm-option (opt)
+(defun org-rl-clock-cps-process-helm-option (option)
   (org-rl-debug :warning "started org-rl-clock-cps-process-helm-option opt: %s" opt)
   (let* ((debug-prompt t)
-         (option        (nth 0 opt))
-         (prev          (nth 1 opt))
-         (next          (nth 2 opt))
+         (opt           (nth 0 option))
+         (prev          (nth 1 option))
+         (next          (nth 2 option))
          ;; (maxtime       (nth 3 opt))
          ;; (resume        (nth 4 opt))
          ;; (fail-quietly  (nth 5 opt))
@@ -110,7 +110,7 @@
            opt
            maxtimelen-mins-fn)))
     (org-rl-debug :warning "in org-rl-clock-cps-process-helm-option")
-    (apply #'org-rl-clock-cps-process-option timelen opt)))
+    (apply #'org-rl-clock-cps-process-option timelen option)))
 
 (defun org-rl-helm-build-options (interval prompt-fn options-fn default-fn)
   (let ((name (if (functionp prompt-fn)

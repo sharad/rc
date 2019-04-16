@@ -876,7 +876,7 @@
         (maxtimelen (if (functionp maxtimelen-fn) (funcall maxtimelen-fn) maxtimelen-fn)))
     (if (or
          (zerop maxtimelen)
-         (memq (car option)
+         (memq option
                '(done
                  cancel-next-p
                  cancel-prev-p)))
