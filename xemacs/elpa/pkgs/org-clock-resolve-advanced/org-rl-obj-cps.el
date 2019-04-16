@@ -81,13 +81,6 @@
             (org-rl-debug nil "Error1")))
       (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen))))
 
-;; started org-rl-clock-cps-process-helm-option opt: (include-in-next
-;; [cl-struct-org-rl-clock #<marker at 458326 in Unnamed.org>
-;; [cl-struct-org-rl-time (23733 35705 565819 532000) nil]
-;; [cl-struct-org-rl-time (23733 35963 409279 4001) nil] t nil]
-;; [cl-struct-org-rl-clock nil [cl-struct-org-rl-time now nil]
-;; [cl-struct-org-rl-time now nil] nil nil] 310 ask nil t)
-
 (defun org-rl-clock-cps-process-helm-option (option)
   (org-rl-debug :warning "started org-rl-clock-cps-process-helm-option opt: %s" opt)
   (let* ((debug-prompt t)
