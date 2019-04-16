@@ -28,6 +28,7 @@
 
 
 (require 'org-rl-clock)
+(require 'org-rl-obj-cps)
 
 
 
