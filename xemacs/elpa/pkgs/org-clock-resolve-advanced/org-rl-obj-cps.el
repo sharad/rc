@@ -91,12 +91,12 @@
 (defun org-rl-clock-cps-process-helm-option (opt)
   (org-rl-debug :warning "started org-rl-clock-cps-process-helm-option opt: %s" opt)
   (let* ((option        (nth 0 opt))
-         (prev          (nth 1 options))
-         (next          (nth 2 options))
-         (maxtimelen    (nth 3 options))
-         (resume        (nth 4 options))
-         (fail-quietly  (nth 5 options))
-         (resume-clocks (nth 6 options))
+         (prev          (nth 1 option))
+         (next          (nth 2 option))
+         (maxtimelen    (nth 3 option))
+         (resume        (nth 4 option))
+         (fail-quietly  (nth 5 option))
+         (resume-clocks (nth 6 option))
          (maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
          (timelen
           (org-rl-clock-read-timelen

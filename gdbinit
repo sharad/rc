@@ -9,6 +9,7 @@ set history filename ~/.gdb_history
 set history save
 set history save on
 set history size 10000
+set print pretty on
 
 # from http://www.ibm.com/developerworks/aix/library/au-gdb.html
 
