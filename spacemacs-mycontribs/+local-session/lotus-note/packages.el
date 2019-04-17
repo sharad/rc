@@ -31,14 +31,15 @@
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-noteS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-note-packages
   '(
     deft
-    (evernote-mode :location local)
-    dbus)
+    evernote-mode
+    dbus
+    ein)
   "The list of Lisp packages required by the lotus-note layer.
 
 Each entry is either:
@@ -150,13 +151,27 @@ Each entry is either:
             (use-package "org"
               :defer t
               :config
-          ;; from: http://lists.gnu.org/archive/html/emacs-orgmode/2009-05/msg00253.html
-          (org-add-link-type "tomboy" 'org-tomboy-open)
+              ;; from: http://lists.gnu.org/archive/html/emacs-orgmode/2009-05/msg00253.html
+              (org-add-link-type "tomboy" 'org-tomboy-open)
 
-          (defun org-tomboy-open (note)
-            (let ((outbuf (get-buffer-create "*Org Shell Output*"))
-                  (cmd (concat "tomboy --open-note " (shell-quote-argument note) " &")))
-              (with-current-buffer outbuf (erase-buffer))
-              (shell-command cmd outbuf outbuf))))))))))
+              (defun org-tomboy-open (note)
+                (let ((outbuf (get-buffer-create "*Org Shell Output*"))
+                      (cmd (concat "tomboy --open-note " (shell-quote-argument note) " &")))
+                  (with-current-buffer outbuf (erase-buffer))
+                  (shell-command cmd outbuf outbuf))))))))))
+
+(defun lotus-note/post-init-ein ()
+  (use-package ein-notification
+    :defer t
+    :command (ein:header-line-setup-maybe)
+    :config
+    (progn
+      ))
+
+  (use-package ein-ac
+    :defer t
+    :command (ein:ac-setup ein:ac-setup-maybe)
+    :config
+    (progn)))
 
 ;;; packages.el ends here

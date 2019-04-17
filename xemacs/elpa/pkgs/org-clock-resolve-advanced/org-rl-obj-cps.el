@@ -31,22 +31,22 @@
 (require 'org-rl-clock)
 
 
-(defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
-  (with-select-frame-set-input-disable-raise
-    (with-timeout (interval
-                   (time-aware-completing-read interval prompt-fn options-fn default-fn))
-      (let ((prompt  (if (functionp prompt-fn)  (funcall prompt-fn) prompt-fn))
-            (options (if (functionp options-fn) (funcall options-fn) options-fn))
-            (default (if (functionp default-fn) (funcall default-fn) default-fn)))
-        (completing-read prompt options)))))
+;; (defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
+;;   (with-select-frame-set-input-disable-raise
+;;     (with-timeout (interval
+;;                    (time-aware-completing-read interval prompt-fn options-fn default-fn))
+;;       (let ((prompt  (if (functionp prompt-fn)  (funcall prompt-fn) prompt-fn))
+;;             (options (if (functionp options-fn) (funcall options-fn) options-fn))
+;;             (default (if (functionp default-fn) (funcall default-fn) default-fn)))
+;;         (completing-read prompt options)))))
 
-(defun time-aware-read-number (interval prompt-fn default-fn)
-  (with-select-frame-set-input-disable-raise
-    (with-timeout (interval
-                   (time-aware-read-number interval prompt-fn default-fn))
-      (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
-            (default (if (functionp default-fn) (funcall default-fn) default-fn)))
-        (read-number prompt default)))))
+;; (defun time-aware-read-number (interval prompt-fn default-fn)
+;;   (with-select-frame-set-input-disable-raise
+;;     (with-timeout (interval
+;;                    (time-aware-read-number interval prompt-fn default-fn))
+;;       (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
+;;             (default (if (functionp default-fn) (funcall default-fn) default-fn)))
+;;         (read-number prompt default)))))
 
 
 (defun org-rl-clock-cps-process-option (timelen opt prev next maxtime resume fail-quietly resume-clocks)
@@ -118,13 +118,13 @@
     :action-transformer #'(lambda (actions candidate)
                             (list (cons "select" #'org-rl-clock-cps-process-helm-option))))))
 
-(defun org-rl-clock-cps-read-option (interval prompt-fn options-fn default-fn)
-  (let ((options (if (functionp options-fn) (funcall options-fn) options-fn)))
-    (cdr
-     (assoc
-      (helm
-       interval prompt-fn options-fn)
-      options))))
+;; (defun org-rl-clock-cps-read-option (interval prompt-fn options-fn default-fn)
+;;   (let ((options (if (functionp options-fn) (funcall options-fn) options-fn)))
+;;     (cdr
+;;      (assoc
+;;       (helm
+;;        interval prompt-fn options-fn)
+;;       options))))
 
 (defun org-rl-clock-cps-read-option (interval prompt-fn options-fn default-fn)
   (let ((options (if (functionp options-fn) (funcall options-fn) options-fn))
