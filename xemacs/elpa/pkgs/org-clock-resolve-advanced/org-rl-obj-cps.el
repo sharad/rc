@@ -50,7 +50,7 @@
 
 
 (defun org-rl-clock-cps-process-option (timelen opt prev next maxtime resume fail-quietly resume-clocks)
-  (org-rl-debug :warning "started org-rl-clock-cps-process-option")
+  (org-rl-debug :warning "started org-rl-clock-cps-process-option selected opt=%s" opt)
   (let ((maxtimelen (org-rl-get-time-gap prev next))) ;get maxtimelen time again
     (if (<=
          (abs timelen)
@@ -76,7 +76,7 @@
                  (org-rl-clock-null next)))
                (> (org-rl-get-time-gap prev next) 0))
               (org-rl-clock-cps-resolve-time prev next resume fail-quietly resume-clocks)
-            (if resume-clocks
+            (if resume
                 (org-rl-clock-resume-clock resume-clocks))
             (org-rl-debug nil "Error1")))
       (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen))))

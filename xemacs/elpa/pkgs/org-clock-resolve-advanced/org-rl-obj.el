@@ -244,6 +244,10 @@
   (org-clock-get-nth-half-clock-beginning
    (org-rl-clock-marker clock)))
 
+(cl-defmethod org-rl-clock-null (clock)
+  ;; TODO??
+  (null clock))
+
 (cl-defmethod org-rl-clock-null ((clock org-rl-clock))
   (let ((marker (org-rl-clock-marker clock)))
     ;; (org-rl-debug nil "org-rl-clock-null: clock[%s] =  %s"
@@ -254,8 +258,16 @@
      (null marker)
      (not (markerp marker)))))
 
-(cl-defmethod org-rl-clock-null (clock)
-  (null clock))
+(cl-defmethod org-rl-clock-real-p ((clock org-rl-clock))
+  (let ((marker (org-rl-clock-marker clock)))
+    ;; (org-rl-debug nil "org-rl-clock-null: clock[%s] =  %s"
+    ;;               (org-rl-format-clock clock)
+    ;;               marker)
+    (not
+     (or
+      (equal marker 'imaginary)
+      (null marker)
+      (not (markerp marker))))))
 
 (cl-defmethod org-rl-clock-duration ((clock org-rl-clock))
   (let ((start (org-rl-clock-start-time clock))
@@ -614,19 +626,19 @@
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
     (append
-     (unless (org-rl-clock-null prev)
-       (list
-        (cons
-         (format "Jump to prev %s" prev-heading)
-         'jump-prev-p)))
+     (if (org-rl-clock-real-p prev)
+         (list
+          (cons
+           (format "Jump to prev %s" prev-heading)
+           'jump-prev)))
      (list
       (cons
-       (if (org-rl-clock-null next)
-           (if (org-rl-clock-null prev)
-               "No idea"
-             (format "Cancel prev %s" prev-heading))
-         (format "Subtract all from next %s" next-heading))
-       'cancel-prev-p)))))
+       (if (org-rl-clock-real-p prev)
+           (format "Cancel prev %s" prev-heading)
+         (if (org-rl-clock-real-p next)
+             (format "Subtract all from next %s" next-heading)
+           "No idea cancel-prev"))
+       'cancel-prev)))))
 
 (cl-defmethod org-rl-clock-opts-prev-with-time ((prev org-rl-clock)
                                                 (next org-rl-clock)
@@ -639,11 +651,11 @@
         (next-heading (org-rl-clock-heading next)))
     (list
      (cons
-      (if (org-rl-clock-null next)
-          (if (org-rl-clock-null prev)
-              "No idea"
-            (format "Include in prev %s" prev-heading))
-        (format "Subtract from next %s" next-heading))
+      (if (org-rl-clock-real-p prev)
+          (format "Include in prev %s" prev-heading)
+        (if (org-rl-clock-real-p next)
+            (format "Subtract from next %s" next-heading)
+          "No idea include-in-prev"))
       'include-in-prev))))
 
 (cl-defmethod org-rl-clock-opts-next ((prev org-rl-clock)
@@ -656,19 +668,19 @@
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
     (append
-     (unless (org-rl-clock-null next)
+     (when (org-rl-clock-real-p next)
        (list
         (cons
          (format "Jump to next %s" next-heading)
-         'jump-next-p)))
+         'jump-next)))
      (list
       (cons
-       (if (org-rl-clock-null prev)
-           (if (org-rl-clock-null next)
-               "No idea"
-             (format "Cancel next %s" next-heading))        ;TODO: still only considering resolve-idle not both prev next, prev can also be null ?
-         (format "Subtract all from prev %s" prev-heading))
-       'cancel-next-p)))))
+       (if (org-rl-clock-real-p next)
+           (format "Cancel next %s" next-heading)
+         (if (org-rl-clock-real-p prev)
+             (format "Add all to prev %s" prev-heading)
+           "No idea cancel-next"))        ;TODO: still only considering resolve-idle not both prev next, prev can also be null ?
+       'cancel-next)))))
 
 (cl-defmethod org-rl-clock-opts-next-with-time ((prev org-rl-clock)
                                                 (next org-rl-clock)
@@ -681,11 +693,11 @@
         (next-heading (org-rl-clock-heading next)))
     (list
      (cons
-      (if (org-rl-clock-null prev)
-          (if (org-rl-clock-null next)
-              "No idea"
-            (format "Include in next %s" next-heading))
-        (format "Subtract from prev %s" prev-heading))
+      (if (org-rl-clock-real-p next)
+          (format "Include in next %s" next-heading)
+        (if (org-rl-clock-real-p prev)
+            (format "Subtract from prev %s" prev-heading)
+          "No idea include-in-next"))
       'include-in-next))))
 
 
@@ -878,8 +890,8 @@
          (zerop maxtimelen)
          (memq option
                '(done
-                 cancel-next-p
-                 cancel-prev-p)))
+                 cancel-next
+                 cancel-prev)))
         maxtimelen
       (*
        (*

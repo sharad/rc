@@ -31,26 +31,32 @@
 
 
 (defun org-rl-get-resume-clocks (resume-clocks clock-alist)
-  (or
-   (if resume-clocks
-    (if (cl-notany
-         (lambda (name-clock) (org-rl-clock-current-real (cdr name-clock)))
-         clock-alist)
+  (if (cl-notany
+       #'(lambda (name-clock)
+           (org-rl-clock-current-real (cdr name-clock)))
+       clock-alist)
       (remove-if
        (lambda (name-clock)
          (or
           (not (consp name-clock))
           (null (cdr name-clock))
           (org-rl-clock-null (cdr name-clock))))
-       (append clock-alist resume-clocks))))
-   resume-clocks))
+       (append clock-alist
+               (unless (consp resume-clocks) nil)))))
 
 
+
+(cl-defmethod org-rl-clock-opt-jump-to ((clock org-rl-clock)
+                                        &optional
+                                        resume-clocks)
+  (org-rl-clock-clock-jump-to clock))
+
 (cl-defmethod org-rl-clock-opt-cancel-prev ((prev org-rl-clock)
                                             (next org-rl-clock)
                                             &optional resume-clocks)
   (setf (org-rl-clock-cancel prev) t)
-  (org-rl-clock-clock-cancel prev)
+  (when (org-rl-clock-real-p prev)
+    (org-rl-clock-clock-cancel prev))
   (org-rl-debug nil "cancelled prev, Can not find previous clock presently [todo]")
   (setf (org-rl-clock-start prev) (org-rl-clock-start prev))
   (setf (org-rl-clock-marker prev) nil)
@@ -58,9 +64,8 @@
   ;; TODO: add off to restart now (org-rl-clock-restart-now)
   (list
    (list prev next)
-   (org-rl-get-resume-clocks (append
-                              (list (cons :prev prev) (cons :next next))
-                              resume-clocks))))
+   (org-rl-get-resume-clocks resume-clocks
+                             (list (cons :prev prev) (cons :next next)))))
 
 (cl-defmethod org-rl-clock-opt-cancel-next ((prev org-rl-clock)
                                             (next org-rl-clock)
@@ -69,7 +74,8 @@
   ;; cancel next clock
   ;; add next clock time
   (setf (org-rl-clock-cancel next) t)
-  (org-rl-clock-clock-cancel next)
+  (when (org-rl-clock-real-p next)
+   (org-rl-clock-clock-cancel next))
   ;;should 'now be used here? todo
   (setf (org-rl-clock-start next) (org-rl-clock-stop prev))
   (setf (org-rl-clock-stop  next) (org-rl-clock-stop prev))
@@ -225,23 +231,24 @@
                                                 fail-quietly
                                                 resume-clocks)
   (org-rl-debug nil "org-rl-clock-time-process-option: begin")
+  (org-rl-debug :warning "started org-rl-clock-time-process-option: selected opt=%s" opt)
   (let* ((clocks
           (cond
-           ((eq opt 'jump-prev-p)
+           ((eq opt 'jump-prev)
             ;; finish here
-            (org-rl-clock-clock-jump-to prev resume-clocks)
+            (org-rl-clock-opt-jump-to prev resume-clocks)
             nil)
 
-           ((eq opt 'jump-next-p)
+           ((eq opt 'jump-next)
             ;; finish here
-            (org-rl-clock-clock-jump-to next resume-clocks)
+            (org-rl-clock-opt-jump-to next resume-clocks)
             nil)
 
-           ((eq opt 'cancel-prev-p)
+           ((eq opt 'cancel-prev)
             (org-rl-clock-opt-cancel-prev prev next resume-clocks))
            ;; set org-clock-leftover-time here
 
-           ((eq opt 'cancel-next-p)
+           ((eq opt 'cancel-next)
             (org-rl-clock-opt-cancel-next prev next resume-clocks))
 
            ((eq opt 'include-in-prev)
@@ -298,7 +305,7 @@
   "Resolve clock time"
   (interactive)
   ;; last-input-event
-  ;; last-event-frame
+  ;; last-event-frameo
   ;; TODO: send some tag or signal when other frame selection
   ;; set pre-command-hook to know if other frame is getting focus
   ;; than save data for this function and abort this function invocation here
@@ -378,7 +385,7 @@
                          (org-rl-clock-null next)))
                        (> (org-rl-get-time-gap prev next) 0))
                       (org-rl-clock-simple-resolve-time prev next resume fail-quietly resume-clocks)
-                    (if resume-clocks
+                    (if resume
                         (org-rl-clock-resume-clock resume-clocks))
                     (org-rl-debug nil "Error1")))
               (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen)))))))
