@@ -873,12 +873,12 @@
 (defvar org-rl-read-interval 60)
 
 (defun org-rl-clock-read-option (interval prompt-fn options-fn default-fn)
-  (let ((options (if (functionp options-fn) (funcall options-fn) options-fn)))
-    (cdr
-     (assoc
-      ;; (time-aware-completing-read interval prompt-fn options-fn default-fn)
-      (time-aware-completing-read interval prompt-fn options-fn)
-      options))))
+  (let* ((options (if (functionp options-fn) (funcall options-fn) options-fn))
+         (desopt (assoc (time-aware-completing-read interval prompt-fn options-fn) options))
+         (des (car desopt))
+         (opt (cdr desopt)))
+    (org-rl-debug :warning "Selected option is %s[ %s ]" des (car opt))
+    opt))
 
 (defvar org-rl-clock-time-direction-reverse nil)
 

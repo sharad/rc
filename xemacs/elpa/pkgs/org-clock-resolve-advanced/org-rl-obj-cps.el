@@ -102,7 +102,7 @@
                    (format "[%s] how many minutes? [%d] " opt maxtimelen-mins))))
            opt
            maxtimelen-mins-fn)))
-    (org-rl-debug :warning "in org-rl-clock-cps-process-helm-option")
+    (org-rl-debug :warning "in org-rl-clock-cps-process-helm-option opt[ %s ]" opt)
     (apply #'org-rl-clock-cps-process-option timelen option)))
 
 (defun org-rl-helm-build-options (interval prompt-fn options-fn default-fn)
@@ -198,5 +198,42 @@
 
 
   (org-rl-debug nil "org-rl-clock-cps-resolve-time: finished"))
+
+(when nil
+  (progn
+
+   (defun cand-transformer (cands)
+     (mapcar
+      #'(lambda (cand)
+          (concat cand
+                  "xx"
+                  (when (minibufferp (current-buffer))
+                    (minibuffer-contents-no-properties))))
+        ;; (with-current-buffer "* Minibuffer"
+        ;;   (minibuffer-contents-no-properties))
+      cands))
+
+   (defun filt-transformer (cands source)
+     (mapcar
+      #'(lambda (cand)
+          (concat cand
+                  "xx"
+                  (when (minibufferp (current-buffer))
+                    (minibuffer-contents-no-properties))))
+      ;; (with-current-buffer "* Minibuffer"
+      ;;   (minibuffer-contents-no-properties))
+      cands))
+
+   (helm
+    (helm-build-sync-source "test"
+      :candidates '("aa" "bb")
+      :candidate-transformer #'cand-transformer
+      :filtered-candidate-transformer #'filt-transformer
+      :action (list
+               (cons "Select" #'(lambda (cand)
+                                  (message "%s %s" cand
+                                           ;; (helm-get-current-source)
+                                           (helm-get-selection)))))))))
+
 
 ;;; org-rl-obj-cps.el ends here
