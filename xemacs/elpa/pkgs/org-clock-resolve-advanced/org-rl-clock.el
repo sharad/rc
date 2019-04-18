@@ -31,9 +31,10 @@
 
 
 (defun org-rl-get-resume-clocks (resume-clocks clock-alist)
-  (if (cl-notany
+  (if (cl-notany                        ;;no current running clock should be present.
        #'(lambda (name-clock)
-           (org-rl-clock-current-real (cdr name-clock)))
+           (when (cdr name-clock)
+             (org-rl-clock-current-real (cdr name-clock))))
        clock-alist)
       (remove-if
        (lambda (name-clock)
@@ -55,8 +56,7 @@
                                             (next org-rl-clock)
                                             &optional resume-clocks)
   (setf (org-rl-clock-cancel prev) t)
-  (when (org-rl-clock-real-p prev)
-    (org-rl-clock-clock-cancel prev))
+  (org-rl-clock-clock-cancel prev)
   (org-rl-debug nil "cancelled prev, Can not find previous clock presently [todo]")
   (setf (org-rl-clock-start prev) (org-rl-clock-start prev))
   (setf (org-rl-clock-marker prev) nil)
@@ -74,8 +74,7 @@
   ;; cancel next clock
   ;; add next clock time
   (setf (org-rl-clock-cancel next) t)
-  (when (org-rl-clock-real-p next)
-   (org-rl-clock-clock-cancel next))
+  (org-rl-clock-clock-cancel next)
   ;;should 'now be used here? todo
   (setf (org-rl-clock-start next) (org-rl-clock-stop prev))
   (setf (org-rl-clock-stop  next) (org-rl-clock-stop prev))
@@ -394,7 +393,10 @@
                       (org-rl-clock-simple-resolve-time prev next resume fail-quietly resume-clocks)
                     (if resume
                         (org-rl-clock-resume-clock resume-clocks))
-                    (org-rl-debug nil "Error1")))
+                    (if resolve-clocks
+                        (org-rl-debug :warning "Done prev[%s] next[%s] gap[%d]"
+                                      prev next (org-rl-get-time-gap prev next))
+                      (org-rl-debug :warning "Done no clock to resolve"))))
               (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen)))))))
   (org-rl-debug nil "org-rl-clock-simple-resolve-time: finished"))
 

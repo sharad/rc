@@ -60,7 +60,10 @@
               (org-rl-clock-cps-resolve-time prev next resume fail-quietly resume-clocks)
             (if resume
                 (org-rl-clock-resume-clock resume-clocks))
-            (org-rl-debug nil "Error1")))
+            (if resolve-clocks
+                (org-rl-debug :warning "Done prev[%s] next[%s] gap[%d]"
+                              prev next (org-rl-get-time-gap prev next))
+              (org-rl-debug :warning "Done no clock to resolve"))))
       (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen))))
 
 (defun org-rl-clock-cps-process-helm-option (option)

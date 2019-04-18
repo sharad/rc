@@ -194,9 +194,10 @@
     (time-get-time rl-time)))
 
 (cl-defmethod org-rl-time-current-delta-secs ((time org-rl-time))
-  (time-subtract
-   (org-rl-time-get-time time)
-   (current-time)))
+  (float-time
+   (time-subtract
+    (org-rl-time-get-time time)
+    (current-time))))
 
 (cl-defmethod org-rl-time-current-min-p ((time org-rl-time))
   (< (abs (org-rl-time-current-delta-secs time)) 60))
@@ -416,23 +417,24 @@
                 (org-rl-format-clock clock)
                 fail-quietly)
   (setf (org-rl-clock-cancel clock) t)
-  (if (org-rl-clock-marker clock)
-      (if (org-rl-clock-start-time clock)
-          (org-clock-clock-cancel
-           (cons
-            (org-rl-clock-marker clock)
-            (org-rl-clock-start-time clock)))
-        (error "%s start time is null" (org-rl-clock-start-time clock)))
-    (error "org-rl-clock-clock-cancel: %s clock is null" (org-rl-clock-marker clock))))
+  (if (org-rl-clock-real-p clock)
+      (if (org-rl-clock-marker clock)
+          (if (org-rl-clock-start-time clock)
+              (org-clock-clock-cancel
+               (org-rl-clock-for-clock-op clock))
+            (error "%s start time is null" (org-rl-clock-start-time clock)))
+        (error "org-rl-clock-clock-cancel: %s clock is null" (org-rl-clock-marker clock)))
+    (org-rl-debug :warning "org-rl-clock-clock-cancel: clock %s is not real."
+                  (org-rl-format-clock clock))))
 
 (cl-defmethod org-rl-clock-clock-jump-to ((clock org-rl-clock))
   (org-rl-debug nil "org-rl-clock-clock-jump-to: clock[%s]"
                 (org-rl-format-clock clock))
-  (if (org-rl-clock-marker clock)
+  (if (org-rl-clock-real-p clock)
       (org-clock-jump-to-current-clock
-       (cons
-        (org-rl-clock-marker clock)
-        (org-rl-clock-start-time clock))))
+       (org-rl-clock-for-clock-op clock))
+    (org-rl-debug :warning "org-rl-clock-clock-jump-to: clock %s is not real."
+                  (org-rl-format-clock clock)))
   nil)
 
 
@@ -444,16 +446,15 @@
                 (org-rl-format-clock clock)
                 resume)
   (when (not org-clock-clocking-in)
-    (if (org-rl-clock-null clock)
-        (progn
-          (org-rl-debug nil "org-rl-clock-clock-in: %s clock is null" (org-rl-clock-marker clock))
-          clock)
-      (if (time-p (org-rl-clock-start-time clock))
-          (org-rl-straight-org-clock-clock-in
-           clock
-           resume
-           (org-rl-clock-start-time clock))
-        (error "%s start time is null" (org-rl-clock-start-time clock))))))
+    (if (org-rl-clock-real-p clock)
+        (if (time-p (org-rl-clock-start-time clock))
+            (org-rl-straight-org-clock-clock-in
+             clock
+             resume
+             (org-rl-clock-start-time clock))
+          (error "%s start time is null" (org-rl-clock-start-time clock)))
+      (org-rl-debug :warning "org-rl-clock-clock-in: clock %s is not real."
+                    (org-rl-format-clock clock)))))
 
 (cl-defmethod org-rl-clock-clock-out ((clock org-rl-clock)
                                       &optional
@@ -463,26 +464,27 @@
                 (org-rl-format-clock clock)
                 fail-quietly)
   (when (not org-clock-clocking-in)
-    (if (org-rl-clock-null clock)
-        (org-rl-debug nil "org-rl-clock-clock-out: %s clock is null" (org-rl-clock-marker clock))
-      (if (time-p (org-rl-clock-stop-time clock))
-          (if (org-rl-clock-half-p clock)
-              (progn
-                (if (or
-                     (org-is-active-clock (org-rl-clock-for-clock-op clock))
-                     (org-rl-clock-current clock))                   ;TODO: check for current clock? find some other way to find active clock like matching with org-clock-marker
-                    (progn
-                      (org-clock-out org-clock-out-switch-to-state
-                                     fail-quietly
-                                     (org-rl-clock-stop-time clock))
-                      (setf (org-rl-clock-current clock) nil)
-                      (setf (org-rl-clock-marker clock) (car org-clock-history)))
-                  (org-clock-clock-out (org-rl-clock-for-clock-out clock)
+    (if (org-rl-clock-real-p clock)
+        (if (time-p (org-rl-clock-stop-time clock))
+            (if (org-rl-clock-half-p clock)
+                (progn
+                  (if (or
+                       (org-is-active-clock (org-rl-clock-for-clock-op clock))
+                       (org-rl-clock-current clock))                   ;TODO: check for current clock? find some other way to find active clock like matching with org-clock-marker
+                      (progn
+                        (org-clock-out org-clock-out-switch-to-state
                                        fail-quietly
-                                       (org-rl-clock-stop-time clock)))
-                (setf (org-rl-clock-current clock) nil))
-            (org-rl-clock-replace clock))
-        (error "org-rl-clock-clock-out: %s stop time is null" (org-rl-clock-stop-time clock))))
+                                       (org-rl-clock-stop-time clock))
+                        (setf (org-rl-clock-current clock) nil)
+                        (setf (org-rl-clock-marker clock) (car org-clock-history)))
+                    (org-clock-clock-out (org-rl-clock-for-clock-out clock)
+                                         fail-quietly
+                                         (org-rl-clock-stop-time clock)))
+                  (setf (org-rl-clock-current clock) nil))
+              (org-rl-clock-replace clock))
+          (error "org-rl-clock-clock-out: %s stop time is null" (org-rl-clock-stop-time clock)))
+      (org-rl-debug :warning "org-rl-clock-clock-out: clock %s is not real."
+                    (org-rl-format-clock clock)))
     clock))
 
 (cl-defmethod org-rl-clock-resume-if-stop-on-current-min ((clock org-rl-clock) resume)
@@ -505,21 +507,26 @@
                 org-clock-clocking-in)
   (let ((org-clock-auto-clock-resolution org-rl-org-clock-auto-clock-resolution))
     (if (not org-clock-clocking-in)
-        (progn
-          (org-rl-debug nil "org-rl-clock-clock-in-out in")
+        (if (org-rl-clock-real-p clock)
+            (progn
+              (org-rl-debug nil "org-rl-clock-clock-in-out in")
 
-          (cl-assert (org-rl-clock-start-time clock))
-          (cl-assert (org-rl-clock-stop-time clock))
+              (cl-assert (org-rl-clock-start-time clock))
+              (cl-assert (org-rl-clock-stop-time clock))
 
-          (let ((clock (org-rl-clock-clock-in clock resume)))
-            ;; (setf (org-rl-clock-marker clock) marker)
-            (org-rl-debug nil "org-rl-clock-clock-in-out out")
-            (unless (org-rl-clock-resume-if-stop-on-current-min
-                     clock
-                     resume)
-              ;; (setf (org-rl-clock-current clock) t)
-              (org-rl-clock-clock-out clock fail-quietly))
-            (org-rl-debug nil "org-rl-clock-clock-in-out out done")
+              (let ((clock (org-rl-clock-clock-in clock resume)))
+                ;; (setf (org-rl-clock-marker clock) marker)
+                (org-rl-debug nil "org-rl-clock-clock-in-out out")
+                (unless (org-rl-clock-resume-if-stop-on-current-min
+                         clock
+                         resume)
+                  ;; (setf (org-rl-clock-current clock) t)
+                  (org-rl-clock-clock-out clock fail-quietly))
+                (org-rl-debug nil "org-rl-clock-clock-in-out out done")
+                clock))
+          (progn
+            (org-rl-debug :warning "org-rl-clock-clock-in-out: clock %s is not real."
+                          (org-rl-format-clock clock))
             clock))
       (error "Clock org-clock-clocking-in is %s" org-clock-clocking-in))))
 
@@ -606,7 +613,10 @@
                                         resume-clocks)
   (list
    (cons "Restart" 'restart)
-   (cons "Done" 'done)))
+   (when (and
+          (org-rl-clock-real-p prev)
+          (org-rl-clock-real-p next))
+     (list (cons "Done" 'done)))))
 
 (cl-defmethod org-rl-clock-opts-common-with-time ((prev org-rl-clock)
                                                   (next org-rl-clock)
@@ -628,20 +638,14 @@
   ;; (org-rl-debug nil :debug "calling org-rl-clock-opts-prev")
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
-    (append
-     (if (org-rl-clock-real-p prev)
-         (list
-          (cons
-           (format "Jump to prev %s" prev-heading)
-           'jump-prev)))
-     (list
-      (cons
-       (if (org-rl-clock-real-p prev)
-           (format "Cancel prev %s" prev-heading)
-         (if (org-rl-clock-real-p next)
-             (format "Subtract all from next %s or [do nothing]" next-heading)
-           "No idea cancel-prev"))
-       'cancel-prev)))))
+    (when (org-rl-clock-real-p prev)
+      (list
+       (cons
+        (format "Jump to prev %s" prev-heading)
+        'jump-prev)
+       (cons
+        (format "Cancel prev %s" prev-heading)
+        'cancel-prev)))))
 
 (cl-defmethod org-rl-clock-opts-prev-with-time ((prev org-rl-clock)
                                                 (next org-rl-clock)
@@ -670,20 +674,14 @@
   ;; (org-rl-debug nil :debug "calling org-rl-clock-opts-next")
   (let ((prev-heading (org-rl-clock-heading prev))
         (next-heading (org-rl-clock-heading next)))
-    (append
-     (when (org-rl-clock-real-p next)
-       (list
-        (cons
-         (format "Jump to next %s" next-heading)
-         'jump-next)))
-     (list
-      (cons
-       (if (org-rl-clock-real-p next)
-           (format "Cancel next %s" next-heading)
-         (if (org-rl-clock-real-p prev)
-             (format "Add all to prev %s or [do nothing]" prev-heading)
-           "No idea cancel-next"))        ;TODO: still only considering resolve-idle not both prev next, prev can also be null ?
-       'cancel-next)))))
+    (when (org-rl-clock-real-p next)
+      (list
+       (cons
+        (format "Jump to next %s" next-heading)
+        'jump-next)
+       (cons
+        (format "Cancel next %s" prev-heading)
+        'cancel-next)))))
 
 (cl-defmethod org-rl-clock-opts-next-with-time ((prev org-rl-clock)
                                                 (next org-rl-clock)
@@ -745,16 +743,7 @@
 (cl-defmethod org-rl-compare-time-gap ((prev org-rl-clock)
                                        (next org-rl-clock)
                                        timelen)
-  ;; (org-rl-debug nil "org-rl-compare-time-gap: timelen %s" timelen)
-  ;; (org-rl-debug nil "org-rl-compare-time-gap: (float-time (org-rl-get-time-gap prev next))= %d, (abs timelen) = %s"
-  ;;               (float-time (org-rl-get-time-gap prev next))
-  ;;               (abs timelen))
   (cl-assert (> (float-time (org-rl-get-time-gap prev next)) 0))
-  ;; (org-rl-debug nil
-  ;;               "(- (float-time (org-rl-get-time-gap prev next)) (abs timelen)) = %s"
-  ;;               (-
-  ;;                (float-time (org-rl-get-time-gap prev next))
-  ;;                (abs timelen)))
   (if (eq timelen 'all)
       0
     (-
