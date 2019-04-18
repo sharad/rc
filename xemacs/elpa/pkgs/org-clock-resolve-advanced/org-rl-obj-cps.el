@@ -48,8 +48,8 @@
                (resume-clocks  (nth 1 clocks))
                (prev (nth 0 resolve-clocks))
                (next (nth 1 resolve-clocks)))
-          (org-rl-debug nil "(org-rl-clock-null prev) %s" (org-rl-clock-null prev))
-          (org-rl-debug nil "(org-rl-clock-null next) %s" (org-rl-clock-null next))
+          (org-rl-debug nil "(org-rl-clock-null prev[%s]) %s" (org-rl-format-clock prev) (org-rl-clock-null prev))
+          (org-rl-debug nil "(org-rl-clock-null next[%s]) %s" (org-rl-format-clock next) (org-rl-clock-null next))
           (if (and
                resolve-clocks
                (not
@@ -62,7 +62,9 @@
                 (org-rl-clock-resume-clock resume-clocks))
             (if resolve-clocks
                 (org-rl-debug :warning "Done prev[%s] next[%s] gap[%d]"
-                              prev next (org-rl-get-time-gap prev next))
+                              (org-rl-format-clock prev)
+                              (org-rl-format-clock next)
+                              (org-rl-get-time-gap prev next))
               (org-rl-debug :warning "Done no clock to resolve"))))
       (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen))))
 
