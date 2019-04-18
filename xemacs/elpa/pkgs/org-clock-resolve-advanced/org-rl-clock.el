@@ -87,6 +87,13 @@
    (org-rl-get-resume-clocks resume-clocks
                              (list (cons :prev prev) (cons :next next)))))
 
+;; Debug (org-rl-clock): 2019-04-18 19:34:25 s: begin org-rl-clock-opt-include-in-prev
+;; Debug (org-rl-clock): 2019-04-18 19:34:25 s: org-rl-clock-expand-time: clock[<STARTED Unnamed task 820> <2019-04-18 Thu 19:01>-<2019-04-18 Thu 19:24> t] org-clock-clocking-in[nil]
+;; Debug (org-rl-clock): 2019-04-18 19:34:25 s: org-rl-clock-clock-out: clock[<STARTED Unnamed task 820> <2019-04-18 Thu 19:01>-<2019-04-18 Thu 19:34> t] fail-quietly[nil]
+;; Debug (org-rl-clock): 2019-04-18 19:34:28 s: finish org-rl-clock-opt-include-in-prev
+;; Debug (org-rl-clock): 2019-04-18 19:34:28 s: org-rl-clock-time-process-option: finished
+;; Debug (org-rl-clock): 2019-04-18 19:34:28 s: (org-rl-clock-null prev) nil
+;; Debug (org-rl-clock): 2019-04-18 19:34:28 s: (org-rl-clock-null next) t
 
 (cl-defmethod org-rl-clock-opt-include-in-prev ((prev org-rl-clock)
                                                 (next org-rl-clock)
@@ -107,7 +114,7 @@
           (org-rl-clock-clock-out prev fail-quietly))
       (if (> (org-rl-compare-time-gap prev next timelen) 0)
           (if (> timelen 0)
-              (setf prev (org-rl-clock-expand-time prev (abs timelen)))
+              (setf prev (org-rl-clock-expand-time prev (abs timelen) resume))
             (progn
               (setf prev (org-rl-clock-clock-out prev fail-quietly))     ;if already not necessary
               (org-rl-clock-clock-out next fail-quietly)     ;if necessary
@@ -147,7 +154,7 @@
           (org-rl-clock-clock-out next fail-quietly))
       (if (> (org-rl-compare-time-gap prev next timelen) 0)
           (if (< timelen 0)
-              (setf next (org-rl-clock-expand-time next timelen))
+              (setf next (org-rl-clock-expand-time next timelen resume))
             (progn
               (org-rl-clock-clock-out prev fail-quietly)     ;if necessary
               (setf next (org-rl-clock-clock-out next fail-quietly))     ;if necessary
@@ -371,8 +378,8 @@
                                                           resume
                                                           fail-quietly
                                                           resume-clocks))
-                       (resolve-clocks (nth 1 clocks))
-                       (resume-clocks (nth 2 clocks))
+                       (resolve-clocks (nth 0 clocks))
+                       (resume-clocks (nth 1 clocks))
                        (prev (nth 0 resolve-clocks))
                        (next (nth 1 resolve-clocks)))
                   (org-rl-debug nil "(org-rl-clock-null prev) %s" (org-rl-clock-null prev))

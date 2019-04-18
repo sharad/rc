@@ -96,8 +96,8 @@ Each entry is either:
       ;; (global-set-key "\C-cew" 'evernote-write-note)
       ;; (global-set-key "\C-cep" 'evernote-post-region)
       ;; (global-set-key "\C-ceb" 'evernote-browser)
-
-      (add-to-list 'anything-sources anything-c-source-evernote-title))))
+      (when (boundp 'anything-sources)
+       (add-to-list 'anything-sources anything-c-source-evernote-title)))))
 
 (defun lotus-note/init-dbus ()
   (use-package dbus
@@ -163,14 +163,14 @@ Each entry is either:
 (defun lotus-note/post-init-ein ()
   (use-package ein-notification
     :defer t
-    :command (ein:header-line-setup-maybe)
+    :commands (ein:header-line-setup-maybe)
     :config
     (progn
       ))
 
   (use-package ein-ac
     :defer t
-    :command (ein:ac-setup ein:ac-setup-maybe)
+    :commands (ein:ac-setup ein:ac-setup-maybe)
     :config
     (progn)))
 

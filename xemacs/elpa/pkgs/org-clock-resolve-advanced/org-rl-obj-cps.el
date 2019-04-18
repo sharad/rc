@@ -31,24 +31,6 @@
 (require 'org-rl-clock)
 
 
-;; (defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
-;;   (with-select-frame-set-input-disable-raise
-;;     (with-timeout (interval
-;;                    (time-aware-completing-read interval prompt-fn options-fn default-fn))
-;;       (let ((prompt  (if (functionp prompt-fn)  (funcall prompt-fn) prompt-fn))
-;;             (options (if (functionp options-fn) (funcall options-fn) options-fn))
-;;             (default (if (functionp default-fn) (funcall default-fn) default-fn)))
-;;         (completing-read prompt options)))))
-
-;; (defun time-aware-read-number (interval prompt-fn default-fn)
-;;   (with-select-frame-set-input-disable-raise
-;;     (with-timeout (interval
-;;                    (time-aware-read-number interval prompt-fn default-fn))
-;;       (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
-;;             (default (if (functionp default-fn) (funcall default-fn) default-fn)))
-;;         (read-number prompt default)))))
-
-
 (defun org-rl-clock-cps-process-option (timelen opt prev next maxtime resume fail-quietly resume-clocks)
   (org-rl-debug :warning "started org-rl-clock-cps-process-option selected opt=%s" opt)
   (let ((maxtimelen (org-rl-get-time-gap prev next))) ;get maxtimelen time again
@@ -62,8 +44,8 @@
                                                   resume
                                                   fail-quietly
                                                   resume-clocks))
-               (resolve-clocks (nth 1 clocks))
-               (resume-clocks  (nth 2 clocks))
+               (resolve-clocks (nth 0 clocks))
+               (resume-clocks  (nth 1 clocks))
                (prev (nth 0 resolve-clocks))
                (next (nth 1 resolve-clocks)))
           (org-rl-debug nil "(org-rl-clock-null prev) %s" (org-rl-clock-null prev))
@@ -87,10 +69,6 @@
          (opt           (nth 0 option))
          (prev          (nth 1 option))
          (next          (nth 2 option))
-         ;; (maxtime       (nth 3 opt))
-         ;; (resume        (nth 4 opt))
-         ;; (fail-quietly  (nth 5 opt))
-         ;; (resume-clocks (nth 6 opt))
          (maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
          (timelen
           (org-rl-clock-read-timelen
@@ -117,14 +95,6 @@
              (cons "Select" #'org-rl-clock-cps-process-helm-option))
     :action-transformer #'(lambda (actions candidate)
                             (list (cons "select" #'org-rl-clock-cps-process-helm-option))))))
-
-;; (defun org-rl-clock-cps-read-option (interval prompt-fn options-fn default-fn)
-;;   (let ((options (if (functionp options-fn) (funcall options-fn) options-fn)))
-;;     (cdr
-;;      (assoc
-;;       (helm
-;;        interval prompt-fn options-fn)
-;;       options))))
 
 (defun org-rl-clock-cps-read-option (interval prompt-fn options-fn default-fn)
   (let ((options (if (functionp options-fn) (funcall options-fn) options-fn))
@@ -175,7 +145,12 @@
                     (org-rl-clock-time-adv-debug-prompt prev next) maxtimelen)
       (when (> maxtimelen 0)
         (let* ((maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
-               (options (org-rl-clock-build-options prev next maxtimelen resume fail-quietly resume-clocks))
+               (options (org-rl-clock-build-options
+                         prev next
+                         maxtimelen
+                         resume
+                         fail-quietly
+                         resume-clocks))
                (ret (message "org-rl-clock-cps-resolve-time: options %s" options))
                (opt
                 (org-rl-clock-cps-read-option
@@ -198,42 +173,5 @@
 
 
   (org-rl-debug nil "org-rl-clock-cps-resolve-time: finished"))
-
-(when nil
-  (progn
-
-   (defun cand-transformer (cands)
-     (mapcar
-      #'(lambda (cand)
-          (concat cand
-                  "xx"
-                  (when (minibufferp (current-buffer))
-                    (minibuffer-contents-no-properties))))
-        ;; (with-current-buffer "* Minibuffer"
-        ;;   (minibuffer-contents-no-properties))
-      cands))
-
-   (defun filt-transformer (cands source)
-     (mapcar
-      #'(lambda (cand)
-          (concat cand
-                  "xx"
-                  (when (minibufferp (current-buffer))
-                    (minibuffer-contents-no-properties))))
-      ;; (with-current-buffer "* Minibuffer"
-      ;;   (minibuffer-contents-no-properties))
-      cands))
-
-   (helm
-    (helm-build-sync-source "test"
-      :candidates '("aa" "bb")
-      :candidate-transformer #'cand-transformer
-      :filtered-candidate-transformer #'filt-transformer
-      :action (list
-               (cons "Select" #'(lambda (cand)
-                                  (message "%s %s" cand
-                                           ;; (helm-get-current-source)
-                                           (helm-get-selection)))))))))
-
 
 ;;; org-rl-obj-cps.el ends here

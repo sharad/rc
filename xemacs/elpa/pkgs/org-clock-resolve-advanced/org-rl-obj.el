@@ -195,7 +195,7 @@
 
 (cl-defmethod org-rl-time-current-delta-secs ((time org-rl-time))
   (time-subtract
-   (org-rl-time-get-time)
+   (org-rl-time-get-time time)
    (current-time)))
 
 (cl-defmethod org-rl-time-current-min-p ((time org-rl-time))
@@ -550,7 +550,7 @@
 ;; https://github.com/dfeich/org-clock-convenience/blob/master/org-clock-convenience.el
 ;; https://emacs.stackexchange.com/questions/34905/how-to-clock-offline-hours-quickly
 
-(cl-defmethod org-rl-clock-expand-time ((clock org-rl-clock) sec)
+(cl-defmethod org-rl-clock-expand-time ((clock org-rl-clock) sec resume)
   "if sec is positive expand in future else expand in past."
   ;; do clock in clock out accordingly
   (org-rl-debug nil "org-rl-clock-expand-time: clock[%s] org-clock-clocking-in[%s]"
@@ -559,7 +559,10 @@
   (if (> sec 0)
       (progn
         (setf (org-rl-clock-stop-time clock) (time-add (org-rl-clock-stop-time clock) sec))
-        (org-rl-clock-clock-out clock))
+        (unless (org-rl-clock-resume-if-stop-on-current-min
+                 clock
+                 resume)
+          (org-rl-clock-clock-out clock)))
     (progn
       (setf (org-rl-clock-start-time clock) (time-subtract (org-rl-clock-stop-time clock) sec))
       (org-rl-clock-replace clock))))
@@ -636,7 +639,7 @@
        (if (org-rl-clock-real-p prev)
            (format "Cancel prev %s" prev-heading)
          (if (org-rl-clock-real-p next)
-             (format "Subtract all from next %s" next-heading)
+             (format "Subtract all from next %s or [do nothing]" next-heading)
            "No idea cancel-prev"))
        'cancel-prev)))))
 
@@ -678,7 +681,7 @@
        (if (org-rl-clock-real-p next)
            (format "Cancel next %s" next-heading)
          (if (org-rl-clock-real-p prev)
-             (format "Add all to prev %s" prev-heading)
+             (format "Add all to prev %s or [do nothing]" prev-heading)
            "No idea cancel-next"))        ;TODO: still only considering resolve-idle not both prev next, prev can also be null ?
        'cancel-next)))))
 
