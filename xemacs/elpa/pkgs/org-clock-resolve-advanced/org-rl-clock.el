@@ -271,6 +271,11 @@
            ((eq opt 'done)
             nil)
 
+           ((eq opt 'restart)
+            (list
+             (list prev next)
+             resume-clocks))
+
            (t (error "Wrong option %s" opt)))))
     (org-rl-debug nil "org-rl-clock-time-process-option: finished")
     clocks))
