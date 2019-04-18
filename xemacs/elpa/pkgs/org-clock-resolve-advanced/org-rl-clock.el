@@ -44,7 +44,6 @@
           (org-rl-clock-null (cdr name-clock))))
        (append clock-alist
                (unless (consp resume-clocks) nil)))))
-
 
 
 (cl-defmethod org-rl-clock-opt-jump-to ((clock org-rl-clock)
@@ -279,8 +278,8 @@
            (t (error "Wrong option %s" opt)))))
     (org-rl-debug nil "org-rl-clock-time-process-option: finished")
     clocks))
-
 
+
 (defun org-rl-clock-resume-clock (resume-clocks)
   (org-rl-debug :warning "resume clocks %s" resume-clocks)
   (if org-clock-marker
@@ -299,8 +298,8 @@
             (sel-clock ((assoc sel resume-clocks)))))
       (if sel-clock
           (org-rl-clock-clock-in sel-clock)))))
-
 
+
 ;; NOTE: Remember here the concept of Positive and Negative and Full time.
 ;; Read time which could be positive or negative or full
 ;; TODO: option for restart also required for with active clock.
@@ -406,8 +405,8 @@
                       (org-rl-debug :warning "Done no clock to resolve"))))
               (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen)))))))
   (org-rl-debug nil "org-rl-clock-simple-resolve-time: finished"))
-
 
+
 (defun org-rl-clock-clock-in-as-it-is (marker)
   (interactive
    (list (point-marker)))

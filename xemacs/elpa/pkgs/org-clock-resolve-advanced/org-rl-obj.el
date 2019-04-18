@@ -68,7 +68,7 @@
          (ts (time-stamp-string))
          (fmt (format "%s: %s" ts (car args)))
          (args (append (list fmt) (cdr args))))
-    (apply #'lwarn 'org-rl-clock level args)
+    ;; (apply #'lwarn 'org-rl-clock level args)
     (message
      (concat
       (format "org-rl-clock %s: " level)
@@ -201,7 +201,6 @@
 
 (cl-defmethod org-rl-time-current-min-p ((time org-rl-time))
   (< (abs (org-rl-time-current-delta-secs time)) 60))
-
 
 (cl-defmethod org-rl-clock-current-real ((clock org-rl-clock))
   (unless (org-rl-clock-null clock)
@@ -284,10 +283,8 @@
 ;; (let ((prev (org-rl-make-clock nil 'now 'now)))
 ;;   (org-rl-clock-start-set prev nil)
 ;;   (org-rl-clock-null prev))
-
-
-
 
+
 (defun org-get-heading-from-clock (clock)
   (if (markerp (car clock))
       (lotus-with-marker (car clock)
@@ -314,8 +311,8 @@
 (cl-defmethod org-rl-clock-name-bracket ((clock org-rl-clock))
   ;;(org-rl-clock-marker clock)
   (concat "<" (org-rl-clock-heading clock) ">"))
-
 
+
 (cl-defmethod org-rl-clock-half-p ((clock org-rl-clock))
   (save-excursion
     (let ((marker (org-rl-clock-marker clock)))
@@ -392,8 +389,8 @@
                         (setf clock (org-rl-clock-insert-range clock)))))))))))
       (error "clock %s is not full" (org-rl-clock-name-bracket clock)))
     clock))
-
 
+
 (cl-defmethod org-rl-clock-for-clock-op ((clock org-rl-clock))
   (cons
    (org-rl-clock-marker clock)
@@ -404,7 +401,6 @@
 
 (cl-defmethod org-rl-clock-for-clock-out ((clock org-rl-clock))
   (org-rl-clock-for-clock-op clock))
-
 
 
 (cl-defmethod org-clock-clock-remove-last-clock ((clock org-rl-clock)))
@@ -436,7 +432,6 @@
     (org-rl-debug :warning "org-rl-clock-clock-jump-to: clock %s is not real."
                   (org-rl-format-clock clock)))
   nil)
-
 
 
 (cl-defmethod org-rl-clock-clock-in ((clock org-rl-clock)
@@ -550,10 +545,10 @@
 (defun org-rl-clocks-action (resume fail-quietly &rest clocks)
   (dolist (clock clocks)
     (when nil
-     (org-rl-clock-action clock resume fail-quietly)))
+      (org-rl-clock-action clock resume fail-quietly)))
   clocks)
-
 
+
 ;; https://github.com/dfeich/org-clock-convenience/blob/master/org-clock-convenience.el
 ;; https://emacs.stackexchange.com/questions/34905/how-to-clock-offline-hours-quickly
 
@@ -579,8 +574,8 @@
   (org-rl-debug nil "org-rl-clock-contract-time: clock[%s] org-clock-clocking-in[%s]"
                 (org-rl-format-clock clock)
                 org-clock-clocking-in))
-
 
+
 (defun org-clock-idle-time-set (mins)
   (interactive
    (list (read-number "org-clock-idle-time: "
@@ -592,12 +587,9 @@
 (defun org-clock-steel-time ()
   (interactive))
 
-
-
 ;; (defvar org-clock-clocking-in nil)
 ;; (defvar org-clock-resolving-clocks nil)
 ;; (defvar org-clock-resolving-clocks-due-to-idleness nil)
-
 
 ;; TODO: Re-org here.
 
@@ -709,16 +701,16 @@
    ((eq time nil) nil)
    (time time)
    (t nil)))
-
 
+
 (defun org-rl-select-other-clock (&optional target)
   (interactive)
   (org-rl-debug nil "org-rl-select-other-clock: target[%s]" target)
   (org-with-refile
       file loc (or target org-refile-targets) "Refile other org heading"
-      (let ((marker (make-marker)))
-        (set-marker marker loc)
-        marker)))
+    (let ((marker (make-marker)))
+      (set-marker marker loc)
+      marker)))
 
 (cl-defmethod org-rl-get-time-gap ((prev org-rl-clock)
                                    (next org-rl-clock))
@@ -749,8 +741,8 @@
     (-
      (float-time (org-rl-get-time-gap prev next))
      (abs timelen))))
-
 
+
 (cl-defmethod org-rl-clock-time-debug-prompt ((prev org-rl-clock)
                                               (next org-rl-clock)
                                               &optional
@@ -790,8 +782,8 @@
          (debug (if prompt (concat prompt " " _debug) _debug)))
     (when stop (read-from-minibuffer (format "%s test: " debug)))
     debug))
-
 
+
 (when nil
   (cl-defmethod org-rl-clock-build-options-OLD ((prev org-rl-clock)
                                                 (next org-rl-clock)
@@ -890,7 +882,6 @@
         (if org-rl-clock-time-direction-reverse -1 1)
         (time-aware-read-number interval prompt-fn maxtimelen-fn))
        60))))
-
 
 
 (defun helm-cand-sel ()

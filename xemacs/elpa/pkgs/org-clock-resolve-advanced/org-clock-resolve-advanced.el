@@ -25,11 +25,10 @@
 
 
 (provide 'org-clock-resolve-advanced)
-
 
+
 (require 'org-rl-clock)
 (require 'org-rl-obj-cps)
-
 
 
 (defvar org-rl-clock-resolve-time #'org-rl-clock-cps-resolve-time "org clock resolver.")
@@ -117,8 +116,8 @@ so long."
             (run-with-idle-timer
              idle-time idle-time
              'org-rl-resolve-clocks-if-idle)))))
-
 
+
 (defun org-find-open-clocks (file)
   "Search through the given file and find all open clocks."
   (let ((buf (or (get-file-buffer file)
@@ -162,8 +161,8 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
   (let ((next (pop clocks))
         (prev (pop clocks)))
     (funcall org-rl-clock-resolve-time next prev)))
-
 
+
 (defun org-rl-first-clock-started-mins (marker)
   (let* ((clock-time (org-clock-get-nth-half-clock-time marker 1))
          (mins-spent
@@ -228,6 +227,7 @@ so long."
           (org-rl-debug nil "Selected min[ = %d ] is more than mins-spent[ = %d ]" (/ idle-sec 60) mins-spent))
       (org-rl-debug nil "Not one min is spent with clock mins-spent = %d" mins-spent))))
 
+
 ;;;###autoload
 (defun org-clock-resolve-advanced-insinuate ()
   (interactive)
@@ -240,6 +240,5 @@ so long."
 (defun org-clock-resolve-advanced-uninsinuate ()
   (remove-hook 'org-clock-in-hook
                #'org-rl-clock-set-correct-idle-timer))
-
 
 ;;; org-clock-utils-lotus.el ends here
