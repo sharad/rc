@@ -398,11 +398,16 @@
                     (if resume
                         (org-rl-clock-resume-clock resume-clocks))
                     (if resolve-clocks
-                        (org-rl-debug :warning "Done prev[%s] next[%s] gap[%d]"
-                                      (org-rl-format-clock prev)
-                                      (org-rl-format-clock next)
-                                      (org-rl-get-time-gap prev next))
-                      (org-rl-debug :warning "Done no clock to resolve"))))
+                       (org-rl-debug :warning "Done prev[%s] next[%s] gap[%d]"
+                                     (org-rl-format-clock prev)
+                                     (org-rl-format-clock next)
+                                     (if (and
+                                          (org-rl-clock-null prev)
+                                          (org-rl-clock-null next))
+                                         (org-rl-get-time-gap prev next)
+                                       -1)))))
+                (org-rl-debug :warning "Done no clock to resolve")
+
               (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen)))))))
   (org-rl-debug nil "org-rl-clock-simple-resolve-time: finished"))
 

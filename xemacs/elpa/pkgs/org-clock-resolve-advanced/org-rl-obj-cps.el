@@ -64,7 +64,11 @@
                 (org-rl-debug :warning "Done prev[%s] next[%s] gap[%d]"
                               (org-rl-format-clock prev)
                               (org-rl-format-clock next)
-                              (org-rl-get-time-gap prev next))
+                              (if (and
+                                   (org-rl-clock-null prev)
+                                   (org-rl-clock-null next))
+                                  (org-rl-get-time-gap prev next)
+                                -1))
               (org-rl-debug :warning "Done no clock to resolve"))))
       (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen))))
 

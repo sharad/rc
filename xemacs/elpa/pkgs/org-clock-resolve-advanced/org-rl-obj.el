@@ -297,6 +297,9 @@
         (org-get-heading t))
     "imaginary"))
 
+(cl-defmethod org-rl-format-clock ((clock null))
+  (format "null"))
+
 (cl-defmethod org-rl-format-clock ((clock org-rl-clock))
   (let ((fmt (cdr org-time-stamp-formats)))
     (let ((heading
