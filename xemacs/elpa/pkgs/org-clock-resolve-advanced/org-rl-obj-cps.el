@@ -49,10 +49,10 @@
                (prev (nth 0 resolve-clocks))
                (next (nth 1 resolve-clocks)))
           (if prev
-              (org-rl-debug nil "org-rl-clock-cps-process-option: (org-rl-clock-null prev[%s]) %s" (org-rl-format-clock prev) (org-rl-clock-null prev))
+              (org-rl-debug nil "org-rl-clock-cps-process-option: (org-rl-clock-null prev[%s]) %s" (org-rl-format prev) (org-rl-clock-null prev))
             (org-rl-debug nil "org-rl-clock-cps-process-option: prev is %s" prev))
           (if next
-              (org-rl-debug nil "org-rl-clock-cps-process-option: (org-rl-clock-null next[%s]) %s" (org-rl-format-clock next) (org-rl-clock-null next))
+              (org-rl-debug nil "org-rl-clock-cps-process-option: (org-rl-clock-null next[%s]) %s" (org-rl-format next) (org-rl-clock-null next))
             (org-rl-debug nil "org-rl-clock-cps-process-option: next is %s" next))
           (if (and prev next)
               (org-rl-debug nil "org-rl-clock-cps-process-option: (org-rl-get-time-gap prev next) = %d" (org-rl-get-time-gap prev next))
@@ -69,8 +69,8 @@
                 (org-rl-clock-resume-clock resume-clocks))
             (if resolve-clocks
                 (org-rl-debug :warning "Done prev[%s] next[%s] gap[%d]"
-                              (org-rl-format-clock prev)
-                              (org-rl-format-clock next)
+                              (org-rl-format prev)
+                              (org-rl-format next)
                               (if (and
                                    (org-rl-clock-null prev)
                                    (org-rl-clock-null next))

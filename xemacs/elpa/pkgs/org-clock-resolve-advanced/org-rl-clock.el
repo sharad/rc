@@ -54,12 +54,12 @@
 (cl-defmethod org-rl-clock-opt-cancel-prev ((prev org-rl-clock)
                                             (next org-rl-clock)
                                             &optional resume-clocks)
-  (setf (org-rl-clock-cancel prev) t)
+  ;; (setf (org-rl-clock-cancel prev) t)
   (org-rl-clock-clock-cancel prev)
   (org-rl-debug nil "cancelled prev, Can not find previous clock presently [todo]")
   (setf (org-rl-clock-start prev) (org-rl-clock-start prev))
   (setf (org-rl-clock-marker prev) nil)
-  (org-rl-clocks-action nil nil prev next)
+  ;; (org-rl-clocks-action nil nil prev next)
   ;; TODO: add off to restart now (org-rl-clock-restart-now)
   (list
    (list prev next)
@@ -72,13 +72,13 @@
   ;; what to do with prev.
   ;; cancel next clock
   ;; add next clock time
-  (setf (org-rl-clock-cancel next) t)
+  ;; (setf (org-rl-clock-cancel next) t)
   (org-rl-clock-clock-cancel next)
   ;;should 'now be used here? todo
   (setf (org-rl-clock-start next) (org-rl-clock-stop prev))
   (setf (org-rl-clock-stop  next) (org-rl-clock-stop prev))
   (setf (org-rl-clock-marker  next) nil)
-  (org-rl-clocks-action nil nil prev next)
+  ;; (org-rl-clocks-action nil nil prev next)
   ;; TODO: add off to restart now (org-rl-clock-restart-now)
   (list
    (list prev next)
@@ -127,7 +127,7 @@
                timelen
                maxtimelen
                (float-time (org-rl-get-time-gap prev next))))))
-  (org-rl-clocks-action resume fail-quietly prev next)
+  ;; (org-rl-clocks-action resume fail-quietly prev next)
   (org-rl-debug nil "finish %s" 'org-rl-clock-opt-include-in-prev)
   ;; TODO: add off to restart now (org-rl-clock-restart-now)
   (list
@@ -218,7 +218,7 @@
 
   (push (cons :other (if (> timelen 0) prev next)) resume-alist)
 
-  (org-rl-clocks-action nil nil prev next)
+  ;; (org-rl-clocks-action nil nil prev next)
   (org-rl-debug nil "finish %s" 'org-rl-clock-opt-include-in-other)
   ;; TODO: add off to restart now (org-rl-clock-restart-now)
   (list
@@ -291,7 +291,7 @@
                              (cons
                               (format "%s %s"
                                       (car el)
-                                      (if (cdr el) (org-rl-format-clock (cdr el)))) el)
+                                      (if (cdr el) (org-rl-format (cdr el)))) el)
                              resume-clocks)))
            (sel
             (completing-read "resume clock: " resume-clocks)
@@ -385,8 +385,8 @@
                        (resume-clocks (nth 1 clocks))
                        (prev (nth 0 resolve-clocks))
                        (next (nth 1 resolve-clocks)))
-                  (org-rl-debug nil "(org-rl-clock-null prev[%s]) %s" (org-rl-format-clock prev) (org-rl-clock-null prev))
-                  (org-rl-debug nil "(org-rl-clock-null next[%s]) %s" (org-rl-format-clock next) (org-rl-clock-null next))
+                  (org-rl-debug nil "(org-rl-clock-null prev[%s]) %s" (org-rl-format prev) (org-rl-clock-null prev))
+                  (org-rl-debug nil "(org-rl-clock-null next[%s]) %s" (org-rl-format next) (org-rl-clock-null next))
                   (if (and
                        resolve-clocks
                        (not
@@ -399,8 +399,8 @@
                         (org-rl-clock-resume-clock resume-clocks))
                     (if resolve-clocks
                        (org-rl-debug :warning "Done prev[%s] next[%s] gap[%d]"
-                                     (org-rl-format-clock prev)
-                                     (org-rl-format-clock next)
+                                     (org-rl-format prev)
+                                     (org-rl-format next)
                                      (if (and
                                           (org-rl-clock-null prev)
                                           (org-rl-clock-null next))
