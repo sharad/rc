@@ -103,7 +103,7 @@
 
   (org-rl-debug nil "begin %s" 'org-rl-clock-opt-include-in-prev)
 
-  (let ((maxtimelen (org-rl-get-time-gap prev next)))
+  (let ((maxtimelen (org-rl-get-time-gap-secs prev next)))
     (if (= (org-rl-compare-time-gap prev next timelen) 0)
         (progn
           (org-rl-debug nil "compare = %s" 'org-rl-clock-opt-include-in-prev)
@@ -143,7 +143,7 @@
                                                 fail-quietly
                                                 resume-clocks)
   (org-rl-debug nil "begin %s" 'org-rl-clock-opt-include-in-next)
-  (let ((maxtimelen (org-rl-get-time-gap prev next)))
+  (let ((maxtimelen (org-rl-get-time-gap-secs prev next)))
     (if (= (org-rl-compare-time-gap prev next timelen) 0)
         (progn
           (org-rl-debug nil "compare = %s" 'org-rl-clock-opt-include-in-next)
@@ -185,7 +185,7 @@
 
   (org-rl-debug nil "begin %s" 'org-rl-clock-opt-include-in-other)
 
-  (let ((maxtimelen   (org-rl-get-time-gap prev next))
+  (let ((maxtimelen   (org-rl-get-time-gap-secs prev next))
         (other-marker (org-rl-select-other-clock))
         resume-alist
         prrev-resume next-resume other-resume)
@@ -330,7 +330,7 @@
         (org-rl-debug nil "org-rl-clock-simple-resolve-time: [minibuffer-body] lotus-with-override-minibuffer-if active minibuffer found aborting it."))
     (org-rl-debug nil "org-rl-clock-simple-resolve-time: [body] lotus-with-override-minibuffer-if")
     (let ((debug-prompt t)
-          (maxtimelen (org-rl-get-time-gap prev next)))
+          (maxtimelen (org-rl-get-time-gap-mins prev next)))
       ;;;
       ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 10 5] with maxtimelen 5
       ;; Warning (org-rl-clock): You have selected opt subtract and timelen 9
@@ -340,7 +340,7 @@
                     (org-rl-clock-time-adv-debug-prompt prev next) maxtimelen)
       ;; (assert (> maxtimelen 0))
       (when (> maxtimelen 0)
-        (let* ((maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
+        (let* ((maxtimelen-mins-fn #'(lambda () (org-rl-get-time-gap-mins prev next)))
                (options (org-rl-clock-build-options prev next maxtimelen resume fail-quiete-clocks))
                (option
                 (org-rl-clock-read-option
@@ -370,7 +370,7 @@
 
 
           (org-rl-debug nil "You have selected opt %s and timelen %d" opt timelen)
-          (let ((maxtimelen (org-rl-get-time-gap prev next))) ;get maxtimelen time again
+          (let ((maxtimelen (org-rl-get-time-gap-mins prev next))) ;get maxtimelen time again
             (if (<=
                  (abs timelen)
                  maxtimelen)
@@ -393,7 +393,7 @@
                         (and
                          (org-rl-clock-null prev)
                          (org-rl-clock-null next)))
-                       (> (org-rl-get-time-gap prev next) 0))
+                       (> (org-rl-get-time-gap-mins prev next) 0))
                       (org-rl-clock-simple-resolve-time prev next resume fail-quietly resume-clocks)
                     (if resume
                         (org-rl-clock-resume-clock resume-clocks))
@@ -404,7 +404,7 @@
                                      (if (and
                                           (org-rl-clock-null prev)
                                           (org-rl-clock-null next))
-                                         (org-rl-get-time-gap prev next)
+                                         (org-rl-get-time-gap-mins prev next)
                                        -1)))))
                 (org-rl-debug :warning "Done no clock to resolve")
 

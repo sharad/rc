@@ -194,12 +194,16 @@
     (time-get-time rl-time)))
 
 (cl-defmethod org-rl-time-current-delta-secs ((time org-rl-time))
-  (float-time
-   (time-subtract
-    (org-rl-time-get-time time)
-    (current-time))))
+  (let ((gap (float-time
+              (time-subtract
+               (org-rl-time-get-time time)
+               (current-time)))))
+    (org-rl-debug :warning "org-rl-time-current-delta-secs: time=<%s> from current time = %d"
+                  (org-rl-format time) gap)
+    gap))
 
 (cl-defmethod org-rl-time-current-min-p ((time org-rl-time))
+  (org-rl-debug :warning "org-rl-time-current-min-p: time=<%s>" (org-rl-format time))
   (< (abs (org-rl-time-current-delta-secs time)) 60))
 
 (cl-defmethod org-rl-clock-current-real ((clock org-rl-clock))
@@ -258,6 +262,16 @@
      (null marker)
      (not (markerp marker)))))
 
+;; (org-rl-clock-null (org-rl-make-clock 'imaginary 'now 'now))
+;;
+;; (setq x (org-rl-make-clock nil 'now 'now))
+;; (setq y (org-rl-make-clock 'imaginary 'now 'now))
+;;
+;; (setf (org-rl-clock-marker x) nil)
+;; (org-rl-clock-null x)
+;; (org-rl-format-clock x)
+;; (org-rl-get-time-gap-secs x y )
+
 (cl-defmethod org-rl-clock-real-p ((clock org-rl-clock))
   (let ((marker (org-rl-clock-marker clock)))
     ;; (org-rl-debug nil "org-rl-clock-null: clock[%s] =  %s"
@@ -302,14 +316,15 @@
 
 (cl-defmethod org-rl-format-clock ((clock org-rl-clock))
   (let ((fmt (cdr org-time-stamp-formats)))
-    (let ((heading
-           (if (markerp (org-rl-clock-marker clock))
-               (lotus-with-marker (org-rl-clock-marker clock)
-                 (org-get-heading t))
-             "imaginary"))
-          (start (format-time-string fmt (org-rl-clock-start-time clock)))
-          (stop  (format-time-string fmt (org-rl-clock-stop-time clock))))
-      (format "<%s> %s-%s %s" heading start stop (org-rl-clock-current clock)))))
+    (let* ((marker (org-rl-clock-marker clock))
+           (heading
+            (if (markerp marker)
+                (lotus-with-marker marker
+                  (org-get-heading t))
+              "imaginary"))
+           (start (format-time-string fmt (org-rl-clock-start-time clock)))
+           (stop  (format-time-string fmt (org-rl-clock-stop-time clock))))
+      (format "<%s %s> %s-%s %s" heading marker start stop (org-rl-clock-current clock)))))
 
 (cl-defmethod org-rl-clock-name-bracket ((clock org-rl-clock))
   ;;(org-rl-clock-marker clock)
@@ -570,7 +585,8 @@
           (org-rl-clock-clock-out clock)))
     (progn
       (setf (org-rl-clock-start-time clock) (time-subtract (org-rl-clock-stop-time clock) sec))
-      (org-rl-clock-replace clock))))
+      (org-rl-clock-replace clock)))
+  clock)
 
 (cl-defmethod org-rl-clock-contract-time ((clock org-rl-clock) sec)
   "if sec is positive contract from future else contract from past."
@@ -721,19 +737,15 @@
    (float-time
     (time-subtract
      (org-rl-clock-start-time next)
-     (or
-      (org-rl-clock-stop-time prev)
-      (if (org-rl-clock-null next)
-          (org-rl-clock-stop-time next)
-        (error "Can not get start time.")))))))
-
-(cl-defmethod org-rl-get-time-gap ((prev org-rl-clock)
-                                   (next org-rl-clock))
-  (floor
-   (float-time
-    (time-subtract
-     (org-rl-clock-start-time next)
      (org-rl-clock-stop-time prev)))))
+
+(cl-defmethod org-rl-get-time-gap-secs ((prev org-rl-clock)
+                                        (next org-rl-clock))
+  (org-rl-get-time-gap prev next))
+
+(cl-defmethod org-rl-get-time-gap-mins ((prev org-rl-clock)
+                                        (next org-rl-clock))
+  (floor (/ (org-rl-get-time-gap prev next) 60)))
 
 (cl-defmethod org-rl-compare-time-gap ((prev org-rl-clock)
                                        (next org-rl-clock)
@@ -906,5 +918,66 @@
                                                   candidate
                                                   (helm-get-selection))))))))))
     (org-rl-debug nil "retval %s" retval)))
+
+
+;; org-rl-clock :debug: 2019-04-19 17:00:58 s: org-rl-clock-cps-resolve-time: [body] lotus-with-override-minibuffer-if
+;; lotus-with-file-pos-new-win: selecting buf Unnamed.org
+;; org-rl-clock :debug: 2019-04-19 17:00:58 s: org-rl-clock-cps-resolve-time: going to run prev[<STARTED Unnamed task 812> <2019-04-16 Tue 13:29>-<2019-04-16 Tue 13:29> nil 6 6] next[<imaginary> <2019-04-19 Fri 17:00>-<2019-04-19 Fri 17:00> nil 23 23] with maxtimelen 271918
+;; lotus-with-file-pos-new-win: selecting buf Unnamed.org
+;; org-rl-clock :debug: 2019-04-19 17:00:58 s: org-rl-clock-build-options: prev[<STARTED Unnamed task 812> <2019-04-16 Tue 13:29>-<2019-04-16 Tue 13:29> nil] next[<imaginary> <2019-04-19 Fri 17:00>-<2019-04-19 Fri 17:00> nil] maxtimelen[271918] secs
+;; lotus-with-file-pos-new-win: selecting buf Unnamed.org [4 times]
+;; org-rl-clock-cps-resolve-time: options ((Include in prev STARTED Unnamed task 812 include-in-prev [cl-struct-org-rl-clock #<marker (moves after insertion) at 460021 in Unnamed.org> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23733 35652) nil] nil nil] [cl-struct-org-rl-clock imaginary [cl-struct-org-rl-time now nil] [cl-struct-org-rl-time now nil] nil nil] 271918 nil nil nil) (Subtract from prev STARTED Unnamed task 812 include-in-next [cl-struct-org-rl-clock #<marker (moves after insertion) at 460021 in Unnamed.org> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23733 35652) nil] nil nil] [cl-struct-org-rl-clock imaginary [cl-struct-org-rl-time now nil] [cl-struct-org-rl-time now nil] nil nil] 271918 nil nil nil) (Include in other include-in-other [cl-struct-org-rl-clock #<marker (moves after insertion) at 460021 in Unnamed.org> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23733 35652) nil] nil nil] [cl-struct-org-rl-clock imaginary [cl-struct-org-rl-time now nil] [cl-struct-org-rl-time now nil] nil nil] 271918 nil nil nil) (Jump to prev STARTED Unnamed task 812 jump-prev [cl-struct-org-rl-clock #<marker (moves after insertion) at 460021 in Unnamed.org> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23733 35652) nil] nil nil] [cl-struct-org-rl-clock imaginary [cl-struct-org-rl-time now nil] [cl-struct-org-rl-time now nil] nil nil] 271918 nil nil nil) (Cancel prev STARTED Unnamed task 812 cancel-prev [cl-struct-org-rl-clock #<marker (moves after insertion) at 460021 in Unnamed.org> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23733 35652) nil] nil nil] [cl-struct-org-rl-clock imaginary [cl-struct-org-rl-time now nil] [cl-struct-org-rl-time now nil] nil nil] 271918 nil nil nil) (Restart restart [cl-struct-org-rl-clock #<marker (moves after insertion) at 460021 in Unnamed.org> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23733 35652) nil] nil nil] [cl-struct-org-rl-clock imaginary [cl-struct-org-rl-time now nil] [cl-struct-org-rl-time now nil] nil nil] 271918 nil nil nil) (nil nil [cl-struct-org-rl-clock #<marker (moves after insertion) at 460021 in Unnamed.org> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23733 35652) nil] nil nil] [cl-struct-org-rl-clock imaginary [cl-struct-org-rl-time now nil] [cl-struct-org-rl-time now nil] nil nil] 271918 nil nil nil))
+;; lotus-with-file-pos-new-win: selecting buf Unnamed.org
+;; prev[<STARTED Unnamed task 812> 6 6] next[<imaginary> 23 23] Select option [4531]:
+;; lotus-with-file-pos-new-win: selecting buf Unnamed.org
+;; Parsing org-rl-obj-cps.el (LL)...done
+;; org-rl-clock :warning: 2019-04-19 17:04:39 s: started org-rl-clock-cps-process-helm-option opt: (include-in-prev [cl-struct-org-rl-clock #<marker (moves after insertion) at 460021 in Unnamed.org> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23733 35652) nil] nil nil] [cl-struct-org-rl-clock imaginary [cl-struct-org-rl-time now nil] [cl-struct-org-rl-time now nil] nil nil] 271918 nil nil nil)
+;; lotus-with-file-pos-new-win: selecting buf Unnamed.org
+;; org-rl-clock :warning: 2019-04-19 17:04:39 s: in org-rl-clock-cps-process-helm-option opt[ include-in-prev]
+;; org-rl-clock :warning: 2019-04-19 17:04:39 s: started org-rl-clock-cps-process-option selected opt=include-in-prev
+;; org-rl-clock :debug: 2019-04-19 17:04:39 s: org-rl-clock-time-process-option: begin
+;; org-rl-clock :warning: 2019-04-19 17:04:39 s: started org-rl-clock-time-process-option: selected opt=include-in-prev
+;; org-rl-clock :debug: 2019-04-19 17:04:39 s: begin org-rl-clock-opt-include-in-prev
+;; lotus-with-file-pos-new-win: selecting buf Unnamed.org
+;; org-rl-clock :debug: 2019-04-19 17:04:39 s: org-rl-clock-expand-time: clock[<STARTED Unnamed task 812> <2019-04-16 Tue 13:29>-<2019-04-16 Tue 13:29> nil] org-clock-clocking-in[nil]
+;; lotus-with-file-pos-new-win: selecting buf Unnamed.org
+;; org-rl-clock :debug: 2019-04-19 17:04:39 s: org-rl-clock-clock-out: clock[<STARTED Unnamed task 812> <2019-04-16 Tue 13:29>-<2019-04-19 Fri 17:04> nil] fail-quietly[nil]
+;; Clock stopped at [2019-04-19 Fri 17:04] after 3d 3:35
+;; Saving file /home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/Unnamed.org...
+;; Wrote /home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/.Unnamed.org.~undo-tree~
+;; Wrote /home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/Unnamed.org
+;; Error callling git diff:
+
+;; Preparing diary...
+;; No diary entries for Friday, April 19, 2019: Good Friday
+;; Preparing diary...done
+;; Appointment reminders enabled
+;; Could disable it with disable-diary-appt-display-for function.
+;; Loading /home/s/hell/.emacs.d/.cache/.org-timestamps/tasks-notes.cache...done
+;; Publishing file /home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/Unnamed.org using ‘org-html-publish-to-html’
+;; Saving file /home/s/hell/Documents/CreatedContent/gen/virtual/org/default/tasks/html/Unnamed.html...
+;; Wrote /home/s/hell/Documents/CreatedContent/gen/virtual/org/default/tasks/html/Unnamed.html
+;; Preparing diary...
+;; No diary entries for Friday, April 19, 2019: Good Friday
+;; Preparing diary...done
+;; Appointment reminders enabled
+;; Could disable it with disable-diary-appt-display-for function.
+;; auto published blog
+;; org-rl-clock :debug: 2019-04-19 17:04:41 s: finish org-rl-clock-opt-include-in-prev
+;; org-rl-clock :debug: 2019-04-19 17:04:41 s: org-rl-clock-time-process-option: finished
+;; org-rl-clock :debug: 2019-04-19 17:04:41 s: (org-rl-clock-null prev[<nil> <2019-04-16 Tue 13:29>-<2019-04-19 Fri 17:04> nil]) nil
+;; org-rl-clock :debug: 2019-04-19 17:04:41 s: (org-rl-clock-null next[<imaginary> <2019-04-19 Fri 17:04>-<2019-04-19 Fri 17:04> nil]) t
+;; org-rl-clock :debug: 2019-04-19 17:04:41 s: org-rl-clock-duration: duration 272100
+;; org-rl-clock :debug: 2019-04-19 17:04:41 s: org-rl-clock-duration: duration 0
+;; org-rl-clock :debug: 2019-04-19 17:04:41 s: org-rl-clock-cps-resolve-time: begin
+;; org-rl-clock :debug: 2019-04-19 17:04:41 s: org-rl-clock-cps-resolve-time: finished
+;; org-rl-clock :debug: 2019-04-19 17:04:41 s: org-rl-clock-cps-resolve-time: [body] lotus-with-override-minibuffer-if
+;; org-rl-clock :debug: 2019-04-19 17:04:41 s: org-rl-clock-cps-resolve-time: going to run prev[<nil> <2019-04-16 Tue 13:29>-<2019-04-19 Fri 17:04> nil 6 27] next[<imaginary> <2019-04-19 Fri 17:04>-<2019-04-19 Fri 17:04> nil 27 27] with maxtimelen 41
+;; org-rl-clock :debug: 2019-04-19 17:04:41 s: org-rl-clock-build-options: prev[<nil> <2019-04-16 Tue 13:29>-<2019-04-19 Fri 17:04> nil] next[<imaginary> <2019-04-19 Fri 17:04>-<2019-04-19 Fri 17:04> nil] maxtimelen[41] secs
+;; org-rl-clock-cps-resolve-time: options ((Include in prev nil include-in-prev [cl-struct-org-rl-clock #<marker (moves after insertion) in no buffer> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23737 45608) nil] nil nil] [cl-struct-org-rl-clock imaginary [cl-struct-org-rl-time now nil] [cl-struct-org-rl-time now nil] nil nil] 41 nil nil ((:prev . [cl-struct-org-rl-clock #<marker (moves after insertion) in no buffer> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23737 45608) nil] nil nil]))) (Subtract from prev nil include-in-next [cl-struct-org-rl-clock #<marker (moves after insertion) in no buffer> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23737 45608) nil] nil nil] [cl-struct-org-rl-clock imaginary [cl-struct-org-rl-time now nil] [cl-struct-org-rl-time now nil] nil nil] 41 nil nil ((:prev . [cl-struct-org-rl-clock #<marker (moves after insertion) in no buffer> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23737 45608) nil] nil nil]))) (Include in other include-in-other [cl-struct-org-rl-clock #<marker (moves after insertion) in no buffer> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23737 45608) nil] nil nil] [cl-struct-org-rl-clock imaginary [cl-struct-org-rl-time now nil] [cl-struct-org-rl-time now nil] nil nil] 41 nil nil ((:prev . [cl-struct-org-rl-clock #<marker (moves after insertion) in no buffer> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23737 45608) nil] nil nil]))) (Jump to prev nil jump-prev [cl-struct-org-rl-clock #<marker (moves after insertion) in no buffer> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23737 45608) nil] nil nil] [cl-struct-org-rl-clock imaginary [cl-struct-org-rl-time now nil] [cl-struct-org-rl-time now nil] nil nil] 41 nil nil ((:prev . [cl-struct-org-rl-clock #<marker (moves after insertion) in no buffer> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23737 45608) nil] nil nil]))) (Cancel prev nil cancel-prev [cl-struct-org-rl-clock #<marker (moves after insertion) in no buffer> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23737 45608) nil] nil nil] [cl-struct-org-rl-clock imaginary [cl-struct-org-rl-time now nil] [cl-struct-org-rl-time now nil] nil nil] 41 nil nil ((:prev . [cl-struct-org-rl-clock #<marker (moves after insertion) in no buffer> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23737 45608) nil] nil nil]))) (Restart restart [cl-struct-org-rl-clock #<marker (moves after insertion) in no buffer> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23737 45608) nil] nil nil] [cl-struct-org-rl-clock imaginary [cl-struct-org-rl-time now nil] [cl-struct-org-rl-time now nil] nil nil] 41 nil nil ((:prev . [cl-struct-org-rl-clock #<marker (moves after insertion) in no buffer> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23737 45608) nil] nil nil]))) (nil nil [cl-struct-org-rl-clock #<marker (moves after insertion) in no buffer> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23737 45608) nil] nil nil] [cl-struct-org-rl-clock imaginary [cl-struct-org-rl-time now nil] [cl-struct-org-rl-time now nil] nil nil] 41 nil nil ((:prev . [cl-struct-org-rl-clock #<marker (moves after insertion) in no buffer> [cl-struct-org-rl-time (23733 35652) nil] [cl-struct-org-rl-time (23737 45608) nil] nil nil]))))
+;; prev[<> 6 27] next[<imaginary> 27 27] Select option [0]:
+;; Error in post-command-hook (org-add-log-note): (error "Can’t expand minibuffer to full frame")
+;; Mark set [2 times]
+
 
 ;;; org-rl-obj.el ends here

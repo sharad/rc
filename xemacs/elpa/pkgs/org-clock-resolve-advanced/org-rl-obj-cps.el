@@ -33,7 +33,7 @@
 
 (defun org-rl-clock-cps-process-option (timelen opt prev next maxtime resume fail-quietly resume-clocks)
   (org-rl-debug :warning "started org-rl-clock-cps-process-option selected opt=%s" opt)
-  (let ((maxtimelen (org-rl-get-time-gap prev next))) ;get maxtimelen time again
+  (let ((maxtimelen (org-rl-get-time-gap-mins prev next))) ;get maxtimelen time again
     (if (<=
          (abs timelen)
          maxtimelen)
@@ -48,15 +48,22 @@
                (resume-clocks  (nth 1 clocks))
                (prev (nth 0 resolve-clocks))
                (next (nth 1 resolve-clocks)))
-          (org-rl-debug nil "(org-rl-clock-null prev[%s]) %s" (org-rl-format-clock prev) (org-rl-clock-null prev))
-          (org-rl-debug nil "(org-rl-clock-null next[%s]) %s" (org-rl-format-clock next) (org-rl-clock-null next))
+          (if prev
+              (org-rl-debug nil "org-rl-clock-cps-process-option: (org-rl-clock-null prev[%s]) %s" (org-rl-format-clock prev) (org-rl-clock-null prev))
+            (org-rl-debug nil "org-rl-clock-cps-process-option: prev is %s" prev))
+          (if next
+              (org-rl-debug nil "org-rl-clock-cps-process-option: (org-rl-clock-null next[%s]) %s" (org-rl-format-clock next) (org-rl-clock-null next))
+            (org-rl-debug nil "org-rl-clock-cps-process-option: next is %s" next))
+          (if (and prev next)
+              (org-rl-debug nil "org-rl-clock-cps-process-option: (org-rl-get-time-gap prev next) = %d" (org-rl-get-time-gap prev next))
+            (org-rl-debug nil "org-rl-clock-cps-process-option: prev %s next is %s one of them is nil" prev next))
           (if (and
                resolve-clocks
                (not
                 (and
                  (org-rl-clock-null prev)
                  (org-rl-clock-null next)))
-               (> (org-rl-get-time-gap prev next) 0))
+               (> (org-rl-get-time-gap-mins prev next) 0))
               (org-rl-clock-cps-resolve-time prev next resume fail-quietly resume-clocks)
             (if resume
                 (org-rl-clock-resume-clock resume-clocks))
@@ -67,7 +74,7 @@
                               (if (and
                                    (org-rl-clock-null prev)
                                    (org-rl-clock-null next))
-                                  (org-rl-get-time-gap prev next)
+                                  (org-rl-get-time-gap-mins prev next)
                                 -1))
               (org-rl-debug :warning "Done no clock to resolve"))))
       (org-rl-debug nil "Error given time %d can not be greater than %d" timelen maxtimelen))))
@@ -78,7 +85,7 @@
          (opt           (nth 0 option))
          (prev          (nth 1 option))
          (next          (nth 2 option))
-         (maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
+         (maxtimelen-mins-fn #'(lambda () (org-rl-get-time-gap-mins prev next)))
          (timelen
           (org-rl-clock-read-timelen
            org-rl-read-interval
@@ -148,7 +155,7 @@
         (org-rl-debug nil "org-rl-clock-cps-resolve-time: [minibuffer-body] lotus-with-override-minibuffer-if active minibuffer found aborting it."))
     (org-rl-debug nil "org-rl-clock-cps-resolve-time: [body] lotus-with-override-minibuffer-if")
     (let ((debug-prompt t)
-          (maxtimelen (org-rl-get-time-gap prev next)))
+          (maxtimelen (org-rl-get-time-gap-mins prev next)))
       (org-rl-debug nil
                     "org-rl-clock-cps-resolve-time: going to run %s with maxtimelen %d"
                     (org-rl-clock-time-adv-debug-prompt prev next) maxtimelen)
