@@ -543,11 +543,87 @@
 ;; (defvar org-clock-resolving-clocks nil)
 ;; (defvar org-clock-resolving-clocks-due-to-idleness nil)
 
+
+(cl-defmethod org-rl-clock-time-debug-prompt ((prev org-rl-clock)
+                                              (next org-rl-clock)
+                                              &optional
+                                              prompt stop)
+  (let* ( ;;(base 120) ;; TODO: why it was 120 ?
+         (base 61)
+         (_debug (format "prev[%s %d %d] next[%s %d %d]"
+                         ;; (org-rl-clock-marker prev)
+                         (org-rl-clock-name-bracket prev)
+                         (if (org-rl-clock-start-time prev) (% (/ (floor (float-time (org-rl-clock-start-time prev))) 60) base) 0)
+                         (if (org-rl-clock-stop-time prev)  (% (/ (floor (float-time (org-rl-clock-stop-time prev))) 60) base) 0)
+                         ;; (org-rl-clock-marker next)
+                         (org-rl-clock-name-bracket next)
+                         (if (org-rl-clock-start-time next) (% (/ (floor (float-time (org-rl-clock-start-time next))) 60) base) 0)
+                         (if (org-rl-clock-stop-time next)  (% (/ (floor (float-time (org-rl-clock-stop-time next))) 60) base) 0)))
+         (debug (if prompt (concat prompt " " _debug) _debug)))
+    (when stop (read-from-minibuffer (format "%s test: " debug)))
+    debug))
+
+
+(cl-defmethod org-rl-clock-time-adv-debug-prompt ((prev org-rl-clock)
+                                                  (next org-rl-clock)
+                                                  &optional
+                                                  prompt
+                                                  stop)
+  (let* ( ;;(base 120) ;; TODO: why it was 120 ?
+         (base 61)
+         (_debug (format "prev[%s %d %d] next[%s %d %d]"
+                         ;; (org-rl-clock-marker prev)
+                         (org-rl-format prev)
+                         (if (org-rl-clock-start-time prev) (% (/ (floor (float-time (org-rl-clock-start-time prev))) 60) base) 0)
+                         (if (org-rl-clock-stop-time prev)  (% (/ (floor (float-time (org-rl-clock-stop-time prev))) 60) base) 0)
+                         ;; (org-rl-clock-marker next)
+                         (org-rl-format next)
+                         (if (org-rl-clock-start-time next) (% (/ (floor (float-time (org-rl-clock-start-time next))) 60) base) 0)
+                         (if (org-rl-clock-stop-time next)  (% (/ (floor (float-time (org-rl-clock-stop-time next))) 60) base) 0)))
+         (debug (if prompt (concat prompt " " _debug) _debug)))
+    (when stop (read-from-minibuffer (format "%s test: " debug)))
+    debug))
+
+
+(cl-defmethod org-rl-get-time-gap ((prev org-rl-clock)
+                                   (next org-rl-clock))
+  (floor
+   (float-time
+    (time-subtract
+     (org-rl-clock-start-time next)
+     (org-rl-clock-stop-time prev)))))
+
+(cl-defmethod org-rl-get-time-gap-secs ((prev org-rl-clock)
+                                        (next org-rl-clock))
+  (org-rl-get-time-gap prev next))
+
+(cl-defmethod org-rl-get-time-gap-mins ((prev org-rl-clock)
+                                        (next org-rl-clock))
+  (floor (/ (org-rl-get-time-gap prev next) 60)))
+
+(cl-defmethod org-rl-compare-time-gap ((prev org-rl-clock)
+                                       (next org-rl-clock)
+                                       timelen)
+  (cl-assert (> (float-time (org-rl-get-time-gap prev next)) 0))
+  (if (eq timelen 'all)
+      0
+    (-
+     (float-time (org-rl-get-time-gap prev next))
+     (abs timelen))))
+
+(defun org-rl-select-other-clock (&optional target)
+  (interactive)
+  (org-rl-debug nil "org-rl-select-other-clock: target[%s]" target)
+  (org-with-refile
+      file loc (or target org-refile-targets) "Refile other org heading"
+    (let ((marker (make-marker)))
+      (set-marker marker loc)
+      marker)))
+
+
 ;; TODO: Re-org here.
 
-;; (setq
-;;  org-rl-clock-opts-common
-;;  '(("Done" . done)))
+(defvar *org-rl-clock-fixed-markers*)
 
 (cl-defmethod org-rl-clock-opts-common ((prev org-rl-clock)
                                         (next org-rl-clock)
@@ -559,7 +635,6 @@
    (cons "Restart" 'restart)
    (cons "Done"    'done)))
 
-
 (cl-defmethod org-rl-clock-opts-common-with-time ((prev org-rl-clock)
                                                   (next org-rl-clock)
                                                   maxtimelen
@@ -569,8 +644,10 @@
   (let ((args
          (list prev next maxtimelen resume fail-quietly resume-clocks)))
     (list
+     (cons "Include in %s"    '(include-in-other marker))
      (cons "Include in other" 'include-in-other)
-     (cons "Include in other" 'include-in-new))))
+     (cons "Include in new %s"    '(include-in-new template))
+     (cons "Include in new"   'include-in-new))))
 
 (cl-defmethod org-rl-clock-opts-prev ((prev org-rl-clock)
                                       (next org-rl-clock)
@@ -644,120 +721,6 @@
           "No idea include-in-next"))
       'include-in-next))))
 
-
-(defun time-get-rl-time (time)
-  (cond
-   ((eq time 'now)
-    (current-time))
-   ((eq time nil) nil)
-   (time time)
-   (t nil)))
-
-
-(defun org-rl-select-other-clock (&optional target)
-  (interactive)
-  (org-rl-debug nil "org-rl-select-other-clock: target[%s]" target)
-  (org-with-refile
-      file loc (or target org-refile-targets) "Refile other org heading"
-    (let ((marker (make-marker)))
-      (set-marker marker loc)
-      marker)))
-
-(cl-defmethod org-rl-get-time-gap ((prev org-rl-clock)
-                                   (next org-rl-clock))
-  (floor
-   (float-time
-    (time-subtract
-     (org-rl-clock-start-time next)
-     (org-rl-clock-stop-time prev)))))
-
-(cl-defmethod org-rl-get-time-gap-secs ((prev org-rl-clock)
-                                        (next org-rl-clock))
-  (org-rl-get-time-gap prev next))
-
-(cl-defmethod org-rl-get-time-gap-mins ((prev org-rl-clock)
-                                        (next org-rl-clock))
-  (floor (/ (org-rl-get-time-gap prev next) 60)))
-
-(cl-defmethod org-rl-compare-time-gap ((prev org-rl-clock)
-                                       (next org-rl-clock)
-                                       timelen)
-  (cl-assert (> (float-time (org-rl-get-time-gap prev next)) 0))
-  (if (eq timelen 'all)
-      0
-    (-
-     (float-time (org-rl-get-time-gap prev next))
-     (abs timelen))))
-
-
-(cl-defmethod org-rl-clock-time-debug-prompt ((prev org-rl-clock)
-                                              (next org-rl-clock)
-                                              &optional
-                                              prompt stop)
-  (let* ( ;;(base 120) ;; TODO: why it was 120 ?
-         (base 61)
-         (_debug (format "prev[%s %d %d] next[%s %d %d]"
-                         ;; (org-rl-clock-marker prev)
-                         (org-rl-clock-name-bracket prev)
-                         (if (org-rl-clock-start-time prev) (% (/ (floor (float-time (org-rl-clock-start-time prev))) 60) base) 0)
-                         (if (org-rl-clock-stop-time prev)  (% (/ (floor (float-time (org-rl-clock-stop-time prev))) 60) base) 0)
-                         ;; (org-rl-clock-marker next)
-                         (org-rl-clock-name-bracket next)
-                         (if (org-rl-clock-start-time next) (% (/ (floor (float-time (org-rl-clock-start-time next))) 60) base) 0)
-                         (if (org-rl-clock-stop-time next)  (% (/ (floor (float-time (org-rl-clock-stop-time next))) 60) base) 0)))
-         (debug (if prompt (concat prompt " " _debug) _debug)))
-    (when stop (read-from-minibuffer (format "%s test: " debug)))
-    debug))
-
-
-(cl-defmethod org-rl-clock-time-adv-debug-prompt ((prev org-rl-clock)
-                                                  (next org-rl-clock)
-                                                  &optional
-                                                  prompt
-                                                  stop)
-  (let* ( ;;(base 120) ;; TODO: why it was 120 ?
-         (base 61)
-         (_debug (format "prev[%s %d %d] next[%s %d %d]"
-                         ;; (org-rl-clock-marker prev)
-                         (org-rl-format prev)
-                         (if (org-rl-clock-start-time prev) (% (/ (floor (float-time (org-rl-clock-start-time prev))) 60) base) 0)
-                         (if (org-rl-clock-stop-time prev)  (% (/ (floor (float-time (org-rl-clock-stop-time prev))) 60) base) 0)
-                         ;; (org-rl-clock-marker next)
-                         (org-rl-format next)
-                         (if (org-rl-clock-start-time next) (% (/ (floor (float-time (org-rl-clock-start-time next))) 60) base) 0)
-                         (if (org-rl-clock-stop-time next)  (% (/ (floor (float-time (org-rl-clock-stop-time next))) 60) base) 0)))
-         (debug (if prompt (concat prompt " " _debug) _debug)))
-    (when stop (read-from-minibuffer (format "%s test: " debug)))
-    debug))
-
-
-(when nil
-  (cl-defmethod org-rl-clock-build-options-OLD ((prev org-rl-clock)
-                                                (next org-rl-clock)
-                                                maxtimelen
-                                                resume
-                                                fail-quietly
-                                                resume-clocks)
-    (org-rl-debug nil "org-rl-clock-build-options: prev[%s] next[%s] maxtimelen[%d] secs"
-                  (org-rl-format prev)
-                  (org-rl-format next)
-                  maxtimelen)
-
-    (let ((args (list prev
-                      next
-                      maxtimelen
-                      resume
-                      fail-quietly
-                      resume-clocks)))
-      (append
-       (append
-        (apply #'org-rl-clock-opts-prev args)
-        (unless (zerop maxtimelen) (apply #'org-rl-clock-opts-prev-with-time args)))
-       (append
-        (apply #'org-rl-clock-opts-next args)
-        (unless (zerop maxtimelen) (apply #'org-rl-clock-opts-next-with-time args)))
-       (unless (zerop maxtimelen) (apply #'org-rl-clock-opts-common-with-time args))
-       (apply #'org-rl-clock-opts-common args)))))
 
 (cl-defmethod org-rl-clock-build-options ((prev org-rl-clock)
                                           (next org-rl-clock)

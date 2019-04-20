@@ -27,18 +27,13 @@
 (provide 'org-rl-obj-cps)
 
 
-(require 'org-capture+-helm)
-
-
 (require 'org-rl-obj)
 (require 'org-rl-clock)
 
 
-(defvar org-rl-capture+-helm-templates-alist org-capture+-helm-templates-alist)
-
 (defun org-rl-clock-cps-process-option (timelen opt prev next maxtime resume fail-quietly resume-clocks)
   (org-rl-debug :warning "started org-rl-clock-cps-process-option selected opt=%s" opt)
-  (let ((maxtimelen (org-rl-get-time-gap-mins prev next))) ;get maxtimelen time again
+  (let ((maxtimelen (org-rl-get-time-gap-secs prev next))) ;get maxtimelen time again
     (if (<=
          (abs timelen)
          maxtimelen)
@@ -104,25 +99,6 @@
     (org-rl-debug :warning "in org-rl-clock-cps-process-helm-option opt[ %s ]" opt)
     (apply #'org-rl-clock-cps-process-option timelen option)))
 
-(defun org-rl-build-capture+-option (interval prompt-fn options-fn default-fn)
-  "To create new org entry"
-  (let ((action #'(lambda ()
-                    (let ((template (occ-capture+-helm-select-template)))
-                      (when template
-                        (let ((mrk (get-marker)))
-                          (with-org-capture+ 'entry `(marker ,mrk) template '(:empty-lines 1)
-                            (let ((capture-clock (make-org-rl-clock (point))))
-                              t))))))))
-   (helm-build-sync-source name
-    :candidates (if (functionp options-fn)
-                    (funcall options-fn)
-                  options-fn)
-    :action (list
-             (cons "New Task" 'new-task))
-    :action-transformer #'(lambda (actions candidate)
-                            (list (cons "select"))))))
-
-
 (defun org-rl-helm-build-options (interval prompt-fn options-fn default-fn)
   (let ((name (if (functionp prompt-fn)
                   (funcall prompt-fn)
@@ -143,9 +119,6 @@
     (let (helm-sources)
       (push
        (org-rl-helm-build-options interval prompt-fn options 1)
-       helm-sources)
-      (push
-       (org-rl-build-capture+-option interval prompt-fn options 1)
        helm-sources)
       (helm helm-sources))))
 
@@ -177,7 +150,7 @@
         (org-rl-debug nil "org-rl-clock-cps-resolve-time: [minibuffer-body] lotus-with-override-minibuffer-if active minibuffer found aborting it."))
     (org-rl-debug nil "org-rl-clock-cps-resolve-time: [body] lotus-with-override-minibuffer-if")
     (let ((debug-prompt t)
-          (maxtimelen (org-rl-get-time-gap-mins prev next)))
+          (maxtimelen (org-rl-get-time-gap-secs prev next)))
       (org-rl-debug nil
                     "org-rl-clock-cps-resolve-time: going to run %s with maxtimelen %d"
                     (org-rl-clock-time-adv-debug-prompt prev next) maxtimelen)

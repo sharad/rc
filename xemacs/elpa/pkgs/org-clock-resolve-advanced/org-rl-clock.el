@@ -27,9 +27,34 @@
 (provide 'org-rl-clock)
 
 
-(require 'org-rl-obj)
 
+(require 'org-capture+-helm)
 
+
+(require 'org-rl-obj)
+
+
+(defvar org-rl-capture+-helm-templates-alist org-capture+-helm-templates-alist)
+
+(defun org-rl-build-capture+-option (interval prompt-fn options-fn default-fn)
+  "To create new org entry"
+  (let ((action #'(lambda ()
+                    (let ((template (occ-capture+-helm-select-template)))
+                      (when template
+                        (let ((mrk (get-marker)))
+                          (with-org-capture+ 'entry `(marker ,mrk) template '(:empty-lines 1)
+                            (let ((capture-clock (make-org-rl-clock (point))))
+                              t))))))))
+    (helm-build-sync-source name
+      :candidates (if (functionp options-fn)
+                      (funcall options-fn)
+                    options-fn)
+      :action (list
+               (cons "New Task" 'new-task))
+      :action-transformer #'(lambda (actions candidate)
+                              (list (cons "select"))))))
+
+
 (defun org-rl-get-resume-clocks (resume-clocks clock-alist)
   (if (cl-notany                        ;;no current running clock should be present.
        #'(lambda (name-clock)
@@ -321,6 +346,16 @@
            ((eq opt 'include-in-new)
             (org-rl-clock-opt-include-in-new prev next timelen resume fail-quietly resume-clocks))
 
+           ((consp opt)
+            (let ((caropt (car opt))
+                  (arg    (cdr opt)))
+             (cond
+              ((eq opt 'include-in-other ;; subtract timelen from timelength
+                (org-rl-clock-opt-include-in-other prev next timelen resume fail-quietly resume-clocks)))
+
+              ((eq opt 'include-in-new
+                (org-rl-clock-opt-include-in-new prev next timelen resume fail-quietly resume-clocks))))))
+
            ((eq opt 'done)
             nil)
 
@@ -384,7 +419,7 @@
         (org-rl-debug nil "org-rl-clock-simple-resolve-time: [minibuffer-body] lotus-with-override-minibuffer-if active minibuffer found aborting it."))
     (org-rl-debug nil "org-rl-clock-simple-resolve-time: [body] lotus-with-override-minibuffer-if")
     (let ((debug-prompt t)
-          (maxtimelen (org-rl-get-time-gap-mins prev next)))
+          (maxtimelen (org-rl-get-time-gap-secs prev next)))
       ;;;
       ;; Warning (org-rl-clock): going to run prev[STARTED Unnamed task 565 51 0] next[imaginary 10 5] with maxtimelen 5
       ;; Warning (org-rl-clock): You have selected opt subtract and timelen 9
