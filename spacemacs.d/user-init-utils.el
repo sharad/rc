@@ -898,6 +898,8 @@ variable."
 (progn                                  ;debug testing code
   (defvar *test-idle-prints-timer* nil)
   (defvar *test-idle-prints-report-min-time* 21)
+
+  (setq *test-idle-prints-report-min-time* (* 5 60))
   (defun test-idle-prints (print)
     (if print
         (progn
@@ -926,7 +928,7 @@ variable."
 
   (defun lotus-necessary-test ()
     (interactive)
-    (test-idle-prints nil)))
+    (test-idle-prints t)))
 
 
 
