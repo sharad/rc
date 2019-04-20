@@ -34,27 +34,6 @@
 (require 'org-rl-obj)
 
 
-(defvar org-rl-capture+-helm-templates-alist org-capture+-helm-templates-alist)
-
-(defun org-rl-build-capture+-option (interval prompt-fn options-fn default-fn)
-  "To create new org entry"
-  (let ((action #'(lambda ()
-                    (let ((template (occ-capture+-helm-select-template)))
-                      (when template
-                        (let ((mrk (get-marker)))
-                          (with-org-capture+ 'entry `(marker ,mrk) template '(:empty-lines 1)
-                            (let ((capture-clock (make-org-rl-clock (point))))
-                              t))))))))
-    (helm-build-sync-source name
-      :candidates (if (functionp options-fn)
-                      (funcall options-fn)
-                    options-fn)
-      :action (list
-               (cons "New Task" 'new-task))
-      :action-transformer #'(lambda (actions candidate)
-                              (list (cons "select"))))))
-
-
 (defun org-rl-get-resume-clocks (resume-clocks clock-alist)
   (if (cl-notany                        ;;no current running clock should be present.
        #'(lambda (name-clock)
@@ -109,14 +88,6 @@
    (list prev next)
    (org-rl-get-resume-clocks resume-clocks
                              (list (cons :prev prev) (cons :next next)))))
-
-;; Debug (org-rl-clock): 2019-04-18 19:34:25 s: begin org-rl-clock-opt-include-in-prev
-;; Debug (org-rl-clock): 2019-04-18 19:34:25 s: org-rl-clock-expand-time: clock[<STARTED Unnamed task 820> <2019-04-18 Thu 19:01>-<2019-04-18 Thu 19:24> t] org-clock-clocking-in[nil]
-;; Debug (org-rl-clock): 2019-04-18 19:34:25 s: org-rl-clock-clock-out: clock[<STARTED Unnamed task 820> <2019-04-18 Thu 19:01>-<2019-04-18 Thu 19:34> t] fail-quietly[nil]
-;; Debug (org-rl-clock): 2019-04-18 19:34:28 s: finish org-rl-clock-opt-include-in-prev
-;; Debug (org-rl-clock): 2019-04-18 19:34:28 s: org-rl-clock-time-process-option: finished
-;; Debug (org-rl-clock): 2019-04-18 19:34:28 s: (org-rl-clock-null prev) nil
-;; Debug (org-rl-clock): 2019-04-18 19:34:28 s: (org-rl-clock-null next) t
 
 (cl-defmethod org-rl-clock-opt-include-in-prev ((prev org-rl-clock)
                                                 (next org-rl-clock)
@@ -201,6 +172,7 @@
 
 (cl-defmethod org-rl-clock-opt-include-in-other ((prev org-rl-clock)
                                                  (next org-rl-clock)
+                                                 other-marker
                                                  timelen
                                                  &optional
                                                  resume
@@ -211,7 +183,7 @@
   (org-rl-debug nil "begin %s" 'org-rl-clock-opt-include-in-other)
 
   (let ((maxtimelen   (org-rl-get-time-gap-secs prev next))
-        (other-marker (org-rl-select-other-clock))
+        (other-marker (or other-marker (org-rl-select-other-clock)))
         resume-alist
         prrev-resume next-resume other-resume)
 
@@ -253,6 +225,7 @@
 
 (cl-defmethod org-rl-clock-opt-include-in-new ((prev org-rl-clock)
                                                (next org-rl-clock)
+                                               template
                                                timelen
                                                &optional
                                                resume
@@ -338,23 +311,23 @@
             (org-rl-clock-opt-include-in-prev prev next timelen resume fail-quietly resume-clocks))
            ;; set org-clock-leftover-time here
            ((eq opt 'include-in-next)
-            (org-rl-clock-opt-include-in-next prev next timelen resume fail-quietly resume-clocks))
+            (org-rl-clock-opt-include-in-next  prev next timelen resume fail-quietly resume-clocks))
 
            ((eq opt 'include-in-other) ;; subtract timelen from timelength
-            (org-rl-clock-opt-include-in-other prev next timelen resume fail-quietly resume-clocks))
+            (org-rl-clock-opt-include-in-other prev next nil timelen resume fail-quietly resume-clocks))
 
            ((eq opt 'include-in-new)
-            (org-rl-clock-opt-include-in-new prev next timelen resume fail-quietly resume-clocks))
+            (org-rl-clock-opt-include-in-new prev next nil timelen resume fail-quietly resume-clocks))
 
            ((consp opt)
             (let ((caropt (car opt))
                   (arg    (cdr opt)))
              (cond
               ((eq opt 'include-in-other ;; subtract timelen from timelength
-                (org-rl-clock-opt-include-in-other prev next timelen resume fail-quietly resume-clocks)))
+                (org-rl-clock-opt-include-in-other prev next nil timelen resume fail-quietly resume-clocks)))
 
               ((eq opt 'include-in-new
-                (org-rl-clock-opt-include-in-new prev next timelen resume fail-quietly resume-clocks))))))
+                (org-rl-clock-opt-include-in-new prev next nil timelen resume fail-quietly resume-clocks))))))
 
            ((eq opt 'done)
             nil)

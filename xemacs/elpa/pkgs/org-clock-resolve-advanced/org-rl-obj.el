@@ -621,9 +621,56 @@
       marker)))
 
 
-;; TODO: Re-org here.
+(defvar org-rl-clock-fixed-heading
+  '())
 
-(defvar *org-rl-clock-fixed-markers*)
+(defun org-rl-find-heading-marker (file heading)
+  (let ((buff (find-file-noselect file)))
+    (when buff
+      (with-current-buffer buff
+        (org-find-exact-headline-in-buffer heading)))))
+
+(defun org-rl-find-all-other-marker-options ()
+  (remove nil
+          (mapcar #'(lambda (file-heading))
+                  (let* ((file    (car file-heading))
+                         (heading (cdr file-heading))
+                         (marker  (org-rl-find-heading-marker file heading)))
+                    (when marker
+                      (cons
+                       (format "Include in %s" heading)
+                       (cons 'include-in-other marker))))
+                  org-rl-clock-fixed-heading)))
+
+
+(defvar org-rl-capture+-helm-templates-alist org-capture+-helm-templates-alist)
+
+(defun org-rl-build-capture+-option (interval prompt-fn options-fn default-fn)
+  "To create new org entry"
+  (let ((action #'(lambda ()
+                    (let ((template (occ-capture+-helm-select-template)))
+                      (when template
+                        (let ((mrk (get-marker)))
+                          (with-org-capture+ 'entry `(marker ,mrk) template '(:empty-lines 1)
+                            (let ((capture-clock (make-org-rl-clock (point))))
+                              t))))))))
+    (helm-build-sync-source name
+      :candidates (if (functionp options-fn)
+                      (funcall options-fn)
+                    options-fn)
+      :action (list
+               (cons "New Task" 'new-task))
+      :action-transformer #'(lambda (actions candidate)
+                              (list (cons "select"))))))
+
+(defun org-rl-find-all-new-template-options ()
+  (mapcar #'(lambda (template))
+          (let* (template)
+            (cons
+             (format "Include in new %s" template)
+             (cons 'include-in-new marker)))
+          org-rl-capture+-helm-templates-alist))
+
 
 (cl-defmethod org-rl-clock-opts-common ((prev org-rl-clock)
                                         (next org-rl-clock)
@@ -643,11 +690,11 @@
                                                   resume-clocks)
   (let ((args
          (list prev next maxtimelen resume fail-quietly resume-clocks)))
-    (list
-     (cons "Include in %s"    '(include-in-other marker))
-     (cons "Include in other" 'include-in-other)
-     (cons "Include in new %s"    '(include-in-new template))
-     (cons "Include in new"   'include-in-new))))
+    (append
+     (org-rl-find-all-other-marker-options)
+     (list (cons "Include in %s"    '(include-in-other marker)))
+     (org-rl-find-all-new-template-options)
+     (list (cons "Include in new"   'include-in-new)))))
 
 (cl-defmethod org-rl-clock-opts-prev ((prev org-rl-clock)
                                       (next org-rl-clock)
