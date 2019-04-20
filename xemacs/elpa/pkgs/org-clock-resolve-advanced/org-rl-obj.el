@@ -557,10 +557,8 @@
                                         resume-clocks)
   (list
    (cons "Restart" 'restart)
-   (when (and
-          (org-rl-clock-real-p prev)
-          (org-rl-clock-real-p next))
-     (list (cons "Done" 'done)))))
+   (cons "Done"    'done)))
+
 
 (cl-defmethod org-rl-clock-opts-common-with-time ((prev org-rl-clock)
                                                   (next org-rl-clock)
@@ -571,7 +569,8 @@
   (let ((args
          (list prev next maxtimelen resume fail-quietly resume-clocks)))
     (list
-     (cons "Include in other" 'include-in-other))))
+     (cons "Include in other" 'include-in-other)
+     (cons "Include in other" 'include-in-new))))
 
 (cl-defmethod org-rl-clock-opts-prev ((prev org-rl-clock)
                                       (next org-rl-clock)

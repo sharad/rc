@@ -182,7 +182,7 @@
                     "org-rl-clock-cps-resolve-time: going to run %s with maxtimelen %d"
                     (org-rl-clock-time-adv-debug-prompt prev next) maxtimelen)
       (when (> maxtimelen 0)
-        (let* ((maxtimelen-mins-fn #'(lambda () (/ (org-rl-get-time-gap prev next) 60)))
+        (let* ((maxtimelen-mins-fn #'(lambda () (org-rl-get-time-gap-mins prev next)))
                (options (org-rl-clock-build-options
                          prev next
                          maxtimelen

@@ -224,6 +224,57 @@
   (list
    (list prev next)
    (org-rl-get-resume-clocks resume-clocks resume-alist)))
+
+
+(cl-defmethod org-rl-clock-opt-include-in-new ((prev org-rl-clock)
+                                               (next org-rl-clock)
+                                               timelen
+                                               &optional
+                                               resume
+                                               fail-quietly
+                                               resume-clocks)
+
+  (org-rl-debug nil "begin %s" 'org-rl-clock-opt-include-in-new)
+
+  (let ((maxtimelen   (org-rl-get-time-gap-secs prev next))
+        (other-marker (org-rl-select-other-clock))
+        resume-alist
+        prrev-resume next-resume other-resume)
+
+    (setf prev (org-rl-clock-clock-out prev fail-quietly))     ;if necessary
+    (setf next (org-rl-clock-clock-out next fail-quietly))     ;if necessary
+
+    (push (cons :prev prev) resume-alist)
+    (push (cons :next next) resume-alist)
+
+    (if (> timelen 0)
+        (setq prev
+              (org-rl-clock-clock-in-out
+               (org-rl-make-clock other-marker
+                                  (org-rl-clock-stop-time prev)
+                                  (time-add
+                                   (org-rl-clock-stop-time prev)
+                                   timelen))
+               resume
+               fail-quietly))
+      (setq next
+            (org-rl-clock-clock-in-out
+             (org-rl-make-clock other-marker
+                                (time-subtract
+                                 (org-rl-clock-start-time next)
+                                 (abs timelen))
+                                (org-rl-clock-stop-time next))
+             resume
+             fail-quietly))))
+
+  (push (cons :other (if (> timelen 0) prev next)) resume-alist)
+
+  ;; (org-rl-clocks-action nil nil prev next)
+  (org-rl-debug nil "finish %s" 'org-rl-clock-opt-include-in-other)
+  ;; TODO: add off to restart now (org-rl-clock-restart-now)
+  (list
+   (list prev next)
+   (org-rl-get-resume-clocks resume-clocks resume-alist)))
 
 
 (cl-defmethod org-rl-clock-time-process-option ((prev org-rl-clock)
@@ -266,6 +317,9 @@
 
            ((eq opt 'include-in-other) ;; subtract timelen from timelength
             (org-rl-clock-opt-include-in-other prev next timelen resume fail-quietly resume-clocks))
+
+           ((eq opt 'include-in-new)
+            (org-rl-clock-opt-include-in-new prev next timelen resume fail-quietly resume-clocks))
 
            ((eq opt 'done)
             nil)
