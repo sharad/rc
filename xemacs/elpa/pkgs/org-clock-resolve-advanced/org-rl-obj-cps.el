@@ -99,27 +99,41 @@
     (org-rl-debug :warning "in org-rl-clock-cps-process-helm-option opt[ %s ]" opt)
     (apply #'org-rl-clock-cps-process-option timelen option)))
 
+(defun org-rl-helm-sync-source-on-option (name list)
+  (org-rl-debug nil "org-rl-helm-build-options: name %s" name)
+  (org-rl-debug nil "org-rl-helm-build-options: list %s" list)
+  (helm-build-sync-source name
+    :candidates (cdr list)
+    :action (list
+             (cons "Select" #'org-rl-clock-cps-process-helm-option))
+    :action-transformer #'(lambda (actions candidate)
+                            (list (cons "select" #'org-rl-clock-cps-process-helm-option)))))
+
+(defun org-rl-helm-sync-source-on-option-tree (name list)
+  (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: name: %s" name)
+  (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: list: %s" list)
+  (if (eq :option (car list))
+      (org-rl-helm-sync-source-on-option name list)
+    (org-rl-helm-sync-source-on-option-tree (concat name " " (car list)) (cdr list))))
+
 (defun org-rl-helm-build-options (interval prompt-fn options-fn default-fn)
   (let ((name (if (functionp prompt-fn)
                   (funcall prompt-fn)
                 prompt-fn)))
-   (helm-build-sync-source name
-    :candidates (if (functionp options-fn)
-                    (funcall options-fn)
-                  options-fn)
-    :action (list
-             (cons "Select" #'org-rl-clock-cps-process-helm-option))
-    :action-transformer #'(lambda (actions candidate)
-                            (list (cons "select" #'org-rl-clock-cps-process-helm-option))))))
+    (mapcar
+     #'(lambda (list)
+         (org-rl-debug nil "org-rl-helm-build-options: map lambda %s" list)
+         (org-rl-helm-sync-source-on-option-tree (car list) (cdr list)))
+
+     (if (functionp options-fn)
+         (funcall options-fn)
+       options-fn))))
 
 (defun org-rl-clock-cps-read-option (interval prompt-fn options-fn default-fn)
   (let ((options (if (functionp options-fn) (funcall options-fn) options-fn))
         (prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn)))
     (message "%s" prompt)
-    (let (helm-sources)
-      (push
-       (org-rl-helm-build-options interval prompt-fn options 1)
-       helm-sources)
+    (let ((helm-sources (org-rl-helm-build-options interval prompt-fn options 1)))
       (helm helm-sources))))
 
 
