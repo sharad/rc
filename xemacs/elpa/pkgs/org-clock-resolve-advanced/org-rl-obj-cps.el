@@ -120,17 +120,12 @@
                          helm-options)))
       (org-rl-debug nil "org-rl-helm-sync-source-on-option: before helm-options %s" helm-options)
       (apply #'helm-make-source name 'helm-source-sync helm-options))))
-    ;; (helm-build-sync-source name
-    ;;   :candidates candidates
-    ;;   :action action
-    ;;   :action-transformer action-transformer)
-
 
 (defun org-rl-helm-sync-source-on-option-tree (name list)
   (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: name: %s" name)
   (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: list: %s" list)
   (let ((helm-options (remove-if-not #'(lambda (opt) (eq (car opt) :helm)) list))
-        (options (remove-if-not #'(lambda (opt) (member (car opt) '(:option :helm))) list))
+        (options (remove-if-not #'(lambda (opt) (member (car opt) '(:option))) list))
         (rec-options (remove-if #'(lambda (opt) (member (car opt) '(:option :helm) )) list)))
     (let ((options-helm     (org-rl-helm-sync-source-on-option name
                                                                (mapcar #'cdr options)
