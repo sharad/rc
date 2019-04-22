@@ -99,29 +99,42 @@
     (org-rl-debug :warning "in org-rl-clock-cps-process-helm-option opt[ %s ]" opt)
     (apply #'org-rl-clock-cps-process-option timelen option)))
 
-(defun org-rl-helm-sync-source-on-option (name list)
+(defun org-rl-helm-sync-source-on-option (name list helm-options)
   (org-rl-debug nil "org-rl-helm-sync-source-on-option: name %s" name)
   (org-rl-debug nil "org-rl-helm-sync-source-on-option: list %s" list)
   (let* ((candidates list)
-         (options    (cdr list))
-         (multiline (plist-get options :multiple)))
+         ;; (options    (cdr list))
+         ;; (multiline (plist-get options :multiple))
+         (action (list
+                  (cons "Select" #'org-rl-clock-cps-process-helm-option)))
+         (action-transformer #'(lambda (actions candidate)
+                                 (list (cons "select" #'org-rl-clock-cps-process-helm-option)))))
     (org-rl-debug nil "org-rl-helm-sync-source-on-option: candidates %s" candidates)
-    (org-rl-debug nil "org-rl-helm-sync-source-on-option: options %s" options)
+    (org-rl-debug nil "org-rl-helm-sync-source-on-option: after helm-options %s" helm-options)
     ;; (helm-make-source name 'helm-source-sync ,@args)
-    (helm-build-sync-source name
-      :candidates candidates
-      ;; :multiline multiline
-      :action (list
-               (cons "Select" #'org-rl-clock-cps-process-helm-option))
-      :action-transformer #'(lambda (actions candidate)
-                              (list (cons "select" #'org-rl-clock-cps-process-helm-option))))))
+    (let ((helm-options (append
+                         (list
+                           :candidates candidates
+                           :action action
+                           :action-transformer action-transformer)
+                         helm-options)))
+      (org-rl-debug nil "org-rl-helm-sync-source-on-option: before helm-options %s" helm-options)
+      (apply #'helm-make-source name 'helm-source-sync helm-options))))
+    ;; (helm-build-sync-source name
+    ;;   :candidates candidates
+    ;;   :action action
+    ;;   :action-transformer action-transformer)
+
 
 (defun org-rl-helm-sync-source-on-option-tree (name list)
   (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: name: %s" name)
   (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: list: %s" list)
-  (let ((options (remove-if-not #'(lambda (opt) (eq :option (car opt))) list))
-        (rec-options (remove-if #'(lambda (opt) (eq :option (car opt))) list)))
-    (let ((options-helm     (org-rl-helm-sync-source-on-option name (mapcar #'cdr options)))
+  (let ((helm-options (remove-if-not #'(lambda (opt) (eq (car opt) :helm)) list))
+        (options (remove-if-not #'(lambda (opt) (member (car opt) '(:option :helm))) list))
+        (rec-options (remove-if #'(lambda (opt) (member (car opt) '(:option :helm) )) list)))
+    (let ((options-helm     (org-rl-helm-sync-source-on-option name
+                                                               (mapcar #'cdr options)
+                                                               (apply #'append (mapcar #'cdr helm-options))))
           (rec-options-helm (mapcar
                              #'(lambda (recopt)
                                  (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: map name %s" name)
@@ -134,11 +147,6 @@
       (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: name = %s append %d" name (length (append
                                                                                                     rec-options-helm
                                                                                                     (list options-helm))))
-
-      ;; (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: name = %s options = %s" name options-helm)
-      ;; (dolist (rec rec-options-helm)
-      ;;   (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: name = %s rec = %s" name rec))
-
       (append
        (mapcar #'car rec-options-helm)
        (list options-helm)))))

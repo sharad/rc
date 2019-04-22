@@ -43,6 +43,8 @@ var bookmark_groups = {
         "http://www.linuxtoday.com",
         "http://xmodulo.com",
         "http://planet.ubuntu.com",
+        "https://www.techdrivein.com",
+        "http://www.ocsmag.com",
     ],
     "Math": [
         "https://plus.maths.org/content/News",

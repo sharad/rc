@@ -660,10 +660,10 @@
 
 (defvar org-rl-capture+-helm-templates-alist org-capture+-helm-templates-alist)
 
-(setq
- org-rl-capture+-helm-templates-alist
- '(("TODO" "* TODO %? %^g% %i [%a]" "* MILESTONE %? %^g %i [%a]")
-   ("MEETING" "* MEETING %? %^g %i [%a]")))
+;; (setq
+;;  org-rl-capture+-helm-templates-alist
+;;  '(("TODO" "* TODO %? %^g% %i [%a]" "* MILESTONE %? %^g %i [%a]")
+;;    ("MEETING" "* MEETING %? %^g %i [%a]")))
 
 ;; (defun org-rl-build-capture+-option (interval prompt-fn options-fn default-fn)
 ;;   "To create new org entry"
@@ -701,13 +701,15 @@
    #'(lambda (list)
        (cons
         (car list)
-        (mapcar #'(lambda (template)
-                    (list
-                     :option
-                     (format "%s" template)
-                     (cons 'include-in-new template)
-                     prev next maxtimelen resume fail-quietly resume-clocks))
-                (cdr list))))
+        (append
+         (list (list :helm :multiline t))
+         (mapcar #'(lambda (template)
+                      (list
+                       :option
+                       (format "%s" template)
+                       (cons 'include-in-new template)
+                       prev next maxtimelen resume fail-quietly resume-clocks))
+                  (cdr list)))))
    org-rl-capture+-helm-templates-alist))
 
 
@@ -854,22 +856,15 @@
           (append
            (if (org-rl-clock-null next)
                (list
-                (list
-                 "Usual"
-                 :helm
-                 :candidate
-                 (list
-                  (apply #'org-rl-clock-opts-prev-with-time args)
-                  (apply #'org-rl-clock-opts-next-with-time args)))
+                (append
+                 (list "Usual")
+                 (apply #'org-rl-clock-opts-prev-with-time args)
+                 (apply #'org-rl-clock-opts-next-with-time args))
                 (unless (zerop maxtimelen)
-                  (list "Other"
-                        :helm
-                        :candidate
-                        (list (apply #'org-rl-clock-opts-other-clock-with-time args))))
+                  (cons "Other"
+                        (apply #'org-rl-clock-opts-other-clock-with-time args)))
                 (unless (zerop maxtimelen)
-                  (list "News"
-                        :helm
-                        :candidate
+                  (cons "News"
                         (apply #'org-rl-clock-opts-new-clock-with-time args)))
                 (append
                  (list "Cancel")
@@ -878,9 +873,8 @@
              (list
               (append
                (list "Usual")
-               (list
-                (apply #'org-rl-clock-opts-next-with-time args)
-                (apply #'org-rl-clock-opts-prev-with-time args)))
+               (apply #'org-rl-clock-opts-next-with-time args)
+               (apply #'org-rl-clock-opts-prev-with-time args))
               (unless (zerop maxtimelen)
                 (cons "Other"
                       (apply #'org-rl-clock-opts-other-clock-with-time args)))
