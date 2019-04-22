@@ -100,40 +100,76 @@
     (apply #'org-rl-clock-cps-process-option timelen option)))
 
 (defun org-rl-helm-sync-source-on-option (name list)
-  (org-rl-debug nil "org-rl-helm-build-options: name %s" name)
-  (org-rl-debug nil "org-rl-helm-build-options: list %s" list)
-  (helm-build-sync-source name
-    :candidates (cdr list)
-    :action (list
-             (cons "Select" #'org-rl-clock-cps-process-helm-option))
-    :action-transformer #'(lambda (actions candidate)
-                            (list (cons "select" #'org-rl-clock-cps-process-helm-option)))))
+  (org-rl-debug nil "org-rl-helm-sync-source-on-option: name %s" name)
+  (org-rl-debug nil "org-rl-helm-sync-source-on-option: list %s" list)
+  (let* ((candidates list)
+         (options    (cdr list))
+         (multiline (plist-get options :multiple)))
+    (org-rl-debug nil "org-rl-helm-sync-source-on-option: candidates %s" candidates)
+    (org-rl-debug nil "org-rl-helm-sync-source-on-option: options %s" options)
+    ;; (helm-make-source name 'helm-source-sync ,@args)
+    (helm-build-sync-source name
+      :candidates candidates
+      ;; :multiline multiline
+      :action (list
+               (cons "Select" #'org-rl-clock-cps-process-helm-option))
+      :action-transformer #'(lambda (actions candidate)
+                              (list (cons "select" #'org-rl-clock-cps-process-helm-option))))))
 
 (defun org-rl-helm-sync-source-on-option-tree (name list)
   (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: name: %s" name)
   (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: list: %s" list)
-  (if (eq :option (car list))
-      (org-rl-helm-sync-source-on-option name list)
-    (org-rl-helm-sync-source-on-option-tree (concat name " " (car list)) (cdr list))))
+  (let ((options (remove-if-not #'(lambda (opt) (eq :option (car opt))) list))
+        (rec-options (remove-if #'(lambda (opt) (eq :option (car opt))) list)))
+    (let ((options-helm     (org-rl-helm-sync-source-on-option name (mapcar #'cdr options)))
+          (rec-options-helm (mapcar
+                             #'(lambda (recopt)
+                                 (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: map name %s" name)
+                                 (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: map (car recopt) %s" (car recopt))
+                                 (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: map (cdr recopt) %s" (cdr recopt))
+                                 (org-rl-helm-sync-source-on-option-tree (concat name " " (car recopt)) (cdr recopt)))
+                             rec-options)))
+      (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: name = %s rec-options = %d rec-options-helm = %d" name (length rec-options) (length rec-options-helm))
+      (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: name = %s options = %d options-helm = %d" name (length options) (length options-helm))
+      (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: name = %s append %d" name (length (append
+                                                                                                    rec-options-helm
+                                                                                                    (list options-helm))))
+
+      ;; (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: name = %s options = %s" name options-helm)
+      ;; (dolist (rec rec-options-helm)
+      ;;   (org-rl-debug nil "org-rl-helm-sync-source-on-option-tree: name = %s rec = %s" name rec))
+
+      (append
+       (mapcar #'car rec-options-helm)
+       (list options-helm)))))
 
 (defun org-rl-helm-build-options (interval prompt-fn options-fn default-fn)
   (let ((name (if (functionp prompt-fn)
                   (funcall prompt-fn)
-                prompt-fn)))
-    (mapcar
-     #'(lambda (list)
-         (org-rl-debug nil "org-rl-helm-build-options: map lambda %s" list)
-         (org-rl-helm-sync-source-on-option-tree (car list) (cdr list)))
+                prompt-fn))
+        (options (if (functionp options-fn)
+                     (funcall options-fn)
+                   options-fn)))
+    (org-rl-debug nil "org-rl-helm-build-options: options: %s" options)
 
-     (if (functionp options-fn)
-         (funcall options-fn)
-       options-fn))))
+    (apply
+     #'append
+     (mapcar
+      #'(lambda (list)
+          (org-rl-debug nil "org-rl-helm-build-options: map lambda %s" list)
+          (org-rl-helm-sync-source-on-option-tree (car list) (cdr list)))
+      options))))
 
 (defun org-rl-clock-cps-read-option (interval prompt-fn options-fn default-fn)
+  (org-rl-debug nil "org-rl-clock-cps-read-option:")
   (let ((options (if (functionp options-fn) (funcall options-fn) options-fn))
         (prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn)))
-    (message "%s" prompt)
-    (let ((helm-sources (org-rl-helm-build-options interval prompt-fn options 1)))
+    (org-rl-debug nil "org-rl-clock-cps-read-option: %s %d" prompt (length options))
+    (dolist (opt options)
+      (org-rl-debug nil "org-rl-clock-cps-read-option: opt = %s" opt))
+    (let* ((helm-sources (org-rl-helm-build-options interval prompt-fn options 1)))
+      (dolist (helm-src helm-sources)
+        (org-rl-debug nil "org-rl-clock-cps-read-option: helm-src = %s" helm-src))
       (helm helm-sources))))
 
 

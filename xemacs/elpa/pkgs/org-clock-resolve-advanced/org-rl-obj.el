@@ -70,10 +70,10 @@
          (args (append (list fmt) (cdr args))))
     ;; (apply #'lwarn 'org-rl-clock level args)
     (message
+     "%s"
      (concat
       (format "org-rl-clock %s: " level)
       (apply #'format args)))))
-
 
 (defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
   (with-select-frame-set-input-disable-raise
@@ -660,6 +660,11 @@
 
 (defvar org-rl-capture+-helm-templates-alist org-capture+-helm-templates-alist)
 
+(setq
+ org-rl-capture+-helm-templates-alist
+ '(("TODO" "* TODO %? %^g% %i [%a]" "* MILESTONE %? %^g %i [%a]")
+   ("MEETING" "* MEETING %? %^g %i [%a]")))
+
 ;; (defun org-rl-build-capture+-option (interval prompt-fn options-fn default-fn)
 ;;   "To create new org entry"
 ;;   (let ((action #'(lambda ()
@@ -691,14 +696,19 @@
                                                     resume
                                                     fail-quietly
                                                     resume-clocks)
-  (mapcar #'(lambda (template)
-              (let* (template)
-                (list
-                 :option
-                 (format "Include in new %s" template)
-                 (cons 'include-in-new template)
-                 prev next maxtimelen resume fail-quietly resume-clocks)))
-          org-rl-capture+-helm-templates-alist))
+
+  (mapcar
+   #'(lambda (list)
+       (cons
+        (car list)
+        (mapcar #'(lambda (template)
+                    (list
+                     :option
+                     (format "%s" template)
+                     (cons 'include-in-new template)
+                     prev next maxtimelen resume fail-quietly resume-clocks))
+                 (cdr list))))
+   org-rl-capture+-helm-templates-alist))
 
 
 (cl-defmethod org-rl-clock-opts-common ((prev org-rl-clock)
@@ -722,8 +732,10 @@
          (list prev next maxtimelen resume fail-quietly resume-clocks)))
     (append
      (apply #'org-rl-find-all-other-marker-options args)
-     (list :option "Include in other"
-           'include-in-other prev next maxtimelen resume fail-quietly resume-clocks))))
+     (list
+      (list :option
+            "Include in other"
+            'include-in-other prev next maxtimelen resume fail-quietly resume-clocks)))))
 
 (cl-defmethod org-rl-clock-opts-new-clock-with-time ((prev org-rl-clock)
                                                      (next org-rl-clock)
@@ -737,8 +749,10 @@
     (append
      (apply #'org-rl-find-all-new-template-options args)
      (list
-      :option "Include in new"
-      'include-in-new prev next maxtimelen resume fail-quietly resume-clocks))))
+      (list
+       :option
+       "Include in new"
+       'include-in-new prev next maxtimelen resume fail-quietly resume-clocks)))))
 
 (cl-defmethod org-rl-clock-opts-prev ((prev org-rl-clock)
                                       (next org-rl-clock)
@@ -845,10 +859,10 @@
                  (apply #'org-rl-clock-opts-prev-with-time args)
                  (apply #'org-rl-clock-opts-next-with-time args))
                 (unless (zerop maxtimelen)
-                  (list "Other"
+                  (cons "Other"
                         (apply #'org-rl-clock-opts-other-clock-with-time args)))
                 (unless (zerop maxtimelen)
-                  (list "News"
+                  (cons "News"
                         (apply #'org-rl-clock-opts-new-clock-with-time args)))
                 (append
                  (list "Cancel")
@@ -860,10 +874,10 @@
                (apply #'org-rl-clock-opts-next-with-time args)
                (apply #'org-rl-clock-opts-prev-with-time args))
               (unless (zerop maxtimelen)
-                (list "Other"
+                (cons "Other"
                       (apply #'org-rl-clock-opts-other-clock-with-time args)))
               (unless (zerop maxtimelen)
-                (list "News"
+                (cons "News"
                       (apply #'org-rl-clock-opts-new-clock-with-time args)))
               (append
                (list "Cancel")
