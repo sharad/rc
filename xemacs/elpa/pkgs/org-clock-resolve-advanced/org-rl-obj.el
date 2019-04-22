@@ -64,16 +64,18 @@
 
 
 (defun org-rl-debug (level &rest args)
-  (let* ((level (or level :debug))
+  (let* ((ilevel (or level :debug))
          (ts (time-stamp-string))
          (fmt (format "%s: %s" ts (car args)))
          (args (append (list fmt) (cdr args))))
-    ;; (apply #'lwarn 'org-rl-clock level args)
-    (message
-     "%s"
-     (concat
-      (format "org-rl-clock %s: " level)
-      (apply #'format args)))))
+    ;; (apply #'lwarn 'org-rl-clock ilevel args)
+
+    (when level
+      (message
+       "%s"
+       (concat
+        (format "org-rl-clock %s: " ilevel)
+        (apply #'format args))))))
 
 (defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
   (with-select-frame-set-input-disable-raise
@@ -856,35 +858,39 @@
           (append
            (if (org-rl-clock-null next)
                (list
-                (append
-                 (list "Usual")
-                 (apply #'org-rl-clock-opts-prev-with-time args)
-                 (apply #'org-rl-clock-opts-next-with-time args))
+                (cons
+                 "Usual"
+                 (append
+                  (apply #'org-rl-clock-opts-prev-with-time args)
+                  (apply #'org-rl-clock-opts-next-with-time args)))
                 (unless (zerop maxtimelen)
                   (cons "Other"
                         (apply #'org-rl-clock-opts-other-clock-with-time args)))
                 (unless (zerop maxtimelen)
                   (cons "News"
                         (apply #'org-rl-clock-opts-new-clock-with-time args)))
-                (append
-                 (list "Cancel")
-                 (apply #'org-rl-clock-opts-next args)
-                 (apply #'org-rl-clock-opts-prev args)))
+                (cons
+                 "Cancel"
+                 (append
+                  (apply #'org-rl-clock-opts-next args)
+                  (apply #'org-rl-clock-opts-prev args))))
              (list
-              (append
-               (list "Usual")
-               (apply #'org-rl-clock-opts-next-with-time args)
-               (apply #'org-rl-clock-opts-prev-with-time args))
+              (cons
+               "Usual"
+               (append
+                (apply #'org-rl-clock-opts-next-with-time args)
+                (apply #'org-rl-clock-opts-prev-with-time args)))
               (unless (zerop maxtimelen)
                 (cons "Other"
                       (apply #'org-rl-clock-opts-other-clock-with-time args)))
               (unless (zerop maxtimelen)
                 (cons "News"
                       (apply #'org-rl-clock-opts-new-clock-with-time args)))
-              (append
-               (list "Cancel")
-               (apply #'org-rl-clock-opts-prev args)
-               (apply #'org-rl-clock-opts-next args))))
+              (cons
+               "Cancel"
+               (cons
+                (apply #'org-rl-clock-opts-prev args)
+                (apply #'org-rl-clock-opts-next args)))))
            (list
             (cons
              "Common"
