@@ -707,7 +707,7 @@
                      (format "%s" template)
                      (cons 'include-in-new template)
                      prev next maxtimelen resume fail-quietly resume-clocks))
-                 (cdr list))))
+                (cdr list))))
    org-rl-capture+-helm-templates-alist))
 
 
@@ -854,15 +854,22 @@
           (append
            (if (org-rl-clock-null next)
                (list
-                (append
-                 (list "Usual")
-                 (apply #'org-rl-clock-opts-prev-with-time args)
-                 (apply #'org-rl-clock-opts-next-with-time args))
+                (list
+                 "Usual"
+                 :helm
+                 :candidate
+                 (list
+                  (apply #'org-rl-clock-opts-prev-with-time args)
+                  (apply #'org-rl-clock-opts-next-with-time args)))
                 (unless (zerop maxtimelen)
-                  (cons "Other"
-                        (apply #'org-rl-clock-opts-other-clock-with-time args)))
+                  (list "Other"
+                        :helm
+                        :candidate
+                        (list (apply #'org-rl-clock-opts-other-clock-with-time args))))
                 (unless (zerop maxtimelen)
-                  (cons "News"
+                  (list "News"
+                        :helm
+                        :candidate
                         (apply #'org-rl-clock-opts-new-clock-with-time args)))
                 (append
                  (list "Cancel")
@@ -871,8 +878,9 @@
              (list
               (append
                (list "Usual")
-               (apply #'org-rl-clock-opts-next-with-time args)
-               (apply #'org-rl-clock-opts-prev-with-time args))
+               (list
+                (apply #'org-rl-clock-opts-next-with-time args)
+                (apply #'org-rl-clock-opts-prev-with-time args)))
               (unless (zerop maxtimelen)
                 (cons "Other"
                       (apply #'org-rl-clock-opts-other-clock-with-time args)))
