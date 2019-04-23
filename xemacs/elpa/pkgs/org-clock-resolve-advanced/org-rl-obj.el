@@ -70,7 +70,7 @@
          (args (append (list fmt) (cdr args))))
     ;; (apply #'lwarn 'org-rl-clock ilevel args)
 
-    (when level
+    (when nil ;; level
       (message
        "%s"
        (concat
@@ -898,7 +898,7 @@
              "Common"
              (apply #'org-rl-clock-opts-common args))))))
     (org-rl-debug nil "org-rl-clock-build-options: options %s" options)
-    (message "org-rl-clock-build-options: done")
+    (org-rl-debug nil "org-rl-clock-build-options: done")
     options))
 
 (defvar org-rl-read-interval 60)

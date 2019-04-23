@@ -217,7 +217,7 @@
                          resume
                          fail-quietly
                          resume-clocks))
-               (ret (message "org-rl-clock-cps-resolve-time: options %s" options))
+               (ret (org-rl-debug nil "org-rl-clock-cps-resolve-time: options %s" options))
                (opt
                 (org-rl-clock-cps-read-option
                  org-rl-read-interval
