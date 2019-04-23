@@ -25,8 +25,8 @@
 ;;; Code:
 
 (provide 'org-rl-obj)
-
 
+
 (require 'cl-macs)
 (require 'cl-generic)
 
@@ -45,8 +45,8 @@
 (eval-when-compile
   (require 'org-clock-utils-lotus))
 (require 'org-clock-utils-lotus)
-
 
+
 (defvar org-rl-org-clock-persist nil "Control org-clock-persist at time of org-resolve clock-in")
 (defvar org-rl-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of org-resolev clock-in")
 
@@ -61,8 +61,8 @@
       (setf (org-rl-clock-marker clock) org-clock-marker)
       (setf (org-rl-clock-current clock) t)
       clock)))
-
 
+
 (defun org-rl-debug (level &rest args)
   (let* ((ilevel (or level :debug))
          (ts (time-stamp-string))
@@ -77,6 +77,7 @@
         (format "org-rl-clock %s: " ilevel)
         (apply #'format args))))))
 
+
 (defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
   (with-select-frame-set-input-disable-raise
     (with-timeout (interval
@@ -104,8 +105,8 @@
 
 (defun time-eq (time1 time2)
   (< (abs (time-to-seconds (time-subtract time1 time2))) 60))
-
 
+
 (cl-defstruct org-rl-time
   time)
 
@@ -161,8 +162,8 @@
 
 (defun org-rl-make-current-time ()
   (make-org-rl-time :time 'now))
-
 
+
 (defun time-get-time (time)
   (when time
     (if (time-p time)
@@ -171,6 +172,7 @@
           time)
       (error "Wring time %s passed." time))))
 
+
 (cl-defmethod org-rl-format (time)
   (let ((fmt (cdr org-time-stamp-formats)))
     (format-time-string fmt (time-get-time time))))
@@ -209,7 +211,6 @@
 (cl-defmethod org-rl-clock-name-bracket ((clock org-rl-clock))
   ;;(org-rl-clock-marker clock)
   (concat "<" (org-rl-clock-heading clock) ">"))
-
 
 
 (cl-defmethod org-rl-time-get-time ((time org-rl-time))
@@ -229,6 +230,7 @@
   (org-rl-debug :warning "org-rl-time-current-min-p: time=<%s>" (org-rl-format time))
   (< (abs (org-rl-time-current-delta-secs time)) 60))
 
+
 (cl-defmethod org-rl-clock-current-real ((clock org-rl-clock))
   (unless (org-rl-clock-null clock)
     (org-rl-clock-current clock)))
