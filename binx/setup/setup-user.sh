@@ -2301,6 +2301,23 @@ function setup_dirs()
     fi
 }
 
+function setup_dirs_safely()
+{
+    running sudo systemctl stop  postfix.service
+    running sudo systemctl stop  postfix.service
+
+    running setup_dirs
+
+    if [ -e ~/.maildir -a -L ~/.maildir -a -d ~/.maildir ] &&
+           [ -e ~/.maildir/dovecot.index -a -e ~/.maildir/dovecot.index.cache -a -e ~/.maildir/dovecot-uidlist -a -e ~/.maildir/dovecot-uidvalidity ]
+    then
+        running sudo systemctl start  postfix.service
+        running sudo systemctl start  postfix.service
+    else
+        warning Can not start postfix and dovecot
+    fi
+}
+
 function setup_spacemacs()
 {
     login_env_dir=~/.rsetup/login/env.d
