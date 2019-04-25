@@ -83,4 +83,40 @@
 (put 'with-org-capture+ 'lisp-indent-function 4)
 
 
+
+(defmacro after-org-capture-plus (type target template plist &rest body)
+  `(let* ((after-finalize #'(lambda () ,@body))
+          (plist (append
+                  (list :after-finalize after-finalize)
+                  ,plist)))
+     (lwarn 'occ-capture+ :debug "plist %s \n" plist)
+     (apply #'org-capture-plus
+            ,type
+            ,target
+            ,template
+            plist)))
+(put 'after-org-capture-plus 'lisp-indent-function 4)
+
+(defmacro after-org-capture+ (type target template plist &rest body)
+  `(after-org-capture-plus ,type ,target ,template ,plist ,@body))
+(put 'with-org-capture+ 'lisp-indent-function 4)
+
+
+(defmacro before-org-capture-plus (type target template plist &rest body)
+  `(let* ((before-finalize #'(lambda () ,@body))
+          (plist (append
+                  (list :before-finalize before-finalize)
+                  ,plist)))
+     (lwarn 'occ-capture+ :debug "plist %s \n" plist)
+     (apply #'org-capture-plus
+            ,type
+            ,target
+            ,template
+            plist)))
+(put 'before-org-capture-plus 'lisp-indent-function 4)
+
+(defmacro before-org-capture+ (type target template plist &rest body)
+  `(before-org-capture-plus ,type ,target ,template ,plist ,@body))
+(put 'with-org-capture+ 'lisp-indent-function 4)
+
 ;;; org-capture+-helm.el ends here

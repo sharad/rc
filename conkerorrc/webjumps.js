@@ -159,6 +159,9 @@ var bookmark_groups = {
         "http://satellite.imd.gov.in/img/3Dasiasec_vis.jpg",
         "http://satellite.imd.gov.in/img/3Dsnd_lwir6_b1.jpg",
     ],
+    "History Archaeology": [
+        "https://www.harappa.com",
+    ],
     "Tech/shell": [
         "http://xmodulo.com/",
         "https://www.ostechnix.com/"
