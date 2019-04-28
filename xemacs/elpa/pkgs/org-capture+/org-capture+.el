@@ -65,10 +65,13 @@ abort `\\[org-capture-kill]'.")))
 ;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*org-capture-plus-finalize][org-capture-plus-finalize:1]]
 (defun org-capture-plus-finalize (&optional stay-with-capture)
   (interactive "P")
-  (let ((finalize (org-capture-get :finalize)))
-    (when (or (null finalize)
-              (funcall finalize))
-      (org-capture-finalize stay-with-capture))))
+  (let ((before-finalize (org-capture-get :before-finalize))
+        (after-finalize (org-capture-get :after-finalize)))
+    (when (or (null before-finalize)
+              (funcall before-finalize))
+      (when (org-capture-finalize stay-with-capture)
+        (unless (null after-finalize)
+          (funcall after-finalize))))))
 ;; org-capture-plus-finalize:1 ends here
 
 ;; Overriding org-capture-place-template function
