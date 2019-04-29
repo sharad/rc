@@ -241,6 +241,7 @@
   ;; (org-rl-clocks-action nil nil prev next)
   (org-rl-debug nil "finish %s" 'org-rl-clock-opt-include-in-other)
   ;; TODO: add off to restart now (org-rl-clock-restart-now)
+  ;; next processing will be handled in after-org-capture+ cps
   nil)
 
 
