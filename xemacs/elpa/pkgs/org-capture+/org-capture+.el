@@ -429,6 +429,7 @@ Store them in the capture property list."
 ;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*new%20capture][new capture:1]]
 (defun org-capture-plus-get-template (template)
   (cond
+   ((stringp template) template)
    ((fboundp template) (funcall template))
    ((symbolp template) (symbol-value template))
    (t template)))

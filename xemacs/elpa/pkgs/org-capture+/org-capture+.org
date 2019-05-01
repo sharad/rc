@@ -442,6 +442,7 @@
 
   (defun org-capture-plus-get-template (template)
     (cond
+     ((stringp template) template)
      ((fboundp template) (funcall template))
      ((symbolp template) (symbol-value template))
      (t template)))

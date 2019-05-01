@@ -82,7 +82,7 @@
 
 (defun org-rl-clock-cps-process-helm-option (option)
   (org-rl-debug :warning "started org-rl-clock-cps-process-helm-option opt: %s" option)
-  (let* ((debug-prompt t)
+  (let* ((debug-prompt  t)
          (opt           (nth 0 option))
          (prev          (nth 1 option))
          (next          (nth 2 option))
@@ -93,7 +93,10 @@
            #'(lambda ()
                (let ((maxtimelen-mins (funcall maxtimelen-mins-fn)))
                  (if debug-prompt
-                     (format "%s [%s] how many minutes? [%d] " (org-rl-clock-time-debug-prompt prev next) opt maxtimelen-mins)
+                     (format "%s [%s] how many minutes? [%d] "
+                             (org-rl-clock-time-debug-prompt prev next)
+                             (if (consp opt) (car opt) opt)
+                             maxtimelen-mins)
                    (format "[%s] how many minutes? [%d] " opt maxtimelen-mins))))
            opt
            maxtimelen-mins-fn)))
@@ -158,6 +161,7 @@
 
     (apply
      #'append
+     (list (helm-build-dummy-source name))
      (mapcar
       #'(lambda (list)
           (org-rl-debug nil "org-rl-helm-build-options: map lambda %s" list)

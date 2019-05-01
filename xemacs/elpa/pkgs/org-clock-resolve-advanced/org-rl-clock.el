@@ -235,6 +235,8 @@
   (org-rl-debug nil "begin %s" 'org-rl-clock-opt-include-in-new)
 
   (let ((mrk (org-rl-select-other-clock)))
+    (org-rl-debug nil "begin %s: org-rl-select-other-clock: %s" 'org-rl-clock-opt-include-in-new mrk)
+    (org-rl-debug nil "begin %s: template: %s" 'org-rl-clock-opt-include-in-new template)
     (after-org-capture+ 'entry `(marker ,mrk) template '(:empty-lines 1)
       (let (mrk (point-marker))
         (org-rl-clock-opt-include-in-other prev next mrk timelen resume fail-quietly resume-clocks))))
@@ -290,15 +292,17 @@
             (org-rl-clock-opt-include-in-new prev next nil timelen resume fail-quietly resume-clocks))
 
            ((consp opt)
+            (org-rl-debug nil "org-rl-clock-time-process-option: in consp")
             (let ((caropt (car opt)))
              (cond
-              ((eq opt 'include-in-other) ;; subtract timelen from timelength
+              ((eq caropt 'include-in-other) ;; subtract timelen from timelength
                (let ((other-marker   (cdr opt)))
                  (org-rl-clock-opt-include-in-other prev next other-marker timelen resume fail-quietly resume-clocks)))
 
-              ((eq opt 'include-in-new)
+              ((eq caropt 'include-in-new)
                (let ((template (cdr opt)))
-                 (org-rl-clock-opt-include-in-new prev next template timelen resume fail-quietly resume-clocks))))))
+                 (org-rl-clock-opt-include-in-new prev next template timelen resume fail-quietly resume-clocks)))
+              (t (error "Wrong option %s" opt)))))
 
            ((eq opt 'done)
             nil)
