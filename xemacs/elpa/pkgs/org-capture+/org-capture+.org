@@ -79,10 +79,10 @@
               (after-finalize (org-capture-get :after-finalize))
               (buff   (org-base-buffer (current-buffer))))
           (when (or (null before-finalize)
-                    (funcall before-finalize))
+                    (funcall before-finalize nil))
             (when (org-capture-finalize stay-with-capture)
               (unless (null after-finalize)
-                (funcall after-finalize))))))
+                (funcall after-finalize nil))))))
 
 
 

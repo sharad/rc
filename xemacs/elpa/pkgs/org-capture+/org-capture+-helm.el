@@ -65,8 +65,8 @@
 
 
 
-(defmacro with-org-capture-plus (type target template plist &rest body)
-  `(let* ((before-finalize #'(lambda () ,@body))
+(defmacro with-org-capture-plus (arg type target template plist &rest body)
+  `(let* ((before-finalize #'(lambda (,arg) ,@body))
           (plist (append
                   (list :before-finalize before-finalize)
                   ,plist)))
@@ -78,8 +78,8 @@
             plist)))
 (put 'with-org-capture-plus 'lisp-indent-function 4)
 
-(defmacro with-org-capture+ (type target template plist &rest body)
-  `(with-org-capture-plus ,type ,target ,template ,plist ,@body))
+(defmacro with-org-capture+ (arg type target template plist &rest body)
+  `(with-org-capture-plus ,arg ,type ,target ,template ,plist ,@body))
 (put 'with-org-capture+ 'lisp-indent-function 4)
 
 

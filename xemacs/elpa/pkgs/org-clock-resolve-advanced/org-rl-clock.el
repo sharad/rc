@@ -240,7 +240,7 @@
 
   (org-rl-debug nil "begin %s" 'org-rl-clock-opt-include-in-new)
 
-  (org-rl-debug nil "begin %s: prev=%s next=%s other-marker-%s timelen=%d"
+  (org-rl-debug nil "begin %s: prev=%s next=%s timelen=%d"
                 'org-rl-clock-opt-include-in-new
                 prev
                 next
