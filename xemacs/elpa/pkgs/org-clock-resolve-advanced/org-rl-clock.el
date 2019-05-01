@@ -178,9 +178,15 @@
                                                  resume
                                                  fail-quietly
                                                  resume-clocks)
-  ;; (if debug-prompt (org-rl-clock-time-debug-prompt prev next t "include-in-other"))
+
 
   (org-rl-debug nil "begin %s" 'org-rl-clock-opt-include-in-other)
+  (org-rl-debug nil "begin %s: prev=%s next=%s other-marker-%s timelen=%d"
+                'org-rl-clock-opt-include-in-other
+                prev
+                next
+                other-marker
+                timelen)
 
   (let ((maxtimelen   (org-rl-get-time-gap-secs prev next))
         (other-marker (or other-marker (org-rl-select-other-clock)))
@@ -234,6 +240,16 @@
 
   (org-rl-debug nil "begin %s" 'org-rl-clock-opt-include-in-new)
 
+  (org-rl-debug nil "begin %s: prev=%s next=%s other-marker-%s timelen=%d"
+                'org-rl-clock-opt-include-in-new
+                prev
+                next
+                timelen)
+
+  (org-rl-debug nil "begin %s: template=%s"
+                'org-rl-clock-opt-include-in-new
+                template)
+
   (let ((mrk (org-rl-select-other-clock)))
     (org-rl-debug nil "begin %s: org-rl-select-other-clock: %s" 'org-rl-clock-opt-include-in-new mrk)
     (org-rl-debug nil "begin %s: template: %s" 'org-rl-clock-opt-include-in-new template)
@@ -242,7 +258,7 @@
         (org-rl-debug nil "org-rl-clock-opt-include-in-new: org-capture-last-stored-marker = %s" org-capture-last-stored-marker)
         (org-rl-clock-opt-include-in-other prev next mrk timelen resume fail-quietly resume-clocks))))
   ;; (org-rl-clocks-action nil nil prev next)
-  (org-rl-debug nil "finish %s" 'org-rl-clock-opt-include-in-other)
+  (org-rl-debug nil "finish %s" 'org-rl-clock-opt-include-in-new)
   ;; TODO: add off to restart now (org-rl-clock-restart-now)
   ;; next processing will be handled in after-org-capture+ cps
   nil)

@@ -171,7 +171,7 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
              (float-time
               (time-subtract
                (current-time)
-               (org-clock-get-nth-half-clock-time marker 1)))
+               clock-time))
              60))))
     mins-spent))
 
