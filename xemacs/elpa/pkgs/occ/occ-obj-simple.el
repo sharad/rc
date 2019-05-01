@@ -210,7 +210,7 @@
          (mrk (occ-tsk-marker tsk))
          (template (occ-capture+-helm-select-template)))
     (when template
-     (with-org-capture+ 'entry `(marker ,mrk) template '(:empty-lines 1)
+     (with-org-capture+ mrk 'entry `(marker ,mrk) template '(:empty-lines 1)
        (progn
          (occ-obj-prop-edit tsk ctx 7)
          (let ((newchild (occ-make-tsk nil)))

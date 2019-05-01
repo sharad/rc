@@ -66,12 +66,18 @@ abort `\\[org-capture-kill]'.")))
 (defun org-capture-plus-finalize (&optional stay-with-capture)
   (interactive "P")
   (let ((before-finalize (org-capture-get :before-finalize))
-        (after-finalize (org-capture-get :after-finalize)))
+        (after-finalize (org-capture-get :after-finalize))
+        (buff   (org-base-buffer (current-buffer)))
+        (pos    (point-min))
+        (marker (make-marker)))
+
+    (set-marker marker pos buff)
+    ;; (buffer-base-buffer (current-buffer))
     (when (or (null before-finalize)
-              (funcall before-finalize))
+              (funcall before-finalize marker))
       (when (org-capture-finalize stay-with-capture)
         (unless (null after-finalize)
-          (funcall after-finalize))))))
+          (funcall after-finalize marker))))))
 ;; org-capture-plus-finalize:1 ends here
 
 ;; Overriding org-capture-place-template function

@@ -65,8 +65,8 @@
 
 
 
-(defmacro with-org-capture-plus (arg type target template plist &rest body)
-  `(let* ((before-finalize #'(lambda (,arg) ,@body))
+(defmacro with-org-capture-plus (marker type target template plist &rest body)
+  `(let* ((before-finalize #'(lambda (,marker) ,@body))
           (plist (append
                   (list :before-finalize before-finalize)
                   ,plist)))
@@ -76,15 +76,15 @@
             ,target
             ,template
             plist)))
-(put 'with-org-capture-plus 'lisp-indent-function 4)
+(put 'with-org-capture-plus 'lisp-indent-function 5)
 
-(defmacro with-org-capture+ (arg type target template plist &rest body)
-  `(with-org-capture-plus ,arg ,type ,target ,template ,plist ,@body))
-(put 'with-org-capture+ 'lisp-indent-function 4)
+(defmacro with-org-capture+ (marker type target template plist &rest body)
+  `(with-org-capture-plus ,marker ,type ,target ,template ,plist ,@body))
+(put 'with-org-capture+ 'lisp-indent-function 5)
 
 
-(defmacro after-org-capture-plus (type target template plist &rest body)
-  `(let* ((after-finalize #'(lambda () ,@body))
+(defmacro after-org-capture-plus (marker type target template plist &rest body)
+  `(let* ((after-finalize #'(lambda (,marker) ,@body))
           (plist (append
                   (list :after-finalize after-finalize)
                   ,plist)))
@@ -94,15 +94,15 @@
             ,target
             ,template
             plist)))
-(put 'after-org-capture-plus 'lisp-indent-function 4)
+(put 'after-org-capture-plus 'lisp-indent-function 5)
 
-(defmacro after-org-capture+ (type target template plist &rest body)
-  `(after-org-capture-plus ,type ,target ,template ,plist ,@body))
-(put 'with-org-capture+ 'lisp-indent-function 4)
+(defmacro after-org-capture+ (marker type target template plist &rest body)
+  `(after-org-capture-plus ,marker ,type ,target ,template ,plist ,@body))
+(put 'with-org-capture+ 'lisp-indent-function 5)
 
 
-(defmacro before-org-capture-plus (type target template plist &rest body)
-  `(let* ((before-finalize #'(lambda () ,@body))
+(defmacro before-org-capture-plus (marker type target template plist &rest body)
+  `(let* ((before-finalize #'(lambda (,marker) ,@body))
           (plist (append
                   (list :before-finalize before-finalize)
                   ,plist)))
@@ -112,10 +112,10 @@
             ,target
             ,template
             plist)))
-(put 'before-org-capture-plus 'lisp-indent-function 4)
+(put 'before-org-capture-plus 'lisp-indent-function 5)
 
-(defmacro before-org-capture+ (type target template plist &rest body)
-  `(before-org-capture-plus ,type ,target ,template ,plist ,@body))
-(put 'with-org-capture+ 'lisp-indent-function 4)
+(defmacro before-org-capture+ (marker type target template plist &rest body)
+  `(before-org-capture-plus ,marker ,type ,target ,template ,plist ,@body))
+(put 'with-org-capture+ 'lisp-indent-function 5)
 
 ;;; org-capture+-helm.el ends here

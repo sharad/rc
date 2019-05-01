@@ -360,7 +360,7 @@
                         :empty-lines 1)))
 
  (macroexpand-1
-  '(with-org-capture-plus 'entry `(marker ,org-clock-marker) 'occ-capture+-helm-select-template '(:empty-lines 1)
+  '(with-org-capture-plus mrk 'entry `(marker ,org-clock-marker) 'occ-capture+-helm-select-template '(:empty-lines 1)
      t))
 
  (let* ((finalize (function (lambda nil t))))
@@ -371,7 +371,7 @@
                      '(:empty-lines 1)))
 
 
- (with-org-capture-plus 'entry `(marker org-clock-marker) 'occ-capture+-helm-select-template '(:empty-lines 1)
+ (with-org-capture-plus mrk 'entry `(marker org-clock-marker) 'occ-capture+-helm-select-template '(:empty-lines 1)
    t))
 
 

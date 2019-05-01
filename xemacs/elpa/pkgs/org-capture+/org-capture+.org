@@ -77,12 +77,17 @@
         (interactive "P")
         (let ((before-finalize (org-capture-get :before-finalize))
               (after-finalize (org-capture-get :after-finalize))
-              (buff   (org-base-buffer (current-buffer))))
+              (buff   (org-base-buffer (current-buffer)))
+              (pos    (point-min))
+              (marker (make-marker)))
+
+          (set-marker marker pos buff)
+          ;; (buffer-base-buffer (current-buffer))
           (when (or (null before-finalize)
-                    (funcall before-finalize nil))
+                    (funcall before-finalize marker))
             (when (org-capture-finalize stay-with-capture)
               (unless (null after-finalize)
-                (funcall after-finalize nil))))))
+                (funcall after-finalize marker))))))
 
 
 
