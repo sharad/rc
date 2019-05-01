@@ -52,9 +52,12 @@
 
 (defun org-rl-straight-org-clock-clock-in (clock &optional resume start-time)
   (progn
+    (org-rl-debug nil "org-rl-straight-org-clock-clock-in: begin")
     (lotus-org-clock-load-only)
     (let ((org-clock-persist               org-rl-org-clock-persist)
           (org-clock-auto-clock-resolution org-rl-org-clock-auto-clock-resolution))
+      (org-with-narrow-to-marker (org-rl-clock-marker clock)
+        (org-entry-put nil "Effort" "10"))
       (org-clock-clock-in
        (org-rl-clock-for-clock-in clock)
        resume start-time)
@@ -68,9 +71,9 @@
          (ts (time-stamp-string))
          (fmt (format "%s: %s" ts (car args)))
          (args (append (list fmt) (cdr args))))
-    ;; (apply #'lwarn 'org-rl-clock ilevel args)
+    (apply #'lwarn 'org-rl-clock ilevel args)
 
-    (when nil ;; level
+    (when level
       (message
        "%s"
        (concat
@@ -411,7 +414,7 @@
   (org-rl-debug nil "org-rl-clock-clock-in: clock[%s] resume[%s]"
                 (org-rl-format clock)
                 resume)
-  (when (not org-clock-clocking-in)
+  (if (not org-clock-clocking-in)
     (if (org-rl-clock-real-p clock)
         (if (time-p (org-rl-clock-start-time clock))
             (org-rl-straight-org-clock-clock-in
@@ -420,7 +423,8 @@
              (org-rl-clock-start-time clock))
           (error "%s start time is null" (org-rl-clock-start-time clock)))
       (org-rl-debug :warning "org-rl-clock-clock-in: clock %s is not real."
-                    (org-rl-format clock)))))
+                    (org-rl-format clock)))
+    (org-rl-debug nil "org-rl-clock-clock-in: Error org-clock-clocking-in = %s" org-clock-clocking-in)))
 
 (cl-defmethod org-rl-clock-clock-out ((clock org-rl-clock)
                                       &optional
