@@ -890,9 +890,11 @@ variable."
 
   (progn
 
-    (let ((ignore-errstr "Nothing to complete"))
-      (unless (member ignore-errstr debug-ignored-errors)
-        (push ignore-errstr debug-ignored-errors)))))
+    (defun add-to-debug-ignore-errors(errstr)
+      (unless (member errstr debug-ignored-errors)
+        (push errstr debug-ignored-errors)))
+    (add-to-debug-ignore-errors "Nothing to complete")
+    (add-to-debug-ignore-errors "Unmatched Text during Lexical Analysis")))
 
 
 (progn                                  ;debug testing code
