@@ -59,12 +59,12 @@
      ,@body))
 (put 'org-with-inhibit-modification-hooks 'lisp-indent-function 0)
 
-(defmacro lotus-org-safe-modification (&rest body)
+(defmacro lotus-org-with-safe-modification (&rest body)
   "For general purpose org file modification (insertion[s] deletion[s] modification[s] etc.)"
   `(org-with-inhibit-modification-hooks
      (progn
       ,@body)))
-(put 'lotus-org-safe-modification 'lisp-indent-function 0)
+(put 'lotus-org-with-safe-modification 'lisp-indent-function 0)
 
 (defmacro org-with-clock-writeable (&rest body)
   `(let ((buff (org-base-buffer (marker-buffer org-clock-marker))))

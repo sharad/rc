@@ -65,10 +65,12 @@
 
 
 
-(defmacro with-org-capture-plus (marker type target template plist &rest body)
-  `(let* ((before-finalize #'(lambda (,marker) ,@body))
+(defmacro with-org-capture-plus (marker type target template plist before-body &rest after-body)
+  `(let* ((before-finalize #'(lambda (,marker) ,@before-body))
+          (after-finalize  #'(lambda (,marker) ,@after-body))
           (plist (append
-                  (list :before-finalize before-finalize)
+                  (list :before-finalize before-finalize
+                        :after-finalize  after-finalize)
                   ,plist)))
      (lwarn 'occ-capture+ :debug "plist %s \n" plist)
      (apply #'org-capture-plus
@@ -76,7 +78,7 @@
             ,target
             ,template
             plist)))
-(put 'with-org-capture-plus 'lisp-indent-function 5)
+(put 'with-org-capture-plus 'lisp-indent-function 6)
 
 (defmacro with-org-capture+ (marker type target template plist &rest body)
   `(with-org-capture-plus ,marker ,type ,target ,template ,plist ,@body))

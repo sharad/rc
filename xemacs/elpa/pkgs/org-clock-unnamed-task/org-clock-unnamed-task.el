@@ -116,8 +116,8 @@
         (error "No marker %s returned" marker))
       (with-current-buffer (marker-buffer marker)
         (goto-char marker)
-        (org-with-inhibit-modification-hooks
-          (org-entry-put nil "Effort" "10")))
+        (lotus-org-with-safe-modification
+         (org-entry-put nil "Effort" "10")))
       (cons subtask marker))))
 
 (when nil

@@ -76,7 +76,7 @@
           (org-clock-auto-clock-resolution org-rl-org-clock-auto-clock-resolution))
 
       (org-with-narrow-to-marker (org-rl-clock-marker clock)
-        (org-with-inhibit-modification-hooks
+        (lotus-org-with-safe-modification
           (org-entry-put nil "Effort" "10")))
 
       (org-clock-clock-in

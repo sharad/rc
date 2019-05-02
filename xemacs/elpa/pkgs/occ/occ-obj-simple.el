@@ -42,8 +42,10 @@
 
 
 (cl-defmethod occ-fontify-like-in-org-mode ((tsk occ-tsk))
-  (let* ((level   (or (occ-get-property tsk 'level) 0))
-         (heading (occ-get-property tsk 'heading-prop))
+  (let* ((level    (or (occ-get-property tsk 'level) 0))
+         (filename (occ-get-property tsk 'file))
+         (heading  (occ-get-property tsk 'heading-prop))
+         (heading-prefix  " ")
          (prefix  (concat (make-string level ?\*) " ")))
     (if nil ;; if test without else with prefix
         (substring
@@ -52,9 +54,13 @@
           org-odd-levels-only)
          (1+ level))
 
-      (org-fontify-like-in-org-mode
-       (concat prefix heading)
-       org-odd-levels-only))))
+      (if (eq heading 'noheading)
+          (concat "file: " filename)
+        (concat
+         heading-prefix
+         (org-fontify-like-in-org-mode
+          (concat prefix heading)
+          org-odd-levels-only))))))
 
 
 (cl-defmethod occ-print ((obj occ-tsk))
@@ -205,12 +211,13 @@
     (occ-capture mrk)))
 
 (cl-defmethod occ-capture ((obj occ-ctsk))
-  (let* ((tsk (occ-ctsk-tsk obj))
-         (ctx (occ-ctsk-ctx obj))
-         (mrk (occ-tsk-marker tsk))
-         (template (occ-capture+-helm-select-template)))
+  (let* ((tsk        (occ-ctsk-tsk obj))
+         (ctx        (occ-ctsk-ctx obj))
+         (mrk        (occ-tsk-marker tsk))
+         (template   (occ-capture+-helm-select-template))
+         (clock-in-p helm-current-prefix-arg))
     (when template
-     (with-org-capture+ mrk 'entry `(marker ,mrk) template '(:empty-lines 1)
+     (before-org-capture+ mrk 'entry `(marker ,mrk) template '(:empty-lines 1)
        (progn
          (occ-obj-prop-edit tsk ctx 7)
          (let ((newchild (occ-make-tsk nil)))
@@ -245,7 +252,7 @@
   (occ-capture obj)
   nil)
 
-;; (with-org-capture+)
+;; (before-org-capture+)
 
 (cl-defgeneric occ-child-with-prop-edit (obj)
   "occ-child")

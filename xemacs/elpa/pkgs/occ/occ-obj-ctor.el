@@ -78,12 +78,13 @@
         (let (tsk
               (heading-with-string-prop
                (if (org-before-first-heading-p)
-                   (format "file: %s" (buffer-file-name))
+                   'noheading
                  (org-get-heading 'notags))))
           (let ((heading (when heading-with-string-prop
-                           (substring-no-properties heading-with-string-prop)))
-                (heading-prop (if heading-with-string-prop
-                                  heading-with-string-prop))
+                           (if (eq heading-with-string-prop 'noheading)
+                               heading-with-string-prop
+                             (substring-no-properties heading-with-string-prop))))
+                (heading-prop heading-with-string-prop)
                 (marker  (move-marker
                           (make-marker)
                           (point)
