@@ -211,7 +211,7 @@
              (pos           (marker-position marker)))
          (if target-buffer
              (with-current-buffer target-buffer
-               (message "lotus-with-file-pos-new-win: selecting buf %s" target-buffer)
+               (message "lotus-with-marker: selecting buf %s" target-buffer)
                (if (<= pos (point-max))
                    (progn
                      (goto-char pos)
@@ -254,7 +254,7 @@
              (pos           (marker-position marker)))
          (if target-buffer
              (lotus-with-new-win ,newwin
-               (message "lotus-with-file-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
+               (message "lotus-with-marker-new-win: selecting buf %s in %s win" target-buffer ,newwin)
                ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
                (switch-to-buffer target-buffer)
                (if (<= pos (point-max))
@@ -270,7 +270,7 @@
          (target-buffer (current-buffer)))
      (if target-buffer
          (lotus-with-new-win ,newwin
-           (message "lotus-with-file-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
+           (message "lotus-with-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
            ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
            (switch-to-buffer target-buffer)
            (if (<= pos (point-max))
@@ -286,7 +286,7 @@
          (target-buffer (if ,buffer ,buffer (current-buffer))))
      (if target-buffer
          (lotus-with-new-win ,newwin
-           (message "lotus-with-file-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
+           (message "lotus-with-buffer-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
            ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
            (switch-to-buffer target-buffer)
            (if (<= pos (point-max))

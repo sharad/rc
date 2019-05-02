@@ -65,17 +65,24 @@
 (defvar org-rl-org-clock-persist nil "Control org-clock-persist at time of org-resolve clock-in")
 (defvar org-rl-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of org-resolev clock-in")
 
+;; lotus-with-file-pos-new-win: selecting buf report.org<hostapdng> [2 times]
+;; org--align-node-property: Match data clobbered by buffer modification hooks
+;; TODO: FIX: org--align-node-property: Match data clobbered by buffer modification hooks
 (defun org-rl-straight-org-clock-clock-in (clock &optional resume start-time)
   (progn
     (org-rl-debug nil "org-rl-straight-org-clock-clock-in: begin")
     (lotus-org-clock-load-only)
     (let ((org-clock-persist               org-rl-org-clock-persist)
           (org-clock-auto-clock-resolution org-rl-org-clock-auto-clock-resolution))
+
       (org-with-narrow-to-marker (org-rl-clock-marker clock)
-        (org-entry-put nil "Effort" "10"))
+        (org-with-inhibit-modification-hooks
+          (org-entry-put nil "Effort" "10")))
+
       (org-clock-clock-in
        (org-rl-clock-for-clock-in clock)
        resume start-time)
+
       (setf (org-rl-clock-marker clock) org-clock-marker)
       (setf (org-rl-clock-current clock) t)
       clock)))
