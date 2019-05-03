@@ -45,10 +45,10 @@
                                                   fail-quietly
                                                   resume-clocks)))
           (if clocks
-              (let ((resolve-clocks (nth 0 clocks))
-                    (resume-clocks  (nth 1 clocks))
-                    (prev (nth 0 resolve-clocks))
-                    (next (nth 1 resolve-clocks)))
+              (let* ((resolve-clocks (nth 0 clocks))
+                     (resume-clocks  (nth 1 clocks))
+                     (prev (nth 0 resolve-clocks))
+                     (next (nth 1 resolve-clocks)))
                  (if prev
                      (org-rl-debug nil "org-rl-clock-cps-process-option: (org-rl-clock-null prev[%s]) %s" (org-rl-format prev) (org-rl-clock-null prev))
                    (org-rl-debug nil "org-rl-clock-cps-process-option: prev is %s" prev))

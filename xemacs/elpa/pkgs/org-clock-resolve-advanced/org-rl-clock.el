@@ -190,14 +190,15 @@
 
   (let ((maxtimelen   (org-rl-get-time-gap-secs prev next))
         (other-marker (or other-marker (org-rl-select-other-clock)))
-        resume-alist
-        prrev-resume next-resume other-resume)
+        (resume-alist nil))
 
-    (setf prev (org-rl-clock-clock-out prev fail-quietly))     ;if necessary
-    (setf next (org-rl-clock-clock-out next fail-quietly))     ;if necessary
 
-    (push (cons :prev prev) resume-alist)
-    (push (cons :next next) resume-alist)
+    (progn
+      (setf prev (org-rl-clock-clock-out prev fail-quietly))     ;if necessary
+      (setf next (org-rl-clock-clock-out next fail-quietly))     ;if necessary
+
+      (push (cons :prev prev) resume-alist)
+      (push (cons :next next) resume-alist))
 
     (if (> timelen 0)
         (setq prev
@@ -217,17 +218,16 @@
                                  (abs timelen))
                                 (org-rl-clock-stop-time next))
              resume
-             fail-quietly))))
+             fail-quietly)))
 
-  (push (cons :other (if (> timelen 0) prev next)) resume-alist)
-
-  ;; (org-rl-clocks-action nil nil prev next)
-  (org-rl-debug nil "finish %s" 'org-rl-clock-opt-include-in-other)
-  ;; TODO: add off to restart now (org-rl-clock-restart-now)
-  (list
-   (list prev next)
-   (org-rl-get-resume-clocks resume-clocks resume-alist)))
-
+    (progn
+      (push (cons :other (if (> timelen 0) prev next)) resume-alist)
+            ;; (org-rl-clocks-action nil nil prev next)
+      (org-rl-debug nil "finish %s" 'org-rl-clock-opt-include-in-other)
+      ;; TODO: add off to restart now (org-rl-clock-restart-now)
+      (list
+       (list prev next)
+       (org-rl-get-resume-clocks resume-clocks resume-alist)))))
 
 (cl-defmethod org-rl-clock-opt-include-in-new ((prev org-rl-clock)
                                                (next org-rl-clock)
@@ -258,7 +258,8 @@
         (org-rl-debug nil "org-rl-clock-opt-include-in-new: org-capture-last-stored-marker = %s" org-capture-last-stored-marker)
         (org-rl-debug nil "org-rl-clock-opt-include-in-new: (org-capture-get :position-for-last-stored 'local) = %s" (org-capture-get :position-for-last-stored 'local))
         ;; (org-rl-clock-opt-include-in-other prev next mrk timelen resume fail-quietly resume-clocks)
-        (org-rl-clock-cps-process-option timelen (cons 'include-in-other mrk) prev next resume fail-quietly resume-clocks))))
+        (let ((maxtimelen (org-rl-get-time-gap-secs prev next)))
+          (org-rl-clock-cps-process-option timelen (cons 'include-in-other mrk) prev next maxtimelen resume fail-quietly resume-clocks)))))
   ;; (org-rl-clocks-action nil nil prev next)
   (org-rl-debug nil "finish %s" 'org-rl-clock-opt-include-in-new)
   ;; TODO: add off to restart now (org-rl-clock-restart-now)
