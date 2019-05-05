@@ -217,13 +217,15 @@
          (template   (occ-capture+-helm-select-template))
          (clock-in-p helm-current-prefix-arg))
     (when template
-     (before-org-capture+ mrk 'entry `(marker ,mrk) template '(:empty-lines 1)
+     (with-org-capture+ marker 'entry `(marker ,mrk) template '(:empty-lines 1)
        (progn
          (occ-obj-prop-edit tsk ctx 7)
-         (let ((newchild (occ-make-tsk nil)))
-           (when newchild
-             (occ-induct-child tsk newchild)))
-         t)))))
+         t)
+       (let ((newchild (occ-make-tsk marker)))
+         (when newchild
+           (occ-induct-child tsk newchild)
+           (if clock-in-p
+               (occ-clock-in newchild))))))))
 
 
 (cl-defmethod occ-induct-child ((obj occ-tree-tsk) (child occ-tree-tsk))
@@ -342,11 +344,39 @@ pointing to it."
 ;; function to setup ctx clock timer:2 ends here
 
 
+(defvar occ-helm-map
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map helm-map)
+    ;; (define-key map (kbd "RET")           'helm-ff-RET)
+    (define-key map (kbd "C-]")           'helm-ff-run-toggle-basename)
+    (define-key map (kdb "S-RET")         'occ-helm-run-child-check-in)
+    (helm-define-key-with-subkeys map (kbd "DEL") ?\d 'helm-ff-delete-char-backward
+                                  '((C-backspace . helm-ff-run-toggle-auto-update)
+                                    ([C-c DEL] . helm-ff-run-toggle-auto-update))
+                                  nil 'helm-ff-delete-char-backward--exit-fn)
+    (when helm-ff-lynx-style-map
+      (define-key map (kbd "<left>")      'helm-find-files-up-one-level)
+      (define-key map (kbd "<right>")     'helm-execute-persistent-action))
+    (delq nil map))
+  "Keymap for `helm-find-files'.")
+
+(defvar occ-helm-doc-header " (\\<helm-find-files-map>\\[helm-find-files-up-one-level]: Go up one level)"
+  "*The doc that is inserted in the Name header of a find-files or dired source.")
+
+(defun occ-helm-run-child-check-in ()
+  "Run mail attach files command action from `helm-source-find-files'."
+  (interactive)
+  (with-helm-alive-p
+    (helm-exit-and-execute-action 'occ-child-check-in)))
+(put 'occ-helm-run-child-check-in 'helm-only t)
+;; add occ-child-check-in in action
+
 (defun occ-list-select-internal (candidates actions &optional timeout)
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
   (message "Running occ-sacha-helm-select")
   (prog1
       (helm
+       ;; :keymap occ-helm-map
        (occ-helm-build-candidates-source
         candidates
         actions))

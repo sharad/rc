@@ -80,9 +80,9 @@
             plist)))
 (put 'with-org-capture-plus 'lisp-indent-function 6)
 
-(defmacro with-org-capture+ (marker type target template plist &rest body)
-  `(with-org-capture-plus ,marker ,type ,target ,template ,plist ,@body))
-(put 'with-org-capture+ 'lisp-indent-function 5)
+(defmacro with-org-capture+ (marker type target template plist before-body &rest after-body)
+  `(with-org-capture-plus ,marker ,type ,target ,template ,plist ,before-body ,@after-body))
+(put 'with-org-capture+ 'lisp-indent-function 6)
 
 
 (defmacro after-org-capture-plus (marker type target template plist &rest body)
