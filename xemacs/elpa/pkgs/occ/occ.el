@@ -72,8 +72,8 @@
 ;;;###autoload
 (defun occ-insinuate ()
   (interactive)
-  (lwarn 'occ :debug "occ-insinuate: begin")
-  (message "occ-insinuate: begin")
+  (occ-debug :debug "occ-insinuate: begin")
+  (occ-message "occ-insinuate: begin")
   (progn
     (setq occ-global-tsk-collection        nil)
     ;; (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)
@@ -87,15 +87,15 @@
       (unless (member propstr org-use-property-inheritance)
         (push propstr org-use-property-inheritance))))
   (org-clock-load) ;; newly added
- (lwarn 'occ :debug "occ-insinuate: finish")
- (message "occ-insinuate: finish"))
+ (occ-debug :debug "occ-insinuate: finish")
+ (occ-message "occ-insinuate: finish"))
 
 
 ;;;###autoload
 (defun occ-uninsinuate ()
   (interactive)
-  (lwarn 'occ :debug "occ-uninsinuate: begin")
-  (message "occ-uninsinuate: begin")
+  (occ-debug :debug "occ-uninsinuate: begin")
+  (occ-message "occ-uninsinuate: begin")
   (progn
     (setq occ-global-tsk-collection            nil)
     ;; (setq buffer-list-update-hook nil)
@@ -111,8 +111,8 @@
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)
         (delete propstr org-use-property-inheritance))))
- (lwarn 'occ :debug "occ-insinuate: finish")
- (message "occ-insinuate: finish"))
+ (occ-debug :debug "occ-insinuate: finish")
+ (occ-message "occ-insinuate: finish"))
 
 
 (defmacro occ-find-library-dir (library)
@@ -201,12 +201,12 @@ With prefix arg UNCOMPILED, load the uncompiled versions."
                               f))
                         lfeat)))
     (when load-uncore
-      (message "The following feature%s found in load-path, please check if that's correct:\n%s"
+      (occ-message "The following feature%s found in load-path, please check if that's correct:\n%s"
                (if (> (length load-uncore) 1) "s were" " was") load-uncore))
     (if load-misses
-        (message "Some error occurred while reloading Org feature%s\n%s\nPlease check *Messages*!\n%s"
+        (occ-message "Some error occurred while reloading Org feature%s\n%s\nPlease check *Messages*!\n%s"
                  (if (> (length load-misses) 1) "s" "") load-misses (occ-version nil 'full))
-      (message "Successfully reloaded Org\n%s" (occ-version nil 'full)))))
+      (occ-message "Successfully reloaded Org\n%s" (occ-version nil 'full)))))
 
 
 ;;; occ.el ends here

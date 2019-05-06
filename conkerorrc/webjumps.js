@@ -692,7 +692,9 @@ define_webjump("code/cpp/cppreference",
 define_webjump("code/cpp/cplusplus",
                "http://www.cplusplus.com/reference/set/set/?kw=%s");
 
-
+//
+define_webjump("readthedocs",
+               "https://readthedocs.org/search/?q=%s");
 
 
 // 2.11. Reference

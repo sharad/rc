@@ -31,14 +31,21 @@
 (defvar occ-org-clock-persist nil "Control org-clock-persist at time of occ clock-in")
 (defvar occ-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of occ clock-in")
 
+
+(defvar occ-debug nil "Debug occ")
+
+(defun occ-message (&rest args)
+  (apply #'message args))
+
 (defun occ-debug (level &rest args)
-  (when (car args)
-    (apply #'format args)
-    (when (member level '(:emergency :error :warning :debug))
-      ;; (apply #'lwarn 'occ level args)
-      (apply #'lwarn 'occ level args)))
-  (unless (eq level :nodisplay)
-   (apply #'message args)))
+  (when occ-debug
+    (when (car args)
+      (apply #'format args)
+      (when (member level '(:emergency :error :warning :debug))
+        ;; (apply #'lwarn 'occ level args)
+        x(apply #'lwarn 'occ level args))
+      (unless (eq level :nodisplay)
+        (apply #'message args)))))
 
 (defun sym2key (sym)
   (if (keywordp sym)
@@ -103,7 +110,7 @@
                    (redisplay)
                    ,@body)))
      (when (eq retval t)
-       (message "user input %s retval %s" last-input-event retval))
+       (occ-debug :debug "user input %s retval %s" last-input-event retval))
      retval))
 
 
@@ -126,7 +133,7 @@
               (with-current-buffer (find-file-noselect f)
                 org-complex-heading-regexp))
           (occ-files))))
-    (message "files with null regex %s" files)))
+    (occ-message :debug "files with null regex %s" files)))
 
 ;; testing verification;; testing verification
 (defun occ-files-not-in-org-mode ()
@@ -137,7 +144,7 @@
               (with-current-buffer (find-file-noselect f)
                 (eq major-mode 'org-mode)))
           (occ-files))))
-    (message "files not in org-mode %s" files)))
+    (occ-message :debug "files not in org-mode %s" files)))
 
 
 ;;;###autoload

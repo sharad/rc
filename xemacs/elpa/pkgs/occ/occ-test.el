@@ -65,7 +65,7 @@
               (with-current-buffer (find-file-noselect f)
                 org-complex-heading-regexp))
           (occ-files))))
-    (message "files with null regex %s" files)))
+    (occ-debug :debug "files with null regex %s" files)))
 
 ;; testing verification;; testing verification
 (defun occ-files-not-in-org-mode ()
@@ -76,7 +76,7 @@
               (with-current-buffer (find-file-noselect f)
                 (eq major-mode 'org-mode)))
           (occ-files))))
-    (message "files not in org-mode %s" files)))
+    (occ-debug :debug "files not in org-mode %s" files)))
 
 
 (when nil                               ;occ-obj-method.el
@@ -107,7 +107,7 @@
 
   (defun test-no-input ()
     (let ((retval))
-      (message "last-input-event %s retval %s" last-input-event retval)))
+      (occ-debug :debug "last-input-event %s retval %s" last-input-event retval)))
 
   (progn
     (run-with-idle-timer 3 nil #'test-no-input)
@@ -125,11 +125,11 @@
       (let ((retval
              (while-no-input
                (redisplay)
-               (message "started")
+               (occ-debug :debug "started")
                (prog1
                    (time-consuming)
-                 (message "stopped")))))
-        (message "last-input-event %s retval %s" last-input-event retval))
+                 (occ-debug :debug "stopped")))))
+        (occ-debug :debug "last-input-event %s retval %s" last-input-event retval))
 
       (progn
         (run-with-idle-timer 3 nil #'test-no-input)
@@ -148,7 +148,7 @@
                (with-current-buffer (find-file-noselect f)
                  org-complex-heading-regexp))
            (occ-files))))
-     (message "files with null regex %s" files)))
+     (occ-debug :debug "files with null regex %s" files)))
 
  ;; testing verification;; testing verification
  (defun occ-files-not-in-org-mode ()
@@ -159,7 +159,7 @@
                (with-current-buffer (find-file-noselect f)
                  (eq major-mode 'org-mode)))
            (occ-files))))
-     (message "files not in org-mode %s" files))))
+     (occ-debug :debug "files not in org-mode %s" files))))
 
 
 (defun functions-in-file-test ()
@@ -192,7 +192,7 @@
       0)
 
     (cl-defmethod occ-rank ((tsk-pair (head root)) (ctx list))
-      (message "%s" tsk-pair))
+      (occ-debug :debug "%s" tsk-pair))
 
     (occ-rank '(root  1) nil)
 
@@ -200,7 +200,7 @@
 
     (cl-defmethod occ-rank ((tsk occ-tsk)
                             (ctx occ-ctx))
-      (message "match occ-rank"))
+      (occ-debug :debug "match occ-rank"))
 
     (occ-rank (make-occ-tree-tsk) (make-occ-ctx))))
 

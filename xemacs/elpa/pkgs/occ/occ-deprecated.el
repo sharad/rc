@@ -74,7 +74,7 @@
     (interactive
      (list (occ-make-ctx-at-point)))
     (progn
-      (message "in occ-clock-in occ-ctx 1")
+      (occ-debug :debug "in occ-clock-in occ-ctx 1")
       (let* ((ctx (or ctx (occ-make-ctx-at-point)))
              (matched-ctxual-tsks
               (run-unobtrusively           ;heavy task
@@ -225,7 +225,7 @@
 
   (defun occ-sacha-helm-select (ctxasks)
     ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
-    (message "Running occ-sacha-helm-select")
+    (occ-debug :debug "Running occ-sacha-helm-select")
     (helm
      (list
       (helm-build-sync-source "Select matching tsks"
@@ -241,7 +241,7 @@
 
   (defun occ-sacha-helm-select-timed (ctxasks)
     (helm-timed 7
-      (message "running sacha/helm-select-clock")
+      (occ-debug :debug "running sacha/helm-select-clock")
       (occ-sacha-helm-select ctxasks))))
 
 
@@ -250,7 +250,7 @@
   "occ-sacha-helm-action")
 
 (cl-defmethod occ-sacha-helm-action ((ctxask occ-ctxual-tsk) clockin-fn)
-  ;; (message "sacha marker %s" (car dyntskpls))
+  ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
   ;; (setq sacha/helm-org-refile-locations tbl)
   (progn
     (helm
@@ -542,7 +542,7 @@
   (interactive
    (list (occ-make-ctx-at-point)))
   (progn
-    (message "in occ-clock-in occ-ctx 1")
+    (occ-debug :debug "in occ-clock-in occ-ctx 1")
     (let* ((obj (or obj (occ-make-ctx)))
            (matched-ctxual-tsks
             (run-unobtrusively           ;heavy task

@@ -47,19 +47,22 @@
 (require 'org-clock-utils-lotus)
 
 
+
+(defvar org-rl-debug nil "Debug org advanced resolve clock")
+
 (defun org-rl-debug (level &rest args)
   (let* ((ilevel (or level :debug))
          (ts (time-stamp-string))
          (fmt (format "%s: %s" ts (car args)))
          (args (append (list fmt) (cdr args))))
-    (apply #'lwarn 'org-rl-clock ilevel args)
-
-    (when level
-      (message
-       "%s"
-       (concat
-        (format "org-rl-clock %s: " ilevel)
-        (apply #'format args))))))
+    (when org-rl-debug
+      (apply #'lwarn 'org-rl-clock ilevel args)
+      (when level
+        (message
+         "%s"
+         (concat
+          (format "org-rl-clock %s: " ilevel)
+          (apply #'format args)))))))
 
 
 (defvar org-rl-org-clock-persist nil "Control org-clock-persist at time of org-resolve clock-in")
@@ -191,25 +194,28 @@
   (let ((fmt (cdr org-time-stamp-formats)))
     (format-time-string fmt (org-rl-time-get-time time))))
 
+(defun org-get-heading-from-marker (mrk)
+  (org-rl-debug :warning "org-get-heading-from-marker: marker = %s, (markerp mrk) = %s, (marker-buffer mrk) = %s"
+                mrk
+                (markerp mrk)
+                (marker-buffer mrk))
+  (let ((heading
+         (if (and
+              (markerp mrk)
+              (marker-buffer mrk))
+             (lotus-with-marker mrk
+               (org-get-heading t))
+           "imaginary")))
+    (org-rl-debug :warning "org-rl-clock-heading: heading = %s" heading)
+    heading))
+
 (defun org-get-heading-from-clock (clock)
   (let ((mrk (car clock)))
-    (if (and
-         (markerp mrk)
-         (marker-buffer mrk))
-        (lotus-with-marker mrk
-          (org-rl-debug :warning "org-get-heading-from-clock: marker = %s" mrk)
-          (org-get-heading t))
-      "imaginary")))
+    (org-get-heading-from-marker mrk)))
 
 (cl-defmethod org-rl-clock-heading ((clock org-rl-clock))
   (let ((mrk (org-rl-clock-marker clock)))
-    (if (and
-         (markerp mrk)
-         (marker-buffer mrk))
-        (lotus-with-marker mrk
-         (org-rl-debug :warning "org-get-heading-from-clock: marker = %s" mrk)
-         (org-get-heading t)))
-    "imaginary"))
+    (org-get-heading-from-marker mrk)))
 
 (cl-defmethod org-rl-format ((clock null))
   (format "null"))
@@ -217,17 +223,12 @@
 (cl-defmethod org-rl-format ((clock org-rl-clock))
   (let ((fmt (cdr org-time-stamp-formats)))
     (let* ((marker (org-rl-clock-marker clock))
-           (heading
-            (if (markerp marker)
-                (lotus-with-marker marker
-                  (org-get-heading t))
-              "imaginary"))
+           (heading (org-rl-clock-heading clock))
            (start (format-time-string fmt (org-rl-clock-start-time clock)))
            (stop  (format-time-string fmt (org-rl-clock-stop-time clock))))
       (format "<%s %s> %s-%s %s" heading marker start stop (org-rl-clock-current clock)))))
 
 (cl-defmethod org-rl-clock-name-bracket ((clock org-rl-clock))
-  ;;(org-rl-clock-marker clock)
   (concat "<" (org-rl-clock-heading clock) ">"))
 
 

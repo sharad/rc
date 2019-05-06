@@ -142,7 +142,7 @@
           (occ-make-tsk-collection occ-global-tsk-collection-spec)
           (occ-collect-tsks occ-global-tsk-collection t))
       (progn
-        (message "occ-global-tsk-collection-spec is nil, set using occ-set-global-tsk-collection-spec")
+        (occ-message "occ-global-tsk-collection-spec is nil, set using occ-set-global-tsk-collection-spec")
         (error "occ-global-tsk-collection-spec is nil"))))
   occ-global-tsk-collection)
 

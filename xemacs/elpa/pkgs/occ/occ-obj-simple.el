@@ -41,6 +41,15 @@
 (require 'occ-helm)
 
 
+(cl-defmethod occ-uniquify-file ((tsk occ-tsk))
+  (let* ((filename (occ-get-property tsk 'file))
+         (basename (file-name-nondirectory filename))
+         (files (occ-files)))))
+    ;; (uniquify-buffer-file-name)
+
+
+;; (file-name-nondirectory "/aaa/aaa/aaa")
+
 (cl-defmethod occ-fontify-like-in-org-mode ((tsk occ-tsk))
   (let* ((level    (or (occ-get-property tsk 'level) 0))
          (filename (occ-get-property tsk 'file))
@@ -254,6 +263,26 @@
   (occ-capture obj)
   nil)
 
+
+(cl-defgeneric occ-child-check-in (obj)
+  "occ-child-check-in")
+
+(cl-defmethod occ-child-check-in ((obj marker))
+  (occ-capture obj)
+  nil)
+
+(cl-defmethod occ-child-check-in ((obj occ-tsk))
+  (occ-capture obj)
+  nil)
+
+(cl-defmethod occ-child-check-in ((obj occ-ctsk))
+  (occ-capture obj)
+  nil)
+
+(cl-defmethod occ-child-check-in ((obj occ-ctxual-tsk))
+  (occ-capture obj)
+  nil)
+
 ;; (before-org-capture+)
 
 (cl-defgeneric occ-child-with-prop-edit (obj)
@@ -349,7 +378,7 @@ pointing to it."
     (set-keymap-parent map helm-map)
     ;; (define-key map (kbd "RET")           'helm-ff-RET)
     (define-key map (kbd "C-]")           'helm-ff-run-toggle-basename)
-    (define-key map (kdb "S-RET")         'occ-helm-run-child-check-in)
+    (define-key map (kbd "S-RET")         'occ-helm-run-child-check-in)
     (helm-define-key-with-subkeys map (kbd "DEL") ?\d 'helm-ff-delete-char-backward
                                   '((C-backspace . helm-ff-run-toggle-auto-update)
                                     ([C-c DEL] . helm-ff-run-toggle-auto-update))
@@ -373,26 +402,26 @@ pointing to it."
 
 (defun occ-list-select-internal (candidates actions &optional timeout)
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
-  (message "Running occ-sacha-helm-select")
+  (occ-debug :debug "Running occ-sacha-helm-select")
   (prog1
       (helm
        ;; :keymap occ-helm-map
        (occ-helm-build-candidates-source
         candidates
         actions))
-    (message "Running occ-sacha-helm-select1")))
+    (occ-debug :debug "Running occ-sacha-helm-select1")))
 
 (defun occ-list-select (candidates actions &optional timeout)
   (let ((timeout (or timeout 7)))
     (helm-timed timeout
-      (message "running sacha/helm-select-clock")
+      (occ-debug :debug "running sacha/helm-select-clock")
       (occ-list-select-internal candidates actions))))
 
 
 (cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
                                           (obj null))
   "Return all TSKs for context nil OBJ"
-  ;; (message "occ-collection-obj-matches list")
+  ;; (occ-debug :debug "occ-collection-obj-matches list")
   (occ-collection-list collection))
 
 
@@ -400,7 +429,7 @@ pointing to it."
 (cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
                                           (obj occ-ctx))
   "Return matched CTXUAL-TSKs for context CTX"
-  ;; (message "occ-collection-obj-matches list")
+  ;; (occ-debug :debug "occ-collection-obj-matches list")
   (let ((tsks (occ-collection collection))
         (obj obj))
     (remove-if-not
@@ -414,7 +443,7 @@ pointing to it."
 ;; ISSUE? should it return rank or occ-ctxual-tsks map
 (cl-defmethod occ-collection-obj-matches ((collection occ-tree-collection)
                                           (obj occ-ctx))
-  ;; (message "occ-collection-obj-matches tree")
+  ;; (occ-debug :debug "occ-collection-obj-matches tree")
   "Return matched CTXUAL-TSKs for context CTX"
   (let ((tsks (occ-collection collection))
         (matched '()))
@@ -458,7 +487,7 @@ pointing to it."
                              (reduce #'+
                                      (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
                              (length rankslist))))))
-        ;; (message "occ-collection-obj-matches :around finish")
+        ;; (occ-debug :debug "occ-collection-obj-matches :around finish")
         (occ-debug :debug "matched ctxtsks %s" (length ctxual-tsks))
         (remove-if-not
          #'(lambda (ctxual-tsk)
@@ -552,7 +581,7 @@ pointing to it."
 ;;   (interactive
 ;;    (list (occ-make-ctx-at-point)))
 ;;   (progn
-;;     (message "in occ-clock-in occ-ctx 1")
+;;     (occ-debug :debug "in occ-clock-in occ-ctx 1")
 ;;     (let* ((obj (or obj (occ-make-ctx)))
 ;;            (matched-ctxual-tsks
 ;;             (run-unobtrusively           ;heavy task
