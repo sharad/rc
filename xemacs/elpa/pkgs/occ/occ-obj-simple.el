@@ -205,6 +205,25 @@
    occ-capture+-helm-templates-alist))
 
 
+(cl-defgeneric occ-capture-in-ctx (tsk ctx)
+  "occ-capture-in-ctx")
+
+(cl-defmethod occ-capture-in-ctx ((obj occ-tsk) (ctx occ-ctx))
+  (let* ((mrk        (occ-tsk-marker tsk))
+         (template   (occ-capture+-helm-select-template))
+         (clock-in-p helm-current-prefix-arg))
+    (when template
+      (with-org-capture+ marker 'entry `(marker ,mrk) template '(:empty-lines 1)
+        (progn
+          (occ-obj-prop-edit tsk ctx 7)
+          t)
+        (let ((newchild (occ-make-tsk marker)))
+          (when newchild
+            (occ-induct-child tsk newchild)
+            (if clock-in-p
+                (occ-clock-in newchild))))))))
+
+
 (cl-defgeneric occ-capture (obj)
   "occ-capture")
 
@@ -220,21 +239,10 @@
     (occ-capture mrk)))
 
 (cl-defmethod occ-capture ((obj occ-ctsk))
+
   (let* ((tsk        (occ-ctsk-tsk obj))
-         (ctx        (occ-ctsk-ctx obj))
-         (mrk        (occ-tsk-marker tsk))
-         (template   (occ-capture+-helm-select-template))
-         (clock-in-p helm-current-prefix-arg))
-    (when template
-     (with-org-capture+ marker 'entry `(marker ,mrk) template '(:empty-lines 1)
-       (progn
-         (occ-obj-prop-edit tsk ctx 7)
-         t)
-       (let ((newchild (occ-make-tsk marker)))
-         (when newchild
-           (occ-induct-child tsk newchild)
-           (if clock-in-p
-               (occ-clock-in newchild))))))))
+         (ctx        (occ-ctsk-ctx obj)))
+    (occ-capture-in-ctx tsk ctx)))
 
 
 (cl-defmethod occ-induct-child ((obj occ-tree-tsk) (child occ-tree-tsk))
