@@ -198,7 +198,7 @@
   (org-rl-debug :warning "org-get-heading-from-marker: marker = %s, (markerp mrk) = %s, (marker-buffer mrk) = %s"
                 mrk
                 (markerp mrk)
-                (marker-buffer mrk))
+                (if (markerp mrk) (marker-buffer mrk) mrk))
   (let ((heading
          (if (and
               (markerp mrk)

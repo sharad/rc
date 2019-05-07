@@ -16,7 +16,15 @@ function main()
     if [ "HEAD" != "$CURR_BRANCH" ]
     then
         BRANCH_REMOTE=$(git config branch.${CURR_BRANCH}.remote )
-        BRANCH_MERGE=$(basename $(git config branch.${CURR_BRANCH}.merge ))
+        BRANCH_MERGE_PATH=$(git config branch.${CURR_BRANCH}.merge )
+        if [ "$BRANCH_MERGE_PATH" ]
+        then
+            BRANCH_MERGE=$(basename ${BRANCH_MERGE_PATH})
+        fi
+
+        echo ${CURR_BRANCH}: remote - ${BRANCH_REMOTE}
+        echo ${CURR_BRANCH}: merge  - ${BRANCH_MERGE}
+
         if [ 0 = $? ] && [ "x" != "x$BRANCH_MERGE" ]
         then
             if [ $stash ]
