@@ -36,31 +36,6 @@
 
 (defun occ-get-location ())
 
-
-
-
-
-(defun org-create-new-task ()
-  (interactive)
-  (let ((collection
-         '(("* TODO %? %^g\n %i\n [%a]\n" . 1)
-           ("* TODO %? %^g\n %i\n Test [%a]\n" . 2))))
-   (org-capture-plus
-    'entry
-    '(function org-goto-refile)
-    (helm :sources
-          `(((name . "Templates: ")
-             (multiline)
-             (candidates ,@collection)
-             (action . identity))))
-            ;; ((name . "Section 2")
-            ;;  (multiline)
-            ;;  (candidates ("G\nH\nI" . 3)
-            ;;              ("J\nK\nL" . 4)))
-
-    :empty-lines 1)))
-
-
 (when nil
   (let ((collection
          '("* TODO %? %^g\n %i\n [%a]\n"

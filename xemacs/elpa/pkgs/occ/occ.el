@@ -34,6 +34,21 @@
 
 
 ;;;###autoload
+(defun occ-run-curr-ctx-timer ()
+  (setq *occ-last-buff-sel-time* (current-time))
+  (when *occ-buff-sel-timer*
+    (cancel-timer *occ-buff-sel-timer*)
+    (setq *occ-buff-sel-timer* nil))
+  (setq *occ-buff-sel-timer*
+        ;; distrubing while editing.
+        ;; run-with-timer
+        (run-with-idle-timer
+         (1+ *occ-tsk-current-ctx-time-interval*)
+         nil
+         'occ-clock-in-curr-ctx-if-not)))
+
+
+;;;###autoload
 (defun occ-switch-buffer-run-curr-ctx-timer-function (prev next)
   (occ-run-curr-ctx-timer))
 
@@ -53,68 +68,6 @@
   (occ-reset-collection-object))
 
 
-;;;###autoload
-(defun occ-run-curr-ctx-timer ()
-  (interactive)
-  (progn
-    (setq *occ-last-buff-sel-time* (current-time))
-    (when *occ-buff-sel-timer*
-      (cancel-timer *occ-buff-sel-timer*)
-      (setq *occ-buff-sel-timer* nil))
-    (setq *occ-buff-sel-timer*
-          ;; distrubing while editing.
-          ;; run-with-timer
-          (run-with-idle-timer
-           (1+ *occ-tsk-current-ctx-time-interval*)
-           nil
-           'occ-clock-in-curr-ctx-if-not))))
-
-;;;###autoload
-(defun occ-insinuate ()
-  (interactive)
-  (occ-debug :debug "occ-insinuate: begin")
-  (occ-message "occ-insinuate: begin")
-  (progn
-    (setq occ-global-tsk-collection        nil)
-    ;; (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)
-    ;; (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer t)
-    ;; (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer t)
-    (add-hook 'switch-buffer-functions #'occ-switch-buffer-run-curr-ctx-timer-function)
-    (add-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode))
-  (dolist (prop (cl-method-sig-matched-arg '(occ-readprop (`((head ,val) occ-ctx) val)) nil))
-    (let ((propstr
-           (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
-      (unless (member propstr org-use-property-inheritance)
-        (push propstr org-use-property-inheritance))))
-  (org-clock-load) ;; newly added
- (occ-debug :debug "occ-insinuate: finish")
- (occ-message "occ-insinuate: finish"))
-
-
-;;;###autoload
-(defun occ-uninsinuate ()
-  (interactive)
-  (occ-debug :debug "occ-uninsinuate: begin")
-  (occ-message "occ-uninsinuate: begin")
-  (progn
-    (setq occ-global-tsk-collection            nil)
-    ;; (setq buffer-list-update-hook nil)
-
-    ;; (remove-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer)
-    ;; (remove-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer)
-    ;; (remove-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer)
-    ;; (remove-hook 'after-save-hook             'occ-after-save-hook-fun t)
-    (remove-hook 'switch-buffer-functions #'occ-switch-buffer-run-curr-ctx-timer-function)
-    (remove-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode))
-  (dolist (prop (cl-method-sig-matched-arg '(occ-readprop (`((head ,val) occ-ctx) val)) nil))
-    (let ((propstr
-           (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
-      (unless (member propstr org-use-property-inheritance)
-        (delete propstr org-use-property-inheritance))))
- (occ-debug :debug "occ-insinuate: finish")
- (occ-message "occ-insinuate: finish"))
-
-
 (defmacro occ-find-library-dir (library)
   `(file-name-directory
     (or
@@ -122,13 +75,12 @@
      (locate-library ,library)
      "")))
 
-(defun occ-version (&optional here full message)
+(defun occ-get-version (here full message)
   "Show the Occ version.
 Interactively, or when MESSAGE is non-nil, show it in echo area.
 With prefix argument, or when HERE is non-nil, insert it at point.
 In non-interactive uses, a reduced version string is output unless
 FULL is given."
-  (interactive (list current-prefix-arg t (not current-prefix-arg)))
   (let ((occ-dir (ignore-errors (occ-find-library-dir "occ")))
         (save-load-suffixes (when (boundp 'load-suffixes) load-suffixes))
         (load-suffixes (list ".el"))
@@ -154,14 +106,13 @@ FULL is given."
                               "org-loaddefs.el can not be found!")))
            (version1 (if full version release)))
       (when here (insert version1))
-      (when message (message "%s" version1))
+      ;; (when message (message "%s" version1))
       version1)))
 
 ;;;###autoload
-(defun occ-reload (&optional uncompiled)
+(defun occ-reload-lib (uncompiled)
   "Reload all Occ Lisp files.
 With prefix arg UNCOMPILED, load the uncompiled versions."
-  (interactive "P")
   (require 'loadhist)
   (let* ((occ-dir     (occ-find-library-dir "occ"))
          ;; (contrib-dir (or (occ-find-library-dir "org-contribdir") occ-dir))

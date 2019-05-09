@@ -402,7 +402,7 @@ pointing to it."
 
 (defun occ-helm-run-child-check-in ()
   "Run mail attach files command action from `helm-source-find-files'."
-  (interactive)
+  (interactive)                         ;TODO: to move to occ-commands.el
   (with-helm-alive-p
     (helm-exit-and-execute-action 'occ-child-check-in)))
 (put 'occ-helm-run-child-check-in 'helm-only t)

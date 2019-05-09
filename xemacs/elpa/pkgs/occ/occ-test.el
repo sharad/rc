@@ -29,6 +29,7 @@
 
 (require 'ert)
 (require 'ert-x)
+(require 'el-mock)
 
 
 
@@ -57,26 +58,8 @@
 
 
 ;; testing verification
-(defun occ-files-with-null-regex ()
-  (interactive)
-  (let ((files
-         (remove-if
-          #'(lambda (f)
-              (with-current-buffer (find-file-noselect f)
-                org-complex-heading-regexp))
-          (occ-files))))
-    (occ-debug :debug "files with null regex %s" files)))
-
-;; testing verification;; testing verification
-(defun occ-files-not-in-org-mode ()
-  (interactive)
-  (let ((files
-         (remove-if
-          #'(lambda (f)
-              (with-current-buffer (find-file-noselect f)
-                (eq major-mode 'org-mode)))
-          (occ-files))))
-    (occ-debug :debug "files not in org-mode %s" files)))
+;; occ-files-with-null-regex
+;; occ-files-not-in-org-mode
 
 
 (when nil                               ;occ-obj-method.el

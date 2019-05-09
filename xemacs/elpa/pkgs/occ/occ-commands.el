@@ -56,19 +56,66 @@
    #'identity
    #'occ-capture))
 
+(defun occ-create-tsk ()
+  (interactive)
+  (error "Implement it.")
+  (occ-helm-select-tsk
+   #'identity
+   #'occ-capture))
+
+(defun occ-create-tsk-clock-in ()
+  (interactive)
+  (error "Implement it.")
+  (occ-helm-select-tsk
+   #'identity
+   #'occ-capture))
+
+(defun org-create-new-task ()
+  (interactive)
+  (let ((collection
+         '(("* TODO %? %^g\n %i\n [%a]\n" . 1)
+           ("* TODO %? %^g\n %i\n Test [%a]\n" . 2))))
+    (org-capture-plus
+     'entry
+     '(function org-goto-refile)
+     (helm :sources
+           `(((name . "Templates: ")
+              (multiline)
+              (candidates ,@collection)
+              (action . identity))))
+     ;; ((name . "Section 2")
+     ;;  (multiline)
+     ;;  (candidates ("G\nH\nI" . 3)
+     ;;              ("J\nK\nL" . 4)))
+
+     :empty-lines 1)))
+
+(defun occ-merge-unamed-task ()
+  (interactive)
+  (error "Implement it."))
+
 ;; (push "Nothing to complete" debug-ignored-errors)
+
 
 (defun occ-goto-test ()
   (interactive)
   (occ-goto-tsk))
 
 
+;;;###autoload
 (defun occ-proprty-edit ()
   (interactive)
   (occ-obj-prop-edit (point-marker)
                      (occ-make-ctx (get-buffer (read-buffer-to-switch "buffer: ")))
                      7))
 
+
+;;;###autoload
+(defun occ-run-timer ()
+  (interactive)
+  (occ-run-curr-ctx-timer))
+
+
 ;;;###autoload
 (defun occ-clock-in-curr-ctx (&optional force)
   (interactive "P")
@@ -95,4 +142,64 @@
   occ-global-tsk-collection)
 
 
+(defun occ-reload (&optional uncompiled)
+  (interactive "P")
+  (occ-reload-lib uncompiled))
+
+;;;###autoload
+(defun occ-insinuate ()
+  (interactive)
+  (occ-debug :debug "occ-insinuate: begin")
+  (occ-message "occ-insinuate: begin")
+  (progn
+    (setq occ-global-tsk-collection        nil)
+    ;; (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)
+    ;; (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer t)
+    ;; (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer t)
+    (add-hook 'switch-buffer-functions #'occ-switch-buffer-run-curr-ctx-timer-function)
+    (add-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode))
+  (dolist (prop (cl-method-sig-matched-arg '(occ-readprop (`((head ,val) occ-ctx) val)) nil))
+    (let ((propstr
+           (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
+      (unless (member propstr org-use-property-inheritance)
+        (push propstr org-use-property-inheritance))))
+  (org-clock-load) ;; newly added
+ (occ-debug :debug "occ-insinuate: finish")
+ (occ-message "occ-insinuate: finish"))
+
+
+;;;###autoload
+(defun occ-uninsinuate ()
+  (interactive)
+  (occ-debug :debug "occ-uninsinuate: begin")
+  (occ-message "occ-uninsinuate: begin")
+  (progn
+    (setq occ-global-tsk-collection            nil)
+    ;; (setq buffer-list-update-hook nil)
+
+    ;; (remove-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer)
+    ;; (remove-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer)
+    ;; (remove-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer)
+    ;; (remove-hook 'after-save-hook             'occ-after-save-hook-fun t)
+    (remove-hook 'switch-buffer-functions #'occ-switch-buffer-run-curr-ctx-timer-function)
+    (remove-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode))
+  (dolist (prop (cl-method-sig-matched-arg '(occ-readprop (`((head ,val) occ-ctx) val)) nil))
+    (let ((propstr
+           (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
+      (unless (member propstr org-use-property-inheritance)
+        (delete propstr org-use-property-inheritance))))
+ (occ-debug :debug "occ-insinuate: finish")
+ (occ-message "occ-insinuate: finish"))
+
+
+(defun occ-version (&optional here full message)
+  "Show the Occ version.
+Interactively, or when MESSAGE is non-nil, show it in echo area.
+With prefix argument, or when HERE is non-nil, insert it at point.
+In non-interactive uses, a reduced version string is output unless
+FULL is given."
+  (interactive (list current-prefix-arg t (not current-prefix-arg)))
+  (message (occ-get-version here full message)))
+
+
 ;;; occ-commands.el ends here
