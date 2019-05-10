@@ -81,6 +81,7 @@ DEB_SYS_PKG1="duc baobab agedu tpb daemontools sysstat isag dos2unix powermanage
 DEB_SYS_MAIL="dovecot-core dovecot-imapd mail-stack-delivery ntpdate postfix augeas-tools augeas-lenses notmuch muchsync notmuch-addrlookup notmuch-emacs afew ldap-utils bbdb3 elpa-lbdb lsdb mu-cite libfinance-quote-perl mail-notification"
 DEB_DEV_GTD="tomboy zim anki mnemosyne mnemosyne-blog sqlitebrowser"
 DEB_PKG_LEARNING="gpodder"
+DEB_PKG_TOOL_TERM="jq"
 DEB_PKG_TOOL_GUI="lightdm osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin gpointing-device-settings touchfreeze bash-completion libinput-tools keynav feh geeqie wmaker xserver-xephyr" # xserver-xorg-input-synaptics
 DEB_PKG2_TOOL_GUI="unclutter xscreensaver xscreensaver-gl xss-lock rss-glx  xssproxy xscreensaver-data-extra xscreensaver-gl-extra" # event
 DEB_PKG3_TOOL_GUI="synenergy quicksynenergy " # event
@@ -689,6 +690,7 @@ function setup_apt_packages()
         DEB_SYS_MAIL
         DEB_DEV_GTD
         DEB_PKG_LEARNING
+        DEB_PKG_TOOL_TERM
         DEB_PKG_TOOL_GUI
         DEB_PKG2_TOOL_GUI
         DEB_PKG3_TOOL_GUI
