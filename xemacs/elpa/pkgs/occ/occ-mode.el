@@ -26,6 +26,7 @@
 
 (provide 'occ-mode)
 
+;; https://nullprogram.com/blog/2013/02/06/
 
 (define-minor-mode occ-mode
   "Toggle Occ mode.

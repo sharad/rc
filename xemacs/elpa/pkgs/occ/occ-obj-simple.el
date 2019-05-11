@@ -208,7 +208,7 @@
 (cl-defgeneric occ-capture-in-ctx (tsk ctx)
   "occ-capture-in-ctx")
 
-(cl-defmethod occ-capture-in-ctx ((obj occ-tsk) (ctx occ-ctx))
+(cl-defmethod occ-capture-in-ctx ((tsk occ-tsk) (ctx occ-ctx))
   (let* ((mrk        (occ-tsk-marker tsk))
          (template   (occ-capture+-helm-select-template))
          (clock-in-p helm-current-prefix-arg))
@@ -246,10 +246,12 @@
 
 
 (cl-defmethod occ-induct-child ((obj occ-tree-tsk) (child occ-tree-tsk))
-  (push child (occ-tree-tsk-tree obj)))
+  (push child (occ-tree-collection-tree (occ-collection-object)))
+  (push child (occ-tree-tsk-subtree obj)))
 
 (cl-defmethod occ-induct-child ((obj occ-list-tsk) (child occ-list-tsk))
-  (push child (occ-list-tsk-list obj)))
+  (push child (occ-list-collection-list (occ-collection-object))))
+  ;; (push child (occ-list-tsk-list obj))
 
 
 (cl-defgeneric occ-child (obj)

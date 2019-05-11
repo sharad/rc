@@ -66,7 +66,7 @@
 
 
 (defmacro with-org-capture-plus (marker type target template plist before-body &rest after-body)
-  `(let* ((before-finalize #'(lambda (,marker) ,@before-body))
+  `(let* ((before-finalize #'(lambda (,marker) ,before-body))
           (after-finalize  #'(lambda (,marker) ,@after-body))
           (plist (append
                   (list :before-finalize before-finalize
