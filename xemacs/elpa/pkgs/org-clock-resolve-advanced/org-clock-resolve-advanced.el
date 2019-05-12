@@ -36,6 +36,15 @@
 ;;;###autoload
 (defvar org-clock-last-idle-start-time nil)
 
+;;;###autoload
+(defun org-clock-resolve-reset-last-idle-start-time ()
+  (interactive)
+  (let* ((old org-clock-last-idle-start-time)
+         (fmt (cdr org-time-stamp-formats))
+         (time-string (format-time-string fmt org-clock-last-idle-start-time)))
+    (setq org-clock-last-idle-start-time nil)
+    (message "%s" time-string)))
+
 (defun org-rl-resolve-clocks-if-idle ()
   "Resolve all currently open Org clock.
 This is performed after `org-clock-idle-time' minutes, to check
@@ -96,12 +105,6 @@ so long."
               (org-rl-debug :warning "Resetting org-clock-last-idle-start-time [= %s] to nil" org-clock-last-idle-start-time)
               (setq org-clock-last-idle-start-time nil)
               (org-rl-debug :warning "Reset org-clock-last-idle-start-time to %s" org-clock-last-idle-start-time))))))
-
-      ;; (error
-      ;;  (progn
-      ;;    (setq org-clock-last-idle-start-time nil)
-      ;;    (error "Error: %s" err)))
-
   (org-rl-debug nil "%s: org-rl-resolve-clocks-if-idle: finished" (time-stamp-string)))
 
 (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
@@ -138,8 +141,6 @@ so long."
 If `only-dangling-p' is non-nil, only ask to resolve dangling
 \(i.e., not currently open and valid) clocks."
   (interactive "P")
-  ;; last-input-event
-  ;; last-event-frame
   (unless org-clock-resolving-clocks
     (let ((org-clock-resolving-clocks t))
       (dolist (file (org-files-list))

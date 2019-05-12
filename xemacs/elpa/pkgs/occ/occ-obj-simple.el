@@ -205,13 +205,12 @@
    occ-capture+-helm-templates-alist))
 
 
-(cl-defgeneric occ-capture-in-ctx (tsk ctx)
+(cl-defgeneric occ-capture-in-ctx (tsk ctx &optional clock-in-p)
   "occ-capture-in-ctx")
 
-(cl-defmethod occ-capture-in-ctx ((tsk occ-tsk) (ctx occ-ctx))
+(cl-defmethod occ-capture-in-ctx ((tsk occ-tsk) (ctx occ-ctx)  &optional clock-in-p)
   (let* ((mrk        (occ-tsk-marker tsk))
-         (template   (occ-capture+-helm-select-template))
-         (clock-in-p helm-current-prefix-arg))
+         (template   (occ-capture+-helm-select-template)))
     (when template
       (with-org-capture+ marker 'entry `(marker ,mrk) template '(:empty-lines 1)
         (progn
@@ -224,73 +223,73 @@
                 (occ-clock-in newchild))))))))
 
 
-(cl-defgeneric occ-capture (obj)
+(cl-defgeneric occ-capture (obj &optional clock-in-p)
   "occ-capture")
 
-(cl-defmethod occ-capture ((obj marker))
+(cl-defmethod occ-capture ((obj marker) &optional clock-in-p)
   (org-capture+
    'entry
    `(marker ,obj)
    'occ-capture+-helm-select-template
    :empty-lines 1))
 
-(cl-defmethod occ-capture ((obj occ-tsk))
+(cl-defmethod occ-capture ((obj occ-tsk) &optional clock-in-p)
   (let ((mrk (occ-tsk-marker obj)))
     (occ-capture mrk)))
 
-(cl-defmethod occ-capture ((obj occ-ctsk))
+(cl-defmethod occ-capture ((obj occ-ctsk) &optional clock-in-p)
 
   (let* ((tsk        (occ-ctsk-tsk obj))
          (ctx        (occ-ctsk-ctx obj)))
-    (occ-capture-in-ctx tsk ctx)))
+    (occ-capture-in-ctx tsk ctx clock-in-p)))
 
 
 (cl-defmethod occ-induct-child ((obj occ-tree-tsk) (child occ-tree-tsk))
-  (push child (occ-tree-collection-tree (occ-collection-object)))
+  ;; BUG: put it to next to correct object obj, so need to find obj task here
+  (push child (occ-tree-collection-list (occ-collection-object)))
   (push child (occ-tree-tsk-subtree obj)))
 
 (cl-defmethod occ-induct-child ((obj occ-list-tsk) (child occ-list-tsk))
   (push child (occ-list-collection-list (occ-collection-object))))
-  ;; (push child (occ-list-tsk-list obj))
 
 
 (cl-defgeneric occ-child (obj)
   "occ-child")
 
 (cl-defmethod occ-child ((obj marker))
-  (occ-capture obj)
+  (occ-capture obj helm-current-prefix-arg)
   nil)
 
 (cl-defmethod occ-child ((obj occ-tsk))
-  (occ-capture obj)
+  (occ-capture obj helm-current-prefix-arg)
   nil)
 
 (cl-defmethod occ-child ((obj occ-ctsk))
-  (occ-capture obj)
+  (occ-capture obj helm-current-prefix-arg)
   nil)
 
 (cl-defmethod occ-child ((obj occ-ctxual-tsk))
-  (occ-capture obj)
+  (occ-capture obj helm-current-prefix-arg)
   nil)
 
 
-(cl-defgeneric occ-child-check-in (obj)
-  "occ-child-check-in")
+(cl-defgeneric occ-child-clock-in (obj)
+  "occ-child-clock-in")
 
-(cl-defmethod occ-child-check-in ((obj marker))
-  (occ-capture obj)
+(cl-defmethod occ-child-clock-in ((obj marker))
+  (occ-capture obj t)
   nil)
 
-(cl-defmethod occ-child-check-in ((obj occ-tsk))
-  (occ-capture obj)
+(cl-defmethod occ-child-clock-in ((obj occ-tsk))
+  (occ-capture obj t)
   nil)
 
-(cl-defmethod occ-child-check-in ((obj occ-ctsk))
-  (occ-capture obj)
+(cl-defmethod occ-child-clock-in ((obj occ-ctsk))
+  (occ-capture obj t)
   nil)
 
-(cl-defmethod occ-child-check-in ((obj occ-ctxual-tsk))
-  (occ-capture obj)
+(cl-defmethod occ-child-clock-in ((obj occ-ctxual-tsk))
+  (occ-capture obj t)
   nil)
 
 ;; (before-org-capture+)
@@ -345,18 +344,18 @@ pointing to it."
       (org-with-wide-buffer
        (progn ;; ignore-errors
          (goto-char obj)
-         (let* ((cat (org-get-category))
-                (heading (org-get-heading 'notags))
-                (prefix (save-excursion
-                          (org-back-to-heading t)
-                          (looking-at org-outline-regexp)
-                          (match-string 0)))
-                (org-heading
-                 (substring
-                  (org-fontify-like-in-org-mode
-                   (concat prefix heading)
-                   org-odd-levels-only)
-                  (length prefix))))
+         (let* ((cat         (org-get-category))
+                (heading     (org-get-heading 'notags))
+                (prefix      (save-excursion
+                               (org-back-to-heading t)
+                               (looking-at org-outline-regexp)
+                               (match-string 0)))
+                (org-heading (substring
+                              (org-fontify-like-in-org-mode
+                               (concat prefix heading)
+                               org-odd-levels-only)
+                              (length prefix))))
+
            (when org-heading ;; (and cat org-heading)
              ;; (insert (format "[%c] %-12s  %s\n" i cat org-heading))
              ;; obj
@@ -367,20 +366,6 @@ pointing to it."
 And return a cons cell with the selection character integer and the marker
 pointing to it."
   (cons (occ-print obj) obj))
-
-;; (cl-defmethod occ-candidate ((obj occ-tsk))
-;;   "Insert a line for the clock selection menu.
-;; And return a cons cell with the selection character integer and the marker
-;; pointing to it."
-;;   (cons (occ-print obj) obj))
-
-;; (cl-defmethod occ-candidate ((obj occ-ctxual-tsk))
-;;   "Insert a line for the clock selection menu.
-;; And return a cons cell with the selection character integer and the marker
-;; pointing to it."
-;;   (cons (occ-print obj) obj))
-
-;; function to setup ctx clock timer:2 ends here
 
 
 (defvar occ-helm-map
@@ -388,7 +373,7 @@ pointing to it."
     (set-keymap-parent map helm-map)
     ;; (define-key map (kbd "RET")           'helm-ff-RET)
     (define-key map (kbd "C-]")           'helm-ff-run-toggle-basename)
-    (define-key map (kbd "S-RET")         'occ-helm-run-child-check-in)
+    (define-key map (kbd "S-RET")         'occ-helm-run-child-clock-in)
     (helm-define-key-with-subkeys map (kbd "DEL") ?\d 'helm-ff-delete-char-backward
                                   '((C-backspace . helm-ff-run-toggle-auto-update)
                                     ([C-c DEL] . helm-ff-run-toggle-auto-update))
@@ -402,14 +387,15 @@ pointing to it."
 (defvar occ-helm-doc-header " (\\<helm-find-files-map>\\[helm-find-files-up-one-level]: Go up one level)"
   "*The doc that is inserted in the Name header of a find-files or dired source.")
 
-(defun occ-helm-run-child-check-in ()
+(defun occ-helm-run-child-clock-in ()
   "Run mail attach files command action from `helm-source-find-files'."
   (interactive)                         ;TODO: to move to occ-commands.el
   (with-helm-alive-p
-    (helm-exit-and-execute-action 'occ-child-check-in)))
-(put 'occ-helm-run-child-check-in 'helm-only t)
-;; add occ-child-check-in in action
+    (helm-exit-and-execute-action 'occ-child-clock-in)))
+(put 'occ-helm-run-child-clock-in 'helm-only t)
+;; add occ-child-clock-in in action
 
+
 (defun occ-list-select-internal (candidates actions &optional timeout)
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
   (occ-debug :debug "Running occ-sacha-helm-select")
@@ -433,7 +419,6 @@ pointing to it."
   "Return all TSKs for context nil OBJ"
   ;; (occ-debug :debug "occ-collection-obj-matches list")
   (occ-collection-list collection))
-
 
 ;; ISSUE? should it return rank or occ-ctxual-tsks list
 (cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)

@@ -552,6 +552,7 @@
                 org-clock-clocking-in))
 
 
+;;;###autoload
 (defun org-clock-idle-time-set (mins)
   (interactive
    (list (read-number "org-clock-idle-time: "
@@ -560,6 +561,7 @@
                         5))))
   (setq org-clock-idle-time mins))
 
+;;;###autoload
 (defun org-clock-steel-time ()
   (interactive))
 
@@ -635,6 +637,7 @@
      (float-time (org-rl-get-time-gap prev next))
      (abs timelen))))
 
+;;;###autoload
 (defun org-rl-select-other-clock (&optional target)
   (interactive)
   (org-rl-debug nil "org-rl-select-other-clock: target[%s]" target)

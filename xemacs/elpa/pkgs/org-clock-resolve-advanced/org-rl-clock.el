@@ -370,7 +370,6 @@
   ;; BUG how to handle current time == 'now
   ;; BUG how to handle when prev == next
   "Resolve clock time"
-  (interactive)
   ;; last-input-event
   ;; last-event-frameo
   ;; TODO: send some tag or signal when other frame selection

@@ -29,12 +29,13 @@
 
 (cl-defmethod occ-helm-actions ((obj null))
   (list
-   (cons "Child"  #'occ-child)))
+   (cons "Child"  #'occ-child)
+   (cons "Child Clock-in" #'occ-child-clock-in)))
 
 (cl-defmethod occ-helm-actions ((obj occ-ctx))
   (list
-   (cons "Clock-in" #'occ-clock-in)
-   (cons "Child"    #'occ-child)))
+   (cons "Child"    #'occ-child)
+   (cons "Child Clock-in" #'occ-child-clock-in)))
 
 
 (cl-defmethod occ-helm-action-transformer ((obj null) actions)
@@ -44,8 +45,8 @@
 (cl-defmethod occ-helm-action-transformer ((obj occ-tsk) actions)
   (list
    (cons "Select"   #'identity)
-   (cons "Clock-in" #'occ-clock-in)
-   (cons "Child"    #'occ-child)))
+   (cons "Child"    #'occ-child)
+   (cons "Child Clock-in" #'occ-child-clock-in)))
 
 ;; (cl-defmethod occ-helm-action-transformer ((obj occ-ctx) actions)
 ;;   (list
@@ -56,13 +57,14 @@
   (list
    ;; (cons "Clock-in" #'occ-clock-in)
    (cons "Select"   #'identity)
-   (cons "Child"    #'occ-child)))
+   (cons "Child"    #'occ-child)
+   (cons "Child Clock-in" #'occ-child-clock-in)))
 
 (cl-defmethod occ-helm-action-transformer ((obj occ-ctxual-tsk) actions)
   (list
    (cons "Select"   #'identity)
-   (cons "Clock-in" #'occ-clock-in)
-   (cons "Child"    #'occ-child)))
+   (cons "Child"    #'occ-child)
+   (cons "Child Clock-in" #'occ-child-clock-in)))
 
 
 (defun occ-helm-build-candidates-source (candidates &optional name-action-cons)

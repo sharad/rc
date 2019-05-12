@@ -48,13 +48,13 @@
   (interactive)
   (occ-helm-select-ctxual-tsk
    #'identity
-   #'occ-capture))
+   #'occ-child-check-in))
 
 (defun occ-create-child-tsk ()
   (interactive)
   (occ-helm-select-tsk
    #'identity
-   #'occ-capture))
+   #'occ-child-check-in))
 
 (defun occ-create-tsk ()
   (interactive)
