@@ -756,26 +756,26 @@ pointing to it."
          (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
          (timeout            (or timeout 7)))
    (if (>
-         (float-time (time-since *occ-last-buff-sel-time*))
-         *occ-tsk-current-ctx-time-interval*
-        (let* ((buff    (occ-ctx-buffer ctx)))
-          (setq *occ-tsk-current-ctx* ctx)
-          (if (and
-               (occ-chgable-p)
-               buff (buffer-live-p buff)
-               (not (minibufferp buff))
-               (not (ignore-p buff))
-               (not              ;BUG: Reconsider whether it is catching case after some delay.
-                (equal *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
-              (progn
-                (when (occ-clock-in-if-not ctx
-                                           :collector #'occ-matches
-                                           :action action
-                                           :action-transformer action-transformer
-                                           :timeout timeout)
-                  (setq *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
-            (occ-debug :nodisplay "occ-clock-in-if-chg: ctx %s not suitable to associate" ctx))))
-      (occ-debug :nodisplay "occ-clock-in-if-chg: not enough time passed."))))
+        (float-time (time-since *occ-last-buff-sel-time*))
+        *occ-tsk-current-ctx-time-interval*)
+       (let* ((buff    (occ-ctx-buffer ctx)))
+         (setq *occ-tsk-current-ctx* ctx)
+         (if (and
+              (occ-chgable-p)
+              buff (buffer-live-p buff)
+              (not (minibufferp buff))
+              (not (ignore-p buff))
+              (not              ;BUG: Reconsider whether it is catching case after some delay.
+               (equal *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
+             (progn
+               (when (occ-clock-in-if-not ctx
+                                          :collector #'occ-matches
+                                          :action action
+                                          :action-transformer action-transformer
+                                          :timeout timeout)
+                 (setq *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
+           (occ-debug :nodisplay "occ-clock-in-if-chg: ctx %s not suitable to associate" ctx)))
+     (occ-debug :nodisplay "occ-clock-in-if-chg: not enough time passed."))))
 
 
 ;;; occ-obj-simple.el ends here

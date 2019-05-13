@@ -334,7 +334,9 @@
     (if (and
          (buffer-live-p buff)
          (not (string-match "^*helm" (buffer-name buff))))
-        (occ-obj-prop-edit (occ-select obj #'occ-list timeout) ctx timeout)
+        (occ-obj-prop-edit
+         (occ-select obj :collector #'occ-list :timeout timeout)
+         ctx timeout)
       (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s"
                  (buffer-live-p buff)
                  (not (string-match "^*helm" (buffer-name buff)))))))
