@@ -72,7 +72,7 @@
           org-odd-levels-only))))))
 
 
-(cl-defmethod occ-print ((obj occ-tsk))
+(cl-defmethod occ-format ((obj occ-tsk))
   ;; (format "[%4d] %s"
   ;;         0
   ;;         (occ-fontify-like-in-org-mode tsk))
@@ -87,11 +87,11 @@
          heading tagstr)
       (format "%s" heading))))
 
-(cl-defmethod occ-print ((obj occ-ctsk))
+(cl-defmethod occ-format ((obj occ-ctsk))
   (let ((tsk (occ-ctsk-tsk obj)))
     (occ-fontify-like-in-org-mode tsk)))
 
-(cl-defmethod occ-print ((obj occ-ctxual-tsk))
+(cl-defmethod occ-format ((obj occ-ctxual-tsk))
   (let ((tsk (occ-ctxual-tsk-tsk obj)))
     (format "[%4d] %s"
             (occ-ctxual-tsk-rank obj)
@@ -135,6 +135,107 @@
 (cl-defmethod occ-current-associated-p ((ctx occ-ctx))
   (let ((tsk (occ-tsk-current-tsk)))
     (when tsk (occ-rank tsk ctx))))
+
+
+(defvar *occ-clocked-ctxual-tsk-ctx-history* nil)
+(defvar occ-clock-in-hooks nil "Hook to run on clockin with previous and next markers.")
+
+(cl-defmethod occ-clock-in ((obj marker))
+  (let ((org-log-note-clock-out nil))
+    (when (marker-buffer obj)
+      (with-current-buffer (marker-buffer obj)
+        (let ((buffer-read-only nil))
+          (condition-case-control t err
+            (progn
+              (occ-straight-org-clock-clock-in (list obj)))
+            ((error)
+             (signal (car err) (cdr err)))))))))
+
+(cl-defmethod occ-clock-in ((obj occ-tsk))
+  (occ-clock-in (occ-tsk-marker obj)))
+
+(cl-defmethod occ-clock-in ((obj occ-ctxual-tsk))
+  ;;TODO add org-insert-log-not
+  (occ-debug :debug "occ-clock-in-marker %s" obj)
+  (let* (retval
+         (old-ctxual-tsk     (car *occ-clocked-ctxual-tsk-ctx-history*))
+         (old-tsk            (when old-ctxual-tsk (occ-ctxual-tsk-tsk old-ctxual-tsk)))
+         (old-marker         (or (if old-tsk (occ-tsk-marker old-tsk)) org-clock-hd-marker))
+         (old-heading        (if old-tsk (occ-tsk-heading old-tsk)))
+         (obj-tsk            (occ-ctxual-tsk-tsk obj))
+         (new-marker         (if obj-tsk (occ-tsk-marker obj-tsk)))
+         (new-heading        (if obj-tsk (occ-tsk-heading obj-tsk))))
+    (when (and
+           new-marker
+           (marker-buffer new-marker))
+
+      (let* ((org-log-note-clock-out nil)
+             (old-marker org-clock-marker)
+             (old-buff   (marker-buffer old-marker)))
+
+        (occ-debug :debug "clocking in %s" new-marker)
+
+        (let ((old-buff-read-only
+               (if old-buff
+                   (with-current-buffer (marker-buffer old-marker)
+                     buffer-read-only))))
+
+          (if old-buff
+              (with-current-buffer old-buff
+                (setq buffer-read-only nil)))
+
+          (setq *occ-update-current-ctx-msg* old-marker)
+
+          (run-hook-with-args 'occ-clock-in-hooks
+                              old-marker
+                              new-marker)
+
+          (when (and
+                 new-heading
+                 old-marker
+                 (marker-buffer old-marker))
+            (org-insert-log-note old-marker (format "clocking out to clockin to <%s>" new-heading)))
+          (when old-heading
+            (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
+
+          (occ-clock-in obj-tsk)
+          (setq retval t)
+
+          (push obj *occ-clocked-ctxual-tsk-ctx-history*)
+
+          (if old-buff
+              (with-current-buffer old-buff
+                (setq buffer-read-only old-buff-read-only)))
+          retval)))))
+
+(cl-defmethod occ-clock-in ((obj occ-ctx))
+  "Clock-in selected CTXUAL-TSK for occ-ctx OBJ or open interface for adding properties to heading."
+  (let ((ctxual-tsk (occ-select obj #'occ-matches)))
+    (if ctxual-tsk
+        (if (occ-ctxual-tsk-p ctxual-tsk)
+            ;; will give liberty to helm to do further actions
+            (occ-clock-in ctxual-tsk))
+      (progn
+        ;; here create unnamed tsk, no need
+        (setq *occ-update-current-ctx-msg* "null clock")
+        (occ-debug :debug
+                   "No clock found please set a match for this ctx %s, add it using M-x occ-prop-edit-safe."
+                   obj)
+        (lwarn 'occ
+               :debug
+               "occ-clock-in(ctx):  with this-command=%s" this-command)
+        (occ-delayed-select-obj-prop-edit-when-idle obj obj 7)
+        nil))))
+
+(cl-defmethod occ-clock-in ((obj null))
+  (error "Can not clock in NIL"))
+
+;; (occ-delayed-select-obj-prop-edit-when-idle (occ-make-ctx nil) (occ-make-ctx nil) 7)
+;; (occ-delayed-select-obj-prop-edit-when-idle nil (occ-make-ctx nil) 7)
+
+(cl-defmethod occ-clock-in-if-associated ((tsk occ-tsk) (ctx occ-ctx))
+  (when (>= 0 (occ-associated-p tsk ctx))
+    (occ-clock-in tsk)))
 
 
 (cl-defgeneric occ-goto (obj)
@@ -216,11 +317,11 @@
         (progn
           (occ-obj-prop-edit tsk ctx 7)
           t)
-        (let ((newchild (occ-make-tsk marker)))
-          (when newchild
-            (occ-induct-child tsk newchild)
+        (let ((child-tsk (occ-make-tsk marker)))
+          (when child-tsk
+            (occ-induct-child tsk child-tsk)
             (if clock-in-p
-                (occ-clock-in newchild))))))))
+                (occ-clock-in-if-associated child-tsk ctx))))))))
 
 
 (cl-defgeneric occ-capture (obj &optional clock-in-p)
@@ -365,7 +466,7 @@ pointing to it."
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
-  (cons (occ-print obj) obj))
+  (cons (occ-format obj) obj))
 
 
 (defvar occ-helm-map
@@ -404,7 +505,8 @@ pointing to it."
        ;; :keymap occ-helm-map
        (occ-helm-build-candidates-source
         candidates
-        actions))
+        :action actions
+        :action-transformer #'(lambda (actions candidate) (occ-helm-action-transformer candidate actions))))
     (occ-debug :debug "Running occ-sacha-helm-select1")))
 
 (defun occ-list-select (candidates actions &optional timeout)
@@ -570,134 +672,21 @@ pointing to it."
   (let ((candidates (funcall collector obj)))
     (when candidates
       (occ-list-select candidates (occ-helm-actions obj) timeout))))
-
-;; (cl-defmethod occ-select ((obj occ-ctx) collector &optional timeout)
-;;   "return interactively selected CTXUAL-TSK or NIL, marker and ranked version"
-;;   (interactive
-;;    (list (occ-make-ctx-at-point)))
-;;   (progn
-;;     (occ-debug :debug "in occ-clock-in occ-ctx 1")
-;;     (let* ((obj (or obj (occ-make-ctx)))
-;;            (matched-ctxual-tsks
-;;             (run-unobtrusively           ;heavy task
-;;               ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)
-;;               ;; begin occ-clock-in-curr-ctx-if-not
-;;               ;; 2019-03-06 22:55:31 s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug
-;;               ;; occ-clock-in-if-not: Now really going to clock.
-;;               ;; in occ-clock-in occ-ctx 1
-;;               ;; user input 111 retval t
-;;               ;; trying to create unnamed tsk.
-;;               ;; occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk
-;;               ;; occ-clock-in-if-not: Now really clock done.
-;;               (remove-if-not
-;;                #'(lambda (ctxual-tsk)
-;;                    (let* ((mrk (occ-ctxual-tsk-marker ctxual-tsk)))
-;;                      (and
-;;                       mrk
-;;                       (marker-buffer mrk))))
-;;                (funcall collector obj)))))
-;;       (unless (eq matched-ctxual-tsks t)
-;;         (when matched-ctxual-tsks
-;;           (let* ((sel-ctxual-tsk
-;;                   (if (> (length matched-ctxual-tsks) 1)
-;;                       (occ-list-select matched-ctxual-tsks (occ-helm-actions obj) timeout)
-;;                     (car matched-ctxual-tsks))))
-;;             sel-ctxual-tsk))))))
 
 
-(defvar *occ-clocked-ctxual-tsk-ctx-history* nil)
-(defvar occ-clock-in-hooks nil "Hook to run on clockin with previous and next markers.")
+(cl-defmethod occ-select-actions ((obj null) collector &optional actions timeout)
+  "return interactively selected TSK or NIL"
+  (let ((actions (or actions (occ-helm-actions obj)))
+        (candidates (funcall collector obj)))
+    (when candidates
+      (occ-list-select candidates actions timeout))))
 
-(cl-defmethod occ-clock-in ((obj marker))
-  (let ((org-log-note-clock-out nil))
-    (when (marker-buffer obj)
-      (with-current-buffer (marker-buffer obj)
-        (let ((buffer-read-only nil))
-          (condition-case-control t err
-            (progn
-              (occ-straight-org-clock-clock-in (list obj)))
-            ((error)
-             (signal (car err) (cdr err)))))))))
-
-(cl-defmethod occ-clock-in ((obj occ-tsk))
-  (occ-clock-in (occ-tsk-marker obj)))
-
-(cl-defmethod occ-clock-in ((obj occ-ctxual-tsk))
-  ;;TODO add org-insert-log-not
-  (occ-debug :debug "occ-clock-in-marker %s" obj)
-  (let* (retval
-         (old-ctxual-tsk     (car *occ-clocked-ctxual-tsk-ctx-history*))
-         (old-tsk            (when old-ctxual-tsk (occ-ctxual-tsk-tsk old-ctxual-tsk)))
-         (old-marker         (or (if old-tsk (occ-tsk-marker old-tsk)) org-clock-hd-marker))
-         (old-heading        (if old-tsk (occ-tsk-heading old-tsk)))
-         (obj-tsk            (occ-ctxual-tsk-tsk obj))
-         (new-marker         (if obj-tsk (occ-tsk-marker obj-tsk)))
-         (new-heading        (if obj-tsk (occ-tsk-heading obj-tsk))))
-    (when (and
-           new-marker
-           (marker-buffer new-marker))
-
-      (let* ((org-log-note-clock-out nil)
-             (old-marker org-clock-marker)
-             (old-buff   (marker-buffer old-marker)))
-
-        (occ-debug :debug "clocking in %s" new-marker)
-
-        (let ((old-buff-read-only
-               (if old-buff
-                   (with-current-buffer (marker-buffer old-marker)
-                     buffer-read-only))))
-
-          (if old-buff
-              (with-current-buffer old-buff
-                (setq buffer-read-only nil)))
-
-          (setq *occ-update-current-ctx-msg* old-marker)
-
-          (run-hook-with-args 'occ-clock-in-hooks
-                              old-marker
-                              new-marker)
-
-          (when (and
-                 new-heading
-                 old-marker
-                 (marker-buffer old-marker))
-            (org-insert-log-note old-marker (format "clocking out to clockin to <%s>" new-heading)))
-          (when old-heading
-            (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
-
-          (occ-clock-in obj-tsk)
-          (setq retval t)
-
-          (push obj *occ-clocked-ctxual-tsk-ctx-history*)
-
-          (if old-buff
-              (with-current-buffer old-buff
-                (setq buffer-read-only old-buff-read-only)))
-          retval)))))
-
-(cl-defmethod occ-clock-in ((obj occ-ctx))
-  "Clock-in selected CTXUAL-TSK for occ-ctx OBJ or open interface for adding properties to heading."
-  (let ((ctxual-tsk (occ-select obj #'occ-matches)))
-    (if ctxual-tsk
-        (occ-clock-in ctxual-tsk)
-      (progn
-        ;; here create unnamed tsk, no need
-        (setq *occ-update-current-ctx-msg* "null clock")
-        (occ-debug :debug
-                   "No clock found please set a match for this ctx %s, add it using M-x occ-prop-edit-safe."
-                   obj)
-        (lwarn 'occ
-               :debug
-               "occ-clock-in(ctx):  with this-command=%s" this-command)
-        (occ-delayed-select-obj-prop-edit-when-idle obj obj 7)
-        nil))))
-
-(cl-defmethod occ-clock-in ((obj null))
-  (error "Can not clock in NIL"))
-
-;; (occ-delayed-select-obj-prop-edit-when-idle (occ-make-ctx nil) (occ-make-ctx nil) 7)
-;; (occ-delayed-select-obj-prop-edit-when-idle nil (occ-make-ctx nil) 7)
+(cl-defmethod occ-select-actions ((obj occ-ctx) collector &optional actions timeout)
+  "return interactively selected TSK or NIL"
+  (let ((actions (or actions (occ-helm-actions obj)))
+        (candidates (funcall collector obj)))
+    (when candidates
+      (occ-list-select candidates actions timeout))))
 
 
 (defcustom *occ-last-buff-sel-time*            (current-time) "*occ-last-buff-sel-time*")

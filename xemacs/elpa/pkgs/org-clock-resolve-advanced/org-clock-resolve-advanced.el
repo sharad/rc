@@ -152,7 +152,7 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
                 (funcall org-rl-clock-resolve-time
                  (org-rl-make-clock (car clock) (cdr clock) (cdr clock))
                  (org-rl-make-clock 'imaginary 'now 'now)
-                 nil nil nil))))))))) ;TODO: should not be now ?
+                 nil nil nil)))))))))
 
 ;;;###autoload
 (defalias 'org-resolve-clocks 'org-rl-resolve-clocks)

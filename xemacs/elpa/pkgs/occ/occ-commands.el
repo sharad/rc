@@ -30,76 +30,21 @@
 (require 'occ-main)
 
 
-;;; Selectors
+;;;###autoload
+(defun occ-helm-match-select ()
+  (interactive)
+  (occ-helm-select (occ-make-ctx-at-point) #'occ-matches))
+
+(defun occ-helm-list-select ()
+  (interactive)
+  ;; TODO: FIX it :action-transformer (lambda (actions candidate) (occ-helm-action-transformer candidate actions))
+  (occ-helm-select (occ-make-ctx-at-point) #'occ-list))
+
 
 ;;;###autoload
-(defun occ-set-to-ctxual-tsk ()
-  (occ-helm-select-ctxual-tsk
-   #'occ-ctxual-tsk-marker
-   #'occ-set-to))
-
-(defun occ-goto-tsk ()
-  (occ-helm-select-tsk
-   #'occ-tsk-marker
-   #'occ-goto))
-
-;;;###autoload
-(defun occ-create-child-tsk ()
-  (interactive)
-  (occ-helm-select-ctxual-tsk
-   #'identity
-   #'occ-child-check-in))
-
-(defun occ-create-child-tsk ()
-  (interactive)
-  (occ-helm-select-tsk
-   #'identity
-   #'occ-child-check-in))
-
-(defun occ-create-tsk ()
-  (interactive)
-  (error "Implement it.")
-  (occ-helm-select-tsk
-   #'identity
-   #'occ-capture))
-
-(defun occ-create-tsk-clock-in ()
-  (interactive)
-  (error "Implement it.")
-  (occ-helm-select-tsk
-   #'identity
-   #'occ-capture))
-
-(defun org-create-new-task ()
-  (interactive)
-  (let ((collection
-         '(("* TODO %? %^g\n %i\n [%a]\n" . 1)
-           ("* TODO %? %^g\n %i\n Test [%a]\n" . 2))))
-    (org-capture-plus
-     'entry
-     '(function org-goto-refile)
-     (helm :sources
-           `(((name . "Templates: ")
-              (multiline)
-              (candidates ,@collection)
-              (action . identity))))
-     ;; ((name . "Section 2")
-     ;;  (multiline)
-     ;;  (candidates ("G\nH\nI" . 3)
-     ;;              ("J\nK\nL" . 4)))
-
-     :empty-lines 1)))
-
 (defun occ-merge-unamed-task ()
   (interactive)
   (error "Implement it."))
-
-;; (push "Nothing to complete" debug-ignored-errors)
-
-
-(defun occ-goto-test ()
-  (interactive)
-  (occ-goto-tsk))
 
 
 ;;;###autoload

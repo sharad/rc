@@ -41,15 +41,4 @@
 (require 'occ-helm)
 
 
-;;;###autoload
-(defun occ-helm-select-tsk (selector
-                            action)
-  (occ-helm-select nil selector action))
-
-;;;###autoload
-(defun occ-helm-select-ctxual-tsk (selector
-                                   action)
-  (occ-helm-select (occ-make-ctx-at-point) selector action))
-
-
 ;;; occ-obj-method.el ends here

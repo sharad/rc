@@ -43,7 +43,7 @@
       (apply #'format args)
       (when (member level '(:emergency :error :warning :debug))
         ;; (apply #'lwarn 'occ level args)
-        x(apply #'lwarn 'occ level args))
+        (apply #'lwarn 'occ level args))
       (unless (eq level :nodisplay)
         (apply #'message args)))))
 
