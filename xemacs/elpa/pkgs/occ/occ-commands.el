@@ -49,6 +49,11 @@
                    :timeout 7))
 
 
+(defun occ-curr-procreate-child ())
+
+(defun occ-curr-procreate-child-clock-in ())
+
+
 ;;;###autoload
 (defun occ-merge-unamed-task ()
   (interactive)

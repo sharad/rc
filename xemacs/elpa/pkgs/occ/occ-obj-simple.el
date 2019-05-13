@@ -421,23 +421,38 @@ pointing to it."
   (push child (occ-list-collection-list (occ-collection-object))))
 
 
+(cl-defgeneric occ-unammed-p (obj))
+
+(cl-defmethod occ-unnamed-p ((obj marker)))
+
+(cl-defmethod occ-unnamed-p ((obj occ-tsk)))
+
+(cl-defmethod occ-unnamed-p ((obj occ-ctsk)))
+
+(cl-defmethod occ-unnamed-p ((obj occ-ctxual-tsk)))
+
+
 (cl-defgeneric occ-procreate-child (obj)
   "occ-child")
 
 (cl-defmethod occ-procreate-child ((obj marker))
-  (occ-capture obj helm-current-prefix-arg)
+  (unless (occ-unnamed-p obj)
+   (occ-capture obj helm-current-prefix-arg))
   nil)
 
 (cl-defmethod occ-procreate-child ((obj occ-tsk))
-  (occ-capture obj helm-current-prefix-arg)
+  (unless (occ-unnamed-p obj)
+    (occ-capture obj helm-current-prefix-arg))
   nil)
 
 (cl-defmethod occ-procreate-child ((obj occ-ctsk))
-  (occ-capture obj helm-current-prefix-arg)
+  (unless (occ-unnamed-p obj)
+    (occ-capture obj helm-current-prefix-arg))
   nil)
 
 (cl-defmethod occ-procreate-child ((obj occ-ctxual-tsk))
-  (occ-capture obj helm-current-prefix-arg)
+  (unless (occ-unnamed-p obj)
+    (occ-capture obj helm-current-prefix-arg))
   nil)
 
 
