@@ -72,7 +72,15 @@
 ;;;###autoload
 (defun occ-clock-in-curr-ctx (&optional force)
   (interactive "P")
-  (occ-clock-in-if-not (occ-make-ctx-at-point)))
+  (let ((collector          #'occ-matches)
+        (action             (occ-helm-actions obj))
+        (action-transformer #'occ-helm-action-transformer-fun)
+        (timeout            7))
+    (occ-clock-in-if-not (occ-make-ctx-at-point)
+                         :collector collector
+                         :action action
+                         :action-transformer action-transformer
+                         :timeout timeout)))
 
 ;;;###autoload
 (defun occ-clock-in-curr-ctx-if-not (&optional force)
@@ -83,8 +91,8 @@
   (lotus-with-other-frame-event-debug "occ-clock-in-curr-ctx-if-not" :cancel
     (occ-debug :debug "%s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug" (time-stamp-string))
     (if force
-        (occ-clock-in-curr-ctx (occ-make-ctx-at-point))
-      (occ-clock-in-if-chg (occ-make-ctx-at-point))))
+        (occ-clock-in-curr-ctx force)
+      (occ-clock-in-if-chg (occ-make-ctx-at-point) :collector #'occ-matches)))
   (occ-debug :nodisplay "%s: end occ-clock-in-curr-ctx-if-not" (time-stamp-string)))
 
 

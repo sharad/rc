@@ -403,7 +403,6 @@
   (occ-capture obj t)
   nil)
 
-;; (before-org-capture+)
 
 (cl-defgeneric occ-child-with-prop-edit (obj)
   "occ-child")
@@ -511,7 +510,7 @@ pointing to it."
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
   (occ-debug :debug "Running occ-sacha-helm-select")
   (prog1
-      (let ((action             (or action (occ-helm-actions obj)))
+      (let (;; (action             (or action (occ-helm-actions obj)))
             (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
             (timeout            (or timeout 7)))
        (helm
@@ -523,7 +522,7 @@ pointing to it."
     (occ-debug :debug "Running occ-sacha-helm-select1")))
 
 (cl-defun occ-list-select (candidates &key action action-transformer timeout)
-  (let ((action             (or action (occ-helm-actions obj)))
+  (let (;; (action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout 7)))
     (helm-timed timeout
@@ -706,33 +705,6 @@ pointing to it."
                        :timeout timeout))))
 
 
-;; (cl-defmethod occ-select-actions ((obj null) &key collector action action-transformer timeout)
-;;   "return interactively selected TSK or NIL"
-;;   (unless collector (error "Collector can not be nil"))
-;;   (let ((candidates         (funcall collector obj))
-;;         (action             (or action (occ-helm-actions obj)))
-;;         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
-;;         (timeout            (or timeout 7)))
-;;     (when candidates
-;;       (occ-list-select candidates
-;;                        :action action
-;;                        :action-transformer action-transformer
-;;                        :timeout timeout))))
-
-;; (cl-defmethod occ-select-actions ((obj occ-ctx) &key collector action action-transformer timeout)
-;;   "return interactively selected TSK or NIL"
-;;   (unless collector (error "Collector can not be nil"))
-;;   (let ((candidates         (funcall collector obj))
-;;         (action             (or action (occ-helm-actions obj)))
-;;         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
-;;         (timeout            (or timeout 7)))
-;;     (when candidates
-;;       (occ-list-select candidates
-;;                        :action action
-;;                        :action-transformer action-transformer
-;;                        :timeout timeout))))
-
-
 (defcustom *occ-last-buff-sel-time*            (current-time) "*occ-last-buff-sel-time*")
 (defvar    *occ-buff-sel-timer*                nil)
 (defvar    *occ-tsk-current-ctx-time-interval* 7)
@@ -741,49 +713,48 @@ pointing to it."
 
 (cl-defmethod occ-clock-in-if-not ((ctx occ-ctx) &key collector action action-transformer timeout)
   (unless collector (error "Collector can not be nil"))
-  (let ((candidates         (funcall collector obj))
-        (action             (or action (occ-helm-actions obj)))
+  (let ((candidates         (funcall collector ctx))
+        (action             (or action (occ-helm-actions ctx)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout 7)))
    (if (or
          (occ-clock-marker-is-unnamed-clock-p)
-         (>= 0 (occ-associated-p (occ-current-tsk) ctx))
+         (>= 0 (occ-associated-p (occ-current-tsk) ctx)))
+       (progn                ;current clock is not matching
+         (occ-debug :debug "occ-clock-in-if-not: Now really going to clock with this-command=%s" this-command)
+         (unless (occ-clock-in ctx
+                               :collector collector
+                               :action action
+                               :action-transformer action-transformer
+                               :timeout timeout)
 
-        (progn                ;current clock is not matching
-          (occ-debug :debug "occ-clock-in-if-not: Now really going to clock with this-command=%s" this-command)
-          (unless (occ-clock-in ctx
-                                :collector #'collector
-                                :action action
-                                :action-transformer action-transformer
-                                :timeout timeout)
+           ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)
 
-            ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)
-
-            ;; begin occ-clock-in-curr-ctx-if-not
-            ;; 2019-03-06 22:55:31 s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug
-            ;; occ-clock-in-if-not: Now really going to clock.
-            ;; in occ-clock-in occ-ctx 1
-            ;; user input 111 retval t
-            ;; trying to create unnamed tsk.
-            ;; occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk
-            ;; occ-clock-in-if-not: Now really clock done.
+           ;; begin occ-clock-in-curr-ctx-if-not
+           ;; 2019-03-06 22:55:31 s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug
+           ;; occ-clock-in-if-not: Now really going to clock.
+           ;; in occ-clock-in occ-ctx 1
+           ;; user input 111 retval t
+           ;; trying to create unnamed tsk.
+           ;; occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk
+           ;; occ-clock-in-if-not: Now really clock done.
 
 
-            ;; not able to find associated, or intentionally not selecting a clock
-            (occ-debug :debug "trying to create unnamed tsk.")
-            (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))
-          (occ-debug :debug "occ-clock-in-if-not: Now really clock done.")
-          t)
-
-        (progn
-          (occ-debug :debug "occ-clock-in-if-not: Current tsk already associate to %s" ctx)
-          nil)))))
+           ;; not able to find associated, or intentionally not selecting a clock
+           (occ-debug :debug "trying to create unnamed tsk.")
+           (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))
+         (occ-debug :debug "occ-clock-in-if-not: Now really clock done.")
+         t)
+       (progn
+         (occ-debug :debug "occ-clock-in-if-not: Current tsk already associate to %s" ctx)
+         nil))))
 
 (cl-defmethod occ-clock-in-if-chg ((ctx occ-ctx) &key collector action action-transformer timeout)
-  (let ((candidates         (funcall collector obj))
-        (action             (or action (occ-helm-actions obj)))
-        (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
-        (timeout            (or timeout 7)))
+  (let* ((collector          (or collector #'occ-matches))
+         (candidates         (funcall collector ctx))
+         (action             (or action (occ-helm-actions ctx)))
+         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+         (timeout            (or timeout 7)))
    (if (>
          (float-time (time-since *occ-last-buff-sel-time*))
          *occ-tsk-current-ctx-time-interval*
