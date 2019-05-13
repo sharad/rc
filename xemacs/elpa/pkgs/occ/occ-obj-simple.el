@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2019  Sharad
 
-;; Author: Sharad <spratap@merunetworks.com>
+;; Author: Sharad <>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -47,9 +47,34 @@
          (files (occ-files)))))
     ;; (uniquify-buffer-file-name)
 
-
 ;; (file-name-nondirectory "/aaa/aaa/aaa")
 
+(cl-defgeneric occ-fontify-like-in-org-mode (obj)
+  "occ-fontify-like-in-org-mode")
+
+(cl-defmethod occ-fontify-like-in-org-mode ((obj marker))
+  "Insert a line for the clock selection menu.
+And return a cons cell with the selection character integer and the obj
+pointing to it."
+  (when (marker-buffer obj)
+    (with-current-buffer (org-base-buffer (marker-buffer obj))
+      (org-with-wide-buffer
+       (progn ;; ignore-errors
+         (goto-char obj)
+         (let* ((cat         (org-get-category))
+                (heading     (org-get-heading 'notags))
+                (prefix      (save-excursion
+                               (org-back-to-heading t)
+                               (looking-at org-outline-regexp)
+                               (match-string 0)))
+                (org-heading (substring
+                              (org-fontify-like-in-org-mode
+                               (concat prefix heading)
+                               org-odd-levels-only)
+                              (length prefix))))
+
+           org-heading))))))
+
 (cl-defmethod occ-fontify-like-in-org-mode ((tsk occ-tsk))
   (let* ((level    (or (occ-get-property tsk 'level) 0))
          (filename (occ-get-property tsk 'file))
@@ -72,10 +97,13 @@
           org-odd-levels-only))))))
 
 
+(cl-defgeneric occ-format (obj)
+  "occ-format")
+
+(cl-defmethod occ-format ((obj marker))
+  (occ-fontify-like-in-org-mode obj))
+
 (cl-defmethod occ-format ((obj occ-tsk))
-  ;; (format "[%4d] %s"
-  ;;         0
-  ;;         (occ-fontify-like-in-org-mode tsk))
   (let* ((align      100)
          (heading    (occ-fontify-like-in-org-mode obj))
          (headinglen (length heading))
@@ -137,6 +165,14 @@
     (when tsk (occ-rank tsk ctx))))
 
 
+;; (occ-delayed-select-obj-prop-edit-when-idle (occ-make-ctx nil) (occ-make-ctx nil) 7)
+;; (occ-delayed-select-obj-prop-edit-when-idle nil (occ-make-ctx nil) 7)
+
+(cl-defmethod occ-clock-in-if-associated ((tsk occ-tsk) (ctx occ-ctx))
+  (when (>= 0 (occ-associated-p tsk ctx))
+    (occ-clock-in tsk)))
+
+
 (defvar *occ-clocked-ctxual-tsk-ctx-history* nil)
 (defvar occ-clock-in-hooks nil "Hook to run on clockin with previous and next markers.")
 
@@ -153,6 +189,34 @@
 
 (cl-defmethod occ-clock-in ((obj occ-tsk) &key collector action action-transformer timeout)
   (occ-clock-in (occ-tsk-marker obj)))
+
+(cl-defmethod occ-clock-in ((obj occ-ctx) &key collector action action-transformer timeout)
+  "Clock-in selected CTXUAL-TSK for occ-ctx OBJ or open interface for adding properties to heading."
+  (unless collector (error "Collector can not be nil"))
+  (let ((candidates         (funcall collector obj))
+        (action             (or action (occ-helm-actions obj)))
+        (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+        (timeout            (or timeout 7)))
+
+    (let ((ctxual-tsk (occ-select obj
+                                  :collector collector
+                                  :action action
+                                  :action-transformer action-transformer
+                                  :timeout timeout)))
+      (if ctxual-tsk
+          (if (occ-ctxual-tsk-p ctxual-tsk)
+              ;; will give liberty to helm to do further actions
+              (occ-clock-in ctxual-tsk))
+        (progn
+          ;; here create unnamed tsk, no need
+          (setq *occ-update-current-ctx-msg* "null clock")
+          (occ-debug :debug
+                     "No clock found please set a match for this ctx %s, add it using M-x occ-prop-edit-safe."
+                     obj)
+          (occ-debug :debug
+                     "occ-clock-in(ctx):  with this-command=%s" this-command)
+          (occ-delayed-select-obj-prop-edit-when-idle obj obj 7)
+          nil)))))
 
 (cl-defmethod occ-clock-in ((obj occ-ctxual-tsk) &key collector action action-transformer timeout)
   ;;TODO add org-insert-log-not
@@ -208,44 +272,37 @@
                 (setq buffer-read-only old-buff-read-only)))
           retval)))))
 
-(cl-defmethod occ-clock-in ((obj occ-ctx) &key collector action action-transformer timeout)
-  "Clock-in selected CTXUAL-TSK for occ-ctx OBJ or open interface for adding properties to heading."
-  (unless collector (error "Collector can not be nil"))
-  (let ((candidates         (funcall collector obj))
-        (action             (or action (occ-helm-actions obj)))
-        (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
-        (timeout            (or timeout 7)))
+(cl-defmethod occ-clock-in ((obj occ-ctsk) &key collector action action-transformer timeout)
+  (occ-clock-in (occ-ctsk-tsk obj)))
 
-    (let ((ctxual-tsk (occ-select obj
-                                  :collector collector
-                                  :action action
-                                  :action-transformer action-transformer
-                                  :timeout timeout)))
-      (if ctxual-tsk
-          (if (occ-ctxual-tsk-p ctxual-tsk)
-              ;; will give liberty to helm to do further actions
-              (occ-clock-in ctxual-tsk))
-        (progn
-          ;; here create unnamed tsk, no need
-          (setq *occ-update-current-ctx-msg* "null clock")
-          (occ-debug :debug
-                     "No clock found please set a match for this ctx %s, add it using M-x occ-prop-edit-safe."
-                     obj)
-          (lwarn 'occ
-                 :debug
-                 "occ-clock-in(ctx):  with this-command=%s" this-command)
-          (occ-delayed-select-obj-prop-edit-when-idle obj obj 7)
-          nil)))))
-
-(cl-defmethod occ-clock-in ((obj null))
+(cl-defmethod occ-clock-in ((obj null) &key collector action action-transformer timeout)
   (error "Can not clock in NIL"))
+
 
-;; (occ-delayed-select-obj-prop-edit-when-idle (occ-make-ctx nil) (occ-make-ctx nil) 7)
-;; (occ-delayed-select-obj-prop-edit-when-idle nil (occ-make-ctx nil) 7)
+(cl-defmethod occ-try-clock-in ((obj marker) &key collector action action-transformer timeout)
+  (occ-clock-in obj))
 
-(cl-defmethod occ-clock-in-if-associated ((tsk occ-tsk) (ctx occ-ctx))
-  (when (>= 0 (occ-associated-p tsk ctx))
-    (occ-clock-in tsk)))
+(cl-defmethod occ-try-clock-in ((obj occ-tsk) &key collector action action-transformer timeout)
+  (occ-clock-in obj))
+
+(cl-defmethod occ-try-clock-in ((obj occ-ctx) &key collector action action-transformer timeout)
+  (occ-clock-in obj))
+
+(cl-defmethod occ-try-clock-in ((obj occ-ctxual-tsk) &key collector action action-transformer timeout)
+  (let ((obj-tsk            (occ-ctxual-tsk-tsk obj))
+        (obj-ctx            (occ-ctxual-tsk-ctx obj)))
+    (when (>= 0 (occ-associated-p obj-tsk obj-ctx))
+      (occ-clock-in obj-tsk
+                    :collector collector
+                    :action    action
+                    :action-transformer action-transformer
+                    :timeout timeout))))
+
+(cl-defmethod occ-try-clock-in ((obj occ-ctsk) &key collector action action-transformer timeout)
+  (occ-clock-in obj))
+
+(cl-defmethod occ-try-clock-in ((obj null) &key collector action action-transformer timeout)
+  (occ-clock-in obj))
 
 
 (cl-defgeneric occ-goto (obj)
@@ -364,43 +421,83 @@
   (push child (occ-list-collection-list (occ-collection-object))))
 
 
-(cl-defgeneric occ-child (obj)
+(cl-defgeneric occ-procreate-child (obj)
   "occ-child")
 
-(cl-defmethod occ-child ((obj marker))
+(cl-defmethod occ-procreate-child ((obj marker))
   (occ-capture obj helm-current-prefix-arg)
   nil)
 
-(cl-defmethod occ-child ((obj occ-tsk))
+(cl-defmethod occ-procreate-child ((obj occ-tsk))
   (occ-capture obj helm-current-prefix-arg)
   nil)
 
-(cl-defmethod occ-child ((obj occ-ctsk))
+(cl-defmethod occ-procreate-child ((obj occ-ctsk))
   (occ-capture obj helm-current-prefix-arg)
   nil)
 
-(cl-defmethod occ-child ((obj occ-ctxual-tsk))
+(cl-defmethod occ-procreate-child ((obj occ-ctxual-tsk))
   (occ-capture obj helm-current-prefix-arg)
   nil)
 
 
-(cl-defgeneric occ-child-clock-in (obj)
+(cl-defgeneric occ-try-procreate-child (obj)
+  "occ-child")
+
+(cl-defmethod occ-try-procreate-child ((obj marker))
+  (occ-procreate-child obj)
+  nil)
+
+(cl-defmethod occ-try-procreate-child ((obj occ-tsk))
+  (occ-procreate-child obj)
+  nil)
+
+(cl-defmethod occ-try-procreate-child ((obj occ-ctsk))
+  (occ-procreate-child obj)
+  nil)
+
+(cl-defmethod occ-try-procreate-child ((obj occ-ctxual-tsk))
+  (occ-procreate-child obj)
+  nil)
+
+
+(cl-defgeneric occ-procreate-child-clock-in (obj)
   "occ-child-clock-in")
 
-(cl-defmethod occ-child-clock-in ((obj marker))
+(cl-defmethod occ-procreate-child-clock-in ((obj marker))
   (occ-capture obj t)
   nil)
 
-(cl-defmethod occ-child-clock-in ((obj occ-tsk))
+(cl-defmethod occ-procreate-child-clock-in ((obj occ-tsk))
   (occ-capture obj t)
   nil)
 
-(cl-defmethod occ-child-clock-in ((obj occ-ctsk))
+(cl-defmethod occ-procreate-child-clock-in ((obj occ-ctsk))
   (occ-capture obj t)
   nil)
 
-(cl-defmethod occ-child-clock-in ((obj occ-ctxual-tsk))
+(cl-defmethod occ-procreate-child-clock-in ((obj occ-ctxual-tsk))
   (occ-capture obj t)
+  nil)
+
+
+(cl-defgeneric occ-try-procreate-child-clock-in (obj)
+  "occ-child-clock-in")
+
+(cl-defmethod occ-try-procreate-child-clock-in ((obj marker))
+  (occ-procreate-child-clock-in obj)
+  nil)
+
+(cl-defmethod occ-try-procreate-child-clock-in ((obj occ-tsk))
+  (occ-procreate-child-clock-in obj)
+  nil)
+
+(cl-defmethod occ-try-procreate-child-clock-in ((obj occ-ctsk))
+  (occ-procreate-child-clock-in obj)
+  nil)
+
+(cl-defmethod occ-try-procreate-child-clock-in ((obj occ-ctxual-tsk))
+  (occ-procreate-child-clock-in obj)
   nil)
 
 
@@ -449,27 +546,7 @@
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the obj
 pointing to it."
-  (when (marker-buffer obj)
-    (with-current-buffer (org-base-buffer (marker-buffer obj))
-      (org-with-wide-buffer
-       (progn ;; ignore-errors
-         (goto-char obj)
-         (let* ((cat         (org-get-category))
-                (heading     (org-get-heading 'notags))
-                (prefix      (save-excursion
-                               (org-back-to-heading t)
-                               (looking-at org-outline-regexp)
-                               (match-string 0)))
-                (org-heading (substring
-                              (org-fontify-like-in-org-mode
-                               (concat prefix heading)
-                               org-odd-levels-only)
-                              (length prefix))))
-
-           (when org-heading ;; (and cat org-heading)
-             ;; (insert (format "[%c] %-12s  %s\n" i cat org-heading))
-             ;; obj
-             (cons org-heading obj))))))))
+  (cons (occ-format obj) obj))
 
 (cl-defmethod occ-candidate ((obj occ-obj))
   "Insert a line for the clock selection menu.
@@ -510,8 +587,7 @@ pointing to it."
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
   (occ-debug :debug "Running occ-sacha-helm-select")
   (prog1
-      (let (;; (action             (or action (occ-helm-actions obj)))
-            (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+      (let ((action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
             (timeout            (or timeout 7)))
        (helm
        ;; :keymap occ-helm-map
@@ -755,27 +831,27 @@ pointing to it."
          (action             (or action (occ-helm-actions ctx)))
          (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
          (timeout            (or timeout 7)))
-   (if (>
-        (float-time (time-since *occ-last-buff-sel-time*))
-        *occ-tsk-current-ctx-time-interval*)
-       (let* ((buff    (occ-ctx-buffer ctx)))
-         (setq *occ-tsk-current-ctx* ctx)
-         (if (and
-              (occ-chgable-p)
-              buff (buffer-live-p buff)
-              (not (minibufferp buff))
-              (not (ignore-p buff))
-              (not              ;BUG: Reconsider whether it is catching case after some delay.
-               (equal *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
-             (progn
-               (when (occ-clock-in-if-not ctx
-                                          :collector #'occ-matches
-                                          :action action
-                                          :action-transformer action-transformer
-                                          :timeout timeout)
-                 (setq *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
-           (occ-debug :nodisplay "occ-clock-in-if-chg: ctx %s not suitable to associate" ctx)))
-     (occ-debug :nodisplay "occ-clock-in-if-chg: not enough time passed."))))
+    (if (>
+         (float-time (time-since *occ-last-buff-sel-time*))
+         *occ-tsk-current-ctx-time-interval*)
+        (let* ((buff (occ-ctx-buffer ctx)))
+          (setq *occ-tsk-current-ctx* ctx)
+          (if (and
+               (occ-chgable-p)
+               buff (buffer-live-p buff)
+               (not (minibufferp buff))
+               (not (ignore-p buff))
+               (not              ;BUG: Reconsider whether it is catching case after some delay.
+                (equal *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
+              (progn
+                (when (occ-clock-in-if-not ctx
+                                           :collector #'occ-matches
+                                           :action action
+                                           :action-transformer action-transformer
+                                           :timeout timeout)
+                  (setq *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
+            (occ-debug :nodisplay "occ-clock-in-if-chg: ctx %s not suitable to associate" ctx)))
+      (occ-debug :nodisplay "occ-clock-in-if-chg: not enough time passed."))))
 
 
 ;;; occ-obj-simple.el ends here

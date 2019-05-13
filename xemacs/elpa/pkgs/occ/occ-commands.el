@@ -35,8 +35,8 @@
   (interactive)
   (occ-helm-select (occ-make-ctx-at-point)
                    :collector #'occ-matches
-                   :action (occ-helm-actions-get :clock-in :child :child-clock-in :goto)
-                   :action-transformer #'(lambda (action candidate) (occ-helm-actions-get :clock-in :child :child-clock-in :goto))
+                   :action (occ-helm-actions-get :clock-in :procreate-child :procreate-child-clock-in :goto)
+                   :action-transformer #'(lambda (action candidate) (occ-helm-actions-get :clock-in :procreate-child :procreate-child-clock-in :goto))
                    :timeout 7))
 
 (defun occ-helm-list-select ()
@@ -44,8 +44,8 @@
   ;; TODO: FIX it :action-transformer (lambda (actions candidate) (occ-helm-action-transformer candidate actions))
   (occ-helm-select (occ-make-ctx-at-point)
                    :collector #'occ-list
-                   :action (occ-helm-actions-get :clock-in :child :child-clock-in :goto)
-                   :action-transformer #'(lambda (action candidate) (occ-helm-actions-get :clock-in :child :child-clock-in :goto))
+                   :action (occ-helm-actions-get :clock-in :procreate-child :procreate-child-clock-in :goto)
+                   :action-transformer #'(lambda (action candidate) (occ-helm-actions-get :clock-in :procreate-child :procreate-child-clock-in :goto))
                    :timeout 7))
 
 
