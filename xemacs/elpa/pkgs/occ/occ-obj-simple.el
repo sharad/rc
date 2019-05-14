@@ -146,6 +146,12 @@ pointing to it."
           tsk)))))
 ;; Create tsk info out of current clock:1 ends here
 
+;; Collect and return tsk matching to CTX
+(cl-defmethod occ-current-associated-p ((ctx occ-ctx))
+  (let ((tsk (occ-tsk-current-tsk)))
+    (when tsk (occ-rank tsk ctx))))
+
+
 (cl-defmethod occ-associated-p ((tsk symbol)
                                 (ctx occ-ctx))
   0)
@@ -158,11 +164,15 @@ pointing to it."
     0))
 ;; Test if TSK is associate to CTX:1 ends here
 
-;; Collect and return tsk matching to CTX
+(cl-defmethod occ-associable-p ((obj occ-ctsk))
+  (let ((tsk (occ-ctsk-tsk obj))
+        (ctx (occ-ctsk-ctx obj)))
+    (occ-associated-p tsk ctx)))
 
-(cl-defmethod occ-current-associated-p ((ctx occ-ctx))
-  (let ((tsk (occ-tsk-current-tsk)))
-    (when tsk (occ-rank tsk ctx))))
+(cl-defmethod occ-associable-p ((obj occ-ctxual-tsk))
+  (let ((tsk (occ-ctxual-tsk-tsk obj))
+        (ctx (occ-ctxual-tsk-ctx obj)))
+    (occ-associated-p tsk ctx)))
 
 
 ;; (occ-delayed-select-obj-prop-edit-when-idle (occ-make-ctx nil) (occ-make-ctx nil) 7)
@@ -227,6 +237,7 @@ pointing to it."
          (old-marker         (or (if old-tsk (occ-tsk-marker old-tsk)) org-clock-hd-marker))
          (old-heading        (if old-tsk (occ-tsk-heading old-tsk)))
          (obj-tsk            (occ-ctxual-tsk-tsk obj))
+         (obj-ctx            (occ-ctxual-tsk-ctx obj))
          (new-marker         (if obj-tsk (occ-tsk-marker obj-tsk)))
          (new-heading        (if obj-tsk (occ-tsk-heading obj-tsk))))
     (when (and
@@ -262,7 +273,16 @@ pointing to it."
           (when old-heading
             (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
 
-          (occ-clock-in obj-tsk)
+          ;; (occ-clock-in obj-tsk)
+          (when (or
+                 (occ-unnamed-p obj)
+                 (>= 0 (occ-associable-p obj)))
+            (occ-clock-in obj-tsk
+                          :collector collector
+                          :action    action
+                          :action-transformer action-transformer
+                          :timeout timeout))
+
           (setq retval t)
 
           (push obj *occ-clocked-ctxual-tsk-ctx-history*)
@@ -291,7 +311,7 @@ pointing to it."
 (cl-defmethod occ-try-clock-in ((obj occ-ctxual-tsk) &key collector action action-transformer timeout)
   (let ((obj-tsk            (occ-ctxual-tsk-tsk obj))
         (obj-ctx            (occ-ctxual-tsk-ctx obj)))
-    (when (>= 0 (occ-associated-p obj-tsk obj-ctx))
+    (when (>= 0 (occ-associable-p obj))
       (occ-clock-in obj-tsk
                     :collector collector
                     :action    action
@@ -421,15 +441,20 @@ pointing to it."
   (push child (occ-list-collection-list (occ-collection-object))))
 
 
-(cl-defgeneric occ-unammed-p (obj))
+(cl-defgeneric occ-unammed-p (obj)
+  "occ-unnamed-p")
 
-(cl-defmethod occ-unnamed-p ((obj marker)))
+(cl-defmethod occ-unnamed-p ((obj marker))
+  (occ-clock-marker-is-unnamed-clock-p obj))
 
-(cl-defmethod occ-unnamed-p ((obj occ-tsk)))
+(cl-defmethod occ-unnamed-p ((obj occ-tsk))
+  (occ-unnamed-p (occ-tsk-marker obj)))
 
-(cl-defmethod occ-unnamed-p ((obj occ-ctsk)))
+(cl-defmethod occ-unnamed-p ((obj occ-ctsk))
+  (occ-unnamed-p (occ-ctsk-tsk obj)))
 
-(cl-defmethod occ-unnamed-p ((obj occ-ctxual-tsk)))
+(cl-defmethod occ-unnamed-p ((obj occ-ctxual-tsk))
+  (occ-unnamed-p (occ-ctxual-tsk-tsk obj)))
 
 
 (cl-defgeneric occ-procreate-child (obj)
@@ -493,26 +518,6 @@ pointing to it."
 
 (cl-defmethod occ-procreate-child-clock-in ((obj occ-ctxual-tsk))
   (occ-capture obj t)
-  nil)
-
-
-(cl-defgeneric occ-try-procreate-child-clock-in (obj)
-  "occ-child-clock-in")
-
-(cl-defmethod occ-try-procreate-child-clock-in ((obj marker))
-  (occ-procreate-child-clock-in obj)
-  nil)
-
-(cl-defmethod occ-try-procreate-child-clock-in ((obj occ-tsk))
-  (occ-procreate-child-clock-in obj)
-  nil)
-
-(cl-defmethod occ-try-procreate-child-clock-in ((obj occ-ctsk))
-  (occ-procreate-child-clock-in obj)
-  nil)
-
-(cl-defmethod occ-try-procreate-child-clock-in ((obj occ-ctxual-tsk))
-  (occ-procreate-child-clock-in obj)
   nil)
 
 

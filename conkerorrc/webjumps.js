@@ -40,6 +40,7 @@ var bookmark_groups = {
         "http://www.osnews.com",
     ],
     "Linux": [
+        "https://www.linuxuprising.com",
         "http://www.linux-mag.com",
         "https://www.linuxjournal.com/news",
         "https://www.itbusinessedge.com/slideshows",
