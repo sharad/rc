@@ -97,49 +97,58 @@ pointing to it."
           org-odd-levels-only))))))
 
 
-(cl-defgeneric occ-title (obj)
+(defun occ-case (case title)
+  (if (fboundp case)
+      (funcall case title)
+    title))
+
+(cl-defgeneric occ-title (obj case)
   "occ-format")
 
 (cl-defmethod occ-title ((obj marker) (case symbol))
-  "Marker")
+  (occ-case case "marker"))
 
 (cl-defmethod occ-title ((obj occ-tsk) (case symbol))
-  "Task")
+  (occ-case case "task"))
 
 (cl-defmethod occ-title ((obj occ-ctsk) (case symbol))
-  "Context Task")
+  (occ-case case "context task"))
 
 (cl-defmethod occ-title ((obj occ-ctxual-tsk) (case symbol))
-  "Contextual Task")
+  (occ-case case "contextual task"))
 
 
-(cl-defgeneric occ-format (obj)
+(cl-defgeneric occ-format (obj &optional case)
   "occ-format")
 
-(cl-defmethod occ-format ((obj marker))
-  (occ-fontify-like-in-org-mode obj))
+(cl-defmethod occ-format ((obj marker) &optional case)
+  (concat (when case (concat (occ-title obj case) ": "))
+          (occ-fontify-like-in-org-mode obj)))
 
-(cl-defmethod occ-format ((obj occ-tsk))
+(cl-defmethod occ-format ((obj occ-tsk) &optional case)
   (let* ((align      100)
          (heading    (occ-fontify-like-in-org-mode obj))
          (headinglen (length heading))
          (tags       (occ-get-property obj 'tags))
          (tagstr     (if tags (concat ":" (mapconcat #'identity tags ":") ":"))))
-    (if tags
-        (format
-         (format "%%-%ds         %%s" align (if (< headinglen align) (- align headinglen) 0))
-         heading tagstr)
-      (format "%s" heading))))
+    (concat (when case (concat (occ-title obj case) ": "))
+            (if tags
+                (format
+                 (format "%%-%ds         %%s" align (if (< headinglen align) (- align headinglen) 0))
+                 heading tagstr)
+              (format "%s" heading)))))
 
-(cl-defmethod occ-format ((obj occ-ctsk))
+(cl-defmethod occ-format ((obj occ-ctsk) &optional case)
   (let ((tsk (occ-ctsk-tsk obj)))
-    (occ-fontify-like-in-org-mode tsk)))
-
-(cl-defmethod occ-format ((obj occ-ctxual-tsk))
-  (let ((tsk (occ-ctxual-tsk-tsk obj)))
-    (format "[%4d] %s"
-            (occ-ctxual-tsk-rank obj)
+    (concat (when case (concat (occ-title obj case) ": "))
             (occ-fontify-like-in-org-mode tsk))))
+
+(cl-defmethod occ-format ((obj occ-ctxual-tsk) &optional case)
+  (let ((tsk (occ-ctxual-tsk-tsk obj)))
+    (concat (when case (concat (occ-title obj case) ": "))
+            (format "[%4d] %s"
+                    (occ-ctxual-tsk-rank obj)
+                    (occ-fontify-like-in-org-mode tsk)))))
 
 
 ;; could be handled with
@@ -232,7 +241,8 @@ pointing to it."
           (if (occ-ctxual-tsk-p ctxual-tsk)
               ;; will give liberty to helm to do further actions
               (occ-clock-in ctxual-tsk))
-        (progn
+        (prog1
+            nil
           ;; here create unnamed tsk, no need
           (setq *occ-update-current-ctx-msg* "null clock")
           (occ-debug :debug
@@ -240,8 +250,7 @@ pointing to it."
                      obj)
           (occ-debug :debug
                      "occ-clock-in(ctx):  with this-command=%s" this-command)
-          (occ-delayed-select-obj-prop-edit-when-idle obj obj 7)
-          nil)))))
+          (occ-delayed-select-obj-prop-edit-when-idle obj obj 7))))))
 
 (cl-defmethod occ-clock-in ((obj occ-ctxual-tsk) &key collector action action-transformer timeout)
   ;;TODO add org-insert-log-not
@@ -342,9 +351,9 @@ pointing to it."
               (> try 0)
               (= 0 (occ-associable-p obj)))
         (setq try (-1 try))
-        (occ-message "Task %s is not associable with Context %s [try %d]"
-                     (occ-format tsk)
-                     (occ-format ctx)
+        (occ-message "%s is not associable with %s [try %d]"
+                     (occ-format tsk 'capitalize)
+                     (occ-format ctx 'capitalize)
                      (- tries try))
         (occ-obj-prop-edit tsk ctx 7)))
 
@@ -353,9 +362,9 @@ pointing to it."
                                         :action    action
                                         :action-transformer action-transformer
                                         :timeout timeout)
-      (occ-message "Task %s is not associable with Context %s not clocking-in."
-                   (occ-format tsk)
-                   (occ-format ctx)))))
+      (occ-message "%s is not associable with %s not clocking-in."
+                   (occ-format tsk 'capitalize)
+                   (occ-format ctx 'capitalize)))))
 
 (cl-defmethod occ-try-clock-in ((obj occ-ctxual-tsk) &key collector action action-transformer timeout)
   (let ((obj-tsk (occ-ctxual-tsk-tsk obj))
@@ -367,9 +376,9 @@ pointing to it."
               (> try 0)
               (= 0 (occ-associable-p obj)))
         (setq try (-1 try))
-        (occ-message "Task %s is not associable with Context %s [try %d]"
-                     (occ-format tsk)
-                     (occ-format ctx)
+        (occ-message "%s is not associable with %s [try %d]"
+                     (occ-format tsk 'capitalize)
+                     (occ-format ctx 'capitalize)
                      (- tries try))
         (occ-obj-prop-edit tsk ctx 7)))
 
@@ -378,9 +387,9 @@ pointing to it."
                                         :action    action
                                         :action-transformer action-transformer
                                         :timeout timeout)
-      (occ-message "Task %s is not associable with Context %s not clocking-in."
-                   (occ-format tsk)
-                   (occ-format ctx)))))
+      (occ-message "%s is not associable with %s not clocking-in."
+                   (occ-format tsk 'capitalize)
+                   (occ-format ctx 'capitalize)))))
 
 (cl-defmethod occ-try-clock-in ((obj occ-ctsk) &key collector action action-transformer timeout)
   (occ-clock-in obj))
