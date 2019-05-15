@@ -177,12 +177,12 @@ pointing to it."
     (when tsk (occ-rank tsk ctx))))
 
 
-(cl-defmethod occ-associated-p ((tsk symbol)
-                                (ctx occ-ctx))
+(cl-defmethod occ-associable-with-ctx-p ((tsk symbol))
+                                (ctx occ-ctx)
   0)
 
-(cl-defmethod occ-associated-p ((tsk occ-tsk)
-                                (ctx occ-ctx))
+(cl-defmethod occ-associable-with-ctx-p ((tsk occ-tsk))
+                                (ctx occ-ctx)
   "Test if TSK is associate to CTX"
   (if tsk
       (occ-rank tsk ctx)
@@ -193,7 +193,7 @@ pointing to it."
   (occ-debug :debug "occ-associable-p(occ-ctsk=%s)" obj)
   (let ((tsk (occ-ctsk-tsk obj))
         (ctx (occ-ctsk-ctx obj)))
-    (occ-associated-p tsk ctx)))
+    (occ-associable-with-ctx-p tsk ctx)))
 
 (cl-defmethod occ-associable-p ((obj occ-ctxual-tsk))
   (occ-debug :debug "occ-associable-p(occ-ctxual-tsk=%s)" obj)
@@ -327,7 +327,7 @@ pointing to it."
 (cl-defmethod occ-clock-in-if-associable ((tsk occ-tsk)
                                           (ctx occ-ctx)
                                           &key collector action action-transformer timeout)
-  (when (>= 0 (occ-associated-p tsk ctx))
+  (when (>= 0 (occ-associable-with-ctx-p tsk ctx))
     (occ-clock-in tsk
                   :collector collector
                   :action    action
@@ -335,6 +335,29 @@ pointing to it."
                   :timeout timeout)))
 
 
+(cl-defmethod occ-try-clock-in-with-ctx ((tsk occ-tsk)
+                                         (ctx occ-ctx))
+  (let* ((tries 3)
+         (try   tries))
+    (while (or
+            (> try 0)
+            (= 0 (occ-associable-with-ctx-p tsk ctx)))
+      (setq try (-1 try))
+      (occ-message "%s is not associable with %s [try %d]"
+                   (occ-format tsk 'capitalize)
+                   (occ-format ctx 'capitalize)
+                   (- tries try))
+      (occ-obj-prop-edit tsk ctx 7)))
+
+  (unless (occ-clock-in-if-associable tsk ctx
+                                      :collector collector
+                                      :action    action
+                                      :action-transformer action-transformer
+                                      :timeout timeout)
+    (occ-message "%s is not associable with %s not clocking-in."
+                 (occ-format tsk 'capitalize)
+                 (occ-format ctx 'capitalize))))
+
 (cl-defmethod occ-try-clock-in ((obj marker) &key collector action action-transformer timeout)
   (occ-clock-in obj))
 
@@ -344,52 +367,12 @@ pointing to it."
 (cl-defmethod occ-try-clock-in ((obj occ-ctx) &key collector action action-transformer timeout)
   (let ((obj-tsk (occ-ctsk-tsk obj))
         (obj-ctx (occ-ctsk-ctx obj)))
-
-    (let* ((tries   3)
-           (try     tries))
-      (while (or
-              (> try 0)
-              (= 0 (occ-associable-p obj)))
-        (setq try (-1 try))
-        (occ-message "%s is not associable with %s [try %d]"
-                     (occ-format tsk 'capitalize)
-                     (occ-format ctx 'capitalize)
-                     (- tries try))
-        (occ-obj-prop-edit tsk ctx 7)))
-
-    (unless (occ-clock-in-if-associable obj-tsk
-                                        :collector collector
-                                        :action    action
-                                        :action-transformer action-transformer
-                                        :timeout timeout)
-      (occ-message "%s is not associable with %s not clocking-in."
-                   (occ-format tsk 'capitalize)
-                   (occ-format ctx 'capitalize)))))
+    (occ-try-clock-in-with-ctx tsk ctx)))
 
 (cl-defmethod occ-try-clock-in ((obj occ-ctxual-tsk) &key collector action action-transformer timeout)
   (let ((obj-tsk (occ-ctxual-tsk-tsk obj))
         (obj-ctx (occ-ctxual-tsk-ctx obj)))
-
-    (let* ((tries   3)
-           (try     tries))
-      (while (or
-              (> try 0)
-              (= 0 (occ-associable-p obj)))
-        (setq try (-1 try))
-        (occ-message "%s is not associable with %s [try %d]"
-                     (occ-format tsk 'capitalize)
-                     (occ-format ctx 'capitalize)
-                     (- tries try))
-        (occ-obj-prop-edit tsk ctx 7)))
-
-    (unless (occ-clock-in-if-associable obj-tsk
-                                        :collector collector
-                                        :action    action
-                                        :action-transformer action-transformer
-                                        :timeout timeout)
-      (occ-message "%s is not associable with %s not clocking-in."
-                   (occ-format tsk 'capitalize)
-                   (occ-format ctx 'capitalize)))))
+    (occ-try-clock-in-with-ctx tsk ctx)))
 
 (cl-defmethod occ-try-clock-in ((obj occ-ctsk) &key collector action action-transformer timeout)
   (occ-clock-in obj))
@@ -466,12 +449,16 @@ pointing to it."
    occ-capture+-helm-templates-alist))
 
 
-(cl-defgeneric occ-capture-in-ctx (tsk ctx &optional clock-in-p)
-  "occ-capture-in-ctx")
+(cl-defgeneric occ-capture-with-ctx (tsk
+                                     ctx
+                                     &optional clock-in-p)
+  "occ-capture-with-ctx")
 
-(cl-defmethod occ-capture-in-ctx ((tsk occ-tsk) (ctx occ-ctx)  &optional clock-in-p)
-  (let* ((mrk        (occ-tsk-marker tsk))
-         (template   (occ-capture+-helm-select-template)))
+(cl-defmethod occ-capture-with-ctx ((tsk occ-tsk)
+                                    (ctx occ-ctx)
+                                    &optional clock-in-p)
+  (let* ((mrk      (occ-tsk-marker tsk))
+         (template (occ-capture+-helm-select-template)))
     (when template
       (with-org-capture+ marker 'entry `(marker ,mrk) template '(:empty-lines 1)
         (progn
@@ -481,36 +468,41 @@ pointing to it."
           (when child-tsk
             (occ-induct-child tsk child-tsk)
             (if clock-in-p
-                (occ-clock-in-if-associable child-tsk ctx))))))))
+                (occ-try-clock-in-with-ctx child-tsk ctx))))))))
 
 
-(cl-defgeneric occ-capture (obj &optional clock-in-p)
+(cl-defgeneric occ-capture (obj
+                            &optional clock-in-p)
   "occ-capture")
 
-(cl-defmethod occ-capture ((obj marker) &optional clock-in-p)
+(cl-defmethod occ-capture ((obj marker)
+                           &optional clock-in-p)
   (org-capture+
    'entry
    `(marker ,obj)
    'occ-capture+-helm-select-template
    :empty-lines 1))
 
-(cl-defmethod occ-capture ((obj occ-tsk) &optional clock-in-p)
+(cl-defmethod occ-capture ((obj occ-tsk)
+                           &optional clock-in-p)
   (let ((mrk (occ-tsk-marker obj)))
     (occ-capture mrk)))
 
-(cl-defmethod occ-capture ((obj occ-ctsk) &optional clock-in-p)
-
+(cl-defmethod occ-capture ((obj occ-ctsk)
+                           &optional clock-in-p)
   (let* ((tsk        (occ-ctsk-tsk obj))
          (ctx        (occ-ctsk-ctx obj)))
-    (occ-capture-in-ctx tsk ctx clock-in-p)))
+    (occ-capture-with-ctx tsk ctx clock-in-p)))
 
 
-(cl-defmethod occ-induct-child ((obj occ-tree-tsk) (child occ-tree-tsk))
+(cl-defmethod occ-induct-child ((obj occ-tree-tsk)
+                                (child occ-tree-tsk))
   ;; BUG: put it to next to correct object obj, so need to find obj task here
   (push child (occ-tree-collection-list (occ-collection-object)))
   (push child (occ-tree-tsk-subtree obj)))
 
-(cl-defmethod occ-induct-child ((obj occ-list-tsk) (child occ-list-tsk))
+(cl-defmethod occ-induct-child ((obj occ-list-tsk)
+                                (child occ-list-tsk))
   (push child (occ-list-collection-list (occ-collection-object))))
 
 
@@ -555,24 +547,24 @@ pointing to it."
   nil)
 
 
-(cl-defgeneric occ-try-procreate-child (obj)
-  "occ-child")
+;; (cl-defgeneric occ-try-procreate-child (obj)
+;;   "occ-child")
 
-(cl-defmethod occ-try-procreate-child ((obj marker))
-  (occ-procreate-child obj)
-  nil)
+;; (cl-defmethod occ-try-procreate-child ((obj marker))
+;;   (occ-procreate-child obj)
+;;   nil)
 
-(cl-defmethod occ-try-procreate-child ((obj occ-tsk))
-  (occ-procreate-child obj)
-  nil)
+;; (cl-defmethod occ-try-procreate-child ((obj occ-tsk))
+;;   (occ-procreate-child obj)
+;;   nil)
 
-(cl-defmethod occ-try-procreate-child ((obj occ-ctsk))
-  (occ-procreate-child obj)
-  nil)
+;; (cl-defmethod occ-try-procreate-child ((obj occ-ctsk))
+;;   (occ-procreate-child obj)
+;;   nil)
 
-(cl-defmethod occ-try-procreate-child ((obj occ-ctxual-tsk))
-  (occ-procreate-child obj)
-  nil)
+;; (cl-defmethod occ-try-procreate-child ((obj occ-ctxual-tsk))
+;;   (occ-procreate-child obj)
+;;   nil)
 
 
 (cl-defgeneric occ-procreate-child-clock-in (obj)
@@ -893,7 +885,7 @@ pointing to it."
         (timeout            (or timeout 7)))
    (if (or
          (occ-clock-marker-is-unnamed-clock-p)
-         (>= 0 (occ-associated-p (occ-current-tsk) ctx)))
+         (>= 0 (occ-associable-with-ctx-p (occ-current-tsk) ctx)))
        (progn                ;current clock is not matching
          (occ-debug :debug "occ-clock-in-if-not: Now really going to clock with this-command=%s" this-command)
          (unless (occ-clock-in ctx
