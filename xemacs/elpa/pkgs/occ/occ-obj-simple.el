@@ -527,23 +527,43 @@ pointing to it."
   "occ-child")
 
 (cl-defmethod occ-procreate-child ((obj marker))
-  (unless (occ-unnamed-p obj)
-   (occ-capture obj helm-current-prefix-arg))
+  (if (not (occ-unnamed-p obj))
+      (occ-capture obj helm-current-prefix-arg)
+    (let ((title (occ-title obj 'captilize)))
+     (error "%s is unnamed %s so can not create child "
+           (occ-format obj 'captilize)
+           title
+           title)))
   nil)
 
 (cl-defmethod occ-procreate-child ((obj occ-tsk))
-  (unless (occ-unnamed-p obj)
-    (occ-capture obj helm-current-prefix-arg))
+  (if (not (occ-unnamed-p obj))
+      (occ-capture obj helm-current-prefix-arg)
+    (let ((title (occ-title obj 'captilize)))
+      (error "%s is unnamed %s so can not create child "
+             (occ-format obj 'captilize)
+             title
+             title)))
   nil)
 
 (cl-defmethod occ-procreate-child ((obj occ-ctsk))
-  (unless (occ-unnamed-p obj)
-    (occ-capture obj helm-current-prefix-arg))
+  (if (not (occ-unnamed-p obj))
+      (occ-capture obj helm-current-prefix-arg)
+    (let ((title (occ-title obj 'captilize)))
+      (error "%s is unnamed %s so can not create child "
+             (occ-format obj 'captilize)
+             title
+             title)))
   nil)
 
 (cl-defmethod occ-procreate-child ((obj occ-ctxual-tsk))
-  (unless (occ-unnamed-p obj)
-    (occ-capture obj helm-current-prefix-arg))
+  (if (not (occ-unnamed-p obj))
+      (occ-capture obj helm-current-prefix-arg)
+    (let ((title (occ-title obj 'captilize)))
+      (error "%s is unnamed %s so can not create child "
+             (occ-format obj 'captilize)
+             title
+             title)))
   nil)
 
 

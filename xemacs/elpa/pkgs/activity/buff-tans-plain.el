@@ -16,7 +16,7 @@
           (trace (with-temp-buffer
                      (backtrace)
                    (buffer-string))))
-      (message "%s: %s" msg trace)))
+      (@:message "%s: %s" msg trace)))
 
   (defun notify-buf-chg (fmt &rest args)
     (let ((msg
@@ -24,15 +24,15 @@
              (current-time-string)
              ": "
              (apply #'format fmt args))))
-      (message msg)))
+      (@:message msg)))
 
   (defun get-timer ()
     (interactive)
-    (message "Timer %s" timer))
+    (@:message "Timer %s" timer))
 
   (defun get-idle-times ()
     (interactive)
-    (message "Idle Times %s" idle-times))
+    (@:message "Idle Times %s" idle-times))
 
   (defun buffer-chg-print-info (&optional msg)
     (interactive)
@@ -89,9 +89,9 @@
              (- time-passed cumulatibe-idle-time)))
 
       (when debug-switch-buf
-         (message "detect-buffer-chg-use: (>= time-spent time-threshold-gap) %s" (>= time-spent time-threshold-gap))
-         (message "detect-buffer-chg-use: (is-run-detect-buffer-chg-use) %s" (is-run-detect-buffer-chg-use))
-         (message "detect-buffer-chg-use: (not (eq currbuf-detect-buffer-chg-use (current-buffer))) %s" (not (eq currbuf-detect-buffer-chg-use (current-buffer)))))
+         (@:message "detect-buffer-chg-use: (>= time-spent time-threshold-gap) %s" (>= time-spent time-threshold-gap))
+         (@:message "detect-buffer-chg-use: (is-run-detect-buffer-chg-use) %s" (is-run-detect-buffer-chg-use))
+         (@:message "detect-buffer-chg-use: (not (eq currbuf-detect-buffer-chg-use (current-buffer))) %s" (not (eq currbuf-detect-buffer-chg-use (current-buffer)))))
 
       (if (and
            (>= time-spent time-threshold-gap)
@@ -141,7 +141,7 @@
                                 #'detect-buffer-chg-use currbuf-run-detect-buffer-chg curr))
           (setq currbuf-run-detect-buffer-chg curr))
         (when (eq currbuf-detect-buffer-chg-use (current-buffer))
-          (when debug-switch-buf (message "cancel timer"))
+          (when debug-switch-buf (@:message "cancel timer"))
           (cancel-detect-buffer-chg-use))))
 
   (defun enable-detect-buffer-chg-use ()

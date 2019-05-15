@@ -39,25 +39,25 @@
 
 (require 'activity-base)
 
-(defclass clocking-activity (buffer-activity)
-  (())
-  "A buffer activity.")
+;; (defclass clocking-activity (@buffer-activity)
+;;   (())
+;;   "A buffer activity.")
 
-(defvar @clocking-activity
-  (@extend @buffer-activity
-           :name "Class for Clocking Activity"
-           :marker nil))
+;; (defvar @clocking-activity
+;;   (@extend @buffer-activity
+;;            :name "Class for Clocking Activity"
+;;            :marker nil))
 
 
-(defvar @clocking-in-activity
-  (@extend @clocking-activity
-           :name "Class for Clocking In Activity"
-           :marker nil))
+;; (defvar @clocking-in-activity
+;;   (@extend @clocking-activity
+;;            :name "Class for Clocking In Activity"
+;;            :marker nil))
 
-(defvar @clocking-out-activity
-  (@extend @clocking-activity
-           :name "Class for Clocking In Activity"
-           :marker nil))
+;; (defvar @clocking-out-activity
+;;   (@extend @clocking-activity
+;;            :name "Class for Clocking In Activity"
+;;            :marker nil))
 
 
 

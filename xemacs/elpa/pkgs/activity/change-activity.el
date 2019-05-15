@@ -37,16 +37,16 @@
 
 (require 'activity-base)
 
-(defclass change-activity (buffer-activity)
-  ((buffer :initarg :buffer
-           :initform (current-buffer)
-           :type buffer
-           :documentation "Current buffer.")
-   (marker :initarg :marker
-           :initform (point-marker)
-           :type marker
-           :documentation "Current point marker."))
-  "A buffer activity.")
+;; (defclass change-activity (buffer-activity)
+;;   ((buffer :initarg :buffer
+;;            :initform (current-buffer)
+;;            :type buffer
+;;            :documentation "Current buffer.")
+;;    (marker :initarg :marker
+;;            :initform (point-marker)
+;;            :type marker
+;;            :documentation "Current point marker."))
+;;   "A buffer activity.")
 
 (defun lotus-buffer-changes-count ()
   (let ((changes 0))
@@ -99,7 +99,7 @@
          (if (funcall action win-timeout)
              (setq lotus-last-buffer-undo-tree-count chgcount))
          (when nil
-           (message "buffer-undo-tree-change: only %d changes not more than %d" chgcount minimal-changes)))))
+           (@:message "buffer-undo-tree-change: only %d changes not more than %d" chgcount minimal-changes)))))
 
  (defun lotus-action-on-buffer-undo-list-change (action &optional minimal-char-changes win-timeout)
    "Set point to the position of the last change.

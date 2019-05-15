@@ -37,10 +37,10 @@
 
 ;;; Code:
 
-(require '@)
-
 (provide 'activity-base)
+
 
+(require '@)
 
 
 (defmacro @extend-object (object &rest body)
@@ -103,15 +103,29 @@
 
                        (setf @:activation-list nil)
 
+                       (setf @:activity-debug nil)
+
                        (def@ @@ :keyp (key)
                          (memq key (@:keys)))
 
                        (def@ @@ :finalize ()
                          ())
 
+                       (def@ @@ :message (&rest args)
+                         (apply #'message args))
+
+                       (def@ @@ :debug (level &rest args)
+                         (when @:activity-debug
+                           (when (car args)
+                             (apply #'format args)
+                             (when (member level '(:emergency :error :warning :debug))
+                               (apply #'lwarn 'activity level args))
+                             (unless (eq level :nodisplay)
+                               (apply #'message args)))))
+
                        (def@ @@ :init ()
                          (@^:init)
-                         (message "@activity-base :init")
+                         (@:message "@activity-base :init")
                          (setf @:_occuredon (current-time)))
 
                        (def@ @@ :occuredon ()
@@ -177,12 +191,12 @@
                                  (if (@! dest :keyp :receive)
                                      ;; (@! dest :receive fmt args)
                                      (apply (@ dest :receive) dest args)
-                                   (message
+                                   (@:message
                                     "for %s dest %s [%s] not has :receive method, not sending msg."
                                     @:name
                                     (@ dest :name)
                                     (@! dest :keys)))
-                               (message "dest is nil")))
+                               (@:message "dest is nil")))
                          (error "%s has No @:dests %d boundp(%s) consp(%s) present."
                                 @:name
                                 (length @:dests)
@@ -223,23 +237,23 @@
   ;; activity
   (setf @activity-class
         (@drive-object @activity-base "activity class"
-          "Activity class"
-          (def@ @@ :init ()
-            (@^:init)
-            (message "@activity-class :init")
-            (setf @:occuredon (current-time)))))
+                       "Activity class"
+                       (def@ @@ :init ()
+                         (@^:init)
+                         (@:message "@activity-class :init")
+                         (setf @:occuredon (current-time)))))
 
   (setf @event-class
         (@drive-object @activity-class "event class"
-          "Event class"
-          (def@ @@ :note ()
-            )))
+                       "Event class"
+                       (def@ @@ :note ()
+                         )))
 
   (setf @transition-class
         (@drive-object @event-class "transition class"
-          "Transition class"
-          (def@ @@ :note ()
-            ))))
+                       "Transition class"
+                       (def@ @@ :note ()
+                         ))))
 
 
 
@@ -350,4 +364,5 @@
     (string-match "\\<\\(@\\^?:[^ ()]+\\)\\>" "@:aa")
 
     (string-match "\\(@\\^?:[^ ()]+\\)\\>" "@:aa")))
+
 ;;; activity-base.el ends here

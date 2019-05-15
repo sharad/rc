@@ -37,10 +37,10 @@
 
 ;;; Code:
 
-(require 'activity-base)
-
 (provide 'org-activity-log-note)
+
 
+(require 'activity-base)
 
 
 (defobjgen@ @dest-class :gen-org-log-dest (marker)
@@ -50,30 +50,30 @@
 
   (def@ @@ :valid-markerp ()
     (cond
-      ((markerp @:marker) @:marker)
-      ((functionp @:marker)
-       (let ((m (funcall @:marker))
-             (if (markerp m) m))))
-      ((symbolp @:marker)
-       (let ((m (symbol-value @:marker))
-             (if (markerp m) m))))
-      (t )))
+     ((markerp @:marker) @:marker)
+     ((functionp @:marker)
+      (let ((m (funcall @:marker))
+            (if (markerp m) m))))
+     ((symbolp @:marker)
+      (let ((m (symbol-value @:marker))
+            (if (markerp m) m))))
+     (t)))
 
   (def@ @@ :get-marker ()
     (cond
-      ((markerp @:marker) @:marker)
-      ((functionp @:marker)
-       (let ((m (funcall @:marker)))
-             (if (markerp m)
-                 m
-               (error "f no marker %s" @:marker))))
-      ((symbolp @:marker)
-       (let ((m (symbol-value @:marker)))
-             (if (markerp m)
-                 m
-               (error "s no marker %s" @:marker))))
-      (t
-       (error "can not find marker %s" @:marker))))
+     ((markerp @:marker) @:marker)
+     ((functionp @:marker)
+      (let ((m (funcall @:marker)))
+        (if (markerp m)
+            m
+          (error "f no marker %s" @:marker))))
+     ((symbolp @:marker)
+      (let ((m (symbol-value @:marker)))
+        (if (markerp m)
+            m
+          (error "s no marker %s" @:marker))))
+     (t
+      (error "can not find marker %s" @:marker))))
 
   (def@ @@ :receive (fmt &rest args)
     ;; TODO
@@ -81,30 +81,31 @@
     (progn
       (move-marker org-log-note-return-to (point))
       (org-clock-lotus-with-current-clock ;change it to consider marker marker
-          (org-add-log-setup-with-timed-new-win win-timeout
-                                                'note nil nil nil
-                                                (concat
-                                                 "# Task: " (org-get-heading t) "\n\n"
-                                                 (apply #'format fmt args))))))
+        (org-add-log-setup-with-timed-new-win win-timeout
+                                              'note nil nil nil
+                                              (concat
+                                               "# Task: " (org-get-heading t) "\n\n"
+                                               (apply #'format fmt args))))))
 
   (@:dispatch marker))
 
 
 
-(defobjgen@ @note-class :gen-org-log-note (marker)
-  "Generator for org note message"
-  (push
-   (@! @dest-class :gen-org-dest "msg" marker)
-   @:dests))
+;; TODO: error :gen-org-dest not found
+;; (defobjgen@ @note-class :gen-org-log-note (marker)
+;;   "Generator for org note message"
+;;   (push
+;;    (@! @dest-class :gen-org-dest "msg" marker)
+;;    @:dests))
 
-(defvar @org-clock-lognote
-  (@! @note-class :gen-org-log-note
-      "org-clock-log-note"
-      #'(lambda ()
-          (or
-           org-clock-hd-marker
-           org-clock-marker)))
-  "Org clock activity node")
+;; (defvar @org-clock-lognote
+;;   (@! @note-class :gen-org-log-note
+;;       "org-clock-log-note"
+;;       #'(lambda ()
+;;           (or
+;;            org-clock-hd-marker
+;;            org-clock-marker)))
+;;   "Org clock activity node")
 
 
 ;; (@! @org-clock-note :send "Hello")

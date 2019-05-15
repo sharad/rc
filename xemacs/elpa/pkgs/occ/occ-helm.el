@@ -45,11 +45,9 @@
 
 (occ-helm-action-add :identity                     "Select"                       #'identity)
 (occ-helm-action-add :clock-in                     "Clock-in"                     #'occ-clock-in)
+(occ-helm-action-add :try-clock-in                 "Try Clock-in"                 #'occ-try-clock-in)
 (occ-helm-action-add :procreate-child              "Procreate Child"              #'occ-procreate-child)
 (occ-helm-action-add :procreate-child-clock-in     "Procreate Child Clock-in"     #'occ-procreate-child-clock-in)
-(occ-helm-action-add :try-clock-in                 "Try Clock-in"                 #'occ-try-clock-in)
-;; (occ-helm-action-add :try-procreate-child          "Try Procreate Child"          #'occ-try-procreate-child)
-;; (occ-helm-action-add :try-procreate-child-clock-in "Try Procreate Child Clock-in" #'occ-try-procreate-child-clock-in)
 (occ-helm-action-add :goto                         "Goto"                         #'occ-goto)
 (occ-helm-action-add :set-to                       "Set To"                       #'occ-set-to)
 (occ-helm-action-add :proprty-edit                 "Proprty Edit"                 #'occ-proprty-edit) ;TODO: implement it.

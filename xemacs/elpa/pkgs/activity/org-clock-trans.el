@@ -75,7 +75,7 @@
     "Make buffer change event."
     (let ((trans
            (@! @org-clock-trans-class :gen-org-clock-trans prev next)))
-      (message "running :make-event")
+      (@:message "running :make-event")
       (@! trans :send prev next)))
 
   (def@ @@ :dispatch (prev next)

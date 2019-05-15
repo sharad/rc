@@ -83,7 +83,7 @@
   (def@ @@ :receive (type target template &rest capture-plist)
     ;; TODO
     ;; add necessary code for interactive note.
-    (message "Test %s %s %s %s" type target template capture-plist)
+    (@:message "Test %s %s %s %s" type target template capture-plist)
     (org-capture+
      (or type @:type)
      (or target @:target)
@@ -114,7 +114,7 @@
   (setf (@ @@ :type) value)
   (def@ @@ :receive (target template &rest capture-plist)
     (@^:receive @:type target template capture-plist)
-    (message "%s %s" target template)))
+    (@:message "%s %s" target template)))
 
 
 (setf
