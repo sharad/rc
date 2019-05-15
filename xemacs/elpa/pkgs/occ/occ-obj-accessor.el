@@ -29,6 +29,17 @@
 (require 'occ-obj-ctor)
 
 
+
+(cl-defmethod occ-ctxual-tsk-get-rank ((ctxask occ-ctxual-tsk))
+  (occ-debug :debug "occ-ctxual-tsk-get-rank(occ-ctxual-tsk=%s)" ctxask)
+  (let* ((tsk  (occ-ctxual-tsk-tsk  ctxask))
+         (ctx  (occ-ctxual-tsk-ctx  ctxask))
+         (rank (occ-ctxual-tsk-rank ctxask)))
+    ;; TODO
+    (unless rank
+      (setf (occ-ctxual-tsk-rank ctxask) (occ-rank tsk ctx)))
+    (occ-ctxual-tsk-rank ctxask)))
+
 (cl-defmethod occ-ctxual-tsk-marker ((ctxask occ-ctxual-tsk))
   (let* ((tsk    (occ-ctxual-tsk-tsk ctxask))
          (marker (occ-tsk-marker tsk)))

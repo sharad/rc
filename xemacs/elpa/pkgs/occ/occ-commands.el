@@ -30,6 +30,8 @@
 (require 'occ-main)
 
 
+;; example of clos in cl-struct-js2-export-binding-node is a variable defined in ‘js2-mode.el’.
+
 ;;;###autoload
 (defun occ-helm-match-select ()
   (interactive)

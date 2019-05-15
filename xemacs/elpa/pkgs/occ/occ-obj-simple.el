@@ -165,20 +165,21 @@ pointing to it."
 ;; Test if TSK is associate to CTX:1 ends here
 
 (cl-defmethod occ-associable-p ((obj occ-ctsk))
+  (occ-debug :debug "occ-associable-p(occ-ctsk=%s)" obj)
   (let ((tsk (occ-ctsk-tsk obj))
         (ctx (occ-ctsk-ctx obj)))
     (occ-associated-p tsk ctx)))
 
 (cl-defmethod occ-associable-p ((obj occ-ctxual-tsk))
-  (let ((tsk (occ-ctxual-tsk-tsk obj))
-        (ctx (occ-ctxual-tsk-ctx obj)))
-    (occ-associated-p tsk ctx)))
+  (occ-debug :debug "occ-associable-p(occ-ctxual-tsk=%s)" obj)
+  (occ-ctxual-tsk-get-rank obj))
 
 
 ;; (occ-delayed-select-obj-prop-edit-when-idle (occ-make-ctx nil) (occ-make-ctx nil) 7)
 ;; (occ-delayed-select-obj-prop-edit-when-idle nil (occ-make-ctx nil) 7)
 
-(cl-defmethod occ-clock-in-if-associated ((tsk occ-tsk) (ctx occ-ctx))
+(cl-defmethod occ-clock-in-if-associable ((tsk occ-tsk)
+                                          (ctx occ-ctx))
   (when (>= 0 (occ-associated-p tsk ctx))
     (occ-clock-in tsk)))
 
@@ -187,6 +188,7 @@ pointing to it."
 (defvar occ-clock-in-hooks nil "Hook to run on clockin with previous and next markers.")
 
 (cl-defmethod occ-clock-in ((obj marker) &key collector action action-transformer timeout)
+  (occ-debug :debug "occ-clock-in(marker=%s)" obj)
   (let ((org-log-note-clock-out nil))
     (when (marker-buffer obj)
       (with-current-buffer (marker-buffer obj)
@@ -198,11 +200,13 @@ pointing to it."
              (signal (car err) (cdr err)))))))))
 
 (cl-defmethod occ-clock-in ((obj occ-tsk) &key collector action action-transformer timeout)
+  (occ-debug :debug "occ-clock-in(occ-tsk=%s)" obj)
   (occ-clock-in (occ-tsk-marker obj)))
 
 (cl-defmethod occ-clock-in ((obj occ-ctx) &key collector action action-transformer timeout)
   "Clock-in selected CTXUAL-TSK for occ-ctx OBJ or open interface for adding properties to heading."
   (unless collector (error "Collector can not be nil"))
+  (occ-debug :debug "occ-clock-in(occ-ctx=%s)" obj)
   (let ((candidates         (funcall collector obj))
         (action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
@@ -230,7 +234,7 @@ pointing to it."
 
 (cl-defmethod occ-clock-in ((obj occ-ctxual-tsk) &key collector action action-transformer timeout)
   ;;TODO add org-insert-log-not
-  (occ-debug :debug "occ-clock-in-marker %s" obj)
+  (occ-debug :debug "occ-clock-in(occ-ctxual-tsk=%s)" obj)
   (let* (retval
          (old-ctxual-tsk     (car *occ-clocked-ctxual-tsk-ctx-history*))
          (old-tsk            (when old-ctxual-tsk (occ-ctxual-tsk-tsk old-ctxual-tsk)))
@@ -293,6 +297,7 @@ pointing to it."
           retval)))))
 
 (cl-defmethod occ-clock-in ((obj occ-ctsk) &key collector action action-transformer timeout)
+  (occ-debug :debug "occ-clock-in(occ-ctsk=%s)" obj)
   (occ-clock-in (occ-ctsk-tsk obj)))
 
 (cl-defmethod occ-clock-in ((obj null) &key collector action action-transformer timeout)
@@ -408,7 +413,7 @@ pointing to it."
           (when child-tsk
             (occ-induct-child tsk child-tsk)
             (if clock-in-p
-                (occ-clock-in-if-associated child-tsk ctx))))))))
+                (occ-clock-in-if-associable child-tsk ctx))))))))
 
 
 (cl-defgeneric occ-capture (obj &optional clock-in-p)
@@ -454,6 +459,7 @@ pointing to it."
   (occ-unnamed-p (occ-ctsk-tsk obj)))
 
 (cl-defmethod occ-unnamed-p ((obj occ-ctxual-tsk))
+  (occ-debug :debug "occ-unnamed-p(occ-ctxual-tsk=%s)" obj)
   (occ-unnamed-p (occ-ctxual-tsk-tsk obj)))
 
 
@@ -541,11 +547,15 @@ pointing to it."
   "occ-rank")
 
 (cl-defmethod occ-rank (tsk-pair ctx)
+  ;; too much output
+  ;; (occ-debug :debug "occ-rank(tsk-pair=%s ctx=%s)" tsk-pair ctx)
   0)
 
 ;; ISSUE? should it return rank or occ-ctxual-tsk
 (cl-defmethod occ-rank ((tsk occ-tsk)
                         (ctx occ-ctx))
+  ;; too much output
+  ;; (occ-debug :debug "occ-rank(tsk=%s ctx=%s)" tsk ctx)
   (let ((rank
          (reduce #'+
                  (mapcar
@@ -863,13 +873,12 @@ pointing to it."
                (not (ignore-p buff))
                (not              ;BUG: Reconsider whether it is catching case after some delay.
                 (equal *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
-              (progn
-                (when (occ-clock-in-if-not ctx
-                                           :collector #'occ-matches
-                                           :action action
-                                           :action-transformer action-transformer
-                                           :timeout timeout)
-                  (setq *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
+              (when (occ-clock-in-if-not ctx
+                                         :collector #'occ-matches
+                                         :action action
+                                         :action-transformer action-transformer
+                                         :timeout timeout)
+                (setq *occ-tsk-previous-ctx* *occ-tsk-current-ctx*))
             (occ-debug :nodisplay "occ-clock-in-if-chg: ctx %s not suitable to associate" ctx)))
       (occ-debug :nodisplay "occ-clock-in-if-chg: not enough time passed."))))
 
