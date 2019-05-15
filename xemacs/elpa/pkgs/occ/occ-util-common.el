@@ -79,7 +79,8 @@
      (prog1
          (let ((org-clock-persist               occ-org-clock-persist)
                (org-clock-auto-clock-resolution occ-org-clock-auto-clock-resolution))
-           (org-clock-clock-in clock resume start-time))
+           (org-clock-clock-in clock resume start-time)
+           t)
        (setq org-clock-loaded t)))))
 
 

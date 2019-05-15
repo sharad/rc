@@ -97,6 +97,22 @@ pointing to it."
           org-odd-levels-only))))))
 
 
+(cl-defgeneric occ-title (obj)
+  "occ-format")
+
+(cl-defmethod occ-title ((obj marker) (case symbol))
+  "Marker")
+
+(cl-defmethod occ-title ((obj occ-tsk) (case symbol))
+  "Task")
+
+(cl-defmethod occ-title ((obj occ-ctsk) (case symbol))
+  "Context Task")
+
+(cl-defmethod occ-title ((obj occ-ctxual-tsk) (case symbol))
+  "Contextual Task")
+
+
 (cl-defgeneric occ-format (obj)
   "occ-format")
 
@@ -177,11 +193,6 @@ pointing to it."
 
 ;; (occ-delayed-select-obj-prop-edit-when-idle (occ-make-ctx nil) (occ-make-ctx nil) 7)
 ;; (occ-delayed-select-obj-prop-edit-when-idle nil (occ-make-ctx nil) 7)
-
-(cl-defmethod occ-clock-in-if-associable ((tsk occ-tsk)
-                                          (ctx occ-ctx))
-  (when (>= 0 (occ-associated-p tsk ctx))
-    (occ-clock-in tsk)))
 
 
 (defvar *occ-clocked-ctxual-tsk-ctx-history* nil)
@@ -304,6 +315,17 @@ pointing to it."
   (error "Can not clock in NIL"))
 
 
+(cl-defmethod occ-clock-in-if-associable ((tsk occ-tsk)
+                                          (ctx occ-ctx)
+                                          &key collector action action-transformer timeout)
+  (when (>= 0 (occ-associated-p tsk ctx))
+    (occ-clock-in tsk
+                  :collector collector
+                  :action    action
+                  :action-transformer action-transformer
+                  :timeout timeout)))
+
+
 (cl-defmethod occ-try-clock-in ((obj marker) &key collector action action-transformer timeout)
   (occ-clock-in obj))
 
@@ -311,17 +333,54 @@ pointing to it."
   (occ-clock-in obj))
 
 (cl-defmethod occ-try-clock-in ((obj occ-ctx) &key collector action action-transformer timeout)
-  (occ-clock-in obj))
+  (let ((obj-tsk (occ-ctsk-tsk obj))
+        (obj-ctx (occ-ctsk-ctx obj)))
+
+    (let* ((tries   3)
+           (try     tries))
+      (while (or
+              (> try 0)
+              (= 0 (occ-associable-p obj)))
+        (setq try (-1 try))
+        (occ-message "Task %s is not associable with Context %s [try %d]"
+                     (occ-format tsk)
+                     (occ-format ctx)
+                     (- tries try))
+        (occ-obj-prop-edit tsk ctx 7)))
+
+    (unless (occ-clock-in-if-associable obj-tsk
+                                        :collector collector
+                                        :action    action
+                                        :action-transformer action-transformer
+                                        :timeout timeout)
+      (occ-message "Task %s is not associable with Context %s not clocking-in."
+                   (occ-format tsk)
+                   (occ-format ctx)))))
 
 (cl-defmethod occ-try-clock-in ((obj occ-ctxual-tsk) &key collector action action-transformer timeout)
-  (let ((obj-tsk            (occ-ctxual-tsk-tsk obj))
-        (obj-ctx            (occ-ctxual-tsk-ctx obj)))
-    (when (>= 0 (occ-associable-p obj))
-      (occ-clock-in obj-tsk
-                    :collector collector
-                    :action    action
-                    :action-transformer action-transformer
-                    :timeout timeout))))
+  (let ((obj-tsk (occ-ctxual-tsk-tsk obj))
+        (obj-ctx (occ-ctxual-tsk-ctx obj)))
+
+    (let* ((tries   3)
+           (try     tries))
+      (while (or
+              (> try 0)
+              (= 0 (occ-associable-p obj)))
+        (setq try (-1 try))
+        (occ-message "Task %s is not associable with Context %s [try %d]"
+                     (occ-format tsk)
+                     (occ-format ctx)
+                     (- tries try))
+        (occ-obj-prop-edit tsk ctx 7)))
+
+    (unless (occ-clock-in-if-associable obj-tsk
+                                        :collector collector
+                                        :action    action
+                                        :action-transformer action-transformer
+                                        :timeout timeout)
+      (occ-message "Task %s is not associable with Context %s not clocking-in."
+                   (occ-format tsk)
+                   (occ-format ctx)))))
 
 (cl-defmethod occ-try-clock-in ((obj occ-ctsk) &key collector action action-transformer timeout)
   (occ-clock-in obj))
