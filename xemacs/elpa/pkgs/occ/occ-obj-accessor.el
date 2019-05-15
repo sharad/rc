@@ -28,24 +28,36 @@
 
 (require 'occ-obj-ctor)
 
-
-
+;; occ-ctxual-tsk - accessors
 (cl-defmethod occ-ctxual-tsk-get-rank ((ctxask occ-ctxual-tsk))
   (occ-debug :debug "occ-ctxual-tsk-get-rank(occ-ctxual-tsk=%s)" ctxask)
   (let* ((tsk  (occ-ctxual-tsk-tsk  ctxask))
          (ctx  (occ-ctxual-tsk-ctx  ctxask))
          (rank (occ-ctxual-tsk-rank ctxask)))
-    ;; TODO
     (unless rank
       (setf (occ-ctxual-tsk-rank ctxask) (occ-rank tsk ctx)))
     (occ-ctxual-tsk-rank ctxask)))
 
+(cl-defmethod occ-ctxual-tsk-xrank ((ctxask occ-ctxual-tsk))
+  (occ-debug :debug "occ-ctxual-tsk-get-rank(occ-ctxual-tsk=%s)" ctxask)
+  (let* ((tsk  (occ-ctxual-tsk-tsk  ctxask))
+         (ctx  (occ-ctxual-tsk-ctx  ctxask))
+         (rank (cl-struct-slot-value occ-ctxual-tsk 'rank ctxask)))
+    (unless rank
+      (setf (cl-struct-slot-value occ-ctxual-tsk 'rank ctxask) (occ-rank tsk ctx)))
+    (cl-struct-slot-value occ-ctxual-tsk 'rank ctxask)))
+
+(cl-defmethod (setf occ-ctxual-tsk-xrank) (value (ctxask occ-ctxual-tsk))
+  (occ-debug :debug "occ-ctxual-tsk-get-rank(occ-ctxual-tsk=%s)" ctxask)
+  (setf (cl-struct-slot-value occ-ctxual-tsk 'rank ctxask) value)
+  (cl-struct-slot-value occ-ctxual-tsk 'rank ctxask))
+
 (cl-defmethod occ-ctxual-tsk-marker ((ctxask occ-ctxual-tsk))
   (let* ((tsk    (occ-ctxual-tsk-tsk ctxask))
-         (marker (occ-tsk-marker tsk)))
+         (marker (occ-tsk-marker     tsk)))
     marker))
 
-
+;; global-object - accessors
 (cl-defmethod occ-collect-tsks (collection
                                 &optional
                                 force)
@@ -60,7 +72,6 @@
      (occ-tree-tsk-build
       #'(lambda ()
           (or
-           ;; (occ-make-tsk-at-point #'make-occ-tree-tsk)
            (occ-make-tsk-at-point (occ-tsk-builder))
            (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of roots
       (car (occ-tree-collection-roots collection)))))

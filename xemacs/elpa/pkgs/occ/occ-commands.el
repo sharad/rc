@@ -37,8 +37,17 @@
   (interactive)
   (occ-helm-select (occ-make-ctx-at-point)
                    :collector #'occ-matches
-                   :action (occ-helm-actions-get :clock-in :procreate-child :procreate-child-clock-in :goto)
-                   :action-transformer #'(lambda (action candidate) (occ-helm-actions-get :clock-in :procreate-child :procreate-child-clock-in :goto))
+                   :action (occ-helm-actions-get
+                            :try-clock-in
+                            :procreate-child
+                            :procreate-child-clock-in
+                            :goto)
+                   :action-transformer #'(lambda (action candidate)
+                                           (occ-helm-actions-get
+                                            :try-clock-in
+                                            :procreate-child
+                                            :procreate-child-clock-in
+                                            :goto))
                    :timeout 7))
 
 (defun occ-helm-list-select ()
@@ -46,14 +55,29 @@
   ;; TODO: FIX it :action-transformer (lambda (actions candidate) (occ-helm-action-transformer candidate actions))
   (occ-helm-select (occ-make-ctx-at-point)
                    :collector #'occ-list
-                   :action (occ-helm-actions-get :clock-in :procreate-child :procreate-child-clock-in :goto)
-                   :action-transformer #'(lambda (action candidate) (occ-helm-actions-get :clock-in :procreate-child :procreate-child-clock-in :goto))
+                   :action (occ-helm-actions-get
+                            :try-clock-in
+                            :procreate-child
+                            :procreate-child-clock-in
+                            :goto)
+                   :action-transformer #'(lambda (action candidate)
+                                           (occ-helm-actions-get
+                                            :try-clock-in
+                                            :procreate-child
+                                            :procreate-child-clock-in
+                                            :goto))
                    :timeout 7))
 
 
-(defun occ-curr-procreate-child ())
+;;;###autoload
+(defun occ-curr-procreate-child ()
+  (interactive)
+  ())
 
-(defun occ-curr-procreate-child-clock-in ())
+;;;###autoload
+(defun occ-curr-procreate-child-clock-in ()
+  (interactive)
+  ())
 
 
 ;;;###autoload
