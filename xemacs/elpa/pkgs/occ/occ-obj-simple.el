@@ -54,22 +54,22 @@
 ;; (file-name-nondirectory "/aaa/aaa/aaa")
 
 
-(cl-defmethod occ-obj-name ((obj symbol))
+(cl-defmethod occ-class-name ((obj symbol))
   "symbol")
 
-(cl-defmethod occ-obj-name ((obj null))
+(cl-defmethod occ-class-name ((obj null))
   "null")
 
-(cl-defmethod occ-obj-name ((obj marker))
+(cl-defmethod occ-class-name ((obj marker))
   "marker")
 
-(cl-defmethod occ-obj-name ((obj occ-tsk))
+(cl-defmethod occ-class-name ((obj occ-tsk))
   "task")
 
-(cl-defmethod occ-obj-name ((obj occ-ctsk))
+(cl-defmethod occ-class-name ((obj occ-ctsk))
   "context task")
 
-(cl-defmethod occ-obj-name ((obj occ-ctxual-tsk))
+(cl-defmethod occ-class-name ((obj occ-ctxual-tsk))
   "contextual task")
 
 
@@ -144,10 +144,10 @@ pointing to it."
   "occ-format")
 
 (cl-defmethod occ-title ((obj marker) (case symbol))
-  (occ-case case (occ-obj-name obj)))
+  (occ-case case (occ-class-name obj)))
 
 (cl-defmethod occ-title ((obj occ-obj) (case symbol))
-  (occ-case case (occ-obj-name obj)))
+  (occ-case case (occ-class-name obj)))
 
 
 (cl-defgeneric occ-format (obj &optional case)
