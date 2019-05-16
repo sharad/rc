@@ -76,7 +76,8 @@
         (let ((ctxual-tsk (occ-build-ctxual-tsk tsk
                                                 (occ-make-ctx-at-point))))
           (if ctxual-tsk
-              (occ-procreate-child ctxual-tsk))))))
+              (occ-procreate-child ctxual-tsk)))
+      (occ-message "No current task clocking-in"))))
 
 ;;;###autoload
 (defun occ-curr-procreate-child-clock-in ()
@@ -86,7 +87,8 @@
         (let ((ctxual-tsk (occ-build-ctxual-tsk tsk
                                                 (occ-make-ctx-at-point))))
           (if ctxual-tsk
-              (occ-procreate-child-clock-in ctxual-tsk))))))
+              (occ-procreate-child-clock-in ctxual-tsk)))
+      (occ-message "No current task clocking-in"))))
 
 
 ;;;###autoload
