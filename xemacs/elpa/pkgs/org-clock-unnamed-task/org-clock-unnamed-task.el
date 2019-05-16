@@ -176,15 +176,23 @@
   ;; Implement
   )
 
+(defun lotus-org-unnamed-task-buffer ()
+  (find-file-noselect *lotus-org-unnamed-task-file*))
+
+;;;###autoload
+(defun org-clock-marker-unnamed-p (marker)
+  (and
+   marker
+   (lotus-org-unnamed-task-buffer)
+   (equal
+    (marker-buffer marker)
+    (lotus-org-unnamed-task-buffer))))
+      ;; (marker-buffer *lotus-org-unnamed-task-clock-marker*)
+
 ;;;###autoload
 (defun org-clock-marker-is-unnamed-clock-p (&optional clock)
   (let ((clock (or clock org-clock-marker)))
-    (and
-     clock
-     *lotus-org-unnamed-task-clock-marker*
-     (equal
-      (marker-buffer org-clock-marker)
-      (marker-buffer *lotus-org-unnamed-task-clock-marker*)))))
+    (org-clock-marker-unnamed-p clock)))
 
 ;;;###autoload
 (defun lotus-org-unnamed-task-at-point-p ()

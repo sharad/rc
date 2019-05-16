@@ -339,14 +339,18 @@ pointing to it."
             (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
 
           ;; (occ-clock-in obj-tsk)
-          (when (or
-                 (occ-unnamed-p obj)
-                 (occ-associable-p obj))
-            (occ-clock-in obj-tsk
-                          :collector collector
-                          :action    action
-                          :action-transformer action-transformer
-                          :timeout timeout))
+          (if (or
+               (occ-unnamed-p obj)
+               (occ-associable-p obj))
+              (occ-clock-in obj-tsk
+                            :collector collector
+                            :action    action
+                            :action-transformer action-transformer
+                            :timeout timeout)
+            (occ-debug :debug
+                       "occ-clock-in(occ-ctxual-tsk): not clocking in (occ-unnamed-p obj)=%s (occ-associable-p obj)=%s"
+                       (occ-unnamed-p obj)
+                       (occ-associable-p obj)))
 
           (setq retval t)
 
@@ -595,12 +599,15 @@ pointing to it."
   "occ-unnamed-p")
 
 (cl-defmethod occ-unnamed-p ((obj marker))
-  (occ-clock-marker-is-unnamed-clock-p obj))
+  (occ-debug :debug "occ-unnamed-p(marker=%s)" obj)
+  (occ-clock-marker-unnamed-p obj))
 
 (cl-defmethod occ-unnamed-p ((obj occ-tsk))
+  (occ-debug :debug "occ-unnamed-p(occ-tsk=%s)" obj)
   (occ-unnamed-p (occ-tsk-marker obj)))
 
 (cl-defmethod occ-unnamed-p ((obj occ-ctsk))
+  (occ-debug :debug "occ-unnamed-p(occ-ctsk=%s)" obj)
   (occ-unnamed-p (occ-ctsk-tsk obj)))
 
 (cl-defmethod occ-unnamed-p ((obj occ-ctxual-tsk))
@@ -981,7 +988,7 @@ pointing to it."
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout 7)))
    (if (or
-         (occ-clock-marker-is-unnamed-clock-p)
+         (occ-clock-marker-unnamed-clock-p)
          (not (occ-associable-with-ctx-p (occ-current-tsk) ctx)))
        (prog1                ;current clock is not matching
            t

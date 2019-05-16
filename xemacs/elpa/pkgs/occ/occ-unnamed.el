@@ -39,6 +39,7 @@
   (setq *occ-unassociate-ctx-start-time* nil))
 
 (defun occ-can-create-unnamed-tsk-p ()
+  (occ-debug :debug "occ-can-create-unnamed-tsk-p: begin")
   (unless *occ-unassociate-ctx-start-time*
     (setq *occ-unassociate-ctx-start-time* (current-time)))
   (let ((unassociate-ctx-start-time *occ-unassociate-ctx-start-time*))
@@ -47,23 +48,19 @@
          (float-time (time-since unassociate-ctx-start-time))
          *occ-swapen-unnamed-threashold-interval*))))
 
-(defun occ-clock-marker-is-unnamed-clock-p (&optional clock)
-  (let ((clock (or clock org-clock-marker)))
-    (when (and
-           clock
-           (lotus-org-unnamed-task-clock-marker)
-           (marker-buffer (lotus-org-unnamed-task-clock-marker)))
-      (equal
-       (marker-buffer org-clock-marker)
-       ;; id:x11 make org-ctx-clock version
-       (marker-buffer (lotus-org-unnamed-task-clock-marker))))))
+(defun occ-clock-marker-unnamed-p (marker)
+  (occ-debug :debug "occ-clock-marker-is-unnamed-p: begin")
+  (org-clock-marker-unnamed-p marker))
 
-;; (lotus-org-unnamed-task-clock-marker org-clock-marker)
+(defun occ-clock-marker-unnamed-clock-p (&optional clock)
+  (let ((clock (or clock org-clock-marker)))
+     (occ-clock-marker-unnamed-p clock)))
 
 (defun occ-maybe-create-clockedin-unnamed-heading ()
+  (occ-debug :debug "occ-maybe-create-clockedin-unnamed-heading: begin")
   (when (occ-can-create-unnamed-tsk-p)
     (let ((org-log-note-clock-out nil))
-      (if (occ-clock-marker-is-unnamed-clock-p)
+      (if (occ-clock-marker-unnamed-clock-p)
           (occ-debug :debug "occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk")
         (prog1
             (org-without-org-clock-persist
@@ -71,9 +68,10 @@
           (occ-unassociate-ctx-start-time-reset))))))
 
 (defun occ-maybe-create-unnamed-heading ()
+  (occ-debug :debug "occ-maybe-create-unnamed-heading: begin")
   (when (occ-can-create-unnamed-tsk-p)
     (let ((org-log-note-clock-out nil))
-      (if (occ-clock-marker-is-unnamed-clock-p)
+      (if (occ-clock-marker-unnamed-clock-p)
           (occ-debug :debug "occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk")
         (cdr
          (org-without-org-clock-persist
@@ -81,6 +79,7 @@
 
 (defun occ-maybe-create-unnamed-tsk ()
   ;; back
+  (occ-debug :debug "occ-maybe-create-unnamed-tsk: begin")
   (let* ((unnamed-heading-marker
           (cdr (org-without-org-clock-persist
                  (lotus-org-create-unnamed-task))))
@@ -98,6 +97,7 @@
 
 (cl-defmethod occ-maybe-create-unnamed-ctxual-tsk ((ctx occ-ctx))
   ;; back
+  (occ-debug :debug "occ-maybe-create-unnamed-ctxual-tsk: begin")
   (let* ((unnamed-tsk        (occ-maybe-create-unnamed-tsk))
          (unnamed-ctxual-tsk (when unnamed-tsk (occ-build-ctxual-tsk unnamed-tsk ctx))))
     (assert unnamed-tsk)
@@ -106,9 +106,10 @@
 
 (cl-defmethod occ-maybe-create-clockedin-unnamed-ctxual-tsk ((ctx occ-ctx))
   ;; back
+  (occ-debug :debug "occ-maybe-create-clockedin-unnamed-ctxual-tsk: begin")
   (when (occ-can-create-unnamed-tsk-p)
     (let ((org-log-note-clock-out nil))
-      (if (occ-clock-marker-is-unnamed-clock-p)
+      (if (occ-clock-marker-unnamed-clock-p)
           (occ-debug :debug "occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk")
         (let* ((unnamed-ctxual-tsk (occ-maybe-create-unnamed-ctxual-tsk ctx))
                (unnamed-tsk        (when unnamed-ctxual-tsk (occ-ctxual-tsk-tsk unnamed-ctxual-tsk)))
