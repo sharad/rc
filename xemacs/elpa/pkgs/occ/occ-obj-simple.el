@@ -368,7 +368,18 @@ pointing to it."
                             action-transformer
                             timeout)
   (occ-debug :debug "occ-clock-in(occ-ctsk=%s)" obj)
-  (occ-clock-in (occ-ctsk-tsk obj)))
+  (if (or
+       (occ-unnamed-p obj)
+       (occ-associable-p obj))
+      (occ-clock-in (occ-ctsk-tsk obj)
+                    :collector collector
+                    :action    action
+                    :action-transformer action-transformer
+                    :timeout timeout)
+    (occ-debug :debug
+               "occ-clock-in(occ-ctxual-tsk): not clocking in (occ-unnamed-p obj)=%s (occ-associable-p obj)=%s"
+               (occ-unnamed-p obj)
+               (occ-associable-p obj))))
 
 (cl-defmethod occ-clock-in ((obj null)
                             &key
