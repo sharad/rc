@@ -27,8 +27,6 @@
 (provide 'occ-macros)
 
 
-
-
 (defmacro occ-with-marker (marker &rest body)
   `(let ((marker ,marker))
      (progn
@@ -46,11 +44,6 @@
              (candidates ,@collection)
              (action . identity))))))
 
-
-
-
-
-
 (when nil
   ;; https://code.orgmode.org/bzg/org-mode/commit/e2bdc488ee071ea9743b00424db28fce3505fe5d
   ;; Refiling: Allow to create new nodes.
@@ -64,7 +57,6 @@
   ;; under that new heading.
 
   ;;; occ-macros.el ends here
-
 
   (org-refile-get-location)
 

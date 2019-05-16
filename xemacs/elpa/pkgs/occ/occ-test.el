@@ -357,5 +357,10 @@
  (before-org-capture-plus mrk 'entry `(marker org-clock-marker) 'occ-capture+-helm-select-template '(:empty-lines 1)
    t))
 
+
+
+;; (occ-delayed-select-obj-prop-edit-when-idle (occ-make-ctx nil) (occ-make-ctx nil) occ-idle-timeout)
+;; (occ-delayed-select-obj-prop-edit-when-idle nil (occ-make-ctx nil) occ-idle-timeout)
+
 
 ;;; occ-test.el ends here

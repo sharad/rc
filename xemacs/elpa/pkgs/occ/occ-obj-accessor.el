@@ -28,6 +28,7 @@
 
 (require 'occ-obj-ctor)
 
+
 ;; occ-ctxual-tsk - accessors
 (cl-defmethod occ-ctxual-tsk-get-rank ((ctxask occ-ctxual-tsk))
   (occ-debug :debug "occ-ctxual-tsk-get-rank(occ-ctxual-tsk=%s)" ctxask)
@@ -140,7 +141,6 @@
 (cl-defmethod occ-collect-list ((collection occ-list-collection))
   (let ((tsks (occ-collection collection)))
     tsks))
-
 
 
 (cl-defmethod occ-collection ((collection occ-tree-collection))
@@ -168,5 +168,4 @@
         (error "occ-global-tsk-collection-spec is nil"))))
   occ-global-tsk-collection)
 
-
 ;;; occ-obj-accessor.el ends here

@@ -220,7 +220,7 @@
          (if timer (cancel-timer timer))
          (signal (car err) (cdr err)))))))
 
-;; (safe-timed-org-refile-get-marker 7)
+;; (safe-timed-org-refile-get-marker occ-idle-timeout)
 
 ;; q(defun occ-select-marker)
 
@@ -306,7 +306,7 @@
 
 
 
-;; (safe-timed-org-refile-get-marker 7)
+;; (safe-timed-org-refile-get-marker occ-idle-timeout)
 
 ;; (defun occ-select-marker)
 
@@ -314,7 +314,7 @@
   "occ-prop-edit")
 
 (cl-defmethod occ-select-obj-prop-edit ((obj null) (ctx occ-ctx) timeout)
-  (let* ((timeout (or timeout 7))
+  (let* ((timeout (or timeout occ-idle-timeout))
          (buff    (occ-ctx-buffer ctx)))
     (lwarn 'occ :debug "occ-select-obj-prop-edit: [body] lotus-with-no-active-minibuffer-if")
     (if (and
@@ -328,7 +328,7 @@
                      (get-buffer "*helm-mode-occ-select-obj-prop-edit*"))))))
 
 (cl-defmethod occ-select-obj-prop-edit ((obj occ-ctx) (ctx occ-ctx) timeout)
-  (let* ((timeout (or timeout 7))
+  (let* ((timeout (or timeout occ-idle-timeout))
          (buff    (occ-ctx-buffer ctx)))
     (lwarn 'occ :debug "occ-select-obj-prop-edit: [body] lotus-with-no-active-minibuffer-if")
     (if (and
@@ -345,7 +345,7 @@
 (cl-defmethod occ-delayed-select-obj-prop-edit (obj (ctx occ-ctx) timeout)
   "add-ctx-to-org-heading"
   ;; TODO: make helm conditional when it is used than only it should be handled.
-  (interactive '((occ-make-ctx-at-point) 7))
+  (interactive '((occ-make-ctx-at-point) occ-idle-timeout))
   (occ-debug :debug "begin occ-delayed-select-obj-prop-edit")
   (lotus-with-no-active-minibuffer-if
       (progn
@@ -398,7 +398,7 @@
 
   (occ-debug :debug "%s: end: occ-delayed-select-obj-prop-edit-when-idle" (time-stamp-string)))
   ;; (run-with-idle-timer-nonobtrusive-simple
-  ;;  7 nil
+  ;;  occ-idle-timeout nil
   ;;  #'(lambda (args)
   ;;      (apply 'occ-delayed-select-obj-prop-edit args)) (list ctx timeout))
 

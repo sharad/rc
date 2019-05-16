@@ -48,11 +48,10 @@
                                             :procreate-child
                                             :procreate-child-clock-in
                                             :goto))
-                   :timeout 7))
+                   :timeout occ-idle-timeout))
 
 (defun occ-helm-list-select ()
   (interactive)
-  ;; TODO: FIX it :action-transformer (lambda (actions candidate) (occ-helm-action-transformer candidate actions))
   (occ-helm-select (occ-make-ctx-at-point)
                    :collector #'occ-list
                    :action (occ-helm-actions-get
@@ -66,18 +65,28 @@
                                             :procreate-child
                                             :procreate-child-clock-in
                                             :goto))
-                   :timeout 7))
+                   :timeout occ-idle-timeout))
 
 
 ;;;###autoload
 (defun occ-curr-procreate-child ()
   (interactive)
-  ())
+  (let ((tsk (occ-current-tsk)))
+    (if tsk
+        (let ((ctxual-tsk (occ-build-ctxual-tsk tsk
+                                                (occ-make-ctx-at-point))))
+          (if ctxual-tsk
+              (occ-procreate-child ctxual-tsk))))))
 
 ;;;###autoload
 (defun occ-curr-procreate-child-clock-in ()
   (interactive)
-  ())
+  (let ((tsk (occ-current-tsk)))
+    (if tsk
+        (let ((ctxual-tsk (occ-build-ctxual-tsk tsk
+                                                (occ-make-ctx-at-point))))
+          (if ctxual-tsk
+              (occ-procreate-child-clock-in ctxual-tsk))))))
 
 
 ;;;###autoload
@@ -91,7 +100,7 @@
   (interactive)
   (occ-obj-prop-edit (point-marker)
                      (occ-make-ctx (get-buffer (read-buffer-to-switch "buffer: ")))
-                     7))
+                     occ-idle-timeout))
 
 
 ;;;###autoload
@@ -106,7 +115,7 @@
   (let ((collector          #'occ-matches)
         (action             (occ-helm-actions obj))
         (action-transformer #'occ-helm-action-transformer-fun)
-        (timeout            7))
+        (timeout            occ-idle-timeout))
     (occ-clock-in-if-not (occ-make-ctx-at-point)
                          :collector collector
                          :action action
@@ -138,6 +147,7 @@
   (interactive "P")
   (occ-reload-lib uncompiled))
 
+
 ;;;###autoload
 (defun occ-insinuate ()
   (interactive)
@@ -158,7 +168,6 @@
   (org-clock-load) ;; newly added
  (occ-debug :debug "occ-insinuate: finish")
  (occ-message "occ-insinuate: finish"))
-
 
 ;;;###autoload
 (defun occ-uninsinuate ()
@@ -190,8 +199,11 @@ Interactively, or when MESSAGE is non-nil, show it in echo area.
 With prefix argument, or when HERE is non-nil, insert it at point.
 In non-interactive uses, a reduced version string is output unless
 FULL is given."
-  (interactive (list current-prefix-arg t (not current-prefix-arg)))
-  (message (occ-get-version here full message)))
-
+  (interactive
+   (list
+    current-prefix-arg
+    t
+    (not current-prefix-arg)))
+  (occ-message (occ-get-version here full message)))
 
 ;;; occ-commands.el ends here
