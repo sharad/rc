@@ -97,7 +97,7 @@
   ctx
   tsk)
 
-(cl-defstruct (occ-ctxual-tsk (:include occ-obj-ctx-tsk))
+(cl-defstruct (occ-ctxual-tsk (:include occ-ctsk))
   rank)
 
 

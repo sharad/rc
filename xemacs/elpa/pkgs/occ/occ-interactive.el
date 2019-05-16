@@ -45,7 +45,9 @@
 (require 'occ-obj-method)
 
 
-(cl-defgeneric occ-select-propetry (tsk ctx &optional prompt)
+(cl-defgeneric occ-select-propetry (tsk
+                                    ctx
+                                    &optional prompt)
   "occ-select-propetry")
 
 (cl-defmethod occ-select-propetry ((tsk occ-tsk)
@@ -92,7 +94,8 @@
     (when range
       org-cycle-subtree-status)))
 
-(defun org-flag-proprty-drawer (flag &optional force)
+(defun org-flag-proprty-drawer (flag
+                                &optional force)
   "NIL to open drawer T to close drawer"
   ;; https://orgmode.org/worg/org-hacks.html
   ;; https://orgmode.org/worg/org-hacks.html#org6d4906f
@@ -151,7 +154,8 @@
         prop-range))))
 
 
-(defun org-get-flag-proprty-drawer-at-marker (marker &optional force)
+(defun org-get-flag-proprty-drawer-at-marker (marker
+                                              &optional force)
   (let ((buff (marker-buffer marker))
         (loc  (marker-position marker)))
     (when (and buff loc)
@@ -224,10 +228,14 @@
 
 ;; q(defun occ-select-marker)
 
-(cl-defgeneric occ-obj-prop-edit (ctx timeout)
+(cl-defgeneric occ-obj-prop-edit (obj
+                                  ctx
+                                  timeout)
   "occ-prop-edit")
 
-(cl-defmethod occ-obj-prop-edit ((obj occ-tsk) (ctx occ-ctx) timeout)
+(cl-defmethod occ-obj-prop-edit ((obj occ-tsk)
+                                 (ctx occ-ctx)
+                                 timeout)
   (let* ((timeout (or timeout 0))
          (tsk     obj)
          (mrk     (occ-tsk-marker obj)))
@@ -310,16 +318,21 @@
 
 ;; (defun occ-select-marker)
 
-(cl-defgeneric occ-select-obj-prop-edit (obj ctx timeout)
+(cl-defgeneric occ-select-obj-prop-edit (obj
+                                         ctx
+                                         timeout)
   "occ-prop-edit")
 
-(cl-defmethod occ-select-obj-prop-edit ((obj null) (ctx occ-ctx) timeout)
+(cl-defmethod occ-select-obj-prop-edit ((obj null)
+                                        (ctx occ-ctx)
+                                        timeout)
   (let* ((timeout (or timeout occ-idle-timeout))
          (buff    (occ-ctx-buffer ctx)))
     (lwarn 'occ :debug "occ-select-obj-prop-edit: [body] lotus-with-no-active-minibuffer-if")
     (if (and
          (buffer-live-p buff)
          (not (string-match "^*helm" (buffer-name buff))))
+        ;; TODO: BUG: Here propagate selection abort properly for (occ-clock-in ((obj occ-ctx)) to work properly.
         (occ-obj-prop-edit (occ-select obj #'occ-list timeout) ctx timeout)
       (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s 3 %s"
                  (eq (current-buffer) buff)
@@ -327,7 +340,9 @@
                  (eq buff
                      (get-buffer "*helm-mode-occ-select-obj-prop-edit*"))))))
 
-(cl-defmethod occ-select-obj-prop-edit ((obj occ-ctx) (ctx occ-ctx) timeout)
+(cl-defmethod occ-select-obj-prop-edit ((obj occ-ctx)
+                                        (ctx occ-ctx)
+                                        timeout)
   (let* ((timeout (or timeout occ-idle-timeout))
          (buff    (occ-ctx-buffer ctx)))
     (lwarn 'occ :debug "occ-select-obj-prop-edit: [body] lotus-with-no-active-minibuffer-if")
@@ -336,13 +351,16 @@
          (not (string-match "^*helm" (buffer-name buff))))
         (occ-obj-prop-edit
          (occ-select obj :collector #'occ-list :timeout timeout)
-         ctx timeout)
+         ctx
+         timeout)
       (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s"
                  (buffer-live-p buff)
                  (not (string-match "^*helm" (buffer-name buff)))))))
 
 
-(cl-defmethod occ-delayed-select-obj-prop-edit (obj (ctx occ-ctx) timeout)
+(cl-defmethod occ-delayed-select-obj-prop-edit (obj
+                                                (ctx occ-ctx)
+                                                timeout)
   "add-ctx-to-org-heading"
   ;; TODO: make helm conditional when it is used than only it should be handled.
   (interactive '((occ-make-ctx-at-point) occ-idle-timeout))
@@ -362,10 +380,14 @@
   (occ-debug :debug "finished occ-delayed-select-obj-prop-edit"))
 
 
-(cl-defmethod occ-delayed-select-obj-prop-edit (obj (ctx marker) timeout)
+(cl-defmethod occ-delayed-select-obj-prop-edit (obj
+                                                (ctx marker)
+                                                timeout)
   (occ-delayed-select-obj-prop-edit obj (occ-make-ctx marker)))
 
-(cl-defmethod occ-delayed-select-obj-prop-edit-when-idle (obj (ctx occ-ctx) timeout)
+(cl-defmethod occ-delayed-select-obj-prop-edit-when-idle (obj
+                                                          (ctx occ-ctx)
+                                                          timeout)
 
   ;; either this should also be in occ-obj-method
   ;; or (cl-defmethod occ-clock-in ((ctx occ-ctx))
