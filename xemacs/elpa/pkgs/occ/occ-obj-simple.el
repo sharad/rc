@@ -233,6 +233,10 @@ pointing to it."
   (occ-debug :debug "occ-clock-in(occ-tsk=%s)" obj)
   (occ-clock-in (occ-tsk-marker obj)))
 
+(defvar occ-select-clock-in-label t)
+
+(assert occ-select-clock-in-label)
+
 (defun occ-select-clock-in-tranform (action)
   "Will make all action except first to return t."
   (let ((first (first action))
@@ -240,11 +244,11 @@ pointing to it."
                            (if (consp a)
                                (cons (car a)
                                      #'(lambda (candidate)
-                                         (funcall (cdr a) candidate)
-                                         t))
+                                         (funcall (cdr a) candidate
+                                          occ-select-clock-in-label)))
                              #'(lambda (candidate)
                                  (funcall a candidate)
-                                 t)))
+                                 occ-select-clock-in-label)))
                        (rest action))))
     (cons first rest)))
 
@@ -273,7 +277,7 @@ pointing to it."
                                   :action             (occ-select-clock-in-tranform action)
                                   :action-transformer (occ-select-clock-in-tranformer-fun-transform action-transformer)
                                   :timeout            timeout)))
-      (if ctxual-tsk ;TODO: should return t if action were done than select[=identity]
+      (if ctxual-tsk ;TODO: should return t if action were done than select[=identity] ;; occ-select-clock-in-label
           (if (occ-ctxual-tsk-p ctxual-tsk)
               ;; will give liberty to helm to do further actions
               (occ-clock-in ctxual-tsk))
