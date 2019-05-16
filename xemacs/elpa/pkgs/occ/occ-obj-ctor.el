@@ -26,8 +26,6 @@
 (provide 'occ-obj-ctor)
 
 
-
-
 (require 'occ-obj-common)
 (require 'occ-tree)
 (require 'occ-obj)
