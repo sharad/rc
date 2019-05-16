@@ -237,11 +237,16 @@ pointing to it."
   "Will make all action except first to return t."
   (let ((first (first action))
         (rest  (mapcar #'(lambda (a)
-                           #'(lambda (candidate)
-                               (funcall a candidate)
-                               t))
+                           (if (consp a)
+                               (cons (car a)
+                                     #'(lambda (candidate)
+                                         (funcall (cdr a) candidate)
+                                         t))
+                             #'(lambda (candidate)
+                                 (funcall a candidate)
+                                 t)))
                        (rest action))))
-    (append first rest)))
+    (cons first rest)))
 
 (defun occ-select-clock-in-tranformer-fun-transform (tranformer-fun)
   "Will make transformer fun to change action except first to return t."
@@ -977,7 +982,7 @@ pointing to it."
         (timeout            (or timeout 7)))
    (if (or
          (occ-clock-marker-is-unnamed-clock-p)
-         (occ-associable-with-ctx-p (occ-current-tsk) ctx))
+         (not (occ-associable-with-ctx-p (occ-current-tsk) ctx)))
        (prog1                ;current clock is not matching
            t
          (occ-debug :debug "occ-clock-in-if-not: Now really going to clock with this-command=%s" this-command)
