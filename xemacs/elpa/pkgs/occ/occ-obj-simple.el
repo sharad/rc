@@ -82,6 +82,9 @@
 ;;   (occ-ctxual-tsk-tsk occ-obj-tsk obj))
 
 
+(cl-defmethod occ-obj-marker ((obj marker))
+  obj)
+
 (cl-defmethod occ-obj-marker ((obj occ-obj-tsk))
   (occ-tsk-marker (occ-obj-tsk obj)))
 
@@ -262,6 +265,7 @@ pointing to it."
       (let ((clock (or clock-marker
                        clock-hd-marker)))
         (if (and tsk
+                 clock
                  (occ-marker= tsk clock))
             tsk
           (when clock

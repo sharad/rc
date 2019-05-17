@@ -171,6 +171,7 @@
 (defvar occ-select-clock-in-true-label     'occ-true "should not be null")
 (defvar occ-select-clock-in-false-label    'occ-false "should not be null")
 
+(cl-assert occ-select-clock-in-operate-label)
 (cl-assert occ-select-clock-in-true-label)
 (cl-assert occ-select-clock-in-false-label)
 
