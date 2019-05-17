@@ -280,6 +280,9 @@
 
 (cl-defmethod occ-props-window-edit ((obj occ-ctx)
                                      &key
+                                     candidate-transformer
+                                     occ-select-clock-in-tranform
+                                     occ-select-clock-in-tranformer-fun-transform
                                      collector
                                      action
                                      action-transformer

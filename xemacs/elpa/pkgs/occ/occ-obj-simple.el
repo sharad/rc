@@ -354,6 +354,9 @@ pointing to it."
 
 (cl-defmethod occ-clock-in ((obj occ-ctx)
                             &key
+                            candidate-transformer
+                            occ-select-clock-in-tranform
+                            occ-select-clock-in-tranformer-fun-transform
                             collector
                             action
                             action-transformer
