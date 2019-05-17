@@ -122,6 +122,10 @@
          ,@handlers)
     bodyform))
 (put 'condition-case-control 'lisp-indent-function 2)
+
+
+(defun occ-helm-buffer-p (buffer)
+  (string-match "^*helm" (buffer-name buffer)))
 
 
 

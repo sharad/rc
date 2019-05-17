@@ -94,6 +94,7 @@
 
 
 (cl-defstruct (occ-ctsk (:include occ-obj-ctx-tsk))
+  ;; Reason to have one more occ-ctsk along with occ-ctxual-tsk to avoid calculating rank.
   ctx
   tsk)
 
