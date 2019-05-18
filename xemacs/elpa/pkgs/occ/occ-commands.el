@@ -30,6 +30,9 @@
 (require 'occ-main)
 
 
+(require 'occ-obj-utils)
+
+
 ;; example of clos in cl-struct-js2-export-binding-node is a variable defined in ‘js2-mode.el’.
 
 ;;;###autoload
@@ -114,15 +117,16 @@
 ;;;###autoload
 (defun occ-clock-in-curr-ctx (&optional force)
   (interactive "P")
-  (let ((collector          #'occ-matches)
-        (action             (occ-helm-actions obj))
-        (action-transformer #'occ-helm-action-transformer-fun)
-        (timeout            occ-idle-timeout))
-    (occ-clock-in-if-not (occ-make-ctx-at-point)
-                         :collector collector
-                         :action action
-                         :action-transformer action-transformer
-                         :timeout timeout)))
+  (let ((ctx (occ-make-ctx-at-point)))
+    (let ((collector          #'occ-matches)
+          (action             (occ-helm-actions ctx))
+          (action-transformer #'occ-helm-action-transformer-fun)
+          (timeout            occ-idle-timeout))
+      (occ-clock-in-if-not ctx
+                           :collector collector
+                           :action action
+                           :action-transformer action-transformer
+                           :timeout timeout))))
 
 ;;;###autoload
 (defun occ-clock-in-curr-ctx-if-not (&optional force)
@@ -134,7 +138,16 @@
     (occ-debug :debug "%s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug" (time-stamp-string))
     (if force
         (occ-clock-in-curr-ctx force)
-      (occ-clock-in-if-chg (occ-make-ctx-at-point) :collector #'occ-matches)))
+      (let ((ctx (occ-make-ctx-at-point)))
+        (let ((collector          #'occ-matches)
+              (action             (occ-select-clock-in-tranform (occ-helm-actions ctx)))
+              (action-transformer (occ-select-clock-in-tranformer-fun-transform #'occ-helm-action-transformer-fun))
+              (timeout            occ-idle-timeout))
+          (occ-clock-in-if-chg ctx
+                               :collector          #'occ-matches
+                               :action             action
+                               :action-transformer action-transformer
+                               :timeout            occ-idle-timeout)))))
   (occ-debug :nodisplay "%s: end occ-clock-in-curr-ctx-if-not" (time-stamp-string)))
 
 

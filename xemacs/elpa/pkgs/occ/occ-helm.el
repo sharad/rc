@@ -110,14 +110,14 @@
   "occ-helm-select")
 
 (cl-defmethod occ-helm-select ((obj occ-ctx) &key collector action action-transformer timeout)
-  (let ((ctxual-tsk (occ-select obj
+  (let ((ctx-tsk (occ-select obj
                                 :collector collector
                                 :action action
                                 :action-transformer action-transformer
                                 :timeout timeout)))
-    (if (occ-ctxual-tsk-p ctxual-tsk)
-        ;; will give liberty to helm to do further actions
-        (occ-message "Selected ctxual-tsk %s" (occ-format ctxual-tsk)))))
+    (when (occ-obj-ctx-tsk-p ctx-tsk)
+      (occ-debug :debug "Selected ctxual-tsk %s" (occ-format ctx-tsk 'capitalize))
+      ctx-tsk)))
 
 
 (defun occ-helm-select-XYZ (obj

@@ -127,8 +127,8 @@
   tree)
 
 
-(cl-defstruct occ-retval
-  operate
-  return-value)
+(cl-defstruct occ-return
+  label
+  value)
 
 ;;; occ-obj.el ends here

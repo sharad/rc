@@ -36,6 +36,7 @@
 (require 'occ-obj-common)
 (require 'occ-tree)
 (require 'occ-obj-accessor)
+(require 'occ-obj-utils)
 (require 'occ-util-common)
 (require 'occ-prop)
 (require 'occ-helm)
@@ -52,6 +53,8 @@
 
 ;; (file-name-nondirectory "/aaa/aaa/aaa")
 
+(cl-defmethod occ-class-name (obj)
+  "unknown")
 
 (cl-defmethod occ-class-name ((obj symbol))
   "symbol")
@@ -146,6 +149,11 @@ pointing to it."
                           case)
   "occ-format")
 
+(cl-defmethod occ-title (obj
+                         case)
+  (occ-case case
+            (occ-class-name obj)))
+
 (cl-defmethod occ-title ((obj marker)
                          (case symbol))
   (occ-case case
@@ -160,6 +168,11 @@ pointing to it."
 (cl-defgeneric occ-format (obj
                            &optional case)
   "occ-format")
+
+(cl-defmethod occ-format (obj
+                          &optional case)
+  (concat (when case (concat (occ-title obj case) ": "))
+          (format "%s" obj)))
 
 (cl-defmethod occ-format ((obj marker)
                           &optional case)
@@ -369,25 +382,20 @@ pointing to it."
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
 
-    (let ((action             (occ-select-clock-in-tranform action))
-          (action-transformer (occ-select-clock-in-tranformer-fun-transform action-transformer)))
-      (let ((ret-lable-ctxual-tsk
+    (let ((return-ctxual-tsk
              (occ-select obj
                          :collector          collector
                          :action             action
                          :action-transformer action-transformer
                          :timeout            timeout)))
-        (let ((ret-lable  (car ret-lable-ctxual-tsk))
-              (ctxual-tsk (cdr ret-lable-ctxual-tsk)))
-          (if ret-lable-ctxual-tsk ;TODO: should return t if action were done than select[=identity] ;; occ-select-clock-in-label
-              (if (eql ret-lable occ-select-clock-in-operate-label)
-                  (if (occ-ctxual-tsk-p ctxual-tsk)
-                      (occ-clock-in ctxual-tsk
-                                    :collector          collector
-                                    :action             action
-                                    :action-transformer action-transformer
-                                    :timeout            timeout)
-                    (occ-message "%s is not ctxual-tsk" (occ-format ctxual-tsk 'capitalize))))
+        (if (occ-return-operate-p return-ctxual-tsk) ;TODO: should return t if action were done than select[=identity] ;; occ-select-clock-in-label
+            (if (occ-ctxual-tsk-p (occ-return-get-value return-ctxual-tsk))
+                (occ-clock-in ctxual-tsk
+                              :collector          collector
+                              :action             action
+                              :action-transformer action-transformer
+                              :timeout            timeout)
+              (occ-message "%s is not ctxual-tsk" (occ-format ctxual-tsk 'capitalize)))
             (prog1
                 nil
               ;; here create unnamed tsk, no need
@@ -399,10 +407,10 @@ pointing to it."
                          "occ-clock-in(ctx):  with this-command=%s" this-command)
               ;; (occ-delayed-select-obj-prop-edit-when-idle obj obj occ-idle-timeout)
               (occ-safe-ignore-quit-props-window-edit obj
-                                                      :collector #'occ-list
+                                                      :collector          #'occ-list
                                                       :action             action
                                                       :action-transformer action-transformer
-                                                      :timeout occ-idle-timeout))))))))
+                                                      :timeout occ-idle-timeout))))))
 
 (cl-defmethod occ-clock-in ((obj occ-ctsk)
                             &key
