@@ -178,17 +178,22 @@
                                      (set-window-configuration ,temp-win-config)
                                      (setq ,temp-win-config nil)))))
        (lotus-with-new-win ,newwin
-         (let* ((,timer (run-with-idle-plus-timer ,timeout
-                                                  nil
-                                                  ,cleanupfn-newwin
-                                                  ,newwin
-                                                  ,cleanupfn-local)))
+         (let* ((,timer
+                 (when (and
+                        ,timeout
+                        (numberp ,timeout)
+                        (not (> ,timeout 0)))
+                   (run-with-idle-plus-timer ,timeout
+                                             nil
+                                             ,cleanupfn-newwin
+                                             ,newwin
+                                             ,cleanupfn-local))))
            (condition-case err
                (progn
                  ,@body)
              ((quit)
               (funcall ,cleanupfn-newwin ,newwin ,cleanupfn-local))))))))
-(put 'lotus-with-timed-new-win 'lisp-indent-function 1)
+(put 'lotus-with-timed-new-win 'lisp-indent-function 5)
 
 
 ;; Marker Macros Starts

@@ -103,9 +103,7 @@
 ;;;###autoload
 (defun occ-proprty-edit ()
   (interactive)
-  (occ-obj-prop-edit (point-marker)
-                     (occ-make-ctx (get-buffer (read-buffer-to-switch "buffer: ")))
-                     occ-idle-timeout))
+  (occ-props-window-edit (occ-make-ctx-at-point)))
 
 
 ;;;###autoload

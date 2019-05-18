@@ -249,62 +249,74 @@
   (occ-debug :debug "occ-props-edit-in-cloned-buffer-with: begin")
   (let ((mrk (occ-obj-marker obj)))
     (org-with-cloned-marker mrk "<proptree>"
-      (org-with-narrow-to-marker mrk
-        (if (occ-open-prop-block (point-marker))
-            (occ-props-edit-with obj ctx)
-          (error "occ-props-edit-in-cloned-buffer-with: can not edit props for %s with %s"
-                 (occ-format obj 'capitalize)
-                 (occ-format ctx 'capitalize)))))))
+      (let ((cloned-mrk (point-marker)))
+        (org-with-narrow-to-marker mrk
+          (if (occ-open-prop-block (point-marker))
+              (occ-props-edit-with obj ctx)
+            (error "occ-props-edit-in-cloned-buffer-with: can not edit props for %s with %s"
+                   (occ-format obj 'capitalize)
+                   (occ-format ctx 'capitalize))))))))
 
 (cl-defmethod occ-props-edit-in-cloned-buffer ((obj occ-obj-ctx-tsk))
   (occ-debug :debug "occ-props-edit-in-cloned-buffer: begin")
   (let ((mrk (occ-obj-marker obj)))
-    (org-with-cloned-marker mrk "<proptree>"
-      (org-with-narrow-to-marker mrk
-        (if (occ-open-prop-block (point-marker))
-            (occ-props-edit obj)
-          (error "occ-props-edit-in-cloned-buffer: can not edit props for %s"
-                 (occ-format obj 'capitalize)))))))
+    (let ((cloned-mrk (point-marker)))
+      (org-with-cloned-marker mrk "<proptree>"
+        (org-with-narrow-to-marker mrk
+          (if (occ-open-prop-block (point-marker))
+              (occ-props-edit obj)
+            (error "occ-props-edit-in-cloned-buffer: can not edit props for %s"
+                   (occ-format obj 'capitalize))))))))
 
 
 (cl-defmethod occ-props-window-edit-with ((obj occ-tsk)
                                           (ctx occ-ctx)
                                           &optional timeout)
   (let* ((tsk     obj)
-         (mrk     (occ-tsk-marker obj))
-         (timeout (or timeout 0)))
+         (mrk     (occ-obj-marker obj))
+         (timeout (or timeout 100)))
     (when mrk
       (org-with-cloned-marker mrk "<proptree>"
-        (org-with-narrow-to-marker mrk
-          (let* ((local-cleanup
-                  #'(lambda ()
-                      (save-excursion) ;what to do here
-                        ;; (org-flag-proprty-drawer-at-marker marker t))
-                      (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
-                        (abort-recursive-edit)))))
-                (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
-                    timeout timer cleanup local-cleanup win
+        ;; (debug)
+        (occ-debug :warning
+                   "occ-props-window-edit-with: current buffer = %s" (current-buffer))
+        (let ((cloned-mrk (point-marker)))
+          ;; (set-marker cloned-mrk () (marker-position mrk))
+          (org-with-narrow-to-marker cloned-mrk
+           ;; (debug)
+            (occ-debug :warning
+                       "occ-props-window-edit-with: current buffer = %s" (current-buffer))
+            (let* ((local-cleanup
+                    #'(lambda ()
+                        ;; (debug)
+                        (occ-debug :warning "occ-props-window-edit-with: local-cleanup called")
+                        ;; (save-excursion ;what to do here
+                        ;;   (org-flag-proprty-drawer-at-marker cloned-mrk t))
+                        (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
+                          (abort-recursive-edit)))))
+              (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
+                  timeout timer cleanup local-cleanup win
 
-                    (condition-case-control nil err
-                      (let ((prop (occ-props-edit-with obj ctx)))
-                        (cond
-                         ((eql 'done prop)
-                          (funcall cleanup win local-cleanup)
-                          (when timer (cancel-timer timer)))
-                         ((eql 'edit prop)
-                          ;; (funcall cleanup win local-cleanup)
-                          (occ-debug :debug "occ-obj-prop-edit: debug editing")
-                          (when timer (cancel-timer timer))
-                          (when (and win (windowp win) (window-valid-p win))
-                            (select-window win 'norecord)))
-                         (t
-                          (funcall cleanup win local-cleanup)
-                          (when timer (cancel-timer timer)))))
-                      ((quit)
-                       (progn
-                         (funcall cleanup win local-cleanup)
-                         (if timer (cancel-timer timer))
-                         (signal (car err) (cdr err))))))))))))
+                  (condition-case-control nil err
+                    (let ((prop (occ-props-edit-with obj ctx)))
+                      (cond
+                       ((eql 'done prop)
+                        (funcall cleanup win local-cleanup)
+                        (when timer (cancel-timer timer)))
+                       ((eql 'edit prop)
+                        ;; (funcall cleanup win local-cleanup)
+                        (occ-debug :debug "occ-obj-prop-edit: debug editing")
+                        (when timer (cancel-timer timer))
+                        (when (and win (windowp win) (window-valid-p win))
+                          (select-window win 'norecord)))
+                       (t
+                        (funcall cleanup win local-cleanup)
+                        (when timer (cancel-timer timer)))))
+                    ((quit)
+                     (progn
+                       (funcall cleanup win local-cleanup)
+                       (if timer (cancel-timer timer))
+                       (signal (car err) (cdr err)))))))))))))
 
 
 (when nil
@@ -315,6 +327,19 @@
                     :action-transformer #'(lambda (action candidate)
                                              (list (cons "sel" #'identity)))
                     :timeout 7)))
+
+
+(when nil
+  (let ((ctx-tsk (occ-helm-select
+                  (occ-make-ctx-at-point)
+                  :collector #'occ-list
+                  :action (list (cons "sel" #'identity))
+                  :action-transformer #'(lambda (action candidate)
+                                          (list (cons "sel" #'identity)))
+                  :timeout 7)))
+    (let ((tsk (occ-ctsk-tsk ctx-tsk))
+          (ctx (occ-ctsk-ctx ctx-tsk)))
+      (occ-props-edit-with tsk ctx))))
 
 
 
@@ -345,21 +370,24 @@
     (let ((buff (occ-ctx-buffer obj)))
       (if (and
            (buffer-live-p buff)
-           (not (occ-helm-buffer-p buff))
-           (let ((retval-ctx-tsk (occ-select obj
-                                             :collector          collector
-                                             :action             action
-                                             :action-transformer action-transformer
-                                             :timeout            timeout)))
-             (occ-debug :debug "occ-props-window-edit: selected %s with label %s"
-                        (occ-format (occ-return-get-value retval-ctx-tsk) 'capitalize)
-                        (occ-return-get-label retval-ctx-tsk))
-             ;; BUG: will do run recursively as another method with (obj null) is define below.
-             (if (occ-return-operate-p retval-ctx-tsk)
-                 (occ-props-window-edit
-                  (occ-return-get-value retval-ctx-tsk))
-               (occ-message "occ-props-window-edit: No selection"))))
-          (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s"
+           (not (occ-helm-buffer-p buff)))
+        (let ((retval-ctx-tsk (occ-select obj
+                                          :collector          collector
+                                          :action             action
+                                          :action-transformer action-transformer
+                                          :timeout            timeout)))
+          (occ-debug :debug "occ-props-window-edit: selected %s with label %s"
+                     (occ-format (occ-return-get-value retval-ctx-tsk) 'capitalize)
+                     (occ-return-get-label retval-ctx-tsk))
+          ;; BUG: will do run recursively as another method with (obj null) is define below.
+          (if (occ-return-operate-p retval-ctx-tsk)
+              (occ-props-window-edit
+               (occ-return-get-value retval-ctx-tsk))
+            (occ-message "occ-props-window-edit: No selection")))
+        (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s"
+                     (buffer-live-p buff)
+                     (not (occ-helm-buffer-p buff)))
+        (occ-message "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s"
                      (buffer-live-p buff)
                      (not (occ-helm-buffer-p buff)))))))
 
@@ -476,6 +504,26 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 (cl-defgeneric occ-obj-prop-edit (obj
                                   ctx
