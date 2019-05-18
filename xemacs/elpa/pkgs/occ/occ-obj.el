@@ -126,4 +126,9 @@
 (cl-defstruct (occ-tree-collection (:include occ-list-collection))
   tree)
 
+
+(cl-defstruct occ-retval
+  operate
+  return-value)
+
 ;;; occ-obj.el ends here
