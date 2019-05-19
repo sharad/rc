@@ -50,20 +50,20 @@
 (occ-helm-action-add :procreate-child-clock-in     "Procreate Child Clock-in"     #'occ-procreate-child-clock-in)
 (occ-helm-action-add :goto                         "Goto"                         #'occ-goto)
 (occ-helm-action-add :set-to                       "Set To"                       #'occ-set-to)
-(occ-helm-action-add :proprty-edit                 "Proprty Edit"                 #'occ-proprty-edit) ;TODO: implement it.
+(occ-helm-action-add :proprty-window-edit                 "Proprtes Window Edit"                 #'occ-props-window-edit) ;TODO: implement it.
 
 (cl-defmethod occ-helm-actions ((obj null))
-  (occ-helm-actions-get :procreate-child :procreate-child-clock-in))
+  (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
 
 (cl-defmethod occ-helm-actions ((obj occ-ctx))
-  (occ-helm-actions-get :procreate-child :procreate-child-clock-in))
+  (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
 
 
 (cl-defmethod occ-helm-action-transformer ((obj null) actions)
-  (occ-helm-actions-get :procreate-child))
+  (occ-helm-actions-get :procreate-child :proprty-window-edit))
 
 (cl-defmethod occ-helm-action-transformer ((obj occ-tsk) actions)
-  (occ-helm-actions-get :identity :procreate-child :procreate-child-clock-in))
+  (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
 
 ;; (cl-defmethod occ-helm-action-transformer ((obj occ-ctx) actions)
 ;;   (list
@@ -71,10 +71,10 @@
 ;;    (cons "Child"    #'occ-procreate-child)))
 
 (cl-defmethod occ-helm-action-transformer ((obj occ-ctsk) actions)
-  (occ-helm-actions-get :identity :procreate-child :procreate-child-clock-in))
+  (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
 
 (cl-defmethod occ-helm-action-transformer ((obj occ-ctxual-tsk) actions)
-  (occ-helm-actions-get :identity :procreate-child :procreate-child-clock-in))
+  (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
 
 (cl-defun occ-helm-action-transformer-fun (action candidate)
   (occ-helm-action-transformer candidate action))

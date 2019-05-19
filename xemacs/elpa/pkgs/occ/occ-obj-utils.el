@@ -54,7 +54,7 @@
 (defun occ-select-clock-in-tranform (action)
   "Will make all action except first to return occ-select-clock-in-label."
   (cons
-   (cons
+   (cons                                ;add default select operation.
     occ-select-clock-in-default-label
     (occ-build-return-lambda occ-select-clock-in-default-function
                              occ-select-clock-in-operate-label))

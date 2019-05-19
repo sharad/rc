@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2019  Sharad
 
-;; Author: Sharad <spratap@merunetworks.com>
+;; Author: Sharad <>
 ;; Keywords:
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -74,10 +74,10 @@
 ;;;###autoload
 (defun occ-curr-procreate-child ()
   (interactive)
-  (let ((tsk (occ-current-tsk)))
+  (let ((tsk (occ-current-tsk))
+        (ctx (occ-make-ctx-at-point)))
     (if tsk
-        (let ((ctxual-tsk (occ-build-ctxual-tsk tsk
-                                                (occ-make-ctx-at-point))))
+        (let ((ctxual-tsk (occ-build-ctxual-tsk tsk ctx)))
           (if ctxual-tsk
               (occ-procreate-child ctxual-tsk)))
       (occ-message "No current task clocking-in"))))
@@ -85,10 +85,10 @@
 ;;;###autoload
 (defun occ-curr-procreate-child-clock-in ()
   (interactive)
-  (let ((tsk (occ-current-tsk)))
+  (let ((tsk (occ-current-tsk))
+        (ctx (occ-make-ctx-at-point)))
     (if tsk
-        (let ((ctxual-tsk (occ-build-ctxual-tsk tsk
-                                                (occ-make-ctx-at-point))))
+        (let ((ctxual-tsk (occ-build-ctxual-tsk tsk ctx)))
           (if ctxual-tsk
               (occ-procreate-child-clock-in ctxual-tsk)))
       (occ-message "No current task clocking-in"))))
@@ -103,7 +103,8 @@
 ;;;###autoload
 (defun occ-proprty-edit ()
   (interactive)
-  (occ-props-window-edit (occ-make-ctx-at-point)))
+  (let ((ctx (occ-make-ctx-at-point)))
+    (occ-props-window-edit ctx)))
 
 
 ;;;###autoload
@@ -121,10 +122,11 @@
           (action-transformer #'occ-helm-action-transformer-fun)
           (timeout            occ-idle-timeout))
       (occ-clock-in-if-not ctx
-                           :collector collector
-                           :action action
-                           :action-transformer action-transformer
-                           :timeout timeout))))
+                           :collector           collector
+                           :action              action
+                           :action-transformer  action-transformer
+                           :auto-select-if-only nil ; occ-clock-in-ctx-auto-select-if-only
+                           :timeout             timeout))))
 
 ;;;###autoload
 (defun occ-clock-in-curr-ctx-if-not (&optional force)
@@ -142,10 +144,11 @@
               (action-transformer (occ-select-clock-in-tranformer-fun-transform #'occ-helm-action-transformer-fun))
               (timeout            occ-idle-timeout))
           (occ-clock-in-if-chg ctx
-                               :collector          #'occ-matches
-                               :action             action
-                               :action-transformer action-transformer
-                               :timeout            occ-idle-timeout)))))
+                               :collector           #'occ-matches
+                               :action              action
+                               :action-transformer  action-transformer
+                               :auto-select-if-only occ-clock-in-ctx-auto-select-if-only
+                               :timeout             occ-idle-timeout)))))
   (occ-debug :nodisplay "%s: end occ-clock-in-curr-ctx-if-not" (time-stamp-string)))
 
 
