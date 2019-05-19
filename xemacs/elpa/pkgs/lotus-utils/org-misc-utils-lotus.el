@@ -616,7 +616,7 @@ With prefix arg C-u, copy region instad of killing it."
                                                           (get-buffer buffname)
                                                           (get-buffer "*helm*")))
                                                    (w (if buff (get-buffer-window buff))))
-                                              (message "triggered timer for new-win %s" w)
+                                              (message "helm-timed: triggered timer for new-win %s" w)
                                               (when (and w (windowp w) (window-valid-p w))
                                                 (delete-window w)
                                                 (when (active-minibuffer-window)
@@ -649,7 +649,7 @@ With prefix arg C-u, copy region instad of killing it."
                                      #'(lambda (buffname)
                                          (let* ((buff (get-buffer buffname))
                                                 (w (if buff (get-buffer-window buff))))
-                                           (message "triggered timer for new-win %s" w)
+                                           (message "safe-timed-org-refile-get-location: triggered timer for new-win %s" w)
                                            (when (and w
                                                       (windowp w)
                                                       (window-valid-p w))

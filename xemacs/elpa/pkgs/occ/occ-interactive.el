@@ -185,7 +185,7 @@
       (with-current-buffer buff
         (let ((currloc (point)))
           (goto-char loc)
-          (occ-debug :debug "%s: called to %s drawer of heading `%s' in file %s loc %d"
+          (occ-debug :debug "%s: org-flag-proprty-drawer-at-marker: called to %s drawer of heading `%s' in file %s loc %d"
                      (time-stamp-string)
                      (if flag "close" "open")
                      heading
@@ -290,7 +290,8 @@
   (let* ((timeout (or timeout 100)))
     (let* ((local-cleanup
               #'(lambda ()
-                  (occ-debug :warning "occ-props-window-edit-with: local-cleanup called")
+                  (occ-debug :warning "occ-props-window-edit-with((obj occ-tsk) (ctx occ-ctx)): local-cleanup called")
+                  (occ-message "occ-props-window-edit-with((obj occ-tsk) (ctx occ-ctx)): local-cleanup called")
                   (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
                     (abort-recursive-edit)))))
         (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
@@ -303,6 +304,8 @@
                  :value obj))
               ((quit)
                (progn
+                 (occ-debug :warning "occ-props-window-edit-with((obj occ-tsk) (ctx occ-ctx)): canceling timer")
+                 (occ-message "occ-props-window-edit-with((obj occ-tsk) (ctx occ-ctx)): canceling timer")
                  (funcall cleanup win local-cleanup)
                  (if timer (cancel-timer timer))
                  (signal (car err) (cdr err))
@@ -326,10 +329,11 @@
                                      action
                                      action-transformer
                                      timeout)
-  (let* ((timeout (or timeout 100)))
+  (let* ((timeout (or timeout occ-idle-timeout)))
     (let* ((local-cleanup
               #'(lambda ()
-                  (occ-debug :warning "occ-props-window-edit-with: local-cleanup called")
+                  (occ-debug :warning "occ-props-window-edit(obj occ-obj-ctx-tsk): local-cleanup called")
+                  (occ-message "occ-props-window-edit(obj occ-obj-ctx-tsk): local-cleanup called")
                   (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
                     (abort-recursive-edit)))))
         (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
@@ -342,6 +346,8 @@
                  :value obj))
               ((quit)
                (progn
+                 (occ-debug :warning "occ-props-window-edit(obj occ-obj-ctx-tsk): canceling timer")
+                 (occ-message "occ-props-window-edit(obj occ-obj-ctx-tsk): canceling timer")
                  (funcall cleanup win local-cleanup)
                  (if timer (cancel-timer timer))
                  (signal (car err) (cdr err))

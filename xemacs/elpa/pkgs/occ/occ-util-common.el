@@ -109,17 +109,22 @@
   nil)
 
 (defmacro run-unobtrusively (&rest body)
-  `(while-no-input
-    (redisplay)
-    ,@body))
+  `(if (called-interactively-p 'any)
+       (progn
+         ,@body)
+     (while-no-input
+      (redisplay)
+      ,@body)))
 
 (defmacro run-unobtrusively (&rest body)
-  `(let ((retval (while-no-input
+  `(if (called-interactively-p 'any)
+       (progn ,@body)
+    (let ((retval (while-no-input
                    (redisplay)
                    ,@body)))
-     (when (eq retval t)
-       (occ-debug :debug "user input %s retval %s" last-input-event retval))
-     retval))
+      (when (eq retval t)
+        (occ-debug :debug "user input %s retval %s" last-input-event retval))
+      retval)))
 
 (defvar occ-condition-case-control-debug nil)
 
