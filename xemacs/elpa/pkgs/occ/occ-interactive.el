@@ -251,7 +251,7 @@
     (org-with-cloned-marker mrk "<proptree>"
       (let ((cloned-mrk (point-marker)))
         (org-with-narrow-to-marker mrk
-          (if (occ-open-prop-block (point-marker))
+          (if (occ-open-prop-block cloned-mrk)
               (occ-props-edit-with obj ctx)
             (error "occ-props-edit-in-cloned-buffer-with: can not edit props for %s with %s"
                    (occ-format obj 'capitalize)
@@ -263,60 +263,81 @@
     (let ((cloned-mrk (point-marker)))
       (org-with-cloned-marker mrk "<proptree>"
         (org-with-narrow-to-marker mrk
-          (if (occ-open-prop-block (point-marker))
+          (if (occ-open-prop-block cloned-mrk)
               (occ-props-edit obj)
             (error "occ-props-edit-in-cloned-buffer: can not edit props for %s"
                    (occ-format obj 'capitalize))))))))
 
 
+(defun occ-props-edit-handle-response (prop win local-cleanup timer)
+  (cond
+   ((eql 'done prop)
+    (funcall cleanup win local-cleanup)
+    (when timer (cancel-timer timer)))
+   ((eql 'edit prop)
+    ;; (funcall cleanup win local-cleanup)
+    (occ-debug :debug "occ-obj-prop-edit: debug editing")
+    (when timer (cancel-timer timer))
+    (when (and win (windowp win) (window-valid-p win))
+      (select-window win 'norecord)))
+   (t
+    (funcall cleanup win local-cleanup)
+    (when timer (cancel-timer timer)))))
+
 (cl-defmethod occ-props-window-edit-with ((obj occ-tsk)
                                           (ctx occ-ctx)
                                           &optional timeout)
-  (let* ((tsk     obj)
-         (mrk     (occ-obj-marker obj))
-         (timeout (or timeout 100)))
+  (let* ((timeout (or timeout 100)))
     (when mrk
-      (org-with-cloned-marker mrk "<proptree>"
-        ;; (debug)
-        (occ-debug :warning
-                   "occ-props-window-edit-with: current buffer = %s" (current-buffer))
-        (let ((cloned-mrk (point-marker)))
-          ;; (set-marker cloned-mrk () (marker-position mrk))
-          (org-with-narrow-to-marker cloned-mrk
-           ;; (debug)
-            (occ-debug :warning
-                       "occ-props-window-edit-with: current buffer = %s" (current-buffer))
-            (let* ((local-cleanup
-                    #'(lambda ()
-                        ;; (debug)
-                        (occ-debug :warning "occ-props-window-edit-with: local-cleanup called")
-                        ;; (save-excursion ;what to do here
-                        ;;   (org-flag-proprty-drawer-at-marker cloned-mrk t))
-                        (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
-                          (abort-recursive-edit)))))
-              (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
-                  timeout timer cleanup local-cleanup win
+      (let* ((local-cleanup
+              #'(lambda ()
+                  (occ-debug :warning "occ-props-window-edit-with: local-cleanup called")
+                  (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
+                    (abort-recursive-edit)))))
+        (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
+            timeout timer cleanup local-cleanup win
+            (condition-case-control nil err
+              (let ((prop (occ-props-edit-in-cloned-buffer-with obj ctx)))
+                (occ-props-edit-handle-response prop win local-cleanup timer))
+              ((quit)
+               (progn
+                 (funcall cleanup win local-cleanup)
+                 (if timer (cancel-timer timer))
+                 (signal (car err) (cdr err))))))))))
 
-                  (condition-case-control nil err
-                    (let ((prop (occ-props-edit-with obj ctx)))
-                      (cond
-                       ((eql 'done prop)
-                        (funcall cleanup win local-cleanup)
-                        (when timer (cancel-timer timer)))
-                       ((eql 'edit prop)
-                        ;; (funcall cleanup win local-cleanup)
-                        (occ-debug :debug "occ-obj-prop-edit: debug editing")
-                        (when timer (cancel-timer timer))
-                        (when (and win (windowp win) (window-valid-p win))
-                          (select-window win 'norecord)))
-                       (t
-                        (funcall cleanup win local-cleanup)
-                        (when timer (cancel-timer timer)))))
-                    ((quit)
-                     (progn
-                       (funcall cleanup win local-cleanup)
-                       (if timer (cancel-timer timer))
-                       (signal (car err) (cdr err)))))))))))))
+;; (cl-defmethod occ-props-window-edit ((obj occ-obj-ctx-tsk)
+;;                                      &key
+;;                                      collector
+;;                                      action
+;;                                      action-transformer
+;;                                      timeout)
+;;   (let ((tsk (occ-ctsk-tsk obj))
+;;         (ctx (occ-ctsk-ctx obj)))
+;;     (occ-props-window-edit-with tsk ctx timeout)))
+
+(cl-defmethod occ-props-window-edit ((obj occ-obj-ctx-tsk)
+                                     &key
+                                     collector
+                                     action
+                                     action-transformer
+                                     timeout)
+  (let* ((timeout (or timeout 100)))
+    (when mrk
+      (let* ((local-cleanup
+              #'(lambda ()
+                  (occ-debug :warning "occ-props-window-edit-with: local-cleanup called")
+                  (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
+                    (abort-recursive-edit)))))
+        (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
+            timeout timer cleanup local-cleanup win
+            (condition-case-control nil err
+              (let ((prop (occ-props-edit-in-cloned-buffer obj)))
+                (occ-props-edit-handle-response prop win local-cleanup timer))
+              ((quit)
+               (progn
+                 (funcall cleanup win local-cleanup)
+                 (if timer (cancel-timer timer))
+                 (signal (car err) (cdr err))))))))))
 
 
 (when nil
@@ -342,16 +363,6 @@
       (occ-props-edit-with tsk ctx))))
 
 
-
-(cl-defmethod occ-props-window-edit ((obj occ-obj-ctx-tsk)
-                                     &key
-                                     collector
-                                     action
-                                     action-transformer
-                                     timeout)
-  (let ((tsk (occ-ctsk-tsk obj))
-        (ctx (occ-ctsk-ctx obj)))
-    (occ-props-window-edit-with tsk ctx timeout)))
 
 (cl-defmethod occ-props-window-edit ((obj occ-ctx)
                                      &key
