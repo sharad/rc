@@ -104,7 +104,11 @@
 (defun occ-proprty-edit ()
   (interactive)
   (let ((ctx (occ-make-ctx-at-point)))
-    (occ-props-window-edit ctx)))
+    (occ-props-window-edit ctx
+                           :action (occ-select-clock-in-tranform
+                                    (occ-props-edit-helm-actions ctx))
+                           :action-transformer (occ-select-clock-in-tranformer-fun-transform
+                                                #'occ-props-edit-helm-action-transformer-fun))))
 
 
 ;;;###autoload

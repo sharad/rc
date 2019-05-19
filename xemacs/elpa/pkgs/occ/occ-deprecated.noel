@@ -165,7 +165,7 @@
                   (let ((buffer-read-only nil))
                     (when old-heading
                       (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
-                    (condition-case-control t err
+                    (condition-case-control err
                       (progn
                         (occ-straight-org-clock-clock-in (list new-marker))
                         (setq retval t)
@@ -403,7 +403,7 @@
                      (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
 
                      (progn
-                       (condition-case-control nil err
+                       (condition-case-control err
                          (let ((buffer-read-only nil))
                            (occ-debug :debug "timer started for win %s" win)
 
@@ -448,15 +448,15 @@
       (occ-debug :debug "begin occ-add-to-org-heading")
       (lotus-with-no-active-minibuffer-if
           (progn
-            (lwarn 'occ :debug "occ-add-to-org-heading: [minibuffer-body] lotus-with-no-active-minibuffer-if")
+            (occ-debug :debug "occ-add-to-org-heading: [minibuffer-body] lotus-with-no-active-minibuffer-if")
             (occ-debug :debug "add-ctx-to-org-heading: minibuffer already active quitting")
             (occ-debug :debug nil))
         (lotus-with-other-frame-event-debug "occ-add-to-org-heading" :cancel
-          (lwarn 'occ :debug "occ-add-to-org-heading: lotus-with-other-frame-event-debug")
+          (occ-debug :debug "occ-add-to-org-heading: lotus-with-other-frame-event-debug")
           (let* ((timeout (or timeout 7))
                  (ctx     (or ctx (occ-make-ctx-at-point)))
                  (buff    (occ-ctx-buffer ctx)))
-            (lwarn 'occ :debug "occ-add-to-org-heading: [body] lotus-with-no-active-minibuffer-if")
+            (occ-debug :debug "occ-add-to-org-heading: [body] lotus-with-no-active-minibuffer-if")
             (if (and
                  (eq (current-buffer) buff)
                  (buffer-live-p buff)
@@ -492,7 +492,7 @@
 
                           (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
                           (progn
-                            (condition-case-control nil err
+                            (condition-case-control err
                               (let ((buffer-read-only nil))
                                 (occ-debug :debug "timer started for win %s" win)
 
@@ -583,7 +583,7 @@
   ;;experimental
   (progn
     (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
-    (condition-case-control nil err
+    (condition-case-control err
       (let ((buffer-read-only nil))
         (occ-debug :debug "timer started for win %s" win)
 

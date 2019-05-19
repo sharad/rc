@@ -91,7 +91,7 @@
                                                  nil
                                                  t)
                             key-val-collection)))
-                      (occ-debug :debug "selected option")
+                      (occ-debug :debug "selected option %s" sel)
                       (cdr sel))
                   (error "Not Keys Vals Collection %s for %s" key-val-collection (occ-format tsk 'capitalize))))
             (error "Not Keys Vals for %s" (occ-format tsk 'capitalize))))
@@ -260,8 +260,8 @@
 (cl-defmethod occ-props-edit-in-cloned-buffer ((obj occ-obj-ctx-tsk))
   (occ-debug :debug "occ-props-edit-in-cloned-buffer: begin")
   (let ((mrk (occ-obj-marker obj)))
-    (let ((cloned-mrk (point-marker)))
-      (org-with-cloned-marker mrk "<proptree>"
+    (org-with-cloned-marker mrk "<proptree>"
+      (let ((cloned-mrk (point-marker)))
         (org-with-narrow-to-marker mrk
           (if (occ-open-prop-block cloned-mrk)
               (occ-props-edit obj)
@@ -269,7 +269,7 @@
                    (occ-format obj 'capitalize))))))))
 
 
-(defun occ-props-edit-handle-response (prop win local-cleanup timer)
+(defun occ-props-edit-handle-response (prop timeout timer cleanup local-cleanup win)
   (cond
    ((eql 'done prop)
     (funcall cleanup win local-cleanup)
@@ -295,9 +295,9 @@
                     (abort-recursive-edit)))))
         (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
             timeout timer cleanup local-cleanup win
-            (condition-case-control nil err
+            (condition-case-control err
               (let ((prop (occ-props-edit-in-cloned-buffer-with obj ctx)))
-                (occ-props-edit-handle-response prop win local-cleanup timer)
+                (occ-props-edit-handle-response prop timeout timer cleanup local-cleanup win)
                 (make-occ-return
                  :label occ-select-clock-in-true-label
                  :value obj))
@@ -334,9 +334,9 @@
                     (abort-recursive-edit)))))
         (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
             timeout timer cleanup local-cleanup win
-            (condition-case-control nil err
+            (condition-case-control err
               (let ((prop (occ-props-edit-in-cloned-buffer obj)))
-                (occ-props-edit-handle-response prop win local-cleanup timer)
+                (occ-props-edit-handle-response prop timeout timer cleanup local-cleanup win)
                 (make-occ-return
                  :label occ-select-clock-in-true-label
                  :value obj))
@@ -351,9 +351,9 @@
 
 (cl-defmethod occ-props-window-edit ((obj occ-ctx)
                                      &key
-                                     candidate-transformer
-                                     occ-select-clock-in-tranform
-                                     occ-select-clock-in-tranformer-fun-transform
+                                     ;; candidate-transformer
+                                     ;; occ-select-clock-in-tranform
+                                     ;; occ-select-clock-in-tranformer-fun-transform
                                      collector
                                      action
                                      action-transformer
@@ -362,7 +362,7 @@
          (action             (or action (occ-helm-actions obj)))
          (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
          (timeout            (or timeout occ-idle-timeout)))
-    (lwarn 'occ :debug "occ-select-obj-prop-edit: [body] lotus-with-no-active-minibuffer-if")
+    (occ-debug :debug "occ-select-obj-prop-edit: [body] lotus-with-no-active-minibuffer-if")
     (let ((buff (occ-ctx-buffer obj)))
       (if (and
            (buffer-live-p buff)
@@ -420,12 +420,12 @@
     (occ-debug :debug "begin occ-delayed-select-obj-prop-edit")
     (lotus-with-no-active-minibuffer-if
         (progn
-          (lwarn 'occ :debug "occ-delayed-select-obj-prop-edit: [minibuffer-body] lotus-with-no-active-minibuffer-if")
+          (occ-debug :debug "occ-delayed-select-obj-prop-edit: [minibuffer-body] lotus-with-no-active-minibuffer-if")
           (occ-debug :debug "add-ctx-to-org-heading: minibuffer already active quitting")
           (occ-debug :debug nil))
       ;;; TODO: extend lotus-with-other-frame-event-debug it to include elscreen change also.
       (lotus-with-other-frame-event-debug "occ-delayed-select-obj-prop-edit" :cancel
-        (lwarn 'occ :debug "occ-delayed-select-obj-prop-edit: lotus-with-other-frame-event-debug")
+        (occ-debug :debug "occ-delayed-select-obj-prop-edit: lotus-with-other-frame-event-debug")
         (let ((buff (occ-ctx-buffer obj)))
           (if (eq (current-buffer) buff)
               (occ-props-window-edit obj
@@ -474,11 +474,11 @@
     ;; not return any value to its caller, which result into no next-action in
     ;; caller function.
 
-    ;; (condition-case-control nil nil
+    ;; (condition-case-control nil
     ;;   (progn
     ;;     ;; TODO: Add code to which check if only focus present than only trigger
     ;;     ;; else postpone it by calling run-with-idle-plus-timer
-    ;;     (lwarn 'occ
+    ;;     (occ-debug
     ;;            :debug
     ;;            "occ-delayed-select-obj-prop-edit-when-idle: calling occ-delayed-select-obj-prop-edit with this-command=%s" this-command)
     ;;     (occ-safe-props-window-edit obj
@@ -488,7 +488,7 @@
     ;;                                 :timeout            timeout))
 
     ;;   ;; (lotus-with-other-frame-event-debug "occ-delayed-select-obj-prop-edit-when-idle" :cancel
-    ;;   ;;   (lwarn 'occ :debug "occ-delayed-select-obj-prop-edit-when-idle: lotus-with-other-frame-event-debug")
+    ;;   ;;   (occ-debug :debug "occ-delayed-select-obj-prop-edit-when-idle: lotus-with-other-frame-event-debug")
     ;;   ;;   (occ-delayed-select-obj-prop-edit ctx timeout))
     ;;   ((quit)))
     (occ-debug :debug
@@ -502,7 +502,7 @@
                                   :action-transformer action-transformer
                                   :timeout            timeout)
       ;; (lotus-with-other-frame-event-debug "occ-delayed-select-obj-prop-edit-when-idle" :cancel
-      ;;   (lwarn 'occ :debug "occ-delayed-select-obj-prop-edit-when-idle: lotus-with-other-frame-event-debug")
+      ;;   (occ-debug :debug "occ-delayed-select-obj-prop-edit-when-idle: lotus-with-other-frame-event-debug")
       ;;   (occ-delayed-select-obj-prop-edit ctx timeout))
       (occ-debug :debug
                  "%s: end: occ-delayed-select-obj-prop-edit-when-idle"

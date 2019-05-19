@@ -30,9 +30,17 @@
 
 (defvar occ-org-clock-persist nil "Control org-clock-persist at time of occ clock-in")
 (defvar occ-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of occ clock-in")
-
-
 (defvar occ-debug nil "Debug occ")
+
+
+;;;###autoload
+(defun occ-enable-debug ()
+  (interactive)
+  (setq occ-debug t))
+;;;###autoload
+(defun occ-disable-debug ()
+  (interactive)
+  (setq occ-debug nil))
 
 (defun occ-message (&rest args)
   (apply #'message args))
@@ -100,13 +108,10 @@
 (cl-defmethod ignore-p ((buff buffer))
   nil)
 
-
-
 (defmacro run-unobtrusively (&rest body)
   `(while-no-input
     (redisplay)
     ,@body))
-
 
 (defmacro run-unobtrusively (&rest body)
   `(let ((retval (while-no-input
@@ -116,14 +121,25 @@
        (occ-debug :debug "user input %s retval %s" last-input-event retval))
      retval))
 
+(defvar occ-condition-case-control-debug nil)
 
-(defmacro condition-case-control (enable var bodyform &rest handlers)
-  (if enable
+;;;###autoload
+(defun occ-enable-condition-case-control-debug ()
+  (interactive)
+  (setq occ-condition-case-control-debug t))
+
+;;;###autoload
+(defun occ-disable-condition-case-control-debug ()
+  (interactive)
+  (setq occ-condition-case-control-debug nil))
+
+(defmacro condition-case-control (var bodyform &rest handlers)
+  (if (not occ-condition-case-control-debug)
       `(condition-case ,var
            ,bodyform
          ,@handlers)
     bodyform))
-(put 'condition-case-control 'lisp-indent-function 2)
+(put 'condition-case-control 'lisp-indent-function 1)
 
 
 (defun occ-helm-buffer-p (buffer)

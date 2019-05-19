@@ -36,25 +36,31 @@
 
 
 (cl-defmethod occ-readprop ((prop symbol) (ctx occ-ctx))
+  (occ-debug :debug "occ-readprop: prop: %s" prop)
   (occ-readprop (cons prop (occ-make-tsk nil)) ctx))
 (cl-defmethod occ-writeprop ((prop symbol) value)
+  (occ-debug :debug "occ-writeprop: prop: %s, value: %s" prop value)
   (if value
-      (unless (org-get-property-block)
-        ;;create property drawer
-        (let ((range (org-get-property-block (point) 'force))
-              (start (when (consp range) (1- (car range)))))
-          (when (numberp start)
-            (goto-char start))))
-      (org-set-property (symbol-name prop) value)
+      (progn
+        (unless (org-get-property-block)
+          ;;create property drawer
+          (occ-debug :debug "occ-writeprop: property block not exist so creating it.")
+          (let* ((range (org-get-property-block (point) 'force))
+                 (start (when (consp range) (1- (car range)))))
+            (when (numberp start)
+              (goto-char start))))
+        (occ-debug :debug "occ-writeprop: adding prop: %s value: %s using (org-set-property)." prop value)
+        (org-set-property (symbol-name prop) value))
     (error "occ-writeprop value is nil")))
 (cl-defmethod occ-editprop ((prop symbol) (ctx occ-ctx))
   (let ((value (occ-readprop prop ctx)))
+    (occ-debug :debug "occ-editprop: prop: %s, value: %s" prop value)
     (occ-writeprop prop value)))
 
 ;;{{ file
 (when nil                               ;rank calculation for org file name in which tsk aka entry not much useful
-  (cl-defmethod occ-rank ((tsk-pair (head file)))
-                         (ctx occ-ctx)
+  (cl-defmethod occ-rank ((tsk-pair (head file))
+                          (ctx occ-ctx))
    ;; file in which tsk aka org entry exists.
    "Predicate funtion to check if ctx matches to tsk's file attribute."
    (let ((prop (car tsk-pair))

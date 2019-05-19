@@ -350,7 +350,7 @@ pointing to it."
     (when (marker-buffer obj)
       (with-current-buffer (marker-buffer obj)
         (let ((buffer-read-only nil))
-          (condition-case-control t err
+          (condition-case-control err
             (progn
               (occ-straight-org-clock-clock-in (list obj)))
             ((error)

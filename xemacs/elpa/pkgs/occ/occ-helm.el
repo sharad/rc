@@ -43,41 +43,65 @@
           (push name-action actions))))
     (reverse actions)))
 
-(occ-helm-action-add :identity                     "Select"                       #'identity)
-(occ-helm-action-add :clock-in                     "Clock-in"                     #'occ-clock-in)
-(occ-helm-action-add :try-clock-in                 "Try Clock-in"                 #'occ-try-clock-in)
-(occ-helm-action-add :procreate-child              "Procreate Child"              #'occ-procreate-child)
-(occ-helm-action-add :procreate-child-clock-in     "Procreate Child Clock-in"     #'occ-procreate-child-clock-in)
-(occ-helm-action-add :goto                         "Goto"                         #'occ-goto)
-(occ-helm-action-add :set-to                       "Set To"                       #'occ-set-to)
-(occ-helm-action-add :proprty-window-edit                 "Proprtes Window Edit"                 #'occ-props-window-edit) ;TODO: implement it.
+(occ-helm-action-add :identity                 "Select"                   #'identity)
+(occ-helm-action-add :clock-in                 "Clock-in"                 #'occ-clock-in)
+(occ-helm-action-add :try-clock-in             "Try Clock-in"             #'occ-try-clock-in)
+(occ-helm-action-add :procreate-child          "Procreate Child"          #'occ-procreate-child)
+(occ-helm-action-add :procreate-child-clock-in "Procreate Child Clock-in" #'occ-procreate-child-clock-in)
+(occ-helm-action-add :goto                     "Goto"                     #'occ-goto)
+(occ-helm-action-add :set-to                   "Set To"                   #'occ-set-to)
+(occ-helm-action-add :proprty-window-edit      "Proprtes Window Edit"     #'occ-props-window-edit) ;TODO: implement it.
 
 (cl-defmethod occ-helm-actions ((obj null))
-  (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
+  (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit :try-clock-in))
 
-(cl-defmethod occ-helm-actions ((obj occ-ctx))
-  (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
+(cl-defmethod occ-helm-actions ((obj occ-obj))
+  (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit :try-clock-in))
+
+;; (cl-defmethod occ-helm-actions ((obj occ-ctx))
+;;   (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
 
 
 (cl-defmethod occ-helm-action-transformer ((obj null) actions)
-  (occ-helm-actions-get :procreate-child :proprty-window-edit))
+  (occ-helm-actions obj))
 
-(cl-defmethod occ-helm-action-transformer ((obj occ-tsk) actions)
-  (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
+(cl-defmethod occ-helm-action-transformer ((obj occ-obj-tsk) actions)
+  (occ-helm-actions obj))
+
+(cl-defmethod occ-helm-action-transformer ((obj occ-obj-ctx-tsk) actions)
+  (occ-helm-actions obj))
+
+(cl-defun occ-helm-action-transformer-fun (action candidate)
+  (occ-helm-action-transformer candidate action))
+
 
 ;; (cl-defmethod occ-helm-action-transformer ((obj occ-ctx) actions)
 ;;   (list
 ;;    (cons "Clock-in" #'occ-clock-in)
 ;;    (cons "Child"    #'occ-procreate-child)))
 
-(cl-defmethod occ-helm-action-transformer ((obj occ-ctsk) actions)
+;; (cl-defmethod occ-helm-action-transformer ((obj occ-ctxual-tsk) actions)
+;;   (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
+
+
+
+(cl-defmethod occ-props-edit-helm-actions ((obj null))
   (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
 
-(cl-defmethod occ-helm-action-transformer ((obj occ-ctxual-tsk) actions)
+(cl-defmethod occ-props-edit-helm-actions ((obj occ-obj))
   (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
 
-(cl-defun occ-helm-action-transformer-fun (action candidate)
-  (occ-helm-action-transformer candidate action))
+(cl-defmethod occ-props-edit-helm-action-transformer ((obj null) actions)
+  (occ-props-edit-helm-actions obj))
+
+(cl-defmethod occ-props-edit-helm-action-transformer ((obj occ-obj-tsk) actions)
+  (occ-props-edit-helm-actions obj))
+
+(cl-defmethod occ-props-edit-helm-action-transformer ((obj occ-obj-ctx-tsk) actions)
+  (occ-props-edit-helm-actions obj))
+
+(cl-defun occ-props-edit-helm-action-transformer-fun (action candidate)
+  (occ-props-edit-helm-action-transformer candidate action))
 
 
 (cl-defun occ-helm-build-candidates-source (candidates &key action action-transformer)
@@ -111,10 +135,10 @@
 
 (cl-defmethod occ-helm-select ((obj occ-ctx) &key collector action action-transformer timeout)
   (let ((ctx-tsk (occ-select obj
-                                :collector collector
-                                :action action
-                                :action-transformer action-transformer
-                                :timeout timeout)))
+                             :collector          collector
+                             :action             action
+                             :action-transformer action-transformer
+                             :timeout            timeout)))
     (when (occ-obj-ctx-tsk-p ctx-tsk)
       (occ-debug :debug "Selected ctxual-tsk %s" (occ-format ctx-tsk 'capitalize))
       ctx-tsk)))
