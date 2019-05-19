@@ -532,7 +532,7 @@ pointing to it."
     (while (or
             (> try 0)
             (not (occ-associable-with-p tsk ctx)))
-      (setq try (-1 try))
+      (setq try (1- try))
       (occ-message "%s is not associable with %s [try %d]"
                    (occ-format tsk 'capitalize)
                    (occ-format ctx 'capitalize)
