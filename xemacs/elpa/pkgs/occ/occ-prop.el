@@ -35,6 +35,8 @@
 (require 'occ-prop)
 
 
+(defun occ-org-set-property (prop value)
+  (org-set-property (symbol-name prop) value))
 (cl-defmethod occ-readprop ((prop symbol) (ctx occ-ctx))
   (occ-debug :debug "occ-readprop: prop: %s" prop)
   (occ-readprop (cons prop (occ-make-tsk nil)) ctx))
@@ -50,7 +52,7 @@
             (when (numberp start)
               (goto-char start))))
         (occ-debug :debug "occ-writeprop: adding prop: %s value: %s using (org-set-property)." prop value)
-        (org-set-property (symbol-name prop) value))
+        (occ-org-set-property (symbol-name prop) value))
     (error "occ-writeprop value is nil")))
 (cl-defmethod occ-editprop ((prop symbol) (ctx occ-ctx))
   (let ((value (occ-readprop prop ctx)))
