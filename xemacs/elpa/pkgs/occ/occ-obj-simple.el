@@ -485,15 +485,16 @@ pointing to it."
                          :auto-select-if-only auto-select-if-only
                          :timeout             timeout)))
       (if (occ-return-operate-p return-ctxual-tsk) ;TODO: should return t if action were done than select[=identity] ;; occ-select-clock-in-label
-          (prog1
-              (make-occ-return :label occ-select-clock-in-true-label :value nil)
-              (if (occ-ctxual-tsk-p (occ-return-get-value return-ctxual-tsk))
+          (let ((ctxual-tsk (occ-return-get-value return-ctxual-tsk)))
+            (prog1
+                (make-occ-return :label occ-select-clock-in-true-label :value nil)
+              (if (occ-ctxual-tsk-p ctxual-tsk)
                   (occ-clock-in ctxual-tsk
                                 :collector          collector
                                 :action             action
                                 :action-transformer action-transformer
                                 :timeout            timeout)
-                (occ-message "%s is not ctxual-tsk" (occ-format ctxual-tsk 'capitalize))))
+                (occ-message "%s is not ctxual-tsk" (occ-format ctxual-tsk 'capitalize)))))
         (progn
           ;; here create unnamed tsk, no need
           (setq *occ-update-current-ctx-msg* "null clock")
@@ -853,7 +854,8 @@ pointing to it."
              auto-select-if-only
              (= 1 (length candidates)))
             (let* ((candidate (car candidates))
-                   (action (car (funcall action-transformer action candidate))))
+                   (action (car (funcall action-transformer action candidate)))
+                   (action (if (consp action) (cdr action) action)))
               (funcall action candidate))
             (helm
              ;; :keymap occ-helm-map
