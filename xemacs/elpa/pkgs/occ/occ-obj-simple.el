@@ -1133,9 +1133,13 @@ pointing to it."
                                       :auto-select-if-only auto-select-if-only
                                       :timeout             timeout)))
             (occ-message "occ-clock-in-if-not: operate %s retval %s"
-                         (occ-return-in-labels-p retval occ-return-quit-label)
+                         (occ-return-in-labels-p retval
+                                                 occ-return-quit-label
+                                                 occ-return-timeout-label)
                          (occ-return-get-value retval))
-            (if (occ-return-in-labels-p retval occ-return-quit-label)
+            (if (occ-return-in-labels-p retval
+                                        occ-return-quit-label
+                                        occ-return-timeout-label)
                 (unless (occ-return-get-value retval)
                   ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)
                   ;; begin occ-clock-in-curr-ctx-if-not
@@ -1147,9 +1151,12 @@ pointing to it."
                   ;; occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk
                   ;; occ-clock-in-if-not: Now really clock done.
                   ;; not able to find associated, or intentionally not selecting a clock
-                  (occ-debug :debug "trying to create unnamed tsk.")
-                  (occ-message "trying to create unnamed tsk.")
-                  (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))
+                  (if (occ-clock-marker-unnamed-clock-p)
+                      (occ-debug :debug "occ-clock-in-if-not: already clock-in into unnamed task ")
+                      (progn
+                        (occ-debug :debug "trying to create unnamed tsk.")
+                        (occ-message "trying to create unnamed tsk.")
+                        (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))))
               (occ-message "occ-clock-in-if-not: Can not operate on %s" (occ-format (occ-return-get-value retval)))))
           (occ-debug :debug "occ-clock-in-if-not: Now really clock done."))
       (prog1
