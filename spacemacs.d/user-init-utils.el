@@ -894,7 +894,8 @@ variable."
       (unless (member errstr debug-ignored-errors)
         (push errstr debug-ignored-errors)))
     (add-to-debug-ignore-errors "Nothing to complete")
-    (add-to-debug-ignore-errors "Unmatched Text during Lexical Analysis")))
+    (add-to-debug-ignore-errors "Unmatched Text during Lexical Analysis")
+    (add-to-debug-ignore-errors "‘global’ non-zero exit: global: GTAGS not found.")))
 
 
 (progn                                  ;debug testing code

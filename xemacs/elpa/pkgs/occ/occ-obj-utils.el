@@ -32,6 +32,7 @@
 
 (defvar occ-return-select-label    :occ-selected "should not be null")
 (defvar occ-return-quit-label      :occ-quitted "should not be null")
+(defvar occ-return-timeout-label   :occ-timeout "should not be null") ;TODO: need to implement.
 (defvar occ-return-true-label      :occ-true "should not be null")
 (defvar occ-return-false-label     :occ-false "should not be null")
 (defvar occ-return-select-function #'identity)
