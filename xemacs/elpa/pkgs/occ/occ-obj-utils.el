@@ -31,6 +31,8 @@
 
 
 (defvar occ-select-clock-in-operate-label    'occ-operate "should not be null")
+(defvar occ-select-clock-in-select-label     'occ-selected "should not be null")
+(defvar occ-select-clock-in-quit-label       'occ-quitted "should not be null")
 (defvar occ-select-clock-in-true-label       'occ-true "should not be null")
 (defvar occ-select-clock-in-false-label      'occ-false "should not be null")
 (defvar occ-select-clock-in-default-function #'identity)
