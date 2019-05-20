@@ -194,72 +194,6 @@
         (occ-debug :debug "file %s not resetting global-tsk-collection" file)))))
 
 
-(defvar occ-select-clock-in-operate-label    'occ-operate "should not be null")
-(defvar occ-select-clock-in-true-label       'occ-true "should not be null")
-(defvar occ-select-clock-in-false-label      'occ-false "should not be null")
-(defvar occ-select-clock-in-default-function #'identity)
-(defvar occ-select-clock-in-default-label    "Select")
-
-(cl-assert occ-select-clock-in-operate-label)
-(cl-assert occ-select-clock-in-true-label)
-(cl-assert occ-select-clock-in-false-label)
-
-(defun occ-build-return-lambda (action &optional label)
-  #'(lambda (candidate)
-      (let* ((value
-              (funcall action candidate))
-             (label
-              (or label
-                  (if value
-                      occ-select-clock-in-true-label
-                    occ-select-clock-in-false-label))))
-       (make-occ-return :label label :value value))))
-
-(defun occ-select-clock-in-tranform (action)
-  "Will make all action except first to return occ-select-clock-in-label."
-  (cons
-   (cons
-    occ-select-clock-in-default-label
-    (occ-build-return-lambda occ-select-clock-in-default-function
-                             occ-select-clock-in-operate-label))
-   (mapcar #'(lambda (a)
-               (if (consp a)
-                   (cons (car a)
-                         (occ-build-return-lambda (cdr a)))
-                 (occ-build-return-lambda a)))
-           action)))
-
-(defun occ-select-clock-in-tranformer-fun-transform (tranformer-fun)
-  "Will make transformer fun to change action except first to return occ-select-clock-in-label."
-  #'(lambda (action
-             candidate)
-      (occ-select-clock-in-tranform
-       (funcall tranformer-fun action candidate))))
-
-(cl-defmethod occ-return-operate-p (retval)
-  retval)
-
-(cl-defmethod occ-return-operate-p ((retval occ-return))
-  (eq
-   occ-select-clock-in-operate-label
-   (occ-return-label retval)))
-
-;; (cl-defmethod occ-return-operate-p ((retval null))
-;;   nil)
-
-(cl-defmethod occ-return-get-value (retval)
-  retval)
-
-(cl-defmethod occ-return-get-value ((retval occ-return))
-  (occ-return-value retval))
-
-(cl-defmethod occ-return-get-label (retval)
-  retval)
-
-(cl-defmethod occ-return-get-label ((retval occ-return))
-  (occ-return-label retval))
-
-
 ;;;###autoload
 (defun occ-run-with-global-tsk-collection (fn)
   (if occ-global-tsk-collection

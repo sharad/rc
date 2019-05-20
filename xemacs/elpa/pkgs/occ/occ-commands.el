@@ -105,9 +105,9 @@
   (interactive)
   (let ((ctx (occ-make-ctx-at-point)))
     (occ-props-window-edit ctx
-                           :action (occ-select-clock-in-tranform
+                           :action (occ-return-tranform
                                     (occ-props-edit-helm-actions ctx))
-                           :action-transformer (occ-select-clock-in-tranformer-fun-transform
+                           :action-transformer (occ-return-tranformer-fun-transform
                                                 #'occ-props-edit-helm-action-transformer-fun))))
 
 
@@ -144,8 +144,8 @@
         (occ-clock-in-curr-ctx force)
       (let ((ctx (occ-make-ctx-at-point)))
         (let ((collector          #'occ-matches)
-              (action             (occ-select-clock-in-tranform (occ-helm-actions ctx)))
-              (action-transformer (occ-select-clock-in-tranformer-fun-transform #'occ-helm-action-transformer-fun))
+              (action             (occ-return-tranform (occ-helm-actions ctx)))
+              (action-transformer (occ-return-tranformer-fun-transform #'occ-helm-action-transformer-fun))
               (timeout            occ-idle-timeout))
           (occ-clock-in-if-chg ctx
                                :collector           #'occ-matches

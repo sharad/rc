@@ -30,17 +30,21 @@
 (require 'occ-obj)
 
 
-(defvar occ-select-clock-in-operate-label    'occ-operate "should not be null")
-(defvar occ-select-clock-in-select-label     'occ-selected "should not be null")
-(defvar occ-select-clock-in-quit-label       'occ-quitted "should not be null")
-(defvar occ-select-clock-in-true-label       'occ-true "should not be null")
-(defvar occ-select-clock-in-false-label      'occ-false "should not be null")
-(defvar occ-select-clock-in-default-function #'identity)
-(defvar occ-select-clock-in-default-label    "Select")
+(defvar occ-return-select-label    :occ-selected "should not be null")
+(defvar occ-return-quit-label      :occ-quitted "should not be null")
+(defvar occ-return-true-label      :occ-true "should not be null")
+(defvar occ-return-false-label     :occ-false "should not be null")
+(defvar occ-return-select-function #'identity)
+(defvar occ-return-select-name     "Select")
 
-(cl-assert occ-select-clock-in-operate-label)
-(cl-assert occ-select-clock-in-true-label)
-(cl-assert occ-select-clock-in-false-label)
+(cl-assert occ-return-select-label   )
+(cl-assert occ-return-quit-label     )
+(cl-assert occ-return-true-label     )
+(cl-assert occ-return-false-label    )
+(cl-assert occ-return-select-function)
+(cl-assert occ-return-select-name    )
+
+
 
 (defun occ-build-return-lambda (action &optional label)
   #'(lambda (candidate)
@@ -49,17 +53,17 @@
              (label
               (or label
                   (if value
-                      occ-select-clock-in-true-label
-                    occ-select-clock-in-false-label))))
-       (make-occ-return :label label :value value))))
+                      occ-return-true-label
+                    occ-return-false-label))))
+        (occ-make-return label value))))
 
-(defun occ-select-clock-in-tranform (action)
-  "Will make all action except first to return occ-select-clock-in-label."
+(defun occ-return-tranform (action)
+  "Will make all action except first to return occ-return-label."
   (cons
    (cons                                ;add default select operation.
-    occ-select-clock-in-default-label
-    (occ-build-return-lambda occ-select-clock-in-default-function
-                             occ-select-clock-in-operate-label))
+    occ-return-select-name
+    (occ-build-return-lambda occ-return-select-function
+                             occ-return-select-label))
    (mapcar #'(lambda (a)
                (if (consp a)
                    (cons (car a)
@@ -67,20 +71,28 @@
                  (occ-build-return-lambda a)))
            action)))
 
-(defun occ-select-clock-in-tranformer-fun-transform (tranformer-fun)
-  "Will make transformer fun to change action except first to return occ-select-clock-in-label."
+(defun occ-return-tranformer-fun-transform (tranformer-fun)
+  "Will make transformer fun to change action except first to return occ-return-label."
   #'(lambda (action
              candidate)
-      (occ-select-clock-in-tranform
+      (occ-return-tranform
        (funcall tranformer-fun action candidate))))
 
-(cl-defmethod occ-return-operate-p (retval)
+;; (cl-defmethod occ-return-operate-p (retval)
+;;   retval)
+
+;; (cl-defmethod occ-return-operate-p ((retval occ-return))
+;;   (eq
+;;    occ-return-operate-label
+;;    (occ-return-label retval)))
+
+(cl-defmethod occ-return-in-labels-p (retval &rest label)
   retval)
 
-(cl-defmethod occ-return-operate-p ((retval occ-return))
-  (eq
-   occ-select-clock-in-operate-label
-   (occ-return-label retval)))
+(cl-defmethod occ-return-in-labels-p ((retval occ-return) &rest label)
+  (memq
+   (occ-return-label retval)
+   label))
 
 ;; (cl-defmethod occ-return-operate-p ((retval null))
 ;;   nil)
@@ -96,6 +108,72 @@
 
 (cl-defmethod occ-return-get-label ((retval occ-return))
   (occ-return-label retval))
+
+
+;; (defvar occ-return-operate-label    'occ-operate "should not be null")
+;; (defvar occ-return-true-label       'occ-true "should not be null")
+;; (defvar occ-return-false-label      'occ-false "should not be null")
+;; (defvar occ-return-select-function #'identity)
+;; (defvar occ-return-select-name    "Select")
+
+;; (cl-assert occ-return-operate-label)
+;; (cl-assert occ-return-true-label)
+;; (cl-assert occ-return-false-label)
+
+;; (defun occ-build-return-lambda (action &optional label)
+;;   #'(lambda (candidate)
+;;       (let* ((value
+;;               (funcall action candidate))
+;;              (label
+;;               (or label
+;;                   (if value
+;;                       occ-return-true-label
+;;                     occ-return-false-label))))
+;;        (occ-make-return label value))))
+
+;; (defun occ-return-tranform (action)
+;;   "Will make all action except first to return occ-return-label."
+;;   (cons
+;;    (cons
+;;     occ-return-select-name
+;;     (occ-build-return-lambda occ-return-select-function
+;;                              occ-return-select-label))
+;;    (mapcar #'(lambda (a)
+;;                (if (consp a)
+;;                    (cons (car a)
+;;                          (occ-build-return-lambda (cdr a)))
+;;                  (occ-build-return-lambda a)))
+;;            action)))
+
+;; (defun occ-return-tranformer-fun-transform (tranformer-fun)
+;;   "Will make transformer fun to change action except first to return occ-return-label."
+;;   #'(lambda (action
+;;              candidate)
+;;       (occ-return-tranform
+;;        (funcall tranformer-fun action candidate))))
+
+;; (cl-defmethod occ-return-operate-p (retval)
+;;   retval)
+
+;; (cl-defmethod occ-return-operate-p ((retval occ-return))
+;;   (eq
+;;    occ-return-operate-label
+;;    (occ-return-label retval)))
+
+;; ;; (cl-defmethod occ-return-operate-p ((retval null))
+;; ;;   nil)
+
+;; (cl-defmethod occ-return-get-value (retval)
+;;   retval)
+
+;; (cl-defmethod occ-return-get-value ((retval occ-return))
+;;   (occ-return-value retval))
+
+;; (cl-defmethod occ-return-get-label (retval)
+;;   retval)
+
+;; (cl-defmethod occ-return-get-label ((retval occ-return))
+;;   (occ-return-label retval))
 
 
 ;;; occ-obj-utils.el ends here

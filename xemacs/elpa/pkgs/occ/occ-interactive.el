@@ -299,20 +299,16 @@
             (condition-case-control err
               (let ((prop (occ-props-edit-in-cloned-buffer-with obj ctx)))
                 (occ-props-edit-handle-response prop timeout timer cleanup local-cleanup win)
-                (occ-message "occ-props-window-edit((obj occ-tsk) (ctx occ-ctx)) noquit: label %s value %s" occ-select-clock-in-true-label obj)
-                (make-occ-return
-                 :label occ-select-clock-in-true-label
-                 :value obj))
+                (occ-message "occ-props-window-edit((obj occ-tsk) (ctx occ-ctx)) noquit: label %s value %s" occ-return-true-label obj)
+                (occ-make-return occ-return-true-label obj))
               ((quit)
                (progn
                  (occ-debug :warning "occ-props-window-edit-with((obj occ-tsk) (ctx occ-ctx)): canceling timer")
-                 (occ-message "occ-props-window-edit((obj occ-tsk) (ctx occ-ctx)) quit: label %s value %s" occ-select-clock-in-operate-label nil)
+                 (occ-message "occ-props-window-edit((obj occ-tsk) (ctx occ-ctx)) quit: label %s value %s" occ-return-select-label nil)
                  (funcall cleanup win local-cleanup)
                  (if timer (cancel-timer timer))
                  (signal (car err) (cdr err))
-                 (make-occ-return
-                  :label occ-select-clock-in-operate-label
-                  :value nil))))))))
+                 (occ-make-return occ-return-quit-label nil))))))))
 
 ;; (cl-defmethod occ-props-window-edit ((obj occ-obj-ctx-tsk)
 ;;                                      &key
@@ -342,10 +338,8 @@
             (condition-case-control err
               (let ((prop (occ-props-edit-in-cloned-buffer obj)))
                 (occ-props-edit-handle-response prop timeout timer cleanup local-cleanup win)
-                (occ-message "occ-props-window-edit(obj occ-obj-ctx-tsk) noquit: label %s value %s" occ-select-clock-in-true-label obj)
-                (make-occ-return
-                 :label occ-select-clock-in-true-label
-                 :value obj))
+                (occ-message "occ-props-window-edit(obj occ-obj-ctx-tsk) noquit: label %s value %s" occ-return-true-label obj)
+                (occ-make-return occ-return-true-label obj))
               ((quit)
                (progn
                  (occ-debug :warning "occ-props-window-edit(obj occ-obj-ctx-tsk): canceling timer")
@@ -353,10 +347,8 @@
                  (funcall cleanup win local-cleanup)
                  (if timer (cancel-timer timer))
                  (signal (car err) (cdr err))
-                 (occ-message "occ-props-window-edit(obj occ-obj-ctx-tsk) quit: label %s value %s" occ-select-clock-in-operate-label nil)
-                 (make-occ-return
-                  :label occ-select-clock-in-operate-label
-                  :value nil))))))))
+                 (occ-message "occ-props-window-edit(obj occ-obj-ctx-tsk) quit: label %s value %s" occ-return-quit-label nil)
+                 (occ-make-return occ-return-quit-label nil))))))))
 
 (cl-defmethod occ-props-window-edit ((obj occ-ctx)
                                      &key
@@ -386,7 +378,7 @@
                        (occ-return-get-label retval-ctx-tsk))
           ;; BUG: will do run recursively as another method with (obj null) is define below.
           (when (and
-                 (occ-return-operate-p retval-ctx-tsk)
+                 (occ-return-in-labels-p retval-ctx-tsk occ-return-select-label)
                  (occ-return-get-value retval-ctx-tsk))
               (occ-props-window-edit
                (occ-return-get-value retval-ctx-tsk))
@@ -395,7 +387,7 @@
                        retval-ctx-tsk
                        (occ-format (occ-return-get-value retval-ctx-tsk) 'capitalize)
                        (occ-return-get-label retval-ctx-tsk)
-                       (occ-return-operate-p retval-ctx-tsk))
+                       (occ-return-in-labels-p retval-ctx-tsk occ-return-select-label))
           retval-ctx-tsk)
         (occ-debug :debug "occ-props-window-edit((obj occ-ctx)): not running  as context buff is deleted or not live 1 %s, 2 %s"
                      (buffer-live-p buff)
@@ -403,9 +395,7 @@
         (occ-message "occ-props-window-edit((obj occ-ctx)): not running  as context buff is deleted or not live 1 %s, 2 %s"
                      (buffer-live-p buff)
                      (not (occ-helm-buffer-p buff)))
-        (make-occ-return
-         :label occ-select-clock-in-false-label
-         :value nil)))))
+        (occ-make-return occ-return-false-label nil)))))
 
 (cl-defmethod occ-props-window-edit ((obj null)
                                      &key

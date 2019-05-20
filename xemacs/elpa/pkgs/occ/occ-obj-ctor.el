@@ -245,4 +245,9 @@
       (setf occ-global-tsk-collection collection))))
 
 
+(defun occ-make-return (label value)
+  (make-occ-return
+   :label label
+   :value value))
+
 ;;; occ-obj-ctor.el ends here

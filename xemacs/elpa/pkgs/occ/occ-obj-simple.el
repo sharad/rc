@@ -462,8 +462,8 @@ pointing to it."
 (cl-defmethod occ-clock-in ((obj occ-ctx)
                             &key
                             candidate-transformer
-                            occ-select-clock-in-tranform
-                            occ-select-clock-in-tranformer-fun-transform
+                            occ-return-tranform
+                            occ-return-tranformer-fun-transform
                             collector
                             action
                             action-transformer
@@ -484,10 +484,10 @@ pointing to it."
                          :action-transformer  action-transformer
                          :auto-select-if-only auto-select-if-only
                          :timeout             timeout)))
-      (if (occ-return-operate-p return-ctxual-tsk) ;TODO: should return t if action were done than select[=identity] ;; occ-select-clock-in-label
+      (if (occ-return-in-labels-p return-ctxual-tsk occ-return-select-label) ;TODO: should return t if action were done than select[=identity] ;; occ-return-label
           (let ((ctxual-tsk (occ-return-get-value return-ctxual-tsk)))
             (prog1
-                (make-occ-return :label occ-select-clock-in-true-label :value nil)
+                (occ-make-return occ-return-true-label nil)
               (if (occ-ctxual-tsk-p ctxual-tsk)
                   (occ-clock-in ctxual-tsk
                                 :collector          collector
@@ -884,8 +884,7 @@ pointing to it."
                                            :timeout             timeout)))
         (occ-message "occ-list-select: selected = %s" selected)
         (unless selected
-          (make-occ-return :label occ-select-clock-in-operate-label
-                           :value selected))))))
+          (occ-make-return occ-return-quit-label selected))))))
 
 
 (cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
@@ -1132,9 +1131,9 @@ pointing to it."
                                       :auto-select-if-only auto-select-if-only
                                       :timeout             timeout)))
             (occ-message "occ-clock-in-if-not: operate %s retval %s"
-                         (occ-return-operate-p retval)
+                         (occ-return-in-labels-p retval occ-return-quit-label)
                          (occ-return-get-value retval))
-            (if (occ-return-operate-p retval)
+            (if (occ-return-in-labels-p retval occ-return-quit-label)
                 (unless (occ-return-get-value retval)
                   ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)
                   ;; begin occ-clock-in-curr-ctx-if-not
@@ -1147,6 +1146,7 @@ pointing to it."
                   ;; occ-clock-in-if-not: Now really clock done.
                   ;; not able to find associated, or intentionally not selecting a clock
                   (occ-debug :debug "trying to create unnamed tsk.")
+                  (occ-message "trying to create unnamed tsk.")
                   (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))
               (occ-message "occ-clock-in-if-not: Can not operate on %s" (occ-format (occ-return-get-value retval)))))
           (occ-debug :debug "occ-clock-in-if-not: Now really clock done."))
