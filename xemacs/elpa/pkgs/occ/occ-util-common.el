@@ -81,6 +81,7 @@
 
 ;;;###autoload
 (defun occ-straight-org-clock-clock-in (clock &optional resume start-time)
+  ;; lotus-org-with-safe-modification
   (let ((org-log-note-clock-out nil))
     (progn
      (lotus-org-clock-load-only)

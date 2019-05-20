@@ -152,9 +152,11 @@
     (org-with-file-headline
      file
      (lotus-org-create-unnamed-task file parent-task)
-     (org-entry-put nil "Effort" "10")
-     ;; BUG: It is clocking to last unfinished task
-     (lotus-org-unnamed-task-straight-org-clock-clock-in (list (lotus-org-unnamed-task-clock-marker (mark-marker))))
+     (lotus-org-with-safe-modification
+       (org-entry-put nil "Effort" "10")
+       ;; BUG: It is clocking to last unfinished task
+       (lotus-org-unnamed-task-straight-org-clock-clock-in
+        (list (lotus-org-unnamed-task-clock-marker (mark-marker)))))
      ;; (org-clock-in)
      ;; (lotus-org-unnamed-task-clock-marker (mark-marker))
      )))

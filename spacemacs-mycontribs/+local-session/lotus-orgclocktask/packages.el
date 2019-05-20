@@ -38,6 +38,7 @@
   '(
     ;; (PACKAGE :location local)
     org-doing
+    org-alert
     lotus-utils
     ;; org-misc-utils-lotus
     org-clock-unnamed-task
@@ -90,8 +91,15 @@ Each entry is either:
   (use-package org-doing
       :defer t
       :config
-      (progn
-        )))
+      (progn)))
+
+
+(defun lotus-orgclocktask/init-org-alert ()
+  ;; see also https://github.com/akhramov/org-wild-notifier.el
+  (use-package org-alert
+    :defer t
+    :config
+    (progn)))
 
 (defun lotus-orgclocktask/init-lotus-utils ()
   (use-package org-misc-utils-lotus

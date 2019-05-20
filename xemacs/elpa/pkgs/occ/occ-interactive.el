@@ -287,7 +287,7 @@
 (cl-defmethod occ-props-window-edit-with ((obj occ-tsk)
                                           (ctx occ-ctx)
                                           &optional timeout)
-  (let* ((timeout (or timeout 100)))
+  (let* ((timeout (or timeout occ-idle-timeout)))
     (let* ((local-cleanup
               #'(lambda ()
                   (occ-debug :warning "occ-props-window-edit-with((obj occ-tsk) (ctx occ-ctx)): local-cleanup called")
@@ -322,9 +322,9 @@
 
 (cl-defmethod occ-props-window-edit ((obj occ-obj-ctx-tsk)
                                      &key
-                                     collector
-                                     action
-                                     action-transformer
+                                     ;; collector
+                                     ;; action
+                                     ;; action-transformer
                                      timeout)
   (let* ((timeout (or timeout occ-idle-timeout)))
     (let* ((local-cleanup

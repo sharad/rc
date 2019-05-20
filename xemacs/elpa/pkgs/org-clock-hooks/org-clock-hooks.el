@@ -24,12 +24,20 @@
 
 ;;; Code:
 
+
+(provide 'org-clock-hooks)
+
+
+(require 'org-misc-utils-lotus)
+
+
 (defvar org-clock-default-effort "1:00")
 
 (defun lotus-org-mode-add-default-effort ()
   "Add a default effort estimation."
-  (unless (org-entry-get (point) "Effort")
-    (org-set-property "Effort" org-clock-default-effort)))
+  (lotus-org-with-safe-modification
+    (unless (org-entry-get (point) "Effort")
+      (org-set-property "Effort" org-clock-default-effort))))
 
 (defun lotus-org-mode-ask-effort ()
   "Ask for an effort estimate when clocking in."
@@ -39,7 +47,8 @@
             "Effort: "
             (org-entry-get-multivalued-property (point) "Effort"))))
       (unless (equal effort "")
-        (org-set-property "Effort" effort)))))
+        (lotus-org-with-safe-modification
+          (org-set-property "Effort" effort))))))
 
 (defun org-add-effort-if-not-clockin-hook ()
   "if effort is not present than ask for it."
@@ -101,6 +110,6 @@
             #'org-timer-cleanup-clockout-hook)
   (add-hook 'org-clock-in-prepare-hook
             'lotus-org-mode-ask-effort))
+
 
-(provide 'org-clock-hooks)
 ;;; org-clock-hooks.el ends here

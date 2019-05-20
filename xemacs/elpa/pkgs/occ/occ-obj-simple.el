@@ -539,7 +539,9 @@ pointing to it."
                    (occ-format tsk 'capitalize)
                    (occ-format ctx 'capitalize)
                    (- tries try))
-      (occ-obj-prop-edit tsk ctx occ-idle-timeout)))
+      ;; (occ-props-window-edit-with tsk ctx :timeout occ-idle-timeout)
+      ;; (occ-obj-prop-edit tsk ctx occ-idle-timeout)
+      (occ-props-edit-with tsk ctx)))
 
   (unless (occ-clock-in-if-associable tsk ctx
                                       :collector collector
@@ -654,7 +656,9 @@ pointing to it."
     (when template
       (with-org-capture+ marker 'entry `(marker ,mrk) template '(:empty-lines 1)
         (progn
-          (occ-obj-prop-edit tsk ctx occ-idle-timeout)
+          (occ-props-edit-with tsk ctx)
+          ;; (occ-props-window-edit-with tsk ctx :timeout occ-idle-timeout)
+          ;; (occ-obj-prop-edit tsk ctx occ-idle-timeout)
           t)
         (let ((child-tsk (occ-make-tsk marker)))
           (when child-tsk

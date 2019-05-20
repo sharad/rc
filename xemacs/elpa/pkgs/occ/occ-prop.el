@@ -25,6 +25,10 @@
 ;;; Code:
 
 (provide 'occ-prop)
+
+
+
+(require 'org-misc-utils-lotus)
 
 
 (require 'occ-obj-common)
@@ -36,7 +40,8 @@
 
 
 (defun occ-org-set-property (prop value)
-  (org-set-property (symbol-name prop) value))
+  (lotus-org-with-safe-modification
+    (org-set-property prop value)))
 (cl-defmethod occ-readprop ((prop symbol) (ctx occ-ctx))
   (occ-debug :debug "occ-readprop: prop: %s" prop)
   (occ-readprop (cons prop (occ-make-tsk nil)) ctx))
