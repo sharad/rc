@@ -540,7 +540,6 @@ pointing to it."
                    (occ-format ctx 'capitalize)
                    (- tries try))
       ;; (occ-props-window-edit-with tsk ctx :timeout occ-idle-timeout)
-      ;; (occ-obj-prop-edit tsk ctx occ-idle-timeout)
       (occ-props-edit-with tsk ctx)))
 
   (unless (occ-clock-in-if-associable tsk ctx
@@ -658,7 +657,6 @@ pointing to it."
         (progn
           (occ-props-edit-with tsk ctx)
           ;; (occ-props-window-edit-with tsk ctx :timeout occ-idle-timeout)
-          ;; (occ-obj-prop-edit tsk ctx occ-idle-timeout)
           t)
         (let ((child-tsk (occ-make-tsk marker)))
           (when child-tsk
@@ -754,22 +752,22 @@ pointing to it."
 ;; (cl-defmethod occ-procreate-child-prop-edit-with ((obj marker)
 ;;                                                   (ctx occ-ctx))
 ;;   (occ-capture obj)
-;;   (occ-obj-prop-edit obj ctx))
+;;   (occ-props-window-edit-with obj ctx))
 
 ;; (cl-defmethod occ-procreate-child-prop-edit-with ((obj occ-tsk)
 ;;                                                   (ctx occ-ctx))
 ;;   (occ-capture obj)
-;;   (occ-obj-prop-edit obj ctx))
+;;   (occ-props-window-edit-with obj ctx))
 
 ;; (cl-defmethod occ-procreate-child-prop-edit ((obj occ-ctsk))
 ;;   (occ-capture obj)
-;;   (occ-obj-prop-edit (occ-ctsk-tsk obj)
-;;                      (occ-ctsk-ctx obj)))
+;;   (occ-props-window-edit-with (occ-ctsk-tsk obj)
+;;                               (occ-ctsk-ctx obj)))
 
 ;; (cl-defmethod occ-procreate-child-prop-edit ((obj occ-ctxual-tsk))
 ;;   (occ-capture obj)
-;;   (occ-obj-prop-edit (occ-ctxual-tsk-tsk obj)
-;;                      (occ-ctxual-tsk-ctx obj)))
+;;   (occ-props-window-edit-with (occ-ctxual-tsk-tsk obj)
+;;                               (occ-ctxual-tsk-ctx obj)))
 
 
 (cl-defgeneric occ-rank (obj
@@ -837,7 +835,7 @@ pointing to it."
 
 (defun occ-helm-run-child-clock-in ()
   "Run mail attach files command action from `helm-source-find-files'."
-  (interactive)                         ;TODO: to move to occ-commands.el
+  ;; (interactive)                         ;TODO: to move to occ-commands.el
   (with-helm-alive-p
     (helm-exit-and-execute-action 'occ-child-clock-in)))
 (put 'occ-helm-run-child-clock-in 'helm-only t)

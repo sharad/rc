@@ -126,7 +126,7 @@
                   (not (eobp)))
         (if (= (funcall outline-level) (1+ level))
             (push (funcall fun) collection))))
-    collection))
+    (nreverse collection)))
 
 (defun occ-tree-tsk-build (tsk-builder &optional file)
   "Build recursive org tsks from org FILE (or current buffer) using TSK-BUILDER function e.g. occ-collect-tsk"
