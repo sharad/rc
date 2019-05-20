@@ -642,21 +642,37 @@
                    (progn
                      (setq frame (selected-frame))
                      (add-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                     (condition-case nil
-                         (progn
-                           (lwarn 'event-input :debug "%s: %s: readfn: %s <%s> inside readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
-                           (lwarn 'event-input :debug "%s: %s: readfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
-                                  (time-stamp-string) 'lotus-with-other-frame-event-debug
-                                  ,name ,action
-                                  last-input-event
-                                  last-event-frame
-                                  frame
-                                  (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
-                           (funcall set-advice-fn)
-                           ,@body
-                           (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                           (funcall set-advice-fn))
-                       (quit nil)))))
+                     (progn
+                       (lwarn 'event-input :debug "%s: %s: readfn: %s <%s> inside readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
+                       (lwarn 'event-input :debug "%s: %s: readfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
+                              (time-stamp-string) 'lotus-with-other-frame-event-debug
+                              ,name ,action
+                              last-input-event
+                              last-event-frame
+                              frame
+                              (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                       (funcall set-advice-fn)
+                       (prog1
+                           (progn
+                             ,@body)
+                         (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
+                         (funcall set-advice-fn)))
+                     ;; (condition-case nil
+                     ;;     (progn
+                     ;;       (lwarn 'event-input :debug "%s: %s: readfn: %s <%s> inside readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
+                     ;;       (lwarn 'event-input :debug "%s: %s: readfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
+                     ;;              (time-stamp-string) 'lotus-with-other-frame-event-debug
+                     ;;              ,name ,action
+                     ;;              last-input-event
+                     ;;              last-event-frame
+                     ;;              frame
+                     ;;              (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                     ;;       (funcall set-advice-fn)
+                     ;;       ,@body
+                     ;;       (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
+                     ;;       (funcall set-advice-fn))
+                     ;;   (quit nil))
+                     )))
               (hookfn
                #'(lambda ()
                    (lwarn 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"

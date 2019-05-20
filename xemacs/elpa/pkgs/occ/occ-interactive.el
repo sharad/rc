@@ -299,13 +299,14 @@
             (condition-case-control err
               (let ((prop (occ-props-edit-in-cloned-buffer-with obj ctx)))
                 (occ-props-edit-handle-response prop timeout timer cleanup local-cleanup win)
+                (occ-message "occ-props-window-edit((obj occ-tsk) (ctx occ-ctx)) noquit: label %s value %s" occ-select-clock-in-true-label obj)
                 (make-occ-return
                  :label occ-select-clock-in-true-label
                  :value obj))
               ((quit)
                (progn
                  (occ-debug :warning "occ-props-window-edit-with((obj occ-tsk) (ctx occ-ctx)): canceling timer")
-                 (occ-message "occ-props-window-edit-with((obj occ-tsk) (ctx occ-ctx)): canceling timer")
+                 (occ-message "occ-props-window-edit((obj occ-tsk) (ctx occ-ctx)) quit: label %s value %s" occ-select-clock-in-operate-label nil)
                  (funcall cleanup win local-cleanup)
                  (if timer (cancel-timer timer))
                  (signal (car err) (cdr err))
@@ -341,6 +342,7 @@
             (condition-case-control err
               (let ((prop (occ-props-edit-in-cloned-buffer obj)))
                 (occ-props-edit-handle-response prop timeout timer cleanup local-cleanup win)
+                (occ-message "occ-props-window-edit(obj occ-obj-ctx-tsk) noquit: label %s value %s" occ-select-clock-in-true-label obj)
                 (make-occ-return
                  :label occ-select-clock-in-true-label
                  :value obj))
@@ -351,15 +353,13 @@
                  (funcall cleanup win local-cleanup)
                  (if timer (cancel-timer timer))
                  (signal (car err) (cdr err))
+                 (occ-message "occ-props-window-edit(obj occ-obj-ctx-tsk) quit: label %s value %s" occ-select-clock-in-operate-label nil)
                  (make-occ-return
                   :label occ-select-clock-in-operate-label
                   :value nil))))))))
 
 (cl-defmethod occ-props-window-edit ((obj occ-ctx)
                                      &key
-                                     ;; candidate-transformer
-                                     ;; occ-select-clock-in-tranform
-                                     ;; occ-select-clock-in-tranformer-fun-transform
                                      collector
                                      action
                                      action-transformer
@@ -368,7 +368,7 @@
          (action             (or action (occ-helm-actions obj)))
          (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
          (timeout            (or timeout occ-idle-timeout)))
-    (occ-debug :debug "occ-select-obj-prop-edit: [body] lotus-with-no-active-minibuffer-if")
+    (occ-debug :debug "occ-select-obj-prop-edit((obj occ-ctx)): [body] lotus-with-no-active-minibuffer-if")
     (let ((buff (occ-ctx-buffer obj)))
       (if (and
            (buffer-live-p buff)
@@ -378,20 +378,34 @@
                                           :action             action
                                           :action-transformer action-transformer
                                           :timeout            timeout)))
-          (occ-debug :debug "occ-props-window-edit: selected %s with label %s"
-                     (occ-format (occ-return-get-value retval-ctx-tsk) 'capitalize)
-                     (occ-return-get-label retval-ctx-tsk))
+          ;; (occ-message "occ-props-window-edit((obj occ-ctx)): action-transformer: %s action %s"
+          ;;              action-transformer action)
+          (occ-message "occ-props-window-edit((obj occ-ctx)): selected original: %s, retval: %s with label %s"
+                       retval-ctx-tsk
+                       (occ-format (occ-return-get-value retval-ctx-tsk) 'capitalize)
+                       (occ-return-get-label retval-ctx-tsk))
           ;; BUG: will do run recursively as another method with (obj null) is define below.
-          (if (occ-return-operate-p retval-ctx-tsk)
+          (when (and
+                 (occ-return-operate-p retval-ctx-tsk)
+                 (occ-return-get-value retval-ctx-tsk))
               (occ-props-window-edit
                (occ-return-get-value retval-ctx-tsk))
-            (occ-message "occ-props-window-edit: No selection")))
-        (occ-debug :debug "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s"
+              (occ-message "occ-props-window-edit((obj occ-ctx)): No selection"))
+          (occ-message "occ-props-window-edit((obj occ-ctx)): returning original: %s, retval: %s with label %s operate: %s"
+                       retval-ctx-tsk
+                       (occ-format (occ-return-get-value retval-ctx-tsk) 'capitalize)
+                       (occ-return-get-label retval-ctx-tsk)
+                       (occ-return-operate-p retval-ctx-tsk))
+          retval-ctx-tsk)
+        (occ-debug :debug "occ-props-window-edit((obj occ-ctx)): not running  as context buff is deleted or not live 1 %s, 2 %s"
                      (buffer-live-p buff)
                      (not (occ-helm-buffer-p buff)))
-        (occ-message "not running add-ctx-to-org-heading as context buff is deleted or not live 1 %s, 2 %s"
+        (occ-message "occ-props-window-edit((obj occ-ctx)): not running  as context buff is deleted or not live 1 %s, 2 %s"
                      (buffer-live-p buff)
-                     (not (occ-helm-buffer-p buff)))))))
+                     (not (occ-helm-buffer-p buff)))
+        (make-occ-return
+         :label occ-select-clock-in-false-label
+         :value nil)))))
 
 (cl-defmethod occ-props-window-edit ((obj null)
                                      &key
@@ -399,6 +413,7 @@
                                      action
                                      action-transformer
                                      timeout)
+  (occ-message "occ-select-obj-prop-edit((obj null)):")
   (let ((collector          (or collector #'occ-list))
         (action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
@@ -419,28 +434,33 @@
   "add-ctx-to-org-heading"
   ;; TODO: make helm conditional when it is used than only it should be handled.
   (interactive '((occ-make-ctx-at-point) occ-idle-timeout))
+  (occ-message "occ-safe-props-window-edit((obj occ-ctx)): begin")
   (let ((collector          (or collector #'occ-list))
         (action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
     (occ-debug :debug "begin occ-delayed-select-obj-prop-edit")
-    (lotus-with-no-active-minibuffer-if
-        (progn
-          (occ-debug :debug "occ-delayed-select-obj-prop-edit: [minibuffer-body] lotus-with-no-active-minibuffer-if")
-          (occ-debug :debug "add-ctx-to-org-heading: minibuffer already active quitting")
-          (occ-debug :debug nil))
-      ;;; TODO: extend lotus-with-other-frame-event-debug it to include elscreen change also.
-      (lotus-with-other-frame-event-debug "occ-delayed-select-obj-prop-edit" :cancel
-        (occ-debug :debug "occ-delayed-select-obj-prop-edit: lotus-with-other-frame-event-debug")
-        (let ((buff (occ-ctx-buffer obj)))
-          (if (eq (current-buffer) buff)
-              (occ-props-window-edit obj
-                                     :collector          collector
-                                     :action             action
-                                     :action-transformer action-transformer
-                                     :timeout            timeout)
-            (occ-debug :debug "context is not for current buffer.")))))
-    (occ-debug :debug "finished occ-delayed-select-obj-prop-edit")))
+    (occ-debug-return "occ-safe-props-window-edit((obj occ-ctx)) no-active"
+      (lotus-with-no-active-minibuffer-if
+          (progn
+            (occ-debug :debug "occ-delayed-select-obj-prop-edit: [minibuffer-body] lotus-with-no-active-minibuffer-if")
+            (occ-debug :debug "add-ctx-to-org-heading: minibuffer already active quitting")
+            (occ-debug :debug nil))
+        ;;; TODO: extend lotus-with-other-frame-event-debug it to include elscreen change also.
+        (occ-debug-return "occ-safe-props-window-edit((obj occ-ctx)) frame-event-debug"
+          (lotus-with-other-frame-event-debug "occ-delayed-select-obj-prop-edit" :cancel
+            (occ-debug :debug "occ-delayed-select-obj-prop-edit: lotus-with-other-frame-event-debug")
+            (prog1
+                (let ((buff (occ-ctx-buffer obj)))
+                  (if (eq (current-buffer) buff)
+                      (occ-debug-return "occ-safe-props-window-edit((obj occ-ctx)) direct"
+                        (occ-props-window-edit obj
+                                               :collector          collector
+                                               :action             action
+                                               :action-transformer action-transformer
+                                               :timeout            timeout))
+                   (occ-debug :debug "context is not for current buffer.")))
+              (occ-debug :debug "finished occ-delayed-select-obj-prop-edit"))))))))
 
 (cl-defmethod occ-safe-props-window-edit ((obj marker)
                                           &key
@@ -448,11 +468,14 @@
                                           action
                                           action-transformer
                                           timeout)
-  (occ-safe-props-window-edit (occ-make-ctx marker)
-                              :collector          collector
-                              :action             action
-                              :action-transformer action-transformer
-                              :timeout            timeout))
+  (occ-message "occ-safe-props-window-edit((obj marker)): begin")
+  (let ((selected (occ-safe-props-window-edit (occ-make-ctx marker)
+                                              :collector          collector
+                                              :action             action
+                                              :action-transformer action-transformer
+                                              :timeout            timeout)))
+    (occ-message "occ-safe-props-window-edit((obj marker)): returning %s" selected)
+    selected))
 
 (cl-defmethod occ-safe-ignore-quit-props-window-edit ((obj occ-ctx)
                                                       &key
@@ -469,6 +492,7 @@
   ;; NOTE: presently it is not running on idle time, it simply runs immediately
 
   "Return value is important to decide next action to (create unnamed tsk.)"
+  (occ-message "occ-safe-ignore-quit-props-window-edit((obj occ-ctx)): begin")
   (let ((collector          (or collector #'occ-list))
         (action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))

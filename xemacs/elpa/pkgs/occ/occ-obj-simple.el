@@ -242,7 +242,7 @@ pointing to it."
 
 (cl-defmethod occ-marker= ((obj occ-obj-tsk)
                            (mrk marker))
-  (occ-marker= (occ-obj-marker obj) marker))
+  (occ-marker= (occ-obj-marker obj) mrk))
 
 
 
@@ -504,6 +504,7 @@ pointing to it."
           (occ-debug :debug
                      "occ-clock-in(ctx):  with this-command=%s" this-command)
           ;; (occ-delayed-select-obj-prop-edit-when-idle obj obj occ-idle-timeout)
+          (occ-message "occ-clock-in((obj occ-ctx)): calling occ-safe-ignore-quit-props-window-edit")
           (occ-safe-ignore-quit-props-window-edit obj
                                                   :collector          #'occ-list
                                                   :action             action
@@ -876,11 +877,15 @@ pointing to it."
         (timeout            (or timeout occ-idle-timeout)))
     (helm-timed timeout
       (occ-debug :debug "running sacha/helm-select-clock")
-      (occ-list-select-internal candidates
-                                :action              action
-                                :action-transformer  action-transformer
-                                :auto-select-if-only auto-select-if-only
-                                :timeout             timeout))))
+      (let ((selected (occ-list-select-internal candidates
+                                           :action              action
+                                           :action-transformer  action-transformer
+                                           :auto-select-if-only auto-select-if-only
+                                           :timeout             timeout)))
+        (occ-message "occ-list-select: selected = %s" selected)
+        (unless selected
+          (make-occ-return :label occ-select-clock-in-operate-label
+                           :value selected))))))
 
 
 (cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
@@ -1126,20 +1131,24 @@ pointing to it."
                                       :action-transformer  action-transformer
                                       :auto-select-if-only auto-select-if-only
                                       :timeout             timeout)))
-            (when (occ-return-operate-p retval)
-              (unless (occ-return-get-value retval)
-                ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)
-                ;; begin occ-clock-in-curr-ctx-if-not
-                ;; 2019-03-06 22:55:31 s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug
-                ;; occ-clock-in-if-not: Now really going to clock.
-                ;; in occ-clock-in occ-ctx 1
-                ;; user input 111 retval t
-                ;; trying to create unnamed tsk.
-                ;; occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk
-                ;; occ-clock-in-if-not: Now really clock done.
-                ;; not able to find associated, or intentionally not selecting a clock
-                (occ-debug :debug "trying to create unnamed tsk.")
-                (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))))
+            (occ-message "occ-clock-in-if-not: operate %s retval %s"
+                         (occ-return-operate-p retval)
+                         (occ-return-get-value retval))
+            (if (occ-return-operate-p retval)
+                (unless (occ-return-get-value retval)
+                  ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)
+                  ;; begin occ-clock-in-curr-ctx-if-not
+                  ;; 2019-03-06 22:55:31 s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug
+                  ;; occ-clock-in-if-not: Now really going to clock.
+                  ;; in occ-clock-in occ-ctx 1
+                  ;; user input 111 retval t
+                  ;; trying to create unnamed tsk.
+                  ;; occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk
+                  ;; occ-clock-in-if-not: Now really clock done.
+                  ;; not able to find associated, or intentionally not selecting a clock
+                  (occ-debug :debug "trying to create unnamed tsk.")
+                  (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))
+              (occ-message "occ-clock-in-if-not: Can not operate on %s" (occ-format (occ-return-get-value retval)))))
           (occ-debug :debug "occ-clock-in-if-not: Now really clock done."))
       (prog1
           nil

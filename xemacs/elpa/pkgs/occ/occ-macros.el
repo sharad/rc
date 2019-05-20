@@ -32,6 +32,17 @@
      (progn
        ,@body)))
 
+(defmacro occ-debug-return (label &rest body)
+  `(let ((retval
+          (progn ,@body)))
+     (occ-message "%s: returns %s\n" ,label retval)))
+
+(defmacro occ-debug-return (label &rest body)
+  `(progn ,@body))
+
+(put 'occ-debug-return 'lisp-indent-function 1)
+
+
 (defun occ-get-location ())
 
 (when nil
