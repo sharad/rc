@@ -95,12 +95,6 @@
 
 
 ;;;###autoload
-(defun occ-merge-unamed-task ()
-  (interactive)
-  (error "Implement it."))
-
-
-;;;###autoload
 (defun occ-proprty-edit ()
   (interactive)
   (let ((ctx (occ-make-ctx-at-point)))
@@ -161,6 +155,23 @@
   (interactive)
   (setq occ-global-tsk-collection nil)
   occ-global-tsk-collection)
+
+
+;;;###autoload
+(defun occ-merge-unamed-task ()
+  (interactive)
+  (error "Implement it."))
+
+
+;;;###autoload
+(defun occ-start-day ()
+  (interactive)
+  ;; also detect if day is started.
+  (error "Implement it."))
+
+(defun occ-stop-day ()
+  (interactive)
+  (error "Implement it."))
 
 
 (defun occ-reload (&optional uncompiled)

@@ -1126,6 +1126,9 @@ pointing to it."
           (occ-debug :debug
                      "occ-clock-in-if-not: Now really going to clock with this-command=%s"
                      this-command)
+          ;; TODO: if (occ-current-tsk) is not unnamed than ask confirmation by :auto-select-if-only 'confirm
+          (occ-debug :debug
+             "TODO: if (occ-current-tsk) is not unnamed than ask confirmation by :auto-select-if-only 'confirm")
           (let ((retval (occ-clock-in ctx
                                       :collector           collector
                                       :action              action
