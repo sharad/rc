@@ -79,6 +79,7 @@
   file
   point
   clock-sum
+  file-level
   plist)
 
 (cl-defstruct (occ-tree-tsk (:include occ-tsk))

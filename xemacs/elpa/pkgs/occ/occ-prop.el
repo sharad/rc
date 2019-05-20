@@ -64,6 +64,71 @@
     (occ-debug :debug "occ-editprop: prop: %s, value: %s" prop value)
     (occ-writeprop prop value)))
 
+
+
+
+;; 
+
+;; (defun occ-org-set-property (prop value)
+;;   (lotus-org-with-safe-modification
+;;     (org-set-property prop value)))
+;; (cl-defmethod occ-writeprop ((prop symbol)
+;;                              (tsk occ-tsk)
+;;                              value)
+;;   (occ-debug :debug "occ-writeprop: prop: %s, value: %s"
+;;              prop value)
+;;   (if value
+;;       (progn
+;;         (unless (org-get-property-block)
+;;           ;;create property drawer
+;;           (occ-debug :debug "occ-writeprop: property block not exist so creating it.")
+;;           (let* ((range (org-get-property-block (point) 'force))
+;;                  (start (when (consp range) (1- (car range)))))
+;;             (when (numberp start)
+;;               (goto-char start))))
+;;         (occ-debug :debug
+;;                    "occ-writeprop: adding prop: %s value: %s using (org-set-property)." prop value)
+;;         (occ-org-set-property (symbol-name prop) value))
+;;     (error "occ-writeprop value is nil")))
+;; 
+
+;; (cl-defmethod occ-readprop-with ((prop symbol)
+;;                                  (tsk occ-tsk)
+;;                                  (ctx occ-ctx))
+;;   (occ-debug :debug "occ-readprop: prop: %s"
+;;              prop)
+;;   (occ-readprop (cons prop tsk)
+;;                 ctx))
+;; (cl-defmethod occ-editprop-with ((prop symbol)
+;;                                  (tsk occ-tsk)
+;;                                  (ctx occ-ctx))
+;;   (let ((value (occ-readprop prop tsk ctx)))
+;;     (occ-debug :debug
+;;                "occ-editprop: prop: %s, value: %s" prop value)
+;;     (occ-writeprop prop tsk value)))
+;; 
+
+;; (cl-defmethod occ-readprop ((prop symbol)
+;;                             (ctsk occ-obj-ctx-tsk))
+;;   (occ-debug :debug "occ-readprop: prop: %s"
+;;              prop)
+;;   (let ((tsk (occ-ctsk-tsk obj))
+;;         (ctx (occ-ctsk-ctx obj)))
+;;     (occ-readprop-with (cons prop tsk)
+;;                        ctx)))
+;; (cl-defmethod occ-editprop ((prop symbol)
+;;                             (ctsk occ-obj-ctx-tsk))
+;;   (let ((tsk (occ-ctsk-tsk obj))
+;;         (ctx (occ-ctsk-ctx obj)))
+;;     (let ((value (occ-readprop-with prop tsk ctx)))
+;;       (occ-debug :debug
+;;                  "occ-editprop: prop: %s, value: %s" prop value)
+;;       (occ-writeprop prop tsk value))))
+
+
+
+
+
 ;;{{ file
 (when nil                               ;rank calculation for org file name in which tsk aka entry not much useful
   (cl-defmethod occ-rank ((tsk-pair (head file))

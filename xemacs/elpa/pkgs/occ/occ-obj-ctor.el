@@ -41,13 +41,13 @@
   (unless occ-global-tsk-collection (occ-collection-object))
   (if occ-global-tsk-collection
       (let ((classname (cl-classname (occ-collection-object))))
-        ;;let ((classname (cl-classname occ-global-tsk-collection)))
         (cond
          ((eq 'occ-list-collection classname)
           #'make-occ-list-tsk)
          ((eq 'occ-tree-collection classname)
           #'make-occ-tree-tsk)
-         (t (error "occ-global-tsk-collection is not from occ-list-collection or occ-tree-collection class"))))
+         (t
+          (error "occ-global-tsk-collection is not from occ-list-collection or occ-tree-collection class"))))
     (error "occ-global-tsk-collection is NIL not from occ-list-collection or occ-tree-collection class")))
 
 
@@ -56,10 +56,11 @@
       (save-excursion
         (save-restriction
           (let ((start (progn
-                         (goto-char (org-element-property :contents-begin (org-element-at-point)))
+                         (goto-char (org-element-property
+                                     :contents-begin (org-element-at-point)))
                          (while (org-at-drawer-p)
-                           (goto-char (org-element-property :end (org-element-at-point))))
-                         ;; (if (org-at-heading-p) (backward-char))
+                           (goto-char (org-element-property :end
+                                                            (org-element-at-point))))
                          (point))))
             (unless (org-at-heading-p)
               (progn
@@ -70,41 +71,39 @@
 
 
 (defun occ-make-tsk-at-point (&optional builder)
-    ;; (org-element-at-point)
     (let ((builder (or builder
                        (occ-tsk-builder))))
-        (let (tsk
+        (let ((tsk nil)
               (heading-with-string-prop
                (if (org-before-first-heading-p)
                    'noheading
                  (org-get-heading 'notags))))
-          (let ((heading (when heading-with-string-prop
-                           (if (eq heading-with-string-prop 'noheading)
-                               heading-with-string-prop
-                             (substring-no-properties heading-with-string-prop))))
+          (let ((heading      (when heading-with-string-prop
+                                (if (eq heading-with-string-prop 'noheading)
+                                    heading-with-string-prop
+                                  (substring-no-properties heading-with-string-prop))))
                 (heading-prop heading-with-string-prop)
-                (marker  (move-marker
-                          (make-marker)
-                          (point)
-                          (org-base-buffer (current-buffer))))
-                (file    (buffer-file-name))
-                (point   (point))
-                (clock-sum (if (org-before-first-heading-p)
-                               0
-                             (org-clock-sum-current-item)))
-                (tsk-plist (cadr (org-element-at-point))))
+                (marker       (move-marker
+                               (make-marker)
+                               (point)
+                               (org-base-buffer (current-buffer))))
+                (file         (buffer-file-name))
+                (point        (point))
+                (clock-sum    (if (org-before-first-heading-p)
+                                  0
+                                (org-clock-sum-current-item)))
+                (tsk-plist    (cadr (org-element-at-point))))
             (when heading
               (setf tsk
                     (funcall builder
-                             :name    heading
-                             :heading heading
+                             :name         heading
+                             :heading      heading
                              :heading-prop heading-prop
-                             :marker  marker
-                             :file file
-                             :point point
-                             :clock-sum clock-sum
-                             :plist tsk-plist))
-
+                             :marker       marker
+                             :file         file
+                             :point        point
+                             :clock-sum    clock-sum
+                             :plist        tsk-plist))
               (let ((inherited-props
                      ;; is it correct ?
                      (cl-method-param-case

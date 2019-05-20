@@ -233,15 +233,14 @@
             (member
              (setq prop (occ-select-propetry obj ctx))
              '(edit done)))
+      ;; (occ-editprop-with prop obj ctx)
       (when (occ-editprop prop ctx)
         (occ-tsk-update-tsks t)))))
 
 (cl-defmethod occ-props-edit ((obj occ-obj-ctx-tsk))
   (occ-debug :debug "occ-props-edit: begin %s"
              (occ-format obj 'capitalize))
-  (let ((tsk (occ-ctsk-tsk obj))
-        (ctx (occ-ctsk-ctx obj)))
-    (occ-props-edit-with tsk ctx)))
+  (occ-props-edit obj))
 
 
 (cl-defmethod occ-props-edit-in-cloned-buffer-with ((obj occ-obj-tsk)

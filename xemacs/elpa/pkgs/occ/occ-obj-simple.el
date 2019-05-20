@@ -120,10 +120,13 @@ pointing to it."
 
 (cl-defmethod occ-fontify-like-in-org-mode ((tsk occ-tsk))
   (let* ((level    (or (occ-get-property tsk 'level) 0))
+         (subtree-level (or (occ-get-property tsk 'subtree-level) 0))
          (filename (occ-get-property tsk 'file))
+         (filename-prefix (concat (make-string (1+ subtree-level) ?\▆) " "))
          (heading  (occ-get-property tsk 'heading-prop))
          (heading-prefix  " ")
-         (prefix  (concat (make-string level ?\*) " ")))
+         (prefix  (concat (make-string (+ level subtree-level) ?\*) " ")))
+    ;; (occ-message "fontify: %s subtree-level=%s" heading subtree-level)
     (if nil ;; if test without else with prefix
         (substring
          (org-fontify-like-in-org-mode
@@ -132,10 +135,11 @@ pointing to it."
          (1+ level))
 
       (if (eq heading 'noheading)
-          (concat "file: " filename)
+          (concat filename-prefix "file: " filename)
         (concat
          heading-prefix
          (org-fontify-like-in-org-mode
+          ;; (concat prefix heading (format " l=%d s=%d" level subtree-level))
           (concat prefix heading)
           org-odd-levels-only))))))
 
@@ -841,6 +845,10 @@ pointing to it."
 (put 'occ-helm-run-child-clock-in 'helm-only t)
 ;; add occ-child-clock-in in action
 
+
+(defun occ-confirm (fn new)
+  (occ-y-or-n-timeout)
+  (error "Implement it."))
 
 (cl-defun occ-list-select-internal (candidates
                                     &key

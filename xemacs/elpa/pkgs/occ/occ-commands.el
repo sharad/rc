@@ -220,8 +220,8 @@
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)
         (delete propstr org-use-property-inheritance))))
- (occ-debug :debug "occ-insinuate: finish")
- (occ-message "occ-insinuate: finish"))
+ (occ-debug :debug "occ-uninsinuate: finish")
+ (occ-message "occ-uninsinuate: finish"))
 
 
 (defun occ-version (&optional here full message)
