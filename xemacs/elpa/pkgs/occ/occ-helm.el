@@ -51,12 +51,20 @@
 (occ-helm-action-add :goto                     "Goto"                     #'occ-goto)
 (occ-helm-action-add :set-to                   "Set To"                   #'occ-set-to)
 (occ-helm-action-add :proprty-window-edit      "Proprtes Window Edit"     #'occ-props-window-edit) ;TODO: implement it.
+
+
+(defun occ-helm-general-actions ()
+  (occ-helm-actions-get :procreate-child
+                        :procreate-child-clock-in
+                        :proprty-window-edit
+                        :try-clock-in
+                        :goto))
 
 (cl-defmethod occ-helm-actions ((obj null))
-  (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit :try-clock-in))
+  (occ-helm-general-actions))
 
 (cl-defmethod occ-helm-actions ((obj occ-obj))
-  (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit :try-clock-in))
+  (occ-helm-general-actions))
 
 ;; (cl-defmethod occ-helm-actions ((obj occ-ctx))
 ;;   (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))

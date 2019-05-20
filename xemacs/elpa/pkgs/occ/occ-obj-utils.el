@@ -68,7 +68,7 @@
    (mapcar #'(lambda (a)
                (if (consp a)
                    (cons (car a)
-                         (occ-build-return-lambda a))
+                         (occ-build-return-lambda (cdr a)))
                  (occ-build-return-lambda a)))
            action)))
 
@@ -76,8 +76,8 @@
   "Will make transformer fun to change action except first to return occ-return-label."
   #'(lambda (action
              candidate)
-      (occ-return-tranform
-       (funcall tranformer-fun action candidate))))
+      (occ-return-tranform (funcall tranformer-fun
+                                    action candidate))))
 
 ;; (cl-defmethod occ-return-operate-p (retval)
 ;;   retval)
