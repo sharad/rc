@@ -101,27 +101,13 @@
                (* 2 (length tsk-currfile))     ;as exact match to files giving double matching points.
              0)))
 
-
-       ;; (cl-defmethod occ-ctx-property-get ((prop (eql currfile))
-       ;;                                     (ctx occ-ctx))
-       ;;   "occ-ctx-property-get"
-       ;;   (let ((currfile (occ-ctx-file ctx)))
-       ;;     currfile))
-
        (cl-defmethod occ-get-property ((ctx occ-ctx)
                                        (prop (eql currfile)))
-         "occ-ctx-property-get"
+         "occ-get-property"
          (occ-message "calling occ-get-property(ctx occ-ctx)")
          (let ((currfile (occ-ctx-file ctx)))
            currfile))
 
-       ;; (occ-get-property (occ-make-ctx-at-point) 'currfile)
-
-       ;; (cl-defmethod occ-ctx-property-get ((ctx-pair (head currfile)))
-       ;;   "file of context"
-       ;;   (let* ((ctx      (cdr ctx-pair))
-       ;;          (currfile (occ-ctx-file ctx)))
-       ;;     currfile))
        (cl-defmethod occ-readprop-with ((obj occ-tsk)
                                         (ctx occ-ctx)
                                         (prop (eql currfile)))
@@ -131,6 +117,8 @@
                                 (file-name-directory ctx-currfile)))
                 (prompt       (concat (symbol-name prop) ": ")))
            (ido-read-currfile-name prompt ctx-dir ctx-currfile)))
+
+       ;; (occ-get-property (occ-make-ctx-at-point) 'currfile)
        ;;}}
        
 
@@ -161,15 +149,10 @@
 
       (cl-defmethod occ-get-property ((ctx occ-ctx)
                                       (prop (eql root)))
-        "occ-ctx-property-get"
+        "occ-get-property"
         (let ((file (occ-ctx-file ctx)))
           (when file (dirname-of-file file))))
 
-      ;; (cl-defmethod occ-ctx-property-get ((ctx-pair (head root)))
-      ;;   (let* ((ctx  (cdr ctx-pair))
-      ;;          (file (occ-ctx-file ctx))
-      ;;          (root (and file (dirname-of-file file))))
-      ;;     root))
       (cl-defmethod occ-readprop-with ((obj occ-tsk)
                                        (ctx occ-ctx)
                                        (prop (eql root)))
@@ -206,14 +189,9 @@
       ;;{{ git-branch
       (cl-defmethod occ-get-property ((ctx occ-ctx)
                                       (prop (eql git-branch)))
-        "occ-ctx-property-get"
+        "occ-get-property"
         (let ((file (occ-ctx-file ctx)))
           file))
-      ;; (cl-defmethod occ-ctx-property-get ((ctx-pair (head git-branch)))
-      ;;   (let* ((ctx (cdr ctx-pair))
-      ;;          (file (occ-ctx-file ctx)))
-      ;;     file))
-      ;;}}
       
     #+end_src
 

@@ -315,15 +315,19 @@ pointing to it."
     (occ-associable-with-p tsk ctx)))
 
 
+(cl-defmethod occ-associable-with-p (obj
+                                     ctx)
+  nil)
+
 (cl-defmethod occ-associable-with-p ((tsk symbol)
                                      (ctx occ-ctx))
   nil)
 
-(cl-defmethod occ-associable-with-p ((tsk occ-tsk)
+(cl-defmethod occ-associable-with-p ((obj occ-tsk)
                                      (ctx occ-ctx))
   "Test if TSK is associate to CTX"
-  (if tsk
-      (> (occ-rank-with tsk ctx) 0)))
+  (>
+   (occ-rank-with obj ctx) 0))
 
 
 (cl-defmethod occ-associable-p ((obj occ-ctsk))
