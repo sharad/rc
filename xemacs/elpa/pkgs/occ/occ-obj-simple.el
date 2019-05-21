@@ -184,9 +184,11 @@ pointing to it."
   (concat (when case (concat (occ-title obj case) ": "))
           (occ-fontify-like-in-org-mode obj)))
 
+(defvar occ-format-tsk-tag-alignment 100 "occ-format-tsk-tag-alignment")
+
 (cl-defmethod occ-format ((obj occ-tsk)
                           &optional case)
-  (let* ((align      100)
+  (let* ((align      occ-format-tsk-tag-alignment)
          (heading    (occ-fontify-like-in-org-mode obj))
          (headinglen (length heading))
          (tags       (occ-get-property obj 'tags))
@@ -206,21 +208,23 @@ pointing to it."
                           &optional case)
   (let ((tsk (occ-ctsk-tsk obj)))
     (concat (when case (concat (occ-title obj case) ": "))
-            (occ-fontify-like-in-org-mode tsk))))
+            ;; (occ-fontify-like-in-org-mode tsk)
+            (occ-format tsk case))))
 
 ;; (cl-defmethod occ-format ((obj occ-ctsk)
 ;;                           &optional case)
 ;;   (let ((tsk (occ-ctsk-tsk obj)))
 ;;     (concat (when case (concat (occ-title obj case) ": "))
-;;             (occ-fontify-like-in-org-mode tsk))))
+;;             (occ-format tsk case))))
 
-;; (cl-defmethod occ-format ((obj occ-ctxual-tsk)
-;;                           &optional case)
-;;   (let ((tsk (occ-ctxual-tsk-tsk obj)))
-;;     (concat (when case (concat (occ-title obj case) ": "))
-;;             (format "[%4d] %s"
-;;                     (occ-ctxual-tsk-rank obj)
-;;                     (occ-fontify-like-in-org-mode tsk)))))
+(cl-defmethod occ-format ((obj occ-ctxual-tsk)
+                          &optional case)
+  (let ((tsk (occ-ctxual-tsk-tsk obj)))
+    (concat (when case (concat (occ-title obj case) ": "))
+            (format "[%4d] %s"
+                    (occ-ctxual-tsk-rank obj)
+                    ;; (occ-fontify-like-in-org-mode tsk)
+                    (occ-format tsk case)))))
 
 
 (cl-defmethod occ-heading-marker ((obj null))

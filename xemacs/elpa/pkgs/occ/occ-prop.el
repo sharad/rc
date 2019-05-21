@@ -38,25 +38,24 @@
 (require 'occ-prop)
 
 
-(defun occ-match-prop-method-args (ctx)
-  (cl-method-sigs-matched-arg
-   '(occ-readprop         (`((head ,val)  occ-ctx) val))
-   '(occ-ctx-property-get (`((head ,val)) val))
-   ctx))
+(defun occ-readprop-props ()
+  (cl-method-param-case
+   '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))))
 
-(defun occ-match-prop-method-args (ctx)
+(defun occ-get-property-props ()
+  (cl-method-param-case
+   '(occ-get-property  (`(occ-ctx (eql ,val)) val))))
+
+;; (occ-readprop-props)
+;; (occ-get-property-props)
+(cl-defgeneric occ-match-prop-method-args (ctx)
+  "occ-match-prop-method-args")
+
+(cl-defmethod occ-match-prop-method-args ((ctx occ-ctx))
   (cl-method-sigs-matched-arg
    '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
    '(occ-get-property  (`(occ-ctx (eql ,val)) val))
    ctx))
-
-;; move to occ-test.el
-;; (cl-method-param-case-with-value-new '(occ-get-property  (`(occ-ctx (eql ,val)) val)) (occ-make-ctx-at-point))
-;; (occ-match-prop-method-args (occ-make-ctx-at-point))
-
-;; (cl-method-param-signs 'occ-readprop-with)
-
-;; (cl-method-param-signs 'occ-get-property)
 
 
 (defun occ-org-set-property (prop value)
@@ -200,26 +199,5 @@
     (occ-debug :debug
                "occ-editprop: prop: %s, value: %s" prop value)
     (occ-writeprop prop obj value)))
-
-
-(when nil
-  (cl-method-first-arg 'occ-ctx-property-get)
-  (occ-readprop-props)
-  (cl-method-matched-arg 'occ-readprop 'occ-ctx-property-get (occ-make-ctx-at-point))
-  (funcall 'occ-ctx-property-get (cons 'file (occ-make-ctx-at-point))))
-
-(when nil
-  (cl-method-sigs-matched-arg
-   '(occ-readprop (`((head ,val) occ-ctx) val))
-   '(occ-ctx-property-get (`((head ,val) val)))
-   (occ-make-ctx-at-point)))
-
-
-
-(defun occ-readprop-props ()
-  (cl-method-param-case
-   '(occ-readprop (`((head ,val) occ-ctx) val))))
-
-
 
 ;;; occ-prop.el ends here

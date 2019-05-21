@@ -364,4 +364,26 @@
 ;; (occ-delayed-select-obj-prop-edit-when-idle nil (occ-make-ctx nil) occ-idle-timeout)
 
 
+(when nil
+  (cl-method-first-arg 'occ-ctx-property-get)
+  (occ-readprop-props)
+  (cl-method-matched-arg 'occ-readprop 'occ-ctx-property-get (occ-make-ctx-at-point))
+  (funcall 'occ-ctx-property-get (cons 'file (occ-make-ctx-at-point))))
+
+(when nil
+  (cl-method-sigs-matched-arg
+   '(occ-readprop (`((head ,val) occ-ctx) val))
+   '(occ-ctx-property-get (`((head ,val) val)))
+   (occ-make-ctx-at-point)))
+
+;; move to occ-test.el
+;; (cl-method-param-case-with-value-new '(occ-get-property  (`(occ-ctx (eql ,val)) val)) (occ-make-ctx-at-point))
+;; (occ-match-prop-method-args (occ-make-ctx-at-point))
+
+;; (cl-method-param-signs 'occ-readprop-with)
+
+;; (cl-method-param-signs 'occ-get-property)
+
+
+
 ;;; occ-test.el ends here
