@@ -32,20 +32,16 @@
 ;; occ-ctxual-tsk - accessors
 (cl-defmethod occ-ctxual-tsk-get-rank ((ctxask occ-ctxual-tsk))
   (occ-debug :debug "occ-ctxual-tsk-get-rank(occ-ctxual-tsk=%s)" ctxask)
-  (let* ((tsk  (occ-ctxual-tsk-tsk  ctxask))
-         (ctx  (occ-ctxual-tsk-ctx  ctxask))
-         (rank (occ-ctxual-tsk-rank ctxask)))
+  (let ((rank (occ-ctxual-tsk-rank ctxask)))
     (unless rank
-      (setf (occ-ctxual-tsk-rank ctxask) (occ-rank tsk ctx)))
+      (setf (occ-ctxual-tsk-rank ctxask) (occ-rank ctxask)))
     (occ-ctxual-tsk-rank ctxask)))
 
 (cl-defmethod occ-ctxual-tsk-xrank ((ctxask occ-ctxual-tsk))
   (occ-debug :debug "occ-ctxual-tsk-get-rank(occ-ctxual-tsk=%s)" ctxask)
-  (let* ((tsk  (occ-ctxual-tsk-tsk  ctxask))
-         (ctx  (occ-ctxual-tsk-ctx  ctxask))
-         (rank (cl-struct-slot-value occ-ctxual-tsk 'rank ctxask)))
+  (let ((rank (cl-struct-slot-value occ-ctxual-tsk 'rank ctxask)))
     (unless rank
-      (setf (cl-struct-slot-value occ-ctxual-tsk 'rank ctxask) (occ-rank tsk ctx)))
+      (setf (cl-struct-slot-value occ-ctxual-tsk 'rank ctxask) (occ-rank ctxask)))
     (cl-struct-slot-value occ-ctxual-tsk 'rank ctxask)))
 
 (cl-defmethod (setf occ-ctxual-tsk-xrank) (value (ctxask occ-ctxual-tsk))

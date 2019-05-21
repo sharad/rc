@@ -39,6 +39,7 @@
 (require 'occ-obj-utils)
 (require 'occ-util-common)
 (require 'occ-prop)
+(require 'occ-property-rank-methods)
 (require 'occ-helm)
 
 
@@ -318,7 +319,7 @@ pointing to it."
                                      (ctx occ-ctx))
   "Test if TSK is associate to CTX"
   (if tsk
-      (> (occ-rank tsk ctx) 0)))
+      (> (occ-rank-with tsk ctx) 0)))
 
 
 (cl-defmethod occ-associable-p ((obj occ-ctsk))

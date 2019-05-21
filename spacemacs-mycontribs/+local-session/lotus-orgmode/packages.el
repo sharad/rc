@@ -57,6 +57,8 @@
     navi-mode
     org-password-manager
     org-parser
+    ;; org-tempo
+    ;; ox-reveal
     ;; new
     org-context
     org-dashboard
@@ -312,13 +314,5 @@ Each entry is either:
     :defer t
     :config
     (progn)))
-
-;; (defun lotus-orgmode/init-abgaben ()
-;;   (use-package abgaben
-;;     :defer t
-;;     :config
-;;     (progn
-;;       (progn
-;; 	(require 'f)))))
 
 ;;; packages.el ends here
