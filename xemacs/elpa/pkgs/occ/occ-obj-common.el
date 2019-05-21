@@ -39,9 +39,12 @@
   ;; mainly used by occ-tsk only.
   (if (memq prop (cl-class-slots (cl-classname obj)))
       (cl-get-field obj prop)
-    (plist-get
-     (cl-obj-plist-value obj)
-     (sym2key prop))))
+    (let ((key (sym2key prop)))
+      (if key
+       (plist-get
+           (cl-obj-plist-value obj)
+           (sym2key prop))
+       (error "occ-get-property: Can not make keyword for `'%s'" prop)))))
 
 (cl-defmethod occ-set-property ((obj occ-obj)
                                 prop
@@ -49,9 +52,12 @@
   ;; mainly used by occ-tsk only
   (if (memq prop (cl-class-slots (cl-classname obj)))
       (setf (cl-struct-slot-value (cl-classname obj) prop obj) val)
-    (plist-put
-     (cl-struct-slot-value (cl-classname obj) 'plist obj) ;TODO ??? (cl-obj-plist-value obj)
-     (sym2key prop) val)))
+    (let ((key (sym2key prop)))
+      (if key
+          (plist-put
+           (cl-struct-slot-value (cl-classname obj) 'plist obj) ;TODO ??? (cl-obj-plist-value obj)
+           key val)
+        (error "occ-set-property: Can not make keyword for `'%s'" prop)))))
 
 (cl-defmethod occ-get-properties ((obj occ-obj)
                                   (props list))

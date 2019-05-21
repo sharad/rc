@@ -58,10 +58,14 @@
 (defun sym2key (sym)
   (if (keywordp sym)
       sym
-    (intern-soft (concat ":" (symbol-name sym)))))
+    (or
+     (intern-soft (concat ":" (symbol-name sym)))
+     (intern (concat ":" (symbol-name sym))))))
 (defun key2sym (sym)
   (if (keywordp sym)
-      (intern-soft (substring (symbol-name sym) 1))
+      (or
+       (intern-soft (substring (symbol-name sym) 1))
+       (intern (substring (symbol-name sym) 1)))
     sym))
 
 

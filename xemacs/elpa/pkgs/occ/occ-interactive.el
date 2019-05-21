@@ -66,6 +66,10 @@
                                       (length (symbol-name sym)))
                                   (append keys fixed-keys))))
               (key-vals  (occ-get-properties tsk keys)))
+          (occ-message "occ-select-propetry: for %s with keys =%s got key-vals = %s"
+                       (occ-format tsk 'capitalize)
+                       keys
+                       key-vals)
           (if key-vals
               (let* ((key-val-collection
                       (mapcar

@@ -189,7 +189,8 @@
 
 
 
-(progn                                  ;; from obj common
+(when nil
+ (progn                                  ;; from obj common
 
   (when nil ;; https://curiousprogrammer.wordpress.com/2010/07/19/emacs-defstruct-vs-other-languages/
 
@@ -225,7 +226,7 @@
          (aref (cl--generic 'occ-readprop) 3)))
 
   (setq xxnaaa
-        (aref (cl--generic 'occ-readprop) 3)))
+        (aref (cl--generic 'occ-readprop) 3))))
 
 
 ;; ctor.el

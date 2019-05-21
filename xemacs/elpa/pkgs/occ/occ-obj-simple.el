@@ -532,17 +532,22 @@ pointing to it."
 
 
 (cl-defmethod occ-try-clock-in-with ((tsk occ-tsk)
-                                     (ctx occ-ctx))
-  (let* ((tries 3)
-         (try   tries))
-    (while (or
+                                     (ctx occ-ctx)
+                                     &key
+                                     collector
+                                     action
+                                     action-transformer
+                                     timeout)
+  (let* ((total-tries 3)
+         (try   total-tries))
+    (while (and
             (> try 0)
             (not (occ-associable-with-p tsk ctx)))
       (setq try (1- try))
-      (occ-message "%s is not associable with %s [try %d]"
+      (occ-message "TEST %s is not associable with %s [try %d]"
                    (occ-format tsk 'capitalize)
                    (occ-format ctx 'capitalize)
-                   (- tries try))
+                   (- total-tries try))
       ;; (occ-props-window-edit-with tsk ctx :timeout occ-idle-timeout)
       (occ-props-edit-with tsk ctx)))
 
