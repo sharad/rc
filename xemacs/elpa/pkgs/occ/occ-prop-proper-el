@@ -38,11 +38,25 @@
 (require 'occ-prop)
 
 
-(defun occ-match-method-args (ctx)
+(defun occ-match-prop-method-args (ctx)
   (cl-method-sigs-matched-arg
    '(occ-readprop         (`((head ,val)  occ-ctx) val))
    '(occ-ctx-property-get (`((head ,val)) val))
    ctx))
+
+(defun occ-match-prop-method-args (ctx)
+  (cl-method-sigs-matched-arg
+   '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
+   '(occ-get-property  (`(occ-ctx (eql ,val)) val))
+   ctx))
+
+;; move to occ-test.el
+;; (cl-method-param-case-with-value-new '(occ-get-property  (`(occ-ctx (eql ,val)) val)) (occ-make-ctx-at-point))
+;; (occ-match-prop-method-args (occ-make-ctx-at-point))
+
+;; (cl-method-param-signs 'occ-readprop-with)
+
+;; (cl-method-param-signs 'occ-get-property)
 
 
 (defun occ-org-set-property (prop value)
@@ -50,24 +64,24 @@
     (org-set-property prop value)))
 
 
-(cl-defgeneric occ-writeprop-with (prop
-                                   obj
+(cl-defgeneric occ-writeprop-with (obj
                                    ctx
+                                   prop
                                    value)
   "occ-writeprop-with")
-(cl-defgeneric occ-readprop-with (prop
-                                  obj
-                                  ctx)
+(cl-defgeneric occ-readprop-with (obj
+                                  ctx
+                                  prop)
   "occ-readprop-with")
-(cl-defgeneric occ-editprop-with (prop
-                                  obj
+(cl-defgeneric occ-editprop-with (obj
+                                  prop
                                   ctx)
   "occ-editprop-with")
 
 
-(cl-defmethod occ-writeprop-with ((prop symbol)
-                                  (obj occ-tsk)
+(cl-defmethod occ-writeprop-with ((obj occ-tsk)
                                   (ctx occ-ctx)
+                                  (prop symbol)
                                   value)
   (occ-debug :debug "occ-writeprop: prop: %s, value: %s"
              prop value)
@@ -84,67 +98,71 @@
                    "occ-writeprop: adding prop: %s value: %s using (org-set-property)." prop value)
         (occ-org-set-property (symbol-name prop) value))
     (error "occ-writeprop value is nil")))
-(cl-defmethod occ-readprop-with ((prop symbol)
-                                 (obj occ-tsk)
-                                 (ctx occ-ctx))
+(cl-defmethod occ-readprop-with ((obj occ-tsk)
+                                 (ctx occ-ctx)
+                                 (prop symbol))
   (occ-debug :debug "occ-readprop: prop: %s"
              prop)
   (occ-readprop prop obj ctx))
-(cl-defmethod occ-editprop-with ((prop symbol)
-                                 (obj occ-tsk)
-                                 (ctx occ-ctx))
+(cl-defmethod occ-editprop-with ((obj occ-tsk)
+                                 (ctx occ-ctx)
+                                 (prop symbol))
   (let ((value (occ-readprop prop obj ctx)))
     (occ-debug :debug
                "occ-editprop: prop: %s, value: %s" prop value)
     (occ-writeprop-with prop obj ctx value)))
 
 
-(cl-defgeneric occ-writeprop (prop
-                              obj
+(cl-defgeneric occ-writeprop (obj
+                              prop
                               value)
   "occ-writeprop")
-(cl-defgeneric occ-readprop (prop
-                             obj)
+(cl-defgeneric occ-readprop (obj
+                             prop)
   "occ-readprop")
-(cl-defgeneric occ-editprop (prop
-                             obj)
+(cl-defgeneric occ-editprop (obj
+                             prop)
   "occ-editprop")
 
 
-(cl-defmethod occ-writeprop ((prop symbol)
-                             (obj occ-obj-ctx-tsk)
+(cl-defmethod occ-writeprop ((obj occ-obj-ctx-tsk)
+                             (prop symbol)
                              value)
   (occ-debug :debug "occ-writeprop: prop: %s, value: %s"
              prop value)
   (let ((tsk (occ-ctsk-tsk obj))
         (ctx (occ-ctsk-ctx obj)))
     (occ-writeprop-with prop tsk ctx value)))
-(cl-defmethod occ-readprop ((prop symbol)
-                            (obj occ-obj-ctx-tsk))
+(cl-defmethod occ-readprop ((obj occ-obj-ctx-tsk)
+                            (prop symbol))
   (occ-debug :debug "occ-readprop: prop: %s"
              prop)
   (let ((tsk (occ-ctsk-tsk obj))
         (ctx (occ-ctsk-ctx obj)))
     (occ-readprop-with prop tsk ctx)))
-(cl-defmethod occ-editprop ((prop symbol)
-                            (obj occ-obj-ctx-tsk))
+(cl-defmethod occ-editprop ((obj occ-obj-ctx-tsk)
+                            (prop symbol))
   (let ((value (occ-readprop prop obj)))
     (occ-debug :debug
                "occ-editprop: prop: %s, value: %s" prop value)
     (occ-writeprop prop obj value)))
 
 
-(cl-defmethod occ-rank ((prop symbol)
-                        (obj  occ-ctx-tsk))
+;; (cl-defgeneric occ-ctx-property-get (prop
+;;                                      ctx)
+;;   "occ-ctx-property-get")
+
+(cl-defmethod occ-rank ((obj  occ-obj-ctx-tsk)
+                        (prop symbol))
   (let ((tsk (occ-ctsk-tsk obj))
         (ctx (occ-ctsk-ctx obj)))
     (occ-rank-with prop tsk ctx)))
 
 ;;{{ file
 (when nil                               ;rank calculation for org file name in which tsk aka entry not much useful
-  (cl-defmethod occ-rank-with ((prop (eql 'file))
-                               (obj occ-tsk)
-                               (ctx occ-ctx))
+  (cl-defmethod occ-rank-with ((obj occ-tsk)
+                               (ctx occ-ctx)
+                               (prop (eql file)))
    ;; file in which tsk aka org entry exists.
    "Predicate funtion to check if ctx matches to tsk's file attribute."
    (let* ((tsk-currfile (occ-get-property obj 'currfile))
@@ -164,9 +182,9 @@
 ;;}}
 
 ;;{{ currfile
-(cl-defmethod occ-rank-with ((prop (eql 'currfile))
-                             (obj occ-tsk)
-                             (ctx occ-ctx))
+(cl-defmethod occ-rank-with ((obj occ-tsk)
+                             (ctx occ-ctx)
+                             (prop (eql currfile)))
   ;; file in which tsk aka org entry exists.
   "Predicate funtion to check if ctx matches to tsk's file attribute."
   (let* ((tsk-currfile (occ-get-property obj prop))
@@ -184,14 +202,30 @@
         (* 2 (length tsk-currfile))     ;as exact match to files giving double matching points.
       0)))
 
-(cl-defmethod occ-ctx-property-get ((ctx-pair (head currfile)))
-  "file of context"
-  (let* ((ctx      (cdr ctx-pair))
-         (currfile (occ-ctx-file ctx)))
+
+;; (cl-defmethod occ-ctx-property-get ((prop (eql currfile))
+;;                                     (ctx occ-ctx))
+;;   "occ-ctx-property-get"
+;;   (let ((currfile (occ-ctx-file ctx)))
+;;     currfile))
+
+(cl-defmethod occ-get-property ((ctx occ-ctx)
+                                (prop (eql currfile)))
+  "occ-ctx-property-get"
+  (occ-message "calling occ-get-property(ctx occ-ctx)")
+  (let ((currfile (occ-ctx-file ctx)))
     currfile))
-(cl-defmethod occ-readprop-with ((prop (eql 'currfile))
-                                 (obj occ-tsk)
-                                 (ctx occ-ctx))
+
+;; (occ-get-property (occ-make-ctx-at-point) 'currfile)
+
+;; (cl-defmethod occ-ctx-property-get ((ctx-pair (head currfile)))
+;;   "file of context"
+;;   (let* ((ctx      (cdr ctx-pair))
+;;          (currfile (occ-ctx-file ctx)))
+;;     currfile))
+(cl-defmethod occ-readprop-with ((obj occ-tsk)
+                                 (ctx occ-ctx)
+                                 (prop (eql currfile)))
   "currfile property for tsk aka org entry"
   (let* ((ctx-currfile (if ctx (occ-ctx-file ctx)))
          (ctx-dir      (when (stringp ctx-currfile)
@@ -201,9 +235,9 @@
 ;;}}
 
 ;;{{ root
-(cl-defmethod occ-rank-with ((prop (eql 'root))
-                             (obj occ-tsk)
-                             (ctx occ-ctx))
+(cl-defmethod occ-rank-with ((obj occ-tsk)
+                             (ctx occ-ctx)
+                             (prop (eql root)))
   "Predicate funtion to check if ctx matches to tsk's file attribute."
   (let* ((tsk-root (occ-get-property obj prop))
          (tsk-root (when tsk-root (file-truename tsk-root)))
@@ -220,14 +254,20 @@
         (length tsk-root)
       0)))
 
-(cl-defmethod occ-ctx-property-get ((ctx-pair (head root)))
-  (let* ((ctx  (cdr ctx-pair))
-         (file (occ-ctx-file ctx))
-         (root (and file (dirname-of-file file))))
-    root))
-(cl-defmethod occ-readprop-with ((prop (eql 'root))
-                                 (obj occ-tsk)
-                                 (ctx occ-ctx))
+(cl-defmethod occ-get-property ((ctx occ-ctx)
+                                (prop (eql root)))
+  "occ-ctx-property-get"
+  (let ((file (occ-ctx-file ctx)))
+    (when file (dirname-of-file file))))
+
+;; (cl-defmethod occ-ctx-property-get ((ctx-pair (head root)))
+;;   (let* ((ctx  (cdr ctx-pair))
+;;          (file (occ-ctx-file ctx))
+;;          (root (and file (dirname-of-file file))))
+;;     root))
+(cl-defmethod occ-readprop-with ((obj occ-tsk)
+                                 (ctx occ-ctx)
+                                 (prop (eql root)))
   (let* ((ctx-file   (when ctx (occ-ctx-file ctx)))
          (ctx-dir    (when (stringp ctx-file) (file-name-directory ctx-file)))
          (prompt (concat (symbol-name prop) ": ")))
@@ -235,9 +275,9 @@
 ;;}}
 
 ;;{{ sub-tree
-(cl-defmethod occ-readprop-with ((prop (eql 'subtree))
-                                 (obj occ-tsk)
-                                 (ctx occ-ctx))
+(cl-defmethod occ-readprop-with ((obj occ-tsk)
+                                 (ctx occ-ctx)
+                                 (prop (eql subtree)))
   (let ((prompt (concat (symbol-name prop) ": ")))
     (file-relative-name
      (ido-read-file-name ;; org-iread-file-name
@@ -246,10 +286,15 @@
 ;;}}
 
 ;;{{ git-branch
-(cl-defmethod occ-ctx-property-get ((ctx-pair (head git-branch)))
-  (let* ((ctx (cdr ctx-pair))
-         (file (occ-ctx-file ctx)))
+(cl-defmethod occ-get-property ((ctx occ-ctx)
+                                (prop (eql git-branch)))
+  "occ-ctx-property-get"
+  (let ((file (occ-ctx-file ctx)))
     file))
+;; (cl-defmethod occ-ctx-property-get ((ctx-pair (head git-branch)))
+;;   (let* ((ctx (cdr ctx-pair))
+;;          (file (occ-ctx-file ctx)))
+;;     file))
 ;;}}
 
 ;;{{ git-branch
@@ -266,9 +311,9 @@
 
 
 
-(cl-defmethod occ-rank-with ((prop (eql 'status))
-                             (obj occ-tsk)
-                             (ctx occ-ctx))
+(cl-defmethod occ-rank-with ((obj occ-tsk)
+                             (ctx occ-ctx)
+                             (prop (eql status)))
   "Predicate funtion to check if ctx matches to tsk's status attribute."
   (let ((todo-type
          (occ-get-property obj 'todo-type))
@@ -282,23 +327,23 @@
          (string-equal status "HOLD"))
         -30 0)))
 
-(cl-defmethod occ-rank-with ((prop (eql 'key))
-                             (obj occ-tsk)
-                             (ctx occ-ctx))
+(cl-defmethod occ-rank-with ((obj occ-tsk)
+                             (ctx occ-ctx)
+                             (prop (eql key)))
   "Predicate funtion to check if ctx matches to tsk's file attribute."
   (let* ((key (occ-get-property obj 'KEY)))
     (if key (string-to-number key) 0)))
 
-(cl-defmethod occ-rank-with ((prop (eql 'heading-level))
-                             (obj occ-tsk)
-                             (ctx occ-ctx))
+(cl-defmethod occ-rank-with ((obj occ-tsk)
+                             (ctx occ-ctx)
+                             (prop (eql heading-level)))
   "Predicate funtion to check if ctx matches to tsk's file attribute."
   (let* ((level (occ-get-property obj 'level)))
     (if level level 0)))
 
-(cl-defmethod occ-rank-with ((prop (eql 'timebeing))
-                             (obj occ-tsk)
-                             (ctx occ-ctx))
+(cl-defmethod occ-rank-with ((obj occ-tsk)
+                             (ctx occ-ctx)
+                             (prop (eql timebeing)))
   (let ((timebeing (occ-get-property obj 'timebeing)))
     (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
           (clocked-time   (occ-get-property obj 'clock-sum)))
@@ -309,9 +354,9 @@
           (- timebeing-time clocked-time)
         0))))
 
-(cl-defmethod occ-rank-with ((prop (eql 'current-clock))
-                             (obj occ-tsk)
-                             (ctx occ-ctx))
+(cl-defmethod occ-rank-with ((obj occ-tsk)
+                             (ctx occ-ctx)
+                             (prop (eql current-clock)))
   (let* ((tsk-marker (occ-get-property obj 'marker)))
     (if (occ-marker= obj org-clock-marker)
         100

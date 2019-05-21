@@ -58,10 +58,7 @@
   (occ-debug :debug "occ-select-propetry: %s" (occ-format tsk 'capitalize))
   (let ((prompt (or prompt "proptery: "))
         (fixed-keys '(edit done))
-        (keys   (cl-method-sigs-matched-arg
-                 '(occ-readprop         (`((head ,val)  occ-ctx) val))
-                 '(occ-ctx-property-get (`((head ,val)) val))
-                 ctx)))
+        (keys       (occ-match-prop-method-args ctx)))
     (if keys
         (let ((maxkeylen (apply
                           #'max
@@ -234,7 +231,7 @@
              (setq prop (occ-select-propetry obj ctx))
              '(edit done)))
       ;; (occ-editprop-with prop obj ctx)
-      (when (occ-editprop prop ctx)
+      (when (occ-editprop-with obj ctx prop) ;; (occ-editprop prop ctx)
         (occ-tsk-update-tsks t)))))
 
 (cl-defmethod occ-props-edit ((obj occ-obj-ctx-tsk))

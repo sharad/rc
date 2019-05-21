@@ -774,29 +774,6 @@ pointing to it."
 ;;                               (occ-ctxual-tsk-ctx obj)))
 
 
-(cl-defgeneric occ-rank (obj
-                         ctx)
-  "occ-rank")
-
-(cl-defmethod occ-rank (tsk-pair
-                        ctx)
-  ;; too much output
-  ;; (occ-debug :debug "occ-rank(tsk-pair=%s ctx=%s)" tsk-pair ctx)
-  0)
-
-;; ISSUE? should it return rank or occ-ctxual-tsk
-(cl-defmethod occ-rank ((tsk occ-tsk)
-                        (ctx occ-ctx))
-  ;; too much output
-  ;; (occ-debug :debug "occ-rank(tsk=%s ctx=%s)" tsk ctx)
-  (let ((rank
-         (reduce #'+
-                 (mapcar #'(lambda (slot) ;;TODO: check if method exist or not, or use some default method.
-                             (occ-rank (cons slot tsk) ctx))
-                         (occ-class-slots tsk)))))
-    rank))
-
-
 (cl-defmethod occ-files ()
   (occ-collect-files
    (occ-collection-object)))

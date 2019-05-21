@@ -108,14 +108,14 @@
   (cl-method-param-case method-sig))
 (cl-defmethod cl-method-sig-matched-arg ((method-sig cons)
                                          (ctx occ-ctx))
-  (let ((slots (occ-obj-defined-slots-with-value ctx)))
+  (let ((slots (occ-obj-defined-slots-with-value-new ctx)))
     (remove-if-not
      #'(lambda (arg) (memq arg slots))
      (cl-method-param-case method-sig))))
 (cl-defmethod cl-method-sigs-matched-arg ((method-sig1 cons)
                                           (method-sig2 cons)
                                           (ctx occ-ctx))
-  (let ((slots (cl-method-param-case-with-value method-sig2 ctx)))
+  (let ((slots (cl-method-param-case-with-value-new method-sig2 ctx)))
     (remove-if-not
      #'(lambda (arg) (memq arg slots))
      (cl-method-param-case method-sig1))))
