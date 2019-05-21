@@ -59,7 +59,7 @@
   (let ((prompt (or prompt "proptery: "))
         (fixed-keys '(edit done))
         (keys   (cl-method-sigs-matched-arg
-                 '(occ-readprop         (`((head ,val) occ-ctx) val))
+                 '(occ-readprop         (`((head ,val)  occ-ctx) val))
                  '(occ-ctx-property-get (`((head ,val)) val))
                  ctx)))
     (if keys

@@ -60,6 +60,9 @@
   (cl-class-obj-slot-value (cl-classname obj) slot obj))
 (defun cl-obj-plist-value (obj)
   (cl-obj-slot-value obj 'plist))
+
+
+;; TODO: find how to do calculation without eval here.
 
 (defun cl-method-param-signs (method)
   "Get params signatures for all defined methods"
