@@ -34,17 +34,25 @@
 ;; https://stackoverflow.com/questions/12262220/add-created-date-property-to-todos-in-org-mode
 
 ;; "org tsks accss common api"
+
+(defun occ-plist-get (plist prop)
+  (let ((key (sym2key prop)))
+    (if key
+        (plist-get
+         plist
+         (sym2key prop))
+      (error "occ-get-property: Can not make keyword for `'%s'" prop))))
+
+(defmacro occ-plist-set (plist prop value))
+
 (cl-defmethod occ-get-property ((obj occ-obj)
                                 (prop symbol))
   ;; mainly used by occ-tsk only.
   (if (memq prop (cl-class-slots (cl-classname obj)))
       (cl-get-field obj prop)
-    (let ((key (sym2key prop)))
-      (if key
-       (plist-get
-           (cl-obj-plist-value obj)
-           (sym2key prop))
-       (error "occ-get-property: Can not make keyword for `'%s'" prop)))))
+    (or
+     (occ-plist-get (cl-obj-plist-value obj) prop)
+     (occ-plist-get (cl-obj-plist-value obj) (upcase-sym prop)))))
 
 (cl-defmethod occ-set-property ((obj occ-obj)
                                 prop

@@ -54,7 +54,11 @@
         (apply #'lwarn 'occ level args))
       (unless (eq level :nodisplay)
         (apply #'message args)))))
-
+(defun upcase-sym (sym)
+  (let ((symname (upcase (symbol-name sym))))
+    (or
+     (intern-soft symname)
+     (intern symname))))
 (defun sym2key (sym)
   (if (keywordp sym)
       sym

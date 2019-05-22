@@ -192,7 +192,10 @@
                               (ctx occ-ctx))
   (occ-make-ctsk tsk ctx))
 
-(cl-defgeneric occ-make-ctxual-tsk (tsk ctx rank)
+
+(cl-defgeneric occ-make-ctxual-tsk (tsk
+                                    ctx
+                                    rank)
   "occ-make-ctxual-tsk")
 
 (cl-defmethod occ-make-ctxual-tsk ((tsk occ-tsk)
@@ -227,8 +230,8 @@
 
 (defun occ-make-ctxual-tsk-container (objs)
   (make-occ-ctxual-tsk-container :list objs))
-
 
+
 (cl-defmethod occ-make-tsk-collection ((file-spec (head :tree)))
   (unless occ-global-tsk-collection
     (let ((collection (make-occ-tree-collection
@@ -248,5 +251,5 @@
   (make-occ-return
    :label label
    :value value))
-
+
 ;;; occ-obj-ctor.el ends here

@@ -1,4 +1,4 @@
-#+TITLE Org capture plus
+#+TITLE OCC Property Rank methods for task
 #+PROPERTY: header-args :tangle yes :padline yes :comments both :noweb yes
 
 * Property Rank methods for task
@@ -45,9 +45,8 @@
 
 
 
-** Read write properties of task
+** Read Write properties of task
 *** Current File property of task
-
 **** Incorrect Method getting confused with `file' org buffer than current-file property of task
      #+begin_src elisp
 
@@ -83,26 +82,28 @@
        ;;{{ currfile
        (cl-defmethod occ-rankprop-with ((obj occ-tsk)
                                         (ctx occ-ctx)
-                                        (prop (eql currfile)))
+                                        (prop (eql CURRFILE)))
          ;; file in which tsk aka org entry exists.
          "Predicate funtion to check if ctx matches to tsk's file attribute."
+         (occ-message "occ-rankprop-with: currfile begin")
          (let* ((tsk-currfile (occ-get-property obj prop))
                 (tsk-currfile (if tsk-currfile (file-truename tsk-currfile)))
-                (ctx-file (occ-ctx-file ctx))
-                (ctx-file (if ctx-file (file-truename ctx-file))))
+                (ctx-file     (occ-ctx-file ctx))
+                (ctx-file     (if ctx-file (file-truename ctx-file))))
            (if tsk-currfile
                (progn
                  (occ-debug :nodisplay "tsk %s tsk-currfile %s" (occ-format obj 'capitalize) tsk-currfile)
                  (occ-debug :nodisplay "tsk %s ctx-file %s"     (occ-format obj 'capitalize) ctx-file))
              (occ-debug :nodisplay "tsk %s tsk-currfile %s not present."
-                        (occ-format obj 'capitalize) tsk-currfile))
+                        (occ-format obj 'capitalize)
+                        tsk-currfile))
            (if (and tsk-currfile ctx-file
-                    (string-match tsk-currfile ctx-file))
+                    (string= tsk-currfile ctx-file))
                (* 2 (length tsk-currfile))     ;as exact match to files giving double matching points.
              0)))
 
        (cl-defmethod occ-get-property ((ctx occ-ctx)
-                                       (prop (eql currfile)))
+                                       (prop (eql CURRFILE)))
          "occ-get-property"
          (occ-message "calling occ-get-property(ctx occ-ctx)")
          (let ((currfile (occ-ctx-file ctx)))
@@ -110,13 +111,13 @@
 
        (cl-defmethod occ-readprop-with ((obj occ-tsk)
                                         (ctx occ-ctx)
-                                        (prop (eql currfile)))
+                                        (prop (eql CURRFILE)))
          "currfile property for tsk aka org entry"
          (let* ((ctx-currfile (if ctx (occ-ctx-file ctx)))
                 (ctx-dir      (when (stringp ctx-currfile)
                                 (file-name-directory ctx-currfile)))
                 (prompt       (concat (symbol-name prop) ": ")))
-           (ido-read-currfile-name prompt ctx-dir ctx-currfile)))
+           (ido-read-file-name prompt ctx-dir ctx-currfile)))
 
        ;; (occ-get-property (occ-make-ctx-at-point) 'currfile)
        ;;}}
@@ -127,41 +128,42 @@
 *** Root dir property of task
     #+begin_src elisp
 
-      ;;{{ root
-      (cl-defmethod occ-rankprop-with ((obj occ-tsk)
-                                       (ctx occ-ctx)
-                                       (prop (eql root)))
-        "Predicate funtion to check if ctx matches to tsk's file attribute."
-        (let* ((tsk-root (occ-get-property obj prop))
-               (tsk-root (when tsk-root (file-truename tsk-root)))
-               (ctx-file (occ-ctx-file ctx))
-               (ctx-file (when ctx-file (file-truename ctx-file))))
-          (if tsk-root
-              (progn
-                (occ-debug :nodisplay "tsk %s tsk-root %s" (occ-format obj 'capitalize) tsk-root)
-                (occ-debug :nodisplay "tsk %s ctx-file %s" (occ-format obj 'capitalize) ctx-file))
-            (occ-debug :nodisplay "tsk %s tsk-root %s not present."
-                       (occ-format obj 'capitalize) tsk-root))
-          (if (and tsk-root ctx-file
-                   (string-match tsk-root ctx-file))
-              (length tsk-root)
-            0)))
+            ;;{{ root
+            (cl-defmethod occ-rankprop-with ((obj occ-tsk)
+                                             (ctx occ-ctx)
+                                             (prop (eql root)))
+              "RANK Predicate funtion to check if ctx matches to tsk's file attribute."
+              (let* ((tsk-root (occ-get-property obj prop))
+                     (tsk-root (when tsk-root (file-truename tsk-root)))
+                     (ctx-file (occ-ctx-file ctx))
+                     (ctx-file (when ctx-file (file-truename ctx-file))))
+                (if tsk-root
+                    (progn
+                      (occ-debug :nodisplay "tsk %s tsk-root %s" (occ-format obj 'capitalize) tsk-root)
+                      (occ-debug :nodisplay "tsk %s ctx-file %s" (occ-format obj 'capitalize) ctx-file))
+                  (occ-debug :nodisplay "tsk %s tsk-root %s not present."
+                             (occ-format obj 'capitalize) tsk-root))
+                (if (and tsk-root ctx-file
+                         (string-match tsk-root ctx-file))
+                    (length tsk-root)
+                  0)))
 
-      (cl-defmethod occ-get-property ((ctx occ-ctx)
-                                      (prop (eql root)))
-        "occ-get-property"
-        (let ((file (occ-ctx-file ctx)))
-          (when file (dirname-of-file file))))
+            (cl-defmethod occ-get-property ((ctx occ-ctx)
+                                            (prop (eql root)))
+              "occ-get-property"
+              (let ((file (occ-ctx-file ctx)))
+                (when file (dirname-of-file file))))
 
-      (cl-defmethod occ-readprop-with ((obj occ-tsk)
-                                       (ctx occ-ctx)
-                                       (prop (eql root)))
-        (let* ((ctx-file   (when ctx (occ-ctx-file ctx)))
-               (ctx-dir    (when (stringp ctx-file) (file-name-directory ctx-file)))
-               (prompt (concat (symbol-name prop) ": ")))
-          (ido-read-directory-name prompt ctx-dir ctx-dir)))
-      ;;}}
-      
+            (cl-defmethod occ-readprop-with ((obj occ-tsk)
+                                             (ctx occ-ctx)
+                                             (prop (eql root)))
+              "READ"
+              (let* ((ctx-file   (when ctx (occ-ctx-file ctx)))
+                     (ctx-dir    (when (stringp ctx-file) (file-name-directory ctx-file)))
+                     (prompt (concat (symbol-name prop) ": ")))
+                (ido-read-directory-name prompt ctx-dir ctx-dir)))
+            ;;}}
+            
     #+end_src
 
 *** Timebeing property of task (not fully implemented) will use for keeping a task clocked in for given time

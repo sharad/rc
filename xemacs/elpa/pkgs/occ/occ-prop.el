@@ -137,8 +137,8 @@
                                   prop)
   "occ-readprop-with")
 (cl-defgeneric occ-editprop-with (obj
-                                  prop
-                                  ctx)
+                                  ctx
+                                  prop)
   "occ-editprop-with")
 
 
@@ -166,14 +166,21 @@
                                  (prop symbol))
   (occ-debug :debug "occ-readprop: prop: %s"
              prop)
-  (occ-readprop prop obj ctx))
+  (occ-readprop obj
+                ctx
+                prop))
 (cl-defmethod occ-editprop-with ((obj occ-tsk)
                                  (ctx occ-ctx)
                                  (prop symbol))
-  (let ((value (occ-readprop prop obj ctx)))
+  (let ((value (occ-readprop-with obj
+                                  ctx
+                                  prop)))
     (occ-debug :debug
                "occ-editprop: prop: %s, value: %s" prop value)
-    (occ-writeprop-with prop obj ctx value)))
+    (occ-writeprop-with obj
+                        ctx
+                        prop
+                        value)))
 
 
 (cl-defgeneric occ-writeprop (obj
@@ -195,19 +202,23 @@
              prop value)
   (let ((tsk (occ-ctsk-tsk obj))
         (ctx (occ-ctsk-ctx obj)))
-    (occ-writeprop-with prop tsk ctx value)))
+    (occ-writeprop-with tsk ctx prop value)))
 (cl-defmethod occ-readprop ((obj occ-obj-ctx-tsk)
                             (prop symbol))
   (occ-debug :debug "occ-readprop: prop: %s"
              prop)
   (let ((tsk (occ-ctsk-tsk obj))
         (ctx (occ-ctsk-ctx obj)))
-    (occ-readprop-with prop tsk ctx)))
+    (occ-readprop-with tsk ctx prop)))
 (cl-defmethod occ-editprop ((obj occ-obj-ctx-tsk)
                             (prop symbol))
-  (let ((value (occ-readprop prop obj)))
+  (let ((value (occ-readprop obj prop)))
     (occ-debug :debug
                "occ-editprop: prop: %s, value: %s" prop value)
-    (occ-writeprop prop obj value)))
+    (occ-writeprop obj value prop)))
 
+
+
+;; (plist-get '(:CURRFILE "/home/s/paradise/releases/main/src/install/mkAsanPatch.sh") :currfile)
+
 ;;; occ-prop.el ends here
