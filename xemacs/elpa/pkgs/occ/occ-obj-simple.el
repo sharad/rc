@@ -488,7 +488,7 @@ pointing to it."
         (timeout            (or timeout occ-idle-timeout)))
 
     (let ((return-ctxual-tsk
-             (occ-select obj            ;TODO: if only one match then where it is selecting that.
+             (occ-select obj ;TODO: if only one match then where it is selecting that.
                          :collector           collector
                          :action              (occ-return-tranform action) ;as return value is going to be used.
                          :action-transformer  (occ-return-tranformer-fun-transform action-transformer)
@@ -547,7 +547,7 @@ pointing to it."
                                      action-transformer
                                      timeout)
   (let* ((total-tries 3)
-         (try   total-tries))
+         (try         total-tries))
     (while (and
             (> try 0)
             (not (occ-associable-with-p tsk ctx)))
