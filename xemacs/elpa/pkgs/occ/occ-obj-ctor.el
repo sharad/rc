@@ -104,15 +104,15 @@
                              :point        point
                              :clock-sum    clock-sum
                              :plist        tsk-plist))
-              (let ((inherited-props
-                     ;; is it correct ?
-                     (cl-method-param-case
-                      '(occ-readprop (`((head ,val) occ-ctx) val)))))
+              (let ((inherit t)
+                    (inherited-props
+                     ;; is it correct ? - guess it is ok and correct.
+                     (occ-readprop-props)))
                 (dolist (prop inherited-props)
                   (let* ((propstr (if (keywordp prop)
                                       (substring (symbol-name prop) 1)
                                     (symbol-name prop)))
-                         (val (org-entry-get nil propstr t)))
+                         (val (org-entry-get nil propstr inherit)))
                     (unless (occ-get-property tsk prop)
                       (occ-set-property tsk prop val))))))
             tsk))))
