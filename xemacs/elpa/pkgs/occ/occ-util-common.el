@@ -31,7 +31,8 @@
 (defvar occ-org-clock-persist nil "Control org-clock-persist at time of occ clock-in")
 (defvar occ-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of occ clock-in")
 (defvar occ-debug nil "Debug occ")
-
+(defvar occ-debug-uncond nil "occ-debug-uncond")
+
 
 ;;;###autoload
 (defun occ-enable-debug ()
@@ -41,6 +42,12 @@
 (defun occ-disable-debug ()
   (interactive)
   (setq occ-debug nil))
+
+
+(defun occ-debug-uncond (&rest args)
+  (when occ-debug-uncond
+    (apply #'message args)))
+
 
 (defun occ-message (&rest args)
   (apply #'message args))
@@ -54,6 +61,29 @@
         (apply #'lwarn 'occ level args))
       (unless (eq level :nodisplay)
         (apply #'message args)))))
+
+
+(defvar occ-condition-case-control-debug nil)
+
+;;;###autoload
+(defun occ-enable-condition-case-control-debug ()
+  (interactive)
+  (setq occ-condition-case-control-debug t))
+
+;;;###autoload
+(defun occ-disable-condition-case-control-debug ()
+  (interactive)
+  (setq occ-condition-case-control-debug nil))
+
+(defmacro condition-case-control (var bodyform &rest handlers)
+  (if (not occ-condition-case-control-debug)
+      `(condition-case ,var
+           ,bodyform
+         ,@handlers)
+    bodyform))
+(put 'condition-case-control 'lisp-indent-function 1)
+
+
 (defun upcase-sym (sym)
   (let ((symname (upcase (symbol-name sym))))
     (or
@@ -71,7 +101,7 @@
        (intern-soft (substring (symbol-name sym) 1))
        (intern (substring (symbol-name sym) 1)))
     sym))
-
+
 
 (defun occ-chgable-p ()
   "Stay with a clock at least 2 mins."
@@ -103,8 +133,8 @@
 
 (defun occ-completing-read (prompt collection &optional predicate require-match initial-input hist def inherit-input-method)
   (let ((helm-always-two-windows nil))
-    (occ-message "occ-completing-read: prompt %s collection %s"
-                 prompt collection)
+    (occ-debug-uncond "occ-completing-read: prompt %s collection %s"
+                      prompt collection)
     (completing-read prompt
                      collection
                      predicate
@@ -113,9 +143,11 @@
                      hist
                      def
                      inherit-input-method)))
+
 
 (cl-defmethod ignore-p ((buff buffer))
   nil)
+
 
 (defmacro run-unobtrusively (&rest body)
   `(if (called-interactively-p 'any)
@@ -134,54 +166,10 @@
       (when (eq retval t)
         (occ-debug :debug "user input %s retval %s" last-input-event retval))
       retval)))
-
-(defvar occ-condition-case-control-debug nil)
-
-;;;###autoload
-(defun occ-enable-condition-case-control-debug ()
-  (interactive)
-  (setq occ-condition-case-control-debug t))
-
-;;;###autoload
-(defun occ-disable-condition-case-control-debug ()
-  (interactive)
-  (setq occ-condition-case-control-debug nil))
-
-(defmacro condition-case-control (var bodyform &rest handlers)
-  (if (not occ-condition-case-control-debug)
-      `(condition-case ,var
-           ,bodyform
-         ,@handlers)
-    bodyform))
-(put 'condition-case-control 'lisp-indent-function 1)
 
 
 (defun occ-helm-buffer-p (buffer)
   (string-match "^*helm" (buffer-name buffer)))
-
-
-
-;; testing verification
-(defun occ-files-with-null-regex ()
-  (interactive)
-  (let ((files
-         (remove-if
-          #'(lambda (f)
-              (with-current-buffer (find-file-noselect f)
-                org-complex-heading-regexp))
-          (occ-files))))
-    (occ-message :debug "files with null regex %s" files)))
-
-;; testing verification;; testing verification
-(defun occ-files-not-in-org-mode ()
-  (interactive)
-  (let ((files
-         (remove-if
-          #'(lambda (f)
-              (with-current-buffer (find-file-noselect f)
-                (eq major-mode 'org-mode)))
-          (occ-files))))
-    (occ-message :debug "files not in org-mode %s" files)))
 
 
 ;;;###autoload

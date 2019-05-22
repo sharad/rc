@@ -609,8 +609,9 @@ Each entry is either:
           (when (and
                  org-task-base-dir
                  (file-directory-p org-task-base-dir))
-            (task-party-base-dir (org-publish-get-attribute "tasks" "org" :base-directory))
-            (task-scratch-dir "~/Scratches/main")
+
+            (task-party-base-dir     (org-publish-get-attribute "tasks" "org" :base-directory))
+            (task-scratch-dir        "~/Scratches/main")
             (task-projbuffs-base-dir (publishing-created-contents-path 'misc "projbuffs"))
 
             (task-add-task-party

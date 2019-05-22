@@ -66,18 +66,26 @@
                                              prop
                                              value)
   (lotus-with-marker mrk
-    (progn
-      (unless (org-get-property-block)
-        ;;create property drawer
-        ;; TODO: NOTE: only create property block if 100% sure value is going to be set.
-        (occ-debug :debug "occ-writeprop: property block not exist so creating it.")
-        (let* ((range (org-get-property-block (point) 'force))
-               (start (when (consp range) (1- (car range)))))
-          (when (numberp start)
-            (goto-char start))))
-      (occ-debug :debug
-                 "occ-writeprop: adding prop: %s value: %s using (org-set-property)." prop value)
-      (occ-org-set-property (symbol-name prop) value))))
+    (unless (org-get-property-block)
+      ;; create property drawer
+      ;; TODO: NOTE: only create property block if 100% sure value is going to be set.
+      (occ-debug :debug "occ-org-set-property-at-point: property block not exist so creating it.")
+      (let* ((range (org-get-property-block (point) 'force))
+             (start (when (consp range) (1- (car range)))))
+        (if (and range start)
+            (when (numberp start)
+              (goto-char start))
+          (error "occ-org-set-property-at-point: not able to create property block to add property %s: %s"
+                 prop value))))
+
+    (if (org-get-property-block)
+        (progn
+          (occ-debug :debug
+                     "occ-org-set-property-at-point: adding prop: %s value: %s using (org-set-property)."
+                     prop value)
+          (occ-org-set-property (symbol-name prop) value))
+        (error "occ-org-set-property-at-point: can not get property block to add property %s: %s"
+               prop value))))
 
 
 (cl-defgeneric occ-rank-with (obj
@@ -168,7 +176,8 @@
   (if value
       (let ((mrk (occ-obj-marker obj)))
         (if (occ-valid-marker mrk)
-            (occ-org-set-property-at-point mrk prop value)
+            (when (occ-org-set-property-at-point mrk prop value)
+              (occ-set-property obj prop value))
           (error "%s marker %s is not valid."
                  (occ-format obj 'capitalize)
                  mrk)))
@@ -229,8 +238,5 @@
                "occ-editprop: prop: %s, value: %s" prop value)
     (occ-writeprop obj value prop)))
 
-
-
-;; (plist-get '(:CURRFILE "/home/s/paradise/releases/main/src/install/mkAsanPatch.sh") :currfile)
 
 ;;; occ-prop.el ends here

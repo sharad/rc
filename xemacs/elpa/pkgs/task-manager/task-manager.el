@@ -379,27 +379,35 @@
 ;; (progn ;; task-type
 ;;;###autoload
 (defun task-org-master-file (task-type)
-  (if (member task-type (mapcar 'car *task-type-config*))
-      (cdr (assoc 'org-master-file (cdr (assoc task-type *task-type-config*))))
-      (error "task-type is not from *task-type-config*")))
+  (if (member task-type
+              (mapcar 'car *task-type-config*))
+      (cdr (assoc 'org-master-file
+                  (cdr (assoc task-type *task-type-config*))))
+    (error "task-type is not from *task-type-config*")))
 
 ;;;###autoload
 (defun task-first-org-master-file (task-type)
-  (if (member task-type (mapcar 'car *task-type-config*))
-      (cadr (assoc 'org-master-file (cdr (assoc task-type *task-type-config*))))
-      (error "task-type is not from *task-type-config*")))
+  (if (member task-type
+              (mapcar 'car *task-type-config*))
+      (cadr (assoc 'org-master-file
+                   (cdr (assoc task-type *task-type-config*))))
+    (error "task-type is not from *task-type-config*")))
 
 ;;;###autoload
 (defun task-org-todo-file (task-type)
-  (if (member task-type (mapcar 'car *task-type-config*))
-      (cadr (assoc 'org-todo-file (cdr (assoc task-type *task-type-config*))))
-      (error "task-type is not from *task-type-config*")))
+  (if (member task-type
+              (mapcar 'car *task-type-config*))
+      (cadr (assoc 'org-todo-file
+                   (cdr (assoc task-type *task-type-config*))))
+    (error "task-type is not from *task-type-config*")))
 
 ;;;###autoload
 (defun task-org-files (task-type)
-  (if (member task-type (mapcar 'car *task-type-config*))
-      (cdr (assoc 'org-files (cdr (assoc task-type *task-type-config*))))
-      (error "task-type is not from *task-type-config*")))
+  (if (member task-type
+              (mapcar 'car *task-type-config*))
+      (cdr (assoc 'org-files
+                  (cdr (assoc task-type *task-type-config*))))
+    (error "task-type is not from *task-type-config*")))
 ;;  )
 ;;
 
@@ -473,7 +481,13 @@
                                     (read-from-minibuffer
                                      (format "Enter the base directory in the project%s: " def-string)
                                      def-string))))
-    (append task-data (list project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder))))
+    (append task-data
+            (list project-type
+                  project-main-file
+                  project-root-folder
+                  project-file-filter
+                  doc-file-filter
+                  doc-base-virtual-folder))))
 
 ;;
 ;;;###autoload
@@ -614,12 +628,12 @@
 ;;;#autoload
 (defun task-delete-org-task (task-type name desc task-dir)
   (interactive (task-get-task-data))
-  (let ()
-    (org-remove-heading-from-file-headline
-     (task-get-org-description task-type name desc)
-     (expand-file-name (task-party-org-master-file) (task-party-dir))
-     (task-party-org-heading))
-    t))
+  (progn
+   (org-remove-heading-from-file-headline
+    (task-get-org-description task-type name desc)
+    (expand-file-name (task-party-org-master-file) (task-party-dir))
+    (task-party-org-heading))
+   t))
 
 ;; Project-Buffer
 ;;;#autoload

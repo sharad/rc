@@ -82,10 +82,10 @@
        ;;{{ currfile
        (cl-defmethod occ-rankprop-with ((obj occ-tsk)
                                         (ctx occ-ctx)
-                                        (prop (eql CURRFILE)))
+                                        (prop (eql currfile)))
          ;; file in which tsk aka org entry exists.
          "Predicate funtion to check if ctx matches to tsk's file attribute."
-         (occ-message "occ-rankprop-with: currfile begin")
+         (occ-debug-uncond "occ-rankprop-with: currfile begin")
          (let* ((tsk-currfile (occ-get-property obj prop))
                 (tsk-currfile (if tsk-currfile (file-truename tsk-currfile)))
                 (ctx-file     (occ-ctx-file ctx))
@@ -103,15 +103,15 @@
              0)))
 
        (cl-defmethod occ-get-property ((ctx occ-ctx)
-                                       (prop (eql CURRFILE)))
+                                       (prop (eql currfile)))
          "occ-get-property"
-         (occ-message "calling occ-get-property(ctx occ-ctx)")
+         (occ-debug-uncond "calling occ-get-property(ctx occ-ctx)")
          (let ((currfile (occ-ctx-file ctx)))
            currfile))
 
        (cl-defmethod occ-readprop-with ((obj occ-tsk)
                                         (ctx occ-ctx)
-                                        (prop (eql CURRFILE)))
+                                        (prop (eql currfile)))
          "currfile property for tsk aka org entry"
          (let* ((ctx-currfile (if ctx (occ-ctx-file ctx)))
                 (ctx-dir      (when (stringp ctx-currfile)

@@ -223,6 +223,29 @@
  (occ-message "occ-uninsinuate: finish"))
 
 
+;; testing verification
+(defun occ-files-with-null-regex ()
+  (interactive)
+  (let ((files
+         (remove-if
+          #'(lambda (f)
+              (with-current-buffer (find-file-noselect f)
+                org-complex-heading-regexp))
+          (occ-files))))
+    (occ-message "files with null regex %s" files)))
+
+;; testing verification
+(defun occ-files-not-in-org-mode ()
+  (interactive)
+  (let ((files
+         (remove-if
+          #'(lambda (f)
+              (with-current-buffer (find-file-noselect f)
+                (eq major-mode 'org-mode)))
+          (occ-files))))
+    (occ-message "files not in org-mode %s" files)))
+
+
 (defun occ-version (&optional here full message)
   "Show the Occ version.
 Interactively, or when MESSAGE is non-nil, show it in echo area.

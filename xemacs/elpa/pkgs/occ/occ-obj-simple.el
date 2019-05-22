@@ -127,7 +127,7 @@ pointing to it."
          (heading  (occ-get-property tsk 'heading-prop))
          (heading-prefix  " ")
          (prefix  (concat (make-string (+ level subtree-level) ?\*) " ")))
-    ;; (occ-message "fontify: %s subtree-level=%s" heading subtree-level)
+    ;; (occ-debug-uncond "fontify: %s subtree-level=%s" heading subtree-level)
     (if nil ;; if test without else with prefix
         (substring
          (org-fontify-like-in-org-mode
@@ -550,11 +550,10 @@ pointing to it."
             (> try 0)
             (not (occ-associable-with-p tsk ctx)))
       (setq try (1- try))
-      (occ-message "TEST %s is not associable with %s [try %d]"
-                   (occ-format tsk 'capitalize)
-                   (occ-format ctx 'capitalize)
-                   (- total-tries try))
-      ;; (occ-props-window-edit-with tsk ctx :timeout occ-idle-timeout)
+      (occ-debug-uncond "TEST %s is not associable with %s [try %d]"
+                        (occ-format tsk 'capitalize)
+                        (occ-format ctx 'capitalize)
+                        (- total-tries try))
       (occ-props-edit-with tsk ctx)))
 
   (unless (occ-clock-in-if-associable tsk ctx
@@ -880,7 +879,7 @@ pointing to it."
                                            :action-transformer  action-transformer
                                            :auto-select-if-only auto-select-if-only
                                            :timeout             timeout)))
-        (occ-message "occ-list-select: selected = %s" selected)
+        (occ-debug-uncond "occ-list-select: selected = %s" selected)
         (unless selected
           (occ-make-return occ-return-quit-label selected))))))
 
@@ -1131,11 +1130,11 @@ pointing to it."
                                       :action-transformer  (occ-return-tranformer-fun-transform action-transformer)
                                       :auto-select-if-only auto-select-if-only
                                       :timeout             timeout)))
-            (occ-message "occ-clock-in-if-not: operate %s retval %s"
-                         (occ-return-in-labels-p retval
-                                                 occ-return-quit-label
-                                                 occ-return-timeout-label)
-                         (occ-return-get-value retval))
+            (occ-debug-uncond "occ-clock-in-if-not: operate %s retval %s"
+                              (occ-return-in-labels-p retval
+                                                      occ-return-quit-label
+                                                      occ-return-timeout-label)
+                              (occ-return-get-value retval))
             (if (occ-return-in-labels-p retval
                                         occ-return-quit-label
                                         occ-return-timeout-label)
@@ -1156,7 +1155,8 @@ pointing to it."
                         (occ-debug :debug "trying to create unnamed tsk.")
                         (occ-message "trying to create unnamed tsk.")
                         (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))))
-              (occ-message "occ-clock-in-if-not: Can not operate on %s" (occ-format (occ-return-get-value retval)))))
+              (occ-debug-uncond "occ-clock-in-if-not: Can not operate on %s"
+                                (occ-format (occ-return-get-value retval)))))
           (occ-debug :debug "occ-clock-in-if-not: Now really clock done."))
       (prog1
           nil
