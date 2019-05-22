@@ -209,7 +209,7 @@
                                     (ctx occ-ctx))
   (occ-make-ctxual-tsk tsk
                        ctx
-                       (occ-rank tsk ctx)))
+                       (occ-rank-with tsk ctx)))
 
 
 (cl-defmethod occ-build-obj ((tsk occ-tsk) (obj occ-ctx))

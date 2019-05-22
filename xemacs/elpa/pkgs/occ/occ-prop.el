@@ -99,7 +99,7 @@
   (let ((rank
          (reduce #'+
                  (mapcar #'(lambda (slot) ;;TODO: check if method exist or not, or use some default method.
-                             (occ-rank (cons slot obj) ctx))
+                             (occ-rankprop-with obj ctx slot))
                          (occ-class-slots obj)))))
     rank))
 
@@ -115,6 +115,16 @@
   (let ((tsk (occ-ctsk-tsk obj))
         (ctx (occ-ctsk-ctx obj)))
     (occ-rankprop-with tsk ctx prop)))
+
+;; (cl-defmethod occ-rankprop-with ((obj occ-tsk)
+;;                                  (ctx occ-ctx)
+;;                                  (prop symbol))
+;;   (occ-rankprop-with obj ctx prop))
+
+(cl-defmethod occ-rankprop-with (obj
+                                 ctx
+                                 prop)
+  0)
 
 
 (cl-defgeneric occ-writeprop-with (obj
