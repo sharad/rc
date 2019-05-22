@@ -279,12 +279,6 @@ pointing to it."
                     (occ-tsk-builder))))
           tsk)))))
 
-(defun occ-valid-marker (marker)
-  (when (and
-         marker
-         (marker-buffer marker))
-    marker))
-
 (defun occ-current-tsk (&optional occ-other-allowed)
   (let ((tsk (car
               *occ-clocked-ctxual-tsk-ctx-history*)))

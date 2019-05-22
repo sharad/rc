@@ -106,6 +106,13 @@
     sym))
 
 
+(defun occ-valid-marker (marker)
+  (when (and
+         marker
+         (marker-buffer marker))
+    marker))
+
+
 (defun occ-chgable-p ()
   "Stay with a clock at least 2 mins."
   (if org-clock-start-time
