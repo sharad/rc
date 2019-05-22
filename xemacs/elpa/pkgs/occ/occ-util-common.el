@@ -27,9 +27,12 @@
 
 
 (defvar occ-verbose 0)
+
 
 (defvar occ-org-clock-persist nil "Control org-clock-persist at time of occ clock-in")
 (defvar occ-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of occ clock-in")
+
+
 (defvar occ-debug nil "Debug occ")
 (defvar occ-debug-uncond nil "occ-debug-uncond")
 

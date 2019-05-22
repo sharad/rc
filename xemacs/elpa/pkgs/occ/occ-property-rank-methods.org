@@ -118,8 +118,6 @@
                                 (file-name-directory ctx-currfile)))
                 (prompt       (concat (symbol-name prop) ": ")))
            (ido-read-file-name prompt ctx-dir ctx-currfile)))
-
-       ;; (occ-get-property (occ-make-ctx-at-point) 'currfile)
        ;;}}
        
 
