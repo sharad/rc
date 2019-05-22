@@ -310,22 +310,36 @@
 
 (defun lotus-layers-list ()
   (let* ((all-layers
-           (append
-            (lotus-dist-layers-group-dirs-layers-select "~/.emacs.d/layers/")
-            (lotus-dist-layers-group-dirs-layers-select "~/.spacemacs-mycontribs/" "^lotus-[a-zA-Z]+")))
+          (append
+           (lotus-dist-layers-group-dirs-layers-select "~/.emacs.d/layers/")
+           (lotus-dist-layers-group-dirs-layers-select "~/.spacemacs-mycontribs/" "^lotus-[a-zA-Z]+")))
          (all-without-excluded-layers
-           (set-difference
-            all-layers (spacemacs-dist-layers-exclude)))
+          (set-difference
+           all-layers (spacemacs-dist-layers-exclude)))
          (all-with-included-layers
-           (append all-without-excluded-layers (spacemacs-dist-layers-include))))
+          (append all-without-excluded-layers (spacemacs-dist-layers-include))))
     all-with-included-layers))
+
+
+(defun lotus-debug-emacs-user-init-begin ()
+  (add-hook 'fundamental-mode-hook
+            #'(lambda ()
+                (if (and
+                     (not (buffer-file-name))
+                     (or
+                      (string= (buffer-name) "report.org")
+                      (string= (buffer-name) "report.org<2>")))
+                    (progn
+                     (message "creating report.org<2> buffer")
+                     (debug))))))
+
 
 (defun cleanup-tty-process ()
   (interactive)
   (let ((tty-processes
-          (remove-if-not
-           'process-tty-name
-           (process-list))))
+         (remove-if-not
+          'process-tty-name
+          (process-list))))
     (dolist (tp tty-processes)
       (kill-process tp))))
 
@@ -567,19 +581,19 @@
     (put-file-in-rcs (auto-config-file "startup/startup.log"))
     (with-current-buffer "*Messages*"
       (setq messages-buffer-max-lines 2000)
-            ;; old-messages-buffer-max-lines
+      ;; old-messages-buffer-max-lines
 
       ;; (append-to-buffer "*xxemacs-startup-log*" (point-min) (point-max))
       (copy-to-buffer "*emacs-startup-log*" (point-min) (point-max))))
 
-    ;; (with-current-buffer "*emacs-startup-log*"
-    ;;   ;; (with-temp-file file body)
-    ;;   (set-buffer-file-coding-system
-    ;;    (if (coding-system-p 'utf-8-emacs)
-    ;;        'utf-8-emacs
-    ;;        'emacs-mule))
-    ;;   (write-region (point-min) (point-max) "~/.emacs.d/startup.log" t)
-    ;;   (put-file-in-rcs "~/.emacs.d/startup.log"))
+  ;; (with-current-buffer "*emacs-startup-log*"
+  ;;   ;; (with-temp-file file body)
+  ;;   (set-buffer-file-coding-system
+  ;;    (if (coding-system-p 'utf-8-emacs)
+  ;;        'utf-8-emacs
+  ;;        'emacs-mule))
+  ;;   (write-region (point-min) (point-max) "~/.emacs.d/startup.log" t)
+  ;;   (put-file-in-rcs "~/.emacs.d/startup.log"))
 
 
 
@@ -595,8 +609,8 @@
    'lotus-enable-startup-interrupting-feature-hook
    #'(lambda ()
        (with-temp-buffer
-           (spacemacs/startup-hook))))
-   ;; 'spacemacs-buffer/goto-buffer
+         (spacemacs/startup-hook))))
+  ;; 'spacemacs-buffer/goto-buffer
 
 
   (when (advice--p (advice--symbol-function 'server-create-window-system-frame))
@@ -621,6 +635,8 @@
     (defun spacemacs/lazy-load-stickyfunc-enhance ()
       "Lazy load the package."
       (require 'stickyfunc-enhance)))
+
+  (lotus-debug-emacs-user-init-begin)
 
 
   (message "loading lotus-emacs-user-init-finish finished"))
