@@ -61,6 +61,23 @@
 (defun occ-org-set-property (prop value)
   (lotus-org-with-safe-modification
     (org-set-property prop value)))
+
+(cl-defmethod occ-org-set-property-at-point ((mrk marker)
+                                             prop
+                                             value)
+  (lotus-with-marker mrk
+    (progn
+      (unless (org-get-property-block)
+        ;;create property drawer
+        ;; TODO: NOTE: only create property block if 100% sure value is going to be set.
+        (occ-debug :debug "occ-writeprop: property block not exist so creating it.")
+        (let* ((range (org-get-property-block (point) 'force))
+               (start (when (consp range) (1- (car range)))))
+          (when (numberp start)
+            (goto-char start))))
+      (occ-debug :debug
+                 "occ-writeprop: adding prop: %s value: %s using (org-set-property)." prop value)
+      (occ-org-set-property (symbol-name prop) value))))
 
 
 (cl-defgeneric occ-rank-with (obj
@@ -149,17 +166,12 @@
   (occ-debug :debug "occ-writeprop: prop: %s, value: %s"
              prop value)
   (if value
-      (progn
-        (unless (org-get-property-block)
-          ;;create property drawer
-          (occ-debug :debug "occ-writeprop: property block not exist so creating it.")
-          (let* ((range (org-get-property-block (point) 'force))
-                 (start (when (consp range) (1- (car range)))))
-            (when (numberp start)
-              (goto-char start))))
-        (occ-debug :debug
-                   "occ-writeprop: adding prop: %s value: %s using (org-set-property)." prop value)
-        (occ-org-set-property (symbol-name prop) value))
+      (let ((mrk (occ-obj-marker obj)))
+        (if (occ-valid-marker mrk)
+            (occ-org-set-property-at-point mrk prop value)
+          (error "%s marker %s is not valid."
+                 (occ-format obj 'capitalize)
+                 mrk)))
     (error "occ-writeprop value is nil")))
 (cl-defmethod occ-readprop-with ((obj occ-tsk)
                                  (ctx occ-ctx)
