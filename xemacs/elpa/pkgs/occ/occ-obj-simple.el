@@ -494,7 +494,8 @@ pointing to it."
                          :action-transformer  (occ-return-tranformer-fun-transform action-transformer)
                          :auto-select-if-only auto-select-if-only
                          :timeout             timeout)))
-      (if (occ-return-in-labels-p return-ctxual-tsk occ-return-select-label) ;TODO: should return t if action were done than select[=identity] ;; occ-return-label
+      (if (occ-return-in-labels-p return-ctxual-tsk ;TODO: should return t if action were done than select[=identity] ;; occ-return-label
+                                  occ-return-select-label)
           (let ((ctxual-tsk (occ-return-get-value return-ctxual-tsk)))
             (prog1
                 (occ-make-return occ-return-true-label nil)
@@ -514,7 +515,8 @@ pointing to it."
           (occ-debug :debug
                      "occ-clock-in(ctx):  with this-command=%s" this-command)
           ;; (occ-delayed-select-obj-prop-edit-when-idle obj obj occ-idle-timeout)
-          (occ-message "occ-clock-in((obj occ-ctx)): calling occ-safe-ignore-quit-props-window-edit")
+          (occ-debug-uncond "occ-clock-in((obj occ-ctx)): calling occ-safe-ignore-quit-props-window-edit")
+          (occ-message "occ-clock-in: Edit properties of a tsk to make associable to current context.")
           (occ-safe-ignore-quit-props-window-edit obj
                                                   :collector          #'occ-list
                                                   :action             action
