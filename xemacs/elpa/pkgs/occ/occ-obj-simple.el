@@ -474,9 +474,6 @@ pointing to it."
 
 (cl-defmethod occ-clock-in ((obj occ-ctx)
                             &key
-                            candidate-transformer
-                            occ-return-tranform
-                            occ-return-tranformer-fun-transform
                             collector
                             action
                             action-transformer
@@ -493,8 +490,8 @@ pointing to it."
     (let ((return-ctxual-tsk
              (occ-select obj            ;TODO: if only one match then where it is selecting that.
                          :collector           collector
-                         :action              action
-                         :action-transformer  action-transformer
+                         :action              (occ-return-tranform action) ;as return value is going to be used.
+                         :action-transformer  (occ-return-tranformer-fun-transform action-transformer)
                          :auto-select-if-only auto-select-if-only
                          :timeout             timeout)))
       (if (occ-return-in-labels-p return-ctxual-tsk occ-return-select-label) ;TODO: should return t if action were done than select[=identity] ;; occ-return-label
@@ -1130,8 +1127,8 @@ pointing to it."
              "TODO: if (occ-current-tsk) is not unnamed than ask confirmation by :auto-select-if-only 'confirm")
           (let ((retval (occ-clock-in ctx
                                       :collector           collector
-                                      :action              action
-                                      :action-transformer  action-transformer
+                                      :action              (occ-return-tranform action) ;as return value is going to be used.
+                                      :action-transformer  (occ-return-tranformer-fun-transform action-transformer)
                                       :auto-select-if-only auto-select-if-only
                                       :timeout             timeout)))
             (occ-message "occ-clock-in-if-not: operate %s retval %s"
