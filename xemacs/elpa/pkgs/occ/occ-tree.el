@@ -113,6 +113,19 @@
     (tree-remove-if-not-nodes
      'occ-tree-tsk-subtree fn tree args)))
 
+;; (defun occ-org-map-subheading (fun)
+;;   "Call FUN for every heading underneath the current heading"
+;;   ;; (org-back-to-heading)
+;;   (let ((level (funcall outline-level))
+;;         (collection nil))
+;;     (save-excursion
+;;       (while (and (progn
+;;                     (outline-next-heading)
+;;                     (> (funcall outline-level) level))
+;;                   (not (eobp)))
+;;         (if (= (funcall outline-level) (1+ level))
+;;             (nconc collection (list (funcall fun))))))
+;;     collection))
 
 (defun occ-org-map-subheading (fun)
   "Call FUN for every heading underneath the current heading"

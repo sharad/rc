@@ -87,6 +87,11 @@
 (put 'condition-case-control 'lisp-indent-function 1)
 
 
+(defun downcase-sym (sym)
+  (let ((symname (upcase (symbol-name sym))))
+    (or
+     (intern-soft symname)
+     (intern symname))))
 (defun upcase-sym (sym)
   (let ((symname (upcase (symbol-name sym))))
     (or

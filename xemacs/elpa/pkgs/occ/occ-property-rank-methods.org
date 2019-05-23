@@ -126,42 +126,48 @@
 *** Root dir property of task
     #+begin_src elisp
 
-            ;;{{ root
-            (cl-defmethod occ-rankprop-with ((obj occ-tsk)
-                                             (ctx occ-ctx)
-                                             (prop (eql root)))
-              "RANK Predicate funtion to check if ctx matches to tsk's file attribute."
-              (let* ((tsk-root (occ-get-property obj prop))
-                     (tsk-root (when tsk-root (file-truename tsk-root)))
-                     (ctx-file (occ-ctx-file ctx))
-                     (ctx-file (when ctx-file (file-truename ctx-file))))
-                (if tsk-root
-                    (progn
-                      (occ-debug :nodisplay "tsk %s tsk-root %s" (occ-format obj 'capitalize) tsk-root)
-                      (occ-debug :nodisplay "tsk %s ctx-file %s" (occ-format obj 'capitalize) ctx-file))
-                  (occ-debug :nodisplay "tsk %s tsk-root %s not present."
-                             (occ-format obj 'capitalize) tsk-root))
-                (if (and tsk-root ctx-file
-                         (string-match tsk-root ctx-file))
-                    (length tsk-root)
-                  0)))
+      ;;{{ root
+      (cl-defmethod occ-rankprop-with ((obj occ-tsk)
+                                       (ctx occ-ctx)
+                                       (prop (eql root)))
+        "RANK Predicate funtion to check if ctx matches to tsk's ROOT attribute."
+        (occ-message "rankprop-with(%s, %s, %s): begin"
+                     (occ-format obj 'capitalize)
+                     (occ-format ctx 'capitalize)
+                     prop)
+        (let* ((tsk-root (occ-get-property obj prop))
+               (tsk-root (when tsk-root (file-truename tsk-root)))
+               (ctx-file (occ-ctx-file ctx))
+               ;; (ctx-file (when ctx-file (file-truename ctx-file)))
+               (ctx-dir  (when (stringp ctx-file) (file-name-directory ctx-file)))
+               (ctx-dir  (when (stringp ctx-file) (file-truename ctx-dir))))
+          (if tsk-root
+              (progn
+                (occ-message "tsk %s tsk-root: %s" (occ-format obj 'capitalize) tsk-root)
+                (occ-message "tsk %s ctx-dir:  %s" (occ-format obj 'capitalize) ctx-dir))
+            (occ-message "tsk %s tsk-root %s not present."
+                         (occ-format obj 'capitalize) tsk-root))
+          (if (and tsk-root ctx-dir
+                   (string-match tsk-root ctx-dir))
+              (length tsk-root)
+            0)))
 
-            (cl-defmethod occ-get-property ((ctx occ-ctx)
-                                            (prop (eql root)))
-              "occ-get-property"
-              (let ((file (occ-ctx-file ctx)))
-                (when file (dirname-of-file file))))
+      (cl-defmethod occ-get-property ((ctx occ-ctx)
+                                      (prop (eql root)))
+        "occ-get-property"
+        (let ((file (occ-ctx-file ctx)))
+          (when file (dirname-of-file file))))
 
-            (cl-defmethod occ-readprop-with ((obj occ-tsk)
-                                             (ctx occ-ctx)
-                                             (prop (eql root)))
-              "READ"
-              (let* ((ctx-file   (when ctx (occ-ctx-file ctx)))
-                     (ctx-dir    (when (stringp ctx-file) (file-name-directory ctx-file)))
-                     (prompt (concat (symbol-name prop) ": ")))
-                (ido-read-directory-name prompt ctx-dir ctx-dir)))
-            ;;}}
-            
+      (cl-defmethod occ-readprop-with ((obj occ-tsk)
+                                       (ctx occ-ctx)
+                                       (prop (eql root)))
+        "READ"
+        (let* ((ctx-file   (when ctx (occ-ctx-file ctx)))
+               (ctx-dir    (when (stringp ctx-file) (file-name-directory ctx-file)))
+               (prompt     (concat (symbol-name prop) ": ")))
+          (ido-read-directory-name prompt ctx-dir ctx-dir)))
+      ;;}}
+      
     #+end_src
 
 *** Timebeing property of task (not fully implemented) will use for keeping a task clocked in for given time

@@ -247,17 +247,18 @@ pointing to it."
                            (mrk marker))
   (let ((obj-marker (occ-heading-marker obj))
         (mrk-marker (occ-heading-marker mrk)))
-    (equal obj-marker mrk-marker)))
+    (equal obj-marker
+           mrk-marker)))
 
 (cl-defmethod occ-marker= ((obj occ-obj-tsk)
                            (mrk marker))
   (occ-marker= (occ-obj-marker obj) mrk))
-
 
 
 ;; (cl-defmethod occ-find ((collection occ-collection) (mrk marker)))
 
-(cl-defmethod occ-find ((collection list) (mrk marker)))
+(cl-defmethod occ-find ((collection list)
+                        (mrk marker)))
 
 
 (cl-defmethod occ-current-tsk-with ((sym null))
@@ -306,7 +307,9 @@ pointing to it."
 
 (cl-defmethod occ-current-associated-p ((ctx occ-ctx))
   (let ((tsk (occ-current-tsk)))
-    (occ-associable-with-p tsk ctx)))
+    (when tsk
+     (occ-associable-with-p tsk
+                            ctx))))
 
 
 (cl-defmethod occ-associable-with-p (obj
@@ -642,6 +645,7 @@ pointing to it."
          (marker-buffer mrk))
         (occ-set-to mrk)
       (error "marker %s invalid." mrk))))
+
 
 
 (defvar occ-capture+-helm-templates-alist org-capture+-helm-templates-alist)

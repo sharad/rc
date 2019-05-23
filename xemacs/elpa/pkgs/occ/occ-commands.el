@@ -41,34 +41,18 @@
   (interactive)
   (occ-helm-select (occ-make-ctx-at-point)
                    :collector #'occ-matches
-                   :action (occ-helm-actions-get
-                            :try-clock-in
-                            :procreate-child
-                            :procreate-child-clock-in
-                            :goto)
+                   :action (occ-helm-intractive-command-actions)
                    :action-transformer #'(lambda (action candidate)
-                                           (occ-helm-actions-get
-                                            :try-clock-in
-                                            :procreate-child
-                                            :procreate-child-clock-in
-                                            :goto))
+                                           (occ-helm-intractive-command-actions))
                    :timeout occ-idle-timeout))
 
 (defun occ-helm-list-select ()
   (interactive)
   (occ-helm-select (occ-make-ctx-at-point)
                    :collector #'occ-list
-                   :action (occ-helm-actions-get
-                            :try-clock-in
-                            :procreate-child
-                            :procreate-child-clock-in
-                            :goto)
+                   :action (occ-helm-intractive-command-actions)
                    :action-transformer #'(lambda (action candidate)
-                                           (occ-helm-actions-get
-                                            :try-clock-in
-                                            :procreate-child
-                                            :procreate-child-clock-in
-                                            :goto))
+                                           (occ-helm-intractive-command-actions))
                    :timeout occ-idle-timeout))
 
 
@@ -168,8 +152,18 @@
   ;; also detect if day is started.
   (error "Implement it."))
 
+(defun occ-show-up (mins)
+  (interactive)
+  ;; https://www.merriam-webster.com/thesaurus/pack%20(up%20or%20off)
+  (error "Implement it."))
+
 (defun occ-stop-day ()
   (interactive)
+  (error "Implement it."))
+
+(defun occ-pack-up (mins)
+  (interactive)
+  ;; https://www.merriam-webster.com/thesaurus/pack%20(up%20or%20off)
   (error "Implement it."))
 
 

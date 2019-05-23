@@ -114,41 +114,40 @@
                             prop)
   ;; too much output
   ;; (occ-debug :debug "occ-rank(tsk-pair=%s ctx=%s)" tsk-pair ctx)
+  (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop)
   0)
 
 ;; ISSUE? should it return rank or occ-ctxual-tsk
 (cl-defmethod occ-rank-with ((obj occ-tsk)
                              (ctx occ-ctx))
   ;; too much output
-  ;; (occ-debug :debug "occ-rank(tsk=%s ctx=%s)" tsk ctx)
+  (occ-debug :debug "occ-rank(obj=%s ctx=%s)" obj ctx)
   (let ((rank
          (reduce #'+
                  (mapcar #'(lambda (slot) ;;TODO: check if method exist or not, or use some default method.
-                             (occ-rankprop-with obj ctx slot))
+                             ;; (occ-debug-uncond "occ-rank-with((obj occ-tsk) (ctx occ-ctx)): checking slot %s" slot)
+                             (occ-rankprop-with obj ctx (downcase-sym slot)))
                          (occ-class-slots obj)))))
     rank))
 
-(cl-defmethod occ-rank ((tsk occ-obj-ctx-tsk))
+(cl-defmethod occ-rank ((obj occ-obj-ctx-tsk))
   ;; too much output
-  ;; (occ-debug :debug "occ-rank(tsk=%s ctx=%s)" tsk ctx)
+  (occ-debug :debug "occ-rank(obj=%s)" obj)
   (let ((tsk (occ-ctsk-tsk obj))
         (ctx (occ-ctsk-ctx obj)))
     (occ-rank-with tsk ctx)))
 
 (cl-defmethod occ-rankprop ((obj  occ-obj-ctx-tsk)
                             (prop symbol))
+  (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop)
   (let ((tsk (occ-ctsk-tsk obj))
         (ctx (occ-ctsk-ctx obj)))
     (occ-rankprop-with tsk ctx prop)))
 
-;; (cl-defmethod occ-rankprop-with ((obj occ-tsk)
-;;                                  (ctx occ-ctx)
-;;                                  (prop symbol))
-;;   (occ-rankprop-with obj ctx prop))
-
 (cl-defmethod occ-rankprop-with (obj
                                  ctx
                                  prop)
+  (occ-debug :debug "occ-rankprop-with(obj=%s ctx=%s symbol=%s)" obj ctx prop)
   0)
 
 
@@ -239,4 +238,12 @@
     (occ-writeprop obj value prop)))
 
 
+
+
+(cl-defmethod occ-print-rank ((obj occ-obj-ctx-tsk))
+  (occ-message "Rank for %s is %d"
+               (occ-format obj 'capitalize)
+               (occ-rank obj)))
+
+
 ;;; occ-prop.el ends here

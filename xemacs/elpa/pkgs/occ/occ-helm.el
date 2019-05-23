@@ -35,6 +35,14 @@
 (defun occ-helm-action-get (key)
   (plist-get occ-helm-actions-plist key))
 
+;; (defun occ-helm-actions-get (&rest keys)
+;;   (let ((actions nil))
+;;     (dolist (key keys)
+;;       (let ((name-action (occ-helm-action-get key)))
+;;         (when name-action
+;;           (nconc actions (list name-action)))))
+;;     actions))
+
 (defun occ-helm-actions-get (&rest keys)
   (let ((actions nil))
     (dolist (key keys)
@@ -43,14 +51,19 @@
           (push name-action actions))))
     (reverse actions)))
 
-(occ-helm-action-add :identity                 "Select"                   #'identity)
-(occ-helm-action-add :clock-in                 "Clock-in"                 #'occ-clock-in)
-(occ-helm-action-add :try-clock-in             "Try Clock-in"             #'occ-try-clock-in)
-(occ-helm-action-add :procreate-child          "Procreate Child"          #'occ-procreate-child)
-(occ-helm-action-add :procreate-child-clock-in "Procreate Child Clock-in" #'occ-procreate-child-clock-in)
-(occ-helm-action-add :goto                     "Goto"                     #'occ-goto)
-(occ-helm-action-add :set-to                   "Set To"                   #'occ-set-to)
-(occ-helm-action-add :proprty-window-edit      "Proprtes Window Edit"     #'occ-props-window-edit) ;TODO: implement it.
+(progn
+
+  (setq occ-helm-actions-plist nil)
+
+  (occ-helm-action-add :identity                 "Select"                   #'identity)
+  (occ-helm-action-add :clock-in                 "Clock-in"                 #'occ-clock-in)
+  (occ-helm-action-add :try-clock-in             "Try Clock-in"             #'occ-try-clock-in)
+  (occ-helm-action-add :procreate-child          "Procreate Child"          #'occ-procreate-child)
+  (occ-helm-action-add :procreate-child-clock-in "Procreate Child Clock-in" #'occ-procreate-child-clock-in)
+  (occ-helm-action-add :goto                     "Goto"                     #'occ-goto)
+  (occ-helm-action-add :set-to                   "Set To"                   #'occ-set-to)
+  (occ-helm-action-add :proprty-window-edit      "Proprtes Window Edit"     #'occ-props-window-edit) ;TODO: implement it.
+  (occ-helm-action-add :rank                     "Get Rank"                 #'occ-print-rank))
 
 
 (defun occ-helm-general-actions ()
@@ -58,7 +71,17 @@
                         :procreate-child-clock-in
                         :proprty-window-edit
                         :try-clock-in
-                        :goto))
+                        :goto
+                        :rank))
+
+(defun occ-helm-intractive-command-actions ()
+  (occ-helm-actions-get :try-clock-in
+                        :procreate-child
+                        :procreate-child-clock-in
+                        :proprty-window-edit
+                        :try-clock-in
+                        :goto
+                        :rank))
 
 (cl-defmethod occ-helm-actions ((obj null))
   (occ-helm-general-actions))
