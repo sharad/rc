@@ -63,7 +63,8 @@
   (occ-helm-action-add :goto                     "Goto"                     #'occ-goto)
   (occ-helm-action-add :set-to                   "Set To"                   #'occ-set-to)
   (occ-helm-action-add :proprty-window-edit      "Proprtes Window Edit"     #'occ-props-window-edit) ;TODO: implement it.
-  (occ-helm-action-add :rank                     "Get Rank"                 #'occ-print-rank))
+  (occ-helm-action-add :rank                     "Get Rank"                 #'occ-print-rank)
+  (occ-helm-action-add :tsk                      "Get Task"                 #'occ-print-tsk))
 
 
 (defun occ-helm-general-actions ()
@@ -72,7 +73,8 @@
                         :proprty-window-edit
                         :try-clock-in
                         :goto
-                        :rank))
+                        :rank
+                        :tsk))
 
 (defun occ-helm-intractive-command-actions ()
   (occ-helm-actions-get :try-clock-in
@@ -81,7 +83,8 @@
                         :proprty-window-edit
                         :try-clock-in
                         :goto
-                        :rank))
+                        :rank
+                        :tsk))
 
 (cl-defmethod occ-helm-actions ((obj null))
   (occ-helm-general-actions))

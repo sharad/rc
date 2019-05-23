@@ -30,20 +30,22 @@
 (require 'occ-obj)
 
 
-(defvar occ-return-select-label    :occ-selected "should not be null")
-(defvar occ-return-quit-label      :occ-quitted "should not be null")
-(defvar occ-return-timeout-label   :occ-timeout "should not be null") ;TODO: need to implement.
-(defvar occ-return-true-label      :occ-true "should not be null")
-(defvar occ-return-false-label     :occ-false "should not be null")
+(defvar occ-return-select-label     :occ-selected    "should not be null")
+(defvar occ-return-quit-label       :occ-nocandidate "should not be null")
+(defvar occ-return-nocndidate-label :occ-quitted     "should not be null")
+(defvar occ-return-timeout-label    :occ-timeout     "should not be null") ;TODO: need to implement.
+(defvar occ-return-true-label       :occ-true        "should not be null")
+(defvar occ-return-false-label      :occ-false       "should not be null")
+(cl-assert occ-return-select-label)
+(cl-assert occ-return-quit-label)
+(cl-assert occ-return-nocndidate-label)
+(cl-assert occ-return-true-label)
+(cl-assert occ-return-false-label)
+
 (defvar occ-return-select-function #'identity)
 (defvar occ-return-select-name     "Select")
-
-(cl-assert occ-return-select-label   )
-(cl-assert occ-return-quit-label     )
-(cl-assert occ-return-true-label     )
-(cl-assert occ-return-false-label    )
-(cl-assert occ-return-select-function)
-(cl-assert occ-return-select-name    )
+(cl-assert occ-return-select-function )
+(cl-assert occ-return-select-name     )
 
 
 
@@ -109,72 +111,6 @@
 
 (cl-defmethod occ-return-get-label ((retval occ-return))
   (occ-return-label retval))
-
-
-;; (defvar occ-return-operate-label    'occ-operate "should not be null")
-;; (defvar occ-return-true-label       'occ-true "should not be null")
-;; (defvar occ-return-false-label      'occ-false "should not be null")
-;; (defvar occ-return-select-function #'identity)
-;; (defvar occ-return-select-name    "Select")
-
-;; (cl-assert occ-return-operate-label)
-;; (cl-assert occ-return-true-label)
-;; (cl-assert occ-return-false-label)
-
-;; (defun occ-build-return-lambda (action &optional label)
-;;   #'(lambda (candidate)
-;;       (let* ((value
-;;               (funcall action candidate))
-;;              (label
-;;               (or label
-;;                   (if value
-;;                       occ-return-true-label
-;;                     occ-return-false-label))))
-;;        (occ-make-return label value))))
-
-;; (defun occ-return-tranform (action)
-;;   "Will make all action except first to return occ-return-label."
-;;   (cons
-;;    (cons
-;;     occ-return-select-name
-;;     (occ-build-return-lambda occ-return-select-function
-;;                              occ-return-select-label))
-;;    (mapcar #'(lambda (a)
-;;                (if (consp a)
-;;                    (cons (car a)
-;;                          (occ-build-return-lambda (cdr a)))
-;;                  (occ-build-return-lambda a)))
-;;            action)))
-
-;; (defun occ-return-tranformer-fun-transform (tranformer-fun)
-;;   "Will make transformer fun to change action except first to return occ-return-label."
-;;   #'(lambda (action
-;;              candidate)
-;;       (occ-return-tranform
-;;        (funcall tranformer-fun action candidate))))
-
-;; (cl-defmethod occ-return-operate-p (retval)
-;;   retval)
-
-;; (cl-defmethod occ-return-operate-p ((retval occ-return))
-;;   (eq
-;;    occ-return-operate-label
-;;    (occ-return-label retval)))
-
-;; ;; (cl-defmethod occ-return-operate-p ((retval null))
-;; ;;   nil)
-
-;; (cl-defmethod occ-return-get-value (retval)
-;;   retval)
-
-;; (cl-defmethod occ-return-get-value ((retval occ-return))
-;;   (occ-return-value retval))
-
-;; (cl-defmethod occ-return-get-label (retval)
-;;   retval)
-
-;; (cl-defmethod occ-return-get-label ((retval occ-return))
-;;   (occ-return-label retval))
 
 
 ;;; occ-obj-utils.el ends here

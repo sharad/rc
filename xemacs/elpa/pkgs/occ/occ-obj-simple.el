@@ -483,7 +483,7 @@ pointing to it."
         (action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
-
+    (occ-debug-uncond "occ-clock-in((obj occ-ctx)): begin")
     (let ((return-ctxual-tsk
              (occ-select obj ;TODO: if only one match then where it is selecting that.
                          :collector           collector
@@ -491,6 +491,10 @@ pointing to it."
                          :action-transformer  (occ-return-tranformer-fun-transform action-transformer)
                          :auto-select-if-only auto-select-if-only
                          :timeout             timeout)))
+      (occ-debug-uncond "occ-clock-in((obj occ-ctx)): selected  return-ctxual-tsk=%s ret-label=%s value=%s"
+                        return-ctxual-tsk
+                        (occ-return-in-labels-p return-ctxual-tsk occ-return-select-label)
+                        (occ-format (occ-return-get-value return-ctxual-tsk)))
       (if (occ-return-in-labels-p return-ctxual-tsk ;TODO: should return t if action were done than select[=identity] ;; occ-return-label
                                   occ-return-select-label)
           (let ((ctxual-tsk (occ-return-get-value return-ctxual-tsk)))
@@ -880,8 +884,9 @@ pointing to it."
                                            :auto-select-if-only auto-select-if-only
                                            :timeout             timeout)))
         (occ-debug-uncond "occ-list-select: selected = %s" selected)
-        (unless selected
-          (occ-make-return occ-return-quit-label selected))))))
+        (or
+         selected
+         (occ-make-return occ-return-quit-label selected))))))
 
 
 (cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
@@ -1067,16 +1072,23 @@ pointing to it."
                           timeout)
   "return interactively selected TSK or NIL"
   (unless collector (error "Collector can not be nil"))
+  (occ-debug-uncond "occ-select((obj occ-ctx)): begin")
   (let ((action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
     (let ((candidates (funcall collector obj)))
-      (when candidates
-        (occ-list-select candidates
-                         :action              action
-                         :action-transformer  action-transformer
-                         :auto-select-if-only auto-select-if-only
-                         :timeout             timeout)))))
+      (if candidates
+          (let ((retval (occ-list-select candidates
+                                         :action              action
+                                         :action-transformer  action-transformer
+                                         :auto-select-if-only auto-select-if-only
+                                         :timeout             timeout)))
+            (occ-debug-uncond "occ-select((obj occ-ctx)): occ-list-select returned %s"
+                              (occ-format retval 'capitalize))
+            retval)
+        (prog1
+            (occ-make-return occ-return-nocndidate-label nil)
+          (occ-message "occ-select((obj occ-ctx)): no candidates available."))))))
 
 (cl-defmethod occ-select ((obj null)
                           &key
@@ -1085,12 +1097,16 @@ pointing to it."
                           action-transformer
                           auto-select-if-only
                           timeout)
-  (occ-select obj
-              :collector           collector
-              :action              action
-              :action-transformer  action-transformer
-              :auto-select-if-only auto-select-if-only
-              :timeout             timeout))
+  (occ-debug-uncond "occ-select((obj null)): begin")
+  (let ((retval (occ-select (occ-make-ctx-at-point)
+                            :collector           collector
+                            :action              action
+                            :action-transformer  action-transformer
+                            :auto-select-if-only auto-select-if-only
+                            :timeout             timeout)))
+    (occ-debug-uncond "occ-select((obj null)): occ-select((obj occ-ctx)) returned %s"
+                      (occ-format retval 'capitalize))
+    retval))
 
 
 (defcustom *occ-last-buff-sel-time*            (current-time) "*occ-last-buff-sel-time*")
@@ -1108,10 +1124,10 @@ pointing to it."
                                    timeout)
   (unless collector (error "Collector can not be nil"))
   (let ((collector          (or collector #'occ-matches))
-        ;; (candidates         (funcall collector ctx))
         (action             (or action (occ-helm-actions ctx)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
+    (occ-debug-uncond "occ-clock-in-if-not((obj occ-ctx)): begin")
     (if (or
          (occ-clock-marker-unnamed-clock-p)
          (not (occ-associable-with-p (occ-current-tsk)
@@ -1178,11 +1194,13 @@ pointing to it."
          (action             (or action (occ-helm-actions ctx)))
          (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
          (timeout            (or timeout occ-idle-timeout)))
+    (occ-debug-uncond "occ-clock-in-if-chg((obj occ-ctx)): begin")
     (if (>
          (float-time (time-since *occ-last-buff-sel-time*))
          *occ-tsk-current-ctx-time-interval*)
         (let* ((buff (occ-ctx-buffer ctx)))
           (setq *occ-tsk-current-ctx* ctx)
+          (occ-debug-uncond "occ-clock-in-if-chg((obj occ-ctx)): pass1")
           (if (and
                (occ-chgable-p)
                buff (buffer-live-p buff)
@@ -1196,8 +1214,15 @@ pointing to it."
                                          :action-transformer  action-transformer
                                          :auto-select-if-only auto-select-if-only
                                          :timeout             timeout)
+                (occ-debug-uncond "occ-clock-in-if-chg((obj occ-ctx)): calling occ-clock-in-if-not")
                 (setq *occ-tsk-previous-ctx* *occ-tsk-current-ctx*))
-            (occ-debug :nodisplay "occ-clock-in-if-chg: ctx %s not suitable to associate" ctx)))
+            (prog1
+                nil
+              ;; BUG *occ-tsk-previous-ctx* *occ-tsk-current-ctx* not getting
+              ;; updated with simple buffer switch as idle tiem occur. IS IT CORRECT OR BUG
+              ;; TODO: here describe reason for not trying properly, need to print where necessary.
+              (occ-debug-uncond "occ-clock-in-if-chg: ctx %s not suitable to associate" (occ-format ctx 'capitalize))
+              (occ-debug :nodisplay "occ-clock-in-if-chg: ctx %s not suitable to associate" (occ-format ctx 'capitalize)))))
       (occ-debug :nodisplay "occ-clock-in-if-chg: not enough time passed."))))
 
 
