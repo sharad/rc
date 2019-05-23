@@ -88,7 +88,7 @@
 
 
 (defun downcase-sym (sym)
-  (let ((symname (upcase (symbol-name sym))))
+  (let ((symname (downcase (symbol-name sym))))
     (or
      (intern-soft symname)
      (intern symname))))

@@ -131,7 +131,7 @@
                                        (ctx occ-ctx)
                                        (prop (eql root)))
         "RANK Predicate funtion to check if ctx matches to tsk's ROOT attribute."
-        (occ-message "rankprop-with(%s, %s, %s): begin"
+        (occ-debug :nodisplay "rankprop-with(%s, %s, %s): begin"
                      (occ-format obj 'capitalize)
                      (occ-format ctx 'capitalize)
                      prop)
@@ -143,9 +143,9 @@
                (ctx-dir  (when (stringp ctx-file) (file-truename ctx-dir))))
           (if tsk-root
               (progn
-                (occ-message "tsk %s tsk-root: %s" (occ-format obj 'capitalize) tsk-root)
-                (occ-message "tsk %s ctx-dir:  %s" (occ-format obj 'capitalize) ctx-dir))
-            (occ-message "tsk %s tsk-root %s not present."
+                (occ-debug :nodisplay "tsk %s tsk-root: %s" (occ-format obj 'capitalize) tsk-root)
+                (occ-debug :nodisplay "tsk %s ctx-dir:  %s" (occ-format obj 'capitalize) ctx-dir))
+            (occ-debug :nodisplay "tsk %s tsk-root %s not present."
                          (occ-format obj 'capitalize) tsk-root))
           (if (and tsk-root ctx-dir
                    (string-match tsk-root ctx-dir))
