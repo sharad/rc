@@ -59,23 +59,17 @@
 ;;;###autoload
 (defun occ-curr-procreate-child ()
   (interactive)
-  (let ((tsk (occ-current-tsk))
-        (ctx (occ-make-ctx-at-point)))
-    (if tsk
-        (let ((ctxual-tsk (occ-build-ctxual-tsk tsk ctx)))
-          (if ctxual-tsk
-              (occ-procreate-child ctxual-tsk)))
+  (let ((ctxual-tsk (occ-current-tsk)))
+    (if ctxual-tsk
+        (occ-procreate-child ctxual-tsk)
       (occ-message "No current task clocking-in"))))
 
 ;;;###autoload
 (defun occ-curr-procreate-child-clock-in ()
   (interactive)
-  (let ((tsk (occ-current-tsk))
-        (ctx (occ-make-ctx-at-point)))
-    (if tsk
-        (let ((ctxual-tsk (occ-build-ctxual-tsk tsk ctx)))
-          (if ctxual-tsk
-              (occ-procreate-child-clock-in ctxual-tsk)))
+  (let ((ctxual-tsk (occ-build-ctxual-tsk tsk ctx)))
+    (if ctxual-tsk
+        (occ-procreate-child-clock-in ctxual-tsk)
       (occ-message "No current task clocking-in"))))
 
 

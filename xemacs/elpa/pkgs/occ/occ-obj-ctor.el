@@ -92,6 +92,12 @@
                 (clock-sum    (if (org-before-first-heading-p)
                                   0
                                 (org-clock-sum-current-item)))
+                ;; BUG: TODO: SHOULD need to maintain plist of :PROPERTIES:
+                ;; separately as keys for these are returned in UPCASE. while it
+                ;; is not the case with other generic properties which are not
+                ;; part of :PROPERTIES: block.
+
+                ;; NOTE also these two are mixed in one list only
                 (tsk-plist    (cadr (org-element-at-point))))
             (when heading
               (setf tsk

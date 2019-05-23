@@ -665,7 +665,7 @@ pointing to it."
                                  &optional clock-in-p)
   "occ-capture-with")
 
-(cl-defmethod occ-capture-with ((tsk occ-tsk)
+(cl-defmethod occ-capture-with ((tsk occ-obj-tsk)
                                 (ctx occ-ctx)
                                 &optional clock-in-p)
   (let* ((mrk      (occ-tsk-marker tsk))
@@ -700,10 +700,10 @@ pointing to it."
   (let ((mrk (occ-tsk-marker obj)))
     (occ-capture mrk)))
 
-(cl-defmethod occ-capture ((obj occ-ctsk)
+(cl-defmethod occ-capture ((obj occ-obj-ctx-tsk)
                            &optional clock-in-p)
-  (let* ((tsk        (occ-ctsk-tsk obj))
-         (ctx        (occ-ctsk-ctx obj)))
+  (let ((tsk        (occ-ctsk-tsk obj))
+        (ctx        (occ-ctsk-ctx obj)))
     (occ-capture-with tsk ctx clock-in-p)))
 
 
@@ -745,6 +745,28 @@ pointing to it."
 (cl-defmethod occ-procreate-child ((obj occ-obj-tsk))
   (if (not (occ-unnamed-p obj))
       (occ-capture obj helm-current-prefix-arg)
+    (let ((title (occ-title obj 'captilize)))
+      (error "%s is unnamed %s so can not create child "
+             (occ-format obj 'captilize)
+             title
+             title))))
+
+(cl-defmethod occ-procreate-child ((obj occ-obj-ctx-tsk))
+  (let ((tsk        (occ-ctsk-tsk obj))
+        (ctx        (occ-ctsk-ctx obj)))
+   (if (not (occ-unnamed-p tsk))
+       (occ-capture obj helm-current-prefix-arg)
+     (let ((title (occ-title obj 'captilize)))
+       (error "%s is unnamed %s so can not create child "
+              (occ-format obj 'captilize)
+              title
+              title)))))
+
+
+(cl-defmethod occ-procreate-child-with ((obj occ-obj-tsk)
+                                        (ctx occ-ctx))
+  (if (not (occ-unnamed-p obj))
+      (occ-capture-with obj ctx helm-current-prefix-arg)
     (let ((title (occ-title obj 'captilize)))
       (error "%s is unnamed %s so can not create child "
              (occ-format obj 'captilize)
