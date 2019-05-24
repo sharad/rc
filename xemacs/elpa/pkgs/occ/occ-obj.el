@@ -40,6 +40,22 @@
 
 (defvar occ-verbose 0)
 
+;;
+;;                                                                                   obj
+;;                                                                                    |
+;;                                       +--------------------------------------------+-------------------------------------------+
+;;                                       |                                            |                                           |
+;;                                    obj-tsk                                      obj-prop                                obj-obj-collection
+;;                                       |                                            |                                           |
+;;          +---------------------------------------------------------+              prop                              +----------+----------+
+;;          |                                                         |                                                |                     |
+;;     obj-ctx-tsk                                                   tsk                                        list-collection         tree-collection
+;;          |                                                         |
+;;         ctsk                                            +----------+----------+
+;;          |                                              |                     |
+;;      ctxual-tsk                                      tree-tsk              list-tsk
+;;
+
 
 (cl-defstruct occ-obj
   name)

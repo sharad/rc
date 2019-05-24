@@ -81,9 +81,13 @@
 
 (cl-defmethod occ-obj-tsk ((obj occ-ctsk))
   (occ-ctsk-tsk obj))
+
 
-;; (cl-defmethod occ-obj-tsk ((obj occ-ctxual-tsk))
-;;   (occ-ctxual-tsk-tsk occ-obj-tsk obj))
+(cl-defmethod occ-obj-ctx ((obj occ-ctx))
+  obj)
+
+(cl-defmethod occ-obj-ctx ((obj occ-ctsk))
+  (occ-ctsk-ctx obj))
 
 
 (cl-defmethod occ-obj-marker ((obj marker))
@@ -320,7 +324,14 @@ pointing to it."
                                      (ctx occ-ctx))
   nil)
 
-(cl-defmethod occ-associable-with-p ((obj occ-tsk)
+(cl-defmethod occ-associable-with-p ((obj occ-obj-tsk)
+                                     (ctx occ-ctx))
+  "Test if TSK is associate to CTX"
+  (let ((tsk (occ-obj-tsk obj)))
+    (>
+     (occ-rank-with tsk ctx) 0)))
+
+(cl-defmethod occ-associable-with-p ((obj occ-obj-ctx-tsk)
                                      (ctx occ-ctx))
   "Test if TSK is associate to CTX"
   (>
@@ -329,8 +340,8 @@ pointing to it."
 
 (cl-defmethod occ-associable-p ((obj occ-ctsk))
   (occ-debug :debug "occ-associable-p(occ-ctsk=%s)" obj)
-  (let ((tsk (occ-ctsk-tsk obj))
-        (ctx (occ-ctsk-ctx obj)))
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
     (occ-associable-with-p tsk ctx)))
 
 (cl-defmethod occ-associable-p ((obj occ-ctxual-tsk))
@@ -590,8 +601,8 @@ pointing to it."
                                 action
                                 action-transformer
                                 timeout)
-  (let ((tsk (occ-ctsk-tsk obj))
-        (ctx (occ-ctsk-ctx obj)))
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
     (occ-try-clock-in-with tsk ctx)))
 
 (cl-defmethod occ-try-clock-in ((obj null)
@@ -702,8 +713,8 @@ pointing to it."
 
 (cl-defmethod occ-capture ((obj occ-obj-ctx-tsk)
                            &optional clock-in-p)
-  (let ((tsk        (occ-ctsk-tsk obj))
-        (ctx        (occ-ctsk-ctx obj)))
+  (let ((tsk        (occ-obj-tsk obj))
+        (ctx        (occ-obj-ctx obj)))
     (occ-capture-with tsk ctx clock-in-p)))
 
 
@@ -752,8 +763,8 @@ pointing to it."
              title))))
 
 (cl-defmethod occ-procreate-child ((obj occ-obj-ctx-tsk))
-  (let ((tsk        (occ-ctsk-tsk obj))
-        (ctx        (occ-ctsk-ctx obj)))
+  (let ((tsk        (occ-obj-tsk obj))
+        (ctx        (occ-obj-ctx obj)))
    (if (not (occ-unnamed-p tsk))
        (occ-capture obj helm-current-prefix-arg)
      (let ((title (occ-title obj 'captilize)))
@@ -801,8 +812,8 @@ pointing to it."
 
 ;; (cl-defmethod occ-procreate-child-prop-edit ((obj occ-ctsk))
 ;;   (occ-capture obj)
-;;   (occ-props-window-edit-with (occ-ctsk-tsk obj)
-;;                               (occ-ctsk-ctx obj)))
+;;   (occ-props-window-edit-with (occ-obj-tsk obj)
+;;                               (occ-obj-ctx obj)))
 
 ;; (cl-defmethod occ-procreate-child-prop-edit ((obj occ-ctxual-tsk))
 ;;   (occ-capture obj)

@@ -243,8 +243,8 @@
 (cl-defmethod occ-props-edit ((obj occ-obj-ctx-tsk))
   (occ-debug :debug "occ-props-edit: begin %s"
              (occ-format obj 'capitalize))
-  (let ((tsk (occ-ctsk-tsk obj))
-        (ctx (occ-ctsk-ctx obj)))
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
     (occ-props-edit-with tsk ctx)))
 
 
@@ -323,8 +323,8 @@
 ;;                                      action
 ;;                                      action-transformer
 ;;                                      timeout)
-;;   (let ((tsk (occ-ctsk-tsk obj))
-;;         (ctx (occ-ctsk-ctx obj)))
+;;   (let ((tsk (occ-obj-tsk obj))
+;;         (ctx (occ-obj-ctx obj)))
 ;;     (occ-props-window-edit-with tsk ctx timeout)))
 
 (cl-defmethod occ-props-window-edit ((obj occ-obj-ctx-tsk)
