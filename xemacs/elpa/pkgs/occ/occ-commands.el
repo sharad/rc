@@ -160,6 +160,17 @@
   ;; https://www.merriam-webster.com/thesaurus/pack%20(up%20or%20off)
   (error "Implement it."))
 
+;; action
+(cl-defmethod occ-log-not ()
+  (error "Implement it."))
+
+(cl-defmethod occ-curr-tsk-log-not ()
+  (error "Implement it."))
+
+
+(defun occ-curr-tsk-contine-for (mins)
+  (error "Implement it."))
+
 
 (defun occ-reload (&optional uncompiled)
   (interactive "P")

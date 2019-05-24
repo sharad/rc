@@ -1,7 +1,8 @@
-;;; occ-obj-method.el --- occ-api               -*- lexical-binding: t; -*-
-;; Copyright (C) 2016  Sharad Pratap
+;;; occ-config.el --- occ config                     -*- lexical-binding: t; -*-
 
-;; Author: Sharad Pratap <sh4r4d _at_ _G-mail_>
+;; Copyright (C) 2019  Sharad
+
+;; Author: Sharad <sh4r4d@gmail.com>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -23,23 +24,25 @@
 
 ;;; Code:
 
-(provide 'occ-obj-method)
+(provide 'occ-config)
 
 
-(require 'lotus-misc-utils)
-(eval-when-compile
-  (require 'lotus-misc-utils))
-
+(defcustom occ-unnamed t)
 
-(require 'occ-cl-utils)
-(require 'occ-obj-common)
-(require 'occ-tree)
-(require 'occ-obj-accessor)
-(require 'occ-util-common)
-(require 'occ-prop)
-(require 'occ-obj-simple)
-(require 'occ-debug-method)
-(require 'occ-helm)
-
+(defcustom occ-clockout-unassociable-to-unnamed 'ask) ;; TODO: or could ask to continue for TIME(m/h) with current task.
 
-;;; occ-obj-method.el ends here
+
+
+(defun occ-confirm (config
+                    msg
+                    timeout)
+  (cond
+   ((null config) nil)
+   ((function config) (funcall config))
+   ((eq config 'ask)  (y-or-n-p msg))
+   ((eq config t) t)
+   (t nil)))
+
+
+
+;;; occ-config.el ends here

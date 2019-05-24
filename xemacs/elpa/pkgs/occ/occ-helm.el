@@ -26,11 +26,18 @@
 
 (provide 'occ-helm)
 
+
+(require 'occ-debug-method)
+(require 'occ-obj-method)
+
+
 (defvar occ-helm-actions-plist nil)
 
 (defun occ-helm-action-add (key name action)
   (setq occ-helm-actions-plist
-        (plist-put occ-helm-actions-plist key (cons name action))))
+        (plist-put
+         occ-helm-actions-plist
+         key (cons name action))))
 
 (defun occ-helm-action-get (key)
   (plist-get occ-helm-actions-plist key))

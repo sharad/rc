@@ -1,7 +1,8 @@
-;;; occ-obj-method.el --- occ-api               -*- lexical-binding: t; -*-
-;; Copyright (C) 2016  Sharad Pratap
+;;; lotus-schedule.el --- Task Schedule              -*- lexical-binding: t; -*-
 
-;; Author: Sharad Pratap <sh4r4d _at_ _G-mail_>
+;; Copyright (C) 2019  Sharad
+
+;; Author: Sharad <sh4r4d@gmail.com>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -23,23 +24,13 @@
 
 ;;; Code:
 
-(provide 'occ-obj-method)
+(provide 'lotus-schedule)
 
 
-(require 'lotus-misc-utils)
-(eval-when-compile
-  (require 'lotus-misc-utils))
-
 
-(require 'occ-cl-utils)
-(require 'occ-obj-common)
-(require 'occ-tree)
-(require 'occ-obj-accessor)
-(require 'occ-util-common)
-(require 'occ-prop)
-(require 'occ-obj-simple)
-(require 'occ-debug-method)
-(require 'occ-helm)
-
+;; Types of tasks
+;; 1. one where newer work update comfortable over do previous work (where it is done or not.)
+;; 2. one where newer work depend on older or previous work.
 
-;;; occ-obj-method.el ends here
+
+;;; lotus-schedule.el ends here
