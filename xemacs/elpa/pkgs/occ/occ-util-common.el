@@ -47,14 +47,6 @@
   (setq occ-debug nil))
 
 
-(defun occ-debug-uncond (&rest args)
-  (when occ-debug-uncond
-    (apply #'message args)))
-
-
-(defun occ-message (&rest args)
-  (apply #'message args))
-
 (defun occ-debug (level &rest args)
   (when occ-debug
     (when (car args)
@@ -64,6 +56,14 @@
         (apply #'lwarn 'occ level args))
       (unless (eq level :nodisplay)
         (apply #'message args)))))
+
+(defun occ-message (&rest args)
+  (apply #'message args)
+  (apply #'occ-debug :debug args))
+
+(defun occ-debug-uncond (&rest args)
+  (when occ-debug-uncond
+    (apply #'occ-message args)))
 
 
 (defvar occ-condition-case-control-debug nil)

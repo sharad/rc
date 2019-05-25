@@ -497,7 +497,7 @@ pointing to it."
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
     (occ-debug-uncond "occ-clock-in((obj occ-ctx)): begin")
-    (let ((return-ctxual-tsk
+    (let ((returned-ctxual-tsk
              (occ-select obj ;TODO: if only one match then where it is selecting that.
                          :collector           collector
                          :return-transform    t ;Here I know return value is going to be used, so passing t
@@ -505,13 +505,13 @@ pointing to it."
                          :action-transformer  action-transformer
                          :auto-select-if-only auto-select-if-only
                          :timeout             timeout)))
-      (occ-debug-uncond "occ-clock-in((obj occ-ctx)): selected  return-ctxual-tsk=%s ret-label=%s value=%s"
-                        return-ctxual-tsk
-                        (occ-return-in-labels-p return-ctxual-tsk occ-return-select-label)
-                        (occ-format (occ-return-get-value return-ctxual-tsk)))
-      (if (occ-return-in-labels-p return-ctxual-tsk ;TODO: should return t if action were done than select[=identity] ;; occ-return-label
+      (occ-debug-uncond "occ-clock-in((obj occ-ctx)): selected  returned-ctxual-tsk=%s ret-label=%s value=%s"
+                        returned-ctxual-tsk
+                        (occ-return-in-labels-p returned-ctxual-tsk occ-return-select-label)
+                        (occ-format (occ-return-get-value returned-ctxual-tsk)))
+      (if (occ-return-in-labels-p returned-ctxual-tsk ;TODO: should return t if action were done than select[=identity] ;; occ-return-label
                                   occ-return-select-label)
-          (let ((ctxual-tsk (occ-return-get-value return-ctxual-tsk)))
+          (let ((ctxual-tsk (occ-return-get-value returned-ctxual-tsk)))
             (prog1
                 (when return-transform ;Here caller know if return value is going to be used.
                      (occ-make-return occ-return-true-label nil))
@@ -1270,8 +1270,25 @@ pointing to it."
               ;; BUG *occ-tsk-previous-ctx* *occ-tsk-current-ctx* not getting
               ;; updated with simple buffer switch as idle tiem occur. IS IT CORRECT OR BUG
               ;; TODO: here describe reason for not trying properly, need to print where necessary.
-              (occ-debug-uncond "occ-clock-in-if-chg: ctx %s not suitable to associate" (occ-format ctx 'capitalize))
-              (occ-debug :nodisplay "occ-clock-in-if-chg: ctx %s not suitable to associate" (occ-format ctx 'capitalize)))))
+              (let ((msg (cond
+                           ((not (occ-chgable-p))
+                            (format "clock is not changeable now."))
+                           ((not buff)
+                            (format "context buffer is null"))
+                           ((not (buffer-live-p buff))
+                            (format "context buffer is not live now."))
+                           ((minibufferp buff)
+                            (format "context buffer is minibuffer."))
+                           ((ignore-p buff)
+                            (format "context buffer is ignored buffer."))
+                           ((equal *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)
+                            (format "context is not changed."))
+                           (t (format "Unknown reason.")))))
+                (let ((full-msg (format "occ-clock-in-if-chg: ctx %s not suitable to associate as %s"
+                                        (occ-format ctx 'capitalize)
+                                        msg)))
+                  ;; (occ-debug :nodisplay full-msg)
+                  (occ-message full-msg))))))
       (occ-debug :nodisplay "occ-clock-in-if-chg: not enough time passed."))))
 
 

@@ -884,7 +884,7 @@
 
 (cl-defmethod org-rl-clock-build-options ((prev org-rl-clock)
                                           (next org-rl-clock)
-                                          maxtimelen-secss
+                                          maxtimelen-secs
                                           resume
                                           fail-quietly
                                           resume-clocks)
