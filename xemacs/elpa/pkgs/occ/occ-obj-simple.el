@@ -333,9 +333,10 @@ pointing to it."
 
 (cl-defmethod occ-associable-with-p ((obj occ-obj-ctx-tsk)
                                      (ctx occ-ctx))
-  "Test if TSK is associate to CTX"
-  (>
-   (occ-rank-with obj ctx) 0))
+  "Test if TSK is associate to CTX"     ;not required.
+  (let ((tsk (occ-obj-tsk obj)))
+    (>
+     (occ-rank-with tsk ctx) 0)))
 
 
 (cl-defmethod occ-associable-p ((obj occ-ctsk))
@@ -483,6 +484,7 @@ pointing to it."
 (cl-defmethod occ-clock-in ((obj occ-ctx)
                             &key
                             collector
+                            return-transform
                             action
                             action-transformer
                             auto-select-if-only
@@ -498,8 +500,9 @@ pointing to it."
     (let ((return-ctxual-tsk
              (occ-select obj ;TODO: if only one match then where it is selecting that.
                          :collector           collector
-                         :action              (occ-return-tranform action) ;as return value is going to be used.
-                         :action-transformer  (occ-return-tranformer-fun-transform action-transformer)
+                         :return-transform    t ;Here I know return value is going to be used, so passing t
+                         :action              action ;as return value is going to be used.
+                         :action-transformer  action-transformer
                          :auto-select-if-only auto-select-if-only
                          :timeout             timeout)))
       (occ-debug-uncond "occ-clock-in((obj occ-ctx)): selected  return-ctxual-tsk=%s ret-label=%s value=%s"
@@ -510,7 +513,8 @@ pointing to it."
                                   occ-return-select-label)
           (let ((ctxual-tsk (occ-return-get-value return-ctxual-tsk)))
             (prog1
-                (occ-make-return occ-return-true-label nil)
+                (when return-transform ;Here caller know if return value is going to be used.
+                     (occ-make-return occ-return-true-label nil))
               (if (occ-ctxual-tsk-p ctxual-tsk)
                   (occ-clock-in ctxual-tsk
                                 :collector          collector
@@ -531,6 +535,7 @@ pointing to it."
           (occ-message "occ-clock-in: Edit properties of a tsk to make associable to current context.")
           (occ-safe-ignore-quit-props-window-edit obj
                                                   :collector          #'occ-list
+                                                  :return-transform   return-transform ;Here caller know if return value is going to be used.
                                                   :action             action
                                                   :action-transformer action-transformer
                                                   :timeout            timeout))))))
@@ -842,86 +847,6 @@ pointing to it."
   (cons (occ-format obj) obj))
 
 
-(defvar occ-helm-map
-  (let ((map (make-sparse-keymap)))
-    (set-keymap-parent map helm-map)
-    ;; (define-key map (kbd "RET")           'helm-ff-RET)
-    (define-key map (kbd "C-]")           'helm-ff-run-toggle-basename)
-    (define-key map (kbd "S-RET")         'occ-helm-run-child-clock-in)
-    (helm-define-key-with-subkeys map (kbd "DEL") ?\d 'helm-ff-delete-char-backward
-                                  '((C-backspace . helm-ff-run-toggle-auto-update)
-                                    ([C-c DEL] . helm-ff-run-toggle-auto-update))
-                                  nil 'helm-ff-delete-char-backward--exit-fn)
-    (when helm-ff-lynx-style-map
-      (define-key map (kbd "<left>")      'helm-find-files-up-one-level)
-      (define-key map (kbd "<right>")     'helm-execute-persistent-action))
-    (delq nil map))
-  "Keymap for `helm-find-files'.")
-
-(defvar occ-helm-doc-header " (\\<helm-find-files-map>\\[helm-find-files-up-one-level]: Go up one level)"
-  "*The doc that is inserted in the Name header of a find-files or dired source.")
-
-(defun occ-helm-run-child-clock-in ()
-  "Run mail attach files command action from `helm-source-find-files'."
-  ;; (interactive)                         ;TODO: to move to occ-commands.el
-  (with-helm-alive-p
-    (helm-exit-and-execute-action 'occ-child-clock-in)))
-(put 'occ-helm-run-child-clock-in 'helm-only t)
-;; add occ-child-clock-in in action
-
-
-(defun occ-confirm (fn new)
-  (occ-y-or-n-timeout)
-  (error "Implement it."))
-
-(cl-defun occ-list-select-internal (candidates
-                                    &key
-                                    action
-                                    action-transformer
-                                    auto-select-if-only
-                                    timeout)
-  ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
-  (occ-debug :debug "Running occ-sacha-helm-select")
-  (prog1
-      (let ((action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
-            (timeout            (or timeout occ-idle-timeout)))
-        (if (and
-             auto-select-if-only
-             (= 1 (length candidates)))
-            (let* ((candidate (car candidates))
-                   (action (car (funcall action-transformer action candidate)))
-                   (action (if (consp action) (cdr action) action)))
-              (funcall action candidate))
-            (helm
-             ;; :keymap occ-helm-map
-             (occ-helm-build-candidates-source
-              candidates
-              :action action
-              :action-transformer action-transformer))))
-    (occ-debug :debug "Running occ-sacha-helm-select1")))
-
-(cl-defun occ-list-select (candidates
-                           &key
-                           action
-                           action-transformer
-                           auto-select-if-only
-                           timeout)
-  (let (;; (action             (or action (occ-helm-actions obj)))
-        (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
-        (timeout            (or timeout occ-idle-timeout)))
-    (helm-timed timeout
-      (occ-debug :debug "running sacha/helm-select-clock")
-      (let ((selected (occ-list-select-internal candidates
-                                           :action              action
-                                           :action-transformer  action-transformer
-                                           :auto-select-if-only auto-select-if-only
-                                           :timeout             timeout)))
-        (occ-debug-uncond "occ-list-select: selected = %s" selected)
-        (or
-         selected
-         (occ-make-return occ-return-quit-label selected))))))
-
-
 (cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
                                           (obj null))
   "Return all TSKs for context nil OBJ"
@@ -1070,6 +995,91 @@ pointing to it."
                            (occ-make-ctx-at-point)))
 
 
+(defvar occ-helm-map
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map helm-map)
+    ;; (define-key map (kbd "RET")           'helm-ff-RET)
+    (define-key map (kbd "C-]")           'helm-ff-run-toggle-basename)
+    (define-key map (kbd "S-RET")         'occ-helm-run-child-clock-in)
+    (helm-define-key-with-subkeys map (kbd "DEL") ?\d 'helm-ff-delete-char-backward
+                                  '((C-backspace . helm-ff-run-toggle-auto-update)
+                                    ([C-c DEL] . helm-ff-run-toggle-auto-update))
+                                  nil 'helm-ff-delete-char-backward--exit-fn)
+    (when helm-ff-lynx-style-map
+      (define-key map (kbd "<left>")      'helm-find-files-up-one-level)
+      (define-key map (kbd "<right>")     'helm-execute-persistent-action))
+    (delq nil map))
+  "Keymap for `helm-find-files'.")
+
+(defvar occ-helm-doc-header " (\\<helm-find-files-map>\\[helm-find-files-up-one-level]: Go up one level)"
+  "*The doc that is inserted in the Name header of a find-files or dired source.")
+
+(defun occ-helm-run-child-clock-in ()
+  "Run mail attach files command action from `helm-source-find-files'."
+  ;; (interactive)                         ;TODO: to move to occ-commands.el
+  (with-helm-alive-p
+    (helm-exit-and-execute-action 'occ-child-clock-in)))
+(put 'occ-helm-run-child-clock-in 'helm-only t)
+;; add occ-child-clock-in in action
+
+
+(defun occ-confirm (fn new)
+  (occ-y-or-n-timeout)
+  (error "Implement it."))
+
+(cl-defun occ-list-select-internal (candidates
+                                    &key
+                                    action
+                                    action-transformer
+                                    auto-select-if-only
+                                    timeout)
+  ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
+  (occ-debug :debug "Running occ-sacha-helm-select")
+  (prog1
+      (let ((action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+            (timeout            (or timeout occ-idle-timeout)))
+        (if (and
+             auto-select-if-only
+             (= 1 (length candidates)))
+            (let* ((candidate (car candidates))
+                   (action (car (funcall action-transformer action candidate)))
+                   (action (if (consp action) (cdr action) action)))
+              (funcall action candidate))
+            (helm
+             ;; :keymap occ-helm-map
+             (occ-helm-build-candidates-source
+              candidates
+              :action action
+              :action-transformer action-transformer))))
+    (occ-debug :debug "Running occ-sacha-helm-select1")))
+
+(cl-defun occ-list-select (candidates
+                           &key
+                           action
+                           return-transform
+                           action-transformer
+                           auto-select-if-only
+                           timeout)
+  (let (;; (action             (or action (occ-helm-actions obj)))
+        (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+        (timeout            (or timeout occ-idle-timeout)))
+    (helm-timed timeout
+      (occ-debug :debug "running sacha/helm-select-clock")
+      (let ((action             (if return-transform (occ-return-tranform action) action)) ;as return value is going to be used.
+            (action-transformer (if return-transform (occ-return-tranformer-fun-transform action-transformer) action-transformer)))
+       (let ((selected (occ-list-select-internal candidates
+                                                 :action              action
+                                                 :action-transformer  action-transformer
+                                                 :auto-select-if-only auto-select-if-only
+                                                 :timeout             timeout)))
+         (occ-debug-uncond "occ-list-select: selected = %s" selected)
+         (if return-transform
+             (or ;as return value is going to be used.
+              selected
+              (occ-make-return occ-return-quit-label selected))
+           selected))))))
+
+
 ;; TODO: Not to run when frame is not open [visible.]
 ;; Getting targets...done
 ;; Error running timer: (error "Window #<window 12> too small for splitting")
@@ -1099,6 +1109,7 @@ pointing to it."
 (cl-defmethod occ-select ((obj occ-ctx)
                           &key
                           collector
+                          return-transform
                           action
                           action-transformer
                           auto-select-if-only
@@ -1112,6 +1123,7 @@ pointing to it."
     (let ((candidates (funcall collector obj)))
       (if candidates
           (let ((retval (occ-list-select candidates
+                                         :return-transform    return-transform
                                          :action              action
                                          :action-transformer  action-transformer
                                          :auto-select-if-only auto-select-if-only
@@ -1120,12 +1132,14 @@ pointing to it."
                               (occ-format retval 'capitalize))
             retval)
         (prog1
-            (occ-make-return occ-return-nocndidate-label nil)
+            (when return-transform
+              (occ-make-return occ-return-nocndidate-label nil))
           (occ-message "occ-select((obj occ-ctx)): no candidates available."))))))
 
 (cl-defmethod occ-select ((obj null)
                           &key
                           collector
+                          return-transform
                           action
                           action-transformer
                           auto-select-if-only
@@ -1133,6 +1147,7 @@ pointing to it."
   (occ-debug-uncond "occ-select((obj null)): begin")
   (let ((retval (occ-select (occ-make-ctx-at-point)
                             :collector           collector
+                            :return-transform    return-transform
                             :action              action
                             :action-transformer  action-transformer
                             :auto-select-if-only auto-select-if-only
@@ -1175,8 +1190,9 @@ pointing to it."
              "TODO: if (occ-current-tsk) is not unnamed than ask confirmation by :auto-select-if-only 'confirm")
           (let ((retval (occ-clock-in ctx
                                       :collector           collector
-                                      :action              (occ-return-tranform action) ;as return value is going to be used.
-                                      :action-transformer  (occ-return-tranformer-fun-transform action-transformer)
+                                      :return-transform    t ;as return value is going to be used.
+                                      :action              action
+                                      :action-transformer  action-transformer
                                       :auto-select-if-only auto-select-if-only
                                       :timeout             timeout)))
             (occ-debug-uncond "occ-clock-in-if-not: operate %s retval %s"

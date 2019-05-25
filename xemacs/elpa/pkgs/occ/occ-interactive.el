@@ -332,6 +332,7 @@
                                      ;; collector
                                      ;; action
                                      ;; action-transformer
+                                     return-transform
                                      timeout)
   (let* ((timeout (or timeout occ-idle-timeout)))
     (let* ((local-cleanup
@@ -347,7 +348,9 @@
                 (occ-props-edit-handle-response prop timeout timer cleanup local-cleanup win)
                 (occ-debug-uncond "occ-props-window-edit(obj occ-obj-ctx-tsk) noquit: label %s value %s"
                                   occ-return-true-label obj)
-                (occ-make-return occ-return-true-label obj))
+                (if return-transform ;Here caller know if return value is going to be used.
+                    (occ-make-return occ-return-true-label obj)
+                  obj))
               ((quit)
                (progn
                  (occ-debug :warning "occ-props-window-edit(obj occ-obj-ctx-tsk): canceling timer")
@@ -357,11 +360,13 @@
                  (signal (car err) (cdr err))
                  (occ-debug-uncond "occ-props-window-edit(obj occ-obj-ctx-tsk) quit: label %s value %s"
                                    occ-return-quit-label nil)
-                 (occ-make-return occ-return-quit-label nil))))))))
+                 (when return-transform ;Here caller know if return value is going to be used.
+                   (occ-make-return occ-return-quit-label nil)))))))))
 
 (cl-defmethod occ-props-window-edit ((obj occ-ctx)
                                      &key
                                      collector
+                                     return-transform ;Here caller know if return value is going to be used.
                                      action
                                      action-transformer
                                      timeout)
@@ -376,6 +381,7 @@
            (not (occ-helm-buffer-p buff)))
         (let ((retval-ctx-tsk (occ-select obj
                                           :collector          collector
+                                          :return-transform   return-transform ;Here caller know if return value is going to be used.
                                           :action             action
                                           :action-transformer action-transformer
                                           :timeout            timeout)))
@@ -389,8 +395,9 @@
           (when (and
                  (occ-return-in-labels-p retval-ctx-tsk occ-return-select-label)
                  (occ-return-get-value retval-ctx-tsk))
-              (occ-props-window-edit
-               (occ-return-get-value retval-ctx-tsk))
+              (occ-props-window-edit (occ-return-get-value retval-ctx-tsk)
+                                     :return-transform   return-transform
+                                     :timeout timeout)
               (occ-debug-uncond "occ-props-window-edit((obj occ-ctx)): No selection"))
           (occ-debug-uncond "occ-props-window-edit((obj occ-ctx)): returning original: %s, retval: %s with label %s operate: %s"
                             retval-ctx-tsk
@@ -404,11 +411,13 @@
         (occ-debug-uncond "occ-props-window-edit((obj occ-ctx)): not running  as context buff is deleted or not live 1 %s, 2 %s"
                           (buffer-live-p buff)
                           (not (occ-helm-buffer-p buff)))
-        (occ-make-return occ-return-false-label nil)))))
+        (when return-transform ;Here caller know if return value is going to be used.
+          (occ-make-return occ-return-false-label nil))))))
 
 (cl-defmethod occ-props-window-edit ((obj null)
                                      &key
                                      collector
+                                     return-transform
                                      action
                                      action-transformer
                                      timeout)
@@ -419,6 +428,7 @@
         (timeout            (or timeout occ-idle-timeout)))
       (occ-props-window-edit (occ-make-ctx-at-point)
                              :collector          collector
+                             :return-transform   return-transform
                              :action             action
                              :action-transformer action-transformer
                              :timeout            timeout)))
@@ -427,6 +437,7 @@
 (cl-defmethod occ-safe-props-window-edit ((obj occ-ctx)
                                           &key
                                           collector
+                                          return-transform
                                           action
                                           action-transformer
                                           timeout)
@@ -455,6 +466,7 @@
                       (occ-debug-return "occ-safe-props-window-edit((obj occ-ctx)) direct"
                         (occ-props-window-edit obj
                                                :collector          collector
+                                               :return-transform   return-transform
                                                :action             action
                                                :action-transformer action-transformer
                                                :timeout            timeout))
@@ -470,6 +482,7 @@
   (occ-debug-uncond "occ-safe-props-window-edit((obj marker)): begin")
   (let ((selected (occ-safe-props-window-edit (occ-make-ctx marker)
                                               :collector          collector
+                                              :return-transform   return-transform
                                               :action             action
                                               :action-transformer action-transformer
                                               :timeout            timeout)))
@@ -479,6 +492,7 @@
 (cl-defmethod occ-safe-ignore-quit-props-window-edit ((obj occ-ctx)
                                                       &key
                                                       collector
+                                                      return-transform
                                                       action
                                                       action-transformer
                                                       timeout)
@@ -527,6 +541,7 @@
       ;; else postpone it by calling run-with-idle-plus-timer
       (occ-safe-props-window-edit obj
                                   :collector          collector
+                                  :return-transform   return-transform
                                   :action             action
                                   :action-transformer action-transformer
                                   :timeout            timeout)

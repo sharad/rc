@@ -51,7 +51,7 @@
 ;;          |                                                         |                                                |                     |
 ;;     obj-ctx-tsk                                                   tsk                                        list-collection         tree-collection
 ;;          |                                                         |
-;;         ctsk                                            +----------+----------+
+;;        ctsk                                             +----------+----------+
 ;;          |                                              |                     |
 ;;      ctxual-tsk                                      tree-tsk              list-tsk
 ;;
@@ -147,5 +147,6 @@
 (cl-defstruct occ-return
   label
   value)
+
 
 ;;; occ-obj.el ends here

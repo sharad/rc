@@ -168,8 +168,12 @@
   (error "Implement it."))
 
 
-(defun occ-curr-tsk-contine-for (mins)
+(defun occ-curr-tsk-continyue-for (mins)
   (error "Implement it."))
+
+
+(defun occ-clock-in-force ()
+  (error "Implement it, open context ctx if not present, then occ-clock-in-if-associable else show error."))
 
 
 (defun occ-reload (&optional uncompiled)

@@ -629,13 +629,33 @@
 
 (cl-defmethod org-rl-compare-time-gap ((prev org-rl-clock)
                                        (next org-rl-clock)
-                                       timelen)
+                                       timelen-secs)
   (cl-assert (> (float-time (org-rl-get-time-gap prev next)) 0))
-  (if (eq timelen 'all)
+  (if (eq timelen-secs 'all)
       0
     (-
      (float-time (org-rl-get-time-gap prev next))
-     (abs timelen))))
+     (abs timelen-secs))))
+
+(cl-defmethod org-rl-compare-time-gap-secs ((prev org-rl-clock)
+                                            (next org-rl-clock)
+                                            timelen-secs)
+  (cl-assert (> (float-time (org-rl-get-time-gap prev next)) 0))
+  (if (eq timelen-secs 'all)
+      0
+    (-
+     (float-time (org-rl-get-time-gap prev next))
+     (abs timelen-secs))))
+
+(cl-defmethod org-rl-compare-time-gap-mins ((prev org-rl-clock)
+                                            (next org-rl-clock)
+                                            timelen-mins)
+  (cl-assert (> (float-time (org-rl-get-time-gap prev next)) 0))
+  (if (eq timelen-mins 'all)
+      0
+    (-
+     (float-time (org-rl-get-time-gap-mins prev next))
+     (abs timelen-mins))))
 
 ;;;###autoload
 (defun org-rl-select-other-clock (&optional target)
@@ -659,7 +679,7 @@
 
 (cl-defgeneric org-rl-find-all-other-marker-options (prev
                                                      next
-                                                     maxtimelen
+                                                     maxtimelen-secs
                                                      resume
                                                      fail-quietly
                                                      resume-clocks)
@@ -667,7 +687,7 @@
 
 (cl-defmethod org-rl-find-all-other-marker-options ((prev org-rl-clock)
                                                     (next org-rl-clock)
-                                                    maxtimelen
+                                                    maxtimelen-secs
                                                     resume
                                                     fail-quietly
                                                     resume-clocks)
@@ -681,7 +701,7 @@
                            :option
                            (format "Include in %s" heading)
                            (cons 'include-in-other marker)
-                           prev next maxtimelen resume fail-quietly resume-clocks))))
+                           prev next maxtimelen-secs resume fail-quietly resume-clocks))))
                   org-rl-clock-fixed-heading)))
 
 
@@ -711,7 +731,7 @@
 ;;                               (list (cons "select"))))))
 (cl-defgeneric org-rl-find-all-new-template-options (prev
                                                      next
-                                                     maxtimelen
+                                                     maxtimelen-secs
                                                      resume
                                                      fail-quietly
                                                      resume-clocks)
@@ -719,7 +739,7 @@
 
 (cl-defmethod org-rl-find-all-new-template-options ((prev org-rl-clock)
                                                     (next org-rl-clock)
-                                                    maxtimelen
+                                                    maxtimelen-secs
                                                     resume
                                                     fail-quietly
                                                     resume-clocks)
@@ -735,57 +755,57 @@
                        :option
                        (format "%s" template)
                        (cons 'include-in-new template)
-                       prev next maxtimelen resume fail-quietly resume-clocks))
+                       prev next maxtimelen-secs resume fail-quietly resume-clocks))
                   (cdr list)))))
    org-rl-capture+-helm-templates-alist))
 
 
 (cl-defmethod org-rl-clock-opts-common ((prev org-rl-clock)
                                         (next org-rl-clock)
-                                        maxtimelen
+                                        maxtimelen-secs
                                         resume
                                         fail-quietly
                                         resume-clocks)
   (list
-   (list :option "Restart" 'restart prev next maxtimelen resume fail-quietly resume-clocks)
-   (list :option "Done"    'done prev next maxtimelen resume fail-quietly resume-clocks)))
+   (list :option "Restart" 'restart prev next maxtimelen-secs resume fail-quietly resume-clocks)
+   (list :option "Done"    'done prev next maxtimelen-secs resume fail-quietly resume-clocks)))
 
 (cl-defmethod org-rl-clock-opts-other-clock-with-time ((prev org-rl-clock)
                                                        (next org-rl-clock)
-                                                       maxtimelen
+                                                       maxtimelen-secs
                                                        resume
                                                        fail-quietly
                                                        resume-clocks)
   (org-rl-debug nil "calling org-rl-clock-opts-other-clock-with-time")
   (let ((args
-         (list prev next maxtimelen resume fail-quietly resume-clocks)))
+         (list prev next maxtimelen-secs resume fail-quietly resume-clocks)))
     (append
      (apply #'org-rl-find-all-other-marker-options args)
      (list
       (list :option
             "Include in other"
-            'include-in-other prev next maxtimelen resume fail-quietly resume-clocks)))))
+            'include-in-other prev next maxtimelen-secs resume fail-quietly resume-clocks)))))
 
 (cl-defmethod org-rl-clock-opts-new-clock-with-time ((prev org-rl-clock)
                                                      (next org-rl-clock)
-                                                     maxtimelen
+                                                     maxtimelen-secs
                                                      resume
                                                      fail-quietly
                                                      resume-clocks)
   (org-rl-debug nil "calling org-rl-clock-opts-new-clock-with-time")
   (let ((args
-         (list prev next maxtimelen resume fail-quietly resume-clocks)))
+         (list prev next maxtimelen-secs resume fail-quietly resume-clocks)))
     (append
      (apply #'org-rl-find-all-new-template-options args)
      (list
       (list
        :option
        "Include in new"
-       'include-in-new prev next maxtimelen resume fail-quietly resume-clocks)))))
+       'include-in-new prev next maxtimelen-secs resume fail-quietly resume-clocks)))))
 
 (cl-defmethod org-rl-clock-opts-prev ((prev org-rl-clock)
                                       (next org-rl-clock)
-                                      maxtimelen
+                                      maxtimelen-secs
                                       resume
                                       fail-quietly
                                       resume-clocks)
@@ -797,15 +817,15 @@
        (list
         :option
         (format "Jump to prev %s" prev-heading)
-        'jump-prev prev next maxtimelen resume fail-quietly resume-clocks)
+        'jump-prev prev next maxtimelen-secs resume fail-quietly resume-clocks)
        (list
         :option
         (format "Cancel prev %s" prev-heading)
-        'cancel-prev prev next maxtimelen resume fail-quietly resume-clocks)))))
+        'cancel-prev prev next maxtimelen-secs resume fail-quietly resume-clocks)))))
 
 (cl-defmethod org-rl-clock-opts-prev-with-time ((prev org-rl-clock)
                                                 (next org-rl-clock)
-                                                maxtimelen
+                                                maxtimelen-secs
                                                 resume
                                                 fail-quietly
                                                 resume-clocks)
@@ -820,11 +840,11 @@
         (if (org-rl-clock-real-p next)
             (format "Subtract from next %s" next-heading)
           "No idea include-in-prev"))
-      'include-in-prev prev next maxtimelen resume fail-quietly resume-clocks))))
+      'include-in-prev prev next maxtimelen-secs resume fail-quietly resume-clocks))))
 
 (cl-defmethod org-rl-clock-opts-next ((prev org-rl-clock)
                                       (next org-rl-clock)
-                                      maxtimelen
+                                      maxtimelen-secs
                                       resume
                                       fail-quietly
                                       resume-clocks)
@@ -836,15 +856,15 @@
        (list
         :option
         (format "Jump to next %s" next-heading)
-        'jump-next prev next maxtimelen resume fail-quietly resume-clocks)
+        'jump-next prev next maxtimelen-secs resume fail-quietly resume-clocks)
        (list
         :option
         (format "Cancel next %s" prev-heading)
-        'cancel-next prev next maxtimelen resume fail-quietly resume-clocks)))))
+        'cancel-next prev next maxtimelen-secs resume fail-quietly resume-clocks)))))
 
 (cl-defmethod org-rl-clock-opts-next-with-time ((prev org-rl-clock)
                                                 (next org-rl-clock)
-                                                maxtimelen
+                                                maxtimelen-secs
                                                 resume
                                                 fail-quietly
                                                 resume-clocks)
@@ -859,23 +879,23 @@
         (if (org-rl-clock-real-p prev)
             (format "Subtract from prev %s" prev-heading)
           "No idea include-in-next"))
-      'include-in-next prev next maxtimelen resume fail-quietly resume-clocks))))
+      'include-in-next prev next maxtimelen-secs resume fail-quietly resume-clocks))))
 
 
 (cl-defmethod org-rl-clock-build-options ((prev org-rl-clock)
                                           (next org-rl-clock)
-                                          maxtimelen
+                                          maxtimelen-secss
                                           resume
                                           fail-quietly
                                           resume-clocks)
-  (org-rl-debug nil "org-rl-clock-build-options: prev[%s] next[%s] maxtimelen[%d] secs"
+  (org-rl-debug nil "org-rl-clock-build-options: prev[%s] next[%s] maxtimelen-secs[%d] secs"
                 (org-rl-format prev)
                 (org-rl-format next)
-                maxtimelen)
+                maxtimelen-secs)
 
   (let* ((args (list prev
                      next
-                     maxtimelen
+                     maxtimelen-secs
                      resume
                      fail-quietly
                      resume-clocks))
@@ -888,10 +908,10 @@
                  (append
                   (apply #'org-rl-clock-opts-prev-with-time args)
                   (apply #'org-rl-clock-opts-next-with-time args)))
-                (unless (zerop maxtimelen)
+                (unless (zerop maxtimelen-secs)
                   (cons "Other"
                         (apply #'org-rl-clock-opts-other-clock-with-time args)))
-                (unless (zerop maxtimelen)
+                (unless (zerop maxtimelen-secs)
                   (cons "News"
                         (apply #'org-rl-clock-opts-new-clock-with-time args)))
                 (cons
@@ -905,10 +925,10 @@
                (append
                 (apply #'org-rl-clock-opts-next-with-time args)
                 (apply #'org-rl-clock-opts-prev-with-time args)))
-              (unless (zerop maxtimelen)
+              (unless (zerop maxtimelen-secs)
                 (cons "Other"
                       (apply #'org-rl-clock-opts-other-clock-with-time args)))
-              (unless (zerop maxtimelen)
+              (unless (zerop maxtimelen-secs)
                 (cons "News"
                       (apply #'org-rl-clock-opts-new-clock-with-time args)))
               (cons
@@ -924,11 +944,11 @@
     (org-rl-debug nil "org-rl-clock-build-options: done")
     options))
 
-(defvar org-rl-read-interval 60)
+(defvar org-rl-read-interval-secs 60)
 
-(defun org-rl-clock-read-option (interval prompt-fn options-fn default-fn)
+(defun org-rl-clock-read-option (interval-secs prompt-fn options-fn default-fn)
   (let* ((options (if (functionp options-fn) (funcall options-fn) options-fn))
-         (desopt (assoc (time-aware-completing-read interval prompt-fn options-fn) options))
+         (desopt (assoc (time-aware-completing-read interval-secs prompt-fn options-fn) options))
          (des (car desopt))
          (opt (cdr desopt)))
     (org-rl-debug :warning "Selected option is %s[ %s ]" des (car opt))
@@ -936,21 +956,21 @@
 
 (defvar org-rl-clock-time-direction-reverse nil)
 
-(defun org-rl-clock-read-timelen (interval prompt-fn option-fn maxtimelen-fn)
+(defun org-rl-clock-read-timelen-mins (interval-secs prompt-fn option-fn maxtimelen-mins-fn)
   "read in mins return secs"
-  (let ((option     (if (functionp option-fn)     (funcall option-fn) option-fn))
-        (maxtimelen (if (functionp maxtimelen-fn) (funcall maxtimelen-fn) maxtimelen-fn)))
+  (let ((option          (if (functionp option-fn)     (funcall option-fn) option-fn))
+        (maxtimelen-mins (if (functionp maxtimelen-mins-fn) (funcall maxtimelen-mins-fn) maxtimelen-mins-fn)))
     (if (or
-         (zerop maxtimelen)
+         (zerop maxtimelen-mins)
          (memq option
                '(done
                  cancel-next
                  cancel-prev)))
-        maxtimelen
+        maxtimelen-mins
       (*
        (*
         (if org-rl-clock-time-direction-reverse -1 1)
-        (time-aware-read-number interval prompt-fn maxtimelen-fn))
+        (time-aware-read-number interval-secs prompt-fn maxtimelen-mins-fn))
        60))))
 
 

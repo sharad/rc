@@ -118,6 +118,15 @@
                                 (file-name-directory ctx-currfile)))
                 (prompt       (concat (symbol-name prop) ": ")))
            (ido-read-file-name prompt ctx-dir ctx-currfile)))
+
+       ;; (cl-defmethod occ-editprop ((obj occ-tsk)
+       ;;                             (ctx occ-ctx)
+       ;;                             (prop (eql currfile)))
+       ;;   (let ((value (occ-readprop obj prop)))
+       ;;     (occ-debug :debug
+       ;;                "occ-editprop: prop: %s, value: %s" prop value)
+       ;;     (occ-writeprop obj
+       ;;                    prop value)))
        ;;}}
        
 
@@ -166,6 +175,11 @@
                (ctx-dir    (when (stringp ctx-file) (file-name-directory ctx-file)))
                (prompt     (concat (symbol-name prop) ": ")))
           (ido-read-directory-name prompt ctx-dir ctx-dir)))
+
+      ;; (cl-defmethod occ-writeprop-with ((obj occ-tsk)
+      ;;                                   (ctx occ-ctx)
+      ;;                                   (prop (eql root)))
+      ;;   "WRITE")
       ;;}}
       
     #+end_src

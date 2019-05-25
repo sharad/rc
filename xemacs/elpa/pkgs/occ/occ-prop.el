@@ -38,6 +38,8 @@
 (require 'occ-prop)
 
 
+;; TODO: multi-value property https://orgmode.org/manual/Using-the-property-API.html
+
 (defun occ-readprop-props ()
   (cl-method-param-case
    '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))))
@@ -58,7 +60,14 @@
    ctx))
 
 
-(defun occ-org-set-property (prop value)
+;; (org-entry-get-multivalued-property (point) "ZEGMA")
+;; (org-entry-put-multivalued-property (point) "ZEGMA" "T1" "T2")
+;; (org-entry-add-to-multivalued-property (point) "ZEGMA" "TEST1")
+;; (org-entry-get (point) "ZEGMA")
+;; (org-entry-set (point) "ZEGMA" "VALUE")
+
+(defun occ-org-set-property (prop
+                             value)
   (lotus-org-with-safe-modification
     (org-set-property prop value)))
 
@@ -133,15 +142,15 @@
 (cl-defmethod occ-rank ((obj occ-obj-ctx-tsk))
   ;; too much output
   (occ-debug :debug "occ-rank(obj=%s)" obj)
-  (let ((tsk (occ-ctsk-tsk obj))
-        (ctx (occ-ctsk-ctx obj)))
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
     (occ-rank-with tsk ctx)))
 
 (cl-defmethod occ-rankprop ((obj  occ-obj-ctx-tsk)
                             (prop symbol))
   (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop)
-  (let ((tsk (occ-ctsk-tsk obj))
-        (ctx (occ-ctsk-ctx obj)))
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
     (occ-rankprop-with tsk ctx prop)))
 
 (cl-defmethod occ-rankprop-with (obj
@@ -166,8 +175,8 @@
   "occ-editprop-with")
 
 
-(cl-defmethod occ-writeprop-with ((obj occ-tsk)
-                                  (ctx occ-ctx)
+(cl-defmethod occ-writeprop-with ((obj  occ-tsk)
+                                  (ctx  occ-ctx)
                                   (prop symbol)
                                   value)
   (occ-debug :debug "occ-writeprop: prop: %s, value: %s"
@@ -181,16 +190,16 @@
                  (occ-format obj 'capitalize)
                  mrk)))
     (error "occ-writeprop value is nil")))
-(cl-defmethod occ-readprop-with ((obj occ-tsk)
-                                 (ctx occ-ctx)
+(cl-defmethod occ-readprop-with ((obj  occ-tsk)
+                                 (ctx  occ-ctx)
                                  (prop symbol))
   (occ-debug :debug "occ-readprop: prop: %s"
              prop)
   (occ-readprop obj
                 ctx
                 prop))
-(cl-defmethod occ-editprop-with ((obj occ-tsk)
-                                 (ctx occ-ctx)
+(cl-defmethod occ-editprop-with ((obj  occ-tsk)
+                                 (ctx  occ-ctx)
                                  (prop symbol))
   (let ((value (occ-readprop-with obj
                                   ctx
@@ -215,35 +224,47 @@
   "occ-editprop")
 
 
-(cl-defmethod occ-writeprop ((obj occ-obj-ctx-tsk)
+(cl-defmethod occ-writeprop ((obj  occ-obj-ctx-tsk)
                              (prop symbol)
                              value)
   (occ-debug :debug "occ-writeprop: prop: %s, value: %s"
              prop value)
-  (let ((tsk (occ-ctsk-tsk obj))
-        (ctx (occ-ctsk-ctx obj)))
-    (occ-writeprop-with tsk ctx prop value)))
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+    (occ-writeprop-with tsk ctx
+                        prop value)))
 (cl-defmethod occ-readprop ((obj occ-obj-ctx-tsk)
                             (prop symbol))
   (occ-debug :debug "occ-readprop: prop: %s"
              prop)
-  (let ((tsk (occ-ctsk-tsk obj))
-        (ctx (occ-ctsk-ctx obj)))
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
     (occ-readprop-with tsk ctx prop)))
-(cl-defmethod occ-editprop ((obj occ-obj-ctx-tsk)
+(cl-defmethod occ-editprop ((obj  occ-obj-ctx-tsk)
                             (prop symbol))
   (let ((value (occ-readprop obj prop)))
     (occ-debug :debug
                "occ-editprop: prop: %s, value: %s" prop value)
-    (occ-writeprop obj value prop)))
+    (occ-writeprop obj
+                   prop value)))
 
 
+(defun occ-edit-multi-valued-prop ())   ;add del clear put get
 
+(defun occ-edit-single-valued-prop ())  ;overwite only
+
+
 
 (cl-defmethod occ-print-rank ((obj occ-obj-ctx-tsk))
   (occ-message "Rank for %s is %d"
                (occ-format obj 'capitalize)
                (occ-rank obj)))
-
 
+
+(defun zzz-select-list-operation ())
+
+(defun zzz-editprop (pom prop)
+  (let ((values (org-entry-get-multivalued-property prop)))
+    (zzz-select-list-operation)))
+
 ;;; occ-prop.el ends here
