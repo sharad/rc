@@ -261,7 +261,8 @@
                (occ-rank obj)))
 
 
-(defun zzz-select-list-operation ())
+(defun zzz-select-list-operation ()
+  (completing-read-multiple))
 
 (defun zzz-editprop (pom prop)
   (let ((values (org-entry-get-multivalued-property prop)))
