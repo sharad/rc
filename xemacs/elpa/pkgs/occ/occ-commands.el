@@ -174,6 +174,12 @@
 
 (defun occ-clock-in-force ()
   (error "Implement it, open context ctx if not present, then occ-clock-in-if-associable else show error."))
+
+(defun occ-interrupt-clock-in (mins)
+  (error "Implement it."))
+
+(defun occ-continue-prev ()
+  (error "Implement it."))
 
 
 (defun occ-reload (&optional uncompiled)

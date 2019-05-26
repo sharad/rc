@@ -262,10 +262,22 @@
 
 
 (defun zzz-select-list-operation ()
-  (completing-read-multiple))
+  (let ((actions '(("add" . add)
+                   ("del" . del)
+                   ("put" . put))))
+    (cdr
+     (assoc (completing-read "action: " actions) actions))))
 
 (defun zzz-editprop (pom prop)
-  (let ((values (org-entry-get-multivalued-property prop)))
-    (zzz-select-list-operation)))
+  (let ((values (org-entry-get-multivalued-property prop))
+        (op (zzz-select-list-operation))))
+  (cond
+   ((eq op 'add)
+    (org-entry-add-to-multivalued-property (point) prop (read-from-minibuffer (format "%s: " prop))))
+   ((eq op 'del)
+    (org-entry-remove-from-multivalued-property (point) prop (completing-read (format "%s: " prop) values nil t)))
+   ((eq op 'add)
+    (org-entry-put-multivalued-property (point) prop (read-from-minibuffer (format "%s: " prop))))))
+
 
 ;;; occ-prop.el ends here
