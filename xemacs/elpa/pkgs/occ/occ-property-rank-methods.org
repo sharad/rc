@@ -39,6 +39,7 @@
 ** Required libraries
 #+begin_src emacs-lisp
 
+  (require 'occ-rank)
   (require 'occ-prop)
   
 #+end_src

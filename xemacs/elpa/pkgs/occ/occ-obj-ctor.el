@@ -69,6 +69,8 @@
                 (backward-char)
                 (buffer-substring start (point)))))))))
 
+(defun occ-read-props ()
+  ())
 
 (defun occ-make-tsk-at-point (&optional builder)
     (let ((builder (or builder

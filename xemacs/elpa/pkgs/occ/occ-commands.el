@@ -180,6 +180,8 @@
 
 (defun occ-continue-prev ()
   (error "Implement it."))
+
+;; TODO: direct prop edit/add/replace/remove etc from helm menu
 
 
 ;; implement console.

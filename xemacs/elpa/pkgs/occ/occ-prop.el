@@ -35,10 +35,17 @@
 (require 'occ-obj-accessor)
 (require 'occ-util-common)
 (require 'occ-obj-method)
-(require 'occ-prop)
+(require 'occ-rank)
 
 
 ;; TODO: multi-value property https://orgmode.org/manual/Using-the-property-API.html
+
+(defun occ-get-from-org ())
+(defun occ-put-to-org ())
+(defun occ-readprop ())
+(defun occ-editprop ())
+
+
 
 (defun occ-readprop-props ()
   (cl-method-param-case
@@ -70,6 +77,77 @@
                              value)
   (lotus-org-with-safe-modification
     (org-set-property prop value)))
+
+
+(defun occ-org-entry-get (pom prop)
+  (lotus-org-with-safe-modification
+    (org-entry-get pom prop)))
+
+(defun occ-org-entry-put (pom prop value)
+  (lotus-org-with-safe-modification
+   (org-entry-put pom prop value)))
+
+
+(defun occ-org-entry-get-multivalued-property (pom prop)
+  (lotus-org-with-safe-modification
+    (org-entry-get-multivalued-property pom prop)))
+
+(defun occ-org-entry-put-multivalued-property (pom prop values)
+  (lotus-org-with-safe-modification
+    (apply #'org-entry-put-multivalued-property pom prop values)))
+
+(defun occ-org-entry-add-to-multivalued-property (pom prop value)
+  (lotus-org-with-safe-modification
+    (org-entry-add-to-multivalued-property pom prop value)))
+
+(defun occ-org-entry-remove-from-multivalued-property (pom prop value)
+  (lotus-org-with-safe-modification
+    (org-entry-remove-from-multivalued-property pom prop value)))
+
+(defun occ-org-entry-member-in-multivalued-property (pom prop values)
+  (lotus-org-with-safe-modification
+    (org-entry-member-in-multivalued-property pom prop values)))
+
+
+(defun occ-org-operate-property (op
+                                 prop
+                                 values)
+  (case op
+    ((get)     (occ-org-entry-get nil prop))
+    ((put)     (occ-org-entry-put nil prop (car values)))
+    ((mget)    (occ-org-entry-get-multivalued-property nil prop))
+    ((mput)    (occ-org-entry-put-multivalued-property nil prop values))
+    ((madd)    (occ-org-entry-add-to-multivalued-property nil prop (car values)))
+    ((mremove) (occ-org-entry-remove-from-multivalued-property nil prop (car values)))
+    ((member)  (occ-org-entry-member-in-from-multivalued-property nil prop (car values)))))
+
+(cl-defmethod occ-org-operate-property-at-point ((mrk marker)
+                                                 op
+                                                 prop
+                                                 &rest
+                                                 values)
+  (lotus-with-marker mrk
+    (unless (org-get-property-block)
+      ;; create property drawer
+      ;; TODO: NOTE: only create property block if 100% sure value is going to be set.
+      (occ-debug :debug "occ-org-set-property-at-point: property block not exist so creating it.")
+      (let* ((range (org-get-property-block (point) 'force))
+             (start (when (consp range) (1- (car range)))))
+        (if (and range start)
+            (when (numberp start)
+              (goto-char start))
+          (error "occ-org-set-property-at-point: not able to create property block to add property %s: %s"
+                 prop value))))
+
+    (if (org-get-property-block)
+        (progn
+          (occ-debug :debug
+                     "occ-org-set-property-at-point: adding prop: %s value: %s using (org-set-property)."
+                     prop value)
+          (occ-org-operate-property opt (symbol-name prop) values))
+        (error "occ-org-set-property-at-point: can not get property block to add property %s: %s"
+               prop value))))
+
 
 (cl-defmethod occ-org-set-property-at-point ((mrk marker)
                                              prop
@@ -95,84 +173,6 @@
           (occ-org-set-property (symbol-name prop) value))
         (error "occ-org-set-property-at-point: can not get property block to add property %s: %s"
                prop value))))
-
-
-(cl-defgeneric occ-rank-with (obj
-                              ctx)
-  "occ-rank-with")
-
-(cl-defgeneric occ-rank (obj)
-  "occ-rank")
-
-(cl-defgeneric occ-rankprop (obj
-                             prop)
-  ;; too much output
-  ;; (occ-debug :debug "occ-rank(tsk-pair=%s ctx=%s)" tsk-pair ctx)
-  "occ-rankprop")
-
-
-(cl-defgeneric occ-rankprop-with (obj
-                                  ctx
-                                  prop)
-  ;; too much output
-  ;; (occ-debug :debug "occ-rank(tsk-pair=%s ctx=%s)" tsk-pair ctx)
-  "occ-rankprop-with")
-
-
-(cl-defmethod occ-rankprop (obj
-                            prop)
-  ;; too much output
-  ;; (occ-debug :debug "occ-rank(tsk-pair=%s ctx=%s)" tsk-pair ctx)
-  (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop)
-  0)
-
-;; ISSUE? should it return rank or occ-ctxual-tsk
-(cl-defmethod occ-rank-with ((obj occ-tsk)
-                             (ctx occ-ctx))
-  ;; too much output
-  (occ-debug :debug "occ-rank(obj=%s ctx=%s)" obj ctx)
-  (let ((rank
-         (reduce #'+
-                 (mapcar #'(lambda (slot) ;;TODO: check if method exist or not, or use some default method.
-                             ;; (occ-debug-uncond "occ-rank-with((obj occ-tsk) (ctx occ-ctx)): checking slot %s" slot)
-                             (occ-rankprop-with obj ctx (downcase-sym slot)))
-                         (occ-class-slots obj)))))
-    rank))
-
-(cl-defmethod occ-rank ((obj occ-obj-ctx-tsk))
-  ;; too much output
-  (occ-debug :debug "occ-rank(obj=%s)" obj)
-  (let ((tsk (occ-obj-tsk obj))
-        (ctx (occ-obj-ctx obj)))
-    (occ-rank-with tsk ctx)))
-
-(cl-defmethod occ-rankprop ((obj  occ-obj-ctx-tsk)
-                            (prop symbol))
-  (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop)
-  (let ((tsk (occ-obj-tsk obj))
-        (ctx (occ-obj-ctx obj)))
-    (occ-rankprop-with tsk ctx prop)))
-
-(cl-defmethod occ-rankprop-with (obj
-                                 ctx
-                                 prop)
-  (occ-debug :debug "occ-rankprop-with(obj=%s ctx=%s symbol=%s)" obj ctx prop)
-  0)
-
-
-(cl-defgeneric occ-writeprop-with (obj
-                                   ctx
-                                   prop
-                                   value)
-  "occ-writeprop-with")
-(cl-defgeneric occ-readprop-with (obj
-                                  ctx
-                                  prop)
-  "occ-readprop-with")
-(cl-defgeneric occ-editprop-with (obj
-                                  ctx
-                                  prop)
-  "occ-editprop-with")
 
 
 (cl-defmethod occ-writeprop-with ((obj  occ-tsk)
@@ -212,17 +212,12 @@
                         value)))
 
 
-(cl-defgeneric occ-writeprop (obj
-                              prop
-                              value)
-  "occ-writeprop")
-(cl-defgeneric occ-readprop (obj
-                             prop)
-  "occ-readprop")
-(cl-defgeneric occ-editprop (obj
-                             prop)
-  "occ-editprop")
-
+(defun occ-select-prop-edit-operation ()
+  (let ((actions '(("add" . add)
+                   ("del" . del)
+                   ("put" . put))))
+    (cdr
+     (assoc (completing-read "action: " actions) actions))))
 
 (cl-defmethod occ-writeprop ((obj  occ-obj-ctx-tsk)
                              (prop symbol)
@@ -242,11 +237,29 @@
     (occ-readprop-with tsk ctx prop)))
 (cl-defmethod occ-editprop ((obj  occ-obj-ctx-tsk)
                             (prop symbol))
+  (error "can not call directly."))
+(cl-defmethod occ-single-editprop ((obj  occ-obj-ctx-tsk)
+                                   (prop symbol))
   (let ((value (occ-readprop obj prop)))
     (occ-debug :debug
                "occ-editprop: prop: %s, value: %s" prop value)
     (occ-writeprop obj
                    prop value)))
+(cl-defmethod occ-multi-editprop ((obj  occ-obj-ctx-tsk)
+                                  (prop symbol))
+  (let ((values (occ-org-entry-get-multivalued-property prop))
+        (op     (occ-select-prop-edit-operation))
+        (mrk    (occ-marker obj)))
+    (cond
+     ((eq op 'add)
+      (occ-org-operate-property-at-point mrk 'madd prop
+                                         (list (read-from-minibuffer (format "%s: " prop)))))
+     ((eq op 'del)
+      (occ-org-operate-property-at-point mrk 'mremove prop
+                                         (list (completing-read (format "%s: " prop) values nil t))))
+     ((eq op 'put)
+      (occ-org-operate-property-at-point mrk 'mput prop
+                                         (list (read-from-minibuffer (format "%s: " prop))))))))
 
 
 (defun occ-edit-multi-valued-prop ())   ;add del clear put get

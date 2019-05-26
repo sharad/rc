@@ -38,6 +38,7 @@
 (require 'occ-obj-accessor)
 (require 'occ-obj-utils)
 (require 'occ-util-common)
+(require 'occ-rank)
 (require 'occ-prop)
 (require 'occ-property-rank-methods)
 (require 'occ-helm)
