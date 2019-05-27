@@ -111,6 +111,14 @@ Each entry is either:
       (lotus-orgmode-config/post-init-org)))
   (use-package org-tempo
     :defer t
+    :init
+    (add-hook 'org-mode-hook 'org-tempo-setup)
+    (add-hook 'org-tab-before-tab-emulation-hook 'org-tempo-complete-tag)
+
+    ;; Enable Org Tempo in all open Org buffers.
+    (dolist (b (org-buffer-list 'files))
+      (with-current-buffer b (org-tempo-setup)))
+
     :config
     (progn))
   ;; (lotus-orgmode-config/init-org-tempo)

@@ -182,6 +182,11 @@
   (error "Implement it."))
 
 
+;; implement console.
+
+;; TODO: direct prop edit/add/replace/remove etc from helm menu
+
+
 (defun occ-reload (&optional uncompiled)
   (interactive "P")
   (occ-reload-lib uncompiled))
