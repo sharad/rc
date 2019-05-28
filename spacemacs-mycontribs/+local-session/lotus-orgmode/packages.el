@@ -111,6 +111,7 @@ Each entry is either:
       (lotus-orgmode-config/post-init-org)))
   (use-package org-tempo
     :defer t
+    :commands (org-tempo-setup org-tempo-complete-tag)
     :init
     (add-hook 'org-mode-hook 'org-tempo-setup)
     (add-hook 'org-tab-before-tab-emulation-hook 'org-tempo-complete-tag)
