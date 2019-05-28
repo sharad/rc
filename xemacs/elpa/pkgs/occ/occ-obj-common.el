@@ -50,6 +50,19 @@
           ,plist ;TODO ??? (cl-obj-plist-value obj)
           key val)
        (error "occ-plist-set: Can not make keyword for `'%s'" prop))))
+
+(defun list-get-evens (lst)
+  (cond
+   ((null lst) nil)
+   ( t (cons  (car lst) (list-get-evens (cdr (cdr lst)))))))
+
+;; (defun list-get-odds (lst)
+;;   (cond
+;;    ((null lst) nil)
+;;    ( t (cons  (cadr lst) (list-get-odds (cdr (cdr lst)))))))
+
+(defun plist-get-keys (plist)
+  (list-get-evens plist))
 
 
 (cl-defmethod occ-get-property ((obj occ-obj)

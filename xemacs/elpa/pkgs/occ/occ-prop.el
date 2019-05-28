@@ -279,5 +279,14 @@
    ((eq op 'add)
     (org-entry-put-multivalued-property (point) prop (read-from-minibuffer (format "%s: " prop))))))
 
+
+
+
+
+
+
+
+
+
 
 ;;; occ-prop.el ends here
