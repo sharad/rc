@@ -299,7 +299,18 @@
 
 
 
+(cl-defmethod ())
 
+;; get from org
+;; get from user
+;; io in occ objs
 
+(cl-defmethod element-from-org-to-occ ())
+(cl-defmethod element-from-occ-to-org ())
+(cl-defmethod read-from-org ())
+(cl-defmethod write-to-org ())
+
+(cl-defmethod read-element-from-user ())
+(cl-defmethod read-from-user ())
 
 ;;; occ-prop.el ends here
