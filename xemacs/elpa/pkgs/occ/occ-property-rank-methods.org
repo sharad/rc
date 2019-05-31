@@ -110,24 +110,24 @@
          (let ((currfile (occ-ctx-file ctx)))
            currfile))
 
-       (cl-defmethod occ-readprop-with ((obj occ-tsk)
-                                        (ctx occ-ctx)
-                                        (prop (eql currfile)))
+       (cl-defmethod occ-prop-is-list ((prop (eql currfile)))
+         t)
+
+       (cl-defmethod occ-prop-elem-to-org   ((prop (eql currfile)) value)
+         value)
+
+       (cl-defmethod occ-prop-elem-from-org ((prop (eql currfile)) value)
+         value)
+
+       (cl-defmethod occ-readprop-elem-from-user-with ((obj occ-tsk)
+                                                       (ctx occ-ctx)
+                                                       (prop (eql currfile)))
          "currfile property for tsk aka org entry"
          (let* ((ctx-currfile (if ctx (occ-ctx-file ctx)))
                 (ctx-dir      (when (stringp ctx-currfile)
                                 (file-name-directory ctx-currfile)))
                 (prompt       (concat (symbol-name prop) ": ")))
            (ido-read-file-name prompt ctx-dir ctx-currfile)))
-
-       ;; (cl-defmethod occ-editprop ((obj occ-tsk)
-       ;;                             (ctx occ-ctx)
-       ;;                             (prop (eql currfile)))
-       ;;   (let ((value (occ-readprop obj prop)))
-       ;;     (occ-debug :debug
-       ;;                "occ-editprop: prop: %s, value: %s" prop value)
-       ;;     (occ-writeprop obj
-       ;;                    prop value)))
        ;;}}
        
 
@@ -168,19 +168,23 @@
         (let ((file (occ-ctx-file ctx)))
           (when file (dirname-of-file file))))
 
-      (cl-defmethod occ-readprop-with ((obj occ-tsk)
-                                       (ctx occ-ctx)
-                                       (prop (eql root)))
+       (cl-defmethod occ-prop-is-list ((prop (eql root)))
+         t)
+
+       (cl-defmethod occ-prop-elem-to-org   ((prop (eql root)) value)
+         value)
+
+       (cl-defmethod occ-prop-elem-from-org ((prop (eql root)) value)
+         value)
+
+      (cl-defmethod occ-readprop-elem-from-user-with ((obj occ-tsk))
+                                                      (ctx occ-ctx)
+                                                      (prop (eql root))
         "READ"
         (let* ((ctx-file   (when ctx (occ-ctx-file ctx)))
                (ctx-dir    (when (stringp ctx-file) (file-name-directory ctx-file)))
                (prompt     (concat (symbol-name prop) ": ")))
           (ido-read-directory-name prompt ctx-dir ctx-dir)))
-
-      ;; (cl-defmethod occ-writeprop-with ((obj occ-tsk)
-      ;;                                   (ctx occ-ctx)
-      ;;                                   (prop (eql root)))
-      ;;   "WRITE")
       ;;}}
       
     #+end_src

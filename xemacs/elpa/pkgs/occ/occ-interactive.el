@@ -43,6 +43,9 @@
   (require 'org-misc-utils-lotus))
 
 
+(eval-when-compile
+  (require 'occ-macros))
+(require 'occ-macros)
 (require 'occ-obj-method)
 (require 'occ-obj-utils)
 (require 'occ-prop)

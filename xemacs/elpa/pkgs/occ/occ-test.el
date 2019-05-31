@@ -386,4 +386,13 @@
 
 
 
+
+;; (org-entry-get-multivalued-property (point) "ZEGMA")
+;; (org-entry-put-multivalued-property (point) "ZEGMA" "T1" "T2")
+;; (org-entry-add-to-multivalued-property (point) "ZEGMA" "TEST1")
+;; (org-entry-get (point) "ZEGMA")
+;; (org-entry-set (point) "ZEGMA" "VALUE")
+
+
+
 ;;; occ-test.el ends here
