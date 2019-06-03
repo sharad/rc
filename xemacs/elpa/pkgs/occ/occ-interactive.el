@@ -239,6 +239,7 @@
             (member
              (setq prop (occ-select-propetry obj ctx))
              '(edit done)))
+      ;; TODO: handle (occ-select-propetry obj ctx) return NIL
       ;; (occ-editprop-with prop obj ctx)
       (when (occ-editprop-with obj ctx prop) ;; (occ-editprop prop ctx)
         (occ-tsk-update-tsks t)))))

@@ -29,6 +29,8 @@
 (defvar occ-verbose 0)
 
 
+;; Resume clock (Unnamed task 933) y
+;; Cannot restart clock because task does not contain unfinished clock
 (defvar occ-org-clock-persist nil "Control org-clock-persist at time of occ clock-in")
 (defvar occ-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of occ clock-in")
 

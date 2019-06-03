@@ -177,9 +177,9 @@
        (cl-defmethod occ-prop-elem-from-org ((prop (eql root)) value)
          value)
 
-      (cl-defmethod occ-readprop-elem-from-user-with ((obj occ-tsk))
+      (cl-defmethod occ-readprop-elem-from-user-with ((obj occ-tsk)
                                                       (ctx occ-ctx)
-                                                      (prop (eql root))
+                                                      (prop (eql root)))
         "READ"
         (let* ((ctx-file   (when ctx (occ-ctx-file ctx)))
                (ctx-dir    (when (stringp ctx-file) (file-name-directory ctx-file)))

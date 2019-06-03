@@ -43,7 +43,8 @@
 
 (defun occ-readprop-props ()
   (cl-method-param-case
-   '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))))
+   ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
+   '(occ-readprop-elem-from-user-with (`(occ-tsk occ-ctx (eql ,val)) val))))
 
 (defun occ-get-property-props ()
   (cl-method-param-case
@@ -56,7 +57,8 @@
 
 (cl-defmethod occ-match-prop-method-args ((ctx occ-ctx))
   (cl-method-sigs-matched-arg
-   '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
+   ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
+   '(occ-readprop-elem-from-user-with (`(occ-tsk occ-ctx (eql ,val)) val))
    '(occ-get-property  (`(occ-ctx (eql ,val)) val))
    ctx))
 
@@ -227,9 +229,9 @@
 (cl-defmethod occ-editprop-list-with ((obj  occ-tsk)
                                       (ctx  occ-ctx)
                                       (prop symbol))
-  (let ((mrk        (occ-obj-marker obj))
-        (prop-value (occ-readprop-elem-from-user-with obj ctx prop)))
-    (let ((op (occ-select-prop-list-operation)))
+  (let ((mrk (occ-obj-marker obj)))
+    (let ((op (occ-select-prop-list-operation))
+          (prop-value (occ-readprop-elem-from-user-with obj ctx prop)))
       (when (occ-org-operate-property-at-point mrk
                                                prop
                                                op
