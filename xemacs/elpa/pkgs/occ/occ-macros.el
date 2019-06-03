@@ -39,7 +39,6 @@
 
 (defmacro occ-debug-return (label &rest body)
   `(progn ,@body))
-
 (put 'occ-debug-return 'lisp-indent-function 1)
 
 

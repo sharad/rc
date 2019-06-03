@@ -44,14 +44,14 @@
       (error "occ-plist-get: Can not make keyword for `'%s'" prop))))
 
 (defmacro occ-plist-set (plist prop value)
-  `(let ((key (sym2key prop)))
+  `(let ((key (sym2key ,prop)))
      (if key
          (plist-put
           ,plist ;TODO ??? (cl-obj-plist-value obj)
-          key val)
-       (error "occ-plist-set: Can not make keyword for `'%s'" prop))))
+          key ,value)
+       (error "occ-plist-set: Can not make keyword for `'%s'" ,prop))))
 
-(defun list-get-evens (lst)
+(defun occ-list-get-evens (lst)
   (cond
    ((null lst) nil)
    ( t (cons  (car lst) (list-get-evens (cdr (cdr lst)))))))
@@ -61,7 +61,7 @@
 ;;    ((null lst) nil)
 ;;    ( t (cons  (cadr lst) (list-get-odds (cdr (cdr lst)))))))
 
-(defun plist-get-keys (plist)
+(defun occ-plist-get-keys (plist)
   (list-get-evens plist))
 
 
@@ -80,13 +80,18 @@
   ;; mainly used by occ-tsk only
   (if (memq prop (cl-class-slots (cl-classname obj)))
       (setf (cl-struct-slot-value (cl-classname obj) prop obj) val)
-    (occ-plist-set
-     ;; NOTE: as Property block keys return by (org-element-at-point) are in
-     ;; UPCASE even in actual org file it is lower or camel case. so our obj
-     ;; (tsk) also must have to be in line of it as it also got created with
-     ;; same function (org-element-at-point).
-     (cl-struct-slot-value (cl-classname obj) 'plist obj)
-     (upcase-sym prop) val)))
+    (let ((plist-prop
+           (if (occ-plist-get (cl-obj-plist-value obj) prop)
+               prop
+             (upcase-sym prop))))
+      (occ-debug-uncond "occ-set-property: got %s using %s" prop plist-prop)
+      (occ-plist-set
+       ;; NOTE: as Property block keys return by (org-element-at-point) are in
+       ;; UPCASE even in actual org file it is lower or camel case. so our obj
+       ;; (tsk) also must have to be in line of it as it also got created with
+       ;; same function (org-element-at-point).
+       (cl-struct-slot-value (cl-classname obj) 'plist obj)
+       plist-prop val))))
 
 
 (cl-defmethod occ-get-properties ((obj occ-obj)
@@ -100,13 +105,13 @@
 
 (cl-defmethod occ-class-slots ((obj occ-obj))
   (let* ((plist (cl-obj-plist-value obj))
-         (plist-keys (plist-get-keys plist))
+         (plist-keys (occ-plist-get-keys plist))
          (slots (cl-class-slots (cl-classname obj))))
     (append slots
             (mapcar #'key2sym plist-keys))))
 (cl-defmethod occ-obj-defined-slots ((obj occ-obj))
   (let* ((plist (cl-obj-plist-value obj))
-         (plist-keys (plist-get-keys plist))
+         (plist-keys (occ-plist-get-keys plist))
          (slots
           (append
            (cl-class-slots (cl-classname obj))

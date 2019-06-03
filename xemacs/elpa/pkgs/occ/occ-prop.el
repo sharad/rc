@@ -194,9 +194,9 @@
   (cl-assert (not (consp value)))
   (if (occ-prop-is-list prop)
       (let* ((values (and value (split-string value))))
-        (mapcar #'occ-prop-elem-from-org
+        (mapcar #'(lambda (v) (occ-prop-elem-from-org prop v))
                 (mapcar #'org-entry-restore-space values)))
-    (occ-prop-elem-from-org value)))
+    (occ-prop-elem-from-org prop value)))
 
 ;; (cl-method-param-case
 ;;  '(occ-prop-is-list (`((eql ,val)) val)))

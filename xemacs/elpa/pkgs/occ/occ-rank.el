@@ -91,6 +91,17 @@
   0)
 
 
+(defmacro occ-aggrigate-list-rank (value values aggregator &rest body)
+  `(let ((total-rank    0))
+     (dolist (,value ,values)
+       (let ((rank (progn
+                     ,@body)))
+         (setq toal-rank
+               (apply ,aggregator total-rank rank))))
+     total-rank))
+(put 'occ-aggrigate-list-rank 'lisp-indent-function 3)
+
+
 (cl-defmethod occ-print-rank ((obj occ-obj-ctx-tsk))
   (occ-message "Rank for %s is %d"
                (occ-format obj 'capitalize)
