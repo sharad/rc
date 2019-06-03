@@ -97,7 +97,7 @@
        (let ((rank (progn
                      ,@body)))
          (setq toal-rank
-               (apply ,aggregator total-rank rank))))
+               (funcall ,aggregator total-rank rank))))
      total-rank))
 (put 'occ-aggrigate-list-rank 'lisp-indent-function 3)
 
