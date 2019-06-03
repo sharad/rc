@@ -123,7 +123,7 @@
                          (val (org-entry-get nil propstr inherit)))
                     (unless (occ-get-property tsk prop)
                       (occ-set-property tsk prop val))))))
-            (occ-reread-props tsk)
+            (occ-reread-props tsk)      ;reset list properties
             tsk))))
 
 (cl-defmethod occ-make-tsk ((obj number)
