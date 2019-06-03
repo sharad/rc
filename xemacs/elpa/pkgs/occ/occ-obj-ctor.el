@@ -29,6 +29,7 @@
 (require 'occ-obj-common)
 (require 'occ-tree)
 (require 'occ-obj)
+(require 'occ-prop)
 
 
 (defvar occ-global-tsk-collection-spec        nil)
@@ -69,8 +70,6 @@
                 (backward-char)
                 (buffer-substring start (point)))))))))
 
-(defun occ-read-props ()
-  ())
 
 (defun occ-make-tsk-at-point (&optional builder)
     (let ((builder (or builder
@@ -123,6 +122,7 @@
                          (val (org-entry-get nil propstr inherit)))
                     (unless (occ-get-property tsk prop)
                       (occ-set-property tsk prop val))))))
+            (occ-reread-props tsk)
             tsk))))
 
 (cl-defmethod occ-make-tsk ((obj number)

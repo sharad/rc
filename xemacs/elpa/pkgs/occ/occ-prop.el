@@ -27,6 +27,7 @@
 (provide 'occ-prop)
 
 
+(require 'dash)
 (require 'org-misc-utils-lotus)
 
 
@@ -151,13 +152,19 @@
 
 (cl-defmethod occ-prop-is-list ((prop symbol))
   ;; 'list
-  (error "Implement method occ-prop-is-list for prop %s" prop))
+  ;; (error "Implement method occ-prop-is-list for prop %s" prop)
+  (occ-debug :debug "occ-prop-is-list: no method for prop %s using default." prop)
+  nil)
 
 
 (cl-defmethod occ-prop-elem-to-org   ((prop symbol) value)
-  (error "Implement method occ-prop-elem-to-org for prop %s" prop))
+  ;; (error "Implement method occ-prop-elem-to-org for prop %s" prop)
+  (occ-debug :debug "occ-prop-elem-to-org: no method for prop %s using default." prop)
+  value)
 (cl-defmethod occ-prop-elem-from-org ((prop symbol) value)
-  (error "Implement method occ-prop-elem-from-org for prop %s" prop))
+  ;; (error "Implement method occ-prop-elem-from-org for prop %s" prop)
+  (occ-debug :debug "occ-prop-elem-from-org: no method for prop %s using default." prop)
+  value)
 
 
 (cl-defmethod occ-readprop-elem-from-user-with ((obj  occ-tsk)
@@ -181,6 +188,34 @@
   (if (occ-prop-is-list prop)
       'mput
     'put))
+
+
+(cl-defmethod occ-rereadprop-value ((prop symbol) value)
+  (cl-assert (not (consp value)))
+  (if (occ-prop-is-list prop)
+      (let* ((values (and value (split-string value))))
+        (mapcar #'occ-prop-elem-from-org
+                (mapcar #'org-entry-restore-space values)))
+    (occ-prop-elem-from-org value)))
+
+;; (cl-method-param-case
+;;  '(occ-prop-is-list (`((eql ,val)) val)))
+;;
+;; (cl-method-param-case
+;;  '(occ-prop-elem-from-org (`((eql ,val) t) val)))
+;;
+;; (cl-method-param-signs 'occ-prop-is-list)
+;; (cl-method-param-signs 'occ-prop-elem-from-org)
+
+(cl-defmethod occ-reread-props ((obj occ-tsk))
+  (let ((props-by-is-list (cl-method-param-case
+                           '(occ-prop-is-list (`((eql ,val)) val))))
+        (props-by-converter (cl-method-param-case
+                             '(occ-prop-elem-from-org (`((eql ,val) t) val)))))
+    (let ((props (-union props-by-is-list props-by-converter))) ;dash
+      (dolist (p props)
+        (occ-set-property obj p
+                          (occ-rereadprop-value p (occ-get-property obj p)))))))
 
 
 (cl-defmethod occ-readprop-org-with ((obj  occ-tsk)
