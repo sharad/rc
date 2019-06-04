@@ -92,10 +92,16 @@
   (lotus-org-with-safe-modification
     (org-entry-member-in-multivalued-property pom prop values)))
 
+(cl-defmethod occ-edit-operation-validate ((prop symbol) op)
+  (if (occ-prop-is-list prop)
+      (memq op '(mget mput madd mremove member))
+    (memq op '(get put))))
 
 (defun occ-org-operate-property (prop
                                  op
                                  values)
+  (unless (occ-edit-operation-validate prop op)
+    (error "occ-org-operate-property: op %s is not allowed for prop %s" op prop))
   (case op
     ((get)     (list (occ-org-entry-get nil prop)))
     ((put)     (occ-org-entry-put nil prop (car values)))
@@ -109,6 +115,8 @@
                                                  (prop symbol)
                                                  op
                                                  values)
+  (unless (occ-edit-operation-validate prop op)
+    (error "occ-org-operate-property: op %s is not allowed for prop %s" op prop))
   (lotus-with-marker mrk
     (unless (org-get-property-block)
       ;; create property drawer
@@ -252,55 +260,42 @@
     (occ-writeprop-org-with tsk ctx prop)))
 
 
-(defun occ-select-prop-list-operation ()
-  (let ((actions '(("add" . madd)
-                   ("del" . mremove)
-                   ("put" . mput))))
-    (cdr
-     (assoc
-      (completing-read "action: " actions)
-      actions))))
+(cl-defmethod occ-select-prop-list-operation ((prop symbol))
+  (if (occ-prop-is-list prop)
+      (let ((actions '(("add" . madd)
+                       ("del" . mremove)
+                       ("put" . mput))))
+        (cdr
+         (assoc
+          (completing-read "action: " actions)
+          actions)))
+     'put))
 
-(cl-defmethod occ-editprop-list-with ((obj  occ-tsk)
-                                      (ctx  occ-ctx)
-                                      (prop symbol))
+(cl-defmethod occ-editprop-with ((obj  occ-tsk)
+                                 (ctx  occ-ctx)
+                                 (prop symbol)
+                                 &optional
+                                 op
+                                 value)
   (let ((mrk (occ-obj-marker obj)))
-    (let ((op (occ-select-prop-list-operation))
-          (prop-value (occ-readprop-elem-from-user-with obj ctx prop)))
+    (let ((op         (or op (occ-select-prop-list-operation prop)))
+          (prop-value (or value (occ-readprop-elem-from-user-with obj ctx prop))))
       (when (occ-org-operate-property-at-point mrk
                                                prop
                                                op
                                                (list prop-value))
         (occ-operate-obj-property-with obj ctx prop op (list prop-value))))))
-
-
-(cl-defmethod occ-editprop-elem-with ((obj  occ-tsk)
-                                      (ctx  occ-ctx)
-                                      (prop symbol))
-  (occ-debug :debug
-             "occ-editprop-with: prop: %s, value: %s" prop value)
-  (let ((prop-value (occ-readprop-from-user-with obj ctx prop)))
-    (when (occ-org-operate-property-at-point mrk
-                                             prop
-                                             'put
-                                             (list prop-value))
-      (occ-operate-obj-property-with obj ctx prop 'put (list prop-value)))))
-
-
-(cl-defmethod occ-editprop-with ((obj  occ-tsk)
-                                 (ctx  occ-ctx)
-                                 (prop symbol))
-  (if (occ-prop-is-list prop)
-      (occ-editprop-list-with obj ctx prop)
-    (occ-editprop-elem-with obj ctx prop)))
 
 (cl-defmethod occ-editprop ((obj  occ-obj-ctx-tsk)
-                            (prop symbol))
+                            (prop symbol)
+                            &optional
+                            op
+                            value)
   (occ-debug :debug
              "occ-editprop: prop: %s, value: %s" prop value)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (occ-editprop-with tsk ctx prop)))
+    (occ-editprop-with tsk ctx prop op value)))
 
 
 (cl-defmethod occ-print-rank ((obj occ-obj-ctx-tsk))
