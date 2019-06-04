@@ -61,7 +61,7 @@
 (cl-defmethod occ-rank-with ((obj occ-tsk)
                              (ctx occ-ctx))
   ;; too much output
-  (occ-debug :debug "occ-rank(obj=%s ctx=%s)" obj ctx)
+  (occ-debug :debug "occ-rank-with(obj=%s ctx=%s)" obj ctx)
   (let ((rank
          (reduce #'+
                  (mapcar #'(lambda (slot) ;;TODO: check if method exist or not, or use some default method.
@@ -92,11 +92,12 @@
 
 
 (defmacro occ-aggrigate-list-rank (value values aggregator &rest body)
-  `(let ((total-rank    0))
-     (dolist (,value ,values)
+  `(let ((values    (if (consp ,values) ,values (list ,values)))
+         (total-rank 0))
+     (dolist (,value values)
        (let ((rank (progn
                      ,@body)))
-         (setq toal-rank
+         (setq total-rank
                (funcall ,aggregator total-rank rank))))
      total-rank))
 (put 'occ-aggrigate-list-rank 'lisp-indent-function 3)
