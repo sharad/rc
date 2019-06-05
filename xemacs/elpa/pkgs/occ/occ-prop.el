@@ -50,9 +50,8 @@
 (defun occ-get-property-props ()
   (cl-method-param-case
    '(occ-get-property  (`(occ-ctx (eql ,val)) val))))
+
 
-;; (occ-readprop-props)
-;; (occ-get-property-props)
 (cl-defgeneric occ-match-prop-method-args (ctx)
   "occ-match-prop-method-args")
 
@@ -64,52 +63,81 @@
    ctx))
 
 
-(defun occ-org-entry-get (pom prop)
+(defun occ-org-entry-get (pom
+                          prop)
   (lotus-org-with-safe-modification
-    (org-entry-get pom prop)))
+    (org-entry-get pom
+                   prop)))
 
-(defun occ-org-entry-put (pom prop value)
+(defun occ-org-entry-put (pom
+                          prop
+                          value)
   (lotus-org-with-safe-modification
-    (org-entry-put pom prop value)))
+    (org-entry-put pom
+                   prop
+                   value)))
 
-(defun occ-org-entry-get-multivalued-property (pom prop)
+(defun occ-org-entry-get-multivalued-property (pom
+                                               prop)
   (lotus-org-with-safe-modification
     (org-entry-get-multivalued-property pom prop)))
 
-(defun occ-org-entry-put-multivalued-property (pom prop values)
+(defun occ-org-entry-put-multivalued-property (pom
+                                               prop
+                                               values)
   (lotus-org-with-safe-modification
-    (apply #'org-entry-put-multivalued-property pom prop values)))
+    (apply #'org-entry-put-multivalued-property
+           pom prop values)))
 
-(defun occ-org-entry-add-to-multivalued-property (pom prop value)
+(defun occ-org-entry-add-to-multivalued-property (pom
+                                                  prop
+                                                  value)
   (lotus-org-with-safe-modification
-    (org-entry-add-to-multivalued-property pom prop value)))
+    (org-entry-add-to-multivalued-property pom
+                                           prop
+                                           value)))
 
-(defun occ-org-entry-remove-from-multivalued-property (pom prop value)
+(defun occ-org-entry-remove-from-multivalued-property (pom
+                                                       prop
+                                                       value)
   (lotus-org-with-safe-modification
-    (org-entry-remove-from-multivalued-property pom prop value)))
+    (org-entry-remove-from-multivalued-property pom
+                                                prop
+                                                value)))
 
-(defun occ-org-entry-member-in-multivalued-property (pom prop values)
+(defun occ-org-entry-member-in-multivalued-property (pom
+                                                     prop
+                                                     values)
   (lotus-org-with-safe-modification
-    (org-entry-member-in-multivalued-property pom prop values)))
+    (org-entry-member-in-multivalued-property pom
+                                              prop
+                                              values)))
 
 (cl-defmethod occ-edit-operation-validate ((prop symbol) op)
   (if (occ-prop-is-list prop)
       (memq op '(mget mput madd mremove member))
     (memq op '(get put))))
 
-(defun occ-org-operate-property (prop
-                                 op
-                                 values)
-  (unless (occ-edit-operation-validate prop op)
-    (error "occ-org-operate-property: op %s is not allowed for prop %s" op prop))
+(cl-defgeneric occ-org-operate-property (pom
+                                         prop
+                                         op
+                                         values)
+  "occ-org-operate-property")
+
+(cl-defmethod occ-org-operate-property ((pom marker)
+                                        (prop string)
+                                        op
+                                        values)
+  ;; (unless (occ-edit-operation-validate prop op)
+  ;;   (error "occ-org-operate-property: op %s is not allowed for prop %s" op prop))
   (case op
-    ((get)     (list (occ-org-entry-get nil prop)))
-    ((put)     (occ-org-entry-put nil prop (car values)))
-    ((mget)    (occ-org-entry-get-multivalued-property nil prop))
-    ((mput)    (occ-org-entry-put-multivalued-property nil prop values))
-    ((madd)    (occ-org-entry-add-to-multivalued-property nil prop (car values)))
-    ((mremove) (occ-org-entry-remove-from-multivalued-property nil prop (car values)))
-    ((member)  (occ-org-entry-member-in-from-multivalued-property nil prop (car values)))))
+    ((get)     (list (occ-org-entry-get pom prop)))
+    ((put)     (occ-org-entry-put pom prop (car values)))
+    ((mget)    (occ-org-entry-get-multivalued-property pom prop))
+    ((mput)    (occ-org-entry-put-multivalued-property pom prop values))
+    ((madd)    (occ-org-entry-add-to-multivalued-property pom prop (car values)))
+    ((mremove) (occ-org-entry-remove-from-multivalued-property pom prop (car values)))
+    ((member)  (occ-org-entry-member-in-from-multivalued-property pom prop (car values)))))
 
 (cl-defmethod occ-org-operate-property-at-point ((mrk marker)
                                                  (prop symbol)
@@ -128,24 +156,33 @@
             (when (numberp start)
               (goto-char start))
           (error "occ-org-operate-property-at-point: not able to create property block to add property %s: %s"
-                 prop value))))
+                 prop values))))
 
     (if (org-get-property-block)
         (progn
           (occ-debug :debug
                      "occ-org-operate-property-at-point: adding prop: %s value: %s using (org-set-property)."
-                     prop value)
-          (occ-org-operate-property (symbol-name prop) opt values))
+                     prop values)
+          (occ-org-operate-property mrk
+                                    (symbol-name prop)
+                                    op
+                                    values))
         (error "occ-org-operate-property-at-point: can not get property block to add property %s: %s"
-               prop value))))
+               prop values))))
 
 
+(cl-defgeneric occ-operate-obj-property-with (obj
+                                              ctx
+                                              prop
+                                              op
+                                              values)
+  "occ-operate-obj-property-with")
 
-(defun occ-operate-obj-property-with ((obj  occ-tsk)
-                                      (ctx  occ-ctx)
-                                      (prop symbol)
-                                      op
-                                      values)
+(cl-defmethod occ-operate-obj-property-with ((obj  occ-tsk)
+                                             (ctx  occ-ctx)
+                                             (prop symbol)
+                                             op
+                                             values)
   (let ((values (mapcar #'(lambda (v) (occ-prop-elem-from-org prop v)) values)))
     (case op
       ((get)     (list (occ-org-entry-get nil prop)))
@@ -165,7 +202,7 @@
   nil)
 
 
-(cl-defmethod occ-prop-elem-to-org   ((prop symbol) value)
+(cl-defmethod occ-prop-elem-to-org ((prop symbol) value)
   ;; (error "Implement method occ-prop-elem-to-org for prop %s" prop)
   (occ-debug :debug "occ-prop-elem-to-org: no method for prop %s using default." prop)
   value)
@@ -205,15 +242,6 @@
         (mapcar #'(lambda (v) (occ-prop-elem-from-org prop v))
                 (mapcar #'org-entry-restore-space values)))
     (occ-prop-elem-from-org prop value)))
-
-;; (cl-method-param-case
-;;  '(occ-prop-is-list (`((eql ,val)) val)))
-;;
-;; (cl-method-param-case
-;;  '(occ-prop-elem-from-org (`((eql ,val) t) val)))
-;;
-;; (cl-method-param-signs 'occ-prop-is-list)
-;; (cl-method-param-signs 'occ-prop-elem-from-org)
 
 (cl-defmethod occ-reread-props ((obj occ-tsk))
   (let ((props-by-is-list (cl-method-param-case
@@ -260,6 +288,10 @@
     (occ-writeprop-org-with tsk ctx prop)))
 
 
+(cl-defgeneric occ-select-prop-list-operation (prop)
+  "occ-select-prop-list-operation")
+
+;; TODO: Add log not on property editing.
 (cl-defmethod occ-select-prop-list-operation ((prop symbol))
   (if (occ-prop-is-list prop)
       (let ((actions '(("add" . madd)
@@ -278,13 +310,17 @@
                                  op
                                  value)
   (let ((mrk (occ-obj-marker obj)))
-    (let ((op         (or op (occ-select-prop-list-operation prop)))
+    (let ((op         (or op    (occ-select-prop-list-operation prop)))
           (prop-value (or value (occ-readprop-elem-from-user-with obj ctx prop))))
       (when (occ-org-operate-property-at-point mrk
                                                prop
                                                op
                                                (list prop-value))
-        (occ-operate-obj-property-with obj ctx prop op (list prop-value))))))
+        (occ-operate-obj-property-with obj
+                                       ctx
+                                       prop
+                                       op
+                                       (list prop-value))))))
 
 (cl-defmethod occ-editprop ((obj  occ-obj-ctx-tsk)
                             (prop symbol)
@@ -298,6 +334,11 @@
     (occ-editprop-with tsk ctx prop op value)))
 
 
+(cl-defmethod occ-generated-operation-methods ((obj  occ-tsk)
+                                               (ctx  occ-ctx)
+                                               (prop symbol)
+                                               value))
+
 (cl-defmethod occ-print-rank ((obj occ-obj-ctx-tsk))
   (occ-message "Rank for %s is %d"
                (occ-format obj 'capitalize)

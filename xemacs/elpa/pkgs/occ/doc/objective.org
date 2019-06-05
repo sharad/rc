@@ -1,8 +1,4 @@
 #+TITLE OCC - Org context clock
 #+PROPERTY: header-args :tangle no
 
-
-Vision :public GPL GNU FSF
-Objective :public Vision GPL GNU FSF
-Design
-Code
+Yes Objective of GPL GNU FSF inherited here

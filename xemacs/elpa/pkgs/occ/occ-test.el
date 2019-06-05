@@ -383,7 +383,16 @@
 ;; (cl-method-param-signs 'occ-readprop-with)
 
 ;; (cl-method-param-signs 'occ-get-property)
+
 
+;; (cl-method-param-case
+;;  '(occ-prop-is-list (`((eql ,val)) val)))
+;;
+;; (cl-method-param-case
+;;  '(occ-prop-elem-from-org (`((eql ,val) t) val)))
+;;
+;; (cl-method-param-signs 'occ-prop-is-list)
+;; (cl-method-param-signs 'occ-prop-elem-from-org)
 
 
 
@@ -394,5 +403,6 @@
 ;; (org-entry-set (point) "ZEGMA" "VALUE")
 
 
+
 
 ;;; occ-test.el ends here

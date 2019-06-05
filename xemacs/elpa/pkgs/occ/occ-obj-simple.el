@@ -577,10 +577,10 @@ pointing to it."
       (occ-props-edit-with tsk ctx)))
 
   (unless (occ-clock-in-if-associable tsk ctx
-                                      :collector collector
-                                      :action    action
+                                      :collector          collector
+                                      :action             action
                                       :action-transformer action-transformer
-                                      :timeout timeout)
+                                      :timeout            timeout)
     (occ-message "%s is not associable with %s not clocking-in."
                  (occ-format tsk 'capitalize)
                  (occ-format ctx 'capitalize))))
@@ -689,8 +689,8 @@ pointing to it."
          (template (occ-capture+-helm-select-template)))
     (when template
       (with-org-capture+ marker 'entry `(marker ,mrk) template '(:empty-lines 1)
-        (progn
-          (occ-props-edit-with tsk ctx)
+        (let ((tmptsk (occ-make-tsk marker)))
+          (occ-props-edit-with tmptsk ctx)
           ;; (occ-props-window-edit-with tsk ctx :timeout occ-idle-timeout)
           t)
         (let ((child-tsk (occ-make-tsk marker)))

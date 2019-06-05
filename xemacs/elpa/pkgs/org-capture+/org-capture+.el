@@ -714,3 +714,19 @@ of the day at point (if any) or the current HH:MM time."
 (provide 'org-capture+)
 ;;; org-capture+.el ends here
 ;; Provide this file:1 ends here
+
+;; Debug code
+
+;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Debug%20code][Debug code:1]]
+(defvar org-capture+-debug nil "org-capture+-debug")
+
+(defun org-capture+-debug (level &rest args)
+  (when org-capture+-debug
+    (when (car args)
+      (apply #'format args)
+      (when (member level '(:emergency :error :warning :debug))
+        ;; (apply #'lwarn 'occ level args)
+        (apply #'lwarn 'org-capture+ level args))
+      (unless (eq level :nodisplay)
+        (apply #'message args)))))
+;; Debug code:1 ends here
