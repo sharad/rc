@@ -542,19 +542,35 @@ pointing to it."
                                                   :timeout            timeout))))))
 
 
-(cl-defmethod occ-clock-in-if-associable ((tsk occ-tsk)
-                                          (ctx occ-ctx)
+(cl-defmethod occ-clock-in-if-associable-with ((tsk occ-tsk)
+                                               (ctx occ-ctx)
+                                               &key
+                                               collector
+                                               action
+                                               action-transformer
+                                               timeout)
+  (when (occ-associable-with-p tsk ctx)
+    (occ-clock-in (occ-build-ctxual-tsk tsk ctx)
+                  :collector collector
+                  :action    action
+                  :action-transformer action-transformer
+                  :timeout timeout)))
+
+
+(cl-defmethod occ-clock-in-if-associable ((obj occ-obj-ctx-tsk)
                                           &key
                                           collector
                                           action
                                           action-transformer
                                           timeout)
-  (when (occ-associable-with-p tsk ctx)
-    (occ-clock-in tsk
-                  :collector collector
-                  :action    action
-                  :action-transformer action-transformer
-                  :timeout timeout)))
+  (let ((tsk        (occ-obj-tsk obj))
+        (ctx        (occ-obj-ctx obj)))
+    (occ-clock-in-if-associable-with tsk ctx
+                                     :collector collector
+                                     :action    action
+                                     :action-transformer action-transformer
+                                     :timeout timeout)))
+
 
 
 (cl-defmethod occ-try-clock-in-with ((tsk occ-tsk)
@@ -576,11 +592,11 @@ pointing to it."
                         (- total-tries try))
       (occ-props-edit-with tsk ctx)))
 
-  (unless (occ-clock-in-if-associable tsk ctx
-                                      :collector          collector
-                                      :action             action
-                                      :action-transformer action-transformer
-                                      :timeout            timeout)
+  (unless (occ-clock-in-if-associable-with tsk ctx
+                                           :collector          collector
+                                           :action             action
+                                           :action-transformer action-transformer
+                                           :timeout            timeout)
     (occ-message "%s is not associable with %s not clocking-in."
                  (occ-format tsk 'capitalize)
                  (occ-format ctx 'capitalize))))
@@ -620,6 +636,10 @@ pointing to it."
   (occ-clock-in obj))
 
 
+(defun occ-clock-out ()
+  (error "Implement it."))
+
+
 (cl-defgeneric occ-goto (obj)
   "occ-goto")
 

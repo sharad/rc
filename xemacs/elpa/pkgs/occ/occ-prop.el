@@ -183,7 +183,9 @@
                                              (prop symbol)
                                              op
                                              values)
-  (let ((values (mapcar #'(lambda (v) (occ-prop-elem-from-org prop v)) values)))
+  (let ((values
+         (mapcar #'(lambda (v) (occ-prop-elem-from-org prop v))
+                 values)))
     (case op
       ((get)     (list (occ-org-entry-get nil prop)))
       ((put)     (occ-set-property obj prop (car values)))
@@ -202,11 +204,13 @@
   nil)
 
 
-(cl-defmethod occ-prop-elem-to-org ((prop symbol) value)
+(cl-defmethod occ-prop-elem-to-org ((prop symbol)
+                                    value)
   ;; (error "Implement method occ-prop-elem-to-org for prop %s" prop)
   (occ-debug :debug "occ-prop-elem-to-org: no method for prop %s using default." prop)
   value)
-(cl-defmethod occ-prop-elem-from-org ((prop symbol) value)
+(cl-defmethod occ-prop-elem-from-org ((prop symbol)
+                                      value)
   ;; (error "Implement method occ-prop-elem-from-org for prop %s" prop)
   (occ-debug :debug "occ-prop-elem-from-org: no method for prop %s using default." prop)
   value)

@@ -71,6 +71,7 @@
 ;; lotus-with-file-pos-new-win: selecting buf report.org<hostapdng> [2 times]
 ;; org--align-node-property: Match data clobbered by buffer modification hooks
 ;; TODO: FIX: org--align-node-property: Match data clobbered by buffer modification hooks
+;; BUG: TODO: need to use (occ-clock-in occ-ctxtual-tsk)
 (defun org-rl-straight-org-clock-clock-in (clock &optional resume start-time)
   (progn
     (org-rl-debug nil "org-rl-straight-org-clock-clock-in: begin")

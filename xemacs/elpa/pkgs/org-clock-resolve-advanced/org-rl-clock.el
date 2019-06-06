@@ -468,6 +468,7 @@
   (org-rl-debug nil "org-rl-clock-simple-resolve-time: finished"))
 
 
+;; BUG: TODO: need to use (occ-clock-in occ-ctxtual-tsk)
 (defun org-rl-clock-clock-in-as-it-is (marker)
   (interactive
    (list (point-marker)))
