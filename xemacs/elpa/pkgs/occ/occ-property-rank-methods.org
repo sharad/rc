@@ -205,6 +205,30 @@
                  (> timebeing-time clocked-time))
                 (- timebeing-time clocked-time)
               0))))
+
+      (cl-defmethod occ-get-property ((ctx occ-ctx)
+                                      (prop (eql timebeing)))
+        "occ-get-property"
+        0)
+
+      (cl-defmethod occ-prop-is-list ((prop (eql timebeing)))
+         nil)
+
+      (cl-defmethod occ-prop-elem-to-org   ((prop (eql timebeing)) value)
+        (number-to-string value))
+
+      (cl-defmethod occ-prop-elem-from-org ((prop (eql timebeing)) value)
+        (string-to-number value))
+
+      (cl-defmethod occ-readprop-elem-from-user-with ((obj occ-tsk)
+                                                      (ctx occ-ctx)
+                                                      (prop (eql timebeing)))
+        "READ"
+        (let* ((ctx-file   (when ctx (occ-ctx-file ctx)))
+               (ctx-dir    (when (stringp ctx-file) (file-name-directory ctx-file)))
+               (prompt     (concat (symbol-name prop) ": ")))
+          (read-number "Timebeing mins: ")))
+
       
     #+end_src
 

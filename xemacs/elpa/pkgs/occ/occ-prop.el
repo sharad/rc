@@ -113,24 +113,25 @@
                                               prop
                                               values)))
 
-(cl-defmethod occ-edit-operation-validate ((prop symbol) op)
+(cl-defmethod occ-edit-operation-validate ((prop symbol)
+                                           operation)
   (if (occ-prop-is-list prop)
-      (memq op '(mget mput madd mremove member))
-    (memq op '(get put))))
+      (memq operation '(mget mput madd mremove member))
+    (memq operation '(get put))))
 
 (cl-defgeneric occ-org-operate-property (pom
                                          prop
-                                         op
+                                         operation
                                          values)
   "occ-org-operate-property")
 
 (cl-defmethod occ-org-operate-property ((pom marker)
                                         (prop string)
-                                        op
+                                        operation
                                         values)
-  ;; (unless (occ-edit-operation-validate prop op)
-  ;;   (error "occ-org-operate-property: op %s is not allowed for prop %s" op prop))
-  (case op
+  ;; (unless (occ-edit-operation-validate prop operation)
+  ;;   (error "occ-org-operate-property: operation %s is not allowed for prop %s" operation prop))
+  (case operation
     ((get)     (list (occ-org-entry-get pom prop)))
     ((put)     (occ-org-entry-put pom prop (car values)))
     ((mget)    (occ-org-entry-get-multivalued-property pom prop))
@@ -141,10 +142,10 @@
 
 (cl-defmethod occ-org-operate-property-at-point ((mrk marker)
                                                  (prop symbol)
-                                                 op
+                                                 operation
                                                  values)
-  (unless (occ-edit-operation-validate prop op)
-    (error "occ-org-operate-property: op %s is not allowed for prop %s" op prop))
+  (unless (occ-edit-operation-validate prop operation)
+    (error "occ-org-operate-property: operation %s is not allowed for prop %s" operation prop))
   (lotus-with-marker mrk
     (unless (org-get-property-block)
       ;; create property drawer
@@ -165,7 +166,7 @@
                      prop values)
           (occ-org-operate-property mrk
                                     (symbol-name prop)
-                                    op
+                                    operation
                                     values))
         (error "occ-org-operate-property-at-point: can not get property block to add property %s: %s"
                prop values))))
@@ -174,19 +175,20 @@
 (cl-defgeneric occ-operate-obj-property-with (obj
                                               ctx
                                               prop
-                                              op
+                                              operation
                                               values)
   "occ-operate-obj-property-with")
 
 (cl-defmethod occ-operate-obj-property-with ((obj  occ-tsk)
                                              (ctx  occ-ctx)
                                              (prop symbol)
-                                             op
+                                             operation
                                              values)
   (let ((values
-         (mapcar #'(lambda (v) (occ-prop-elem-from-org prop v))
+         (mapcar #'(lambda (v)
+                     (occ-prop-elem-from-org prop v))
                  values)))
-    (case op
+    (case operation
       ((get)     (list (occ-org-entry-get nil prop)))
       ((put)     (occ-set-property obj prop (car values)))
       ((mget)    (occ-org-entry-get-multivalued-property nil prop))
@@ -212,7 +214,8 @@
 (cl-defmethod occ-prop-elem-from-org ((prop symbol)
                                       value)
   ;; (error "Implement method occ-prop-elem-from-org for prop %s" prop)
-  (occ-debug :debug "occ-prop-elem-from-org: no method for prop %s using default." prop)
+  (occ-debug :debug
+             "occ-prop-elem-from-org: no method for prop %s using default." prop)
   value)
 
 
@@ -221,6 +224,7 @@
                                                 (prop symbol))
   "readprop-elem-from-user for org"
   (error "Implement method occ-readprop-elem-from-user-with for prop %s" prop))
+
 (cl-defmethod occ-readprop-from-user-with ((obj  occ-tsk)
                                            (ctx  occ-ctx)
                                            (prop symbol))
@@ -228,18 +232,34 @@
   (error "Implement method occ-readprop-from-user-with for prop %s" prop))
 
 
-(cl-defmethod occ-prop-get-op ((prop symbol))
+(cl-defmethod occ-readprop-elem-from-user ((obj  occ-obj-ctx-tsk)
+                                           (prop symbol))
+  "readprop-elem-from-user for org"
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+    (occ-readprop-elem-from-user-with tsk ctx)))
+
+(cl-defmethod occ-readprop-from-user ((obj  occ-obj-ctx-tsk)
+                                      (prop symbol))
+  "readprop-from-user for org"
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+    (occ-readprop-from-user-with tsk ctx)))
+
+
+(cl-defmethod occ-prop-get-operation ((prop symbol))
   (if (occ-prop-is-list prop)
       'mget
     'get))
 
-(cl-defmethod occ-prop-put-op ((prop symbol))
+(cl-defmethod occ-prop-put-operation ((prop symbol))
   (if (occ-prop-is-list prop)
       'mput
     'put))
 
 
-(cl-defmethod occ-rereadprop-value ((prop symbol) value)
+(cl-defmethod occ-rereadprop-value ((prop symbol)
+                                    value)
   (cl-assert (not (consp value)))
   (if (occ-prop-is-list prop)
       (let* ((values (and value (split-string value))))
@@ -262,10 +282,13 @@
                                      (ctx  occ-ctx)
                                      (prop symbol))
   "readprop-org"
-  (let ((values (occ-org-operate-property-at-point (point)
-                                                   prop
-                                                   (occ-prop-get-op prop))))
-    (mapcar #'(lambda (v) (occ-prop-elem-from-org prop v)) values)))
+  (let* ((mrk    (or (occ-obj-marker obj) (point)))
+         (values (occ-org-operate-property-at-point mrk
+                                                    prop
+                                                    (occ-prop-get-operation prop))))
+    (mapcar #'(lambda (v)
+                (occ-prop-elem-from-org prop v))
+            values)))
 
 (cl-defmethod occ-writeprop-org-with ((obj  occ-tsk)
                                       (ctx  occ-ctx)
@@ -273,10 +296,12 @@
   "readprop-org"
   (let* ((values (occ-get-property obj prop))
          (values (if (consp values) values (list values)))
-         (values (mapcar #'(lambda (v) (occ-prop-elem-to-org prop va)) values)))
+         (values (mapcar #'(lambda (v)
+                             (occ-prop-elem-to-org prop va))
+                         values)))
     (occ-org-operate-property-at-point (point)
                                        prop
-                                       (occ-prop-put-op prop)
+                                       (occ-prop-put-operation prop)
                                        values)))
 
 (cl-defmethod occ-readprop-org ((obj  occ-obj-ctx-tsk)
@@ -311,38 +336,53 @@
                                  (ctx  occ-ctx)
                                  (prop symbol)
                                  &optional
-                                 op
+                                 operation
                                  value)
   (let ((mrk (occ-obj-marker obj)))
-    (let ((op         (or op    (occ-select-prop-list-operation prop)))
+    (let ((operation  (or operation    (occ-select-prop-list-operation prop)))
           (prop-value (or value (occ-readprop-elem-from-user-with obj ctx prop))))
       (when (occ-org-operate-property-at-point mrk
                                                prop
-                                               op
+                                               operation
                                                (list prop-value))
         (occ-operate-obj-property-with obj
                                        ctx
                                        prop
-                                       op
+                                       operation
                                        (list prop-value))))))
 
 (cl-defmethod occ-editprop ((obj  occ-obj-ctx-tsk)
                             (prop symbol)
                             &optional
-                            op
+                            operation
                             value)
   (occ-debug :debug
              "occ-editprop: prop: %s, value: %s" prop value)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (occ-editprop-with tsk ctx prop op value)))
+    (occ-editprop-with tsk ctx prop operation value)))
 
 
-(cl-defmethod occ-generated-operation-methods ((obj  occ-tsk)
-                                               (ctx  occ-ctx)
-                                               (prop symbol)
-                                               value))
+(cl-defmethod occ-generated-operation-method-with ((obj  occ-tsk)
+                                                   (ctx  occ-ctx)
+                                                   (prop symbol)
+                                                   operation
+                                                   value)
+  #'(lambda (obj ctx)
+      (occ-editprop-with obj ctx
+                         prop
+                         operation
+                         value)))
+
+(cl-defmethod occ-generated-operation-method ((obj  occ-obj-ctx-tsk)
+                                              (prop symbol)
+                                              operation
+                                              value)
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+    (occ-generated-operation-method-with tsk ctx prop value)))
 
+
 (cl-defmethod occ-print-rank ((obj occ-obj-ctx-tsk))
   (occ-message "Rank for %s is %d"
                (occ-format obj 'capitalize)
