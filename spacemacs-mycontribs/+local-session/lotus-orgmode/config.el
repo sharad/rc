@@ -677,6 +677,7 @@
     (setq orgnav-log 't)))
 
 (defun lotus-orgmode-config/init-outshine ()
+  ;; https://github.com/alphapapa/outshine
   ;; TODO https://orgmode.org/worg/org-tutorials/org-outside-org.html
   ;; http://www.modernemacs.com/post/outline-ivy/
   ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
@@ -691,11 +692,18 @@
     ;; (defvar outline-minor-mode-prefix "\M-#")
     (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
     (setq outshine-use-speed-commands t)
-    (add-hook 'prog-mode-hook 'outline-minor-mode)
-    (add-hook 'ruby-mode-hook 'outline-minor-mode)
-    (add-hook 'lua-mode-hook 'outline-minor-mode)
-    (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
-    (add-hook 'common-lisp-mode-hook 'outline-minor-mode)
-    (add-hook 'lisp-mode-hook 'outline-minor-mode)))
+    (add-hook 'prog-mode-hook 'outshine-minor-mode)
+    (add-hook 'ruby-mode-hook 'outshine-minor-mode)
+    (add-hook 'lua-mode-hook 'outshine-minor-mode)
+    (add-hook 'emacs-lisp-mode-hook 'outshine-minor-mode)
+    (add-hook 'common-lisp-mode-hook 'outshine-minor-mode)
+    (add-hook 'lisp-mode-hook 'outshine-minor-mode))
+  (progn
+    (if (fboundp 'outshine-minor-mode)
+        (add-hook 'message-mode-hook #'outshine-minor-mode)
+      (lwarn 'error 'spacemacs "outshine-minor-mode is not available for message-mode-hook"))
+    (if (fboundp 'outshine-minor-mode++)
+        (add-hook 'message-mode-hook #'outshine-minor-mode++)
+      (lwarn 'error 'spacemacs "outshine-minor-mode++ is not available for message-mode-hook"))))
 
 ;;; config.el ends here
