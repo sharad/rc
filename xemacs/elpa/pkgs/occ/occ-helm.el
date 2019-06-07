@@ -42,21 +42,21 @@
 (defun occ-helm-action-get (key)
   (plist-get occ-helm-actions-plist key))
 
-;; (defun occ-helm-actions-get (&rest keys)
-;;   (let ((actions nil))
-;;     (dolist (key keys)
-;;       (let ((name-action (occ-helm-action-get key)))
-;;         (when name-action
-;;           (nconc actions (list name-action)))))
-;;     actions))
-
 (defun occ-helm-actions-get (&rest keys)
   (let ((actions nil))
     (dolist (key keys)
       (let ((name-action (occ-helm-action-get key)))
         (when name-action
-          (push name-action actions))))
-    (reverse actions)))
+          (setf actions (nconc actions (list name-action))))))
+    actions))
+
+;; (defun occ-helm-actions-get (&rest keys)
+;;   (let ((actions nil))
+;;     (dolist (key keys)
+;;       (let ((name-action (occ-helm-action-get key)))
+;;         (when name-action
+;;           (push name-action actions))))
+;;     (reverse actions)))
 
 (progn
 

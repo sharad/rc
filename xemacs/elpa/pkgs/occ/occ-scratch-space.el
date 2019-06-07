@@ -387,8 +387,7 @@ USAGE:  (org-get-entries-fn '(6 1 2015) '(6 30 2015))"
              (calendar-date-is-valid-p end))
           (let ((debug-on-quit nil))
             (signal 'quit `("One or both of your gregorian dates are invalid."))))
-        (let* (
-               result
+        (let* ((result nil)
                (org-agenda-prefix-format "  • ")
                (org-agenda-entry-types '(:scheduled))
                (date-after
@@ -407,7 +406,7 @@ USAGE:  (org-get-entries-fn '(6 1 2015) '(6 30 2015))"
                       (push (copy-sequence d) ret)
                       (setq cont (not (equal d end)))
                       (setq d (funcall date-after d 1)))
-                    (nreverse ret)))) )
+                    (nreverse ret)))))
           (org-agenda-reset-markers)
           (setq org-agenda-buffer
                 (when (buffer-live-p org-agenda-buffer)

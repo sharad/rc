@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2019  Sharad
 
-;; Author: Sharad <spratap@merunetworks.com>
+;; Author: Sharad <>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -50,6 +50,12 @@
   "occ-rankprop-with")
 
 
+(cl-defmethod occ-rankprop-with (obj
+                                 ctx
+                                 prop)
+  (occ-debug :debug "occ-rankprop-with(obj=%s ctx=%s symbol=%s)" obj ctx prop)
+  0)
+
 (cl-defmethod occ-rankprop (obj
                             prop)
   ;; too much output
@@ -69,6 +75,23 @@
                              (occ-rankprop-with obj ctx (downcase-sym slot)))
                          (occ-class-slots obj)))))
     rank))
+
+
+(cl-defmethod occ-rank ((obj occ-tsk))
+  ;; too much output
+  (occ-debug :debug "occ-rank(obj=%s)" obj))
+  ;; (let ((tsk (occ-obj-tsk obj))
+  ;;       (ctx (occ-obj-ctx obj)))
+  ;;   (occ-rank-with tsk ctx))
+
+
+(cl-defmethod occ-rankprop ((obj  occ-tsk)
+                            (prop symbol))
+  (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop))
+  ;; (let ((tsk (occ-obj-tsk obj))
+  ;;       (ctx (occ-obj-ctx obj)))
+  ;;   (occ-rankprop-with tsk ctx prop))
+
 
 (cl-defmethod occ-rank ((obj occ-obj-ctx-tsk))
   ;; too much output
@@ -83,12 +106,6 @@
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
     (occ-rankprop-with tsk ctx prop)))
-
-(cl-defmethod occ-rankprop-with (obj
-                                 ctx
-                                 prop)
-  (occ-debug :debug "occ-rankprop-with(obj=%s ctx=%s symbol=%s)" obj ctx prop)
-  0)
 
 
 (defmacro occ-aggrigate-list-rank (value values aggregator &rest body)

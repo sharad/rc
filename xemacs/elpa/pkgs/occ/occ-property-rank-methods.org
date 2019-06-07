@@ -215,10 +215,14 @@
          nil)
 
       (cl-defmethod occ-prop-elem-to-org   ((prop (eql timebeing)) value)
-        (number-to-string value))
+        (if (numberp value)
+            (number-to-string value)
+          ""))
 
       (cl-defmethod occ-prop-elem-from-org ((prop (eql timebeing)) value)
-        (string-to-number value))
+        (if (stringp value)
+            (or (string-to-number value) 0)
+          0))
 
       (cl-defmethod occ-readprop-elem-from-user-with ((obj occ-tsk)
                                                       (ctx occ-ctx)

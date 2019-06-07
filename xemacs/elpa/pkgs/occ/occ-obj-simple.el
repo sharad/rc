@@ -593,12 +593,11 @@ pointing to it."
             (> try 0)
             (not (occ-associable-with-p tsk ctx)))
       (setq try (1- try))
-      (occ-debug-uncond "TEST %s is not associable with %s [try %d]"
-                        (occ-format tsk 'capitalize)
-                        (occ-format ctx 'capitalize)
-                        (- total-tries try))
+      (occ-message "occ-try-clock-in-with %s is not associable with %s [try %d]"
+                   (occ-format tsk 'capitalize)
+                   (occ-format ctx 'capitalize)
+                   (- total-tries try))
       (occ-props-edit-with tsk ctx)))
-
   (unless (occ-clock-in-if-associable-with tsk ctx
                                            :collector          collector
                                            :action             action
@@ -722,7 +721,8 @@ pointing to it."
                     (occ-get-property obj 'subtree-level))
   (occ-insert-node-after-element child obj
                                  (occ-tree-collection-list (occ-collection-object)))
-  (push child (occ-tree-tsk-subtree obj)))
+  (setf
+   (occ-tree-tsk-subtree obj) (nconc (occ-tree-tsk-subtree obj) '(list  child))))
 
 (cl-defmethod occ-induct-child ((obj occ-list-tsk)
                                 (child occ-list-tsk))
