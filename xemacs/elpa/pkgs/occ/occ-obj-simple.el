@@ -970,6 +970,11 @@ pointing to it."
 ;;   ;; (occ-make-tsk-container
 ;;   ;;  (occ-collect-list collection))
 ;;   (occ-collect-list collection))
+;;
+
+;;
+;; (occ-make-tsk-container
+;;  (occ-collect-list collection))
 
 (cl-defmethod occ-collection-obj-list ((collection occ-collection)
                                        (obj occ-ctx))
@@ -987,8 +992,6 @@ pointing to it."
 (cl-defmethod occ-collection-obj-list ((collection occ-collection)
                                        (obj null))
   "return TSKs list"
-  ;; (occ-make-tsk-container
-  ;;  (occ-collect-list collection))
   (occ-collection-obj-list collection (occ-make-ctx-at-point)))
 
 
