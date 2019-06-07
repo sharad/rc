@@ -162,6 +162,30 @@
                      inherit-input-method)))
 
 
+(defun occ-insert-node-before-element (node element list)
+  ;; https://groups.google.com/forum/#!topic/comp.lang.lisp/83g9zkq_CQY
+  (let ((pos (cl-position element list)))
+    (if pos
+        (if (= pos 0)
+            (cons node list) ;There's no way to be destructive in this case, so just cons.
+
+          (let ((tail (nthcdr (1- pos) list)))
+            (if (null tail) (error "There is no position ~D in ~S." pos list))
+            (push node (cdr tail))
+            list)))))
+(defun occ-insert-node-after-element (node element list)
+  ;; https://groups.google.com/forum/#!topic/comp.lang.lisp/83g9zkq_CQY
+  (let ((pos (cl-position element list)))
+    (if pos
+        (if (= pos 0)
+            (cons node list) ;There's no way to be destructive in this case, so just cons.
+
+          (let ((tail (nthcdr pos list)))
+            (if (null tail) (error "There is no position ~D in ~S." pos list))
+            (push node (cdr tail))
+            list)))))
+
+
 (cl-defmethod ignore-p ((buff buffer))
   nil)
 

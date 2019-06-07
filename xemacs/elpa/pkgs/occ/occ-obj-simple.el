@@ -716,6 +716,21 @@ pointing to it."
    occ-capture+-helm-templates-alist))
 
 
+(cl-defmethod occ-induct-child ((obj occ-tree-tsk)
+                                (child occ-tree-tsk))
+  (occ-set-property child 'subtree-level
+                    (occ-get-property obj 'subtree-level))
+  (occ-insert-node-after-element child obj
+                                 (occ-tree-collection-list (occ-collection-object)))
+  (push child (occ-tree-tsk-subtree obj)))
+
+(cl-defmethod occ-induct-child ((obj occ-list-tsk)
+                                (child occ-list-tsk))
+  (occ-set-property child 'subtree-level
+                    (occ-get-property obj 'subtree-level))
+  (occ-insert-node-after-element child obj
+                                 (occ-tree-collection-list (occ-collection-object))))
+
 (cl-defgeneric occ-capture-with (tsk
                                  ctx
                                  &optional clock-in-p)
@@ -761,17 +776,6 @@ pointing to it."
   (let ((tsk        (occ-obj-tsk obj))
         (ctx        (occ-obj-ctx obj)))
     (occ-capture-with tsk ctx clock-in-p)))
-
-
-(cl-defmethod occ-induct-child ((obj occ-tree-tsk)
-                                (child occ-tree-tsk))
-  ;; BUG: put it to next to correct object obj, so need to find obj task here
-  (push child (occ-tree-collection-list (occ-collection-object)))
-  (push child (occ-tree-tsk-subtree obj)))
-
-(cl-defmethod occ-induct-child ((obj occ-list-tsk)
-                                (child occ-list-tsk))
-  (push child (occ-list-collection-list (occ-collection-object))))
 
 
 (cl-defgeneric occ-unammed-p (obj)
@@ -838,32 +842,6 @@ pointing to it."
 
 (cl-defmethod occ-procreate-child-clock-in ((obj occ-obj-tsk))
   (occ-capture obj t))
-
-
-;; TODO: remove it.
-;; (cl-defgeneric occ-procreate-child-prop-edit-with (obj
-;;                                                    ctx)
-;;   "occ-child")
-
-;; (cl-defmethod occ-procreate-child-prop-edit-with ((obj marker)
-;;                                                   (ctx occ-ctx))
-;;   (occ-capture obj)
-;;   (occ-props-window-edit-with obj ctx))
-
-;; (cl-defmethod occ-procreate-child-prop-edit-with ((obj occ-tsk)
-;;                                                   (ctx occ-ctx))
-;;   (occ-capture obj)
-;;   (occ-props-window-edit-with obj ctx))
-
-;; (cl-defmethod occ-procreate-child-prop-edit ((obj occ-ctsk))
-;;   (occ-capture obj)
-;;   (occ-props-window-edit-with (occ-obj-tsk obj)
-;;                               (occ-obj-ctx obj)))
-
-;; (cl-defmethod occ-procreate-child-prop-edit ((obj occ-ctxual-tsk))
-;;   (occ-capture obj)
-;;   (occ-props-window-edit-with (occ-ctxual-tsk-tsk obj)
-;;                               (occ-ctxual-tsk-ctx obj)))
 
 
 (cl-defmethod occ-files ()
