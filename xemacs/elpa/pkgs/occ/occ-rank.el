@@ -80,13 +80,21 @@
 (cl-defmethod occ-rank ((obj occ-tsk))
   ;; too much output
   (occ-debug :debug "occ-rank(obj=%s)"
-             obj))
+             obj)
+  (let ((rank
+         (reduce #'+
+                 (mapcar #'(lambda (slot) ;;TODO: check if method exist or not, or use some default method.
+                             ;; (occ-debug-uncond "occ-rank-with((obj occ-tsk) (ctx occ-ctx)): checking slot %s" slot)
+                             (occ-rankprop obj (downcase-sym slot)))
+                         (occ-class-slots obj)))))
+    rank))
 
 (cl-defmethod occ-rankprop ((obj  occ-tsk)
                             (prop symbol))
   (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)"
              obj
-             prop))
+             prop)
+  0)
 
 
 (cl-defmethod occ-rank ((obj occ-obj-ctx-tsk))
