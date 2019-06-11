@@ -79,18 +79,14 @@
 
 (cl-defmethod occ-rank ((obj occ-tsk))
   ;; too much output
-  (occ-debug :debug "occ-rank(obj=%s)" obj))
-  ;; (let ((tsk (occ-obj-tsk obj))
-  ;;       (ctx (occ-obj-ctx obj)))
-  ;;   (occ-rank-with tsk ctx))
-
+  (occ-debug :debug "occ-rank(obj=%s)"
+             obj))
 
 (cl-defmethod occ-rankprop ((obj  occ-tsk)
                             (prop symbol))
-  (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop))
-  ;; (let ((tsk (occ-obj-tsk obj))
-  ;;       (ctx (occ-obj-ctx obj)))
-  ;;   (occ-rankprop-with tsk ctx prop))
+  (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)"
+             obj
+             prop))
 
 
 (cl-defmethod occ-rank ((obj occ-obj-ctx-tsk))
