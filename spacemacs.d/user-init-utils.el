@@ -321,17 +321,22 @@
     all-with-included-layers))
 
 
+(defun lotus-disable-report-org ()
+  (if (and
+       (not (buffer-file-name))
+       (or
+        (string= (buffer-name) "report.org")
+        (string= (buffer-name) "report.org<2>")))
+      (progn
+        (message "creating report.org<2> buffer not going to debug.")
+        (backtrace)
+        (message "backtrace creating report.org<2> buffer not going to debug.")
+        (debug))))
 (defun lotus-debug-emacs-user-init-begin ()
   (add-hook 'fundamental-mode-hook
-            #'(lambda ()
-                (if (and
-                     (not (buffer-file-name))
-                     (or
-                      (string= (buffer-name) "report.org")
-                      (string= (buffer-name) "report.org<2>")))
-                    (progn
-                     (message "creating report.org<2> buffer")
-                     (debug))))))
+            #'lotus-disable-report-org)
+  (add-hook 'org-mode-hook
+            #'lotus-disable-report-org))
 
 
 (defun cleanup-tty-process ()
