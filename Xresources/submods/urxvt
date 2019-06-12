@@ -68,11 +68,12 @@ URxvt.font: \
    xft:Sahadeva:style=Regular:size=SETUP_fontsize:spacing=1,\
    xft:Lohit Sindhi:style=Regular:size=SETUP_fontsize:spacing=1
 
+Urxvt.scaleHeight: 1.01
 
 
 
-
-URxvt.xftAntialias:      false
+!! URxvt.xftAntialias:      false
+URxvt.xftAntialias:      true
 !!                                                              digital-clock
 !! URxvt.perl-ext:        selection,mark-yank-urls,readline,tabbed
 URxvt.perl-ext:        selection,mark-yank-urls,readline
