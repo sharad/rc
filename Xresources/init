@@ -62,6 +62,11 @@ Xft.hintstyle: hintmedium
 !! YeahConsole
 include(submods/general)
 
+!! xft
+include(submods/xft)
+
+!! cursor
+include(submods/cursor)
 
 !! Emacs
 include(submods/emacs)

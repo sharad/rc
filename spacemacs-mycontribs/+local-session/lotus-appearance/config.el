@@ -344,5 +344,34 @@
 
 (add-hook 'after-make-frame-functions
           #'(lambda (frame) (set-default-face-height-by-resolution)) t)
+
+
+
+(defvar lotus-dotspacemacs-default-font-list
+  '(("Source Code Pro:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
+    ("Source Code Pro" :size 9 :weight normal :width normal :powerline-scale 1.1)
+    ("DejaVu Sans Mono:size=8:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
+    ("DejaVu Sans Mono" :size 9 :weight normal :width normal :powerline-scale 1.1)))
+
+(setq
+ dotspacemacs-default-font '("Source Code Pro:antialias=true"
+                             :size 9
+                             :weight normal
+                             :width normal
+                             :powerline-scale 1.1))
+
+
+(defun lotus-set-default-face (font)
+  (interactive
+   (let* ((font-name (completing-read "Fonts: " lotus-dotspacemacs-default-font-list))
+          (font      (assoc font-name lotus-dotspacemacs-default-font-list)))
+     (list font)))
+  (message "Setting font: %s" font)
+  (setq dotspacemacs-default-font font)
+  (spacemacs/set-default-font font))
+;; (spacemacs/set-default-font dotspacemacs-default-font)
+
+
+
 
 ;;; config.el ends here

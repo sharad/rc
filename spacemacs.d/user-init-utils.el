@@ -323,7 +323,9 @@
 
 (defun lotus-disable-report-org ()
   (if (and
-       (not (buffer-file-name))
+       ;; (not (buffer-file-name))
+       (string-equal (file-truename "~/../paradise/")
+                     (file-truename default-directory))
        (or
         (string= (buffer-name) "report.org")
         (string= (buffer-name) "report.org<2>")))
@@ -413,10 +415,10 @@
     ;; remove this
     (push "~/.xemacs/pkgrepos/mypkgs/gnus-session-start" load-path)
     (push "~/.xemacs/pkgrepos/world/misc/misc" load-path)
-    (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path)
+    (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path))
     ;; (push "~/.xemacs/pkgrepos/mypkgs/pa-planner" load-path)
     ;; (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path)
-    )
+
 
   ;; (push
   ;;  '("local" . "~/.xemacs/elpa/upload")
@@ -574,8 +576,38 @@
 
   (package-initialize)
 
+  ;;   (font-family-list)
+
+
+  (defvar lotus-dotspacemacs-default-font-list
+    '(("Source Code Pro:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
+      ("Source Code Pro" :size 9 :weight normal :width normal :powerline-scale 1.1)
+      ("DejaVu Sans Mono:size=8:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
+      ("DejaVu Sans Mono" :size 9 :weight normal :width normal :powerline-scale 1.1)))
+
   (setq
    dotspacemacs-default-font '("Source Code Pro"
+                               :size 9
+                               :weight normal
+                               :width normal
+                               :powerline-scale 1.1))
+
+  (setq
+   dotspacemacs-default-font '("DejaVu Sans Mono:size=8:antialias=true"
+                               :size 9
+                               :weight normal
+                               :width normal
+                               :powerline-scale 1.1))
+
+  (setq
+   dotspacemacs-default-font '("DejaVu Sans Mono"
+                               :size 9
+                               :weight normal
+                               :width normal
+                               :powerline-scale 1.1))
+
+  (setq
+   dotspacemacs-default-font '("Source Code Pro:antialias=true"
                                :size 9
                                :weight normal
                                :width normal

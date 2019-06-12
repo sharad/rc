@@ -27,6 +27,8 @@ XTerm*c132: True
 XTerm*cursorColor: Red
 ! XTerm*font: 9x15
 ! xterm*font:             9x15
+
+
 xterm*VT100*font9: -*-terminal-*-*-*-*-*-*-*-*-*-*-*-*
 xterm*font:             10x20
 *fontMenu*font7*Label:  Sharad
@@ -68,6 +70,9 @@ XTerm*fontMenu.Label: VT Fonts
 XTerm*fontMenu*fontdefault*Label: Default
 XTerm*fontMenu*font1*Label: Unreadable
 XTerm*VT100*font1: nil2
+
+
+
 
 ! !! added from http://gigo.com/archives/blog/apples-x11app-and-xterm-copypa.html
 ! ! xterm*trimSelection: true
@@ -142,3 +147,15 @@ XTerm*VT100*font1: nil2
 ! 		<Btn1Up>:               select-end(PRIMARY,CUT_BUFFER0) \n\
 ! 		Button1<Btn2Down>:      select-end(CLIPBOARD) \n\
 ! 		Button1<Btn2Up>:        ignore()
+
+
+
+
+!! https://superuser.com/questions/867335/how-to-fine-tune-ttf-rendering-in-xterm
+!! https://superuser.com/a/867368
+!! https://wiki.archlinux.org/index.php/Xterm
+!! Search DejaVu
+XTerm.vt100.faceName: DejaVu Sans Mono:style=Book:antialias=false
+XTerm.vt100.faceNameDoublesize: WenQuanYi WenQuanYi Bitmap Song
+XTerm.vt100.faceSize: 8
+XTerm.scaleHeight: 1.01
