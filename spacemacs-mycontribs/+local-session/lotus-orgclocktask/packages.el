@@ -614,6 +614,8 @@ Each entry is either:
             (task-scratch-dir        "~/Scratches/main")
             (task-projbuffs-base-dir (publishing-created-contents-path 'misc "projbuffs"))
 
+            (message "lotus-orgclocktask/init-task-manager: org-task-base-dir = %s" org-task-base-dir)
+
             (task-add-task-party
              "personal"
              "report.org"

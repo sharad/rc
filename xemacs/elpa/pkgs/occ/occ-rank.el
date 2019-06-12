@@ -48,7 +48,7 @@
                                  ctx
                                  prop)
   (occ-debug :debug "occ-rankprop-with(obj=%s ctx=%s symbol=%s)" obj ctx prop)
-  0)
+  (* 2 (occ-rank-with obj prop)))
 
 (cl-defmethod occ-rankprop (obj
                             prop)
@@ -104,7 +104,9 @@
   (occ-debug :debug "occ-rank(obj=%s)" obj)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (occ-rank-with tsk ctx)))
+    (+
+     ;; (occ-rank obj)
+     (occ-rank-with tsk ctx))))
 
 
 (defmacro occ-aggrigate-list-rank (value values aggregator &rest body)
