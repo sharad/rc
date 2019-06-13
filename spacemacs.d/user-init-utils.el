@@ -577,37 +577,8 @@
   (package-initialize)
 
   ;;   (font-family-list)
-
-
-  (defvar lotus-dotspacemacs-default-font-list
-    '(("Source Code Pro:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
-      ("Source Code Pro" :size 9 :weight normal :width normal :powerline-scale 1.1)
-      ("DejaVu Sans Mono:size=8:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
-      ("DejaVu Sans Mono" :size 9 :weight normal :width normal :powerline-scale 1.1)))
-
-  (setq
-   dotspacemacs-default-font '("Source Code Pro"
-                               :size 9
-                               :weight normal
-                               :width normal
-                               :powerline-scale 1.1))
-
   (setq
    dotspacemacs-default-font '("DejaVu Sans Mono:size=8:antialias=true"
-                               :size 9
-                               :weight normal
-                               :width normal
-                               :powerline-scale 1.1))
-
-  (setq
-   dotspacemacs-default-font '("DejaVu Sans Mono"
-                               :size 9
-                               :weight normal
-                               :width normal
-                               :powerline-scale 1.1))
-
-  (setq
-   dotspacemacs-default-font '("Source Code Pro:antialias=true"
                                :size 9
                                :weight normal
                                :width normal

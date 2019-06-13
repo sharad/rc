@@ -55,49 +55,6 @@
 
 ;; (file-name-nondirectory "/aaa/aaa/aaa")
 
-(cl-defmethod occ-class-name (obj)
-  "unknown")
-
-(cl-defmethod occ-class-name ((obj symbol))
-  "symbol")
-
-(cl-defmethod occ-class-name ((obj null))
-  "null")
-
-(cl-defmethod occ-class-name ((obj marker))
-  "marker")
-
-(cl-defmethod occ-class-name ((obj occ-tsk))
-  "task")
-
-(cl-defmethod occ-class-name ((obj occ-ctsk))
-  "context task")
-
-(cl-defmethod occ-class-name ((obj occ-ctxual-tsk))
-  "contextual task")
-
-
-(cl-defmethod occ-obj-tsk ((obj occ-tsk))
-  obj)
-
-(cl-defmethod occ-obj-tsk ((obj occ-ctsk))
-  (occ-ctsk-tsk obj))
-
-
-(cl-defmethod occ-obj-ctx ((obj occ-ctx))
-  obj)
-
-(cl-defmethod occ-obj-ctx ((obj occ-ctsk))
-  (occ-ctsk-ctx obj))
-
-
-(cl-defmethod occ-obj-marker ((obj marker))
-  obj)
-
-(cl-defmethod occ-obj-marker ((obj occ-obj-tsk))
-  (occ-tsk-marker (occ-obj-tsk obj)))
-
-
 
 (defvar occ-fontify-like-org-file-bullet ?\▆ "occ-fontify-like-org-file-bullet")
 ;; (defvar occ-fontify-like-org-file-bullet ?\▆ "occ-fontify-like-org-file-bullet")
@@ -157,31 +114,6 @@ pointing to it."
           org-odd-levels-only))))))
 
 
-(defun occ-case (case title)
-  (if (fboundp case)
-      (funcall case title)
-    title))
-
-(cl-defgeneric occ-title (obj
-                          case)
-  "occ-format")
-
-(cl-defmethod occ-title (obj
-                         case)
-  (occ-case case
-            (occ-class-name obj)))
-
-(cl-defmethod occ-title ((obj marker)
-                         (case symbol))
-  (occ-case case
-            (occ-class-name obj)))
-
-(cl-defmethod occ-title ((obj occ-obj)
-                         (case symbol))
-  (occ-case case
-            (occ-class-name obj)))
-
-
 (cl-defgeneric occ-format (obj
                            &optional case)
   "occ-format")
@@ -237,22 +169,6 @@ pointing to it."
                     (occ-ctxual-tsk-rank obj)
                     ;; (occ-fontify-like-in-org-mode tsk)
                     (occ-format tsk case)))))
-
-
-(cl-defmethod occ-heading-marker ((obj null))
-  (make-marker))
-
-(cl-defmethod occ-heading-marker ((obj marker))
-  (save-excursion
-    (with-current-buffer (marker-buffer obj)
-      (goto-char obj)
-      (end-of-line)
-      (outline-previous-heading)
-      (point-marker))))
-
-(cl-defmethod occ-heading-marker ((obj occ-obj-tsk))
-  (occ-heading-marker
-   (occ-obj-marker obj)))
 
 
 (cl-defmethod occ-marker= ((obj marker)
@@ -844,11 +760,6 @@ pointing to it."
   (occ-capture obj t))
 
 
-(cl-defmethod occ-files ()
-  (occ-collect-files
-   (occ-collection-object)))
-
-
 (cl-defgeneric occ-candidate (obj)
   "occ-candidate")
 
@@ -1313,4 +1224,9 @@ pointing to it."
       (occ-debug :nodisplay "occ-clock-in-if-chg: not enough time passed."))))
 
 
+(cl-defmethod occ-print-rank ((obj occ-obj-ctx-tsk))
+  (occ-message "Rank for %s is %d"
+               (occ-format obj 'capitalize)
+               (occ-rank obj)))
+
 ;;; occ-obj-simple.el ends here

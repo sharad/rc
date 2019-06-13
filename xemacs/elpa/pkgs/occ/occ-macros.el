@@ -40,7 +40,20 @@
 (defmacro occ-debug-return (label &rest body)
   `(progn ,@body))
 (put 'occ-debug-return 'lisp-indent-function 1)
+
 
+
+(defmacro occ-aggrigate-list-rank (value values aggregator &rest body)
+  `(let ((values    (if (consp ,values) ,values (list ,values)))
+         (total-rank 0))
+     (dolist (,value values)
+       (let ((rank (progn
+                     ,@body)))
+         (setq total-rank
+               (funcall ,aggregator total-rank rank))))
+     total-rank))
+(put 'occ-aggrigate-list-rank 'lisp-indent-function 3)
+
 
 (defun occ-get-location ())
 

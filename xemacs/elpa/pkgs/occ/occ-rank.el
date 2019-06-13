@@ -27,6 +27,9 @@
 (provide 'occ-rank)
 
 
+(require 'occ-macros)
+
+
 (cl-defgeneric occ-rankprop-with (obj
                                   ctx
                                   prop)
@@ -36,11 +39,11 @@
                              prop)
   "occ-rankprop")
 
-(cl-defgeneric occ-rank-with (obj
-                              ctx)
+(cl-defgeneric occ-calculate-rank-with (obj
+                                        ctx)
   "occ-rank-with")
 
-(cl-defgeneric occ-rank (obj)
+(cl-defgeneric occ-calculate-rank (obj)
   "occ-rank")
 
 
@@ -48,7 +51,7 @@
                                  ctx
                                  prop)
   (occ-debug :debug "occ-rankprop-with(obj=%s ctx=%s symbol=%s)" obj ctx prop)
-  (* 2 (occ-rank-with obj prop)))
+  0)
 
 (cl-defmethod occ-rankprop (obj
                             prop)
@@ -56,19 +59,6 @@
   ;; (occ-debug :debug "occ-rank(tsk-pair=%s ctx=%s)" tsk-pair ctx)
   (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop)
   0)
-
-
-;; ISSUE? should it return rank or occ-ctxual-tsk
-(cl-defmethod occ-rank-with ((obj occ-tsk)
-                             (ctx occ-ctx))
-  ;; too much output
-  (occ-debug :debug "occ-rank-with(obj=%s ctx=%s)" obj ctx)
-  (let ((rank
-         (reduce #'+
-                 (mapcar #'(lambda (slot)
-                             (occ-rankprop-with obj ctx (downcase-sym slot)))
-                         (occ-class-slots obj)))))
-    rank))
 
 
 ;; * tsk rank
@@ -79,7 +69,7 @@
              prop)
   0)
 
-(cl-defmethod occ-rank ((obj occ-tsk))
+(cl-defmethod occ-calculate-rank ((obj occ-tsk))
   ;; too much output
   (occ-debug :debug "occ-rank(obj=%s)"
              obj)
@@ -92,6 +82,18 @@
 
 
 ;; * ctx-tsk rank
+(cl-defmethod occ-calculate-rank-with ((obj occ-tsk)
+                                       (ctx occ-ctx))
+  ;; too much output
+  (occ-debug :debug "occ-rank-with(obj=%s ctx=%s)" obj ctx)
+  (let ((rank
+         (reduce #'+
+                 (mapcar #'(lambda (slot)
+                             (occ-rankprop-with obj ctx (downcase-sym slot)))
+                         (occ-class-slots obj)))))
+    rank))
+
+
 (cl-defmethod occ-rankprop ((obj  occ-obj-ctx-tsk)
                             (prop symbol))
   (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop)
@@ -99,32 +101,12 @@
         (ctx (occ-obj-ctx obj)))
     (occ-rankprop-with tsk ctx prop)))
 
-(cl-defmethod occ-rank ((obj occ-obj-ctx-tsk))
+(cl-defmethod occ-calculate-rank ((obj occ-obj-ctx-tsk))
   ;; too much output
   (occ-debug :debug "occ-rank(obj=%s)" obj)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (+
-     ;; (occ-rank obj)
-     (occ-rank-with tsk ctx))))
-
-
-(defmacro occ-aggrigate-list-rank (value values aggregator &rest body)
-  `(let ((values    (if (consp ,values) ,values (list ,values)))
-         (total-rank 0))
-     (dolist (,value values)
-       (let ((rank (progn
-                     ,@body)))
-         (setq total-rank
-               (funcall ,aggregator total-rank rank))))
-     total-rank))
-(put 'occ-aggrigate-list-rank 'lisp-indent-function 3)
-
-
-(cl-defmethod occ-print-rank ((obj occ-obj-ctx-tsk))
-  (occ-message "Rank for %s is %d"
-               (occ-format obj 'capitalize)
-               (occ-rank obj)))
+    (occ-calculate-rank-with tsk ctx)))
 
 
 ;;; occ-rank.el ends here

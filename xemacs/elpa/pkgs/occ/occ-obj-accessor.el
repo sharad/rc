@@ -27,33 +27,121 @@
 
 
 (require 'occ-obj-ctor)
+(require 'occ-rank)
+
+
+(cl-defmethod occ-class-name (obj)
+  "unknown")
+
+(cl-defmethod occ-class-name ((obj symbol))
+  "symbol")
+
+(cl-defmethod occ-class-name ((obj null))
+  "null")
+
+(cl-defmethod occ-class-name ((obj marker))
+  "marker")
+
+(cl-defmethod occ-class-name ((obj occ-tsk))
+  "task")
+
+(cl-defmethod occ-class-name ((obj occ-ctsk))
+  "context task")
+
+(cl-defmethod occ-class-name ((obj occ-ctxual-tsk))
+  "contextual task")
+
+
+(cl-defmethod occ-obj-tsk ((obj occ-tsk))
+  obj)
+
+(cl-defmethod occ-obj-tsk ((obj occ-ctsk))
+  (occ-ctsk-tsk obj))
+
+
+(cl-defmethod occ-obj-ctx ((obj occ-ctx))
+  obj)
+
+(cl-defmethod occ-obj-ctx ((obj occ-ctsk))
+  (occ-ctsk-ctx obj))
+
+
+(cl-defmethod occ-obj-marker ((obj marker))
+  obj)
+
+(cl-defmethod occ-obj-marker ((obj occ-obj-tsk))
+  (occ-tsk-marker (occ-obj-tsk obj)))
+
+
+(defun occ-case (case title)
+  (if (fboundp case)
+      (funcall case title)
+    title))
+
+(cl-defgeneric occ-title (obj
+                          case)
+  "occ-format")
+
+(cl-defmethod occ-title (obj
+                         case)
+  (occ-case case
+            (occ-class-name obj)))
+
+(cl-defmethod occ-title ((obj marker)
+                         (case symbol))
+  (occ-case case
+            (occ-class-name obj)))
+
+(cl-defmethod occ-title ((obj occ-obj)
+                         (case symbol))
+  (occ-case case
+            (occ-class-name obj)))
+
+
+(cl-defmethod occ-heading-marker ((obj null))
+  (make-marker))
+
+(cl-defmethod occ-heading-marker ((obj marker))
+  (save-excursion
+    (with-current-buffer (marker-buffer obj)
+      (goto-char obj)
+      (end-of-line)
+      (outline-previous-heading)
+      (point-marker))))
+
+(cl-defmethod occ-heading-marker ((obj occ-obj-tsk))
+  (occ-heading-marker
+   (occ-obj-marker obj)))
+
+
+;; occ-tsk - accessors
+(cl-defmethod occ-rank ((tsk occ-tsk))
+  (occ-debug :debug "occ-tsk-get-rank(occ-tsk=%s)" tsk)
+  (let ((rank (cl-struct-slot-value occ-tsk 'rank-internal tsk)))
+    (unless rank
+      (setf (occ-tsk-rank-internal tsk) (occ-calculate-rank tsk)))
+    (occ-tsk-rank-internal tsk)))
+
+(cl-defmethod (setf occ-rank) (value (tsk occ-tsk))
+  (occ-debug :debug "occ-tsk-get-rank(occ-tsk=%s)" tsk)
+  (setf (occ-tsk-rank-internal tsk) value)
+  (occ-tsk-rank-internal tsk))
 
 
 ;; occ-ctxual-tsk - accessors
-(cl-defmethod occ-ctxual-tsk-get-rank ((ctxask occ-ctxual-tsk))
+(cl-defmethod occ-rank ((ctxask occ-ctxual-tsk))
   (occ-debug :debug "occ-ctxual-tsk-get-rank(occ-ctxual-tsk=%s)" ctxask)
-  (let ((rank (occ-ctxual-tsk-rank ctxask)))
+  (let ((rank (cl-struct-slot-value occ-ctxual-tsk 'rank-internal ctxask)))
     (unless rank
-      (setf (occ-ctxual-tsk-rank ctxask) (occ-rank ctxask)))
-    (occ-ctxual-tsk-rank ctxask)))
+      (setf (occ-ctxual-tsk-rank-internal ctxask) (occ-calculate-rank ctxask)))
+    (occ-ctxual-tsk-rank-internal ctxask)))
 
-(cl-defmethod occ-ctxual-tsk-xrank ((ctxask occ-ctxual-tsk))
+(cl-defmethod (setf occ-rank) (value (ctxask occ-ctxual-tsk))
   (occ-debug :debug "occ-ctxual-tsk-get-rank(occ-ctxual-tsk=%s)" ctxask)
-  (let ((rank (cl-struct-slot-value occ-ctxual-tsk 'rank ctxask)))
-    (unless rank
-      (setf (cl-struct-slot-value occ-ctxual-tsk 'rank ctxask) (occ-rank ctxask)))
-    (cl-struct-slot-value occ-ctxual-tsk 'rank ctxask)))
-
-(cl-defmethod (setf occ-ctxual-tsk-xrank) (value (ctxask occ-ctxual-tsk))
-  (occ-debug :debug "occ-ctxual-tsk-get-rank(occ-ctxual-tsk=%s)" ctxask)
-  (setf (cl-struct-slot-value occ-ctxual-tsk 'rank ctxask) value)
-  (cl-struct-slot-value occ-ctxual-tsk 'rank ctxask))
-
-(cl-defmethod occ-ctxual-tsk-marker ((ctxask occ-ctxual-tsk))
-  (let* ((tsk    (occ-ctxual-tsk-tsk ctxask))
-         (marker (occ-tsk-marker     tsk)))
-    marker))
+  (setf (occ-ctxual-tsk-rank-internal ctxask) value)
+  (occ-ctxual-tsk-rank-internal ctxask))
 
+
 ;; global-object - accessors
 (cl-defmethod occ-collect-tsks (collection
                                 &optional
@@ -120,6 +208,11 @@
   (occ-list-collection-files collection))
 
 
+(cl-defmethod occ-files ()
+  (occ-collect-files
+   (occ-collection-object)))
+
+
 (cl-defmethod occ-collect-list ((collection occ-tree-collection))
   (unless (occ-tree-collection-list collection)
     (let ((tsks (occ-collection collection))
@@ -131,18 +224,6 @@
       (setf (occ-tree-collection-list collection)
             tsk-list)))
   (occ-tree-collection-list collection))
-
-;; (cl-defmethod occ-collect-list ((collection occ-tree-collection))
-;;   (unless (occ-tree-collection-list collection)
-;;     (let ((tsks (occ-collection collection))
-;;           (tsk-list '()))
-;;       (occ-mapc-tree-tsks
-;;        #'(lambda (tsk args) (push tsk tsk-list))
-;;        tsks
-;;        nil)
-;;       (setf (occ-tree-collection-list collection)
-;;             (nreverse tsk-list))))
-;;   (occ-tree-collection-list collection))
 
 (cl-defmethod occ-collect-list ((collection occ-list-collection))
   (let ((tsks (occ-collection collection)))

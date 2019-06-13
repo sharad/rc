@@ -28,15 +28,15 @@
 
 (require 'occ-obj-common)
 
-
-;; TODO org-base-buffer
-
+;; * cl-macs
+;; https://nullprogram.com/blog/2018/02/14/
+;;
+;; * TODO org-base-buffer
+;;
 ;; https://stackoverflow.com/questions/12262220/add-created-date-property-to-todos-in-org-mode
-
+;;
 ;; https://stackoverflow.com/questions/40884764/lisp-get-all-slot-names-from-an-class-instance
-
-;; "org tsks accss common api"
-;; (defvar org-)
+
 
 (defvar occ-verbose 0)
 
@@ -98,7 +98,7 @@
   file-level
   plist
   ;; rank
-  rank)
+  rank-internal)
 
 (cl-defstruct (occ-tree-tsk (:include occ-tsk))
   subtree)
@@ -118,7 +118,7 @@
   tsk)
 
 (cl-defstruct (occ-ctxual-tsk (:include occ-ctsk))
-  rank)
+  rank-internal)
 
 
 (cl-defstruct (occ-container (:include occ-obj-container))

@@ -128,20 +128,6 @@
              collection (nconc collection (list (funcall fun)))))))
     collection))
 
-;; (defun occ-org-map-subheading (fun)
-;;   "Call FUN for every heading underneath the current heading"
-;;   ;; (org-back-to-heading)
-;;   (let ((level (funcall outline-level))
-;;         (collection nil))
-;;     (save-excursion
-;;       (while (and (progn
-;;                     (outline-next-heading)
-;;                     (> (funcall outline-level) level))
-;;                   (not (eobp)))
-;;         (if (= (funcall outline-level) (1+ level))
-;;             (push (funcall fun) collection))))
-;;     (nreverse collection)))
-
 (defun occ-tree-tsk-build (tsk-builder &optional file subtree-level)
   "Build recursive org tsks from org FILE (or current buffer) using TSK-BUILDER function e.g. occ-collect-tsk"
   (with-current-buffer (if file

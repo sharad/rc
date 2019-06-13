@@ -204,11 +204,13 @@
 
 (cl-defgeneric occ-make-ctxual-tsk (tsk
                                     ctx
+                                    &optional
                                     rank)
   "occ-make-ctxual-tsk")
 
 (cl-defmethod occ-make-ctxual-tsk ((tsk occ-tsk)
                                    (ctx occ-ctx)
+                                   &optional
                                    rank)
   ;; use occ-build-ctxual-tsk
   (make-occ-ctxual-tsk
@@ -221,7 +223,7 @@
                                     (ctx occ-ctx))
   (occ-make-ctxual-tsk tsk
                        ctx
-                       (occ-rank-with tsk ctx)))
+                       (occ-calculate-rank-with tsk ctx)))
 
 
 (cl-defmethod occ-build-obj ((tsk occ-tsk) (obj occ-ctx))

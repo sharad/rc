@@ -35,9 +35,6 @@
          nil :slant normal :weight normal :height 108 :width
          normal :foundry "monotype" :family "Courier New"))))))
 
-
-
-
 (when nil
   (face-list)
   (face-background 'default)
@@ -115,14 +112,6 @@
 ;; http://david.rothlis.net/emacs/customize_colors.html
 ;; http://david.rothlis.net/emacs/customize_colors.html
   )
-
-
-
-
-
-
-
-
 
 ;; (face-attribute 'default :width nil)
 
@@ -337,29 +326,25 @@
              (propertize (concat "The quick brown fox jumps over the lazy dog 1 l; 0 O o ("
                                  font-family ")\n") 'face `((:family ,font-family)))
              (propertize (concat "The quick brown fox jumps over the lazy dog 1 l; 0 O o ("
-                                 font-family ")\n") 'face `((:family ,font-family) italic)))))))
-    ))
-
-
+                                 font-family ")\n") 'face `((:family ,font-family) italic)))))))))
 
 (add-hook 'after-make-frame-functions
           #'(lambda (frame) (set-default-face-height-by-resolution)) t)
 
 
-
 (defvar lotus-dotspacemacs-default-font-list
-  '(("Source Code Pro:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
-    ("Source Code Pro" :size 9 :weight normal :width normal :powerline-scale 1.1)
-    ("DejaVu Sans Mono:size=8:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
-    ("DejaVu Sans Mono" :size 9 :weight normal :width normal :powerline-scale 1.1)))
+  '(("DejaVu Sans Mono:size=8:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
+    ("DejaVu Sans Mono" :size 9 :weight normal :width normal :powerline-scale 1.1)
+    ("Source Code Pro:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
+    ("Source Code Pro" :size 9 :weight normal :width normal :powerline-scale 1.1)))
 
 (setq
- dotspacemacs-default-font '("Source Code Pro:antialias=true"
+ dotspacemacs-default-font '("DejaVu Sans Mono:size=8:antialias=true"
                              :size 9
                              :weight normal
                              :width normal
                              :powerline-scale 1.1))
-
+(spacemacs/set-default-font dotspacemacs-default-font)
 
 (defun lotus-set-default-face (font)
   (interactive
@@ -369,9 +354,6 @@
   (message "Setting font: %s" font)
   (setq dotspacemacs-default-font font)
   (spacemacs/set-default-font font))
-;; (spacemacs/set-default-font dotspacemacs-default-font)
-
-
-
+
 
 ;;; config.el ends here
