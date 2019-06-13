@@ -142,6 +142,50 @@
   (occ-ctxual-tsk-rank-internal ctxask))
 
 
+(cl-defmethod occ-current-tsk-with ((sym null))
+  nil)
+
+(cl-defmethod occ-current-tsk-with ((mrk marker))
+  "return created occ-tsk from marker"
+  (when (and
+         mrk
+         (markerp mrk)
+         (> (marker-position-nonil mrk) 0))
+    (org-with-cloned-marker mrk "<tree>"
+      (let ((view-read-only nil)
+            (buffer-read-only t))
+        (read-only-mode)
+        (org-previous-visible-heading 1)
+        (let ((tsk (occ-make-tsk
+                    (or org-clock-hd-marker mrk)
+                    (occ-tsk-builder))))
+          tsk)))))
+
+(defun occ-current-tsk (&optional occ-other-allowed)
+  (let ((tsk (car
+              *occ-clocked-ctxual-tsk-ctx-history*)))
+    (let ((clock-marker    (occ-valid-marker org-clock-marker))
+          (clock-hd-marker (occ-valid-marker org-clock-hd-marker)))
+      (let ((clock (or clock-marker
+                       clock-hd-marker)))
+        (if (and tsk
+                 clock
+                 (occ-marker= tsk clock))
+            tsk
+          (when clock
+            (let ((msg
+                   (if tsk
+                       (format "occ-current-tsk: %s from head of *occ-clocked-ctxual-tsk-ctx-history* is not equal to current clocking clock %s"
+                               (occ-format tsk   'captilize)
+                               (occ-format clock 'captilize))
+                     (format "occ-current-tsk: %s is outside of occ"
+                             (occ-format clock 'captilize)))))
+              (if occ-other-allowed
+                  (occ-debug :warning msg)
+                (error msg))
+              (occ-current-tsk-with clock))))))))
+
+
 ;; global-object - accessors
 (cl-defmethod occ-collect-tsks (collection
                                 &optional
