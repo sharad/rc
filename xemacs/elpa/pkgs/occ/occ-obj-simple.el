@@ -38,6 +38,8 @@
 (require 'occ-obj-accessor)
 (require 'occ-obj-utils)
 (require 'occ-util-common)
+(require 'occ-print)
+(require 'occ-predicate)
 (require 'occ-rank)
 (require 'occ-prop)
 (require 'occ-property-rank-methods)
@@ -47,187 +49,10 @@
 (defvar occ-idle-timeout 7)
 
 
-(cl-defmethod occ-uniquify-file ((tsk occ-tsk))
-  (let* ((filename (occ-get-property tsk 'file))
-         (basename (file-name-nondirectory filename))
-         (files (occ-files)))))
-    ;; (uniquify-buffer-file-name)
-
-;; (file-name-nondirectory "/aaa/aaa/aaa")
-
-
-(defvar occ-fontify-like-org-file-bullet ?\▆ "occ-fontify-like-org-file-bullet")
-;; (defvar occ-fontify-like-org-file-bullet ?\▆ "occ-fontify-like-org-file-bullet")
-
-(cl-defgeneric occ-fontify-like-in-org-mode (obj)
-  "occ-fontify-like-in-org-mode")
-
-(cl-defmethod occ-fontify-like-in-org-mode ((obj marker))
-  "Insert a line for the clock selection menu.
-And return a cons cell with the selection character integer and the obj
-pointing to it."
-  (when (marker-buffer obj)
-    (with-current-buffer (org-base-buffer (marker-buffer obj))
-      (org-with-wide-buffer
-       (progn ;; ignore-errors
-         (goto-char obj)
-         (let* ((cat         (org-get-category))
-                (heading     (org-get-heading 'notags))
-                (prefix      (save-excursion
-                               (org-back-to-heading t)
-                               (looking-at org-outline-regexp)
-                               (match-string 0)))
-                (org-heading (substring
-                              (org-fontify-like-in-org-mode
-                               (concat prefix heading)
-                               org-odd-levels-only)
-                              (length prefix))))
-
-           org-heading))))))
-
-(cl-defmethod occ-fontify-like-in-org-mode ((tsk occ-tsk))
-  (let* ((level    (or (occ-get-property tsk 'level) 0))
-         (subtree-level (or (occ-get-property tsk 'subtree-level) 0))
-         (filename (occ-get-property tsk 'file))
-         (filename-prefix (concat (make-string
-                                   (1+ subtree-level)
-                                   occ-fontify-like-org-file-bullet)
-                                  " "))
-         (heading  (occ-get-property tsk 'heading-prop))
-         (heading-prefix  " ")
-         (prefix  (concat (make-string (+ level subtree-level) ?\*) " ")))
-    ;; (occ-debug-uncond "fontify: %s subtree-level=%s" heading subtree-level)
-    (if nil ;; if test without else with prefix
-        (substring
-         (org-fontify-like-in-org-mode
-          (concat prefix heading)
-          org-odd-levels-only)
-         (1+ level))
-
-      (if (eq heading 'noheading)
-          (concat filename-prefix "file: " filename)
-        (concat
-         heading-prefix
-         (org-fontify-like-in-org-mode
-          ;; (concat prefix heading (format " l=%d s=%d" level subtree-level))
-          (concat prefix heading)
-          org-odd-levels-only))))))
-
-
-(cl-defgeneric occ-format (obj
-                           &optional case)
-  "occ-format")
-
-(cl-defmethod occ-format (obj
-                          &optional case)
-  (concat (when case (concat (occ-title obj case) ": "))
-          (format "%s" obj)))
-
-(cl-defmethod occ-format ((obj marker)
-                          &optional case)
-  (concat (when case (concat (occ-title obj case) ": "))
-          (occ-fontify-like-in-org-mode obj)))
-
-(defvar occ-format-tsk-tag-alignment 100 "occ-format-tsk-tag-alignment")
-
-(cl-defmethod occ-format ((obj occ-tsk)
-                          &optional case)
-  (let* ((align      occ-format-tsk-tag-alignment)
-         (heading    (occ-fontify-like-in-org-mode obj))
-         (headinglen (length heading))
-         (tags       (occ-get-property obj 'tags))
-         (tagstr     (if tags (concat ":" (mapconcat #'identity tags ":") ":"))))
-    (concat (when case (concat (occ-title obj case) ": "))
-            (if tags
-                (format
-                 (format "%%-%ds         %%s" align (if (< headinglen align) (- align headinglen) 0))
-                 heading tagstr)
-              (format "%s" heading)))))
-
-(cl-defmethod occ-format ((obj occ-ctx)
-                          &optional case)
-  (format "%s" obj))
-
-(cl-defmethod occ-format ((obj occ-obj-ctx-tsk)
-                          &optional case)
-  (let ((tsk (occ-ctsk-tsk obj)))
-    (concat (when case (concat (occ-title obj case) ": "))
-            ;; (occ-fontify-like-in-org-mode tsk)
-            (occ-format tsk case))))
-
-;; (cl-defmethod occ-format ((obj occ-ctsk)
-;;                           &optional case)
-;;   (let ((tsk (occ-ctsk-tsk obj)))
-;;     (concat (when case (concat (occ-title obj case) ": "))
-;;             (occ-format tsk case))))
-
-(cl-defmethod occ-format ((obj occ-ctxual-tsk)
-                          &optional case)
-  (let ((tsk (occ-ctxual-tsk-tsk obj)))
-    (concat (when case (concat (occ-title obj case) ": "))
-            (format "[%4d] %s"
-                    (occ-ctxual-tsk-rank obj)
-                    ;; (occ-fontify-like-in-org-mode tsk)
-                    (occ-format tsk case)))))
-
-
-(cl-defmethod occ-marker= ((obj marker)
-                           (mrk marker))
-  (let ((obj-marker (occ-heading-marker obj))
-        (mrk-marker (occ-heading-marker mrk)))
-    (equal obj-marker
-           mrk-marker)))
-
-(cl-defmethod occ-marker= ((obj occ-obj-tsk)
-                           (mrk marker))
-  (occ-marker= (occ-obj-marker obj) mrk))
-
-
 ;; (cl-defmethod occ-find ((collection occ-collection) (mrk marker)))
 
 (cl-defmethod occ-find ((collection list)
                         (mrk marker)))
-
-
-(cl-defmethod occ-current-associated-p ((ctx occ-ctx))
-  (let ((tsk (occ-current-tsk)))
-    (when tsk
-     (occ-associable-with-p tsk
-                            ctx))))
-
-
-(cl-defmethod occ-associable-with-p (obj
-                                     ctx)
-  nil)
-
-(cl-defmethod occ-associable-with-p ((tsk symbol)
-                                     (ctx occ-ctx))
-  nil)
-
-(cl-defmethod occ-associable-with-p ((obj occ-obj-tsk)
-                                     (ctx occ-ctx))
-  "Test if TSK is associate to CTX"
-  (let ((tsk (occ-obj-tsk obj)))
-    (>
-     (occ-rank-with tsk ctx) 0)))
-
-(cl-defmethod occ-associable-with-p ((obj occ-obj-ctx-tsk)
-                                     (ctx occ-ctx))
-  "Test if TSK is associate to CTX"     ;not required.
-  (let ((tsk (occ-obj-tsk obj)))
-    (>
-     (occ-rank-with tsk ctx) 0)))
-
-
-(cl-defmethod occ-associable-p ((obj occ-ctsk))
-  (occ-debug :debug "occ-associable-p(occ-ctsk=%s)" obj)
-  (let ((tsk (occ-obj-tsk obj))
-        (ctx (occ-obj-ctx obj)))
-    (occ-associable-with-p tsk ctx)))
-
-(cl-defmethod occ-associable-p ((obj occ-ctxual-tsk))
-  (occ-debug :debug "occ-associable-p(occ-ctxual-tsk=%s)" obj)
-  (> (occ-ctxual-tsk-get-rank obj) 0))
 
 
 (defvar *occ-clocked-ctxual-tsk-ctx-history* nil)
