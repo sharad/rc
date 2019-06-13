@@ -108,5 +108,4 @@
         (ctx (occ-obj-ctx obj)))
     (occ-calculate-rank-with tsk ctx)))
 
-
 ;;; occ-rank.el ends here
