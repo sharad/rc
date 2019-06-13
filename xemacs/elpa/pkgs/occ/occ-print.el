@@ -150,4 +150,10 @@ pointing to it."
                     ;; (occ-fontify-like-in-org-mode tsk)
                     (occ-format tsk case)))))
 
+
+(cl-defmethod occ-print-rank ((obj occ-obj-ctx-tsk))
+  (occ-message "Rank for %s is %d"
+               (occ-format obj 'capitalize)
+               (occ-rank obj)))
+
 ;;; occ-print.el ends here

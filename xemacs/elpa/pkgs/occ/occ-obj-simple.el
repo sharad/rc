@@ -541,22 +541,6 @@
   (occ-capture obj t))
 
 
-(cl-defgeneric occ-candidate (obj)
-  "occ-candidate")
-
-(cl-defmethod occ-candidate ((obj marker))
-  "Insert a line for the clock selection menu.
-And return a cons cell with the selection character integer and the obj
-pointing to it."
-  (cons (occ-format obj) obj))
-
-(cl-defmethod occ-candidate ((obj occ-obj-tsk))
-  "Insert a line for the clock selection menu.
-And return a cons cell with the selection character integer and the marker
-pointing to it."
-  (cons (occ-format obj) obj))
-
-
 (cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
                                           (obj null))
   "Return all TSKs for context nil OBJ"
@@ -1003,11 +987,5 @@ pointing to it."
                   ;; (occ-debug :nodisplay full-msg)
                   (occ-message full-msg))))))
       (occ-debug :nodisplay "occ-clock-in-if-chg: not enough time passed."))))
-
-
-(cl-defmethod occ-print-rank ((obj occ-obj-ctx-tsk))
-  (occ-message "Rank for %s is %d"
-               (occ-format obj 'capitalize)
-               (occ-rank obj)))
 
 ;;; occ-obj-simple.el ends here
