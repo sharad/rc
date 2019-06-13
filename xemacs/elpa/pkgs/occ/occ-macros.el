@@ -42,7 +42,6 @@
 (put 'occ-debug-return 'lisp-indent-function 1)
 
 
-
 (defmacro occ-aggrigate-list-rank (value values aggregator &rest body)
   `(let ((values    (if (consp ,values) ,values (list ,values)))
          (total-rank 0))

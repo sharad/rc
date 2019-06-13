@@ -218,7 +218,7 @@
    :name    nil
    :tsk     tsk
    :ctx     ctx
-   :rank    rank))
+   :rank-internal    rank))
 
 (cl-defmethod occ-build-ctxual-tsk ((tsk occ-tsk) ;ctor
                                     (ctx occ-ctx))

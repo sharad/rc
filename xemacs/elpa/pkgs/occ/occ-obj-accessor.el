@@ -118,7 +118,7 @@
 ;; occ-tsk - accessors
 (cl-defmethod occ-rank ((tsk occ-tsk))
   (occ-debug :debug "occ-tsk-get-rank(occ-tsk=%s)" tsk)
-  (let ((rank (cl-struct-slot-value occ-tsk 'rank-internal tsk)))
+  (let ((rank (occ-tsk-rank-internal tsk)))
     (unless rank
       (setf (occ-tsk-rank-internal tsk) (occ-calculate-rank tsk)))
     (occ-tsk-rank-internal tsk)))
@@ -132,7 +132,7 @@
 ;; occ-ctxual-tsk - accessors
 (cl-defmethod occ-rank ((ctxask occ-ctxual-tsk))
   (occ-debug :debug "occ-ctxual-tsk-get-rank(occ-ctxual-tsk=%s)" ctxask)
-  (let ((rank (cl-struct-slot-value occ-ctxual-tsk 'rank-internal ctxask)))
+  (let ((rank (occ-ctxual-tsk-rank-internal ctxask)))
     (unless rank
       (setf (occ-ctxual-tsk-rank-internal ctxask) (occ-calculate-rank ctxask)))
     (occ-ctxual-tsk-rank-internal ctxask)))

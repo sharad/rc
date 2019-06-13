@@ -560,5 +560,4 @@
   ;;  #'(lambda (args)
   ;;      (apply 'occ-delayed-select-obj-prop-edit args)) (list ctx timeout))
 
-
 ;;; occ-prop-edit.el ends here
