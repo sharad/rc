@@ -30,6 +30,7 @@
 (require 'occ-tree)
 (require 'occ-obj)
 (require 'occ-prop)
+(require 'occ-rank)
 (require 'occ-property-rank-methods)
 
 

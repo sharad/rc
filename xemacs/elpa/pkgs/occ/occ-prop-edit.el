@@ -1,4 +1,4 @@
-;;; occ-interactive.el --- occ-api               -*- lexical-binding: t; -*-
+;;; occ-prop-edit.el --- occ-api               -*- lexical-binding: t; -*-
 ;; Copyright (C) 2016  sharad
 
 ;; Author: sharad <sh4r4d _at_ _G-mail_>
@@ -23,7 +23,7 @@
 
 ;;; Code:
 
-(provide 'occ-interactive)
+(provide 'occ-prop-edit)
 
 
 (require 'timer-utils-lotus)
@@ -561,4 +561,4 @@
   ;;      (apply 'occ-delayed-select-obj-prop-edit args)) (list ctx timeout))
 
 
-;;; occ-interactive.el ends here
+;;; occ-prop-edit.el ends here

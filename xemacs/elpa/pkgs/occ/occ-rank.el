@@ -86,12 +86,13 @@
                                        (ctx occ-ctx))
   ;; too much output
   (occ-debug :debug "occ-rank-with(obj=%s ctx=%s)" obj ctx)
-  (let ((rank
+  (let ((tsk-rank (occ-rank tsk))
+        (rank
          (reduce #'+
                  (mapcar #'(lambda (slot)
                              (occ-rankprop-with obj ctx (downcase-sym slot)))
                          (occ-class-slots obj)))))
-    rank))
+    (+ rank tsk-rank)))
 
 
 (cl-defmethod occ-rankprop ((obj  occ-obj-ctx-tsk)

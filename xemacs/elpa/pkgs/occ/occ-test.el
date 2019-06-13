@@ -121,7 +121,7 @@
 
 
 
-(when nil                               ;occ-interactive.el
+(when nil                               ;occ-prop-edit.el
   ;; testing verification
  (defun occ-files-with-null-regex ()
    (interactive)
