@@ -204,7 +204,8 @@ It should only modify the values of Spacemacs settings."
                          monokai
                          zenburn
                          arjen-grey
-                         arjen)
+                         ;; arjen
+                         )
 
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
