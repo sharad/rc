@@ -303,7 +303,7 @@
        org-clock-persist t
        org-clock-in-switch-to-state "STARTED"
        org-clock-in-resume nil
-       org-show-notification-handler 'message
+       org-show-notification-handler nil ; must be nil
        org-clock-report-include-clocking-task t))
 
     (progn

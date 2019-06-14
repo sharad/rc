@@ -146,7 +146,7 @@ pointing to it."
   (let ((tsk (occ-ctxual-tsk-tsk obj)))
     (concat (when case (concat (occ-title obj case) ": "))
             (format "[%4d] %s"
-                    (occ-ctxual-tsk-rank obj)
+                    (occ-rank obj)
                     ;; (occ-fontify-like-in-org-mode tsk)
                     (occ-format tsk case)))))
 

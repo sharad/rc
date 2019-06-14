@@ -556,7 +556,7 @@
         (obj obj))
     (remove-if-not
      #'(lambda (ctxual-tsk)
-         (> (occ-ctxual-tsk-rank ctxual-tsk) 0))
+         (> (occ-rank ctxual-tsk) 0))
      (mapcar #'(lambda (tsk)
                  (occ-build-ctxual-tsk tsk obj))
              tsks))))
@@ -574,9 +574,9 @@
        #'(lambda (tsk args)
            ;; (occ-debug :debug "occ-rank heading = %s" (occ-tsk-heading tsk))
            (let* ((ctxual-tsk (occ-build-ctxual-tsk tsk args))
-                  (rank       (occ-ctxual-tsk-rank ctxual-tsk)))
+                  (rank       (occ-rank ctxual-tsk)))
              (unless rank (error "occ-collection-obj-matches[lambda]: rank is null"))
-             (when (> (occ-ctxual-tsk-rank ctxual-tsk) 0)
+             (when (> (occ-rank ctxual-tsk) 0)
                (push ctxual-tsk matched)
                (occ-debug :debug "occ-collection-obj-matches[lambda]: tsk %s MATCHED RANK %d"
                           (occ-tsk-heading tsk)
@@ -594,7 +594,7 @@
       (let* ((ctxual-tsks (cl-call-next-method))
              (rankslist  (mapcar
                           #'(lambda (ctxual-tsk)
-                              (occ-ctxual-tsk-rank ctxual-tsk))
+                              (occ-rank ctxual-tsk))
                           ctxual-tsks))
              (avgrank    (if (= 0 (length rankslist))
                              0
@@ -612,7 +612,7 @@
         (occ-debug :debug "matched ctxtsks %s" (length ctxual-tsks))
         (remove-if-not
          #'(lambda (ctxual-tsk)
-             (>= (occ-ctxual-tsk-rank ctxual-tsk) avgrank))
+             (>= (occ-rank ctxual-tsk) avgrank))
          ctxual-tsks))
     (error "(occ-collection-object) returned nil")))
 

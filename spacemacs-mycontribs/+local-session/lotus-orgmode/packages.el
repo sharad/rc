@@ -108,7 +108,8 @@ Each entry is either:
     :defer t
     :config
     (progn
-      (lotus-orgmode-config/post-init-org)))
+      (lotus-orgmode-config/post-init-org)
+      (assert (null org-show-notification-handler))))
   (use-package org-tempo
     :defer t
     :commands (org-tempo-setup org-tempo-complete-tag)
@@ -136,10 +137,18 @@ Each entry is either:
 
 (defun lotus-orgmode/post-init-org-agenda ()
   (use-package org-agenda
+    ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-06/msg00122.html
     :defer t
     :config
     (progn
-      (lotus-orgmode-config/post-init-org-agenda))))
+      (progn
+        (lotus-orgmode-config/post-init-org-agenda))
+      (progn
+        (use-package appt
+          :defer t
+          :config
+          (progn
+            (org-agenda-to-appt)))))))
 
 (defun lotus-orgmode/post-init-ob-tangle ()
   (use-package org-notmuch

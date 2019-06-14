@@ -37,8 +37,11 @@
 (defconst lotus-orgclocktask-packages
   '(
     ;; (PACKAGE :location local)
+    org
+    ;; org-notify
     org-doing
     org-alert
+    org-wild-notifier
     lotus-utils
     ;; org-misc-utils-lotus
     org-clock-unnamed-task
@@ -87,16 +90,52 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+;; (spacemacs|use-package-add-hook org
+;;   :pre-init
+;;   (package-initialize))
+
+(defun lotus-orgclocktask/post-init-org ()
+  (use-package org
+    :defer t
+    :config
+    (progn
+      (lotus-orgmode-config/post-init-org)
+      (assert (null org-show-notification-handler))))
+  ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-06/msg00122.html
+  (use-package org-notify
+    ;; alternate very small https://github.com/syohex/org-notify
+    :init
+    (org-notify-start)
+    :commands (org-notify-start)
+    :defer t
+    :config
+    (progn
+      (assert (null org-show-notification-handler)))))
+
 (defun lotus-orgclocktask/init-org-doing ()
   (use-package org-doing
-      :defer t
-      :config
-      (progn)))
-
+    :defer t
+    :config
+    (progn)))
 
 (defun lotus-orgclocktask/init-org-alert ()
-  ;; see also https://github.com/akhramov/org-wild-notifier.el
+  ;; https://www.reddit.com/r/emacs/comments/3nx0d0/introducing_orgalert_system_notifications_for/
+  ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-06/msg00122.html
+  ;; https://www.reddit.com/r/emacs/comments/8bywj3/orgnotify_to_show_scheduled_items/
   (use-package org-alert
+    :init
+    (org-alert-enable)
+    :commands (org-alert-enable)
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-orgclocktask/init-org-wild-notifier ()
+  ;; see also https://github.com/akhramov/org-wild-notifier.el
+  (use-package org-wild-notifier
+    :init
+    (org-wild-notifier-mode)
+    :commands (org-wild-notifier-mode)
     :defer t
     :config
     (progn)))

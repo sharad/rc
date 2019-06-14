@@ -1,4 +1,4 @@
-;;; config.el --- config                             -*- lexical-binding: t; -*-
+;;; funcs.el --- funcs                               -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016  sharad
 
@@ -25,29 +25,6 @@
 ;;; Code:
 
 
-(when (configuration-layer/package-usedp 'org-clock-in-if-not)
-  (defun spacemacs/org-clock-in-if-not-enable ()
-    (progn
-      (defun call-org-clock-in-if-not-at-time-delay-frame-fn (frame)
-        (if (functionp 'org-clock-in-if-not-at-time-delay-fn)
-            (org-clock-in-if-not-at-time-delay-fn)
-          (warn "function org-clock-in-if-not-at-time-delay-frame-fn not defined.")))))
 
-       ;; "Keybinding: Elscreen"
-
-
-  (defun spacemacs/org-clock-in-if-not-disable ()
-    (progn)) ;; "Keybinding: Elscreen"
-
-
-  (spacemacs/org-clock-in-if-not-enable))
-
-
-
-
-
-
-(defun lotus-orgmode-config/post-init-org ())
-
-;; (provide 'config)
-;;; config.el ends here
+;; (provide 'funcs)
+;;; funcs.el ends here

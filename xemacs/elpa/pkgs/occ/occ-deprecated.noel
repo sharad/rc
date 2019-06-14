@@ -49,7 +49,7 @@
       ;; And return a cons cell with the selection character integer and the marker
       ;; pointing to it."
       ;;   (let ((marker (occ-ctxual-tsk-marker ctxask))
-      ;;         (rank   (occ-ctxual-tsk-rank   ctxask)))
+      ;;         (rank   (occ-rank   ctxask)))
       ;;     (when (marker-buffer marker)
       ;;       (with-current-buffer (org-base-buffer (marker-buffer marker))
       ;;         (org-with-wide-buffer

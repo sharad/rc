@@ -77,6 +77,6 @@
 
 (cl-defmethod occ-associable-p ((obj occ-ctxual-tsk))
   (occ-debug :debug "occ-associable-p(occ-ctxual-tsk=%s)" obj)
-  (> (occ-ctxual-tsk-get-rank obj) 0))
+  (> (occ-rank obj) 0))
 
 ;;; occ-predicate.el ends here
