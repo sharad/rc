@@ -691,11 +691,11 @@
       (setq-default yas-fallback-behavior 'call-other-command)
 
       (setq
-       x-select-enable-primary t)
+       x-select-enable-primary t))
 
       ;; do not want it.
       ;; (setq yas/trigger-key "")
-      )
+
 
     (when nil                           ; FROM where this came.
       (let (current-load-list)
@@ -745,9 +745,9 @@ variable."
                                      (eolp))
                                 (delete-region (develock-point-at-bol) (point)))))
                       (forward-line 1)))))
-            ad-do-it))
+            ad-do-it)))))
 
-        )))
+
 
 
   (deh-require-maybe folding
@@ -827,6 +827,7 @@ variable."
     ;; custom-enabled-themes
     ;; theme using (ujelly)
 
+    ;; trying (arjen)
 
     (defun theme-current ()
       (interactive)
@@ -866,8 +867,8 @@ variable."
     ;; (add-to-list 'org-src-block-faces
     ;;              '("prog"
     ;;                (:foreground "#FFFFFF")))
-    (set-face-attribute 'org-block nil :inherit 'src-block)
-    )
+    (set-face-attribute 'org-block nil :inherit 'src-block))
+
 
   (with-eval-after-load 'psgml
     (message "psgml loaded, now loading sgml-mode.el library")
