@@ -757,8 +757,7 @@
                            action-transformer
                            auto-select-if-only
                            timeout)
-  (let (;; (action             (or action (occ-helm-actions obj)))
-        (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+  (let ((action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
     (helm-timed timeout
       (occ-debug :debug "running sacha/helm-select-clock")
