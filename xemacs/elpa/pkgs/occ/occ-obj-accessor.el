@@ -129,6 +129,11 @@
   (occ-tsk-rank-internal tsk))
 
 
+(cl-defmethod occ-rank-with ((obj occ-tsk)
+                             (ctx occ-ctx))
+  (occ-calculate-rank-with obj ctx))
+
+
 ;; occ-ctxual-tsk - accessors
 (cl-defmethod occ-rank ((ctxask occ-ctxual-tsk))
   (occ-debug :debug "occ-rank(occ-ctxual-tsk=%s)" ctxask)

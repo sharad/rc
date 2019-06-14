@@ -582,7 +582,9 @@
                                :size 9
                                :weight normal
                                :width normal
-                               :powerline-scale 1.1))
+                               :powerline-scale 0.8
+                               :powerline-text-scale-factor 0.5
+                               :powerline-default-separator 'curve))
   ;; (spacemacs/set-default-font dotspacemacs-default-font)
 
   (when nil

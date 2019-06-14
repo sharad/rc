@@ -333,7 +333,7 @@
 
 
 (defvar lotus-dotspacemacs-default-font-list
-  '(("DejaVu Sans Mono:size=8:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
+  '(("DejaVu Sans Mono:size=8:antialias=true" :size 9 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
     ("DejaVu Sans Mono" :size 9 :weight normal :width normal :powerline-scale 1.1)
     ("Source Code Pro:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
     ("Source Code Pro" :size 9 :weight normal :width normal :powerline-scale 1.1)))

@@ -43,8 +43,10 @@ var bookmark_groups = {
     ],
     "NewsTech": [
         "http://www.osnews.com",
+        "https://www.techopedia.com/",
     ],
     "Linux": [
+        "https://www.techopedia.com/",
         "https://www.linuxuprising.com",
         "http://www.linux-mag.com",
         "https://www.linuxjournal.com/news",

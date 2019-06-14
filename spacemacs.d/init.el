@@ -193,7 +193,6 @@ It should only modify the values of Spacemacs settings."
    ;; dotspacemacs-themes '(spacemacs-dark
    ;;                       spacemacs-light)
    dotspacemacs-themes '(
-                         arjen
                          ujelly
                          reverse
                          twilight
@@ -204,8 +203,8 @@ It should only modify the values of Spacemacs settings."
                          leuven
                          monokai
                          zenburn
-                         arjen-grey)
-                         ;; arjen
+                         arjen-grey
+                         arjen)
 
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
