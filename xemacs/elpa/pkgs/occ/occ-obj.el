@@ -98,7 +98,7 @@
   file-level
   plist
   ;; rank
-  rank-internal)
+  rank)
 
 (cl-defstruct (occ-tree-tsk (:include occ-tsk))
   subtree)
@@ -118,7 +118,7 @@
   tsk)
 
 (cl-defstruct (occ-ctxual-tsk (:include occ-ctsk))
-  rank-internal)
+  rank)
 
 
 (cl-defstruct (occ-container (:include occ-obj-container))

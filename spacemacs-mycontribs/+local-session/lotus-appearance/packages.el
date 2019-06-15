@@ -93,5 +93,4 @@ Each entry is either:
        powerline-text-scale-factor  0.5
        powerline-default-separator 'curve))))
 
-
 ;;; packages.el ends here

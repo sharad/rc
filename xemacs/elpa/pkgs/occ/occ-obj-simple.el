@@ -630,28 +630,6 @@
                                 obj)))
 
 
-;; (cl-defmethod occ-collection-obj-list ((collection occ-collection)
-;;                                        (obj occ-ctx))
-;;   "return CTXUAL-TSKs list"
-;;   (occ-collection-obj-matches collection obj))
-
-;; (cl-defmethod occ-collection-obj-list ((collection occ-collection)
-;;                                        (obj null))
-;;   "return TSKs list"
-;;   (occ-collect-list collection))
-
-;; (cl-defmethod occ-collection-obj-list ((collection occ-collection)
-;;                                        (obj null))
-;;   "return TSKs list"
-;;   ;; (occ-make-tsk-container
-;;   ;;  (occ-collect-list collection))
-;;   (occ-collect-list collection))
-;;
-
-;;
-;; (occ-make-tsk-container
-;;  (occ-collect-list collection))
-
 (cl-defmethod occ-collection-obj-list ((collection occ-collection)
                                        (obj occ-ctx))
   "return CTSKs list"
@@ -676,11 +654,6 @@
 (cl-defgeneric occ-list (obj)
   "occ-list")
 
-;; (cl-defmethod occ-list ((obj null))
-;;   "return TSKs container"
-;;   (occ-collection-obj-list (occ-collection-object)
-;;                            obj))
-
 (cl-defmethod occ-list ((obj occ-ctx))
   "return CTXUAL-TSKs container"
   (occ-collection-obj-list (occ-collection-object)
@@ -688,8 +661,7 @@
 
 (cl-defmethod occ-list ((obj null))
   "return TSKs container"
-  (occ-collection-obj-list (occ-collection-object)
-                           (occ-make-ctx-at-point)))
+  (occ-list (occ-make-ctx-at-point)))
 
 
 (defvar occ-helm-map
