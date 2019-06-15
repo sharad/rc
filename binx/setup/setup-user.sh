@@ -2459,6 +2459,15 @@ function setup_bpkg_pkgs()
     install_bpkg_pkg sharad/gitwatch
 }
 
+function setup_fzf()
+{
+    if [ ! -d ~/.setup/fzf ]
+    then
+        running git clone --depth 1 https://github.com/junegunn/fzf.git ~/.setup/fzf
+        running ~/.setup/fzf/install
+    fi
+}
+
 function set_window_share()
 {
     # //WIN7-SPRATAP/Users/spratap/Desktop/Desktop/Docs  /media/winshare cifs credentials=/media/.credentials,uid=nobody,iocharset=utf8,noperm 0 0

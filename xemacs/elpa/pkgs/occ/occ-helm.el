@@ -145,6 +145,34 @@
   (occ-props-edit-helm-action-transformer candidate action))
 
 
+(defvar occ-helm-map
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map helm-map)
+    ;; (define-key map (kbd "RET")           'helm-ff-RET)
+    (define-key map (kbd "C-]")           'helm-ff-run-toggle-basename)
+    (define-key map (kbd "S-RET")         'occ-helm-run-child-clock-in)
+    (helm-define-key-with-subkeys map (kbd "DEL") ?\d 'helm-ff-delete-char-backward
+                                  '((C-backspace . helm-ff-run-toggle-auto-update)
+                                    ([C-c DEL] . helm-ff-run-toggle-auto-update))
+                                  nil 'helm-ff-delete-char-backward--exit-fn)
+    (when helm-ff-lynx-style-map
+      (define-key map (kbd "<left>")      'helm-find-files-up-one-level)
+      (define-key map (kbd "<right>")     'helm-execute-persistent-action))
+    (delq nil map))
+  "Keymap for `helm-find-files'.")
+
+(defvar occ-helm-doc-header " (\\<helm-find-files-map>\\[helm-find-files-up-one-level]: Go up one level)"
+  "*The doc that is inserted in the Name header of a find-files or dired source.")
+
+(defun occ-helm-run-child-clock-in ()
+  "Run mail attach files command action from `helm-source-find-files'."
+  ;; (interactive)                         ;TODO: to move to occ-commands.el
+  (with-helm-alive-p
+    (helm-exit-and-execute-action 'occ-child-clock-in)))
+(put 'occ-helm-run-child-clock-in 'helm-only t)
+;; add occ-child-clock-in in action
+
+
 (cl-defun occ-helm-build-candidates-source (candidates &key action action-transformer)
   (when candidates
     (helm-build-sync-source (concat
@@ -228,6 +256,14 @@
 ;; ;;   :action (helm-make-actions
 ;; ;;            "Create tsk"
 ;; ;;            'sacha/helm-org-create-tsk))
+
+
+(defvar occ-capture+-helm-templates-alist org-capture+-helm-templates-alist)
+
+(defun occ-capture+-helm-select-template ()
+  (org-capture+-helm-select-template
+   nil
+   occ-capture+-helm-templates-alist))
 
 
 ;;; occ-helm.el ends here
