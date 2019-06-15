@@ -71,8 +71,7 @@ Each entry is either:
     :defer t
     :config
     (progn
-      (setq face-scale-div-max-min '(110 210 100 92))
-      )))
+      (setq face-scale-div-max-min '(110 210 100 92)))))
 
 
 (defun lotus-appearance/post-init-powerline ()

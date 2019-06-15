@@ -415,7 +415,6 @@
                                    auto-select-if-only
                                    timeout)
   (let* ((collector          (or collector #'occ-matches))
-         ;; (candidates         (funcall collector ctx))
          (action             (or action (occ-helm-actions ctx)))
          (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
          (timeout            (or timeout occ-idle-timeout)))

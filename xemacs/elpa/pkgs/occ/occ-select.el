@@ -27,6 +27,9 @@
 (provide 'occ-select)
 
 
+(require 'org-misc-utils-lotus)
+
+
 (require 'occ-list-filter)
 (require 'occ-helm)
 
