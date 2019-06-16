@@ -27,9 +27,6 @@
 (provide 'occ-commands)
 
 
-
-
-
 (require 'occ-main)
 (require 'occ-obj-utils)
 
@@ -39,27 +36,33 @@
 ;;;###autoload
 (defun occ-helm-match-select ()
   (interactive)
-  (let ((filters (occ-match-filters))
-        (builder #'occ-build-ctxual-tsk))
+  (let ((filters            (occ-match-filters))
+        (builder            #'occ-build-ctxual-tsk)
+        (action             (occ-helm-intractive-command-actions))
+        (action-transformer #'(lambda (action candidate)
+                                (occ-helm-intractive-command-actions)))
+        (timeout            occ-idle-timeout))
    (occ-helm-select (occ-make-ctx-at-point)
-                    :filters filters
-                    :builder builder
-                    :action (occ-helm-intractive-command-actions)
-                    :action-transformer #'(lambda (action candidate)
-                                            (occ-helm-intractive-command-actions))
-                    :timeout occ-idle-timeout)))
+                    :filters            filters
+                    :builder            builder
+                    :action             action
+                    :action-transformer action-transformer
+                    :timeout            timeout)))
 
 (defun occ-helm-list-select ()
   (interactive)
-  (let ((filters (occ-list-filters))
-        (builder #'occ-build-ctsk))
+  (let ((filters            (occ-list-filters))
+        (builder            #'occ-build-ctsk)
+        (action             (occ-helm-intractive-command-actions))
+        (action-transformer #'(lambda (action candidate)
+                                (occ-helm-intractive-command-actions)))
+        (timeout            occ-idle-timeout))
    (occ-helm-select (occ-make-ctx-at-point)
-                    :filters filters
-                    :builder builder
-                    :action (occ-helm-intractive-command-actions)
-                    :action-transformer #'(lambda (action candidate)
-                                            (occ-helm-intractive-command-actions))
-                    :timeout occ-idle-timeout)))
+                    :filters            filters
+                    :builder            builder
+                    :action             action
+                    :action-transformer action-transformer
+                    :timeout            timeout)))
 
 
 ;;;###autoload
@@ -84,7 +87,7 @@
   (interactive)
   (let ((ctx (occ-make-ctx-at-point)))
     (occ-props-window-edit ctx
-                           :action (occ-props-edit-helm-actions ctx)
+                           :action             (occ-props-edit-helm-actions ctx)
                            :action-transformer #'occ-props-edit-helm-action-transformer-fun)))
 
 
@@ -98,17 +101,18 @@
 (defun occ-clock-in-curr-ctx (&optional force)
   (interactive "P")
   (let ((ctx (occ-make-ctx-at-point)))
-    (let ((filters            (or filters (occ-match-filters)))
-          (builder            (or builder #'occ-build-ctxual-tsk))
-          (action             (occ-helm-actions ctx))
-          (action-transformer #'occ-helm-action-transformer-fun)
-          (timeout            occ-idle-timeout))
+    (let ((filters             (or filters (occ-match-filters)))
+          (builder             (or builder #'occ-build-ctxual-tsk))
+          (action              (occ-helm-actions ctx))
+          (action-transformer  #'occ-helm-action-transformer-fun)
+          (auto-select-if-only nil) ; occ-clock-in-ctx-auto-select-if-only)
+          (timeout             occ-idle-timeout))
       (occ-clock-in-if-not ctx
                            :filters             filters
                            :builder             builder
                            :action              action
                            :action-transformer  action-transformer
-                           :auto-select-if-only nil ; occ-clock-in-ctx-auto-select-if-only
+                           :auto-select-if-only auto-select-if-only
                            :timeout             timeout))))
 
 ;;;###autoload
@@ -122,18 +126,19 @@
     (if force
         (occ-clock-in-curr-ctx force)
       (let ((ctx (occ-make-ctx-at-point)))
-        (let ((filters            (occ-match-filters))
-              (builder            #'occ-build-ctxual-tsk)
-              (action             (occ-helm-actions ctx))
-              (action-transformer #'occ-helm-action-transformer-fun)
-              (timeout            occ-idle-timeout))
+        (let ((filters             (occ-match-filters))
+              (builder             #'occ-build-ctxual-tsk)
+              (action              (occ-helm-actions ctx))
+              (action-transformer  #'occ-helm-action-transformer-fun)
+              (auto-select-if-only occ-clock-in-ctx-auto-select-if-only)
+              (timeout             occ-idle-timeout))
           (occ-clock-in-if-chg ctx
                                :filters             filters
                                :builder             builder
                                :action              action
                                :action-transformer  action-transformer
-                               :auto-select-if-only occ-clock-in-ctx-auto-select-if-only
-                               :timeout             occ-idle-timeout)))))
+                               :auto-select-if-only auto-select-if-only
+                               :timeout             timeout)))))
   (occ-debug :nodisplay "%s: end occ-clock-in-curr-ctx-if-not" (time-stamp-string)))
 
 
