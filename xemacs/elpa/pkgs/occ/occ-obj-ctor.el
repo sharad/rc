@@ -234,16 +234,6 @@
   tsk)
 
 
-(defun occ-make-tsk-container (objs)
-  (make-occ-tsk-container :list objs))
-
-(defun occ-make-ctsk-container (objs)
-  (make-occ-ctsk-container :list objs))
-
-(defun occ-make-ctxual-tsk-container (objs)
-  (make-occ-ctxual-tsk-container :list objs))
-
-
 (cl-defmethod occ-make-tsk-collection ((file-spec (head :tree)))
   (unless occ-global-tsk-collection
     (let ((collection (make-occ-tree-collection

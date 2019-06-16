@@ -68,10 +68,6 @@
 (cl-defstruct (occ-obj-prop (:include occ-obj))
   "Will hold prop")
 
-(cl-defstruct (occ-obj-container (:include occ-obj))
-  ;; presently not used
-  "Will hold container [presently not used]")
-
 (cl-defstruct (occ-obj-collection (:include occ-obj))
   "Will hold collection")
 
@@ -118,20 +114,6 @@
 
 (cl-defstruct (occ-ctxual-tsk (:include occ-ctsk))
   rank)
-
-
-(cl-defstruct (occ-container (:include occ-obj-container))
-  "[presently not used]"
-  list)
-
-(cl-defstruct (occ-tsk-container (:include occ-container))
-  "[presently not used]")
-
-(cl-defstruct (occ-ctsk-container (:include occ-container))
-  "[presently not used]")
-
-(cl-defstruct (occ-ctxual-tsk-container (:include occ-container))
-  "[presently not used]")
 
 
 (cl-defstruct (occ-collection (:include occ-obj-collection))
