@@ -26,7 +26,6 @@
 (provide 'occ-obj)
 
 
-(require 'occ-obj-common)
 
 ;; * cl-macs
 ;; https://nullprogram.com/blog/2018/02/14/
