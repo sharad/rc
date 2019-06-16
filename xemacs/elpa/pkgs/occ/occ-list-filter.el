@@ -217,12 +217,12 @@
          objs))
     (error "(occ-collection-object) returned nil")))
 
-(occ-filter-add :mutual-deviation occ-filter-mutual-deviation)
+(occ-filter-add :mutual-deviation #'occ-filter-mutual-deviation)
 
 (defun occ-filter-positive (objs)
   (remove-if-not #'(lambda (obj) (> (occ-rank obj) 0)) objs))
 
-(occ-filter-add :positive occ-filter-positive)
+(occ-filter-add :positive #'occ-filter-positive)
 
 
 (defun occ-list-filters () nil)

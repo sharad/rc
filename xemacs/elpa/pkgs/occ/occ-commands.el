@@ -39,23 +39,27 @@
 ;;;###autoload
 (defun occ-helm-match-select ()
   (interactive)
-  (occ-helm-select (occ-make-ctx-at-point)
-                   :filters #'occ-match-filters
-                   :builder #'occ-build-ctxual-tsk
-                   :action (occ-helm-intractive-command-actions)
-                   :action-transformer #'(lambda (action candidate)
-                                           (occ-helm-intractive-command-actions))
-                   :timeout occ-idle-timeout))
+  (let ((filters (occ-match-filters))
+        (builder #'occ-build-ctxual-tsk))
+   (occ-helm-select (occ-make-ctx-at-point)
+                    :filters filters
+                    :builder builder
+                    :action (occ-helm-intractive-command-actions)
+                    :action-transformer #'(lambda (action candidate)
+                                            (occ-helm-intractive-command-actions))
+                    :timeout occ-idle-timeout)))
 
 (defun occ-helm-list-select ()
   (interactive)
-  (occ-helm-select (occ-make-ctx-at-point)
-                   :filters #'occ-list-filters
-                   :builder #'occ-build-ctsk
-                   :action (occ-helm-intractive-command-actions)
-                   :action-transformer #'(lambda (action candidate)
-                                           (occ-helm-intractive-command-actions))
-                   :timeout occ-idle-timeout))
+  (let ((filters (occ-list-filters))
+        (builder #'occ-build-ctsk))
+   (occ-helm-select (occ-make-ctx-at-point)
+                    :filters filters
+                    :builder builder
+                    :action (occ-helm-intractive-command-actions)
+                    :action-transformer #'(lambda (action candidate)
+                                            (occ-helm-intractive-command-actions))
+                    :timeout occ-idle-timeout)))
 
 
 ;;;###autoload
@@ -118,8 +122,8 @@
     (if force
         (occ-clock-in-curr-ctx force)
       (let ((ctx (occ-make-ctx-at-point)))
-        (let ((filters            (or filters (occ-match-filters)))
-              (builder            (or builder #'occ-build-ctxual-tsk))
+        (let ((filters            (occ-match-filters))
+              (builder            #'occ-build-ctxual-tsk)
               (action             (occ-helm-actions ctx))
               (action-transformer #'occ-helm-action-transformer-fun)
               (timeout            occ-idle-timeout))
