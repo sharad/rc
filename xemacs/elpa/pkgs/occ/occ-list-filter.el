@@ -40,7 +40,8 @@
 
 (cl-defmethod occ-collection-obj-list ((collection occ-collection)
                                        (obj occ-ctx)
-                                       &key builder)
+                                       &key
+                                       builder)
   "return CTSKs list"
   (let ((builder (or builder #'occ-build-ctsk)))
     (let ((ctsks
@@ -62,90 +63,16 @@
                            :builder builder))
 
 
-(cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
-                                          (obj null))
-  "Return all TSKs for context nil OBJ"
-  ;; (occ-debug :debug "occ-collection-obj-matches list")
-  (occ-collection-list collection))
-
-;; ISSUE? should it return rank or occ-ctxual-tsks list
-(cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
-                                          (obj occ-ctx))
-  "Return matched CTXUAL-TSKs for context CTX"
-  ;; (occ-debug :debug "occ-collection-obj-matches list")
-  (let ((tsks (occ-collection collection))
-        (obj obj))
-    (mapcar #'(lambda (tsk)
-                (occ-build-ctxual-tsk tsk obj))
-            tsks)))
-
-;; ISSUE? should it return rank or occ-ctxual-tsks map
-(cl-defmethod occ-collection-obj-matches ((collection occ-tree-collection)
-                                          (obj occ-ctx))
-  ;; (occ-debug :debug "occ-collection-obj-matches tree")
-  "Return matched CTXUAL-TSKs for context CTX"
-  (let ((tsks (occ-collection collection))
-        (matched '()))
-    (when tsks
-      (occ-debug :debug "occ-collection-obj-matches BEFORE matched %s[%d]" matched (length matched))
-      (occ-mapc-tree-tsks
-       #'(lambda (tsk args)
-           (let ((ctxual-tsk (occ-build-ctxual-tsk tsk args)))
-             (setf matched (nconc matched
-                                  (list ctxual-tsk)))))
-           ;; (occ-debug :debug "occ-rank heading = %s" (occ-tsk-heading tsk))
-           ;; (let* ((ctxual-tsk (occ-build-ctxual-tsk tsk args))
-           ;;        (rank       (occ-rank ctxual-tsk)))
-           ;;   (unless rank (error "occ-collection-obj-matches[lambda]: rank is null"))
-           ;;   (when (> (occ-rank ctxual-tsk) 0)
-           ;;     (push ctxual-tsk matched)
-           ;;     (occ-debug :debug "occ-collection-obj-matches[lambda]: tsk %s MATCHED RANK %d"
-           ;;                (occ-tsk-heading tsk)
-           ;;                (length matched))))
-       tsks
-       obj))
-    (occ-debug :debug "occ-collection-obj-matches: AFTER matched %s[%d]" "matched" (length matched))
-    matched))
-
-;;TODO: make it after method
-(cl-defmethod occ-collection-obj-matches :around  ((collection occ-collection)
-                                                   (obj occ-ctx)) ;TODO: make it after method
-  "Return matched CTXUAL-TSKs for context CTX"
-  (if (occ-collection-object)
-      (let* ((ctxual-tsks (cl-call-next-method))
-             (rankslist  (mapcar
-                          #'(lambda (ctxual-tsk)
-                              (occ-rank ctxual-tsk))
-                          ctxual-tsks))
-             (avgrank    (if (= 0 (length rankslist))
-                             0
-                           (/
-                            (reduce #'+ rankslist)
-                            (length rankslist))))
-             (varirank   (if (= 0 (length rankslist))
-                             0
-                           (sqrt
-                            (/
-                             (reduce #'+
-                                     (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
-                             (length rankslist))))))
-        ;; (occ-debug :debug "occ-collection-obj-matches :around finish")
-        (occ-debug :debug "matched ctxtsks %s" (length ctxual-tsks))
-        (remove-if-not
-         #'(lambda (ctxual-tsk)
-             (>= (occ-rank ctxual-tsk) avgrank))
-         ctxual-tsks))
-    (error "(occ-collection-object) returned nil")))
-
-
 ;; http://sachachua.com/blog/2015/03/getting-helm-org-refile-clock-create-tasks/
 
 (cl-defgeneric occ-list (obj
-                         &key builder)
+                         &key
+                         builder)
   "occ-list")
 
 (cl-defmethod occ-list ((obj occ-ctx)
-                        &key builder)
+                        &key
+                        builder)
   "return CTXUAL-TSKs container"
   (occ-collection-obj-list (occ-collection-object)
                            obj
@@ -156,19 +83,6 @@
   "return TSKs container"
   (occ-list (occ-make-ctx-at-point)
             :builder builder))
-
-
-(cl-defmethod occ-matches ((obj null))
-  "return TSKs matches"
-  (let ((collection (occ-collection-object)))
-    (occ-collection-obj-matches collection
-                                obj)))
-
-(cl-defmethod occ-matches ((obj occ-ctx))
-  "return CTXUAL-TSKs matches"
-  (let ((collection (occ-collection-object)))
-    (occ-collection-obj-matches collection
-                                obj)))
 
 
 (defvar occ-filters-plist nil)
@@ -189,6 +103,20 @@
         (when fun
           (setf funs (nconc funs (list fun))))))
     funs))
+
+(defun occ-apply-recursively (methods result)
+  (let ((fun (car methods)))
+    (if fun
+        (occ-apply-recursively (cdr methods)
+                               (funcall fun result))
+      result)))
+
+(cl-defmethod occ-filter ((obj occ-ctx)
+                          methods
+                          &key builder)
+  (occ-apply-recursively (occ-filters-get methods)
+                         (occ-list obj
+                                   :builder builder)))
 
 
 (defun occ-filter-mutual-deviation (objs) ;TODO: make it after method
@@ -228,39 +156,5 @@
 (defun occ-list-filters () nil)
 
 (defun occ-match-filters () '(:positive :mutual-deviation))
-
-(defun occ-apply-recursively (methods result)
-  (let ((fun (car methods)))
-    (if fun
-        (occ-apply-recursively (cdr methods)
-                               (funcall fun result))
-      result)))
-
-(cl-defmethod occ-filter ((obj occ-ctx)
-                          methods
-                          &key builder)
-  (occ-apply-recursively (occ-filters-get methods)
-                         (occ-list obj
-                                   :builder builder)))
-
-
-;; (occ-filter (occ-make-ctx-at-point)l
-;;             (list :positive :mutual-deviation)
-;;             :builder nil)
-
-;; (occ-filter (occ-make-ctx-at-point)
-;;             (list #'occ-filter-mutual-deviation)
-;;             :builder nil)
-
-;; (occ-list (occ-make-ctx-at-point))
-
-;; (occ-apply-recursively '(+ -) 1)
-
-
-(cl-defmethod occ-matches ((obj occ-ctx))
-  "return CTXUAL-TSKs matches"
-  (occ-filter obj
-              (list #'occ-filter-mutual-deviation)
-              :builder nil))
 
 ;;; occ-list-filter.el ends here

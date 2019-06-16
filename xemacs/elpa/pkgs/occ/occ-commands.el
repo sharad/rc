@@ -218,7 +218,9 @@
     (add-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode))
   (dolist (prop (cl-method-sig-matched-arg '(occ-readprop (`((head ,val) occ-ctx) val)) nil))
     (let ((propstr
-           (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
+           (upcase (if (keywordp prop)
+                       (substring (symbol-name prop) 1)
+                     (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)
         (push propstr org-use-property-inheritance))))
   (org-clock-load) ;; newly added
