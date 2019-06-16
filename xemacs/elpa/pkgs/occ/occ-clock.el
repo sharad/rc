@@ -306,7 +306,13 @@
                                 action
                                 action-transformer
                                 timeout)
-  (occ-clock-in obj))
+  (occ-clock-in obj
+                :filters            filters
+                :builder            builder
+                :action             action
+                :action-transformer action-transformer
+                :timeout            timeout))
+
 
 (cl-defmethod occ-try-clock-in ((obj occ-obj-tsk)
                                 &key
@@ -315,7 +321,12 @@
                                 action
                                 action-transformer
                                 timeout)
-  (occ-clock-in obj))
+  (occ-clock-in obj
+                :filters            filters
+                :builder            builder
+                :action             action
+                :action-transformer action-transformer
+                :timeout            timeout))
 
 (cl-defmethod occ-try-clock-in ((obj occ-ctsk)
                                 &key
@@ -326,7 +337,12 @@
                                 timeout)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (occ-try-clock-in-with tsk ctx)))
+    (occ-try-clock-in-with tsk ctx
+                           :filters            filters
+                           :builder            builder
+                           :action             action
+                           :action-transformer action-transformer
+                           :timeout            timeout)))
 
 (cl-defmethod occ-try-clock-in ((obj null)
                                 &key
@@ -335,7 +351,12 @@
                                 action
                                 action-transformer
                                 timeout)
-  (occ-clock-in obj))
+  (occ-clock-in obj
+                :filters            filters
+                :builder            builder
+                :action             action
+                :action-transformer action-transformer
+                :timeout            timeout))
 
 ;; BUG: solve it.
 ;; Debugger entered--Lisp error: (error "Marker points into wrong buffer" #<marker at 28600 in report.org>)
@@ -373,6 +394,7 @@
   (let ((filters            (or filters (occ-match-filters)))
         (builder            (or builder #'occ-build-ctxual-tsk))
         (action             (or action  (occ-helm-actions ctx)))
+        (return-transform   t) ;as return value is going to be used.)
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
     (occ-debug-uncond "occ-clock-in-if-not((obj occ-ctx)): begin")
@@ -391,7 +413,7 @@
           (let ((retval (occ-clock-in ctx
                                       :filters             filters
                                       :builder             builder
-                                      :return-transform    t ;as return value is going to be used.
+                                      :return-transform    return-transform
                                       :action              action
                                       :action-transformer  action-transformer
                                       :auto-select-if-only auto-select-if-only
@@ -460,8 +482,8 @@
                (not              ;BUG: Reconsider whether it is catching case after some delay.
                 (equal *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
               (when (occ-clock-in-if-not ctx
-                                         :filters             #'occ-match-filters
-                                         :builder             #'occ-build-ctxual-tsk
+                                         :filters             filters
+                                         :builder             builder
                                          :action              action
                                          :action-transformer  action-transformer
                                          :auto-select-if-only auto-select-if-only

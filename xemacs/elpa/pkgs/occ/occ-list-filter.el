@@ -151,9 +151,15 @@
   (remove-if-not #'(lambda (obj) (> (occ-rank obj) 0)) objs))
 
 (occ-filter-add :positive #'occ-filter-positive)
+
+
+(defun occ-filter-nonnegative (objs)
+  (remove-if-not #'(lambda (obj) (>= (occ-rank obj) 0)) objs))
+
+(occ-filter-add :nonnegative #'occ-filter-nonnegative)
 
 
-(defun occ-list-filters () nil)
+(defun occ-list-filters () '(:nonnegative))
 
 (defun occ-match-filters () '(:positive :mutual-deviation))
 
