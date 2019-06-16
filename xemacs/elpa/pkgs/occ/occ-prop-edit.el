@@ -333,9 +333,6 @@
 
 (cl-defmethod occ-props-window-edit ((obj occ-obj-ctx-tsk)
                                      &key
-                                     ;; collector
-                                     ;; action
-                                     ;; action-transformer
                                      return-transform
                                      timeout)
   (let* ((timeout (or timeout occ-idle-timeout)))
@@ -369,12 +366,14 @@
 
 (cl-defmethod occ-props-window-edit ((obj occ-ctx)
                                      &key
-                                     collector
+                                     filters
+                                     builder
                                      return-transform ;Here caller know if return value is going to be used.
                                      action
                                      action-transformer
                                      timeout)
-  (let* ((collector          (or collector #'occ-list))
+  (let* ((filters            (or filters nil))
+         (builder            (or builder #'occ-build-ctsk))
          (action             (or action (occ-helm-actions obj)))
          (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
          (timeout            (or timeout occ-idle-timeout)))
@@ -384,7 +383,8 @@
            (buffer-live-p buff)
            (not (occ-helm-buffer-p buff)))
         (let ((retval-ctx-tsk (occ-select obj
-                                          :collector          collector
+                                          :filters            filters
+                                          :builder            builder
                                           :return-transform   return-transform ;Here caller know if return value is going to be used.
                                           :action             action
                                           :action-transformer action-transformer
@@ -420,18 +420,21 @@
 
 (cl-defmethod occ-props-window-edit ((obj null)
                                      &key
-                                     collector
+                                     filters
+                                     builder
                                      return-transform
                                      action
                                      action-transformer
                                      timeout)
   (occ-debug-uncond "occ-select-obj-prop-edit((obj null)):")
-  (let ((collector          (or collector #'occ-list))
+  (let ((filters            (or filters nil))
+        (builder            (or builder #'occ-build-ctsk))
         (action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
       (occ-props-window-edit (occ-make-ctx-at-point)
-                             :collector          collector
+                             :filters            filters
+                             :builder            builder
                              :return-transform   return-transform
                              :action             action
                              :action-transformer action-transformer
@@ -440,7 +443,8 @@
 
 (cl-defmethod occ-safe-props-window-edit ((obj occ-ctx)
                                           &key
-                                          collector
+                                          filters
+                                          builder
                                           return-transform
                                           action
                                           action-transformer
@@ -449,7 +453,8 @@
   ;; TODO: make helm conditional when it is used than only it should be handled.
   (interactive '((occ-make-ctx-at-point) occ-idle-timeout))
   (occ-debug-uncond "occ-safe-props-window-edit((obj occ-ctx)): begin")
-  (let ((collector          (or collector #'occ-list))
+  (let ((filters            (or filters nil))
+        (builder            (or builder #'occ-build-ctsk))
         (action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
@@ -469,7 +474,8 @@
                   (if (eq (current-buffer) buff)
                       (occ-debug-return "occ-safe-props-window-edit((obj occ-ctx)) direct"
                         (occ-props-window-edit obj
-                                               :collector          collector
+                                               :filters            filters
+                                               :builder            builder
                                                :return-transform   return-transform
                                                :action             action
                                                :action-transformer action-transformer
@@ -479,13 +485,15 @@
 
 (cl-defmethod occ-safe-props-window-edit ((obj marker)
                                           &key
-                                          collector
+                                          filters
+                                          builder
                                           action
                                           action-transformer
                                           timeout)
   (occ-debug-uncond "occ-safe-props-window-edit((obj marker)): begin")
   (let ((selected (occ-safe-props-window-edit (occ-make-ctx marker)
-                                              :collector          collector
+                                              :filters            filters
+                                              :builder            builder
                                               :return-transform   return-transform
                                               :action             action
                                               :action-transformer action-transformer
@@ -495,7 +503,8 @@
 
 (cl-defmethod occ-safe-ignore-quit-props-window-edit ((obj occ-ctx)
                                                       &key
-                                                      collector
+                                                      filters
+                                                      builder
                                                       return-transform
                                                       action
                                                       action-transformer
@@ -510,7 +519,8 @@
 
   "Return value is important to decide next action to (create unnamed tsk.)"
   (occ-debug-uncond "occ-safe-ignore-quit-props-window-edit((obj occ-ctx)): begin")
-  (let ((collector          (or collector #'occ-list))
+  (let ((filters            (or filters nil))
+        (builder            (or builder #'occ-build-ctsk))
         (action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
@@ -544,7 +554,8 @@
       ;; TODO: Add code to which check if only focus present than only trigger
       ;; else postpone it by calling run-with-idle-plus-timer
       (occ-safe-props-window-edit obj
-                                  :collector          collector
+                                  :filters            filters
+                                  :builder            builder
                                   :return-transform   return-transform
                                   :action             action
                                   :action-transformer action-transformer

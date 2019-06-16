@@ -42,20 +42,24 @@
                                        (obj occ-ctx)
                                        &key builder)
   "return CTSKs list"
-  (let ((ctsks
-         (run-unobtrusively
-           (let ((tsks (occ-collect-list collection))) ;;????TODO
-             (when tsks
-               (mapcar
-                #'(lambda (tsk) (occ-build-ctsk tsk obj))
-                tsks))))))
-    (unless (eq t ctsks)
-      ctsks)))
+  (let ((builder (or builder #'occ-build-ctsk)))
+    (let ((ctsks
+            (run-unobtrusively
+              (let ((tsks (occ-collect-list collection))) ;;????TODO
+                (when tsks
+                  (mapcar
+                   #'(lambda (tsk) (funcall builder tsk obj))
+                   tsks))))))
+       (unless (eq t ctsks)
+         ctsks))))
 
 (cl-defmethod occ-collection-obj-list ((collection occ-collection)
-                                       (obj null))
+                                       (obj null)
+                                       &key builder)
   "return CTSKs list"
-  (occ-collection-obj-list collection (occ-make-ctx-at-point)))
+  (occ-collection-obj-list collection
+                           (occ-make-ctx-at-point)
+                           :builder builder))
 
 
 (cl-defmethod occ-collection-obj-matches ((collection occ-list-collection)
@@ -136,17 +140,22 @@
 
 ;; http://sachachua.com/blog/2015/03/getting-helm-org-refile-clock-create-tasks/
 
-(cl-defgeneric occ-list (obj)
+(cl-defgeneric occ-list (obj
+                         &key builder)
   "occ-list")
 
-(cl-defmethod occ-list ((obj occ-ctx))
+(cl-defmethod occ-list ((obj occ-ctx)
+                        &key builder)
   "return CTXUAL-TSKs container"
   (occ-collection-obj-list (occ-collection-object)
-                           obj))
+                           obj
+                           :builder builder))
 
-(cl-defmethod occ-list ((obj null))
+(cl-defmethod occ-list ((obj null)
+                        &key builder)
   "return TSKs container"
-  (occ-list (occ-make-ctx-at-point)))
+  (occ-list (occ-make-ctx-at-point)
+            :builder builder))
 
 
 (cl-defmethod occ-matches ((obj null))
@@ -162,7 +171,24 @@
                                 obj)))
 
 
+(defvar occ-filters-plist nil)
 
+(defun occ-filter-add (key fun)
+  (setq occ-helm-actions-plist
+        (plist-put
+         occ-filters-plist
+         key fun)))
+
+(defun occ-filter-get (key)
+  (plist-get occ-filters-plist key))
+
+(defun occ-filters-get (&rest keys)
+  (let ((funs nil))
+    (dolist (key keys)
+      (let ((fun (occ-filter-get key)))
+        (when fun
+          (setf funs (nconc funs (list fun))))))
+    funs))
 
 
 (defun occ-filter-mutual-deviation (objs) ;TODO: make it after method
@@ -191,10 +217,18 @@
          objs))
     (error "(occ-collection-object) returned nil")))
 
-(defun occ-filter-positive-rank (objs)
+(occ-filter-add :mutual-deviation occ-filter-mutual-deviation)
+
+(defun occ-filter-positive (objs)
   (remove-if-not #'(lambda (obj) (> (occ-rank obj) 0)) objs))
+
+(occ-filter-add :positive occ-filter-positive)
 
 
+(defun occ-list-filters () nil)
+
+(defun occ-match-filters () '(:positive :mutual-deviation))
+
 (defun occ-apply-recursively (methods result)
   (let ((fun (car methods)))
     (if fun
@@ -205,12 +239,13 @@
 (cl-defmethod occ-filter ((obj occ-ctx)
                           methods
                           &key builder)
-  (occ-apply-recursively methods
-                         (occ-list obj :builder builder)))
+  (occ-apply-recursively (occ-filters-get methods)
+                         (occ-list obj
+                                   :builder builder)))
 
 
-;; (occ-filter (occ-make-ctx-at-point)
-;;             (list #'occ-filter-positive-rank #'occ-filter-mutual-deviation)
+;; (occ-filter (occ-make-ctx-at-point)l
+;;             (list :positive :mutual-deviation)
 ;;             :builder nil)
 
 ;; (occ-filter (occ-make-ctx-at-point)

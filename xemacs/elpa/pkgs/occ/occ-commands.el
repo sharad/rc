@@ -40,7 +40,8 @@
 (defun occ-helm-match-select ()
   (interactive)
   (occ-helm-select (occ-make-ctx-at-point)
-                   :collector #'occ-matches
+                   :filters #'occ-match-filters
+                   :builder #'occ-build-ctxual-tsk
                    :action (occ-helm-intractive-command-actions)
                    :action-transformer #'(lambda (action candidate)
                                            (occ-helm-intractive-command-actions))
@@ -49,7 +50,8 @@
 (defun occ-helm-list-select ()
   (interactive)
   (occ-helm-select (occ-make-ctx-at-point)
-                   :collector #'occ-list
+                   :filters #'occ-list-filters
+                   :builder #'occ-build-ctsk
                    :action (occ-helm-intractive-command-actions)
                    :action-transformer #'(lambda (action candidate)
                                            (occ-helm-intractive-command-actions))
@@ -92,12 +94,14 @@
 (defun occ-clock-in-curr-ctx (&optional force)
   (interactive "P")
   (let ((ctx (occ-make-ctx-at-point)))
-    (let ((collector          #'occ-matches)
+    (let ((filters            (or filters (occ-match-filters)))
+          (builder            (or builder #'occ-build-ctxual-tsk))
           (action             (occ-helm-actions ctx))
           (action-transformer #'occ-helm-action-transformer-fun)
           (timeout            occ-idle-timeout))
       (occ-clock-in-if-not ctx
-                           :collector           collector
+                           :filters             filters
+                           :builder             builder
                            :action              action
                            :action-transformer  action-transformer
                            :auto-select-if-only nil ; occ-clock-in-ctx-auto-select-if-only
@@ -114,12 +118,14 @@
     (if force
         (occ-clock-in-curr-ctx force)
       (let ((ctx (occ-make-ctx-at-point)))
-        (let ((collector          #'occ-matches)
+        (let ((filters            (or filters (occ-match-filters)))
+              (builder            (or builder #'occ-build-ctxual-tsk))
               (action             (occ-helm-actions ctx))
               (action-transformer #'occ-helm-action-transformer-fun)
               (timeout            occ-idle-timeout))
           (occ-clock-in-if-chg ctx
-                               :collector           #'occ-matches
+                               :filters             filters
+                               :builder             builder
                                :action              action
                                :action-transformer  action-transformer
                                :auto-select-if-only occ-clock-in-ctx-auto-select-if-only

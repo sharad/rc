@@ -50,14 +50,6 @@
           (setf actions (nconc actions (list name-action))))))
     actions))
 
-;; (defun occ-helm-actions-get (&rest keys)
-;;   (let ((actions nil))
-;;     (dolist (key keys)
-;;       (let ((name-action (occ-helm-action-get key)))
-;;         (when name-action
-;;           (push name-action actions))))
-;;     (reverse actions)))
-
 (progn
 
   (setq occ-helm-actions-plist nil)
@@ -199,12 +191,25 @@
    actions))
 
 
-(cl-defgeneric occ-helm-select (obj collector)
+(cl-defgeneric occ-helm-select (obj
+                                &key
+                                filters
+                                builder
+                                action
+                                action-transformer
+                                timeout)
   "occ-helm-select")
 
-(cl-defmethod occ-helm-select ((obj occ-ctx) &key collector action action-transformer timeout)
+(cl-defmethod occ-helm-select ((obj occ-ctx)
+                               &key
+                               filters
+                               builder
+                               action
+                               action-transformer
+                               timeout)
   (let ((ctx-tsk (occ-select obj
-                             :collector          collector
+                             :filters            filters
+                             :builder            builder
                              :action             action
                              :action-transformer action-transformer
                              :timeout            timeout)))

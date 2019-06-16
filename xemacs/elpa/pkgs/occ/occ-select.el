@@ -94,39 +94,24 @@
 ;; Getting targets...done
 ;; Error running timer ‘occ-clock-in-curr-ctx-if-not’: (error "Window #<window 12> too small for splitting")
 
-;; (cl-defmethod occ-select ((obj null)
-;;                           &key
-;;                           collector
-;;                           action
-;;                           action-transformer
-;;                           timeout)
-;;   "return interactively selected TSK or NIL"
-;;   (unless collector (error "Collector can not be nil"))
-;;   (let ((candidates         (funcall collector obj))
-;;         (action             (or action (occ-helm-actions obj)))
-;;         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
-;;         (timeout            (or timeout occ-idle-timeout)))
-;;     (when candidates
-;;       (occ-list-select candidates
-;;                        :action action
-;;                        :action-transformer action-transformer
-;;                        :timeout timeout))))
-
 (cl-defmethod occ-select ((obj occ-ctx)
                           &key
-                          collector
+                          filters
+                          builder
                           return-transform
                           action
                           action-transformer
                           auto-select-if-only
                           timeout)
   "return interactively selected TSK or NIL"
-  (unless collector (error "Collector can not be nil"))
+  (unless builder (error "Builder can not be nil"))
   (occ-debug-uncond "occ-select((obj occ-ctx)): begin")
   (let ((action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
-    (let ((candidates (funcall collector obj)))
+    (let ((candidates (occ-filter obj
+                                  filters
+                                  :builder builder)))
       (if candidates
           (let ((retval (occ-list-select candidates
                                          :return-transform    return-transform
@@ -144,7 +129,8 @@
 
 (cl-defmethod occ-select ((obj null)
                           &key
-                          collector
+                          filters
+                          builder
                           return-transform
                           action
                           action-transformer
@@ -152,7 +138,8 @@
                           timeout)
   (occ-debug-uncond "occ-select((obj null)): begin")
   (let ((retval (occ-select (occ-make-ctx-at-point)
-                            :collector           collector
+                            :filters             filters
+                            :builder             builder
                             :return-transform    return-transform
                             :action              action
                             :action-transformer  action-transformer
