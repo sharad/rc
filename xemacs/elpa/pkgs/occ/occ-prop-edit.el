@@ -63,7 +63,7 @@
   (occ-debug :debug "occ-select-propetry: %s" (occ-format tsk 'capitalize))
   (let ((prompt (or prompt "proptery: "))
         (fixed-keys '(edit done))
-        (keys       (occ-match-prop-method-args ctx)))
+        (keys       (occ-properties-to-edit ctx)))
     (if keys
         (let ((maxkeylen (apply
                           #'max

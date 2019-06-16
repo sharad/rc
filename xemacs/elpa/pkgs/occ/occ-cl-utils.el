@@ -123,19 +123,28 @@
       (cl-method-param-signs method)))))
 
 
+(defun cl-method-arg-get (method fn)
+  (mapcar
+   fn
+   (cl-method-param-signs method)))
+
 (defun cl-method-first-arg (method)
-  (let ((methods (cl--generic method)))
-    (mapcar
-     #'(lambda (fspec) (cadar fspec))
-     (cl-method-param-signs method))))
+  (mapcar
+   #'(lambda (fspec) (cadar fspec))
+   (cl-method-param-signs method)))
+
+(defun cl-method-first-arg (method)
+  (cl-method-arg-get method #'cadar))
 
 (defun cl-method-first-arg-with-value (method obj)
-  (let ((methods (cl--generic method)))
-    (mapcar
-     #'(lambda (fspec)
-         (let ((first-arg (cadar fspec)))
-           (when (funcall method (cons first-arg obj)) first-arg)))
-     (cl-method-param-signs method))))
+  (mapcar
+   #'(lambda (fspec)
+       (let ((first-arg (cadar fspec)))
+         (when (funcall method (cons first-arg obj)) first-arg)))
+   (cl-method-param-signs method)))
+
+
+
 
 
 ;;; occ-cl-utils.el ends here

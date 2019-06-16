@@ -27,6 +27,9 @@
 (provide 'occ-helm)
 
 
+(require 'org-capture+-helm)
+
+
 (require 'occ-debug-method)
 (require 'occ-obj-method)
 

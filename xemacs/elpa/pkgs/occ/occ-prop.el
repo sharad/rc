@@ -42,25 +42,71 @@
 ;; TODO: multi-value property https://orgmode.org/manual/Using-the-property-API.html
 
 
-(defun occ-readprop-props ()
+(defun occ-readprop-props () ;;TODO: check about them
   (cl-method-param-case
    ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
    '(occ-readprop-elem-from-user-with (`(occ-tsk occ-ctx (eql ,val)) val))))
 
-(defun occ-get-property-props ()
+(defun occ-get-property-props () ;;TODO: check about them
   (cl-method-param-case
    '(occ-get-property  (`(occ-ctx (eql ,val)) val))))
 
 
-(cl-defgeneric occ-match-prop-method-args (ctx)
+(cl-defgeneric occ-match-prop-method-args (obj)
   "occ-match-prop-method-args")
 
-(cl-defmethod occ-match-prop-method-args ((ctx occ-ctx))
+(cl-defmethod occ-match-prop-method-args ((obj occ-ctx))
   (cl-method-sigs-matched-arg
    ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
    '(occ-readprop-elem-from-user-with (`(occ-tsk occ-ctx (eql ,val)) val))
    '(occ-get-property  (`(occ-ctx (eql ,val)) val))
-   ctx))
+   obj))
+
+;; (occ-match-prop-method-args (occ-make-ctx-at-point))
+
+(cl-defmethod occ-match-prop-method-args ((obj occ-tsk))
+  (cl-method-param-case '(occ-readprop-elem-from-user (`(occ-tsk (eql ,val)) val))))
+
+
+(cl-defgeneric occ-properties-to-edit (obj)
+  "occ-properties-to-edit")
+
+(cl-defgeneric occ-properties-to-calculate-rank (obj)
+  "occ-properties-to-calculate-rank")
+
+
+(cl-defmethod occ-properties-to-edit ((obj occ-ctx))
+  (occ-match-prop-method-args obj))
+
+(cl-defmethod occ-properties-to-edit ((obj occ-tsk))
+  (cl-method-param-case '(occ-readprop-elem-from-user (`(occ-tsk (eql ,val)) val))))
+
+
+(cl-defmethod occ-properties-to-calculate-rank ((obj occ-ctx))
+  (let ((class 'occ-ctx))
+    (cl-method-param-case '(occ-rankprop-with (`(occ-tsk occ-ctx (eql ,val)) val)))))
+
+(cl-defmethod occ-properties-to-calculate-rank ((obj occ-tsk))
+  (let ((class 'occ-ctx))
+    (cl-method-param-case '(occ-rankprop (`(occ-tsk (eql ,val)) val)))))
+
+;; (let ((class 'occ-tsk))
+;;   (cl-method-param-case `'(occ-rankprop (`(class (eql ,val)) val))))
+
+;; (let ((class 'occ-tsk))
+;;   (cl-method-param-case `'(occ-rankprop (`(,class (eql ,,'val)) val))))
+
+;; (let ((class 'occ-tsk))
+;;   `'(occ-rankprop  (,``(,,class (eql ,val)) val)))
+
+;; (let ((class 'occ-tsk))
+;;   (cl-method-param-case `'(occ-rankprop  (,`(,class (eql ,',val)) val))))
+
+;; (cl-method-param-case '(occ-rankprop (`(occ-tsk (eql ,val)) val)))
+
+
+;; (let ((class 'occ-tsk))
+;;   (cl-method-param-case `'(occ-rankprop  (,``(,,class (eql ,val)) val))))
 
 
 (defun occ-org-entry-get (pom
