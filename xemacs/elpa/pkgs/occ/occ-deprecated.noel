@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2019  Sharad
 
-;; Author: Sharad <spratap@merunetworks.com>
+;; Author: Sharad <>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -49,7 +49,7 @@
       ;; And return a cons cell with the selection character integer and the marker
       ;; pointing to it."
       ;;   (let ((marker (occ-ctxual-tsk-marker ctxask))
-      ;;         (rank   (occ-ctxual-tsk-rank   ctxask)))
+      ;;         (rank   (occ-rank   ctxask)))
       ;;     (when (marker-buffer marker)
       ;;       (with-current-buffer (org-base-buffer (marker-buffer marker))
       ;;         (org-with-wide-buffer
@@ -165,7 +165,7 @@
                   (let ((buffer-read-only nil))
                     (when old-heading
                       (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
-                    (condition-case-control t err
+                    (condition-case-control err
                       (progn
                         (occ-straight-org-clock-clock-in (list new-marker))
                         (setq retval t)
@@ -403,7 +403,7 @@
                      (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
 
                      (progn
-                       (condition-case-control nil err
+                       (condition-case-control err
                          (let ((buffer-read-only nil))
                            (occ-debug :debug "timer started for win %s" win)
 
@@ -448,15 +448,15 @@
       (occ-debug :debug "begin occ-add-to-org-heading")
       (lotus-with-no-active-minibuffer-if
           (progn
-            (lwarn 'occ :debug "occ-add-to-org-heading: [minibuffer-body] lotus-with-no-active-minibuffer-if")
+            (occ-debug :debug "occ-add-to-org-heading: [minibuffer-body] lotus-with-no-active-minibuffer-if")
             (occ-debug :debug "add-ctx-to-org-heading: minibuffer already active quitting")
             (occ-debug :debug nil))
         (lotus-with-other-frame-event-debug "occ-add-to-org-heading" :cancel
-          (lwarn 'occ :debug "occ-add-to-org-heading: lotus-with-other-frame-event-debug")
+          (occ-debug :debug "occ-add-to-org-heading: lotus-with-other-frame-event-debug")
           (let* ((timeout (or timeout 7))
                  (ctx     (or ctx (occ-make-ctx-at-point)))
                  (buff    (occ-ctx-buffer ctx)))
-            (lwarn 'occ :debug "occ-add-to-org-heading: [body] lotus-with-no-active-minibuffer-if")
+            (occ-debug :debug "occ-add-to-org-heading: [body] lotus-with-no-active-minibuffer-if")
             (if (and
                  (eq (current-buffer) buff)
                  (buffer-live-p buff)
@@ -492,7 +492,7 @@
 
                           (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
                           (progn
-                            (condition-case-control nil err
+                            (condition-case-control err
                               (let ((buffer-read-only nil))
                                 (occ-debug :debug "timer started for win %s" win)
 
@@ -576,6 +576,442 @@
                 sel-ctxual-tsk)))))))
     ;; occ-simple
 
+
+
+(when nil
+ (defun org-prop-edit-at-point ()
+  ;;experimental
+  (progn
+    (occ-debug :debug "called add-ctx-to-org-heading %s" (current-buffer))
+    (condition-case-control err
+      (let ((buffer-read-only nil))
+        (occ-debug :debug "timer started for win %s" win)
+
+        ;; show proptery drawer
+        (let* ((prop-range (org-flag-proprty-drawer-at-marker marker nil))
+               (prop-loc   (when (consp prop-range) (1- (car prop-range)))))
+          (if (numberp prop-loc)
+              (goto-char prop-loc)))
+
+        ;; try to read values of properties.
+        (let ((prop nil))
+          (while (not
+                  (member
+                   (setq prop (occ-select-propetry tsk ctx))
+                   '(edit done)))
+            (when (occ-editprop prop ctx)
+              (occ-tsk-update-tsks t)))
+          (cond
+           ((eql 'done prop)
+            (funcall cleanup win local-cleanup)
+            (when timer (cancel-timer timer)))
+           ((eql 'edit prop)
+            ;; (funcall cleanup win local-cleanup)
+            (occ-debug :debug "debug editing")
+            (when timer (cancel-timer timer))
+            (when (and win (windowp win) (window-valid-p win))
+              (select-window win 'norecord)))
+           (t
+            (funcall cleanup win local-cleanup)
+            (when timer (cancel-timer timer))))))
+      ((quit)
+       (progn
+         (funcall cleanup win local-cleanup)
+         (if timer (cancel-timer timer))
+         (signal (car err) (cdr err))))))))
+
+
+
+(when nil
+
+(provide 'occ-prop)
+
+
+(require 'org-misc-utils-lotus)
+
+
+(require 'occ-obj-common)
+(require 'occ-tree)
+(require 'occ-obj-accessor)
+(require 'occ-util-common)
+(require 'occ-obj-method)
+(require 'occ-prop)
+
+
+(defun occ-org-set-property (prop value)
+  (lotus-org-with-safe-modification
+    (org-set-property prop value)))
+(cl-defmethod occ-readprop ((prop symbol) (ctx occ-ctx))
+  (occ-debug :debug "occ-readprop: prop: %s" prop)
+  (occ-readprop (cons prop (occ-make-tsk nil)) ctx))
+(cl-defmethod occ-writeprop ((prop symbol) value)
+  (occ-debug :debug "occ-writeprop: prop: %s, value: %s" prop value)
+  (if value
+      (progn
+        (unless (org-get-property-block)
+          ;;create property drawer
+          (occ-debug :debug "occ-writeprop: property block not exist so creating it.")
+          (let* ((range (org-get-property-block (point) 'force))
+                 (start (when (consp range) (1- (car range)))))
+            (when (numberp start)
+              (goto-char start))))
+        (occ-debug :debug "occ-writeprop: adding prop: %s value: %s using (org-set-property)." prop value)
+        (occ-org-set-property (symbol-name prop) value))
+    (error "occ-writeprop value is nil")))
+(cl-defmethod occ-editprop ((prop symbol) (ctx occ-ctx))
+  (let ((value (occ-readprop prop ctx)))
+    (occ-debug :debug "occ-editprop: prop: %s, value: %s" prop value)
+    (occ-writeprop prop value)))
+
+
+
+
+
+
+
+(defun occ-org-set-property (prop value)
+  (lotus-org-with-safe-modification
+    (org-set-property prop value)))
+
+(cl-defgeneric occ-writeprop-with (prop
+                                   obj
+                                   ctx
+                                   value)
+  "occ-writeprop-with")
+(cl-defgeneric occ-readprop-with (prop
+                                  obj
+                                  ctx)
+  "occ-readprop-with")
+(cl-defmethod occ-editprop-with (prop
+                                 obj
+                                 ctx)
+  "occ-editprop-with")
+
+(cl-defgeneric occ-writeprop (prop
+                              obj
+                              value)
+  "occ-writeprop")
+(cl-defgeneric occ-readprop (prop
+                             obj)
+  "occ-readprop")
+(cl-defmethod occ-editprop (prop
+                            obj)
+  "occ-editprop")
+
+
+
+(cl-defmethod occ-writeprop-with ((prop symbol)
+                                  (obj occ-tsk)
+                                  (ctx occ-ctx)
+                                  value)
+  (occ-debug :debug "occ-writeprop: prop: %s, value: %s"
+             prop value)
+  (if value
+      (progn
+        (unless (org-get-property-block)
+          ;;create property drawer
+          (occ-debug :debug "occ-writeprop: property block not exist so creating it.")
+          (let* ((range (org-get-property-block (point) 'force))
+                 (start (when (consp range) (1- (car range)))))
+            (when (numberp start)
+              (goto-char start))))
+        (occ-debug :debug
+                   "occ-writeprop: adding prop: %s value: %s using (org-set-property)." prop value)
+        (occ-org-set-property (symbol-name prop) value))
+    (error "occ-writeprop value is nil")))
+(cl-defmethod occ-readprop-with ((prop symbol)
+                                 (obj occ-tsk)
+                                 (ctx occ-ctx))
+  (occ-debug :debug "occ-readprop: prop: %s"
+             prop)
+  (occ-readprop prop obj ctx))
+(cl-defmethod occ-editprop-with ((prop symbol)
+                                 (obj occ-tsk)
+                                 (ctx occ-ctx))
+  (let ((value (occ-readprop prop obj ctx)))
+    (occ-debug :debug
+               "occ-editprop: prop: %s, value: %s" prop value)
+    (occ-writeprop-with prop obj ctx value)))
+
+
+(cl-defmethod occ-writeprop ((prop symbol)
+                             (obj occ-obj-ctx-tsk)
+                             value)
+  (occ-debug :debug "occ-writeprop: prop: %s, value: %s"
+             prop value)
+  (let ((tsk (occ-ctsk-tsk obj))
+        (ctx (occ-ctsk-ctx obj)))
+    (occ-writeprop-with prop tsk ctx value)))
+(cl-defmethod occ-readprop ((prop symbol)
+                            (obj occ-obj-ctx-tsk))
+  (occ-debug :debug "occ-readprop: prop: %s"
+             prop)
+  (let ((tsk (occ-ctsk-tsk obj))
+        (ctx (occ-ctsk-ctx obj)))
+    (occ-readprop-with prop tsk ctx)))
+(cl-defmethod occ-editprop ((prop symbol)
+                            (obj occ-obj-ctx-tsk))
+  (let ((value (occ-readprop prop obj)))
+    (occ-debug :debug
+               "occ-editprop: prop: %s, value: %s" prop value)
+    (occ-writeprop prop obj value)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;;{{ file
+(when nil                               ;rank calculation for org file name in which tsk aka entry not much useful
+  (cl-defmethod occ-rank ((tsk-pair (head file))
+                          (ctx occ-ctx))
+   ;; file in which tsk aka org entry exists.
+   "Predicate funtion to check if ctx matches to tsk's file attribute."
+   (let ((prop (car tsk-pair))
+         (tsk  (cdr tsk-pair)))
+     (let* ((currfile (occ-get-property tsk 'currfile))
+            (currfile (if currfile (file-truename currfile))))
+      (let* ((file (occ-ctx-file ctx))
+             (file (if file (file-truename file))))
+        (if currfile
+            (progn
+              (occ-debug :nodisplay "tsk %s currfile %s" (occ-tsk-heading tsk) currfile)
+              (occ-debug :nodisplay "tsk %s file %s"     (occ-tsk-heading tsk) file))
+          (occ-debug :nodisplay "tsk %s currfile %s not present."
+                     (occ-tsk-heading tsk) currfile))
+        (if (and currfile file
+                 (string-match currfile file))
+            (* 2 (length currfile))     ;as exact match to file giving double matching points.
+          0))))))
+;;}}
+
+;;{{ currfile
+(cl-defmethod occ-rank ((tsk-pair (head currfile))
+                        (ctx occ-ctx))
+  ;; file in which tsk aka org entry exists.
+  "Predicate funtion to check if ctx matches to tsk's file attribute."
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
+    (let* ((currfile (occ-get-property tsk 'currfile))
+           (currfile (if currfile (file-truename currfile))))
+      (let* ((file (occ-ctx-file ctx))
+             (file (if file (file-truename file))))
+        (if currfile
+            (progn
+              (occ-debug :nodisplay "tsk %s currfile %s" (occ-tsk-heading tsk) currfile)
+              (occ-debug :nodisplay "tsk %s file %s"     (occ-tsk-heading tsk) file))
+          (occ-debug :nodisplay "tsk %s currfile %s not present."
+                     (occ-tsk-heading tsk) currfile))
+        (if (and currfile file
+                 (string-match currfile file))
+            (* 2 (length currfile))     ;as exact match to file giving double matching points.
+          0)))))
+
+(cl-defmethod occ-ctx-property-get ((ctx-pair (head currfile)))
+  "file of context"
+  (let* ((ctx (cdr ctx-pair))
+         (currfile (occ-ctx-file ctx)))
+    currfile))
+(cl-defmethod occ-readprop ((tsk-pair (head currfile))
+                            (ctx occ-ctx))
+  "currfile property for tsk aka org entry"
+  (let* ((currfile (if ctx (occ-ctx-file ctx)))
+         (dir (when (stringp currfile)
+                  (file-name-directory currfile) (dirname-of-file currfile)))
+         (prompt (concat (symbol-name (car tsk-pair)) ": ")))
+    (ido-read-currfile-name prompt dir currfile)))
+;;}}
+
+;;{{ root
+(cl-defmethod occ-rank ((tsk-pair (head root))
+                        (ctx occ-ctx))
+  "Predicate funtion to check if ctx matches to tsk's file attribute."
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
+    (let* ((root (occ-get-property tsk 'root))
+           (root (if root (file-truename root))))
+     (let* ((file (occ-ctx-file ctx))
+            (file (if file (file-truename file))))
+       (if root
+           (progn
+             (occ-debug :nodisplay "tsk %s root %s" (occ-tsk-heading tsk) root)
+             (occ-debug :nodisplay "tsk %s file %s" (occ-tsk-heading tsk) file))
+         (occ-debug :nodisplay "tsk %s root %s not present."
+                    (occ-tsk-heading tsk) root))
+       (if (and root file
+                (string-match root file))
+           (length root)
+         0)))))
+(cl-defmethod occ-ctx-property-get ((ctx-pair (head root)))
+  (let* ((ctx (cdr ctx-pair))
+         (file (occ-ctx-file ctx))
+         (root (and file (dirname-of-file file))))
+    root))
+(cl-defmethod occ-readprop ((tsk-pair (head root))
+                            (ctx occ-ctx))
+  (let* ((file (if ctx (occ-ctx-file ctx)))
+         (dir (if (stringp file) (file-name-directory file) (dirname-of-file file)))
+         (prompt (concat (symbol-name (car tsk-pair)) ": ")))
+    (ido-read-directory-name prompt dir dir)))
+;;}}
+
+;;{{ sub-tree
+(cl-defmethod occ-readprop ((tsk-pair (head subtree))
+                            (ctx occ-ctx))
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
+    (let ((prompt (concat (symbol-name (car tsk-pair)) ": ")))
+     (file-relative-name
+       (ido-read-file-name ;; org-iread-file-name
+        prompt
+        default-directory default-directory)))))
+
+(cl-defmethod occ-writeprop ((tsk-pair (head subtree)) value))
+;;}}
+
+;;{{ git-branch
+(cl-defmethod occ-ctx-property-get ((ctx-pair (head git-branch)))
+  (let* ((ctx (cdr ctx-pair))
+         (file (occ-ctx-file ctx)))
+    file))
+;;}}
+
+;;{{ git-branch
+;;}}
+
+;;{{ git-branch
+;;}}
+
+;;{{ git-branch
+;;}}
+
+
+
+
+
+
+(cl-defmethod occ-rank ((tsk-pair (head status))
+                        (ctx occ-ctx))
+  "Predicate funtion to check if ctx matches to tsk's status attribute."
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
+    (let ((todo-type
+           (occ-get-property tsk 'todo-type))
+          (closed
+           (occ-get-property tsk 'closed))
+          (status
+           (occ-get-property tsk 'todo-keyword)))
+      (if (or
+           closed
+           (eql todo-type 'done)
+           (string-equal status "HOLD"))
+          -30 0))))
+
+(cl-defmethod occ-rank ((tsk-pair (head key))
+                        (ctx occ-ctx))
+  "Predicate funtion to check if ctx matches to tsk's file attribute."
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
+    (let* ((key (occ-get-property tsk 'KEY)))
+      (if key (string-to-number key) 0))))
+
+(cl-defmethod occ-rank ((tsk-pair (head heading-level))
+                        (ctx occ-ctx))
+  "Predicate funtion to check if ctx matches to tsk's file attribute."
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
+    (let* ((level (occ-get-property tsk 'level)))
+      (if level level 0))))
+
+(cl-defmethod occ-rank ((tsk-pair (head timebeing))
+                        (ctx occ-ctx))
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
+   (let ((timebeing (occ-get-property tsk 'timebeing)))
+     (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
+           (clocked-time   (occ-get-property tsk 'clock-sum)))
+       (if (and
+            (numberp clocked-time)
+            (numberp timebeing-time)
+            (> timebeing-time clocked-time))
+           (- timebeing-time clocked-time)
+         0)))))
+
+(cl-defmethod occ-rank ((tsk-pair (head current-clock))
+                        (ctx occ-ctx))
+  (let ((prop (car tsk-pair))
+        (tsk  (cdr tsk-pair)))
+    (let* ((tsk-marker (occ-get-property tsk 'marker)))
+      (if (and
+           (markerp org-clock-hd-marker)
+           (markerp tsk-marker)
+           (equal org-clock-hd-marker org-clock-hd-marker))
+          100
+        0))))
+
+
+(when nil
+  (cl-method-first-arg 'occ-ctx-property-get)
+  (occ-readprop-props)
+  (cl-method-matched-arg 'occ-readprop 'occ-ctx-property-get (occ-make-ctx-at-point))
+  (funcall 'occ-ctx-property-get (cons 'file (occ-make-ctx-at-point))))
+
+(when nil
+  (cl-method-sigs-matched-arg
+   '(occ-readprop (`((head ,val) occ-ctx) val))
+   '(occ-ctx-property-get (`((head ,val) val)))
+   (occ-make-ctx-at-point)))
+
+
+
+(defun occ-readprop-props ()
+  (cl-method-param-case
+   '(occ-readprop (`((head ,val) occ-ctx) val))))
+
+
+
+;;; occ-prop.el ends here
+
+
+)
 
 (provide 'occ-deprecated)
 ;;; occ-deprecated.el ends here

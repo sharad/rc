@@ -37,6 +37,7 @@
 (defconst lotus-appearance-packages
   '(
     ;; (PACKAGE :location local)
+    powerline
     )
   "The list of Lisp packages required by the lotus-appearance layer.
 
@@ -67,10 +68,28 @@ Each entry is either:
 
 (defun lotus-appearance/init-PACKAGE ()
   (use-package PACKAGE
-      :defer t
-      :config
-      (progn
-        (setq face-scale-div-max-min '(110 210 100 92))
-        )))
+    :defer t
+    :config
+    (progn
+      (setq face-scale-div-max-min '(110 210 100 92)))))
+
+
+(defun lotus-appearance/post-init-powerline ()
+  (use-package powerline
+    :init
+    (progn
+      (setq
+       powerline-scale              0.8
+       powerline-height             10
+       powerline-text-scale-factor  0.5
+       powerline-default-separator 'curve))
+    :defer t
+    :config
+    (progn
+      (setq
+       powerline-scale              0.8
+       powerline-height             10
+       powerline-text-scale-factor  0.5
+       powerline-default-separator 'curve))))
 
 ;;; packages.el ends here

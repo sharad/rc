@@ -57,7 +57,7 @@
 ;;               #'(lambda (dir)
 ;;                   (expand-file-name dir (file-name-directory load-file-name)))
 ;;               '("node-dest" "activities")))
-;;   (message "adding %s to load path" dir)
+;;   (@:message "adding %s to load path" dir)
 ;;   (add-to-list 'load-path dir))
 
 ;; ;;;###autoload
@@ -66,7 +66,7 @@
 ;;                  #'(lambda (dir)
 ;;                      (expand-file-name dir (file-name-directory load-file-name)))
 ;;                  '("node-dest" "activities")))
-;;      (message "adding %s to load path" dir)
+;;      (@:message "adding %s to load path" dir)
 ;;      (add-to-list 'load-path dir)))
 
 ;; ;;;###autoload
@@ -89,7 +89,7 @@
 
                      (def@ @@ :init ()
                        (@^:init)
-                       (message "@activity-class :init")
+                       (@:message "@activity-class :init")
                        (setf @:occuredon (current-time)))
 
                      (setf
@@ -107,7 +107,7 @@
                      (def@ @@ :activate (key)
                        (let ((c (assoc key @:insinuate)))
                          (if (member key @:active)
-                             (lwarn 'activity :warning "key %s already active" key)
+                             (@:debug :warning "key %s already active" key)
                            (when c
                              (progn
                                (push key @:active)
@@ -117,13 +117,13 @@
                        (let ((c (assoc key @:uninsinuate)))
                          (if (member key @:active)
                              (when c
-                               (lwarn 'activity :warning "b key %s not active %s" key @:active)
+                               (@:debug :warning "b key %s not active %s" key @:active)
                                (setf
                                 @:active
                                 (remove key @:active))
-                               (lwarn 'activity :warning "a key %s not active %s" key @:active)
+                               (@:debug :warning "a key %s not active %s" key @:active)
                                (funcall (cdr c)))
-                           (lwarn 'activity :warning "key %s not active" key))))
+                           (@:debug :warning "key %s not active" key))))
 
 
                      (def@ @@ :activate-all ()
@@ -143,7 +143,7 @@
                          (push (cons key deactive) @:uninsinuate)))
 
                      (def@ @@ :inspect ()
-                       (message
+                       (@:message
                         "active: [%s], insinuate: [%s], uninsinuate: [%s]"
                         @:active
                         @:insinuate

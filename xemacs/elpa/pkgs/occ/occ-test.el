@@ -121,7 +121,7 @@
 
 
 
-(when nil                               ;occ-interactive.el
+(when nil                               ;occ-prop-edit.el
   ;; testing verification
  (defun occ-files-with-null-regex ()
    (interactive)
@@ -189,7 +189,8 @@
 
 
 
-(progn                                  ;; from obj common
+(when nil
+ (progn                                  ;; from obj common
 
   (when nil ;; https://curiousprogrammer.wordpress.com/2010/07/19/emacs-defstruct-vs-other-languages/
 
@@ -225,7 +226,7 @@
          (aref (cl--generic 'occ-readprop) 3)))
 
   (setq xxnaaa
-        (aref (cl--generic 'occ-readprop) 3)))
+        (aref (cl--generic 'occ-readprop) 3))))
 
 
 ;; ctor.el
@@ -338,7 +339,7 @@
            (mrk  (if tsk (occ-tsk-marker tsk))))
       (org-capture-plus 'entry `(marker ,mrk) 'occ-capture+-helm-select-template
                         :finalize (lambda ()
-                                    (occ-obj-prop-edit tsk ctx 7)
+                                    (occ-props-window-edit-with tsk ctx 7)
                                     t)
                         :empty-lines 1)))
 
@@ -356,6 +357,52 @@
 
  (before-org-capture-plus mrk 'entry `(marker org-clock-marker) 'occ-capture+-helm-select-template '(:empty-lines 1)
    t))
+
+
+
+;; (occ-delayed-select-obj-prop-edit-when-idle (occ-make-ctx nil) (occ-make-ctx nil) occ-idle-timeout)
+;; (occ-delayed-select-obj-prop-edit-when-idle nil (occ-make-ctx nil) occ-idle-timeout)
+
+
+(when nil
+  (cl-method-first-arg 'occ-ctx-property-get)
+  (occ-readprop-props)
+  (cl-method-matched-arg 'occ-readprop 'occ-ctx-property-get (occ-make-ctx-at-point))
+  (funcall 'occ-ctx-property-get (cons 'file (occ-make-ctx-at-point))))
+
+(when nil
+  (cl-method-sigs-matched-arg
+   '(occ-readprop (`((head ,val) occ-ctx) val))
+   '(occ-ctx-property-get (`((head ,val) val)))
+   (occ-make-ctx-at-point)))
+
+;; move to occ-test.el
+;; (cl-method-param-case-with-value-new '(occ-get-property  (`(occ-ctx (eql ,val)) val)) (occ-make-ctx-at-point))
+;; (occ-match-prop-method-args (occ-make-ctx-at-point))
+
+;; (cl-method-param-signs 'occ-readprop-with)
+
+;; (cl-method-param-signs 'occ-get-property)
+
+
+;; (cl-method-param-case
+;;  '(occ-prop-is-list (`((eql ,val)) val)))
+;;
+;; (cl-method-param-case
+;;  '(occ-prop-elem-from-org (`((eql ,val) t) val)))
+;;
+;; (cl-method-param-signs 'occ-prop-is-list)
+;; (cl-method-param-signs 'occ-prop-elem-from-org)
+
+
+
+;; (org-entry-get-multivalued-property (point) "ZEGMA")
+;; (org-entry-put-multivalued-property (point) "ZEGMA" "T1" "T2")
+;; (org-entry-add-to-multivalued-property (point) "ZEGMA" "TEST1")
+;; (org-entry-get (point) "ZEGMA")
+;; (org-entry-set (point) "ZEGMA" "VALUE")
+
+
 
 
 ;;; occ-test.el ends here

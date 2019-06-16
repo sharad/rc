@@ -6,6 +6,11 @@ var bookmark_groups = {
         "https://www.mojarto.com/blogs/top-6-krishna-artworks-for-your-walls-this-janmashtami?pfrom=home-specialprojects",
         "https://www.mojarto.com/blogs/top-6-krishna-artworks-for-your-walls-this-janmashtami?pfrom=home-specialprojects",
     ],
+    "Business": [
+        "https://www.bloombergquint.com",
+        "https://www.bloomberg.com",
+        "https://www.bbc.com/news/business",
+    ],
     "Crypto": [
         "http://news.mit.edu/topic/cryptography",
         "https://www.google.co.in/search?q=cryptography+News",
@@ -38,8 +43,11 @@ var bookmark_groups = {
     ],
     "NewsTech": [
         "http://www.osnews.com",
+        "https://www.techopedia.com/",
     ],
     "Linux": [
+        "https://www.techopedia.com/",
+        "https://www.linuxuprising.com",
         "http://www.linux-mag.com",
         "https://www.linuxjournal.com/news",
         "https://www.itbusinessedge.com/slideshows",

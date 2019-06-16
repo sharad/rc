@@ -22,10 +22,12 @@ function main()
             BRANCH_MERGE=$(basename ${BRANCH_MERGE_PATH})
         fi
 
-        echo ${CURR_BRANCH}: remote - ${BRANCH_REMOTE}
-        echo ${CURR_BRANCH}: merge  - ${BRANCH_MERGE}
+        echo ${CURR_BRANCH}: "remote: ${BRANCH_REMOTE}"
+        echo ${CURR_BRANCH}: "merge:  ${BRANCH_MERGE}"
+        echo ${CURR_BRANCH}: "${BRANCH_REMOTE}/${BRANCH_MERGE}"
 
-        if [ 0 = $? ] && [ "x" != "x$BRANCH_MERGE" ]
+        # if [ 0 = $? ] && [ "x" != "x$BRANCH_MERGE" ]
+        if [ "x" != "x$BRANCH_MERGE" ]
         then
             if [ $stash ]
             then

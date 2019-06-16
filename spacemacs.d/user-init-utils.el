@@ -310,22 +310,43 @@
 
 (defun lotus-layers-list ()
   (let* ((all-layers
-           (append
-            (lotus-dist-layers-group-dirs-layers-select "~/.emacs.d/layers/")
-            (lotus-dist-layers-group-dirs-layers-select "~/.spacemacs-mycontribs/" "^lotus-[a-zA-Z]+")))
+          (append
+           (lotus-dist-layers-group-dirs-layers-select "~/.emacs.d/layers/")
+           (lotus-dist-layers-group-dirs-layers-select "~/.spacemacs-mycontribs/" "^lotus-[a-zA-Z]+")))
          (all-without-excluded-layers
-           (set-difference
-            all-layers (spacemacs-dist-layers-exclude)))
+          (set-difference
+           all-layers (spacemacs-dist-layers-exclude)))
          (all-with-included-layers
-           (append all-without-excluded-layers (spacemacs-dist-layers-include))))
+          (append all-without-excluded-layers (spacemacs-dist-layers-include))))
     all-with-included-layers))
+
+
+(defun lotus-disable-report-org ()
+  (if (and
+       ;; (not (buffer-file-name))
+       (string-equal (file-truename "~/../paradise/")
+                     (file-truename default-directory))
+       (or
+        (string= (buffer-name) "report.org")
+        (string= (buffer-name) "report.org<2>")))
+      (progn
+        (message "creating report.org<2> buffer not going to debug.")
+        (backtrace)
+        (message "backtrace creating report.org<2> buffer not going to debug.")
+        (debug))))
+(defun lotus-debug-emacs-user-init-begin ()
+  (add-hook 'fundamental-mode-hook
+            #'lotus-disable-report-org)
+  (add-hook 'org-mode-hook
+            #'lotus-disable-report-org))
+
 
 (defun cleanup-tty-process ()
   (interactive)
   (let ((tty-processes
-          (remove-if-not
-           'process-tty-name
-           (process-list))))
+         (remove-if-not
+          'process-tty-name
+          (process-list))))
     (dolist (tp tty-processes)
       (kill-process tp))))
 
@@ -394,10 +415,10 @@
     ;; remove this
     (push "~/.xemacs/pkgrepos/mypkgs/gnus-session-start" load-path)
     (push "~/.xemacs/pkgrepos/world/misc/misc" load-path)
-    (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path)
+    (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path))
     ;; (push "~/.xemacs/pkgrepos/mypkgs/pa-planner" load-path)
     ;; (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path)
-    )
+
 
   ;; (push
   ;;  '("local" . "~/.xemacs/elpa/upload")
@@ -555,31 +576,34 @@
 
   (package-initialize)
 
+  ;;   (font-family-list)
   (setq
-   dotspacemacs-default-font '("Source Code Pro"
+   dotspacemacs-default-font '("DejaVu Sans Mono:size=8:antialias=true"
                                :size 9
                                :weight normal
                                :width normal
-                               :powerline-scale 1.1))
+                               :powerline-scale 0.8
+                               :powerline-text-scale-factor 0.5
+                               :powerline-default-separator 'curve))
   ;; (spacemacs/set-default-font dotspacemacs-default-font)
 
   (when nil
     (put-file-in-rcs (auto-config-file "startup/startup.log"))
     (with-current-buffer "*Messages*"
       (setq messages-buffer-max-lines 2000)
-            ;; old-messages-buffer-max-lines
+      ;; old-messages-buffer-max-lines
 
       ;; (append-to-buffer "*xxemacs-startup-log*" (point-min) (point-max))
       (copy-to-buffer "*emacs-startup-log*" (point-min) (point-max))))
 
-    ;; (with-current-buffer "*emacs-startup-log*"
-    ;;   ;; (with-temp-file file body)
-    ;;   (set-buffer-file-coding-system
-    ;;    (if (coding-system-p 'utf-8-emacs)
-    ;;        'utf-8-emacs
-    ;;        'emacs-mule))
-    ;;   (write-region (point-min) (point-max) "~/.emacs.d/startup.log" t)
-    ;;   (put-file-in-rcs "~/.emacs.d/startup.log"))
+  ;; (with-current-buffer "*emacs-startup-log*"
+  ;;   ;; (with-temp-file file body)
+  ;;   (set-buffer-file-coding-system
+  ;;    (if (coding-system-p 'utf-8-emacs)
+  ;;        'utf-8-emacs
+  ;;        'emacs-mule))
+  ;;   (write-region (point-min) (point-max) "~/.emacs.d/startup.log" t)
+  ;;   (put-file-in-rcs "~/.emacs.d/startup.log"))
 
 
 
@@ -595,8 +619,8 @@
    'lotus-enable-startup-interrupting-feature-hook
    #'(lambda ()
        (with-temp-buffer
-           (spacemacs/startup-hook))))
-   ;; 'spacemacs-buffer/goto-buffer
+         (spacemacs/startup-hook))))
+  ;; 'spacemacs-buffer/goto-buffer
 
 
   (when (advice--p (advice--symbol-function 'server-create-window-system-frame))
@@ -621,6 +645,8 @@
     (defun spacemacs/lazy-load-stickyfunc-enhance ()
       "Lazy load the package."
       (require 'stickyfunc-enhance)))
+
+  (lotus-debug-emacs-user-init-begin)
 
 
   (message "loading lotus-emacs-user-init-finish finished"))
@@ -667,11 +693,11 @@
       (setq-default yas-fallback-behavior 'call-other-command)
 
       (setq
-       x-select-enable-primary t)
+       x-select-enable-primary t))
 
       ;; do not want it.
       ;; (setq yas/trigger-key "")
-      )
+
 
     (when nil                           ; FROM where this came.
       (let (current-load-list)
@@ -721,9 +747,9 @@ variable."
                                      (eolp))
                                 (delete-region (develock-point-at-bol) (point)))))
                       (forward-line 1)))))
-            ad-do-it))
+            ad-do-it)))))
 
-        )))
+
 
 
   (deh-require-maybe folding
@@ -803,6 +829,7 @@ variable."
     ;; custom-enabled-themes
     ;; theme using (ujelly)
 
+    ;; trying (arjen)
 
     (defun theme-current ()
       (interactive)
@@ -842,8 +869,8 @@ variable."
     ;; (add-to-list 'org-src-block-faces
     ;;              '("prog"
     ;;                (:foreground "#FFFFFF")))
-    (set-face-attribute 'org-block nil :inherit 'src-block)
-    )
+    (set-face-attribute 'org-block nil :inherit 'src-block))
+
 
   (with-eval-after-load 'psgml
     (message "psgml loaded, now loading sgml-mode.el library")
@@ -894,7 +921,8 @@ variable."
       (unless (member errstr debug-ignored-errors)
         (push errstr debug-ignored-errors)))
     (add-to-debug-ignore-errors "Nothing to complete")
-    (add-to-debug-ignore-errors "Unmatched Text during Lexical Analysis")))
+    (add-to-debug-ignore-errors "Unmatched Text during Lexical Analysis")
+    (add-to-debug-ignore-errors "‘global’ non-zero exit: global: GTAGS not found.")))
 
 
 (progn                                  ;debug testing code

@@ -48,15 +48,17 @@
     (org-feed :location local)
     worf
     orgnav
-    (orgstruct :location local)
-    (orgstruct++ :location local)
-    outshine
+    ;; (orgstruct :location local)
+    ;; (orgstruct++ :location local)
+    outorg                              ;https://github.com/alphapapa/outorg
+    outshine                            ;https://github.com/alphapapa/outshibe
     (outline-ivy :location local)
-    outorg
     poporg
     navi-mode
     org-password-manager
     org-parser
+    ;; org-tempo
+    ;; ox-reveal
     ;; new
     org-context
     org-dashboard
@@ -106,9 +108,19 @@ Each entry is either:
     :defer t
     :config
     (progn
-      (lotus-orgmode-config/post-init-org)))
+      (lotus-orgmode-config/post-init-org)
+      (assert (null org-show-notification-handler))))
   (use-package org-tempo
     :defer t
+    :commands (org-tempo-setup org-tempo-complete-tag)
+    :init
+    (add-hook 'org-mode-hook 'org-tempo-setup)
+    (add-hook 'org-tab-before-tab-emulation-hook 'org-tempo-complete-tag)
+
+    ;; Enable Org Tempo in all open Org buffers.
+    (dolist (b (org-buffer-list 'files))
+      (with-current-buffer b (org-tempo-setup)))
+
     :config
     (progn))
   ;; (lotus-orgmode-config/init-org-tempo)
@@ -125,10 +137,18 @@ Each entry is either:
 
 (defun lotus-orgmode/post-init-org-agenda ()
   (use-package org-agenda
+    ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-06/msg00122.html
     :defer t
     :config
     (progn
-      (lotus-orgmode-config/post-init-org-agenda))))
+      (progn
+        (lotus-orgmode-config/post-init-org-agenda))
+      (progn
+        (use-package appt
+          :defer t
+          :config
+          (progn
+            (org-agenda-to-appt)))))))
 
 (defun lotus-orgmode/post-init-ob-tangle ()
   (use-package org-notmuch
@@ -188,63 +208,80 @@ Each entry is either:
   (use-package worf
       :defer t
       :config
-      (progn
-        )))
+      (progn)))
+
 
 (defun lotus-orgmode/init-orgnav ()
   (use-package orgnav
-      :defer t
-      :config
-      (progn
-        (lotus-orgmode-config/init-orgnav))))
+    :defer t
+    :config
+    (progn
+      (lotus-orgmode-config/init-orgnav))))
 
-(defun lotus-orgmode/init-orgstruct ()
-  (use-package orgstruct
-      :defer t
-      :config
-      (progn
-        )))
+;; from ~/.emacs.d/elpa/org-plus-contrib-20181230/etc/ORG-NEWS
+;; * Version 9.2
+;; ** Incompatible changes
+;; *** Removal of OrgStruct mode mode and radio lists
 
-(defun lotus-orgmode/init-orgstruct++ ()
-  (use-package orgstruct++
-      :defer t
-      :config
-      (progn
-        (progn
-          ;;(setq orgstruct-heading-prefix-regexp "^;; ")
-          )
-        )))
+;; OrgStruct minor mode and radio lists mechanism (~org-list-send-list~
+;;                                                 and ~org-list-radio-lists-templates~) are removed from the code base.
+
+;; Note that only radio /lists/ have been removed, not radio tables.
+
+;; If you want to manipulate lists like in Org in other modes, we suggest
+;; to use orgalist.el, which you can install from GNU ELPA.
+
+;; If you want to use Org folding outside of Org buffers, you can have a
+;; look at the outshine package in the MELPA repository.
+;;
+;;
+;; (defun lotus-orgmode/init-orgstruct ()
+;;   (use-package orgstruct
+;;       :defer t
+;;       :config
+;;       (progn
+;;         )))
+;;
+;; (defun lotus-orgmode/init-orgstruct++ ()
+;;   (use-package orgstruct++
+;;       :defer t
+;;       :config
+;;       (progn
+;;         (progn))))
+;;           ;;(setq orgstruct-heading-prefix-regexp "^;; ")
+
+(defun lotus-orgmode/init-outorg ()
+  ;; https://github.com/alphapapa/outorg
+  (use-package outorg
+    :defer t
+    :config
+    (progn)))
 
 (defun lotus-orgmode/init-outshine ()
   (use-package outshine
-      :defer t
-      :config
-      (progn
-        (lotus-orgmode-config/init-outshine))))
+    :init
+    ;; https://github.com/alphapapa/outshine
+    (defvar outline-minor-mode-prefix "\M-#")
+    :defer t
+    :config
+    (progn
+      (lotus-orgmode-config/init-outshine))))
 
 (defun lotus-orgmode/init-outline-ivy ()
   ;; http://www.modernemacs.com/post/outline-bullets/
   (use-package outline-ivy
-      :defer t
-      :config
-      (progn
-        )))
-
-(defun lotus-orgmode/init-outorg ()
-  (use-package outorg
-      :defer t
-      :config
-      (progn
-        )))
-
+    :defer t
+    :config
+    (progn
+      )))
 
 (defun lotus-orgmode/init-poporg ()
   (use-package poporg
-      :defer t
-      :commands (poporg-dwim)
-      :config
-      (progn
-        )))
+    :defer t
+    :commands (poporg-dwim)
+    :config
+    (progn
+      )))
 
 (defun lotus-orgmode/init-navi-mode ()
   (use-package navi-mode
@@ -312,13 +349,5 @@ Each entry is either:
     :defer t
     :config
     (progn)))
-
-;; (defun lotus-orgmode/init-abgaben ()
-;;   (use-package abgaben
-;;     :defer t
-;;     :config
-;;     (progn
-;;       (progn
-;; 	(require 'f)))))
 
 ;;; packages.el ends here

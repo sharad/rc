@@ -38,6 +38,23 @@
 #+END_SRC
 
 ** Rest
+
+*** Debug code
+    #+begin_src elisp
+
+      (defvar org-capture+-debug nil "org-capture+-debug")
+
+      (defun org-capture+-debug (level &rest args)
+        (when org-capture+-debug
+          (when (car args)
+            (apply #'format args)
+            (when (member level '(:emergency :error :warning :debug))
+              ;; (apply #'lwarn 'occ level args)
+              (apply #'lwarn 'org-capture+ level args))
+            (unless (eq level :nodisplay)
+              (apply #'message args)))))
+
+    #+end_src
 *** Mode definition
 
     #+begin_src emacs-lisp

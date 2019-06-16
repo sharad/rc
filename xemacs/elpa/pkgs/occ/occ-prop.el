@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2019  Sharad
 
-;; Author: sharad <sh4r4d _at_ _G-mail_>
+;; Author: sharad <sh4r4d _>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -27,237 +27,365 @@
 (provide 'occ-prop)
 
 
+(require 'dash)
+(require 'org-misc-utils-lotus)
+
+
 (require 'occ-obj-common)
 (require 'occ-tree)
 (require 'occ-obj-accessor)
 (require 'occ-util-common)
 (require 'occ-obj-method)
-(require 'occ-prop)
+(require 'occ-rank)
 
 
-(cl-defmethod occ-readprop ((prop symbol) (ctx occ-ctx))
-  (occ-readprop (cons prop (occ-make-tsk nil)) ctx))
-(cl-defmethod occ-writeprop ((prop symbol) value)
-  (if value
-      (unless (org-get-property-block)
-        ;;create property drawer
-        (let ((range (org-get-property-block (point) 'force))
-              (start (when (consp range) (1- (car range)))))
-          (when (numberp start)
-            (goto-char start))))
-      (org-set-property (symbol-name prop) value)
-    (error "occ-writeprop value is nil")))
-(cl-defmethod occ-editprop ((prop symbol) (ctx occ-ctx))
-  (let ((value (occ-readprop prop ctx)))
-    (occ-writeprop prop value)))
-
-;;{{ file
-(when nil                               ;rank calculation for org file name in which tsk aka entry not much useful
-  (cl-defmethod occ-rank ((tsk-pair (head file)))
-                         (ctx occ-ctx)
-   ;; file in which tsk aka org entry exists.
-   "Predicate funtion to check if ctx matches to tsk's file attribute."
-   (let ((prop (car tsk-pair))
-         (tsk  (cdr tsk-pair)))
-     (let* ((currfile (occ-get-property tsk 'currfile))
-            (currfile (if currfile (file-truename currfile))))
-      (let* ((file (occ-ctx-file ctx))
-             (file (if file (file-truename file))))
-        (if currfile
-            (progn
-              (occ-debug :nodisplay "tsk %s currfile %s" (occ-tsk-heading tsk) currfile)
-              (occ-debug :nodisplay "tsk %s file %s"     (occ-tsk-heading tsk) file))
-          (occ-debug :nodisplay "tsk %s currfile %s not present."
-                     (occ-tsk-heading tsk) currfile))
-        (if (and currfile file
-                 (string-match currfile file))
-            (* 2 (length currfile))     ;as exact match to file giving double matching points.
-          0))))))
-;;}}
-
-;;{{ currfile
-(cl-defmethod occ-rank ((tsk-pair (head currfile))
-                        (ctx occ-ctx))
-  ;; file in which tsk aka org entry exists.
-  "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let ((prop (car tsk-pair))
-        (tsk  (cdr tsk-pair)))
-    (let* ((currfile (occ-get-property tsk 'currfile))
-           (currfile (if currfile (file-truename currfile))))
-      (let* ((file (occ-ctx-file ctx))
-             (file (if file (file-truename file))))
-        (if currfile
-            (progn
-              (occ-debug :nodisplay "tsk %s currfile %s" (occ-tsk-heading tsk) currfile)
-              (occ-debug :nodisplay "tsk %s file %s"     (occ-tsk-heading tsk) file))
-          (occ-debug :nodisplay "tsk %s currfile %s not present."
-                     (occ-tsk-heading tsk) currfile))
-        (if (and currfile file
-                 (string-match currfile file))
-            (* 2 (length currfile))     ;as exact match to file giving double matching points.
-          0)))))
-
-(cl-defmethod occ-ctx-property-get ((ctx-pair (head currfile)))
-  "file of context"
-  (let* ((ctx (cdr ctx-pair))
-         (currfile (occ-ctx-file ctx)))
-    currfile))
-(cl-defmethod occ-readprop ((tsk-pair (head currfile))
-                            (ctx occ-ctx))
-  "currfile property for tsk aka org entry"
-  (let* ((currfile (if ctx (occ-ctx-file ctx)))
-         (dir (when (stringp currfile)
-                  (file-name-directory currfile) (dirname-of-file currfile)))
-         (prompt (concat (symbol-name (car tsk-pair)) ": ")))
-    (ido-read-currfile-name prompt dir currfile)))
-;;}}
-
-;;{{ root
-(cl-defmethod occ-rank ((tsk-pair (head root))
-                        (ctx occ-ctx))
-  "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let ((prop (car tsk-pair))
-        (tsk  (cdr tsk-pair)))
-    (let* ((root (occ-get-property tsk 'root))
-           (root (if root (file-truename root))))
-     (let* ((file (occ-ctx-file ctx))
-            (file (if file (file-truename file))))
-       (if root
-           (progn
-             (occ-debug :nodisplay "tsk %s root %s" (occ-tsk-heading tsk) root)
-             (occ-debug :nodisplay "tsk %s file %s" (occ-tsk-heading tsk) file))
-         (occ-debug :nodisplay "tsk %s root %s not present."
-                    (occ-tsk-heading tsk) root))
-       (if (and root file
-                (string-match root file))
-           (length root)
-         0)))))
-(cl-defmethod occ-ctx-property-get ((ctx-pair (head root)))
-  (let* ((ctx (cdr ctx-pair))
-         (file (occ-ctx-file ctx))
-         (root (and file (dirname-of-file file))))
-    root))
-(cl-defmethod occ-readprop ((tsk-pair (head root))
-                            (ctx occ-ctx))
-  (let* ((file (if ctx (occ-ctx-file ctx)))
-         (dir (if (stringp file) (file-name-directory file) (dirname-of-file file)))
-         (prompt (concat (symbol-name (car tsk-pair)) ": ")))
-    (ido-read-directory-name prompt dir dir)))
-;;}}
-
-;;{{ sub-tree
-(cl-defmethod occ-readprop ((tsk-pair (head subtree))
-                            (ctx occ-ctx))
-  (let ((prop (car tsk-pair))
-        (tsk  (cdr tsk-pair)))
-    (let ((prompt (concat (symbol-name (car tsk-pair)) ": ")))
-     (file-relative-name
-       (ido-read-file-name ;; org-iread-file-name
-        prompt
-        default-directory default-directory)))))
-
-(cl-defmethod occ-writeprop ((tsk-pair (head subtree)) value))
-;;}}
-
-;;{{ git-branch
-(cl-defmethod occ-ctx-property-get ((ctx-pair (head git-branch)))
-  (let* ((ctx (cdr ctx-pair))
-         (file (occ-ctx-file ctx)))
-    file))
-;;}}
-
-;;{{ git-branch
-;;}}
-
-;;{{ git-branch
-;;}}
-
-;;{{ git-branch
-;;}}
-
-
-
-
-
-
-(cl-defmethod occ-rank ((tsk-pair (head status))
-                        (ctx occ-ctx))
-  "Predicate funtion to check if ctx matches to tsk's status attribute."
-  (let ((prop (car tsk-pair))
-        (tsk  (cdr tsk-pair)))
-    (let ((todo-type
-           (occ-get-property tsk 'todo-type))
-          (closed
-           (occ-get-property tsk 'closed))
-          (status
-           (occ-get-property tsk 'todo-keyword)))
-      (if (or
-           closed
-           (eql todo-type 'done)
-           (string-equal status "HOLD"))
-          -30 0))))
-
-(cl-defmethod occ-rank ((tsk-pair (head key))
-                        (ctx occ-ctx))
-  "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let ((prop (car tsk-pair))
-        (tsk  (cdr tsk-pair)))
-    (let* ((key (occ-get-property tsk 'KEY)))
-      (if key (string-to-number key) 0))))
-
-(cl-defmethod occ-rank ((tsk-pair (head heading-level))
-                        (ctx occ-ctx))
-  "Predicate funtion to check if ctx matches to tsk's file attribute."
-  (let ((prop (car tsk-pair))
-        (tsk  (cdr tsk-pair)))
-    (let* ((level (occ-get-property tsk 'level)))
-      (if level level 0))))
-
-(cl-defmethod occ-rank ((tsk-pair (head timebeing))
-                        (ctx occ-ctx))
-  (let ((prop (car tsk-pair))
-        (tsk  (cdr tsk-pair)))
-   (let ((timebeing (occ-get-property tsk 'timebeing)))
-     (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
-           (clocked-time   (occ-get-property tsk 'clock-sum)))
-       (if (and
-            (numberp clocked-time)
-            (numberp timebeing-time)
-            (> timebeing-time clocked-time))
-           (- timebeing-time clocked-time)
-         0)))))
-
-(cl-defmethod occ-rank ((tsk-pair (head current-clock))
-                        (ctx occ-ctx))
-  (let ((prop (car tsk-pair))
-        (tsk  (cdr tsk-pair)))
-    (let* ((tsk-marker (occ-get-property tsk 'marker)))
-      (if (and
-           (markerp org-clock-hd-marker)
-           (markerp tsk-marker)
-           (equal org-clock-hd-marker org-clock-hd-marker))
-          100
-        0))))
-
-
-(when nil
-  (cl-method-first-arg 'occ-ctx-property-get)
-  (occ-readprop-props)
-  (cl-method-matched-arg 'occ-readprop 'occ-ctx-property-get (occ-make-ctx-at-point))
-  (funcall 'occ-ctx-property-get (cons 'file (occ-make-ctx-at-point))))
-
-(when nil
-  (cl-method-sigs-matched-arg
-   '(occ-readprop (`((head ,val) occ-ctx) val))
-   '(occ-ctx-property-get (`((head ,val) val)))
-   (occ-make-ctx-at-point)))
-
+;; TODO: multi-value property https://orgmode.org/manual/Using-the-property-API.html
 
 
 (defun occ-readprop-props ()
   (cl-method-param-case
-   '(occ-readprop (`((head ,val) occ-ctx) val))))
+   ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
+   '(occ-readprop-elem-from-user-with (`(occ-tsk occ-ctx (eql ,val)) val))))
 
-
+(defun occ-get-property-props ()
+  (cl-method-param-case
+   '(occ-get-property  (`(occ-ctx (eql ,val)) val))))
 
-;;; occ-prop.el ends here
+
+(cl-defgeneric occ-match-prop-method-args (ctx)
+  "occ-match-prop-method-args")
+
+(cl-defmethod occ-match-prop-method-args ((ctx occ-ctx))
+  (cl-method-sigs-matched-arg
+   ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
+   '(occ-readprop-elem-from-user-with (`(occ-tsk occ-ctx (eql ,val)) val))
+   '(occ-get-property  (`(occ-ctx (eql ,val)) val))
+   ctx))
+
+
+(defun occ-org-entry-get (pom
+                          prop)
+  (lotus-org-with-safe-modification
+    (org-entry-get pom
+                   prop)))
+
+(defun occ-org-entry-put (pom
+                          prop
+                          value)
+  (lotus-org-with-safe-modification
+    (org-entry-put pom
+                   prop
+                   value)))
+
+(defun occ-org-entry-get-multivalued-property (pom
+                                               prop)
+  (lotus-org-with-safe-modification
+    (org-entry-get-multivalued-property pom prop)))
+
+(defun occ-org-entry-put-multivalued-property (pom
+                                               prop
+                                               values)
+  (lotus-org-with-safe-modification
+    (apply #'org-entry-put-multivalued-property
+           pom prop values)))
+
+(defun occ-org-entry-add-to-multivalued-property (pom
+                                                  prop
+                                                  value)
+  (lotus-org-with-safe-modification
+    (org-entry-add-to-multivalued-property pom
+                                           prop
+                                           value)))
+
+(defun occ-org-entry-remove-from-multivalued-property (pom
+                                                       prop
+                                                       value)
+  (lotus-org-with-safe-modification
+    (org-entry-remove-from-multivalued-property pom
+                                                prop
+                                                value)))
+
+(defun occ-org-entry-member-in-multivalued-property (pom
+                                                     prop
+                                                     values)
+  (lotus-org-with-safe-modification
+    (org-entry-member-in-multivalued-property pom
+                                              prop
+                                              values)))
+
+(cl-defmethod occ-edit-operation-validate ((prop symbol)
+                                           operation)
+  (if (occ-prop-is-list prop)
+      (memq operation '(mget mput madd mremove member))
+    (memq operation '(get put))))
+
+(cl-defgeneric occ-org-operate-property (pom
+                                         prop
+                                         operation
+                                         values)
+  "occ-org-operate-property")
+
+(cl-defmethod occ-org-operate-property ((pom marker)
+                                        (prop string)
+                                        operation
+                                        values)
+  ;; (unless (occ-edit-operation-validate prop operation)
+  ;;   (error "occ-org-operate-property: operation %s is not allowed for prop %s" operation prop))
+  (case operation
+    ((get)     (list (occ-org-entry-get pom prop)))
+    ((put)     (occ-org-entry-put pom prop (car values)))
+    ((mget)    (occ-org-entry-get-multivalued-property pom prop))
+    ((mput)    (occ-org-entry-put-multivalued-property pom prop values))
+    ((madd)    (occ-org-entry-add-to-multivalued-property pom prop (car values)))
+    ((mremove) (occ-org-entry-remove-from-multivalued-property pom prop (car values)))
+    ((member)  (occ-org-entry-member-in-from-multivalued-property pom prop (car values)))))
+
+(cl-defmethod occ-org-operate-property-at-point ((mrk marker)
+                                                 (prop symbol)
+                                                 operation
+                                                 values)
+  (unless (occ-edit-operation-validate prop operation)
+    (error "occ-org-operate-property: operation %s is not allowed for prop %s" operation prop))
+  (lotus-with-marker mrk
+    (unless (org-get-property-block)
+      ;; create property drawer
+      ;; TODO: NOTE: only create property block if 100% sure value is going to be set.
+      (occ-debug :debug "occ-org-operate-property-at-point: property block not exist so creating it.")
+      (let* ((range (org-get-property-block (point) 'force))
+             (start (when (consp range) (1- (car range)))))
+        (if (and range start)
+            (when (numberp start)
+              (goto-char start))
+          (error "occ-org-operate-property-at-point: not able to create property block to add property %s: %s"
+                 prop values))))
+
+    (if (org-get-property-block)
+        (progn
+          (occ-debug :debug
+                     "occ-org-operate-property-at-point: adding prop: %s value: %s using (org-set-property)."
+                     prop values)
+          (occ-org-operate-property mrk
+                                    (symbol-name prop)
+                                    operation
+                                    values))
+        (error "occ-org-operate-property-at-point: can not get property block to add property %s: %s"
+               prop values))))
+
+
+(cl-defgeneric occ-operate-obj-property-with (obj
+                                              ctx
+                                              prop
+                                              operation
+                                              values)
+  "occ-operate-obj-property-with")
+
+(cl-defmethod occ-operate-obj-property-with ((obj  occ-tsk)
+                                             (ctx  occ-ctx)
+                                             (prop symbol)
+                                             operation
+                                             values)
+  (let ((values
+         (mapcar #'(lambda (v)
+                     (occ-prop-elem-from-org prop v))
+                 values)))
+    (case operation
+      ((get)     (list (occ-org-entry-get nil prop)))
+      ((put)     (occ-set-property obj prop (car values)))
+      ((mget)    (occ-org-entry-get-multivalued-property nil prop))
+      ((mput)    (occ-set-property obj prop values))
+      ((madd)    (occ-set-property obj prop (cons (car values)
+                                                  (occ-get-property obj prop))))
+      ((mremove) (error "remove from obj prop"))
+      ((member)  (occ-org-entry-member-in-from-multivalued-property nil prop (car values))))))
+
+
+(cl-defmethod occ-prop-is-list ((prop symbol))
+  ;; 'list
+  ;; (error "Implement method occ-prop-is-list for prop %s" prop)
+  (occ-debug :debug "occ-prop-is-list: no method for prop %s using default." prop)
+  nil)
+
+
+(cl-defmethod occ-prop-elem-to-org ((prop symbol)
+                                    value)
+  ;; (error "Implement method occ-prop-elem-to-org for prop %s" prop)
+  (occ-debug :debug "occ-prop-elem-to-org: no method for prop %s using default." prop)
+  value)
+(cl-defmethod occ-prop-elem-from-org ((prop symbol)
+                                      value)
+  ;; (error "Implement method occ-prop-elem-from-org for prop %s" prop)
+  (occ-debug :debug
+             "occ-prop-elem-from-org: no method for prop %s using default." prop)
+  value)
+
+
+(cl-defmethod occ-readprop-elem-from-user-with ((obj  occ-tsk)
+                                                (ctx  occ-ctx)
+                                                (prop symbol))
+  "readprop-elem-from-user for org"
+  (error "Implement method occ-readprop-elem-from-user-with for prop %s" prop))
+
+(cl-defmethod occ-readprop-from-user-with ((obj  occ-tsk)
+                                           (ctx  occ-ctx)
+                                           (prop symbol))
+  "readprop-from-user for org"
+  (error "Implement method occ-readprop-from-user-with for prop %s" prop))
+
+
+(cl-defmethod occ-readprop-elem-from-user ((obj  occ-obj-ctx-tsk)
+                                           (prop symbol))
+  "readprop-elem-from-user for org"
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+    (occ-readprop-elem-from-user-with tsk ctx)))
+
+(cl-defmethod occ-readprop-from-user ((obj  occ-obj-ctx-tsk)
+                                      (prop symbol))
+  "readprop-from-user for org"
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+    (occ-readprop-from-user-with tsk ctx)))
+
+
+(cl-defmethod occ-prop-get-operation ((prop symbol))
+  (if (occ-prop-is-list prop)
+      'mget
+    'get))
+
+(cl-defmethod occ-prop-put-operation ((prop symbol))
+  (if (occ-prop-is-list prop)
+      'mput
+    'put))
+
+
+(cl-defmethod occ-rereadprop-value ((prop symbol)
+                                    value)
+  (cl-assert (not (consp value)))
+  (if (occ-prop-is-list prop)
+      (let* ((values (and value (split-string value))))
+        (mapcar #'(lambda (v) (occ-prop-elem-from-org prop v))
+                (mapcar #'org-entry-restore-space values)))
+    (occ-prop-elem-from-org prop value)))
+
+(cl-defmethod occ-reread-props ((obj occ-tsk))
+  (let ((props-by-is-list (cl-method-param-case
+                           '(occ-prop-is-list (`((eql ,val)) val))))
+        (props-by-converter (cl-method-param-case
+                             '(occ-prop-elem-from-org (`((eql ,val) t) val)))))
+    (let ((props (-union props-by-is-list props-by-converter))) ;dash
+      (dolist (p props)
+        (occ-set-property obj p
+                          (occ-rereadprop-value p (occ-get-property obj p)))))))
+
+
+(cl-defmethod occ-readprop-org-with ((obj  occ-tsk)
+                                     (ctx  occ-ctx)
+                                     (prop symbol))
+  "readprop-org"
+  (let* ((mrk    (or (occ-obj-marker obj) (point)))
+         (values (occ-org-operate-property-at-point mrk
+                                                    prop
+                                                    (occ-prop-get-operation prop))))
+    (mapcar #'(lambda (v)
+                (occ-prop-elem-from-org prop v))
+            values)))
+
+(cl-defmethod occ-writeprop-org-with ((obj  occ-tsk)
+                                      (ctx  occ-ctx)
+                                      (prop symbol))
+  "readprop-org"
+  (let* ((values (occ-get-property obj prop))
+         (values (if (consp values) values (list values)))
+         (values (mapcar #'(lambda (v)
+                             (occ-prop-elem-to-org prop va))
+                         values)))
+    (occ-org-operate-property-at-point (point)
+                                       prop
+                                       (occ-prop-put-operation prop)
+                                       values)))
+
+(cl-defmethod occ-readprop-org ((obj  occ-obj-ctx-tsk)
+                                (prop symbol))
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+    (occ-readprop-org-with tsk ctx prop)))
+
+(cl-defmethod occ-writeprop-org ((obj  occ-obj-ctx-tsk))
+                                (prop symbol)
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+    (occ-writeprop-org-with tsk ctx prop)))
+
+
+(cl-defgeneric occ-select-prop-list-operation (prop)
+  "occ-select-prop-list-operation")
+
+;; TODO: Add log not on property editing.
+(cl-defmethod occ-select-prop-list-operation ((prop symbol))
+  (if (occ-prop-is-list prop)
+      (let ((actions '(("add" . madd)
+                       ("del" . mremove)
+                       ("put" . mput))))
+        (cdr
+         (assoc
+          (completing-read "action: " actions)
+          actions)))
+     'put))
+
+(cl-defmethod occ-editprop-with ((obj  occ-tsk)
+                                 (ctx  occ-ctx)
+                                 (prop symbol)
+                                 &optional
+                                 operation
+                                 value)
+  (let ((mrk (occ-obj-marker obj)))
+    (let ((operation  (or operation    (occ-select-prop-list-operation prop)))
+          (prop-value (or value (occ-readprop-elem-from-user-with obj ctx prop))))
+      (when (occ-org-operate-property-at-point mrk
+                                               prop
+                                               operation
+                                               (list prop-value))
+        (occ-operate-obj-property-with obj
+                                       ctx
+                                       prop
+                                       operation
+                                       (list prop-value))))))
+
+(cl-defmethod occ-editprop ((obj  occ-obj-ctx-tsk)
+                            (prop symbol)
+                            &optional
+                            operation
+                            value)
+  (occ-debug :debug
+             "occ-editprop: prop: %s, value: %s" prop value)
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+    (occ-editprop-with tsk ctx prop operation value)))
+
+
+(cl-defmethod occ-generated-operation-method-with ((obj  occ-tsk)
+                                                   (ctx  occ-ctx)
+                                                   (prop symbol)
+                                                   operation
+                                                   value)
+  #'(lambda (obj ctx)
+      (occ-editprop-with obj ctx
+                         prop
+                         operation
+                         value)))
+
+(cl-defmethod occ-generated-operation-method ((obj  occ-obj-ctx-tsk)
+                                              (prop symbol)
+                                              operation
+                                              value)
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+    (occ-generated-operation-method-with tsk ctx prop value)))
+
+
+(cl-defmethod occ-print-rank ((obj occ-obj-ctx-tsk))
+  (occ-message "Rank for %s is %d"
+               (occ-format obj 'capitalize)
+               (occ-rank obj)))
+
+;;; occprop.el ends here

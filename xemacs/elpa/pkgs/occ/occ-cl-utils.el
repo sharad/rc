@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2019  Sharad
 
-;; Author: Sharad <spratap@merunetworks.com>
+;; Author: Sharad <>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -60,6 +60,9 @@
   (cl-class-obj-slot-value (cl-classname obj) slot obj))
 (defun cl-obj-plist-value (obj)
   (cl-obj-slot-value obj 'plist))
+
+
+;; TODO: find how to do calculation without eval here.
 
 (defun cl-method-param-signs (method)
   "Get params signatures for all defined methods"
@@ -99,6 +102,26 @@
                   (funcall method (cons first-arg obj)))
              first-arg)))
      (cl-method-param-signs method)))))
+
+(defun cl-method-param-case-with-value-new (signature-val-spec obj)
+  "signature-val-spec = (METHOD PARAMS VAL)"
+  (cl-destructuring-bind (method (param-spec val)) signature-val-spec
+    (remove
+     nil
+     (mapcar
+      #'(lambda (fspec)
+          (let ((first-arg
+                 (eval
+                  `(pcase ',fspec
+                     (,param-spec ,val)
+                     (_ nil)))))
+            (when (and
+                   first-arg
+                   ;; (funcall method (cons first-arg obj))) -- TODO BUG make it general
+                   (funcall method obj first-arg))
+              first-arg)))
+      (cl-method-param-signs method)))))
+
 
 (defun cl-method-first-arg (method)
   (let ((methods (cl--generic method)))

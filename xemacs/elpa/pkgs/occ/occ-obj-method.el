@@ -38,6 +38,7 @@
 (require 'occ-util-common)
 (require 'occ-prop)
 (require 'occ-obj-simple)
+(require 'occ-debug-method)
 (require 'occ-helm)
 
 

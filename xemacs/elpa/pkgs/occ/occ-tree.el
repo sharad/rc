@@ -113,7 +113,6 @@
     (tree-remove-if-not-nodes
      'occ-tree-tsk-subtree fn tree args)))
 
-
 (defun occ-org-map-subheading (fun)
   "Call FUN for every heading underneath the current heading"
   ;; (org-back-to-heading)
@@ -125,21 +124,26 @@
                     (> (funcall outline-level) level))
                   (not (eobp)))
         (if (= (funcall outline-level) (1+ level))
-            (push (funcall fun) collection))))
+            (setf
+             collection (nconc collection (list (funcall fun)))))))
     collection))
 
-(defun occ-tree-tsk-build (tsk-builder &optional file)
+(defun occ-tree-tsk-build (tsk-builder &optional file subtree-level)
   "Build recursive org tsks from org FILE (or current buffer) using TSK-BUILDER function e.g. occ-collect-tsk"
   (with-current-buffer (if file
                            (find-file-noselect file)
                          (current-buffer))
     (if file (goto-char (point-min)))
-    (let ((entry (funcall tsk-builder)))
+    (let ((entry         (funcall tsk-builder))
+          (subtree-level (if subtree-level subtree-level 0)))
+      (when (numberp subtree-level)
+        (occ-set-property entry 'subtree-level subtree-level))
+      (cl-assert (numberp subtree-level))
       (when entry
         (let* ((sub-tree
                 (append
                  (occ-org-map-subheading #'(lambda ()
-                                             (occ-tree-tsk-build tsk-builder nil)))
+                                             (occ-tree-tsk-build tsk-builder nil subtree-level)))
                  (let ((subtree-file-prop (occ-get-property entry :SUBTREEFILE)))
                    (when subtree-file-prop
                      (let* ((file (if file file (buffer-file-name)))
@@ -155,8 +159,40 @@
                             subtree-file
                             (file-readable-p subtree-file))
                            (list
-                            (occ-tree-tsk-build tsk-builder subtree-file)))))))))
-          (occ-set-property entry 'subtree sub-tree)
+                            (occ-tree-tsk-build tsk-builder subtree-file (+ (or (occ-get-property entry 'level) 0)
+                                                                            (or subtree-level 0)))))))))))
+          (when sub-tree      (occ-set-property entry 'subtree sub-tree))
           entry)))))
+
+;; (defun occ-tree-tsk-build (tsk-builder &optional file)
+;;   "Build recursive org tsks from org FILE (or current buffer) using TSK-BUILDER function e.g. occ-collect-tsk"
+;;   (with-current-buffer (if file
+;;                            (find-file-noselect file)
+;;                          (current-buffer))
+;;     (if file (goto-char (point-min)))
+;;     (let ((entry (funcall tsk-builder)))
+;;       (when entry
+;;         (let* ((sub-tree
+;;                 (append
+;;                  (occ-org-map-subheading #'(lambda ()
+;;                                              (occ-tree-tsk-build tsk-builder nil)))
+;;                  (let ((subtree-file-prop (occ-get-property entry :SUBTREEFILE)))
+;;                    (when subtree-file-prop
+;;                      (let* ((file (if file file (buffer-file-name)))
+;;                             (subtree-file
+;;                              (if (and subtree-file-prop
+;;                                       (file-relative-name subtree-file-prop))
+;;                                  (expand-file-name subtree-file-prop
+;;                                                    (if file
+;;                                                        (file-name-directory file)
+;;                                                      default-directory))
+;;                                subtree-file)))
+;;                        (if (and
+;;                             subtree-file
+;;                             (file-readable-p subtree-file))
+;;                            (list
+;;                             (occ-tree-tsk-build tsk-builder subtree-file)))))))))
+;;           (when sub-tree      (occ-set-property entry 'subtree sub-tree))
+;;           entry)))))
 
 ;;; occ-tree.el ends here

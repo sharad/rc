@@ -152,9 +152,11 @@
     (org-with-file-headline
      file
      (lotus-org-create-unnamed-task file parent-task)
-     (org-entry-put nil "Effort" "10")
-     ;; BUG: It is clocking to last unfinished task
-     (lotus-org-unnamed-task-straight-org-clock-clock-in (list (lotus-org-unnamed-task-clock-marker (mark-marker))))
+     (lotus-org-with-safe-modification
+       (org-entry-put nil "Effort" "10")
+       ;; BUG: It is clocking to last unfinished task
+       (lotus-org-unnamed-task-straight-org-clock-clock-in
+        (list (lotus-org-unnamed-task-clock-marker (mark-marker)))))
      ;; (org-clock-in)
      ;; (lotus-org-unnamed-task-clock-marker (mark-marker))
      )))
@@ -176,15 +178,23 @@
   ;; Implement
   )
 
+(defun lotus-org-unnamed-task-buffer ()
+  (find-file-noselect *lotus-org-unnamed-task-file*))
+
+;;;###autoload
+(defun org-clock-marker-unnamed-p (marker)
+  (and
+   marker
+   (lotus-org-unnamed-task-buffer)
+   (equal
+    (marker-buffer marker)
+    (lotus-org-unnamed-task-buffer))))
+      ;; (marker-buffer *lotus-org-unnamed-task-clock-marker*)
+
 ;;;###autoload
 (defun org-clock-marker-is-unnamed-clock-p (&optional clock)
   (let ((clock (or clock org-clock-marker)))
-    (and
-     clock
-     *lotus-org-unnamed-task-clock-marker*
-     (equal
-      (marker-buffer org-clock-marker)
-      (marker-buffer *lotus-org-unnamed-task-clock-marker*)))))
+    (org-clock-marker-unnamed-p clock)))
 
 ;;;###autoload
 (defun lotus-org-unnamed-task-at-point-p ()

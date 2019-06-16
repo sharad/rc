@@ -78,7 +78,7 @@
   (def@ @@ :receive (fmt &rest args)
     (if (marker-buffer (@:get-marker))
         (org-insert-log-note (@:get-marker) (apply #'format fmt args) 'note)
-      (lwarn 'activity :warning "marker %s is not valid." (@:get-marker))))
+      (@:debug :warning "marker %s is not valid." (@:get-marker))))
 
   (@:dispatch marker))
 

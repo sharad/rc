@@ -73,7 +73,7 @@
           (trace (with-temp-buffer
                      (backtrace)
                    (buffer-string))))
-      (message "%s: %s" msg trace)))
+      (@:message "%s: %s" msg trace)))
 
   (def@ @@ :notify-buf-chg (fmt &rest args)
     (let ((msg
@@ -81,13 +81,13 @@
              (current-time-string)
              ": "
              (apply #'format fmt args))))
-      (message msg)))
+      (@:message msg)))
 
   (def@ @@ :get-timer ()
-     (message "Timer %s" @:timer))
+     (@:message "Timer %s" @:timer))
 
   (def@ @@ :get-idle-times ()
-    (message "Idle Times %s" idle-times))
+    (@:message "Idle Times %s" idle-times))
 
   (def@ @@ :buffer-chg-print-info (&optional msg)
     (let ((msg (or msg "info"))
@@ -147,9 +147,9 @@
              (- time-passed cumulatibe-idle-time)))
 
       (when @:debug-switch-buf
-        (message "detect-buffer-chg-use: (>= time-spent time-threshold-gap) %s" (>= time-spent @:time-threshold-gap))
-        (message "detect-buffer-chg-use: (is-run-detect-buffer-chg-use) %s" (@:is-run-detect-buffer-chg-use))
-        (message "detect-buffer-chg-use: (not (eq currbuf-detect-buffer-chg-use (current-buffer))) %s" (not (eq @:currbuf-detect-buffer-chg-use (current-buffer)))))
+        (@:message "detect-buffer-chg-use: (>= time-spent time-threshold-gap) %s" (>= time-spent @:time-threshold-gap))
+        (@:message "detect-buffer-chg-use: (is-run-detect-buffer-chg-use) %s" (@:is-run-detect-buffer-chg-use))
+        (@:message "detect-buffer-chg-use: (not (eq currbuf-detect-buffer-chg-use (current-buffer))) %s" (not (eq @:currbuf-detect-buffer-chg-use (current-buffer)))))
 
       (if (and
            (>= time-spent @:time-threshold-gap)
@@ -199,7 +199,7 @@
                                 @:detect-buffer-chg-use @@ @:currbuf-run-detect-buffer-chg curr))
           (setf @:currbuf-run-detect-buffer-chg curr))
         (when (eq @:currbuf-detect-buffer-chg-use (current-buffer))
-          (when @:debug-switch-buf (message "cancel timer"))
+          (when @:debug-switch-buf (@:message "cancel timer"))
           (@:cancel-detect-buffer-chg-use))))
 
   ;; (def@ @@ :enable-detect-buffer-chg-use ()

@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2019  Sharad
 
-;; Author: Sharad <spratap@merunetworks.com>
+;; Author: Sharad <>
 ;; Keywords:
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -27,45 +27,61 @@
 (provide 'occ-commands)
 
 
-(require 'occ-main)
+
 
+
+(require 'occ-main)
+(require 'occ-obj-utils)
+
+
+;; example of clos in cl-struct-js2-export-binding-node is a variable defined in ‘js2-mode.el’.
 
 ;;;###autoload
 (defun occ-helm-match-select ()
   (interactive)
   (occ-helm-select (occ-make-ctx-at-point)
-                   :collector #'occ-matches
-                   :action (occ-helm-actions-get :clock-in :procreate-child :procreate-child-clock-in :goto)
-                   :action-transformer #'(lambda (action candidate) (occ-helm-actions-get :clock-in :procreate-child :procreate-child-clock-in :goto))
-                   :timeout 7))
+                   :filters #'occ-match-filters
+                   :builder #'occ-build-ctxual-tsk
+                   :action (occ-helm-intractive-command-actions)
+                   :action-transformer #'(lambda (action candidate)
+                                           (occ-helm-intractive-command-actions))
+                   :timeout occ-idle-timeout))
 
 (defun occ-helm-list-select ()
   (interactive)
-  ;; TODO: FIX it :action-transformer (lambda (actions candidate) (occ-helm-action-transformer candidate actions))
   (occ-helm-select (occ-make-ctx-at-point)
-                   :collector #'occ-list
-                   :action (occ-helm-actions-get :clock-in :procreate-child :procreate-child-clock-in :goto)
-                   :action-transformer #'(lambda (action candidate) (occ-helm-actions-get :clock-in :procreate-child :procreate-child-clock-in :goto))
-                   :timeout 7))
-
-
-(defun occ-curr-procreate-child ())
-
-(defun occ-curr-procreate-child-clock-in ())
+                   :filters #'occ-list-filters
+                   :builder #'occ-build-ctsk
+                   :action (occ-helm-intractive-command-actions)
+                   :action-transformer #'(lambda (action candidate)
+                                           (occ-helm-intractive-command-actions))
+                   :timeout occ-idle-timeout))
 
 
 ;;;###autoload
-(defun occ-merge-unamed-task ()
+(defun occ-curr-procreate-child ()
   (interactive)
-  (error "Implement it."))
+  (let ((ctxual-tsk (occ-current-tsk)))
+    (if ctxual-tsk
+        (occ-procreate-child ctxual-tsk)
+      (occ-message "No current task clocking-in"))))
+
+;;;###autoload
+(defun occ-curr-procreate-child-clock-in ()
+  (interactive)
+  (let ((ctxual-tsk (occ-build-ctxual-tsk tsk ctx)))
+    (if ctxual-tsk
+        (occ-procreate-child-clock-in ctxual-tsk)
+      (occ-message "No current task clocking-in"))))
 
 
 ;;;###autoload
 (defun occ-proprty-edit ()
   (interactive)
-  (occ-obj-prop-edit (point-marker)
-                     (occ-make-ctx (get-buffer (read-buffer-to-switch "buffer: ")))
-                     7))
+  (let ((ctx (occ-make-ctx-at-point)))
+    (occ-props-window-edit ctx
+                           :action (occ-props-edit-helm-actions ctx)
+                           :action-transformer #'occ-props-edit-helm-action-transformer-fun)))
 
 
 ;;;###autoload
@@ -77,15 +93,19 @@
 ;;;###autoload
 (defun occ-clock-in-curr-ctx (&optional force)
   (interactive "P")
-  (let ((collector          #'occ-matches)
-        (action             (occ-helm-actions obj))
-        (action-transformer #'occ-helm-action-transformer-fun)
-        (timeout            7))
-    (occ-clock-in-if-not (occ-make-ctx-at-point)
-                         :collector collector
-                         :action action
-                         :action-transformer action-transformer
-                         :timeout timeout)))
+  (let ((ctx (occ-make-ctx-at-point)))
+    (let ((filters            (or filters (occ-match-filters)))
+          (builder            (or builder #'occ-build-ctxual-tsk))
+          (action             (occ-helm-actions ctx))
+          (action-transformer #'occ-helm-action-transformer-fun)
+          (timeout            occ-idle-timeout))
+      (occ-clock-in-if-not ctx
+                           :filters             filters
+                           :builder             builder
+                           :action              action
+                           :action-transformer  action-transformer
+                           :auto-select-if-only nil ; occ-clock-in-ctx-auto-select-if-only
+                           :timeout             timeout))))
 
 ;;;###autoload
 (defun occ-clock-in-curr-ctx-if-not (&optional force)
@@ -97,7 +117,19 @@
     (occ-debug :debug "%s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug" (time-stamp-string))
     (if force
         (occ-clock-in-curr-ctx force)
-      (occ-clock-in-if-chg (occ-make-ctx-at-point) :collector #'occ-matches)))
+      (let ((ctx (occ-make-ctx-at-point)))
+        (let ((filters            (or filters (occ-match-filters)))
+              (builder            (or builder #'occ-build-ctxual-tsk))
+              (action             (occ-helm-actions ctx))
+              (action-transformer #'occ-helm-action-transformer-fun)
+              (timeout            occ-idle-timeout))
+          (occ-clock-in-if-chg ctx
+                               :filters             filters
+                               :builder             builder
+                               :action              action
+                               :action-transformer  action-transformer
+                               :auto-select-if-only occ-clock-in-ctx-auto-select-if-only
+                               :timeout             occ-idle-timeout)))))
   (occ-debug :nodisplay "%s: end occ-clock-in-curr-ctx-if-not" (time-stamp-string)))
 
 
@@ -108,10 +140,66 @@
   occ-global-tsk-collection)
 
 
+;;;###autoload
+(defun occ-merge-unamed-task ()
+  (interactive)
+  (error "Implement it."))
+
+
+;;;###autoload
+(defun occ-start-day ()
+  (interactive)
+  ;; also detect if day is started.
+  (error "Implement it."))
+
+(defun occ-show-up (mins)
+  (interactive)
+  ;; https://www.merriam-webster.com/thesaurus/pack%20(up%20or%20off)
+  (error "Implement it."))
+
+(defun occ-stop-day ()
+  (interactive)
+  (error "Implement it."))
+
+(defun occ-pack-up (mins)
+  (interactive)
+  ;; https://www.merriam-webster.com/thesaurus/pack%20(up%20or%20off)
+  (error "Implement it."))
+
+;; action
+(cl-defmethod occ-log-not ()
+  (error "Implement it."))
+
+(cl-defmethod occ-curr-tsk-log-not ()
+  (error "Implement it."))
+
+
+(defun occ-curr-tsk-continyue-for (mins)
+  (error "Implement it."))
+
+
+(defun occ-clock-in-force ()
+  (error "Implement it, open context ctx if not present, then occ-clock-in-if-associable else show error."))
+
+(defun occ-interrupt-clock-in (mins)
+  (error "Implement it."))
+
+(defun occ-continue-prev ()
+  (error "Implement it."))
+
+;; TODO: direct prop edit/add/replace/remove etc from helm menu
+
+
+;; implement console.
+
+;; TODO: direct prop edit/add/replace/remove etc from helm menu
+
+
 (defun occ-reload (&optional uncompiled)
   (interactive "P")
   (occ-reload-lib uncompiled))
 
+
 ;;;###autoload
 (defun occ-insinuate ()
   (interactive)
@@ -133,7 +221,6 @@
  (occ-debug :debug "occ-insinuate: finish")
  (occ-message "occ-insinuate: finish"))
 
-
 ;;;###autoload
 (defun occ-uninsinuate ()
   (interactive)
@@ -154,8 +241,31 @@
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)
         (delete propstr org-use-property-inheritance))))
- (occ-debug :debug "occ-insinuate: finish")
- (occ-message "occ-insinuate: finish"))
+ (occ-debug :debug "occ-uninsinuate: finish")
+ (occ-message "occ-uninsinuate: finish"))
+
+
+;; testing verification
+(defun occ-files-with-null-regex ()
+  (interactive)
+  (let ((files
+         (remove-if
+          #'(lambda (f)
+              (with-current-buffer (find-file-noselect f)
+                org-complex-heading-regexp))
+          (occ-files))))
+    (occ-message "files with null regex %s" files)))
+
+;; testing verification
+(defun occ-files-not-in-org-mode ()
+  (interactive)
+  (let ((files
+         (remove-if
+          #'(lambda (f)
+              (with-current-buffer (find-file-noselect f)
+                (eq major-mode 'org-mode)))
+          (occ-files))))
+    (occ-message "files not in org-mode %s" files)))
 
 
 (defun occ-version (&optional here full message)
@@ -164,8 +274,11 @@ Interactively, or when MESSAGE is non-nil, show it in echo area.
 With prefix argument, or when HERE is non-nil, insert it at point.
 In non-interactive uses, a reduced version string is output unless
 FULL is given."
-  (interactive (list current-prefix-arg t (not current-prefix-arg)))
-  (message (occ-get-version here full message)))
-
+  (interactive
+   (list
+    current-prefix-arg
+    t
+    (not current-prefix-arg)))
+  (occ-message (occ-get-version here full message)))
 
 ;;; occ-commands.el ends here

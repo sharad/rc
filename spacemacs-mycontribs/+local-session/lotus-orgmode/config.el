@@ -303,7 +303,7 @@
        org-clock-persist t
        org-clock-in-switch-to-state "STARTED"
        org-clock-in-resume nil
-       org-show-notification-handler 'message
+       org-show-notification-handler nil ; must be nil
        org-clock-report-include-clocking-task t))
 
     (progn
@@ -677,6 +677,7 @@
     (setq orgnav-log 't)))
 
 (defun lotus-orgmode-config/init-outshine ()
+  ;; https://github.com/alphapapa/outshine
   ;; TODO https://orgmode.org/worg/org-tutorials/org-outside-org.html
   ;; http://www.modernemacs.com/post/outline-ivy/
   ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
@@ -689,13 +690,21 @@
   (progn
     ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
     ;; (defvar outline-minor-mode-prefix "\M-#")
-    (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+
+    ;; (add-hook 'outline-minor-mode-hook 'outshine-hook-function) ;; -- deprecated
     (setq outshine-use-speed-commands t)
-    (add-hook 'prog-mode-hook 'outline-minor-mode)
-    (add-hook 'ruby-mode-hook 'outline-minor-mode)
-    (add-hook 'lua-mode-hook 'outline-minor-mode)
-    (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
-    (add-hook 'common-lisp-mode-hook 'outline-minor-mode)
-    (add-hook 'lisp-mode-hook 'outline-minor-mode)))
+    (add-hook 'prog-mode-hook 'outshine-mode)
+    (add-hook 'ruby-mode-hook 'outshine-mode)
+    (add-hook 'lua-mode-hook 'outshine-mode)
+    (add-hook 'emacs-lisp-mode-hook 'outshine-mode)
+    (add-hook 'common-lisp-mode-hook 'outshine-mode)
+    (add-hook 'lisp-mode-hook 'outshine-mode))
+  (progn
+    (if (fboundp 'outshine-minor-mode)
+        (add-hook 'message-mode-hook #'outshine-mode)
+      (lwarn 'error 'spacemacs "outshine-minor-mode is not available for message-mode-hook"))
+    (if (fboundp 'outshine-minor-mode++)
+        (add-hook 'message-mode-hook #'outshine-mode)
+      (lwarn 'error 'spacemacs "outshine-minor-mode++ is not available for message-mode-hook"))))
 
 ;;; config.el ends here

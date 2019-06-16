@@ -72,7 +72,7 @@
                   (list :before-finalize before-finalize
                         :after-finalize  after-finalize)
                   ,plist)))
-     (lwarn 'occ-capture+ :debug "plist %s \n" plist)
+     (org-capture+-debug :debug "plist %s \n" plist)
      (apply #'org-capture-plus
             ,type
             ,target
@@ -90,7 +90,7 @@
           (plist (append
                   (list :after-finalize after-finalize)
                   ,plist)))
-     (lwarn 'occ-capture+ :debug "plist %s \n" plist)
+     (org-capture+-debug :debug "plist %s \n" plist)
      (apply #'org-capture-plus
             ,type
             ,target
@@ -108,7 +108,7 @@
           (plist (append
                   (list :before-finalize before-finalize)
                   ,plist)))
-     (lwarn 'occ-capture+ :debug "plist %s \n" plist)
+     (org-capture+-debug :debug "plist %s \n" plist)
      (apply #'org-capture-plus
             ,type
             ,target

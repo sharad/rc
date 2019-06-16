@@ -27,12 +27,32 @@
 (provide 'occ-macros)
 
 
-
-
 (defmacro occ-with-marker (marker &rest body)
   `(let ((marker ,marker))
      (progn
        ,@body)))
+
+(defmacro occ-debug-return (label &rest body)
+  `(let ((retval
+          (progn ,@body)))
+     (occ-message "%s: returns %s\n" ,label retval)))
+
+(defmacro occ-debug-return (label &rest body)
+  `(progn ,@body))
+(put 'occ-debug-return 'lisp-indent-function 1)
+
+
+(defmacro occ-aggrigate-list-rank (value values aggregator &rest body)
+  `(let ((values    (if (consp ,values) ,values (list ,values)))
+         (total-rank 0))
+     (dolist (,value values)
+       (let ((rank (progn
+                     ,@body)))
+         (setq total-rank
+               (funcall ,aggregator total-rank rank))))
+     total-rank))
+(put 'occ-aggrigate-list-rank 'lisp-indent-function 3)
+
 
 (defun occ-get-location ())
 
@@ -45,11 +65,6 @@
              (multiline)
              (candidates ,@collection)
              (action . identity))))))
-
-
-
-
-
 
 (when nil
   ;; https://code.orgmode.org/bzg/org-mode/commit/e2bdc488ee071ea9743b00424db28fce3505fe5d
@@ -64,7 +79,6 @@
   ;; under that new heading.
 
   ;;; occ-macros.el ends here
-
 
   (org-refile-get-location)
 

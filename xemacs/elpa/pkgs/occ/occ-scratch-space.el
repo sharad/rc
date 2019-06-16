@@ -125,8 +125,8 @@ If JUMP is non-nil or the function is called with the prefix argument, jump to t
   If not found return RETURN-VALUE or something that would ask the user."
       (or (cadr (if (gnus-alive-p)
                     (gnus-with-article-headers
-                      (mail-extract-address-components
-                       (or (mail-fetch-field "Reply-To") (mail-fetch-field "From") "")))))
+                     (mail-extract-address-components
+                      (or (mail-fetch-field "Reply-To") (mail-fetch-field "From") "")))))
           return-value
           (concat "%^{" org-contacts-email-property "}p")))
 
@@ -387,8 +387,7 @@ USAGE:  (org-get-entries-fn '(6 1 2015) '(6 30 2015))"
              (calendar-date-is-valid-p end))
           (let ((debug-on-quit nil))
             (signal 'quit `("One or both of your gregorian dates are invalid."))))
-        (let* (
-               result
+        (let* ((result nil)
                (org-agenda-prefix-format "  • ")
                (org-agenda-entry-types '(:scheduled))
                (date-after
@@ -407,7 +406,7 @@ USAGE:  (org-get-entries-fn '(6 1 2015) '(6 30 2015))"
                       (push (copy-sequence d) ret)
                       (setq cont (not (equal d end)))
                       (setq d (funcall date-after d 1)))
-                    (nreverse ret)))) )
+                    (nreverse ret)))))
           (org-agenda-reset-markers)
           (setq org-agenda-buffer
                 (when (buffer-live-p org-agenda-buffer)
@@ -552,4 +551,27 @@ USAGE:  (org-get-entries-fn '(6 1 2015) '(6 30 2015))"
   (fset 'org-refile-get-location 'org-refile-get-location-bkp))
 
 
+
+(when nil
+  (cl-defgeneric display-number (i)
+    "display-number")
+
+  (cl-defmethod display-number ((i number))
+    ;; (cl-call-next-method)
+    (message "plain i=%d" i))
+
+  (cl-defmethod display-number :extra "test0" ((i number))
+                (cl-call-next-method)
+                (message "test0 i=%d" i))
+
+  (cl-defmethod display-number :extra "test1" ((i number))
+                (cl-call-next-method)
+                (message "test1 i=%d" i))
+
+  (cl-defmethod display-number :extra "test2" ((i number))
+                (cl-call-next-method)
+                (message "test2 i=%d" i))
+
+  (display-number 1))
+
 ;;; occ-scratch-space.el ends here

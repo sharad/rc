@@ -76,8 +76,8 @@
   (def@ @@ :make-event ()
     "Make mail read event."
     (let ((note (@! @:note :new)))
-      (message "Helloooo")
-      (message "Helloo %s" (@:make-message))
+      (@:message "Helloooo")
+      (@:message "Helloo %s" (@:make-message))
       (funcall
        (@ note :send)
        note
@@ -100,7 +100,7 @@
       (with-current-buffer (get-buffer gnus-article-buffer)
         (let ((subject
                (message-fetch-field "Subject" t)))
-          (message "checking: %s" subject)
+          (@:message "checking: %s" subject)
           (@:make-event)))))
 
   (def@ @@ :dispatch ()
@@ -154,7 +154,7 @@
       (with-current-buffer (get-buffer gnus-message-buffer)
         (let ((subject
                (message-fetch-field "Subject" t)))
-          (message "sending mail: %s" subject)
+          (@:message "sending mail: %s" subject)
           (@:make-event)))))
 
   (def@ @@ :dispatch ()

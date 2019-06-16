@@ -84,7 +84,7 @@ DEB_PKG_LEARNING="gpodder"
 DEB_PKG_TOOL_TERM="jq"
 DEB_PKG_TOOL_GUI="lightdm osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin gpointing-device-settings touchfreeze bash-completion libinput-tools keynav feh geeqie wmaker xserver-xephyr" # xserver-xorg-input-synaptics
 DEB_PKG2_TOOL_GUI="unclutter xscreensaver xscreensaver-gl xss-lock rss-glx  xssproxy xscreensaver-data-extra xscreensaver-gl-extra" # event
-DEB_PKG3_TOOL_GUI="synenergy quicksynenergy " # event
+DEB_PKG3_TOOL_GUI="synenergy quicksynenergy xserver-xorg-input-synaptics" # xserver-xorg-core-hwe-18.04 xserver-xorg-input-synaptics-hwe-18.04 # event
 DEB_PKG_XWM="compton xcompmgr autocutsel sakura wmctrl sawfish"
 DEB_PKG_XML="libxml2-utils xsltproc docbook5-xml docbook-xsl-ns"
 DEB_PKG_UTILS="gcalcli newsbeuter liblz4-tool tracker gtimelog d-feet linuxbrew-wrapper zsync"
@@ -2457,6 +2457,15 @@ function install_bpkg_pkg()
 function setup_bpkg_pkgs()
 {
     install_bpkg_pkg sharad/gitwatch
+}
+
+function setup_fzf()
+{
+    if [ ! -d ~/.setup/fzf ]
+    then
+        running git clone --depth 1 https://github.com/junegunn/fzf.git ~/.setup/fzf
+        running ~/.setup/fzf/install
+    fi
 }
 
 function set_window_share()

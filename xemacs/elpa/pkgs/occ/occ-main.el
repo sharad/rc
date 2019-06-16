@@ -39,7 +39,7 @@
 (require 'occ-obj-method)
 (require 'occ-util-common)
 (require 'occ-unnamed)
-(require 'occ-interactive)
+(require 'occ-prop-edit)
 (require 'occ-version)
 
 

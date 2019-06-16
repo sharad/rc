@@ -27,15 +27,27 @@
 
 
 (defvar occ-verbose 0)
+
 
+;; Resume clock (Unnamed task 933) y
+;; Cannot restart clock because task does not contain unfinished clock
 (defvar occ-org-clock-persist nil "Control org-clock-persist at time of occ clock-in")
 (defvar occ-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of occ clock-in")
-
+
 
 (defvar occ-debug nil "Debug occ")
+(defvar occ-debug-uncond nil "occ-debug-uncond")
+
 
-(defun occ-message (&rest args)
-  (apply #'message args))
+;;;###autoload
+(defun occ-enable-debug ()
+  (interactive)
+  (setq occ-debug t))
+;;;###autoload
+(defun occ-disable-debug ()
+  (interactive)
+  (setq occ-debug nil))
+
 
 (defun occ-debug (level &rest args)
   (when occ-debug
@@ -47,15 +59,66 @@
       (unless (eq level :nodisplay)
         (apply #'message args)))))
 
+(defun occ-message (&rest args)
+  (apply #'message args)
+  (apply #'occ-debug :debug args))
+
+(defun occ-debug-uncond (&rest args)
+  (when occ-debug-uncond
+    (apply #'occ-message args)))
+
+
+(defvar occ-condition-case-control-debug nil)
+
+;;;###autoload
+(defun occ-enable-condition-case-control-debug ()
+  (interactive)
+  (setq occ-condition-case-control-debug t))
+
+;;;###autoload
+(defun occ-disable-condition-case-control-debug ()
+  (interactive)
+  (setq occ-condition-case-control-debug nil))
+
+(defmacro condition-case-control (var bodyform &rest handlers)
+  (if (not occ-condition-case-control-debug)
+      `(condition-case ,var
+           ,bodyform
+         ,@handlers)
+    bodyform))
+(put 'condition-case-control 'lisp-indent-function 1)
+
+
+(defun downcase-sym (sym)
+  (let ((symname (downcase (symbol-name sym))))
+    (or
+     (intern-soft symname)
+     (intern symname))))
+(defun upcase-sym (sym)
+  (let ((symname (upcase (symbol-name sym))))
+    (or
+     (intern-soft symname)
+     (intern symname))))
 (defun sym2key (sym)
   (if (keywordp sym)
       sym
-    (intern-soft (concat ":" (symbol-name sym)))))
+    (or
+     (intern-soft (concat ":" (symbol-name sym)))
+     (intern (concat ":" (symbol-name sym))))))
 (defun key2sym (sym)
   (if (keywordp sym)
-      (intern-soft (substring (symbol-name sym) 1))
+      (or
+       (intern-soft (substring (symbol-name sym) 1))
+       (intern (substring (symbol-name sym) 1)))
     sym))
+
 
+(defun occ-valid-marker (marker)
+  (when (and
+         marker
+         (marker-buffer marker))
+    marker))
+
 
 (defun occ-chgable-p ()
   "Stay with a clock at least 2 mins."
@@ -73,18 +136,22 @@
 
 ;;;###autoload
 (defun occ-straight-org-clock-clock-in (clock &optional resume start-time)
+  ;; lotus-org-with-safe-modification
   (let ((org-log-note-clock-out nil))
     (progn
      (lotus-org-clock-load-only)
      (prog1
          (let ((org-clock-persist               occ-org-clock-persist)
                (org-clock-auto-clock-resolution occ-org-clock-auto-clock-resolution))
-           (org-clock-clock-in clock resume start-time))
+           (org-clock-clock-in clock resume start-time)
+           t)
        (setq org-clock-loaded t)))))
 
 
 (defun occ-completing-read (prompt collection &optional predicate require-match initial-input hist def inherit-input-method)
   (let ((helm-always-two-windows nil))
+    (occ-debug-uncond "occ-completing-read: prompt %s collection %s"
+                      prompt collection)
     (completing-read prompt
                      collection
                      predicate
@@ -93,58 +160,57 @@
                      hist
                      def
                      inherit-input-method)))
+
+
+(defun occ-insert-node-before-element (node element list)
+  ;; https://groups.google.com/forum/#!topic/comp.lang.lisp/83g9zkq_CQY
+  (let ((pos (cl-position element list)))
+    (if pos
+        (if (= pos 0)
+            (cons node list) ;There's no way to be destructive in this case, so just cons.
+
+          (let ((tail (nthcdr (1- pos) list)))
+            (if (null tail) (error "There is no position ~D in ~S." pos list))
+            (push node (cdr tail))
+            list)))))
+(defun occ-insert-node-after-element (node element list)
+  ;; https://groups.google.com/forum/#!topic/comp.lang.lisp/83g9zkq_CQY
+  (let ((pos (cl-position element list)))
+    (if pos
+        (if (= pos 0)
+            (cons node list) ;There's no way to be destructive in this case, so just cons.
+
+          (let ((tail (nthcdr pos list)))
+            (if (null tail) (error "There is no position ~D in ~S." pos list))
+            (push node (cdr tail))
+            list)))))
+
 
 (cl-defmethod ignore-p ((buff buffer))
   nil)
-
-
-
-(defmacro run-unobtrusively (&rest body)
-  `(while-no-input
-    (redisplay)
-    ,@body))
-
-
-(defmacro run-unobtrusively (&rest body)
-  `(let ((retval (while-no-input
-                   (redisplay)
-                   ,@body)))
-     (when (eq retval t)
-       (occ-debug :debug "user input %s retval %s" last-input-event retval))
-     retval))
-
-
-(defmacro condition-case-control (enable var bodyform &rest handlers)
-  (if enable
-      `(condition-case ,var
-           ,bodyform
-         ,@handlers)
-    bodyform))
-(put 'condition-case-control 'lisp-indent-function 2)
-
 
 
-;; testing verification
-(defun occ-files-with-null-regex ()
-  (interactive)
-  (let ((files
-         (remove-if
-          #'(lambda (f)
-              (with-current-buffer (find-file-noselect f)
-                org-complex-heading-regexp))
-          (occ-files))))
-    (occ-message :debug "files with null regex %s" files)))
+(defmacro run-unobtrusively (&rest body)
+  `(if (called-interactively-p 'any)
+       (progn
+         ,@body)
+     (while-no-input
+      (redisplay)
+      ,@body)))
 
-;; testing verification;; testing verification
-(defun occ-files-not-in-org-mode ()
-  (interactive)
-  (let ((files
-         (remove-if
-          #'(lambda (f)
-              (with-current-buffer (find-file-noselect f)
-                (eq major-mode 'org-mode)))
-          (occ-files))))
-    (occ-message :debug "files not in org-mode %s" files)))
+(defmacro run-unobtrusively (&rest body)
+  `(if (called-interactively-p 'any)
+       (progn ,@body)
+    (let ((retval (while-no-input
+                   (redisplay)
+                   ,@body)))
+      (when (eq retval t)
+        (occ-debug :debug "user input %s retval %s" last-input-event retval))
+      retval)))
+
+
+(defun occ-helm-buffer-p (buffer)
+  (string-match "^*helm" (buffer-name buffer)))
 
 
 ;;;###autoload

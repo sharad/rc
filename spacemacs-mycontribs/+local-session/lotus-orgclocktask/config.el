@@ -42,5 +42,12 @@
 
   (spacemacs/org-clock-in-if-not-enable))
 
+
+
+
+
+
+(defun lotus-orgmode-config/post-init-org ())
+
 ;; (provide 'config)
 ;;; config.el ends here
