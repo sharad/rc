@@ -250,7 +250,9 @@
       ((madd)    (occ-set-property obj prop (nconc
                                              (occ-get-property obj prop)
                                              (list (car values)))))
-      ((mremove) (error "remove from obj prop"))
+      ((mremove) (occ-set-property obj prop (remove
+                                             (car values)
+                                             (occ-get-property obj prop))))
       ((member)  (occ-org-entry-member-in-from-multivalued-property nil prop (car values))))))
 
 
