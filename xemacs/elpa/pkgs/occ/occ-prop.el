@@ -141,7 +141,8 @@
   (lotus-org-with-safe-modification
     (org-entry-add-to-multivalued-property pom
                                            prop
-                                           value)))
+                                           value)
+    t))
 
 (defun occ-org-entry-remove-from-multivalued-property (pom
                                                        prop
@@ -149,7 +150,8 @@
   (lotus-org-with-safe-modification
     (org-entry-remove-from-multivalued-property pom
                                                 prop
-                                                value)))
+                                                value)
+    t))
 
 (defun occ-org-entry-member-in-multivalued-property (pom
                                                      prop
@@ -210,10 +212,12 @@
           (occ-debug :debug
                      "occ-org-operate-property-at-point: adding prop: %s value: %s using (org-set-property)."
                      prop values)
-          (occ-org-operate-property mrk
-                                    (symbol-name prop)
-                                    operation
-                                    values))
+          (let ((retval (occ-org-operate-property mrk
+                                                  (symbol-name prop)
+                                                  operation
+                                                  values)))
+            (occ-debug-uncond "occ-org-operate-property: (occ-org-operate-property mrk) returned %s" retval)
+            retval))
         (error "occ-org-operate-property-at-point: can not get property block to add property %s: %s"
                prop values))))
 
@@ -236,13 +240,16 @@
          (mapcar #'(lambda (v)
                      (occ-prop-elem-from-org prop v))
                  values)))
+    (occ-debug-uncond "occ-operate-obj-property-with: operation %s values %s"
+                      operation values)
     (case operation
       ((get)     (list (occ-org-entry-get nil prop)))
       ((put)     (occ-set-property obj prop (car values)))
       ((mget)    (occ-org-entry-get-multivalued-property nil prop))
       ((mput)    (occ-set-property obj prop values))
-      ((madd)    (occ-set-property obj prop (cons (car values)
-                                                  (occ-get-property obj prop))))
+      ((madd)    (occ-set-property obj prop (nconc
+                                             (occ-get-property obj prop)
+                                             (list (car values)))))
       ((mremove) (error "remove from obj prop"))
       ((member)  (occ-org-entry-member-in-from-multivalued-property nil prop (car values))))))
 
@@ -401,15 +408,19 @@
   (let ((mrk (occ-obj-marker obj)))
     (let ((operation  (or operation    (occ-select-prop-list-operation prop)))
           (prop-value (or value (occ-readprop-elem-from-user-with obj ctx prop))))
-      (when (occ-org-operate-property-at-point mrk
-                                               prop
-                                               operation
-                                               (list prop-value))
-        (occ-operate-obj-property-with obj
-                                       ctx
-                                       prop
-                                       operation
-                                       (list prop-value))))))
+      (let ((retval
+             (occ-org-operate-property-at-point mrk
+                                                prop
+                                                operation
+                                                (list prop-value))))
+        (occ-debug-uncond "occ-editprop-with: (occ-org-operate-property-at-point mrk) returnd %s" retval)
+        (when retval
+          (occ-operate-obj-property-with obj
+                                         ctx
+                                         prop
+                                         operation
+                                         (list prop-value)))))))
+
 
 (cl-defmethod occ-editprop ((obj  occ-obj-ctx-tsk)
                             (prop symbol)

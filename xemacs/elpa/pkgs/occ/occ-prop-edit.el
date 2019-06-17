@@ -241,8 +241,12 @@
              '(edit done)))
       ;; TODO: handle (occ-select-propetry obj ctx) return NIL
       ;; (occ-editprop-with prop obj ctx)
-      (when (occ-editprop-with obj ctx prop) ;; (occ-editprop prop ctx)
-        (occ-tsk-update-tsks t)))))
+      (let ((retval
+             (occ-editprop-with obj ctx prop)))
+        (when retval ;; (occ-editprop prop ctx)
+          ;; (occ-tsk-update-tsks t)
+          (occ-debug :debug "occ-props-edit-with: done with retval %s" retval)
+          retval)))))
 
 (cl-defmethod occ-props-edit ((obj occ-obj-ctx-tsk))
   (occ-debug :debug "occ-props-edit: begin %s"
