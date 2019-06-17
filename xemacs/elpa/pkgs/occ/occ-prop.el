@@ -229,8 +229,8 @@
                                               values)
   "occ-operate-obj-property-with")
 
-(cl-defmethod occ-operate-obj-property-with ((obj  occ-tsk)
-                                             (ctx  occ-ctx)
+(cl-defmethod occ-operate-obj-property-with ((obj occ-tsk)
+                                             (ctx occ-ctx)
                                              (prop symbol)
                                              operation
                                              values)
@@ -276,39 +276,39 @@
   value)
 
 
-(cl-defmethod occ-readprop-elem-from-user ((obj  occ-tsk)
+(cl-defmethod occ-readprop-elem-from-user ((obj occ-tsk)
                                            (prop symbol))
   "readprop-elem-from-user for org"
   (error "Implement method occ-readprop-elem-from-user-with for prop %s" prop))
 
-(cl-defmethod occ-readprop-from-user ((obj  occ-tsk)
-                                      (ctx  occ-ctx)
+(cl-defmethod occ-readprop-from-user ((obj occ-tsk)
+                                      (ctx occ-ctx)
                                       (prop symbol))
   "readprop-from-user for org"
   (error "Implement method occ-readprop-from-user-with for prop %s" prop))
 
 
-(cl-defmethod occ-readprop-elem-from-user-with ((obj  occ-tsk)
-                                                (ctx  occ-ctx)
+(cl-defmethod occ-readprop-elem-from-user-with ((obj occ-tsk)
+                                                (ctx occ-ctx)
                                                 (prop symbol))
   "readprop-elem-from-user for org"
   (occ-readprop-elem-from-user obj prop))
 
-(cl-defmethod occ-readprop-from-user-with ((obj  occ-tsk)
-                                           (ctx  occ-ctx)
+(cl-defmethod occ-readprop-from-user-with ((obj occ-tsk)
+                                           (ctx occ-ctx)
                                            (prop symbol))
   "readprop-from-user for org"
   (occ-readprop-from-user-with obj prop))
 
 
-(cl-defmethod occ-readprop-elem-from-user ((obj  occ-obj-ctx-tsk)
+(cl-defmethod occ-readprop-elem-from-user ((obj occ-obj-ctx-tsk)
                                            (prop symbol))
   "readprop-elem-from-user for org"
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
     (occ-readprop-elem-from-user-with tsk ctx)))
 
-(cl-defmethod occ-readprop-from-user ((obj  occ-obj-ctx-tsk)
+(cl-defmethod occ-readprop-from-user ((obj occ-obj-ctx-tsk)
                                       (prop symbol))
   "readprop-from-user for org"
   (let ((tsk (occ-obj-tsk obj))
@@ -347,8 +347,8 @@
                           (occ-rereadprop-value p (occ-get-property obj p)))))))
 
 
-(cl-defmethod occ-readprop-org-with ((obj  occ-tsk)
-                                     (ctx  occ-ctx)
+(cl-defmethod occ-readprop-org-with ((obj occ-tsk)
+                                     (ctx occ-ctx)
                                      (prop symbol))
   "readprop-org"
   (let* ((mrk    (or (occ-obj-marker obj) (point)))
@@ -359,8 +359,8 @@
                 (occ-prop-elem-from-org prop v))
             values)))
 
-(cl-defmethod occ-writeprop-org-with ((obj  occ-tsk)
-                                      (ctx  occ-ctx)
+(cl-defmethod occ-writeprop-org-with ((obj occ-tsk)
+                                      (ctx occ-ctx)
                                       (prop symbol))
   "readprop-org"
   (let* ((values (occ-get-property obj prop))
@@ -373,13 +373,13 @@
                                        (occ-prop-put-operation prop)
                                        values)))
 
-(cl-defmethod occ-readprop-org ((obj  occ-obj-ctx-tsk)
+(cl-defmethod occ-readprop-org ((obj occ-obj-ctx-tsk)
                                 (prop symbol))
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
     (occ-readprop-org-with tsk ctx prop)))
 
-(cl-defmethod occ-writeprop-org ((obj  occ-obj-ctx-tsk))
+(cl-defmethod occ-writeprop-org ((obj occ-obj-ctx-tsk))
                                 (prop symbol)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
@@ -401,8 +401,8 @@
           actions)))
      'put))
 
-(cl-defmethod occ-editprop-with ((obj  occ-tsk)
-                                 (ctx  occ-ctx)
+(cl-defmethod occ-editprop-with ((obj occ-tsk)
+                                 (ctx occ-ctx)
                                  (prop symbol)
                                  &optional
                                  operation
@@ -423,7 +423,7 @@
                                          operation
                                          (list prop-value)))))))
 
-(cl-defmethod occ-editprop ((obj  occ-obj-ctx-tsk)
+(cl-defmethod occ-editprop ((obj occ-obj-ctx-tsk)
                             (prop symbol)
                             &optional
                             operation
@@ -435,8 +435,8 @@
     (occ-editprop-with tsk ctx prop operation value)))
 
 
-(cl-defmethod occ-generated-operation-method-with ((obj  occ-tsk)
-                                                   (ctx  occ-ctx)
+(cl-defmethod occ-generated-operation-method-with ((obj occ-tsk)
+                                                   (ctx occ-ctx)
                                                    (prop symbol)
                                                    operation
                                                    value)
@@ -446,7 +446,7 @@
                          operation
                          value)))
 
-(cl-defmethod occ-generated-operation-method ((obj  occ-obj-ctx-tsk)
+(cl-defmethod occ-generated-operation-method ((obj occ-obj-ctx-tsk)
                                               (prop symbol)
                                               operation
                                               value)
