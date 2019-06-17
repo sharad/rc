@@ -30,6 +30,7 @@
 (require 'occ-macros)
 (require 'occ-util-common)
 
+;; TODO: graded ranking where ranking will be under priority of properties, where one can not go beyond above one, normally
 
 (cl-defgeneric occ-rankprop-with (obj
                                   ctx

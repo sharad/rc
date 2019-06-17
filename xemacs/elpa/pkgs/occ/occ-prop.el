@@ -79,7 +79,7 @@
   (occ-match-prop-method-args obj))
 
 (cl-defmethod occ-properties-to-edit ((obj occ-tsk))
-  (cl-method-param-case '(occ-readprop-elem-from-user (`(occ-tsk (eql ,val)) val))))
+  (occ-match-prop-method-args obj))
 
 
 (cl-defmethod occ-properties-to-calculate-rank ((obj occ-ctx))
@@ -230,6 +230,8 @@
                                              (prop symbol)
                                              operation
                                              values)
+  ;; TODO: check if this is working properly
+  ;;       responsible to modify object obj
   (let ((values
          (mapcar #'(lambda (v)
                      (occ-prop-elem-from-org prop v))
@@ -265,17 +267,29 @@
   value)
 
 
+(cl-defmethod occ-readprop-elem-from-user ((obj  occ-tsk)
+                                           (prop symbol))
+  "readprop-elem-from-user for org"
+  (error "Implement method occ-readprop-elem-from-user-with for prop %s" prop))
+
+(cl-defmethod occ-readprop-from-user ((obj  occ-tsk)
+                                      (ctx  occ-ctx)
+                                      (prop symbol))
+  "readprop-from-user for org"
+  (error "Implement method occ-readprop-from-user-with for prop %s" prop))
+
+
 (cl-defmethod occ-readprop-elem-from-user-with ((obj  occ-tsk)
                                                 (ctx  occ-ctx)
                                                 (prop symbol))
   "readprop-elem-from-user for org"
-  (error "Implement method occ-readprop-elem-from-user-with for prop %s" prop))
+  (occ-readprop-elem-from-user obj prop))
 
 (cl-defmethod occ-readprop-from-user-with ((obj  occ-tsk)
                                            (ctx  occ-ctx)
                                            (prop symbol))
   "readprop-from-user for org"
-  (error "Implement method occ-readprop-from-user-with for prop %s" prop))
+  (occ-readprop-from-user-with obj prop))
 
 
 (cl-defmethod occ-readprop-elem-from-user ((obj  occ-obj-ctx-tsk)
