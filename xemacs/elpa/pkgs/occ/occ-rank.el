@@ -28,6 +28,7 @@
 
 
 (require 'occ-macros)
+(require 'occ-util-common)
 
 
 (cl-defgeneric occ-rankprop-with (obj

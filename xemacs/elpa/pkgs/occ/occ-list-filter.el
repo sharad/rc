@@ -125,18 +125,8 @@
       (let* ((rankslist  (mapcar
                           #'occ-rank
                           objs))
-             (avgrank    (if (= 0 (length rankslist))
-                             0
-                           (/
-                            (reduce #'+ rankslist)
-                            (length rankslist))))
-             (varirank   (if (= 0 (length rankslist))
-                             0
-                           (sqrt
-                            (/
-                             (reduce #'+
-                                     (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
-                             (length rankslist))))))
+             (avgrank    (occ-calculate-average rankslist))
+             (varirank   (occ-calculate-variance rankslist)))
         ;; (occ-debug :debug "occ-collection-obj-matches :around finish")
         (occ-debug :debug "matched ctxtsks %s" (length objs))
         (remove-if-not
