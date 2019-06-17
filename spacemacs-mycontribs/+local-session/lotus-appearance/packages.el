@@ -66,13 +66,6 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-appearance/init-PACKAGE ()
-  (use-package PACKAGE
-    :defer t
-    :config
-    (progn
-      (setq face-scale-div-max-min '(110 210 100 92)))))
-
 
 (defun lotus-appearance/post-init-powerline ()
   (use-package powerline
@@ -91,5 +84,13 @@ Each entry is either:
        powerline-height             10
        powerline-text-scale-factor  0.5
        powerline-default-separator 'curve))))
+
+(defun lotus-appearance/init-PACKAGE ()
+  (use-package PACKAGE
+    :defer t
+    :config
+    (progn
+      (setq face-scale-div-max-min '(110 210 100 92)))))
+
 
 ;;; packages.el ends here

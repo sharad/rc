@@ -29,10 +29,16 @@
 
 (cl-defmethod occ-marker= ((obj marker)
                            (mrk marker))
-  (let ((obj-marker (occ-heading-marker obj))
-        (mrk-marker (occ-heading-marker mrk)))
-    (equal obj-marker
-           mrk-marker)))
+  (if (and
+       (occ-valid-marker obj)
+       (occ-valid-marker mrk))
+   (let ((obj-marker (occ-heading-marker obj))
+         (mrk-marker (occ-heading-marker mrk)))
+     (if (and
+          (occ-valid-marker obj-marker)
+          (occ-valid-marker mrk-marker))
+      (equal obj-marker
+             mrk-marker)))))
 
 (cl-defmethod occ-marker= ((obj occ-obj-tsk)
                            (mrk marker))

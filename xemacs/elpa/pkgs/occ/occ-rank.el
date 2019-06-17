@@ -109,4 +109,90 @@
         (ctx (occ-obj-ctx obj)))
     (occ-calculate-rank-with tsk ctx)))
 
+
+(defun occ-filter-mutual-deviation (objs) ;TODO: make it after method
+  "Return matched Objs for context CTX"
+  (if (occ-collection-object)
+      (let* ((rankslist  (mapcar
+                          #'occ-rank
+                          objs))
+             (avgrank    (if (= 0 (length rankslist))
+                             0
+                           (/
+                            (reduce #'+ rankslist)
+                            (length rankslist))))
+             (varirank   (if (= 0 (length rankslist))
+                             0
+                           (sqrt
+                            (/
+                             (reduce #'+
+                                     (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
+                             (length rankslist))))))
+        ;; (occ-debug :debug "occ-collection-obj-matches :around finish")
+        (occ-debug :debug "matched ctxtsks %s" (length objs))
+        (remove-if-not
+         #'(lambda (obj)
+             (>= (occ-rank obj) avgrank))
+         objs))
+    (error "(occ-collection-object) returned nil")))
+
+
+(cl-defmethod occ-calculate-avgrank ((collection occ-collection))
+  ;; too much output
+  (occ-debug :debug "occ-rank(obj=%s)"
+             obj)
+  (let* ((objs (occ-collect-list collection))
+         (rankslist (mapcar #'occ-rank objs))
+         (avgrank (if (= 0 (length rankslist))
+                      0
+                    (/
+                     (reduce #'+ rankslist)
+                     (length rankslist)))))
+    avgrank))
+
+(cl-defmethod occ-calculate-varirank ((collection occ-collection))
+  ;; too much output
+  (occ-debug :debug "occ-rank(obj=%s)"
+             obj)
+  (let* ((objs (occ-collect-list collection))
+         (rankslist (mapcar #'occ-rank objs))
+         (varirank   (if (= 0 (length rankslist))
+                         0
+                       (sqrt
+                        (/
+                         (reduce #'+
+                                 (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
+                         (length rankslist))))))
+    varirank))
+
+
+(cl-defmethod occ-calculate-avgrank ((obj occ-ctx))
+  ;; too much output
+  (occ-debug :debug "occ-rank(obj=%s)"
+             obj)
+  (let* ((objs (occ-list obj))
+         (rankslist (mapcar #'occ-rank objs))
+         (avgrank (if (= 0 (length rankslist))
+                      0
+                    (/
+                     (reduce #'+ rankslist)
+                     (length rankslist)))))
+    avgrank))
+
+(cl-defmethod occ-calculate-varirank ((obj occ-ctx))
+  ;; too much output
+  (occ-debug :debug "occ-rank(obj=%s)"
+             obj)
+  (let* ((objs (occ-list obj))
+         (rankslist (mapcar #'occ-rank objs))
+         (varirank   (if (= 0 (length rankslist))
+                         0
+                       (sqrt
+                        (/
+                         (reduce #'+
+                                 (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
+                         (length rankslist))))))
+    varirank))
+
+
 ;;; occ-rank.el ends here

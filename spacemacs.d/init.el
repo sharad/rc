@@ -645,7 +645,8 @@ This function is called at the very end of Spacemacs initialization."
  '(psc-ide-rebuild-on-save nil t)
  '(safe-local-variable-values
    (quote
-    ((ee-line-start . "/+_? *. ")
+    ((major-mode . nxml-mode)
+     (ee-line-start . "/+_? *. ")
      (ee-comment-prefix . "/")
      (ee-anchor-format . "«%s»")
      (major-mode . emacs-lisp)

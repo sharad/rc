@@ -323,6 +323,17 @@
       
     #+end_src
 
+** TODO: obj-tsk
+
+*** clock time
+
+*** scheduled deadline
+
+*** lastest clock
+
+*** status
+
+
 ** File Ends Here
    #+begin_src elisp
 ;;; occ-property-rank-methods.el ends here
