@@ -158,6 +158,58 @@
   (setf (occ-ctxual-tsk-rank ctxask) value))
 
 
+;; occ-ctx - accessors
+(cl-defmethod occ-avgrank ((obj occ-ctx))
+  (occ-debug :debug "occ-avgrank(occ-ctx=%s)" obj)
+  (let ((avgrank (occ-ctx-avgrank obj)))
+    (unless avgrank
+      (setf (occ-ctx-avgrank obj) (occ-calculate-avgrank obj)))
+    (occ-ctx-avgrank obj)))
+
+(cl-defmethod (setf occ-avgrank) (value (obj occ-ctx))
+  (occ-debug :debug "occ-avgrank(occ-ctx=%s)" obj)
+  (setf (occ-ctx-avgrank obj) value))
+
+
+;; occ-ctx - accessors
+(cl-defmethod occ-verirank ((obj occ-ctx))
+  (occ-debug :debug "occ-verirank(occ-ctx=%s)" obj)
+  (let ((verirank (occ-ctx-verirank obj)))
+    (unless verirank
+      (setf (occ-ctx-verirank obj) (occ-calculate-verirank obj)))
+    (occ-ctx-verirank obj)))
+
+(cl-defmethod (setf occ-verirank) (value (obj occ-ctx))
+  (occ-debug :debug "occ-verirank(occ-ctx=%s)" obj)
+  (setf (occ-ctx-verirank obj) value))
+
+
+;; occ-collection - accessors
+(cl-defmethod occ-avgrank ((obj occ-collection))
+  (occ-debug :debug "occ-avgrank(occ-collection=%s)" obj)
+  (let ((avgrank (occ-collection-avgrank obj)))
+    (unless avgrank
+      (setf (occ-collection-avgrank obj) (occ-calculate-avgrank obj)))
+    (occ-collection-avgrank obj)))
+
+(cl-defmethod (setf occ-avgrank) (value (obj occ-collection))
+  (occ-debug :debug "occ-avgrank(occ-collection=%s)" obj)
+  (setf (occ-collection-avgrank obj) value))
+
+
+;; occ-ctxual-tsk - accessors
+(cl-defmethod occ-verirank ((obj occ-collection))
+  (occ-debug :debug "occ-verirank(occ-collection=%s)" obj)
+  (let ((verirank (occ-collection-verirank obj)))
+    (unless verirank
+      (setf (occ-collection-verirank obj) (occ-calculate-verirank obj)))
+    (occ-collection-verirank obj)))
+
+(cl-defmethod (setf occ-verirank) (value (obj occ-collection))
+  (occ-debug :debug "occ-verirank(occ-collection=%s)" obj)
+  (setf (occ-collection-verirank obj) value))
+
+
 (cl-defmethod occ-current-tsk-with ((sym null))
   nil)
 

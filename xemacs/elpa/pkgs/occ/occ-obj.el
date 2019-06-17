@@ -103,6 +103,8 @@
 
 
 (cl-defstruct (occ-ctx (:include occ-obj-tsk))
+  avgrank
+  varirank
   buffer
   file)
 
@@ -117,6 +119,8 @@
 
 
 (cl-defstruct (occ-collection (:include occ-obj-collection))
+  avgrank
+  varirank
   roots
   files)
 
