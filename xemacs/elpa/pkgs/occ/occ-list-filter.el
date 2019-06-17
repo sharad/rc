@@ -88,7 +88,7 @@
 (defvar occ-filters-plist nil)
 
 (defun occ-filter-add (key fun)
-  (setq occ-helm-actions-plist
+  (setq occ-filters-plist
         (plist-put
          occ-filters-plist
          key fun)))

@@ -216,7 +216,7 @@
                                                   (symbol-name prop)
                                                   operation
                                                   values)))
-            (occ-debug-uncond "occ-org-operate-property: (occ-org-operate-property mrk) returned %s" retval)
+            (occ-debug :debug "occ-org-operate-property: (occ-org-operate-property mrk) returned %s" retval)
             retval))
         (error "occ-org-operate-property-at-point: can not get property block to add property %s: %s"
                prop values))))
@@ -240,7 +240,7 @@
          (mapcar #'(lambda (v)
                      (occ-prop-elem-from-org prop v))
                  values)))
-    (occ-debug-uncond "occ-operate-obj-property-with: operation %s values %s"
+    (occ-debug :debug "occ-operate-obj-property-with: operation %s values %s"
                       operation values)
     (case operation
       ((get)     (list (occ-org-entry-get nil prop)))
@@ -415,14 +415,13 @@
                                                 prop
                                                 operation
                                                 (list prop-value))))
-        (occ-debug-uncond "occ-editprop-with: (occ-org-operate-property-at-point mrk) returnd %s" retval)
+        (occ-debug :debug "occ-editprop-with: (occ-org-operate-property-at-point mrk) returnd %s" retval)
         (when retval
           (occ-operate-obj-property-with obj
                                          ctx
                                          prop
                                          operation
                                          (list prop-value)))))))
-
 
 (cl-defmethod occ-editprop ((obj  occ-obj-ctx-tsk)
                             (prop symbol)
