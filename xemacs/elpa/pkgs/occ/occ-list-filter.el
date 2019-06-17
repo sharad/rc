@@ -147,6 +147,18 @@
   (remove-if-not #'(lambda (obj) (>= (occ-rank obj) 0)) objs))
 
 (occ-filter-add :nonnegative #'occ-filter-nonnegative)
+
+(defvar occ-filter-min 0)
+(defun occ-filter-min (objs)
+  (remove-if-not #'(lambda (obj) (>= (occ-rank obj) occ-filter-min)) objs))
+
+(occ-filter-add :min #'occ-filter-min)
+
+(defvar occ-filter-max 0)
+(defun occ-filter-max (objs)
+  (remove-if-not #'(lambda (obj) (>= (occ-rank obj) occ-filter-max)) objs))
+
+(occ-filter-add :max #'occ-filter-max)
 
 
 (defun occ-list-filters () '(:nonnegative))

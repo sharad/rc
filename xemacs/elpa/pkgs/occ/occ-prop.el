@@ -234,8 +234,6 @@
                                              (prop symbol)
                                              operation
                                              values)
-  ;; TODO: check if this is working properly
-  ;;       responsible to modify object obj
   (let ((values
          (mapcar #'(lambda (v)
                      (occ-prop-elem-from-org prop v))
@@ -278,7 +276,7 @@
 
 (cl-defmethod occ-readprop-elem-from-user ((obj occ-tsk)
                                            (prop symbol))
-  "readprop-elem-from-user for org"
+  "readprop-elem-from-user for org"i
   (error "Implement method occ-readprop-elem-from-user-with for prop %s" prop))
 
 (cl-defmethod occ-readprop-from-user ((obj occ-tsk)

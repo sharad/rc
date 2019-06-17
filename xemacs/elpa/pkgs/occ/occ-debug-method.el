@@ -27,11 +27,16 @@
 (provide 'occ-debug-method)
 
 
+(require 'occ-util-common)
+(require 'occ-obj)
+
 (cl-defmethod occ-print-tsk ((obj occ-obj-tsk))
+  "Dump tsk"
   (occ-message "occ-print-tsk: %s" obj))
 
 (cl-defmethod occ-print-tsk ((obj occ-obj-ctx-tsk))
+  "Dump ctx-tsk"
   (let ((tsk (occ-obj-tsk obj)))
     (occ-message "occ-print-tsk: %s" tsk)))
-
+
 ;;; occ-debug-method.el ends here
