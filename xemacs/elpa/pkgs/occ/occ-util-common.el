@@ -240,22 +240,4 @@
      'occ-global-tsk-collection-change-hook
      fn)))
 
-
-(defun occ-calculate-average (nums)
-  (if (> (length nums) 0)
-      (/
-       (reduce #'+ nums)
-       (length nums))
-      0))
-
-(defun occ-calculate-variance (nums)
-  (let ((average (occ-calculate-average nums)))
-   (if (> (length nums) 0)
-       (sqrt
-        (/
-         (reduce #'+
-                 (mapcar #'(lambda (rank) (expt (- rank average) 2)) nums))
-         (length nums)))
-     0)))
-
 ;;; occ-util-common.el ends here
