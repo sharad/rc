@@ -34,6 +34,14 @@
 (require 'occ-obj-method)
 
 
+(defvar occ-capture+-helm-templates-alist org-capture+-helm-templates-alist)
+
+(defun occ-capture+-helm-select-template ()
+  (org-capture+-helm-select-template
+   nil
+   occ-capture+-helm-templates-alist))
+
+
 (defvar occ-helm-actions-plist nil)
 
 (defun occ-helm-action-add (key name action)
@@ -265,13 +273,4 @@
 ;; ;;            "Create tsk"
 ;; ;;            'sacha/helm-org-create-tsk))
 
-
-(defvar occ-capture+-helm-templates-alist org-capture+-helm-templates-alist)
-
-(defun occ-capture+-helm-select-template ()
-  (org-capture+-helm-select-template
-   nil
-   occ-capture+-helm-templates-alist))
-
-
 ;;; occ-helm.el ends here

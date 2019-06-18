@@ -65,7 +65,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-notification/init-alert ()
+(defun lotus-notification/post-init-alert ()
   ;; check https://github.com/jwiegley/alert#builtin-alert-styles
   (use-package alert
     :defer t

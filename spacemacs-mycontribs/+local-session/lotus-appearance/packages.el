@@ -75,7 +75,7 @@ Each entry is either:
        powerline-scale              0.8
        powerline-height             10
        powerline-text-scale-factor  0.5
-       powerline-default-separator 'curve))
+       powerline-default-separator 'alternate))
     :defer t
     :config
     (progn
@@ -83,7 +83,7 @@ Each entry is either:
        powerline-scale              0.8
        powerline-height             10
        powerline-text-scale-factor  0.5
-       powerline-default-separator 'curve))))
+       powerline-default-separator 'alternate))))
 
 (defun lotus-appearance/init-PACKAGE ()
   (use-package PACKAGE

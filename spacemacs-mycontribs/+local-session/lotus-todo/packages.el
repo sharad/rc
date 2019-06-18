@@ -158,7 +158,7 @@ Each entry is either:
       ;; (a minor mode).
       )))
 
-(defun lotus-todo/init-org-jira ()
+(defun lotus-todo/post-init-org-jira ()
   (use-package org-jira
     :defer t
     :config

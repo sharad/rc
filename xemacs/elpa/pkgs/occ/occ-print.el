@@ -112,17 +112,20 @@ pointing to it."
 
 (cl-defmethod occ-format ((obj occ-tsk)
                           &optional case)
-  (let* ((align      occ-format-tsk-tag-alignment)
+  (let* ((rank       (occ-rank obj))
+         (align      occ-format-tsk-tag-alignment)
          (heading    (occ-fontify-like-in-org-mode obj))
          (headinglen (length heading))
          (tags       (occ-get-property obj 'tags))
-         (tagstr     (if tags (concat ":" (mapconcat #'identity tags ":") ":"))))
+         (tagstr     (if tags
+                         (concat ":" (mapconcat #'identity tags ":") ":")
+                       "")))
     (concat (when case (concat (occ-title obj case) ": "))
-            (if tags
-                (format
-                 (format "%%-%ds         %%s" align (if (< headinglen align) (- align headinglen) 0))
-                 heading tagstr)
-              (format "%s" heading)))))
+            (format
+             (format (concat "[%%4d] " (if tags "%%-%ds         %%s" "%%s"))
+                     align
+                     (if (< headinglen align) (- align headinglen) 0))
+             rank heading tagstr))))
 
 (cl-defmethod occ-format ((obj occ-ctx)
                           &optional case)

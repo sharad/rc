@@ -252,9 +252,8 @@
 *** STATUS property of task
     #+begin_src elisp
 
-      (cl-defmethod occ-rankprop-with ((obj occ-tsk)
-                                       (ctx occ-ctx)
-                                       (prop (eql status)))
+      (cl-defmethod occ-rankprop ((obj occ-tsk)
+                                  (prop (eql status)))
         "Predicate funtion to check if ctx matches to tsk's status attribute."
         (let ((todo-type
                (occ-get-property obj 'todo-type))
@@ -273,9 +272,8 @@
 *** Key property of task for setting arbitrary rank
     #+begin_src elisp
 
-      (cl-defmethod occ-rankprop-with ((obj occ-tsk)
-                                       (ctx occ-ctx)
-                                       (prop (eql key)))
+      (cl-defmethod occ-rankprop ((obj occ-tsk)
+                                  (prop (eql key)))
         "Predicate funtion to check if ctx matches to tsk's file attribute."
         (let* ((key (occ-get-property obj 'KEY)))
           (if key (string-to-number key) 0)))
@@ -285,9 +283,8 @@
 *** Heading level property of task
     #+begin_src elisp
 
-      (cl-defmethod occ-rankprop-with ((obj occ-tsk)
-                                       (ctx occ-ctx)
-                                       (prop (eql heading-level)))
+      (cl-defmethod occ-rankprop ((obj occ-tsk)
+                                  (prop (eql heading-level)))
         "Predicate funtion to check if ctx matches to tsk's file attribute."
         (let* ((level (occ-get-property obj 'level)))
           (if level level 0)))
@@ -296,9 +293,8 @@
 
 *** Current clock status proprty of task (will rank based on task is currently clocking-in or not
     #+begin_src elisp
-      (cl-defmethod occ-rankprop-with ((obj occ-tsk)
-                                       (ctx occ-ctx)
-                                       (prop (eql current-clock)))
+      (cl-defmethod occ-rankprop ((obj occ-tsk)
+                                  (prop (eql current-clock)))
         (let* ((tsk-marker (occ-get-property obj 'marker)))
           (if (occ-marker= obj org-clock-marker)
               100
