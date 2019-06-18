@@ -172,16 +172,16 @@
 
 
 ;; occ-ctx - accessors
-(cl-defmethod occ-verirank ((obj occ-ctx))
-  (occ-debug :debug "occ-verirank(occ-ctx=%s)" obj)
-  (let ((verirank (occ-ctx-verirank obj)))
-    (unless verirank
-      (setf (occ-ctx-verirank obj) (occ-calculate-verirank obj)))
-    (occ-ctx-verirank obj)))
+(cl-defmethod occ-varirank ((obj occ-ctx))
+  (occ-debug :debug "occ-varirank(occ-ctx=%s)" obj)
+  (let ((varirank (occ-ctx-varirank obj)))
+    (unless varirank
+      (setf (occ-ctx-varirank obj) (occ-calculate-varirank obj)))
+    (occ-ctx-varirank obj)))
 
-(cl-defmethod (setf occ-verirank) (value (obj occ-ctx))
-  (occ-debug :debug "occ-verirank(occ-ctx=%s)" obj)
-  (setf (occ-ctx-verirank obj) value))
+(cl-defmethod (setf occ-varirank) (value (obj occ-ctx))
+  (occ-debug :debug "occ-varirank(occ-ctx=%s)" obj)
+  (setf (occ-ctx-varirank obj) value))
 
 
 ;; occ-collection - accessors
@@ -198,16 +198,16 @@
 
 
 ;; occ-ctxual-tsk - accessors
-(cl-defmethod occ-verirank ((obj occ-collection))
-  (occ-debug :debug "occ-verirank(occ-collection=%s)" obj)
-  (let ((verirank (occ-collection-verirank obj)))
-    (unless verirank
-      (setf (occ-collection-verirank obj) (occ-calculate-verirank obj)))
-    (occ-collection-verirank obj)))
+(cl-defmethod occ-varirank ((obj occ-collection))
+  (occ-debug :debug "occ-varirank(occ-collection=%s)" obj)
+  (let ((varirank (occ-collection-varirank obj)))
+    (unless varirank
+      (setf (occ-collection-varirank obj) (occ-calculate-varirank obj)))
+    (occ-collection-varirank obj)))
 
-(cl-defmethod (setf occ-verirank) (value (obj occ-collection))
-  (occ-debug :debug "occ-verirank(occ-collection=%s)" obj)
-  (setf (occ-collection-verirank obj) value))
+(cl-defmethod (setf occ-varirank) (value (obj occ-collection))
+  (occ-debug :debug "occ-varirank(occ-collection=%s)" obj)
+  (setf (occ-collection-varirank obj) value))
 
 
 (cl-defmethod occ-current-tsk-with ((sym null))

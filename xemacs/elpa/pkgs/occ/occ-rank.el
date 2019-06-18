@@ -131,22 +131,26 @@
     varirank))
 
 
-(cl-defmethod occ-calculate-avgrank ((collection occ-collection))
+(cl-defmethod occ-calculate-avgrank ((obj occ-collection))
   ;; too much output
   (occ-debug :debug "occ-rank(obj=%s)"
              obj)
-  (let* ((objs      (occ-collect-list collection))
+  (let* ((objs      (occ-collect-list obj))
          (rankslist (mapcar #'occ-rank objs))
          (avgrank   (occ-calculate-average rankslist)))
     avgrank))
 
-(cl-defmethod occ-calculate-varirank ((collection occ-collection))
+(cl-defmethod occ-calculate-varirank ((obj occ-collection))
   ;; too much output
   (occ-debug :debug "occ-rank(obj=%s)"
              obj)
-  (let* ((objs      (occ-collect-list collection))
+  (let* ((objs      (occ-collect-list obj))
          (rankslist (mapcar #'occ-rank objs))
          (varirank  (occ-calculate-variance rankslist)))
     varirank))
+
+
+;; (occ-avgrank (occ-collection-object))
+;; (occ-varirank (occ-collection-object))
 
 ;;; occ-rank.el ends here

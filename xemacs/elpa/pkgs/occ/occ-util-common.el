@@ -249,12 +249,13 @@
       0))
 
 (defun occ-calculate-variance (nums)
-  (if (> (length nums) 0)
-      (sqrt
-       (/
-        (reduce #'+
-                (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) nums))
-        (length nums)))
-      0))
+  (let ((average (occ-calculate-average nums)))
+   (if (> (length nums) 0)
+       (sqrt
+        (/
+         (reduce #'+
+                 (mapcar #'(lambda (rank) (expt (- rank average) 2)) nums))
+         (length nums)))
+     0)))
 
 ;;; occ-util-common.el ends here
