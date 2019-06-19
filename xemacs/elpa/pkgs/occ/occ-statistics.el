@@ -102,14 +102,26 @@
   (sort
    '((5 . 3) (4 . 1) (3 . 3) (2 . 1) (1 . 2)) #'(lambda (a b) (> (cdr a) (cdr b)))))
 
-(defun occ-stats-variance (nums)
-  (let ((average (occ-stats-average nums)))
-    (if (> (length nums) 0)
-        (sqrt
-         (/
-          (apply #'occ-stats-aggregate
+(defun occ-stats-variance (num &rest nums)
+  (let ((nums (cons num nums)))
+   (let ((average (occ-stats-average nums)))
+     (if (> (length nums) 0)
+         (sqrt
+          (/
+           (apply #'occ-stats-aggregate
                   (mapcar #'(lambda (rank) (expt (- rank average) 2)) nums))
-          (length nums)))
-      0)))
+           (length nums)))
+       0))))
+
+(defun occ-stats-stddev (num &rest nums)
+  (let ((nums (cons num nums)))
+   (let ((average (occ-stats-average nums)))
+     (if (> (length nums) 0)
+         (sqrt
+          (/
+           (apply #'occ-stats-aggregate
+                  (mapcar #'(lambda (rank) (expt (- rank average) 2)) nums))
+           (length nums)))
+       0))))
 
 ;;; occ-statistics.el ends here
