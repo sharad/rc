@@ -57,22 +57,22 @@
                                     &optional prompt)
   "occ-select-propetry")
 
-(cl-defmethod occ-select-propetry ((tsk occ-tsk)
+(cl-defmethod occ-select-propetry ((obj occ-tsk)
                                    (ctx occ-ctx)
                                    &optional prompt)
-  (occ-debug :debug "occ-select-propetry: %s" (occ-format tsk 'capitalize))
+  (occ-debug :debug "occ-select-propetry: %s" (occ-format obj 'capitalize))
   (let ((prompt (or prompt "proptery: "))
         (fixed-keys '(edit done))
-        (keys       (occ-properties-to-edit ctx)))
+        (keys       (occ-properties-to-edit-with obj ctx)))
     (if keys
         (let ((maxkeylen (apply
                           #'max
                           (mapcar #'(lambda (sym) ;https://www.gnu.org/software/emacs/manual/html_node/elisp/Formatting-Strings.html
                                       (length (symbol-name sym)))
                                   (append keys fixed-keys))))
-              (key-vals  (occ-get-properties tsk keys)))
+              (key-vals  (occ-get-properties obj keys)))
           (occ-debug-uncond "occ-select-propetry: for %s with keys =%s got key-vals = %s"
-                            (occ-format tsk 'capitalize)
+                            (occ-format obj 'capitalize)
                             keys
                             key-vals)
           (if key-vals
@@ -99,9 +99,9 @@
                             key-val-collection)))
                       (occ-debug :debug "selected option %s" sel)
                       (cdr sel))
-                  (error "Not Keys Vals Collection %s for %s" key-val-collection (occ-format tsk 'capitalize))))
-            (error "Not Keys Vals for %s" (occ-format tsk 'capitalize))))
-      (occ-debug :debug "Not Keys for %s" (occ-format tsk 'capitalize)))))
+                  (error "Not Keys Vals Collection %s for %s" key-val-collection (occ-format obj 'capitalize))))
+            (error "Not Keys Vals for %s" (occ-format obj 'capitalize))))
+      (occ-debug :debug "Not Keys for %s" (occ-format obj 'capitalize)))))
 
 
 (defun org-get-flag-proprty-drawer (&optional force)

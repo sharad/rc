@@ -93,7 +93,7 @@
          (reduce #'+
                  (mapcar #'(lambda (slot)
                              (occ-rankprop-with obj ctx (downcase-sym slot)))
-                         (occ-properties-to-calculate-rank ctx)))))
+                         (occ-properties-to-calculate-rank-with obj ctx)))))
     (+ rank tsk-rank)))
 
 
