@@ -161,6 +161,14 @@
                                               prop
                                               values)))
 
+
+(cl-defmethod occ-prop-is-list ((prop symbol))
+  "Method tell property represent list or not."
+  ;; 'list
+  ;; (error "Implement method occ-prop-is-list for prop %s" prop)
+  (occ-debug :debug "occ-prop-is-list: no method for prop %s using default." prop)
+  nil)
+
 (cl-defmethod occ-edit-operation-validate ((prop symbol)
                                            operation)
   (if (occ-prop-is-list prop)
@@ -222,6 +230,20 @@
                prop values))))
 
 
+(cl-defmethod occ-prop-elem-to-org ((prop symbol)
+                                    value)
+  "Method convert value VALUE of property PROP from occ to org string representation."
+  ;; (error "Implement method occ-prop-elem-to-org for prop %s" prop)
+  (occ-debug :debug "occ-prop-elem-to-org: no method for prop %s using default." prop)
+  value)
+(cl-defmethod occ-prop-elem-from-org ((prop symbol)
+                                      value)
+  "Method convert value VALUE of property PROP from org string to occ representation."
+  ;; (error "Implement method occ-prop-elem-from-org for prop %s" prop)
+  (occ-debug :debug
+             "occ-prop-elem-from-org: no method for prop %s using default." prop)
+  value)
+
 
 (cl-defgeneric occ-operate-obj-property-with (obj
                                               ctx
@@ -277,71 +299,53 @@
     (occ-operate-obj-property-with tsk ctx prop operation values)))
 
 
-(cl-defmethod occ-prop-is-list ((prop symbol))
-  ;; 'list
-  ;; (error "Implement method occ-prop-is-list for prop %s" prop)
-  (occ-debug :debug "occ-prop-is-list: no method for prop %s using default." prop)
-  nil)
-
-
-(cl-defmethod occ-prop-elem-to-org ((prop symbol)
-                                    value)
-  ;; (error "Implement method occ-prop-elem-to-org for prop %s" prop)
-  (occ-debug :debug "occ-prop-elem-to-org: no method for prop %s using default." prop)
-  value)
-(cl-defmethod occ-prop-elem-from-org ((prop symbol)
-                                      value)
-  ;; (error "Implement method occ-prop-elem-from-org for prop %s" prop)
-  (occ-debug :debug
-             "occ-prop-elem-from-org: no method for prop %s using default." prop)
-  value)
-
-
 (cl-defmethod occ-readprop-elem-from-user ((obj occ-tsk)
                                            (prop symbol))
-  "readprop-elem-from-user for org"i
+  "Read value of element of list for property PROP from user for OCC-TSK OBJ."
   (error "Implement method occ-readprop-elem-from-user-with for prop %s" prop))
 
 (cl-defmethod occ-readprop-from-user ((obj occ-tsk)
                                       (prop symbol))
-  "readprop-from-user for org"
+  "Read value of element of list for property PROP from user for OCC-TSK OBJ."
   (error "Implement method occ-readprop-from-user-with for prop %s" prop))
 
 
 (cl-defmethod occ-readprop-elem-from-user-with ((obj occ-tsk)
                                                 (ctx occ-ctx)
                                                 (prop symbol))
-  "readprop-elem-from-user for org"
+  "Read value of element of list for property PROP from user for OCC-TSK OBJ and OCC-CTX CTX."
   (occ-readprop-elem-from-user obj prop))
 
 (cl-defmethod occ-readprop-from-user-with ((obj occ-tsk)
                                            (ctx occ-ctx)
                                            (prop symbol))
-  "readprop-from-user for org"
+  "Read complete property list from user."
   (occ-readprop-from-user obj prop))
 
 
 (cl-defmethod occ-readprop-elem-from-user ((obj occ-obj-ctx-tsk)
                                            (prop symbol))
-  "readprop-elem-from-user for org"
+  "Read value of element of list for property PROP from user for OCC-OBJ-CTX-TSK OBJ."
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
     (occ-readprop-elem-from-user-with tsk ctx)))
 
 (cl-defmethod occ-readprop-from-user ((obj occ-obj-ctx-tsk)
                                       (prop symbol))
-  "readprop-from-user for org"
+  "Read complete values list for property PROP from user for OCC-OBJ-CTX-TSK OBJ."
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
     (occ-readprop-from-user-with tsk ctx)))
 
 
 (cl-defmethod occ-prop-get-operation ((prop symbol))
+  "Return corresponding get option for property PROP based on type."
   (if (occ-prop-is-list prop)
       'mget
     'get))
 
 (cl-defmethod occ-prop-put-operation ((prop symbol))
+  "Return corresponding put option for property PROP based on type."
   (if (occ-prop-is-list prop)
       'mput
     'put))
@@ -349,6 +353,7 @@
 
 (cl-defmethod occ-rereadprop-value ((prop symbol)
                                     value)
+  "Read org string property PROP to occ representation."
   (cl-assert (not (consp value)))
   (if (occ-prop-is-list prop)
       (let* ((values (and value (split-string value))))
@@ -357,6 +362,7 @@
     (occ-prop-elem-from-org prop value)))
 
 (cl-defmethod occ-reread-props ((obj occ-tsk))
+  "Read all org string properties for task TSK to occ representation."
   (let ((props-by-is-list (cl-method-param-case
                            '(occ-prop-is-list (`((eql ,val)) val))))
         (props-by-converter (cl-method-param-case
@@ -370,7 +376,7 @@
 (cl-defmethod occ-readprop-org-with ((obj occ-tsk)
                                      (ctx occ-ctx)
                                      (prop symbol))
-  "readprop-org"
+  "Read property PROP of task TSK from its corresponding org file entry."
   (let* ((mrk    (or (occ-obj-marker obj) (point)))
          (values (occ-org-operate-property-at-point mrk
                                                     prop
@@ -382,7 +388,7 @@
 (cl-defmethod occ-writeprop-org-with ((obj occ-tsk)
                                       (ctx occ-ctx)
                                       (prop symbol))
-  "readprop-org"
+  "Write property PROP of task TSK from its corresponding org file entry."
   (let* ((values (occ-get-property obj prop))
          (values (if (consp values) values (list values)))
          (values (mapcar #'(lambda (v)
