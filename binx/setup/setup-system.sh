@@ -246,12 +246,13 @@ function setup_misc()
              xsessions/stumpwm.desktop \
              xsessions/stumpwm-gnome.desktop
     do
-	      if [ ! -e /usr/share/$f ]
+	local _INSTALL_DIR=$_INSTALL_DIR
+	      if [ ! -e $_INSTALL_DIR/$f ]
 	      then
-            echo sudo mkdir -p /usr/share/$(dirname $f)
-            echo sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/share/$f /usr/share/$f
-            sudo mkdir -p /usr/share/$(dirname $f)
-            sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/share/$f /usr/share/$f
+            echo sudo mkdir -p $_INSTALL_DIR/$(dirname $f)
+            echo sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/share/$f $_INSTALL_DIR/$f
+            sudo mkdir -p $_INSTALL_DIR/$(dirname $f)
+            sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/share/$f $_INSTALL_DIR/$f
 	      fi
     done
     cd -

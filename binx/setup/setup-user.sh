@@ -40,6 +40,8 @@ APT_REPO_UTILS="ppa:yartsa/lvmeject ppa:mikhailnov/pulseeffects"
 
 APT_REPO_KOI="ppa:team-xbmc/ppa"
 
+DEB_PKGS1="vim emacs25-lucid emacs emacs-goodies-el org-mode develock-el dash-el s-el zile keychain undistract-me rpm sosreport"
+DEB_PKGS2="rxvt-unicode-256color elscreen planner-el p7zip-full pdftk golang gocode gparted"
 DEB_PKG_FIRST_INTERCATIVE_QA="macchanger postfix cyrus-clients lyskom-server console-data tlp"
 DEB_PKG_FIRST_INSTALL="zsh"
 DEB_PKG_EMACS="elpa-git-commit elpa-git-annex elpa-magit elpa-magit-popup elpa-magit-annex elpa-magithub magit elpa-with-editor emacs-goodies-el enscript flim lm-sensors preload pandoc automake g++ gcc libpng-dev libpoppler-dev libpoppler-glib-dev libpoppler-private-dev libz-dev make pkg-config elpa-projectile elpa-ghub elpa-ghub+ git-el rtv elpa-ert-async elpa-ert-expectations elpa-package-lint" #
@@ -57,9 +59,7 @@ DEB_PKG_NECESSARY1="fish ondir zsh-syntax-highlighting doc-base snooze"
 DEB_PKG_WITH_ERROR="edb"
 DEB_PKG_APPEARANCE="lxappearance gnome-tweak-tool gnome-themes-standard libgtk-3-dev console-data gnome-session gnome-settings-daemon gnome-panel policykit-1-gnome dex"
 DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp virtualbox-dkms virtualbox-guest-x11 vagrant libvirt-clients docker-compose"
-DEB_PKGS1="vim emacs25-lucid emacs emacs-goodies-el org-mode develock-el dash-el s-el zile keychain undistract-me rpm sosreport"
 
-DEB_PKGS2="rxvt-unicode-256color elscreen planner-el p7zip-full pdftk golang gocode gparted"
 DEB_EXTRA_PKG1=" libpam-tmpdir xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip python3-secretstorage copyq parcellite clipit diodon dunst zathura apvlv udiskie xsel xfce4-clipman rofi shellex"
 DEB_EXTRA_PKG_COMMUNICATION="pidgin finch pidgin-skype pidgin-skypeweb empathy empathy-skype pidgin-gnome-keyring purple-skypeweb telegram-purple pidgin-plugin-pack bitlbee-libpurple bitlbee-plugin-otr tor" #  bitlbee
 DEB_EXTRA_PKG_VIRTUAL=""
@@ -114,6 +114,8 @@ DEB_PKG_LANG_SCHEME="guile-2.2 guile-2.0 scsh"
 DEB_PKG_LANG_HASKELL="ghc alex happy haddock hlint"
 # https://hostpresto.com/community/tutorials/how-to-install-erlang-on-ubuntu-16-04/
 DEB_PKG_LANG_ERLANG="elixir esl-erlang"
+# https://askubuntu.com/questions/77657/how-to-enable-arabic-support-in-gnome-terminal
+DEB_PKG_LANGUAGE="bicon libfribidi0 libfribidi-dev"
 
 PY_PIP_PKG="termdown "
 NODE_PKG="tern "
@@ -649,6 +651,8 @@ function setup_apt_packages()
 
 
     local deb_pkg_lists=(
+        DEB_PKGS1
+        DEB_PKGS2
         DEB_PKG_FIRST_INTERCATIVE_QA
         DEB_PKG_FIRST_INSTALL
         DEB_PKG_EMACS
@@ -666,9 +670,7 @@ function setup_apt_packages()
         # DEB_PKG_WITH_ERROR
         DEB_PKG_APPEARANCE
         DEB_PKG_VIRTURALMACHINE
-        DEB_PKGS1
 
-        DEB_PKGS2
         DEB_EXTRA_PKG1
         DEB_EXTRA_PKG_COMMUNICATION
         DEB_EXTRA_PKG_VIRTUAL
@@ -715,7 +717,7 @@ function setup_apt_packages()
         DEB_PKG_LANG_OCAML
         DEB_PKG_LANG_SMALLTALK
         DEB_PKG_LANG_SCHEME
-
+	DEB_PKG_LANGUAGE
     )
 
     for pkg in ${deb_pkg_lists[*]}
