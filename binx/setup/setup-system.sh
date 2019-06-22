@@ -236,7 +236,7 @@ function setup_git_repos()
 
 function setup_misc()
 {
-    sudo cp -ar $SITEDIR/.repos/git/system/system/ubuntu/$SITEDIR/* $SITEDIR/
+    running sudo cp -ar $SITEDIR/.repos/git/system/system/ubuntu/$SITEDIR/* $SITEDIR/
 
 
     cd $SITEDIR/.repos/git/system/system/ubuntu/usr/share
@@ -246,14 +246,16 @@ function setup_misc()
              xsessions/stumpwm.desktop \
              xsessions/stumpwm-gnome.desktop
     do
-	local _INSTALL_DIR=$_INSTALL_DIR
-	      if [ ! -e $_INSTALL_DIR/$f ]
-	      then
+	local _INSTALL_DIR=/usr/share
+	if [ ! -e $_INSTALL_DIR/$f ]
+	then
             echo sudo mkdir -p $_INSTALL_DIR/$(dirname $f)
             echo sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/share/$f $_INSTALL_DIR/$f
-            sudo mkdir -p $_INSTALL_DIR/$(dirname $f)
-            sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/share/$f $_INSTALL_DIR/$f
-	      fi
+            running sudo mkdir -p $_INSTALL_DIR/$(dirname $f)
+            running sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/share/$f $_INSTALL_DIR/$f
+	else
+	    echo $_INSTALL_DIR/$f already exists.
+	fi
     done
     cd -
 
