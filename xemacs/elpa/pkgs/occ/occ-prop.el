@@ -90,6 +90,11 @@
 (cl-defmethod occ-properties-to-edit-with ((obj occ-tsk)
                                            (ctx occ-ctx))
   (occ-match-prop-method-args-with obj ctx))
+
+(cl-defmethod occ-properties-to-edit ((obj occ-obj-ctx-tsk))
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+   (occ-match-prop-method-args-with tsk ctx)))
 
 
 (cl-defmethod occ-properties-to-calculate-rank ((obj occ-tsk))
@@ -100,6 +105,11 @@
                                                      (ctx occ-ctx))
   (let ((class 'occ-ctx))
     (cl-method-param-case '(occ-rankprop-with (`(occ-tsk occ-ctx (eql ,val)) val)))))
+
+(cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-ctx-tsk))
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+    (occ-properties-to-calculate-rank-with tsk ctx)))
 
 ;; (let ((class 'occ-tsk))
 ;;   (cl-method-param-case `'(occ-rankprop (`(class (eql ,val)) val))))
@@ -297,9 +307,7 @@
                                              (prop symbol)
                                              operation
                                              values)
-  (let ((tsk (occ-obj-tsk obj))
-        (ctx (occ-obj-ctx obj)))
-    (occ-operate-obj-property tsk prop operation values)))
+  (occ-operate-obj-property obj prop operation values))
 
 (cl-defmethod occ-operate-obj-property ((obj occ-obj-ctx-tsk)
                                         (prop symbol)
@@ -307,7 +315,8 @@
                                         values)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (occ-operate-obj-property-with tsk ctx prop operation values)))
+    (occ-operate-obj-property-with tsk ctx
+                                   prop operation values)))
 
 
 (cl-defmethod occ-readprop-elem-from-user ((obj occ-tsk)
@@ -360,6 +369,18 @@
   (if (occ-prop-is-list prop)
       'mput
     'put))
+
+(cl-defmethod occ-prop-add-operation ((prop symbol))
+  "Return corresponding put option for property PROP based on type."
+  (if (occ-prop-is-list prop)
+      'madd
+    'put))
+
+(cl-defmethod occ-prop-remove-operation ((prop symbol))
+  "Return corresponding put option for property PROP based on type."
+  (if (occ-prop-is-list prop)
+      'mremove
+    'remove))
 
 
 (cl-defmethod occ-rereadprop-value ((prop symbol)
@@ -436,7 +457,7 @@
                        ("put" . mput))))
         (cdr
          (assoc
-          (completing-read "action: " actions)
+          (completing-read (format "%s action: " prop) actions)
           actions)))
     'put))
 
@@ -529,7 +550,6 @@
                                                value)
   "occ-generated-operation-method")
 
-
 (cl-defmethod occ-generated-operation-method ((obj occ-tsk)
                                               (prop symbol)
                                               operation
@@ -555,9 +575,165 @@
                                               (prop symbol)
                                               operation
                                               value)
+  #'(lambda (obj)
+      (occ-editprop obj
+                    prop
+                    operation
+                    value)))
+
+
+(cl-defgeneric occ-generated-prompt-operation-method-with (obj
+                                                           ctx
+                                                           prop
+                                                           operation
+                                                           value)
+  "occ-generated-prompt-operation-method-with")
+
+(cl-defgeneric occ-generated-prompt-operation-method (obj
+                                                      ctx
+                                                      prop
+                                                      operation
+                                                      value)
+  "occ-generated-prompt-operation-method")
+
+(cl-defmethod occ-generated-prompt-operation-method ((obj occ-tsk)
+                                                     (prop symbol)
+                                                     operation
+                                                     value)
+  (let ((value (occ-prop-elem-to-org prop value)))
+    (cons
+     (format "%s %s in %s"
+             (if (occ-prop-is-list prop) "Add" "Replace")
+             propvalue prop)
+     (occ-generated-operation-method obj prop
+                                     (occ-prop-add-operation prop)
+                                     value))))
+
+(cl-defmethod occ-generated-prompt-operation-method-with ((obj occ-tsk)
+                                                          (ctx occ-ctx)
+                                                          (prop symbol)
+                                                          operation
+                                                          value)
+  (let ((value (occ-prop-elem-to-org prop value)))
+    (cons
+     (format "%s %s in %s"
+             (if (occ-prop-is-list prop) "Add" "Replace")
+             value prop)
+     (occ-generated-operation-method-with obj ctx prop
+                                          (occ-prop-add-operation prop)
+                                          value))))
+
+(cl-defmethod occ-generated-prompt-operation-method ((obj occ-obj-ctx-tsk)
+                                                     (prop symbol)
+                                                     operation
+                                                     value)
+  (let ((value (occ-prop-elem-to-org prop value)))
+    (cons
+     (format "%s %s in %s"
+             (if (memq operation '(madd add))
+                 (if (occ-prop-is-list prop) "Add" "Replace")
+               "Remove")
+             value prop)
+     (occ-generated-operation-method obj prop
+                                     (occ-prop-add-operation prop)
+                                     value))))
+
+
+;; (defmethod occ-generate-operation-for-add (obj occ-obj-tsk)
+;;   (mapcar
+;;    #'(lambda (prop)
+;;        (occ-generated-prompt-operation-method obj prop
+;;                                               (occ-prop-add-operation prop)
+;;                                               (occ-get-property obj prop)))
+;;    (occ-properties-to-edit obj)))
+
+;; (defmethod occ-generate-operation-for-remove (obj occ-obj-tsk)
+;;   (mapcar
+;;    #'(lambda (prop)
+;;        (occ-generated-prompt-operation-method obj prop
+;;                                               (occ-prop-remove-operation prop)
+;;                                               (occ-get-property obj prop)))
+;;    (occ-properties-to-edit obj)))
+
+
+(cl-defgeneric occ-property-membership-p (obj
+                                          prop
+                                          value)
+  "occ-property-membership-p")
+
+(cl-defmethod occ-property-membership-p ((obj occ-tsk)
+                                         (prop symbol)
+                                         value)
+  (if (occ-prop-is-list prop)
+      (memq value (occ-get-property obj prop))
+    (equal value (occ-get-property obj prop))))
+
+(cl-defmethod occ-property-membership-p ((obj occ-obj-ctx-tsk)
+                                         (prop symbol)
+                                         value)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (occ-generated-operation-methodo-with tsk ctx prop value)))
+    (occ-property-membership-p tsk prop value)))
+
+
+(cl-defmethod occ-generate-operation-for-add ((obj occ-obj-ctx-tsk))
+  (let ((props (occ-properties-to-edit obj))
+        (gen-add-action
+         #'(lambda (prop)
+             (unless (occ-property-membership-p obj prop
+                                                (occ-get-property (occ-obj-ctx obj)
+                                                                  prop))
+               (occ-generated-prompt-operation-method obj prop
+                                                      (occ-prop-add-operation prop)
+                                                      (occ-get-property (occ-obj-ctx obj)
+                                                                        prop)))))))
+  (remove nil
+          (mapcar #'(lambda (prop) (gen-add-action prop))
+                  props)))
+
+(cl-defmethod occ-generate-operation-for-remove ((obj occ-obj-ctx-tsk))
+  (let ((props (occ-properties-to-edit obj))
+        (gen-remove-action
+         #'(lambda (prop)
+             (unless (occ-property-membership-p obj prop
+                                                (occ-get-property (occ-obj-ctx obj)
+                                                                  prop))
+               (occ-generated-prompt-operation-method obj prop
+                                                      (occ-prop-remove-operation prop)
+                                                      (occ-get-property (occ-obj-ctx obj)
+                                                                        prop)))))))
+  (remove nil
+          (mapcar #'(lambda (prop) (gen-remove-action prop))
+                  props)))
+
+
+(cl-defmethod occ-generate-operation-for-add-remove ((obj occ-obj-ctx-tsk))
+  (let ((props (occ-properties-to-edit obj))
+        (gen-add-action
+         #'(lambda (prop)
+             (unless (occ-property-membership-p obj prop
+                                                (occ-get-property (occ-obj-ctx obj)
+                                                                  prop))
+               (occ-generated-prompt-operation-method obj prop
+                                                      (occ-prop-add-operation prop)
+                                                      (occ-get-property (occ-obj-ctx obj)
+                                                                        prop)))))
+        (gen-remove-action
+         #'(lambda (prop)
+             (unless (occ-property-membership-p obj prop
+                                                (occ-get-property (occ-obj-ctx obj)
+                                                                  prop))
+               (occ-generated-prompt-operation-method obj prop
+                                                      (occ-prop-remove-operation prop)
+                                                      (occ-get-property (occ-obj-ctx obj)
+                                                                        prop))))))
+    (remove nil
+            (apply #'
+             append
+             (mapcar
+               #'(lambda (prop)
+                   (list (funcall gen-add-action prop) (funcall gen-remove-action prop)))
+               props)))))
 
 
 (cl-defmethod occ-print-rank ((obj occ-tsk))

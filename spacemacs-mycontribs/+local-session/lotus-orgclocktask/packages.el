@@ -36,12 +36,11 @@
 
 (defconst lotus-orgclocktask-packages
   '(
-    ;; (PACKAGE :location local)
     org
     ;; org-notify
     org-doing
     org-alert
-    org-wild-notifier
+    ;; org-wild-notifier
     lotus-utils
     ;; org-misc-utils-lotus
     org-clock-unnamed-task
@@ -130,15 +129,16 @@ Each entry is either:
     :config
     (progn)))
 
-(defun lotus-orgclocktask/init-org-wild-notifier ()
-  ;; see also https://github.com/akhramov/org-wild-notifier.el
-  (use-package org-wild-notifier
-    :init
-    (org-wild-notifier-mode)
-    :commands (org-wild-notifier-mode)
-    :defer t
-    :config
-    (progn)))
+;; not working
+;; (defun lotus-orgclocktask/init-org-wild-notifier ()
+;;   ;; see also https://github.com/akhramov/org-wild-notifier.el
+;;   (use-package org-wild-notifier
+;;     :init
+;;     (org-wild-notifier-mode)
+;;     :commands (org-wild-notifier-mode)
+;;     :defer t
+;;     :config
+;;     (progn)))
 
 (defun lotus-orgclocktask/init-lotus-utils ()
   (use-package org-misc-utils-lotus

@@ -113,11 +113,15 @@
   (occ-helm-actions obj))
 
 (cl-defmethod occ-helm-action-transformer ((obj occ-obj-ctx-tsk) actions)
-  (occ-helm-actions obj))
+  (message "occ-helm-action-transformer: %s"
+           (occ-generate-operation-for-add-remove obj))
+  ;; (occ-helm-actions obj)
+  (append
+   (occ-helm-actions obj)
+   (occ-generate-operation-for-add-remove obj)))
 
 (cl-defun occ-helm-action-transformer-fun (action candidate)
   (occ-helm-action-transformer candidate action))
-
 
 ;; (cl-defmethod occ-helm-action-transformer ((obj occ-ctx) actions)
 ;;   (list
@@ -126,7 +130,6 @@
 
 ;; (cl-defmethod occ-helm-action-transformer ((obj occ-ctxual-tsk) actions)
 ;;   (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
-
 
 
 (cl-defmethod occ-props-edit-helm-actions ((obj null))
