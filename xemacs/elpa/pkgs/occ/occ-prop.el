@@ -746,4 +746,8 @@
                (occ-format obj 'capitalize)
                (occ-rank obj)))
 
+
+(cl-defmethod occ-increase-timeout ((obj occ-obj-ctx-tsk))
+  (occ-generated-prompt-operation-method obj 'timeout add 100))
+
 ;;; occprop.el ends here
