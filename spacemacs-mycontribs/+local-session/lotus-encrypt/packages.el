@@ -40,6 +40,14 @@
     ;; epa
     ;; (epa-file :location local)
     lotus-crypt-utils
+
+    ;; pass               20190611.2001 new        melpa      Major mode for password-store.el
+    ;; passmm             20181130.1612 new        melpa      A minor mode for pass (Password Store).
+    ;; passthword         20141201.923  new        melpa      Simple password manager
+    ;; password-mode      20170412.629  new        melpa      Hide password text using overlays
+    ;; password-store-otp 20180815.610  new        melpa      Password store (pass) OTP extension support
+    ;; password-vault     20160126.1820 new        melpa      A Password manager for Emacs.
+
     )
   "The list of Lisp packages required by the lotus-encrypt layer.
 

@@ -40,10 +40,10 @@ APT_REPO_UTILS="ppa:yartsa/lvmeject ppa:mikhailnov/pulseeffects"
 
 APT_REPO_KOI="ppa:team-xbmc/ppa"
 
+DEB_PKG_FIRST_INSTALL="zsh"
 DEB_PKGS1="vim emacs25-lucid emacs emacs-goodies-el org-mode develock-el dash-el s-el zile keychain undistract-me rpm sosreport"
 DEB_PKGS2="rxvt-unicode-256color elscreen planner-el p7zip-full pdftk golang gocode gparted"
 DEB_PKG_FIRST_INTERCATIVE_QA="macchanger postfix cyrus-clients lyskom-server console-data tlp"
-DEB_PKG_FIRST_INSTALL="zsh"
 DEB_PKG_EMACS="elpa-git-commit elpa-git-annex elpa-magit elpa-magit-popup elpa-magit-annex elpa-magithub magit elpa-with-editor emacs-goodies-el enscript flim lm-sensors preload pandoc automake g++ gcc libpng-dev libpoppler-dev libpoppler-glib-dev libpoppler-private-dev libz-dev make pkg-config elpa-projectile elpa-ghub elpa-ghub+ git-el rtv elpa-ert-async elpa-ert-expectations elpa-package-lint" #
 DEB_PKG_MESSAGING="namazu2 mhc x-face-el compface"
 DEB_PKG_NECESSARY_MORE1="xaos xnee xnee-doc xzgv yatex zsh zsh-doc zutils zplug zsh-theme-powerlevel9k screen tmate tmux tmuxp byobu landscape-common update-motd ccze shutdown-at-night sitesummary xterm rxvt-unicode-256color cifs-utils"
@@ -125,12 +125,14 @@ function main()
 
     trap setup_finish EXIT SIGINT SIGTERM
 
-    echo process_arg $@
-    process_arg $@
+    running process_arg $@
+    # process_arg $@
 
-    mkdir -p $TMPDIR
+    running mkdir -p $TMPDIR
 
-    set_keyboard
+    running set_keyboard
+
+    running setup_sourcecode_pro_font
 
     cd ~/
 
@@ -138,7 +140,7 @@ function main()
 
     running setup_ecrypt_private
 
-    setup_tmp_ssh_keys "$TMPDIR/ssh" "$SSH_KEY_DUMP"
+    running setup_tmp_ssh_keys "$TMPDIR/ssh" "$SSH_KEY_DUMP"
 
     if ! ssh-add -l
     then
@@ -162,8 +164,6 @@ function main()
     running setup_advertisement_blocking
 
     running setup_dirs
-
-    running setup_sourcecode_pro_font
 
     running setup_apache_usermod
 
@@ -651,10 +651,10 @@ function setup_apt_packages()
 
 
     local deb_pkg_lists=(
+        DEB_PKG_FIRST_INSTALL
         DEB_PKGS1
         DEB_PKGS2
         DEB_PKG_FIRST_INTERCATIVE_QA
-        DEB_PKG_FIRST_INSTALL
         DEB_PKG_EMACS
         DEB_PKG_MESSAGING
         DEB_PKG_NECESSARY_MORE1
@@ -1045,30 +1045,18 @@ function setup_user_config_setup()
     else                        # if [ -d "${RCHOME}" ]
         error "${RCHOME}" not exists >&2
     fi                          # if [ -d "${RCHOME}" ]
-
-    # if false
-    # then
-    #     if [ -d ~/.setup/.config/_home/acyclicsymlinkfix ]
-    #     then
-    #         for symlnk in ~/.setup/.config/_home/acyclicsymlinkfix/.Volumes \
-    #                       ~/.setup/.config/_home/acyclicsymlinkfix/Desktop \
-    #                       ~/.setup/.config/_home/acyclicsymlinkfix/Downloads \
-    #                       ~/.setup/.config/_home/acyclicsymlinkfix/Music \
-    #                       ~/.setup/.config/_home/acyclicsymlinkfix/Pictures
-    #         do
-    #             cp -a $symlnk ~/
-    #         done
-    #     fi
-    # fi
 }
 
 function setup_download_misc()
 {
-    if [ ! -f /usr/local/bin/p4 ]
+    if false
     then
-	      wget 'https://www.perforce.com/downloads/free/p4' -O $TMPDIR/p4
-	      sudo cp $TMPDIR/p4 /usr/local/bin/p4
-	      sudo chmod +x /usr/local/bin/p4
+        if [ ! -f /usr/local/bin/p4 ]
+        then
+	          wget 'https://www.perforce.com/downloads/free/p4' -O $TMPDIR/p4
+	          sudo cp $TMPDIR/p4 /usr/local/bin/p4
+	          sudo chmod +x /usr/local/bin/p4
+        fi
     fi
 }
 
