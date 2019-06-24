@@ -486,8 +486,8 @@
   (occ-debug :debug
              "occ-editprop: prop: %s, value: %s" prop value)
   (let ((mrk (occ-obj-marker obj)))
-    (let ((operation  (or operation    (occ-select-prop-list-operation prop)))
-          (prop-value (or value (occ-readprop-elem-from-user obj prop))))
+    (let ((operation  (or operation (occ-select-prop-list-operation prop)))
+          (prop-value (or value     (occ-readprop-elem-from-user obj prop))))
       (let ((retval
              (occ-org-operate-property-at-point mrk
                                                 prop
@@ -509,8 +509,8 @@
   (occ-debug :debug
              "occ-editprop-with: prop: %s, value: %s" prop value)
   (let ((mrk (occ-obj-marker obj)))
-    (let ((operation  (or operation    (occ-select-prop-list-operation prop)))
-          (prop-value (or value (occ-readprop-elem-from-user-with obj ctx prop))))
+    (let ((operation  (or operation (occ-select-prop-list-operation prop)))
+          (prop-value (or value     (occ-readprop-elem-from-user-with obj ctx prop))))
       (let ((retval
              (occ-org-operate-property-at-point mrk
                                                 prop
@@ -602,9 +602,12 @@
                                                      value)
   (let ((value (occ-prop-elem-to-org prop value)))
     (cons
-     (format "%s %s in %s"
-             (if (occ-prop-is-list prop) "Add" "Replace")
-             propvalue prop)
+     (format "%s %s %s %s"
+             (if (memq operation '(madd add))
+                 (if (occ-prop-is-list prop) "Add" "Replace")
+               "Remove")
+             (if (occ-prop-is-list prop) "in" "from")
+             value prop)
      (occ-generated-operation-method obj prop
                                      (occ-prop-add-operation prop)
                                      value))))
@@ -616,8 +619,11 @@
                                                           value)
   (let ((value (occ-prop-elem-to-org prop value)))
     (cons
-     (format "%s %s in %s"
-             (if (occ-prop-is-list prop) "Add" "Replace")
+     (format "%s %s %s %s"
+             (if (memq operation '(madd add))
+                 (if (occ-prop-is-list prop) "Add" "Replace")
+               "Remove")
+             (if (occ-prop-is-list prop) "in" "from")
              value prop)
      (occ-generated-operation-method-with obj ctx prop
                                           (occ-prop-add-operation prop)
@@ -629,10 +635,11 @@
                                                      value)
   (let ((value (occ-prop-elem-to-org prop value)))
     (cons
-     (format "%s %s in %s"
+     (format "%s %s %s %s"
              (if (memq operation '(madd add))
                  (if (occ-prop-is-list prop) "Add" "Replace")
                "Remove")
+             (if (occ-prop-is-list prop) "in" "from")
              value prop)
      (occ-generated-operation-method obj prop
                                      (occ-prop-add-operation prop)
@@ -695,9 +702,9 @@
   (let ((props (occ-properties-to-edit obj))
         (gen-remove-action
          #'(lambda (prop)
-             (unless (occ-property-membership-p obj prop
-                                                (occ-get-property (occ-obj-ctx obj)
-                                                                  prop))
+             (when (occ-property-membership-p obj prop
+                                              (occ-get-property (occ-obj-ctx obj
+                                                                  prop)))
                (occ-generated-prompt-operation-method obj prop
                                                       (occ-prop-remove-operation prop)
                                                       (occ-get-property (occ-obj-ctx obj)
@@ -720,9 +727,9 @@
                                                                         prop)))))
         (gen-remove-action
          #'(lambda (prop)
-             (unless (occ-property-membership-p obj prop
-                                                (occ-get-property (occ-obj-ctx obj)
-                                                                  prop))
+             (when (occ-property-membership-p obj prop
+                                              (occ-get-property (occ-obj-ctx obj)
+                                                                prop))
                (occ-generated-prompt-operation-method obj prop
                                                       (occ-prop-remove-operation prop)
                                                       (occ-get-property (occ-obj-ctx obj)

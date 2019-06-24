@@ -67,7 +67,7 @@ Each entry is either:
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
 
-(defun lotus-appearance/post-init-powerline ()
+(defun lotus-appearance/init-powerline ()
   (use-package powerline
     :init
     (progn
