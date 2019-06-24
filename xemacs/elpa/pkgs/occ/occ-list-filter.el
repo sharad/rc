@@ -43,7 +43,7 @@
                                        &key
                                        builder)
   "return CTSKs list"
-  (let ((builder (or builder #'occ-build-ctsk)))
+  (let ((builder (or builder #'occ-build-ctsk-with)))
     (let ((ctsks
             (run-unobtrusively
               (let ((tsks (occ-collect-list collection))) ;;????TODO

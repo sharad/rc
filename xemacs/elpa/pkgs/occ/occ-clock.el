@@ -183,7 +183,7 @@
   (unless builder (error "Builder can not be nil"))
   (occ-debug :debug "occ-clock-in(occ-ctx=%s)" obj)
   (let ((filters            (or filters (occ-match-filters)))
-        (builder            (or builder #'occ-build-ctxual-tsk))
+        (builder            (or builder #'occ-build-ctxual-tsk-with))
         (action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
@@ -228,29 +228,28 @@
           (occ-message "occ-clock-in: Edit properties of a tsk to make associable to current context.")
           (occ-safe-ignore-quit-props-window-edit obj
                                                   :filters            #'occ-list-filters
-                                                  :builder            #'occ-build-ctsk
+                                                  :builder            #'occ-build-ctsk-with
                                                   :return-transform   return-transform ;Here caller know if return value is going to be used.
                                                   :action             action
                                                   :action-transformer action-transformer
                                                   :timeout            timeout))))))
 
 
-(cl-defmethod occ-clock-in-if-associable-with ((tsk occ-tsk)
-                                               (ctx occ-ctx)
-                                               &key
-                                               filters
-                                               builder
-                                               action
-                                               action-transformer
-                                               timeout)
-  (when (occ-associable-with-p tsk ctx)
-    (occ-clock-in (occ-build-ctxual-tsk tsk ctx)
-                  :filters            filters
-                  :builder            builder
-                  :action             action
-                  :action-transformer action-transformer
-                  :timeout            timeout)))
-
+;; (cl-defmethod occ-clock-in-if-associable-with ((tsk occ-tsk)
+;;                                                (ctx occ-ctx)
+;;                                                &key
+;;                                                filters
+;;                                                builder
+;;                                                action
+;;                                                action-transformer
+;;                                                timeout)
+;;   (when (occ-associable-with-p tsk ctx)
+;;     (occ-clock-in (occ-build-ctxual-tsk-with tsk ctx)
+;;                   :filters            filters
+;;                   :builder            builder
+;;                   :action             action
+;;                   :action-transformer action-transformer
+;;                   :timeout            timeout)))
 
 (cl-defmethod occ-clock-in-if-associable ((obj occ-obj-ctx-tsk)
                                           &key
@@ -259,44 +258,44 @@
                                           action
                                           action-transformer
                                           timeout)
-  (let ((tsk (occ-obj-tsk obj))
-        (ctx (occ-obj-ctx obj)))
-    (occ-clock-in-if-associable-with tsk ctx
-                                     :filters            filters
-                                     :builder            builder
-                                     :action             action
-                                     :action-transformer action-transformer
-                                     :timeout            timeout)))
+  (let ((ctxtual-tsk (occ-build-ctxual-tsk obj)))
+    (when ctxtual-tsk
+      (occ-clock-in ctxtual-tsk
+                    :filters            filters
+                    :builder            builder
+                    :action             action
+                    :action-transformer action-transformer
+                    :timeout            timeout))))
 
 
-(cl-defmethod occ-try-clock-in-with ((tsk occ-tsk)
-                                     (ctx occ-ctx)
-                                     &key
-                                     filters
-                                     builder
-                                     action
-                                     action-transformer
-                                     timeout)
-  (let* ((total-tries 3)
-         (try         total-tries))
-    (while (and
-            (> try 0)
-            (not (occ-associable-with-p tsk ctx)))
-      (setq try (1- try))
-      (occ-message "occ-try-clock-in-with %s is not associable with %s [try %d]"
-                   (occ-format tsk 'capitalize)
-                   (occ-format ctx 'capitalize)
-                   (- total-tries try))
-      (occ-props-edit-with tsk ctx)))
-  (unless (occ-clock-in-if-associable-with tsk ctx
-                                           :filters            filters
-                                           :builder            builder
-                                           :action             action
-                                           :action-transformer action-transformer
-                                           :timeout            timeout)
-    (occ-message "%s is not associable with %s not clocking-in."
-                 (occ-format tsk 'capitalize)
-                 (occ-format ctx 'capitalize))))
+;; (cl-defmethod occ-try-clock-in-with ((tsk occ-tsk)
+;;                                      (ctx occ-ctx)
+;;                                      &key
+;;                                      filters
+;;                                      builder
+;;                                      action
+;;                                      action-transformer
+;;                                      timeout)
+;;   (let* ((total-tries 3)
+;;          (try         total-tries))
+;;     (while (and
+;;             (> try 0)
+;;             (not (occ-associable-with-p tsk ctx)))
+;;       (setq try (1- try))
+;;       (occ-message "occ-try-clock-in-with %s is not associable with %s [try %d]"
+;;                    (occ-format tsk 'capitalize)
+;;                    (occ-format ctx 'capitalize)
+;;                    (- total-tries try))
+;;       (occ-props-edit-with tsk ctx)))
+;;   (unless (occ-clock-in-if-associable-with tsk ctx
+;;                                            :filters            filters
+;;                                            :builder            builder
+;;                                            :action             action
+;;                                            :action-transformer action-transformer
+;;                                            :timeout            timeout)
+;;     (occ-message "%s is not associable with %s not clocking-in."
+;;                  (occ-format tsk 'capitalize)
+;;                  (occ-format ctx 'capitalize))))
 
 
 (cl-defmethod occ-try-clock-in ((obj marker)
@@ -328,6 +327,22 @@
                 :action-transformer action-transformer
                 :timeout            timeout))
 
+;; (cl-defmethod occ-try-clock-in ((obj occ-ctsk)
+;;                                 &key
+;;                                 filters
+;;                                 builder
+;;                                 action
+;;                                 action-transformer
+;;                                 timeout)
+;;   (let ((tsk (occ-obj-tsk obj))
+;;         (ctx (occ-obj-ctx obj)))
+;;     (occ-try-clock-in-with tsk ctx
+;;                            :filters            filters
+;;                            :builder            builder
+;;                            :action             action
+;;                            :action-transformer action-transformer
+;;                            :timeout            timeout)))
+
 (cl-defmethod occ-try-clock-in ((obj occ-ctsk)
                                 &key
                                 filters
@@ -336,13 +351,28 @@
                                 action-transformer
                                 timeout)
   (let ((tsk (occ-obj-tsk obj))
-        (ctx (occ-obj-ctx obj)))
-    (occ-try-clock-in-with tsk ctx
-                           :filters            filters
-                           :builder            builder
-                           :action             action
-                           :action-transformer action-transformer
-                           :timeout            timeout)))
+        (ctx (occ-obj-ctx obj))
+        (ctxtual-tsk (occ-build-ctxual-tsk obj)))
+    (let* ((total-tries 3))
+         (try         total-tries))
+    (while (and
+            (> try 0)
+            (not (occ-associable-p ctxtual-tsk)))
+      (setq try (1- try))
+      (occ-message "occ-try-clock-in %s is not associable with %s [try %d]"
+                   (occ-format tsk 'capitalize)
+                   (occ-format ctx 'capitalize)
+                   (- total-tries try))
+      (occ-props-edit ctxtual-tsk)))
+  (unless (occ-clock-in-if-associable ctxtual-tsk
+                                      :filters            filters
+                                      :builder            builder
+                                      :action             action
+                                      :action-transformer action-transformer
+                                      :timeout            timeout)
+    (occ-message "%s is not associable with %s not clocking-in."
+                 (occ-format tsk 'capitalize)
+                 (occ-format ctx 'capitalize))))
 
 (cl-defmethod occ-try-clock-in ((obj null)
                                 &key
@@ -392,7 +422,7 @@
                                    timeout)
   (unless builder (error "Builder can not be nil"))
   (let ((filters            (or filters (occ-match-filters)))
-        (builder            (or builder #'occ-build-ctxual-tsk))
+        (builder            (or builder #'occ-build-ctxual-tsk-with))
         (action             (or action  (occ-helm-actions ctx)))
         (return-transform   t) ;as return value is going to be used.)
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
@@ -400,8 +430,7 @@
     (occ-debug-uncond "occ-clock-in-if-not((obj occ-ctx)): begin")
     (if (or
          (occ-clock-marker-unnamed-clock-p)
-         (not (occ-associable-with-p (occ-current-tsk)
-                                     ctx)))
+         (not (occ-current-ctxual-tsk ctx)))
         (prog1                ;current clock is not matching
             t
           (occ-debug :debug
@@ -463,7 +492,7 @@
                                    auto-select-if-only
                                    timeout)
   (let* ((filters            (or filters (occ-match-filters)))
-         (builder            (or builder #'occ-build-ctxual-tsk))
+         (builder            (or builder #'occ-build-ctxual-tsk-with))
          (action             (or action  (occ-helm-actions ctx)))
          (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
          (timeout            (or timeout occ-idle-timeout)))

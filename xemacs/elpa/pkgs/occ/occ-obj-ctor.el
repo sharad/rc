@@ -187,50 +187,101 @@
   (occ-make-ctx-at-point (point-marker)))
 
 
-(cl-defgeneric occ-make-ctsk (tsk ctx)
-  "occ-make-ctsk")
+(cl-defgeneric occ-make-ctsk-with (tsk ctx)
+  "occ-make-ctsk-with")
 
-(cl-defmethod occ-make-ctsk ((tsk occ-tsk)
-                             (ctx occ-ctx))
-  ;; use occ-build-ctsk
+(cl-defmethod occ-make-ctsk-with ((tsk occ-tsk)
+                                  (ctx occ-ctx))
+  ;; use occ-build-ctsk-with
   (make-occ-ctsk
    :name    nil
    :tsk     tsk
    :ctx     ctx))
 
-(cl-defmethod occ-build-ctsk ((tsk occ-tsk) ;ctor
-                              (ctx occ-ctx))
-  (occ-make-ctsk tsk ctx))
+(cl-defmethod occ-build-ctsk-with ((tsk occ-tsk) ;ctor
+                                   (ctx occ-ctx))
+  (occ-make-ctsk-with tsk ctx))
+
+(cl-defmethod occ-make-ctsk ((obj occ-ctxtual-tsk))
+  ;; use occ-build-ctsk-with
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+    (make-occ-ctsk
+     :name    nil
+     :tsk     tsk
+     :ctx     ctx)))
+
+(cl-defmethod occ-build-ctsk ((obj occ-ctxtual-tsk))
+  (occ-make-ctsk obj))
+
+
+(cl-defmethod occ-make-ctsk ((obj occ-ctsk))
+  ;; use occ-build-ctsk-with
+  obj)
+
+(cl-defmethod occ-build-ctsk ((obj occ-ctsk))
+  obj)
 
 
-(cl-defgeneric occ-make-ctxual-tsk (tsk
-                                    ctx
-                                    &optional
-                                    rank)
-  "occ-make-ctxual-tsk")
+(cl-defgeneric occ-make-ctxual-tsk-with (tsk ctx
+                                         &optional
+                                         rank)
+  "occ-make-ctxual-tsk-with")
 
-(cl-defmethod occ-make-ctxual-tsk ((tsk occ-tsk)
-                                   (ctx occ-ctx)
-                                   &optional
-                                   rank)
-  ;; use occ-build-ctxual-tsk
+(cl-defmethod occ-make-ctxual-tsk-with ((tsk occ-tsk)
+                                        (ctx occ-ctx)
+                                        &optional
+                                        rank)
+  ;; use occ-build-ctxual-tsk-with
   (make-occ-ctxual-tsk
    :name    nil
    :tsk     tsk
    :ctx     ctx
    :rank    rank))
 
-(cl-defmethod occ-build-ctxual-tsk ((tsk occ-tsk) ;ctor
-                                    (ctx occ-ctx))
-  (occ-make-ctxual-tsk tsk
-                       ctx
-                       (occ-calculate-rank-with tsk ctx)))
+;; (cl-defmethod occ-build-ctxual-tsk-with ((tsk occ-tsk) ;ctor
+;;                                     (ctx occ-ctx))
+;;   (occ-make-ctxual-tsk-with tsk
+;;                             ctx
+;;                             (occ-calculate-rank-with tsk ctx)))
+
+(cl-defmethod occ-build-ctxual-tsk-with ((tsk occ-tsk) ;ctor
+                                         (ctx occ-ctx))
+  (occ-make-ctxual-tsk-with tsk ctx))
+
+(cl-defmethod occ-make-ctxual-tsk ((obj occ-ctsk)
+                                   &optional
+                                   rank)
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+    (make-occ-ctxual-tsk
+     :name    nil
+     :tsk     tsk
+     :ctx     ctx
+     :rank    rank)))
+
+(cl-defmethod occ-build-ctxual-tsk ((obj occ-ctsk)
+                                    &optional
+                                    rank)
+  (occ-make-ctxual-tsk obj rank))
+
+(cl-defmethod occ-make-ctxual-tsk ((obj occ-ctxtual-tsk)
+                                   &optional
+                                   rank)
+  obj)
+
+(cl-defmethod occ-build-ctxual-tsk ((obj occ-ctxtual-tsk)
+                                    &optional
+                                    rank)
+  obj)
 
 
-(cl-defmethod occ-build-obj ((tsk occ-tsk) (obj occ-ctx))
-   (occ-build-ctxual-tsk tsk obj))
+(cl-defmethod occ-build-obj-with ((tsk occ-tsk)
+                                  (obj occ-ctx))
+   (occ-build-ctxual-tsk-with tsk obj))
 
-(cl-defmethod occ-build-obj ((tsk occ-tsk) (obj null))
+(cl-defmethod occ-build-obj-with ((tsk occ-tsk)
+                                  (obj null))
   tsk)
 
 

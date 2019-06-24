@@ -41,6 +41,7 @@
                              prop)
   "occ-rankprop")
 
+;; keep
 ;; (cl-defgeneric occ-calculate-rank-with (obj
 ;;                                         ctx)
 ;;   "occ-rank-with")
@@ -84,6 +85,7 @@
 
 
 ;; * ctx-tsk rank
+;; ;; keep
 ;; (cl-defmethod occ-calculate-rank-with ((obj occ-tsk)
 ;;                                        (ctx occ-ctx))
 ;;   ;; too much output
@@ -140,7 +142,7 @@
   ;; too much output
   (occ-debug :debug "occ-rank(obj=%s)"
              obj)
-  (let* ((objs      (occ-list obj #'occ-build-ctxual-tsk))
+  (let* ((objs      (occ-list obj #'occ-build-ctxual-tsk-with))
          (rankslist (mapcar #'occ-rank objs))
          (avgrank   (occ-calculate-average rankslist)))
     avgrank))
@@ -149,7 +151,7 @@
   ;; too much output
   (occ-debug :debug "occ-rank(obj=%s)"
              obj)
-  (let* ((objs      (occ-list obj #'occ-build-ctxual-tsk))
+  (let* ((objs      (occ-list obj #'occ-build-ctxual-tsk-with))
          (rankslist (mapcar #'occ-rank objs))
          (varirank  (occ-calculate-variance rankslist)))
     varirank))

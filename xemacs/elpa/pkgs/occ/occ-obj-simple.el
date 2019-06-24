@@ -177,7 +177,7 @@
       (with-org-capture+ marker 'entry `(marker ,mrk) template '(:empty-lines 1)
         (let ((tmptsk (occ-make-tsk marker)))
           ;; (occ-props-edit-with tmptsk ctx)
-          (occ-props-edit (occ-make-ctsk tmptsk ctx))
+          (occ-props-edit (occ-make-ctsk-with tmptsk ctx))
           ;; (occ-props-window-edit-with tsk ctx :timeout occ-idle-timeout)
           t)
         (let ((child-tsk (occ-make-tsk marker)))
@@ -185,7 +185,7 @@
             (occ-induct-child tsk child-tsk)
             (if clock-in-p
                 ;; (occ-try-clock-in-with child-tsk ctx)
-                (occ-try-clock-in (occ-build-ctxual-tsk child-tsk ctx)))))))))
+                (occ-try-clock-in (occ-build-ctxual-tsk-with child-tsk ctx)))))))))
 
 
 (cl-defgeneric occ-procreate-child (obj)

@@ -63,7 +63,7 @@
   (occ-debug :debug "occ-select-propetry: %s" (occ-format obj 'capitalize))
   (let ((prompt (or prompt "proptery: "))
         (fixed-keys '(edit done))
-        (keys       (occ-properties-to-edit (occ-build-ctsk obj ctx))))
+        (keys       (occ-properties-to-edit (occ-build-ctsk-with obj ctx))))
     (if keys
         (let ((maxkeylen (apply
                           #'max
@@ -397,7 +397,7 @@
                                      action-transformer
                                      timeout)
   (let* ((filters            (or filters nil))
-         (builder            (or builder #'occ-build-ctsk))
+         (builder            (or builder #'occ-build-ctsk-with))
          (action             (or action (occ-helm-actions obj)))
          (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
          (timeout            (or timeout occ-idle-timeout)))
@@ -452,7 +452,7 @@
                                      timeout)
   (occ-debug-uncond "occ-select-obj-prop-edit((obj null)):")
   (let ((filters            (or filters nil))
-        (builder            (or builder #'occ-build-ctsk))
+        (builder            (or builder #'occ-build-ctsk-with))
         (action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
@@ -478,7 +478,7 @@
   (interactive '((occ-make-ctx-at-point) occ-idle-timeout))
   (occ-debug-uncond "occ-safe-props-window-edit((obj occ-ctx)): begin")
   (let ((filters            (or filters nil))
-        (builder            (or builder #'occ-build-ctsk))
+        (builder            (or builder #'occ-build-ctsk-with))
         (action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
@@ -544,7 +544,7 @@
   "Return value is important to decide next action to (create unnamed tsk.)"
   (occ-debug-uncond "occ-safe-ignore-quit-props-window-edit((obj occ-ctx)): begin")
   (let ((filters            (or filters nil))
-        (builder            (or builder #'occ-build-ctsk))
+        (builder            (or builder #'occ-build-ctsk-with))
         (action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))

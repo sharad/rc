@@ -47,9 +47,9 @@
    ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
    '(occ-readprop-elem-from-user-with (`(occ-tsk occ-ctx (eql ,val)) val))))
 
-(defun occ-get-property-props () ;;TODO: check about them
-  (cl-method-param-case
-   '(occ-get-property  (`(occ-ctx (eql ,val)) val))))
+;; (defun occ-get-property-props () ;;TODO: check about them
+;;   (cl-method-param-case
+;;    '(occ-get-property  (`(occ-ctx (eql ,val)) val))))
 
 
 (cl-defgeneric occ-match-prop-method-args (obj)
@@ -60,13 +60,20 @@
 (cl-defmethod occ-match-prop-method-args ((obj occ-tsk))
   (cl-method-param-case '(occ-readprop-elem-from-user (`(occ-tsk (eql ,val)) val))))
 
-(cl-defmethod occ-match-prop-method-args-with ((obj occ-tsk)
-                                               (ctx occ-ctx))
+;; (cl-defmethod occ-match-prop-method-args-with ((obj occ-tsk)
+;;                                                (ctx occ-ctx))
+;;   (cl-method-sigs-matched-arg
+;;    ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
+;;    '(occ-readprop-elem-from-user-with (`(occ-tsk occ-ctx (eql ,val)) val))
+;;    '(occ-get-property  (`(occ-ctx (eql ,val)) val))
+;;    ctx))
+
+(cl-defmethod occ-match-prop-method-args ((obj occ-obj-ctx-tsk))
   (cl-method-sigs-matched-arg
    ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
-   '(occ-readprop-elem-from-user-with (`(occ-tsk occ-ctx (eql ,val)) val))
+   '(occ-readprop-elem-from-user-with (`(occ-obj-ctx-tsk (eql ,val)) val))
    '(occ-get-property  (`(occ-ctx (eql ,val)) val))
-   ctx))
+   (occ-obj-ctx ctx)))
 
 
 (cl-defgeneric occ-properties-to-edit (obj)
@@ -91,10 +98,13 @@
 ;;                                            (ctx occ-ctx))
 ;;   (occ-match-prop-method-args-with obj ctx))
 
+;; (cl-defmethod occ-properties-to-edit ((obj occ-obj-ctx-tsk))
+;;   (let ((tsk (occ-obj-tsk obj))
+;;         (ctx (occ-obj-ctx obj)))
+;;    (occ-match-prop-method-args-with tsk ctx)))
+
 (cl-defmethod occ-properties-to-edit ((obj occ-obj-ctx-tsk))
-  (let ((tsk (occ-obj-tsk obj))
-        (ctx (occ-obj-ctx obj)))
-   (occ-match-prop-method-args-with tsk ctx)))
+  (occ-match-prop-method-args-with obj))
 
 
 (cl-defmethod occ-properties-to-calculate-rank ((obj occ-tsk))
@@ -123,7 +133,7 @@
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
     (let ((class 'occ-ctx))
-      (cl-method-param-case '(occ-rankprop (`(occ-ctsk (eql ,val)) val))))))
+      (cl-method-param-case '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val))))))
 
 ;; (let ((class 'occ-tsk))
 ;;   (cl-method-param-case `'(occ-rankprop (`(class (eql ,val)) val))))

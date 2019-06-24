@@ -99,7 +99,7 @@
   ;; back
   (occ-debug :debug "occ-maybe-create-unnamed-ctxual-tsk: begin")
   (let* ((unnamed-tsk        (occ-maybe-create-unnamed-tsk))
-         (unnamed-ctxual-tsk (when unnamed-tsk (occ-build-ctxual-tsk unnamed-tsk ctx))))
+         (unnamed-ctxual-tsk (when unnamed-tsk (occ-build-ctxual-tsk-with unnamed-tsk ctx))))
     (assert unnamed-tsk)
     (assert unnamed-ctxual-tsk)
     unnamed-ctxual-tsk))

@@ -52,38 +52,35 @@
                             ctx))))
 
 
-(cl-defmethod occ-associable-with-p (obj
-                                     ctx)
-  nil)
+;; (cl-defmethod occ-associable-with-p (obj
+;;                                      ctx)
+;;   nil)
 
-(cl-defmethod occ-associable-with-p ((tsk symbol)
-                                     (ctx occ-ctx))
-  nil)
+;; (cl-defmethod occ-associable-with-p ((tsk symbol)
+;;                                      (ctx occ-ctx))
+;;   nil)
 
-(cl-defmethod occ-associable-with-p ((obj occ-obj-tsk)
-                                     (ctx occ-ctx))
-  "Test if TSK is associate to CTX"
-  (let ((tsk (occ-obj-tsk obj)))
-    (>
-     (occ-rank-with tsk ctx) 0)))
-
-(cl-defmethod occ-associable-with-p ((obj occ-obj-ctx-tsk)
-                                     (ctx occ-ctx))
-  "Test if TSK is associate to CTX"     ;not required.
-  (let ((tsk (occ-obj-tsk obj)))
-    (>
-     (occ-rank-with tsk ctx) 0)))
+;; ;; keepit
+;; (cl-defmethod occ-associable-with-p ((obj occ-obj-tsk)
+;;                                      (ctx occ-ctx))
+;;   "Test if TSK is associate to CTX"
+;;   (let ((tsk (occ-obj-tsk obj)))
+;;     (>
+;;      (occ-rank-with tsk ctx) 0)))
 
 
-(cl-defmethod occ-associable-p ((obj occ-ctsk))
-  (occ-debug :debug "occ-associable-p(occ-ctsk=%s)" obj)
-  (let ((tsk (occ-obj-tsk obj))
-        (ctx (occ-obj-ctx obj)))
-    (occ-associable-with-p tsk ctx)))
 
-(cl-defmethod occ-associable-p ((obj occ-ctxual-tsk))
-  (occ-debug :debug "occ-associable-p(occ-ctxual-tsk=%s)" obj)
-  (> (occ-rank obj) 0))
+(cl-defmethod occ-associable-p ((obj occ-obj-ctx-tsk))
+  "Test if CTSK is associate"     ;not required.
+  (> (occ-rank (occ-build-ctxual-tsk obj)) 0))
+
+;; (cl-defmethod occ-associable-p ((obj occ-ctsk))
+;;   (occ-debug :debug "occ-associable-p(occ-ctsk=%s)" obj)
+;;   (> (occ-rank (occ-build-ctxual-tsk obj)) 0))
+
+;; (cl-defmethod occ-associable-p ((obj occ-ctxual-tsk))
+;;   (occ-debug :debug "occ-associable-p(occ-ctxual-tsk=%s)" obj)
+;;   (> (occ-rank (occ-build-ctxual-tsk obj)) 0))
 
 
 (cl-defgeneric occ-unammed-p (obj)

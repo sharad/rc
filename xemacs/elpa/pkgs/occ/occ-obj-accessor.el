@@ -128,6 +128,7 @@
   (setf (occ-tsk-rank tsk) value))
 
 
+;; keep
 ;; (cl-defmethod occ-rank-with ((obj occ-tsk)
 ;;                              (ctx occ-ctx))
 ;;   (occ-calculate-rank-with obj ctx))
@@ -252,6 +253,10 @@
                   (occ-debug :warning msg)
                 (error msg))
               (occ-current-tsk-with clock))))))))
+
+(cl-defmethod occ-current-ctxual-tsk ((ctx occ-ctx) &optional occ-other-allowed)
+  (occ-build-ctxual-tsk-with (occ-current-tsk occ-other-allowed)
+                             ctx))
 
 
 (cl-defgeneric occ-candidate (obj)
