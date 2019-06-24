@@ -102,99 +102,61 @@
                 (_ nil))))
        (cl-method-param-signs method))))))
 
-;; (cl-defun cl-method-param-case-ctsk (signature-val-spec)
-;;   "signature-val-spec = (METHOD (PARAMS VAL))"
+;; (cl-defun cl-method-param-case-with-value (signature-val-spec obj)
+;;   "signature-val-spec = (METHOD PARAMS VAL)"
 ;;   (cl-destructuring-bind (method (param-spec val)) signature-val-spec
 ;;     (remove
 ;;      nil
 ;;      (mapcar
-;;       #'funcall
-;;       (mapcar
-;;        #'(lambda (fspec)
-;;            `(lambda ()
-;;               (pcase ',fspec
-;;                 (,param-spec ,val)
-;;                 (_ nil))))
-;;        '((occ-obj-ctx-tsk (eql timebeing)) (occ-obj-ctx-tsk (eql root)) (occ-obj-ctx-tsk (eql currfile)) (occ-obj-ctx-tsk symbol) (occ-tsk symabol)))))))
-
-
-;; (cl-defun cl-method-param-case-tsk (signature-val-spec)
-;;   "signature-val-spec = (METHOD (PARAMS VAL))"
-;;   (cl-destructuring-bind (method (param-spec val)) signature-val-spec
-;;     (remove
-;;      nil
-;;      (mapcar
-;;       #'funcall
-;;       (mapcar
-;;        #'(lambda (fspec)
-;;            `(lambda ()
-;;               (pcase ',fspec
-;;                 (,param-spec ,val)
-;;                 (_ nil))))
-;;        '((occ-tsk (eql current-clock)) (occ-tsk (eql heading-level)) (occ-tsk (eql key)) (occ-tsk (eql status)) (occ-tsk symbol)))))))
-
-;; ;; (cl-method-param-signs 'occ-rankprop)
-
-;; ((occ-tsk (eql current-clock)) (occ-tsk (eql heading-level)) (occ-tsk (eql key)) (occ-tsk (eql status)) (occ-obj-ctx-tsk (eql timebeing)) (occ-obj-ctx-tsk (eql root)) (occ-obj-ctx-tsk (eql currfile)) (occ-obj-ctx-tsk symbol) (occ-tsk symbol) (t t))
-
-;; (pcase '(occ-obj-ctx-tsk (eql currfile))
-;;   (`(occ-obj-ctx-tsk (eql ,val)) val)
-;;   (_ nil))
-
-
-;; (pcase '(occ-obj-ctx-tsk (eql timebeing))
-;;   (`(occ-obj-ctx-tsk (eql ,val)) val)
-;;   (_ nil))
-
-;; (pcase '(occ-tsk (eql current-clock))
-;;   (`(occ-obj-ctx-tsk (eql ,val)) val)
-;;   (_ nil))
-
-;; (cl-destructuring-bind (method (param-spec val)) '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val))
-;;   (list method param-spec val))
-
-
-;; (occ-rankprop `(occ-obj-ctx-tsk (eql ,val)) val)
-
-;; (cl-method-param-case '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val)))
-
-;; (pcase (quote (occ-tsk (eql current-clock))) ((\` (occ-obj-ctx-tsk (eql (\, val)))) val) (_ nil))
-
-;; (pcase (quote (t t)) ((\` (occ-obj-ctx-tsk (eql (\, val)))) val) (_ nil))
-
-;; (pcase (quote (occ-tsk (eql current-clock))) ((\` (occ-obj-ctx-tsk (eql (\, val)))) val) (_ nil))
-
-;; (pcase--expand (quote (occ-tsk (eql current-clock))) '(((\` (occ-obj-ctx-tsk (eql (\, val)))) val) (_ nil)))
-
-;; (cl-method-param-case '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val)))
-
-;; (funcall (car (cl-method-param-case '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val)))))
-
-;; (funcall (car (cl-method-param-case '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val)))))
-
-;; (mapcar #'funcall (cl-method-param-case '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val))))
-
-;; (pcase--expand '(occ-tsk (eql current-clock)) '((`(occ-obj-ctx-tsk (eql ,val)) val) (_ nil)))
-
-;; (pcase (quote (occ-tsk (eql current-clock))) ((\` (occ-obj-ctx-tsk (eql (\, val)))) val) (_ nil))
+;;       #'(lambda (fspec)
+;;           (let ((first-arg
+;;                  (eval
+;;                   `(pcase ',fspec
+;;                      (,param-spec ,val)
+;;                      (_ nil)))))
+;;             (when (and
+;;                    first-arg
+;;                    (funcall method (cons first-arg obj)))
+;;               first-arg)))
+;;       (cl-method-param-signs method)))))
 
 (cl-defun cl-method-param-case-with-value (signature-val-spec obj)
- "signature-val-spec = (METHOD PARAMS VAL)"
- (cl-destructuring-bind (method (param-spec val)) signature-val-spec
-   (remove
-    nil
-    (mapcar
-     #'(lambda (fspec)
-         (let ((first-arg
-                (eval
-                 `(pcase ',fspec
-                    (,param-spec ,val)
-                    (_ nil)))))
-           (when (and
-                  first-arg
-                  (funcall method (cons first-arg obj)))
-             first-arg)))
-     (cl-method-param-signs method)))))
+  "signature-val-spec = (METHOD PARAMS VAL)"
+  (cl-destructuring-bind (method (param-spec val)) signature-val-spec
+    (remove
+     nil
+     (mapcar
+      #'(lambda (fspec)
+          (let ((first-arg
+                 (funcall
+                  `(lambda ()
+                     (pcase ',fspec
+                       (,param-spec ,val)
+                       (_ nil))))))
+            (when (and
+                   first-arg
+                   (funcall method (cons first-arg obj)))
+              first-arg)))
+      (cl-method-param-signs method)))))
+
+;; (defun cl-method-param-case-with-value-new (signature-val-spec obj)
+;;   "signature-val-spec = (METHOD PARAMS VAL)"
+;;   (cl-destructuring-bind (method (param-spec val)) signature-val-spec
+;;     (remove
+;;      nil
+;;      (mapcar
+;;       #'(lambda (fspec)
+;;           (let ((first-arg
+;;                  (eval
+;;                   `(pcase ',fspec
+;;                      (,param-spec ,val)
+;;                      (_ nil)))))
+;;             (when (and
+;;                    first-arg
+;;                    ;; (funcall method (cons first-arg obj))) -- TODO BUG make it general
+;;                    (funcall method obj first-arg))
+;;               first-arg)))
+;;       (cl-method-param-signs method)))))
 
 (defun cl-method-param-case-with-value-new (signature-val-spec obj)
   "signature-val-spec = (METHOD PARAMS VAL)"
@@ -204,10 +166,11 @@
      (mapcar
       #'(lambda (fspec)
           (let ((first-arg
-                 (eval
-                  `(pcase ',fspec
-                     (,param-spec ,val)
-                     (_ nil)))))
+                 (funcall
+                  `(lambda ()
+                     (pcase ',fspec
+                       (,param-spec ,val)
+                       (_ nil))))))
             (when (and
                    first-arg
                    ;; (funcall method (cons first-arg obj))) -- TODO BUG make it general
