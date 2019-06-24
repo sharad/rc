@@ -129,7 +129,7 @@
   (occ-debug :debug "occ-rank(obj=%s)" obj)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (let ((tsk-rank (occ-rank obj))
+    (let ((tsk-rank (occ-rank tsk))
           (rank
            (reduce #'+
                    (mapcar #'(lambda (slot)

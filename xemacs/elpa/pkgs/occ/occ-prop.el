@@ -31,6 +31,7 @@
 (require 'org-misc-utils-lotus)
 
 
+(require 'occ-cl-utils)
 (require 'occ-obj-common)
 (require 'occ-tree)
 (require 'occ-obj-accessor)

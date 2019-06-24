@@ -202,7 +202,7 @@
                                    (ctx occ-ctx))
   (occ-make-ctsk-with tsk ctx))
 
-(cl-defmethod occ-make-ctsk ((obj occ-ctxtual-tsk))
+(cl-defmethod occ-make-ctsk ((obj occ-ctxual-tsk))
   ;; use occ-build-ctsk-with
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
@@ -211,7 +211,7 @@
      :tsk     tsk
      :ctx     ctx)))
 
-(cl-defmethod occ-build-ctsk ((obj occ-ctxtual-tsk))
+(cl-defmethod occ-build-ctsk ((obj occ-ctxual-tsk))
   (occ-make-ctsk obj))
 
 
@@ -265,12 +265,12 @@
                                     rank)
   (occ-make-ctxual-tsk obj rank))
 
-(cl-defmethod occ-make-ctxual-tsk ((obj occ-ctxtual-tsk)
+(cl-defmethod occ-make-ctxual-tsk ((obj occ-ctxual-tsk)
                                    &optional
                                    rank)
   obj)
 
-(cl-defmethod occ-build-ctxual-tsk ((obj occ-ctxtual-tsk)
+(cl-defmethod occ-build-ctxual-tsk ((obj occ-ctxual-tsk)
                                     &optional
                                     rank)
   obj)

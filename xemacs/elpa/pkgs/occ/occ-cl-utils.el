@@ -64,7 +64,7 @@
 
 ;; TODO: find how to do calculation without eval here.
 
-(defun cl-method-param-signs (method)
+(cl-defun cl-method-param-signs (method)
   "Get params signatures for all defined methods"
   (let ((method-instances (cl--generic method)))
    (mapcar
@@ -72,7 +72,7 @@
     (if method-instances
         (aref method-instances 3)))))
 
-(defun cl-method-param-case (signature-val-spec)
+(cl-defun cl-method-param-case (signature-val-spec)
    "signature-val-spec = (METHOD (PARAMS VAL))"
    (cl-destructuring-bind (method (param-spec val)) signature-val-spec
      (remove
@@ -85,7 +85,44 @@
                (_ nil))))
        (cl-method-param-signs method)))))
 
-(defun cl-method-param-case-with-value (signature-val-spec obj)
+;; ;; (cl-method-param-signs 'occ-rankprop)
+
+;; ((occ-tsk (eql current-clock)) (occ-tsk (eql heading-level)) (occ-tsk (eql key)) (occ-tsk (eql status)) (occ-obj-ctx-tsk (eql timebeing)) (occ-obj-ctx-tsk (eql root)) (occ-obj-ctx-tsk (eql currfile)) (occ-obj-ctx-tsk symbol) (occ-tsk symbol) (t t))
+
+;; (pcase '(occ-obj-ctx-tsk (eql currfile))
+;;   (`(occ-obj-ctx-tsk (eql ,val)) val)
+;;   (_ nil))
+
+
+;; (pcase '(occ-obj-ctx-tsk (eql timebeing))
+;;   (`(occ-obj-ctx-tsk (eql ,val)) val)
+;;   (_ nil))
+
+;; (pcase '(occ-tsk (eql current-clock))
+;;   (`(occ-obj-ctx-tsk (eql ,val)) val)
+;;   (_ nil))
+
+;; (cl-destructuring-bind (method (param-spec val)) '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val))
+;;   (list method param-spec val))
+
+
+;; (occ-rankprop `(occ-obj-ctx-tsk (eql ,val)) val)
+
+;; (cl-method-param-case '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val)))
+
+;; (pcase (quote (occ-tsk (eql current-clock))) ((\` (occ-obj-ctx-tsk (eql (\, val)))) val) (_ nil))
+
+;; (pcase (quote (t t)) ((\` (occ-obj-ctx-tsk (eql (\, val)))) val) (_ nil))
+
+;; (pcase (quote (occ-tsk (eql current-clock))) ((\` (occ-obj-ctx-tsk (eql (\, val)))) val) (_ nil))
+
+;; (pcase--expand (quote (occ-tsk (eql current-clock))) (((\` (occ-obj-ctx-tsk (eql (\, val)))) val) (_ nil)))
+
+;; (cl-method-param-case '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val)))
+
+;; (pcase--expand '(occ-tsk (eql current-clock)) '((`(occ-obj-ctx-tsk (eql ,val)) val) (_ nil)))
+
+(cl-defun cl-method-param-case-with-value (signature-val-spec obj)
  "signature-val-spec = (METHOD PARAMS VAL)"
  (cl-destructuring-bind (method (param-spec val)) signature-val-spec
    (remove

@@ -69,6 +69,9 @@
 ;;      (occ-rank-with tsk ctx) 0)))
 
 
+(cl-defmethod occ-associable-p ((obj null))
+  "Test if CTSK is associate"     ;not required.
+  nil)
 
 (cl-defmethod occ-associable-p ((obj occ-obj-ctx-tsk))
   "Test if CTSK is associate"     ;not required.

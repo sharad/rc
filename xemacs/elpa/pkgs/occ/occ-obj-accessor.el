@@ -255,8 +255,10 @@
               (occ-current-tsk-with clock))))))))
 
 (cl-defmethod occ-current-ctxual-tsk ((ctx occ-ctx) &optional occ-other-allowed)
-  (occ-build-ctxual-tsk-with (occ-current-tsk occ-other-allowed)
-                             ctx))
+  (let ((tsk (occ-current-tsk occ-other-allowed)))
+    (when tsk
+     (occ-build-ctxual-tsk-with tsk ctx))))
+
 
 
 (cl-defgeneric occ-candidate (obj)

@@ -68,6 +68,7 @@ Each entry is either:
 
 
 (defun lotus-appearance/init-powerline ()
+  (interactive)
   (use-package powerline
     :init
     (progn

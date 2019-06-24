@@ -430,7 +430,7 @@
     (occ-debug-uncond "occ-clock-in-if-not((obj occ-ctx)): begin")
     (if (or
          (occ-clock-marker-unnamed-clock-p)
-         (not (occ-current-ctxual-tsk ctx)))
+         (not (occ-associable-p (occ-current-ctxual-tsk ctx))))
         (prog1                ;current clock is not matching
             t
           (occ-debug :debug
