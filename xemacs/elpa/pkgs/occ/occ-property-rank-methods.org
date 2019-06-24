@@ -53,25 +53,26 @@
 
        ;;{{ file
        (when nil                               ;rank calculation for org file name in which tsk aka entry not much useful
-         (cl-defmethod occ-rankprop-with ((obj occ-tsk)
-                                          (ctx occ-ctx)
-                                          (prop (eql file)))
+         (cl-defmethod occ-rankprop ((obj occ-obj-ctx-tsk)
+                                     (prop (eql file)))
           ;; file in which tsk aka org entry exists.
-          "Predicate funtion to check if ctx matches to tsk's file attribute."
-          (let* ((tsk-currfile (occ-get-property obj 'currfile))
-                 (tsk-currfile (if tsk-currfile (file-truename tsk-currfile))))
-            (let* ((ctx-file (occ-ctx-file ctx))
-                   (ctx-file (when ctx-file (file-truename ctx-file))))
-              (if tsk-currfile
-                  (progn
-                    (occ-debug :nodisplay "tsk %s tsk-currfile %s" (occ-format obj 'capitalize) tsk-currfile)
-                    (occ-debug :nodisplay "tsk %s ctx-file %s"     (occ-format obj 'capitalize) ctx-file))
-                (occ-debug :nodisplay "tsk %s currfile %s not present."
-                           (occ-format obj 'capitalize) tsk-currfile))
-              (if (and tsk-currfile ctx-file
-                       (string-match tsk-currfile ctx-file))
-                  (* 2 (length tsk-currfile))     ;as exact match to file giving double matching points.
-                0)))))
+           "Predicate funtion to check if ctx matches to tsk's file attribute."
+           (let ((tsk (occ-obj-tsk obj))
+                 (ctx (occ-obj-ctx obj)))
+             (let* ((tsk-currfile (occ-get-property tsk 'currfile))
+                    (tsk-currfile (if tsk-currfile (file-truename tsk-currfile))))
+               (let* ((ctx-file (occ-ctx-file ctx))
+                      (ctx-file (when ctx-file (file-truename ctx-file))))
+                 (if tsk-currfile
+                     (progn
+                       (occ-debug :nodisplay "tsk %s tsk-currfile %s" (occ-format tsk 'capitalize) tsk-currfile)
+                       (occ-debug :nodisplay "tsk %s ctx-file %s"     (occ-format tsk 'capitalize) ctx-file))
+                   (occ-debug :nodisplay "tsk %s currfile %s not present."
+                              (occ-format tsk 'capitalize) tsk-currfile))
+                 (if (and tsk-currfile ctx-file
+                          (string-match tsk-currfile ctx-file))
+                     (* 2 (length tsk-currfile))     ;as exact match to file giving double matching points.
+                   0))))))
        ;;}}
        
      #+end_src
@@ -81,27 +82,28 @@
      #+begin_src elisp
 
        ;;{{ currfile
-       (cl-defmethod occ-rankprop-with ((obj occ-tsk)
-                                        (ctx occ-ctx)
-                                        (prop (eql currfile)))
+       (cl-defmethod occ-rankprop ((obj occ-obj-ctx-tsk)
+                                   (prop (eql currfile)))
          ;; file in which tsk aka org entry exists.
          "Predicate funtion to check if ctx matches to tsk's file attribute."
-         (occ-debug-uncond "occ-rankprop-with: currfile begin")
-         (occ-aggrigate-list-rank tsk-currfile (occ-get-property obj prop) #'+
-           (let* ((tsk-currfile (if tsk-currfile (file-truename tsk-currfile)))
-                  (ctx-file     (occ-ctx-file ctx))
-                  (ctx-file     (if ctx-file (file-truename ctx-file))))
-             (if tsk-currfile
-                 (progn
-                   (occ-debug :nodisplay "tsk %s tsk-currfile %s" (occ-format obj 'capitalize) tsk-currfile)
-                   (occ-debug :nodisplay "tsk %s ctx-file %s"     (occ-format obj 'capitalize) ctx-file))
-               (occ-debug :nodisplay "tsk %s tsk-currfile %s not present."
-                          (occ-format obj 'capitalize)
-                          tsk-currfile))
-             (if (and tsk-currfile ctx-file
-                      (string= tsk-currfile ctx-file))
-                 (* 2 (length tsk-currfile))     ;as exact match to files giving double matching points.
-               0))))
+         (let ((tsk (occ-obj-tsk obj))
+               (ctx (occ-obj-ctx obj)))
+           (occ-debug-uncond "occ-rankprop-with: currfile begin")
+           (occ-aggrigate-list-rank tsk-currfile (occ-get-property tsk prop) #'+
+             (let* ((tsk-currfile (if tsk-currfile (file-truename tsk-currfile)))
+                    (ctx-file     (occ-ctx-file ctx))
+                    (ctx-file     (if ctx-file (file-truename ctx-file))))
+               (if tsk-currfile
+                   (progn
+                     (occ-debug :nodisplay "tsk %s tsk-currfile %s" (occ-format tsk 'capitalize) tsk-currfile)
+                     (occ-debug :nodisplay "tsk %s ctx-file %s"     (occ-format tsk 'capitalize) ctx-file))
+                 (occ-debug :nodisplay "tsk %s tsk-currfile %s not present."
+                            (occ-format tsk 'capitalize)
+                            tsk-currfile))
+               (if (and tsk-currfile ctx-file
+                        (string= tsk-currfile ctx-file))
+                   (* 2 (length tsk-currfile))     ;as exact match to files giving double matching points.
+                 0)))))
 
        (cl-defmethod occ-get-property ((ctx occ-ctx)
                                        (prop (eql currfile)))
@@ -119,15 +121,16 @@
        (cl-defmethod occ-prop-elem-from-org ((prop (eql currfile)) value)
          value)
 
-       (cl-defmethod occ-readprop-elem-from-user-with ((obj occ-tsk)
-                                                       (ctx occ-ctx)
-                                                       (prop (eql currfile)))
+       (cl-defmethod occ-readprop-elem-from-user ((obj occ-obj-ctx-tsk)
+                                                  (prop (eql currfile)))
          "currfile property for tsk aka org entry"
-         (let* ((ctx-currfile (if ctx (occ-ctx-file ctx)))
-                (ctx-dir      (when (stringp ctx-currfile)
-                                (file-name-directory ctx-currfile)))
-                (prompt       (concat (symbol-name prop) ": ")))
-           (ido-read-file-name prompt ctx-dir ctx-currfile)))
+         (let ((tsk (occ-obj-tsk obj))
+               (ctx (occ-obj-ctx obj)))
+           (let* ((ctx-currfile (if ctx (occ-ctx-file ctx)))
+                  (ctx-dir      (when (stringp ctx-currfile)
+                                  (file-name-directory ctx-currfile)))
+                  (prompt       (concat (symbol-name prop) ": ")))
+             (ido-read-file-name prompt ctx-dir ctx-currfile))))
        ;;}}
        
 
@@ -137,31 +140,32 @@
     #+begin_src elisp
 
       ;;{{ root
-      (cl-defmethod occ-rankprop-with ((obj occ-tsk)
-                                       (ctx occ-ctx)
-                                       (prop (eql root)))
+      (cl-defmethod occ-rankprop ((obj occ-obj-ctx-tsk)
+                                  (prop (eql root)))
         "RANK Predicate funtion to check if ctx matches to tsk's ROOT attribute."
         (occ-debug :nodisplay "rankprop-with(%s, %s, %s): begin"
                    (occ-format obj 'capitalize)
                    (occ-format ctx 'capitalize)
                    prop)
-        (occ-aggrigate-list-rank tsk-root (occ-get-property obj prop) #'+
-          (let* ((tsk-root (car (occ-get-property obj prop)))
-                 (tsk-root (when tsk-root (file-truename tsk-root)))
-                 (ctx-file (occ-ctx-file ctx))
-                 ;; (ctx-file (when ctx-file (file-truename ctx-file)))
-                 (ctx-dir  (when (stringp ctx-file) (file-name-directory ctx-file)))
-                 (ctx-dir  (when (stringp ctx-file) (file-truename ctx-dir))))
-            (if tsk-root
-                (progn
-                  (occ-debug :nodisplay "tsk %s tsk-root: %s" (occ-format obj 'capitalize) tsk-root)
-                  (occ-debug :nodisplay "tsk %s ctx-dir:  %s" (occ-format obj 'capitalize) ctx-dir))
-              (occ-debug :nodisplay "tsk %s tsk-root %s not present."
-                         (occ-format obj 'capitalize) tsk-root))
-            (if (and tsk-root ctx-dir
-                     (string-match tsk-root ctx-dir))
-                (length tsk-root)
-              0))))
+        (let ((tsk (occ-obj-tsk obj))
+              (ctx (occ-obj-ctx obj)))
+          (occ-aggrigate-list-rank tsk-root (occ-get-property tsk prop) #'+
+            (let* ((tsk-root (car (occ-get-property tsk prop)))
+                   (tsk-root (when tsk-root (file-truename tsk-root)))
+                   (ctx-file (occ-ctx-file ctx))
+                   ;; (ctx-file (when ctx-file (file-truename ctx-file)))
+                   (ctx-dir  (when (stringp ctx-file) (file-name-directory ctx-file)))
+                   (ctx-dir  (when (stringp ctx-file) (file-truename ctx-dir))))
+              (if tsk-root
+                  (progn
+                    (occ-debug :nodisplay "tsk %s tsk-root: %s" (occ-format tsk 'capitalize) tsk-root)
+                    (occ-debug :nodisplay "tsk %s ctx-dir:  %s" (occ-format tsk 'capitalize) ctx-dir))
+                (occ-debug :nodisplay "tsk %s tsk-root %s not present."
+                           (occ-format tsk 'capitalize) tsk-root))
+              (if (and tsk-root ctx-dir
+                       (string-match tsk-root ctx-dir))
+                  (length tsk-root)
+                0)))))
 
       (cl-defmethod occ-get-property ((ctx occ-ctx)
                                       (prop (eql root)))
@@ -178,14 +182,15 @@
        (cl-defmethod occ-prop-elem-from-org ((prop (eql root)) value)
          value)
 
-      (cl-defmethod occ-readprop-elem-from-user-with ((obj occ-tsk)
-                                                      (ctx occ-ctx)
-                                                      (prop (eql root)))
+      (cl-defmethod occ-readprop-elem-from-user ((obj occ-obj-ctx-tsk)
+                                                 (prop (eql root)))
         "READ"
-        (let* ((ctx-file   (when ctx (occ-ctx-file ctx)))
-               (ctx-dir    (when (stringp ctx-file) (file-name-directory ctx-file)))
-               (prompt     (concat (symbol-name prop) ": ")))
-          (ido-read-directory-name prompt ctx-dir ctx-dir)))
+        (let ((tsk (occ-obj-tsk obj))
+              (ctx (occ-obj-ctx obj)))
+          (let* ((ctx-file   (when ctx (occ-ctx-file ctx)))
+                 (ctx-dir    (when (stringp ctx-file) (file-name-directory ctx-file)))
+                 (prompt     (concat (symbol-name prop) ": ")))
+            (ido-read-directory-name prompt ctx-dir ctx-dir))))
       ;;}}
       
     #+end_src
@@ -193,18 +198,19 @@
 *** Timebeing property of task (not fully implemented) will use for keeping a task clocked in for given time
     #+begin_src elisp
 
-      (cl-defmethod occ-rankprop-with ((obj occ-tsk)
-                                       (ctx occ-ctx)
-                                       (prop (eql timebeing)))
-        (let ((timebeing (occ-get-property obj 'timebeing)))
-          (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
-                (clocked-time   (occ-get-property obj 'clock-sum)))
-            (if (and
-                 (numberp clocked-time)
-                 (numberp timebeing-time)
-                 (> timebeing-time clocked-time))
-                (- timebeing-time clocked-time)
-              0))))
+      (cl-defmethod occ-rankprop ((obj occ-obj-ctx-tsk)
+                                  (prop (eql timebeing)))
+        (let ((tsk (occ-obj-tsk obj))
+              (ctx (occ-obj-ctx obj)))
+          (let ((timebeing (occ-get-property tsk 'timebeing)))
+            (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
+                  (clocked-time   (occ-get-property tsk 'clock-sum)))
+              (if (and
+                   (numberp clocked-time)
+                   (numberp timebeing-time)
+                   (> timebeing-time clocked-time))
+                  (- timebeing-time clocked-time)
+                0)))))
 
       (cl-defmethod occ-get-property ((ctx occ-ctx)
                                       (prop (eql timebeing)))
@@ -224,15 +230,15 @@
             (or (string-to-number value) 0)
           0))
 
-      (cl-defmethod occ-readprop-elem-from-user-with ((obj occ-tsk)
-                                                      (ctx occ-ctx)
-                                                      (prop (eql timebeing)))
+      (cl-defmethod occ-readprop-elem-from-user ((obj occ-obj-ctx-tsk)
+                                                 (prop (eql timebeing)))
         "READ"
-        (let* ((ctx-file   (when ctx (occ-ctx-file ctx)))
-               (ctx-dir    (when (stringp ctx-file) (file-name-directory ctx-file)))
-               (prompt     (concat (symbol-name prop) ": ")))
-          (read-number "Timebeing mins: ")))
-
+        (let ((tsk (occ-obj-tsk obj))
+              (ctx (occ-obj-ctx obj)))
+          (let* ((ctx-file   (when ctx (occ-ctx-file ctx)))
+                 (ctx-dir    (when (stringp ctx-file) (file-name-directory ctx-file)))
+                 (prompt     (concat (symbol-name prop) ": ")))
+            (read-number "Timebeing mins: "))))
       
     #+end_src
 
@@ -307,14 +313,15 @@
     #+begin_src elisp
 
       ;;{{ sub-tree
-      (cl-defmethod occ-readprop-with ((obj occ-tsk)
-                                       (ctx occ-ctx)
-                                       (prop (eql subtree)))
-        (let ((prompt (concat (symbol-name prop) ": ")))
-          (file-relative-name
-           (ido-read-file-name ;; org-iread-file-name
-            prompt
-            default-directory default-directory))))
+      (cl-defmethod occ-readprop ((obj occ-obj-ctx-tsk)
+                                  (prop (eql subtree)))
+        (let ((tsk (occ-obj-tsk obj))
+              (ctx (occ-obj-ctx obj)))
+          (let ((prompt (concat (symbol-name prop) ": ")))
+            (file-relative-name
+             (ido-read-file-name ;; org-iread-file-name
+              prompt
+              default-directory default-directory)))))
       ;;}}
       
     #+end_src
