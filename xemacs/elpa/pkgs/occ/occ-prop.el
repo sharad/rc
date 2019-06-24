@@ -74,7 +74,7 @@
    ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
    '(occ-readprop-elem-from-user-with (`(occ-obj-ctx-tsk (eql ,val)) val))
    '(occ-get-property  (`(occ-ctx (eql ,val)) val))
-   (occ-obj-ctx ctx)))
+   (occ-obj-ctx obj)))
 
 
 (cl-defgeneric occ-properties-to-edit (obj)
@@ -105,11 +105,12 @@
 ;;    (occ-match-prop-method-args-with tsk ctx)))
 
 (cl-defmethod occ-properties-to-edit ((obj occ-obj-ctx-tsk))
-  (occ-match-prop-method-args-with obj))
+  (occ-match-prop-method-args obj))
 
 
 (cl-defmethod occ-properties-to-calculate-rank ((obj occ-tsk))
-  (let ((class 'occ-ctx))
+  (let ((class 'occ-tsk))
+    ;; (cl-method-param-case-tsk '(occ-rankprop (`(occ-tsk (eql ,val)) val)))
     (cl-method-param-case '(occ-rankprop (`(occ-tsk (eql ,val)) val)))))
 
 ;; (cl-defmethod occ-properties-to-calculate-rank-with ((obj occ-tsk)
@@ -123,6 +124,7 @@
 ;;     (occ-properties-to-calculate-rank-with tsk ctx)))
 
 
+
 ;; NOTE:
 ;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-ctx-tsk))
 ;;   (let ((tsk (occ-obj-tsk obj))
@@ -133,8 +135,19 @@
 (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-ctx-tsk))
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (let ((class 'occ-ctx))
+    (let ((class 'occ-obj-ctx-tsk))
+      ;; (cl-method-param-case-ctsk '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val)))
       (cl-method-param-case '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val))))))
+
+
+
+;; (cl-destructuring-bind (method (param-spec val)) signature-val-spec
+;;   (remove
+;;    nil
+;;    (mapcar
+;;     #'(lambda (fspec)
+;;         ())
+;;     (cl-method-param-signs method))))
 
 ;; (let ((class 'occ-tsk))
 ;;   (cl-method-param-case `'(occ-rankprop (`(class (eql ,val)) val))))
@@ -153,6 +166,39 @@
 
 ;; (let ((class 'occ-tsk))
 ;;   (cl-method-param-case `'(occ-rankprop  (,``(,,class (eql ,val)) val))))
+
+
+
+
+
+;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-tsk))
+;;   (let ((class 'occ-ctx))
+;;     (cl-method-param-case '(occ-rankprop (`(occ-tsk (eql ,val)) val)))))
+
+;; (cl-defmethod occ-properties-to-calculate-rank-with ((obj occ-tsk)
+;;                                                      (ctx occ-ctx))
+;;   (let ((class 'occ-ctx))
+;;     (cl-method-param-case '(occ-rankprop-with (`(occ-tsk occ-ctx (eql ,val)) val)))))
+
+;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-ctx-tsk))
+;;   (let ((tsk (occ-obj-tsk obj))
+;;         (ctx (occ-obj-ctx obj)))
+;;     (occ-properties-to-calculate-rank-with tsk ctx)))
+
+;; (occ-properties-to-calculate-rank
+;;  (occ-build-ctxual-tsk-with (nth 2 (occ-collect-list (occ-collection-object)))
+;;                             (occ-make-ctx-at-point)))
+
+;; (occ-properties-to-calculate-rank
+;;  (nth 2 (occ-collect-list (occ-collection-object))))
+
+;; (defun occ-max-call ()
+;;   (interactive)
+;;   (occ-properties-to-calculate-rank
+;;    (occ-build-ctxual-tsk-with (nth 2 (occ-collect-list (occ-collection-object)))
+;;                               (occ-make-ctx-at-point))))
+
+
 
 
 (defun occ-org-entry-get (pom

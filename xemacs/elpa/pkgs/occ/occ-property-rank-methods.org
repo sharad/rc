@@ -65,10 +65,10 @@
                       (ctx-file (when ctx-file (file-truename ctx-file))))
                  (if tsk-currfile
                      (progn
-                       (occ-debug :nodisplay "tsk %s tsk-currfile %s" (occ-format tsk 'capitalize) tsk-currfile)
-                       (occ-debug :nodisplay "tsk %s ctx-file %s"     (occ-format tsk 'capitalize) ctx-file))
+                       (occ-debug :nodisplay "tsk %s tsk-currfile %s" (occ-format-norank tsk 'capitalize) tsk-currfile)
+                       (occ-debug :nodisplay "tsk %s ctx-file %s"     (occ-format-norank tsk 'capitalize) ctx-file))
                    (occ-debug :nodisplay "tsk %s currfile %s not present."
-                              (occ-format tsk 'capitalize) tsk-currfile))
+                              (occ-format-norank tsk 'capitalize) tsk-currfile))
                  (if (and tsk-currfile ctx-file
                           (string-match tsk-currfile ctx-file))
                      (* 2 (length tsk-currfile))     ;as exact match to file giving double matching points.
@@ -95,10 +95,10 @@
                     (ctx-file     (if ctx-file (file-truename ctx-file))))
                (if tsk-currfile
                    (progn
-                     (occ-debug :nodisplay "tsk %s tsk-currfile %s" (occ-format tsk 'capitalize) tsk-currfile)
-                     (occ-debug :nodisplay "tsk %s ctx-file %s"     (occ-format tsk 'capitalize) ctx-file))
+                     (occ-debug :nodisplay "tsk %s tsk-currfile %s" (occ-format-norank tsk 'capitalize) tsk-currfile)
+                     (occ-debug :nodisplay "tsk %s ctx-file %s"     (occ-format-norank tsk 'capitalize) ctx-file))
                  (occ-debug :nodisplay "tsk %s tsk-currfile %s not present."
-                            (occ-format tsk 'capitalize)
+                            (occ-format-norank tsk 'capitalize)
                             tsk-currfile))
                (if (and tsk-currfile ctx-file
                         (string= tsk-currfile ctx-file))
@@ -143,12 +143,12 @@
       (cl-defmethod occ-rankprop ((obj occ-obj-ctx-tsk)
                                   (prop (eql root)))
         "RANK Predicate funtion to check if ctx matches to tsk's ROOT attribute."
-        (occ-debug :nodisplay "rankprop-with(%s, %s, %s): begin"
-                   (occ-format obj 'capitalize)
-                   (occ-format ctx 'capitalize)
-                   prop)
         (let ((tsk (occ-obj-tsk obj))
               (ctx (occ-obj-ctx obj)))
+          (occ-debug :nodisplay "rankprop(%s, %s): begin"
+                     (occ-format-norank tsk 'capitalize)
+                     (occ-format ctx 'capitalize)
+                     prop)
           (occ-aggrigate-list-rank tsk-root (occ-get-property tsk prop) #'+
             (let* ((tsk-root (car (occ-get-property tsk prop)))
                    (tsk-root (when tsk-root (file-truename tsk-root)))
@@ -158,10 +158,10 @@
                    (ctx-dir  (when (stringp ctx-file) (file-truename ctx-dir))))
               (if tsk-root
                   (progn
-                    (occ-debug :nodisplay "tsk %s tsk-root: %s" (occ-format tsk 'capitalize) tsk-root)
-                    (occ-debug :nodisplay "tsk %s ctx-dir:  %s" (occ-format tsk 'capitalize) ctx-dir))
+                    (occ-debug :nodisplay "tsk %s tsk-root: %s" (occ-format-norank tsk 'capitalize) tsk-root)
+                    (occ-debug :nodisplay "tsk %s ctx-dir:  %s" (occ-format-norank tsk 'capitalize) ctx-dir))
                 (occ-debug :nodisplay "tsk %s tsk-root %s not present."
-                           (occ-format tsk 'capitalize) tsk-root))
+                           (occ-format-norank tsk 'capitalize) tsk-root))
               (if (and tsk-root ctx-dir
                        (string-match tsk-root ctx-dir))
                   (length tsk-root)

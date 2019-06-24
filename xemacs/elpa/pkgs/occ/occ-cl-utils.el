@@ -27,6 +27,8 @@
 (provide 'occ-cl-utils)
 
 
+(eval-when-compile
+  (require 'pcase))
 (require 'cl-macs)
 (require 'cl-generic)
 
@@ -72,18 +74,64 @@
     (if method-instances
         (aref method-instances 3)))))
 
+;; (cl-defun cl-method-param-case (signature-val-spec)
+;;    "signature-val-spec = (METHOD (PARAMS VAL))"
+;;    (cl-destructuring-bind (method (param-spec val)) signature-val-spec
+;;      (remove
+;;       nil
+;;       (mapcar
+;;        #'(lambda (fspec)
+;;            (eval
+;;             `(pcase ',fspec
+;;                (,param-spec ,val)
+;;                (_ nil))))
+;;        (cl-method-param-signs method)))))
+
 (cl-defun cl-method-param-case (signature-val-spec)
-   "signature-val-spec = (METHOD (PARAMS VAL))"
-   (cl-destructuring-bind (method (param-spec val)) signature-val-spec
-     (remove
-      nil
+  "signature-val-spec = (METHOD (PARAMS VAL))"
+  (cl-destructuring-bind (method (param-spec val)) signature-val-spec
+    (remove
+     nil
+     (mapcar
+      #'funcall
       (mapcar
        #'(lambda (fspec)
-           (eval
-            `(pcase ',fspec
-               (,param-spec ,val)
-               (_ nil))))
-       (cl-method-param-signs method)))))
+           `(lambda ()
+              (pcase ',fspec
+                (,param-spec ,val)
+                (_ nil))))
+       (cl-method-param-signs method))))))
+
+;; (cl-defun cl-method-param-case-ctsk (signature-val-spec)
+;;   "signature-val-spec = (METHOD (PARAMS VAL))"
+;;   (cl-destructuring-bind (method (param-spec val)) signature-val-spec
+;;     (remove
+;;      nil
+;;      (mapcar
+;;       #'funcall
+;;       (mapcar
+;;        #'(lambda (fspec)
+;;            `(lambda ()
+;;               (pcase ',fspec
+;;                 (,param-spec ,val)
+;;                 (_ nil))))
+;;        '((occ-obj-ctx-tsk (eql timebeing)) (occ-obj-ctx-tsk (eql root)) (occ-obj-ctx-tsk (eql currfile)) (occ-obj-ctx-tsk symbol) (occ-tsk symabol)))))))
+
+
+;; (cl-defun cl-method-param-case-tsk (signature-val-spec)
+;;   "signature-val-spec = (METHOD (PARAMS VAL))"
+;;   (cl-destructuring-bind (method (param-spec val)) signature-val-spec
+;;     (remove
+;;      nil
+;;      (mapcar
+;;       #'funcall
+;;       (mapcar
+;;        #'(lambda (fspec)
+;;            `(lambda ()
+;;               (pcase ',fspec
+;;                 (,param-spec ,val)
+;;                 (_ nil))))
+;;        '((occ-tsk (eql current-clock)) (occ-tsk (eql heading-level)) (occ-tsk (eql key)) (occ-tsk (eql status)) (occ-tsk symbol)))))))
 
 ;; ;; (cl-method-param-signs 'occ-rankprop)
 
@@ -116,9 +164,15 @@
 
 ;; (pcase (quote (occ-tsk (eql current-clock))) ((\` (occ-obj-ctx-tsk (eql (\, val)))) val) (_ nil))
 
-;; (pcase--expand (quote (occ-tsk (eql current-clock))) (((\` (occ-obj-ctx-tsk (eql (\, val)))) val) (_ nil)))
+;; (pcase--expand (quote (occ-tsk (eql current-clock))) '(((\` (occ-obj-ctx-tsk (eql (\, val)))) val) (_ nil)))
 
 ;; (cl-method-param-case '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val)))
+
+;; (funcall (car (cl-method-param-case '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val)))))
+
+;; (funcall (car (cl-method-param-case '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val)))))
+
+;; (mapcar #'funcall (cl-method-param-case '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val))))
 
 ;; (pcase--expand '(occ-tsk (eql current-clock)) '((`(occ-obj-ctx-tsk (eql ,val)) val) (_ nil)))
 
