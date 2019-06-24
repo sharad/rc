@@ -122,6 +122,8 @@
 
 ;; (pcase--expand '(occ-tsk (eql current-clock)) '((`(occ-obj-ctx-tsk (eql ,val)) val) (_ nil)))
 
+;; (pcase (quote (occ-tsk (eql current-clock))) ((\` (occ-obj-ctx-tsk (eql (\, val)))) val) (_ nil))
+
 (cl-defun cl-method-param-case-with-value (signature-val-spec obj)
  "signature-val-spec = (METHOD PARAMS VAL)"
  (cl-destructuring-bind (method (param-spec val)) signature-val-spec
