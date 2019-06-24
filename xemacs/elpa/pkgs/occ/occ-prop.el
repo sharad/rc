@@ -79,17 +79,17 @@
 (cl-defgeneric occ-properties-to-calculate-rank (obj)
   "occ-properties-to-calculate-rank")
 
-(cl-defgeneric occ-properties-to-calculate-rank-with (obj
-                                                      ctx)
-  "occ-properties-to-calculate-rank-with")
+;; (cl-defgeneric occ-properties-to-calculate-rank-with (obj
+;;                                                       ctx)
+;;   "occ-properties-to-calculate-rank-with")
 
 
 (cl-defmethod occ-properties-to-edit ((obj occ-tsk))
   (occ-match-prop-method-args obj))
 
-(cl-defmethod occ-properties-to-edit-with ((obj occ-tsk)
-                                           (ctx occ-ctx))
-  (occ-match-prop-method-args-with obj ctx))
+;; (cl-defmethod occ-properties-to-edit-with ((obj occ-tsk)
+;;                                            (ctx occ-ctx))
+;;   (occ-match-prop-method-args-with obj ctx))
 
 (cl-defmethod occ-properties-to-edit ((obj occ-obj-ctx-tsk))
   (let ((tsk (occ-obj-tsk obj))
@@ -101,15 +101,29 @@
   (let ((class 'occ-ctx))
     (cl-method-param-case '(occ-rankprop (`(occ-tsk (eql ,val)) val)))))
 
-(cl-defmethod occ-properties-to-calculate-rank-with ((obj occ-tsk)
-                                                     (ctx occ-ctx))
-  (let ((class 'occ-ctx))
-    (cl-method-param-case '(occ-rankprop-with (`(occ-tsk occ-ctx (eql ,val)) val)))))
+;; (cl-defmethod occ-properties-to-calculate-rank-with ((obj occ-tsk)
+;;                                                      (ctx occ-ctx))
+;;   (let ((class 'occ-ctx))
+;;     (cl-method-param-case '(occ-rankprop-with (`(occ-tsk occ-ctx (eql ,val)) val)))))
+
+;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-ctx-tsk))
+;;   (let ((tsk (occ-obj-tsk obj))
+;;         (ctx (occ-obj-ctx obj)))
+;;     (occ-properties-to-calculate-rank-with tsk ctx)))
+
+
+;; NOTE:
+;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-ctx-tsk))
+;;   (let ((tsk (occ-obj-tsk obj))
+;;         (ctx (occ-obj-ctx obj)))
+;;     (let ((class 'occ-ctx))
+;;       (cl-method-param-case '(occ-rankprop-with (`(occ-tsk occ-ctx (eql ,val)) val))))))
 
 (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-ctx-tsk))
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (occ-properties-to-calculate-rank-with tsk ctx)))
+    (let ((class 'occ-ctx))
+      (cl-method-param-case '(occ-rankprop (`(occ-ctsk (eql ,val)) val))))))
 
 ;; (let ((class 'occ-tsk))
 ;;   (cl-method-param-case `'(occ-rankprop (`(class (eql ,val)) val))))
@@ -266,12 +280,12 @@
   value)
 
 
-(cl-defgeneric occ-operate-obj-property-with (obj
-                                              ctx
-                                              prop
-                                              operation
-                                              values)
-  "occ-operate-obj-property-with")
+;; (cl-defgeneric occ-operate-obj-property-with (obj
+;;                                               ctx
+;;                                               prop
+;;                                               operation
+;;                                               values)
+;;   "occ-operate-obj-property-with")
 
 (cl-defgeneric occ-operate-obj-property (obj
                                          prop
@@ -302,12 +316,22 @@
                                              (occ-get-property obj prop))))
       ((member)  (occ-org-entry-member-in-from-multivalued-property nil prop (car values))))))
 
-(cl-defmethod occ-operate-obj-property-with ((obj occ-tsk)
-                                             (ctx occ-ctx)
-                                             (prop symbol)
-                                             operation
-                                             values)
-  (occ-operate-obj-property obj prop operation values))
+;; (cl-defmethod occ-operate-obj-property-with ((obj occ-tsk)
+;;                                              (ctx occ-ctx)
+;;                                              (prop symbol)
+;;                                              operation
+;;                                              values)
+;;   (occ-operate-obj-property obj prop operation values))
+
+;; (cl-defmethod occ-operate-obj-property ((obj occ-obj-ctx-tsk)
+;;                                         (prop symbol)
+;;                                         operation
+;;                                         values)
+;;   (let ((tsk (occ-obj-tsk obj))
+;;         (ctx (occ-obj-ctx obj)))
+;;     (occ-operate-obj-property-with tsk ctx
+;;                                    prop operation values)))
+
 
 (cl-defmethod occ-operate-obj-property ((obj occ-obj-ctx-tsk)
                                         (prop symbol)
@@ -315,19 +339,18 @@
                                         values)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (occ-operate-obj-property-with tsk ctx
-                                   prop operation values)))
+    (occ-operate-obj-property obj prop operation values)))
 
 
 (cl-defmethod occ-readprop-elem-from-user ((obj occ-tsk)
                                            (prop symbol))
   "Read value of element of list for property PROP from user for OCC-TSK OBJ."
-  (error "Implement method occ-readprop-elem-from-user-with for prop %s" prop))
+  (error "Implement method occ-readprop-elem-from-user for prop %s" prop))
 
 (cl-defmethod occ-readprop-from-user ((obj occ-tsk)
                                       (prop symbol))
   "Read value of element of list for property PROP from user for OCC-TSK OBJ."
-  (error "Implement method occ-readprop-from-user-with for prop %s" prop))
+  (error "Implement method occ-readprop-from-user for prop %s" prop))
 
 
 (cl-defmethod occ-readprop-elem-from-user-with ((obj occ-tsk)

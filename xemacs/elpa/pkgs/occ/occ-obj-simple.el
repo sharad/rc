@@ -123,27 +123,27 @@
   (occ-insert-node-after-element child obj
                                  (occ-tree-collection-list (occ-collection-object))))
 
-(cl-defgeneric occ-capture-with (tsk
-                                 ctx
-                                 &optional clock-in-p)
-  "occ-capture-with")
+;; (cl-defgeneric occ-capture-with (tsk
+;;                                  ctx
+;;                                  &optional clock-in-p)
+;;   "occ-capture-with")
 
-(cl-defmethod occ-capture-with ((tsk occ-obj-tsk)
-                                (ctx occ-ctx)
-                                &optional clock-in-p)
-  (let* ((mrk      (occ-tsk-marker tsk))
-         (template (occ-capture+-helm-select-template)))
-    (when template
-      (with-org-capture+ marker 'entry `(marker ,mrk) template '(:empty-lines 1)
-        (let ((tmptsk (occ-make-tsk marker)))
-          (occ-props-edit-with tmptsk ctx)
-          ;; (occ-props-window-edit-with tsk ctx :timeout occ-idle-timeout)
-          t)
-        (let ((child-tsk (occ-make-tsk marker)))
-          (when child-tsk
-            (occ-induct-child tsk child-tsk)
-            (if clock-in-p
-                (occ-try-clock-in-with child-tsk ctx))))))))
+;; (cl-defmethod occ-capture-with ((tsk occ-obj-tsk)
+;;                                 (ctx occ-ctx)
+;;                                 &optional clock-in-p)
+;;   (let* ((mrk      (occ-tsk-marker tsk))
+;;          (template (occ-capture+-helm-select-template)))
+;;     (when template
+;;       (with-org-capture+ marker 'entry `(marker ,mrk) template '(:empty-lines 1)
+;;         (let ((tmptsk (occ-make-tsk marker)))
+;;           (occ-props-edit-with tmptsk ctx)
+;;           ;; (occ-props-window-edit-with tsk ctx :timeout occ-idle-timeout)
+;;           t)
+;;         (let ((child-tsk (occ-make-tsk marker)))
+;;           (when child-tsk
+;;             (occ-induct-child tsk child-tsk)
+;;             (if clock-in-p
+;;                 (occ-try-clock-in-with child-tsk ctx))))))))
 
 
 (cl-defgeneric occ-capture (obj
@@ -163,11 +163,29 @@
   (let ((mrk (occ-tsk-marker obj)))
     (occ-capture mrk)))
 
+;; (cl-defmethod occ-capture ((obj occ-obj-ctx-tsk)
+;;                            &optional clock-in-p)
+;;   (let ((tsk        (occ-obj-tsk obj))
+;;         (ctx        (occ-obj-ctx obj)))
+;;     (occ-capture-with tsk ctx clock-in-p)))
+
 (cl-defmethod occ-capture ((obj occ-obj-ctx-tsk)
                            &optional clock-in-p)
-  (let ((tsk        (occ-obj-tsk obj))
-        (ctx        (occ-obj-ctx obj)))
-    (occ-capture-with tsk ctx clock-in-p)))
+  (let* ((mrk      (occ-tsk-marker tsk))
+         (template (occ-capture+-helm-select-template)))
+    (when template
+      (with-org-capture+ marker 'entry `(marker ,mrk) template '(:empty-lines 1)
+        (let ((tmptsk (occ-make-tsk marker)))
+          ;; (occ-props-edit-with tmptsk ctx)
+          (occ-props-edit (occ-make-ctsk tmptsk ctx))
+          ;; (occ-props-window-edit-with tsk ctx :timeout occ-idle-timeout)
+          t)
+        (let ((child-tsk (occ-make-tsk marker)))
+          (when child-tsk
+            (occ-induct-child tsk child-tsk)
+            (if clock-in-p
+                ;; (occ-try-clock-in-with child-tsk ctx)
+                (occ-try-clock-in (occ-build-ctxual-tsk child-tsk ctx)))))))))
 
 
 (cl-defgeneric occ-procreate-child (obj)
@@ -203,15 +221,15 @@
               title)))))
 
 
-(cl-defmethod occ-procreate-child-with ((obj occ-obj-tsk)
-                                        (ctx occ-ctx))
-  (if (not (occ-unnamed-p obj))
-      (occ-capture-with obj ctx helm-current-prefix-arg)
-    (let ((title (occ-title obj 'captilize)))
-      (error "%s is unnamed %s so can not create child "
-             (occ-format obj 'captilize)
-             title
-             title))))
+;; (cl-defmethod occ-procreate-child-with ((obj occ-obj-tsk)
+;;                                         (ctx occ-ctx))
+;;   (if (not (occ-unnamed-p obj))
+;;       (occ-capture-with obj ctx helm-current-prefix-arg)
+;;     (let ((title (occ-title obj 'captilize)))
+;;       (error "%s is unnamed %s so can not create child "
+;;              (occ-format obj 'captilize)
+;;              title
+;;              title))))
 
 
 (cl-defgeneric occ-procreate-child-clock-in (obj)

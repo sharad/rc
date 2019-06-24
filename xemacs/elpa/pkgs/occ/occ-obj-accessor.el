@@ -128,9 +128,9 @@
   (setf (occ-tsk-rank tsk) value))
 
 
-(cl-defmethod occ-rank-with ((obj occ-tsk)
-                             (ctx occ-ctx))
-  (occ-calculate-rank-with obj ctx))
+;; (cl-defmethod occ-rank-with ((obj occ-tsk)
+;;                              (ctx occ-ctx))
+;;   (occ-calculate-rank-with obj ctx))
 
 
 ;; occ-ctsk - accessors

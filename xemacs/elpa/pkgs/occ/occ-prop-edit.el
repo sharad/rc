@@ -63,7 +63,7 @@
   (occ-debug :debug "occ-select-propetry: %s" (occ-format obj 'capitalize))
   (let ((prompt (or prompt "proptery: "))
         (fixed-keys '(edit done))
-        (keys       (occ-properties-to-edit-with obj ctx)))
+        (keys       (occ-properties-to-edit (occ-build-ctsk obj ctx))))
     (if keys
         (let ((maxkeylen (apply
                           #'max
@@ -230,44 +230,64 @@
   (occ-open-prop-block (point-marker)))
 
 
-(cl-defmethod occ-props-edit-with ((obj occ-obj-tsk)
-                                   (ctx occ-ctx))
-  (occ-debug :debug "occ-props-edit-with: begin %s"
-             (occ-format obj 'capitalize))
-  (let ((prop nil))
-    (while (not
-            (member
-             (setq prop (occ-select-propetry obj ctx))
-             '(edit done)))
-      ;; TODO: handle (occ-select-propetry obj ctx) return NIL
-      ;; (occ-editprop-with prop obj ctx)
-      (let ((retval
-             (occ-editprop-with obj ctx prop)))
-        (when retval ;; (occ-editprop prop ctx)
-          ;; (occ-tsk-update-tsks t)
-          (occ-debug :debug "occ-props-edit-with: done with retval %s" retval)
-          retval)))))
+;; (cl-defmethod occ-props-edit-with ((obj occ-obj-tsk)
+;;                                    (ctx occ-ctx))
+;;   (occ-debug :debug "occ-props-edit-with: begin %s"
+;;              (occ-format obj 'capitalize))
+;;   (let ((prop nil))
+;;     (while (not
+;;             (member
+;;              (setq prop (occ-select-propetry obj ctx))
+;;              '(edit done)))
+;;       ;; TODO: handle (occ-select-propetry obj ctx) return NIL
+;;       ;; (occ-editprop-with prop obj ctx)
+;;       (let ((retval
+;;              (occ-editprop-with obj ctx prop)))
+;;         (when retval ;; (occ-editprop prop ctx)
+;;           ;; (occ-tsk-update-tsks t)
+;;           (occ-debug :debug "occ-props-edit-with: done with retval %s" retval)
+;;           retval)))))
+
+;; (cl-defmethod occ-props-edit ((obj occ-obj-ctx-tsk))
+;;   (occ-debug :debug "occ-props-edit: begin %s"
+;;              (occ-format obj 'capitalize))
+;;   (let ((tsk (occ-obj-tsk obj))
+;;         (ctx (occ-obj-ctx obj)))
+;;     (occ-props-edit-with tsk ctx)))
 
 (cl-defmethod occ-props-edit ((obj occ-obj-ctx-tsk))
   (occ-debug :debug "occ-props-edit: begin %s"
              (occ-format obj 'capitalize))
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (occ-props-edit-with tsk ctx)))
+    (let ((prop nil))
+      (while (not
+              (member
+               (setq prop (occ-select-propetry obj ctx))
+               '(edit done)))
+        ;; TODO: handle (occ-select-propetry obj ctx) return NIL
+        ;; (occ-editprop-with prop obj ctx)
+        (let ((retval
+               ;; (occ-editprop-with obj ctx prop)
+               (occ-editprop obj prop)))
+          (when retval ;; (occ-editprop prop ctx)
+            ;; (occ-tsk-update-tsks t)
+            (occ-debug :debug "occ-props-edit-with: done with retval %s" retval)
+            retval))))))
 
 
-(cl-defmethod occ-props-edit-in-cloned-buffer-with ((obj occ-obj-tsk)
-                                                    (ctx occ-ctx))
-  (occ-debug :debug "occ-props-edit-in-cloned-buffer-with: begin")
-  (let ((mrk (occ-obj-marker obj)))
-    (org-with-cloned-marker mrk "<proptree>"
-      (let ((cloned-mrk (point-marker)))
-        (org-with-narrow-to-marker mrk
-          (if (occ-open-prop-block cloned-mrk)
-              (occ-props-edit-with obj ctx)
-            (error "occ-props-edit-in-cloned-buffer-with: can not edit props for %s with %s"
-                   (occ-format obj 'capitalize)
-                   (occ-format ctx 'capitalize))))))))
+;; (cl-defmethod occ-props-edit-in-cloned-buffer-with ((obj occ-obj-tsk)
+;;                                                     (ctx occ-ctx))
+;;   (occ-debug :debug "occ-props-edit-in-cloned-buffer-with: begin")
+;;   (let ((mrk (occ-obj-marker obj)))
+;;     (org-with-cloned-marker mrk "<proptree>"
+;;       (let ((cloned-mrk (point-marker)))
+;;         (org-with-narrow-to-marker mrk
+;;           (if (occ-open-prop-block cloned-mrk)
+;;               (occ-props-edit-with obj ctx)
+;;             (error "occ-props-edit-in-cloned-buffer-with: can not edit props for %s with %s"
+;;                    (occ-format obj 'capitalize)
+;;                    (occ-format ctx 'capitalize))))))))
 
 (cl-defmethod occ-props-edit-in-cloned-buffer ((obj occ-obj-ctx-tsk))
   (occ-debug :debug "occ-props-edit-in-cloned-buffer: begin")
@@ -296,34 +316,34 @@
     (funcall cleanup win local-cleanup)
     (when timer (cancel-timer timer)))))
 
-(cl-defmethod occ-props-window-edit-with ((obj occ-tsk)
-                                          (ctx occ-ctx)
-                                          &optional timeout)
-  (let* ((timeout (or timeout occ-idle-timeout)))
-    (let* ((local-cleanup
-              #'(lambda ()
-                  (occ-debug :warning "occ-props-window-edit-with((obj occ-tsk) (ctx occ-ctx)): local-cleanup called")
-                  (occ-debug-uncond "occ-props-window-edit-with((obj occ-tsk) (ctx occ-ctx)): local-cleanup called")
-                  (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
-                    (abort-recursive-edit)))))
-        (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
-            timeout timer cleanup local-cleanup win
-            (condition-case-control err
-              (let ((prop
-                     (occ-props-edit-in-cloned-buffer-with obj ctx)))
-                (occ-props-edit-handle-response prop timeout timer cleanup local-cleanup win)
-                (occ-debug-uncond "occ-props-window-edit((obj occ-tsk) (ctx occ-ctx)) noquit: label %s value %s"
-                                  occ-return-true-label obj)
-                (occ-make-return occ-return-true-label obj))
-              ((quit)
-               (progn
-                 (occ-debug :warning "occ-props-window-edit-with((obj occ-tsk) (ctx occ-ctx)): canceling timer")
-                 (occ-debug-uncond "occ-props-window-edit((obj occ-tsk) (ctx occ-ctx)) quit: label %s value %s"
-                                   occ-return-select-label nil)
-                 (funcall cleanup win local-cleanup)
-                 (if timer (cancel-timer timer))
-                 (signal (car err) (cdr err))
-                 (occ-make-return occ-return-quit-label nil))))))))
+;; (cl-defmethod occ-props-window-edit-with ((obj occ-tsk)
+;;                                           (ctx occ-ctx)
+;;                                           &optional timeout)
+;;   (let* ((timeout (or timeout occ-idle-timeout)))
+;;     (let* ((local-cleanup
+;;               #'(lambda ()
+;;                   (occ-debug :warning "occ-props-window-edit-with((obj occ-tsk) (ctx occ-ctx)): local-cleanup called")
+;;                   (occ-debug-uncond "occ-props-window-edit-with((obj occ-tsk) (ctx occ-ctx)): local-cleanup called")
+;;                   (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
+;;                     (abort-recursive-edit)))))
+;;         (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
+;;             timeout timer cleanup local-cleanup win
+;;             (condition-case-control err
+;;               (let ((prop
+;;                      (occ-props-edit-in-cloned-buffer-with obj ctx)))
+;;                 (occ-props-edit-handle-response prop timeout timer cleanup local-cleanup win)
+;;                 (occ-debug-uncond "occ-props-window-edit((obj occ-tsk) (ctx occ-ctx)) noquit: label %s value %s"
+;;                                   occ-return-true-label obj)
+;;                 (occ-make-return occ-return-true-label obj))
+;;               ((quit)
+;;                (progn
+;;                  (occ-debug :warning "occ-props-window-edit-with((obj occ-tsk) (ctx occ-ctx)): canceling timer")
+;;                  (occ-debug-uncond "occ-props-window-edit((obj occ-tsk) (ctx occ-ctx)) quit: label %s value %s"
+;;                                    occ-return-select-label nil)
+;;                  (funcall cleanup win local-cleanup)
+;;                  (if timer (cancel-timer timer))
+;;                  (signal (car err) (cdr err))
+;;                  (occ-make-return occ-return-quit-label nil))))))))
 
 ;; (cl-defmethod occ-props-window-edit ((obj occ-obj-ctx-tsk)
 ;;                                      &key
