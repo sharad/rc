@@ -339,46 +339,57 @@
                                         values)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (occ-operate-obj-property obj prop operation values)))
+    (occ-operate-obj-property tsk prop operation values)))
 
 
-(cl-defmethod occ-readprop-elem-from-user ((obj occ-tsk)
+;; (cl-defmethod occ-readprop-elem-from-user ((obj occ-tsk)
+;;                                            (prop symbol))
+;;   "Read value of element of list for property PROP from user for OCC-TSK OBJ."
+;;   (error "Implement method occ-readprop-elem-from-user for prop %s" prop))
+
+;; (cl-defmethod occ-readprop-from-user ((obj occ-tsk)
+;;                                       (prop symbol))
+;;   "Read value of element of list for property PROP from user for OCC-TSK OBJ."
+;;   (error "Implement method occ-readprop-from-user for prop %s" prop))
+
+
+(cl-defmethod occ-readprop-elem-from-user ((obj occ-obj-tsk)
                                            (prop symbol))
   "Read value of element of list for property PROP from user for OCC-TSK OBJ."
   (error "Implement method occ-readprop-elem-from-user for prop %s" prop))
 
-(cl-defmethod occ-readprop-from-user ((obj occ-tsk)
+(cl-defmethod occ-readprop-from-user ((obj occ-obj-tsk)
                                       (prop symbol))
   "Read value of element of list for property PROP from user for OCC-TSK OBJ."
   (error "Implement method occ-readprop-from-user for prop %s" prop))
 
 
-(cl-defmethod occ-readprop-elem-from-user-with ((obj occ-tsk)
-                                                (ctx occ-ctx)
-                                                (prop symbol))
-  "Read value of element of list for property PROP from user for OCC-TSK OBJ and OCC-CTX CTX."
-  (occ-readprop-elem-from-user obj prop))
+;; (cl-defmethod occ-readprop-elem-from-user-with ((obj occ-tsk)
+;;                                                 (ctx occ-ctx)
+;;                                                 (prop symbol))
+;;   "Read value of element of list for property PROP from user for OCC-TSK OBJ and OCC-CTX CTX."
+;;   (occ-readprop-elem-from-user obj prop))
 
-(cl-defmethod occ-readprop-from-user-with ((obj occ-tsk)
-                                           (ctx occ-ctx)
-                                           (prop symbol))
-  "Read complete property list from user."
-  (occ-readprop-from-user obj prop))
+;; (cl-defmethod occ-readprop-from-user-with ((obj occ-tsk)
+;;                                            (ctx occ-ctx)
+;;                                            (prop symbol))
+;;   "Read complete property list from user."
+;;   (occ-readprop-from-user obj prop))
 
 
-(cl-defmethod occ-readprop-elem-from-user ((obj occ-obj-ctx-tsk)
-                                           (prop symbol))
-  "Read value of element of list for property PROP from user for OCC-OBJ-CTX-TSK OBJ."
-  (let ((tsk (occ-obj-tsk obj))
-        (ctx (occ-obj-ctx obj)))
-    (occ-readprop-elem-from-user-with tsk ctx)))
+;; (cl-defmethod occ-readprop-elem-from-user ((obj occ-obj-ctx-tsk)
+;;                                            (prop symbol))
+;;   "Read value of element of list for property PROP from user for OCC-OBJ-CTX-TSK OBJ."
+;;   (let ((tsk (occ-obj-tsk obj))
+;;         (ctx (occ-obj-ctx obj)))
+;;     (occ-readprop-elem-from-user tsk prop)))
 
-(cl-defmethod occ-readprop-from-user ((obj occ-obj-ctx-tsk)
-                                      (prop symbol))
-  "Read complete values list for property PROP from user for OCC-OBJ-CTX-TSK OBJ."
-  (let ((tsk (occ-obj-tsk obj))
-        (ctx (occ-obj-ctx obj)))
-    (occ-readprop-from-user-with tsk ctx)))
+;; (cl-defmethod occ-readprop-from-user ((obj occ-obj-ctx-tsk)
+;;                                       (prop symbol))
+;;   "Read complete values list for property PROP from user for OCC-OBJ-CTX-TSK OBJ."
+;;   (let ((tsk (occ-obj-tsk obj))
+;;         (ctx (occ-obj-ctx obj)))
+;;     (occ-readprop-from-user tsk prop)))
 
 
 (cl-defmethod occ-prop-get-operation ((prop symbol))
@@ -428,45 +439,74 @@
                           (occ-rereadprop-value p (occ-get-property obj p)))))))
 
 
-(cl-defmethod occ-readprop-org-with ((obj occ-tsk)
-                                     (ctx occ-ctx)
-                                     (prop symbol))
-  "Read property PROP of OBJ-TSK OBJ and OBJ-CTX CTX from its corresponding org file entry."
-  (let* ((mrk    (or (occ-obj-marker obj) (point)))
-         (values (occ-org-operate-property-at-point mrk
-                                                    prop
-                                                    (occ-prop-get-operation prop))))
-    (mapcar #'(lambda (v)
-                (occ-prop-elem-from-org prop v))
-            values)))
+;; (cl-defmethod occ-readprop-org-with ((obj occ-tsk)
+;;                                      (ctx occ-ctx)
+;;                                      (prop symbol))
+;;   "Read property PROP of OBJ-TSK OBJ and OBJ-CTX CTX from its corresponding org file entry."
+;;   (let* ((mrk    (or (occ-obj-marker obj) (point)))
+;;          (values (occ-org-operate-property-at-point mrk
+;;                                                     prop
+;;                                                     (occ-prop-get-operation prop))))
+;;     (mapcar #'(lambda (v)
+;;                 (occ-prop-elem-from-org prop v))
+;;             values)))
 
-(cl-defmethod occ-writeprop-org-with ((obj occ-tsk)
-                                      (ctx occ-ctx)
-                                      (prop symbol))
-  "Write property PROP of OBJ-TSK TSK and OBJ-CTX CTXfrom its corresponding org file entry."
-  (let* ((values (occ-get-property obj prop))
-         (values (if (consp values) values (list values)))
-         (values (mapcar #'(lambda (v)
-                             (occ-prop-elem-to-org prop va))
-                         values)))
-    (occ-org-operate-property-at-point (point)
-                                       prop
-                                       (occ-prop-put-operation prop)
-                                       values)))
+;; (cl-defmethod occ-writeprop-org-with ((obj occ-tsk)
+;;                                       (ctx occ-ctx)
+;;                                       (prop symbol))
+;;   "Write property PROP of OBJ-TSK TSK and OBJ-CTX CTXfrom its corresponding org file entry."
+;;   (let* ((values (occ-get-property obj prop))
+;;          (values (if (consp values) values (list values)))
+;;          (values (mapcar #'(lambda (v)
+;;                              (occ-prop-elem-to-org prop v))
+;;                          values)))
+;;     (occ-org-operate-property-at-point (point)
+;;                                        prop
+;;                                        (occ-prop-put-operation prop)
+;;                                        values)))
+
+
+;; (cl-defmethod occ-readprop-org ((obj occ-obj-ctx-tsk)
+;;                                 (prop symbol))
+;;   "Read property PROP of OBJ-CTX-TSK OBJ from its corresponding org file entry."
+;;   (let ((tsk (occ-obj-tsk obj))
+;;         (ctx (occ-obj-ctx obj)))
+;;     (occ-readprop-org-with tsk ctx prop)))
+
+;; (cl-defmethod occ-writeprop-org ((obj occ-obj-ctx-tsk)
+;;                                  (prop symbol))
+;;   "Write property PROP of OBJ-CTX-TSK OBJ from its corresponding org file entry."
+;;   (let ((tsk (occ-obj-tsk obj))
+;;         (ctx (occ-obj-ctx obj)))
+;;     (occ-writeprop-org-with tsk ctx prop)))
 
 (cl-defmethod occ-readprop-org ((obj occ-obj-ctx-tsk)
                                 (prop symbol))
   "Read property PROP of OBJ-CTX-TSK OBJ from its corresponding org file entry."
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (occ-readprop-org-with tsk ctx prop)))
+    (let* ((mrk    (or (occ-obj-marker tsk) (point)))
+           (values (occ-org-operate-property-at-point mrk
+                                                      prop
+                                                      (occ-prop-get-operation prop))))
+      (mapcar #'(lambda (v)
+                  (occ-prop-elem-from-org prop v))
+              values))))
 
 (cl-defmethod occ-writeprop-org ((obj occ-obj-ctx-tsk)
                                  (prop symbol))
   "Write property PROP of OBJ-CTX-TSK OBJ from its corresponding org file entry."
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (occ-writeprop-org-with tsk ctx prop)))
+    (let* ((values (occ-get-property tsk prop))
+           (values (if (consp values) values (list values)))
+           (values (mapcar #'(lambda (v)
+                               (occ-prop-elem-to-org prop v))
+                           values)))
+      (occ-org-operate-property-at-point (point)
+                                         prop
+                                         (occ-prop-put-operation prop)
+                                         values))))
 
 
 (cl-defgeneric occ-select-prop-list-operation (prop)
