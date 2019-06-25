@@ -235,22 +235,6 @@
                                                   :timeout            timeout))))))
 
 
-;; (cl-defmethod occ-clock-in-if-associable-with ((tsk occ-tsk)
-;;                                                (ctx occ-ctx)
-;;                                                &key
-;;                                                filters
-;;                                                builder
-;;                                                action
-;;                                                action-transformer
-;;                                                timeout)
-;;   (when (occ-associable-with-p tsk ctx)
-;;     (occ-clock-in (occ-build-ctxual-tsk-with tsk ctx)
-;;                   :filters            filters
-;;                   :builder            builder
-;;                   :action             action
-;;                   :action-transformer action-transformer
-;;                   :timeout            timeout)))
-
 (cl-defmethod occ-clock-in-if-associable ((obj occ-obj-ctx-tsk)
                                           &key
                                           filters
@@ -266,36 +250,6 @@
                     :action             action
                     :action-transformer action-transformer
                     :timeout            timeout))))
-
-
-;; (cl-defmethod occ-try-clock-in-with ((tsk occ-tsk)
-;;                                      (ctx occ-ctx)
-;;                                      &key
-;;                                      filters
-;;                                      builder
-;;                                      action
-;;                                      action-transformer
-;;                                      timeout)
-;;   (let* ((total-tries 3)
-;;          (try         total-tries))
-;;     (while (and
-;;             (> try 0)
-;;             (not (occ-associable-with-p tsk ctx)))
-;;       (setq try (1- try))
-;;       (occ-message "occ-try-clock-in-with %s is not associable with %s [try %d]"
-;;                    (occ-format tsk 'capitalize)
-;;                    (occ-format ctx 'capitalize)
-;;                    (- total-tries try))
-;;       (occ-props-edit-with tsk ctx)))
-;;   (unless (occ-clock-in-if-associable-with tsk ctx
-;;                                            :filters            filters
-;;                                            :builder            builder
-;;                                            :action             action
-;;                                            :action-transformer action-transformer
-;;                                            :timeout            timeout)
-;;     (occ-message "%s is not associable with %s not clocking-in."
-;;                  (occ-format tsk 'capitalize)
-;;                  (occ-format ctx 'capitalize))))
 
 
 (cl-defmethod occ-try-clock-in ((obj marker)
@@ -326,22 +280,6 @@
                 :action             action
                 :action-transformer action-transformer
                 :timeout            timeout))
-
-;; (cl-defmethod occ-try-clock-in ((obj occ-ctsk)
-;;                                 &key
-;;                                 filters
-;;                                 builder
-;;                                 action
-;;                                 action-transformer
-;;                                 timeout)
-;;   (let ((tsk (occ-obj-tsk obj))
-;;         (ctx (occ-obj-ctx obj)))
-;;     (occ-try-clock-in-with tsk ctx
-;;                            :filters            filters
-;;                            :builder            builder
-;;                            :action             action
-;;                            :action-transformer action-transformer
-;;                            :timeout            timeout)))
 
 (cl-defmethod occ-try-clock-in ((obj occ-ctsk)
                                 &key

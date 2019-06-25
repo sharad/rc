@@ -52,23 +52,6 @@
                             ctx))))
 
 
-;; (cl-defmethod occ-associable-with-p (obj
-;;                                      ctx)
-;;   nil)
-
-;; (cl-defmethod occ-associable-with-p ((tsk symbol)
-;;                                      (ctx occ-ctx))
-;;   nil)
-
-;; ;; keepit
-;; (cl-defmethod occ-associable-with-p ((obj occ-obj-tsk)
-;;                                      (ctx occ-ctx))
-;;   "Test if TSK is associate to CTX"
-;;   (let ((tsk (occ-obj-tsk obj)))
-;;     (>
-;;      (occ-rank-with tsk ctx) 0)))
-
-
 (cl-defmethod occ-associable-p ((obj null))
   "Test if CTSK is associate"     ;not required.
   nil)
@@ -76,14 +59,6 @@
 (cl-defmethod occ-associable-p ((obj occ-obj-ctx-tsk))
   "Test if CTSK is associate"     ;not required.
   (> (occ-rank (occ-build-ctxual-tsk obj)) 0))
-
-;; (cl-defmethod occ-associable-p ((obj occ-ctsk))
-;;   (occ-debug :debug "occ-associable-p(occ-ctsk=%s)" obj)
-;;   (> (occ-rank (occ-build-ctxual-tsk obj)) 0))
-
-;; (cl-defmethod occ-associable-p ((obj occ-ctxual-tsk))
-;;   (occ-debug :debug "occ-associable-p(occ-ctxual-tsk=%s)" obj)
-;;   (> (occ-rank (occ-build-ctxual-tsk obj)) 0))
 
 
 (cl-defgeneric occ-unammed-p (obj)

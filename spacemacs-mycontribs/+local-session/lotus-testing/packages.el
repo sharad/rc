@@ -37,6 +37,14 @@
 (defconst lotus-testing-packages
   '(
     (ert :location local)
+    (ert-async :location local)
+    (ert-expectations :location local)
+    (ert-junit :location local)
+    (ert-modeline :location local)
+    (ert-runner :location local)
+    (ert-x :location local)
+    (ertx :location local)
+    (ert :location local)
     )
   "The list of Lisp packages required by the LAYER layer.
 

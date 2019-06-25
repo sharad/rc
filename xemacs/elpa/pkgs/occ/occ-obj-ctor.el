@@ -239,12 +239,6 @@
    :ctx     ctx
    :rank    rank))
 
-;; (cl-defmethod occ-build-ctxual-tsk-with ((tsk occ-tsk) ;ctor
-;;                                     (ctx occ-ctx))
-;;   (occ-make-ctxual-tsk-with tsk
-;;                             ctx
-;;                             (occ-calculate-rank-with tsk ctx)))
-
 (cl-defmethod occ-build-ctxual-tsk-with ((tsk occ-tsk) ;ctor
                                          (ctx occ-ctx))
   (occ-make-ctxual-tsk-with tsk ctx))

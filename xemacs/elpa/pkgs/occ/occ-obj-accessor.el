@@ -128,12 +128,6 @@
   (setf (occ-tsk-rank tsk) value))
 
 
-;; keep
-;; (cl-defmethod occ-rank-with ((obj occ-tsk)
-;;                              (ctx occ-ctx))
-;;   (occ-calculate-rank-with obj ctx))
-
-
 ;; occ-ctsk - accessors
 (cl-defmethod occ-rank ((obj occ-ctsk))
   (occ-debug :debug "occ-rank(occ-ctsk=%s)" obj)

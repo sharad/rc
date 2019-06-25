@@ -32,29 +32,13 @@
 
 ;; TODO: graded ranking where ranking will be under priority of properties, where one can not go beyond above one, normally
 
-;; (cl-defgeneric occ-rankprop-with (obj
-;;                                   ctx
-;;                                   prop)
-;;   "occ-rankprop-with")
-
 (cl-defgeneric occ-rankprop (obj
                              prop)
   "occ-rankprop")
 
-;; keep
-;; (cl-defgeneric occ-calculate-rank-with (obj
-;;                                         ctx)
-;;   "occ-rank-with")
-
 (cl-defgeneric occ-calculate-rank (obj)
   "occ-rank")
 
-
-;; (cl-defmethod occ-rankprop-with (obj
-;;                                  ctx
-;;                                  prop)
-;;   (occ-debug :debug "occ-rankprop-with(obj=%s ctx=%s symbol=%s)" obj ctx prop)
-;;   0)
 
 (cl-defmethod occ-rankprop (obj
                             prop)
@@ -85,44 +69,11 @@
 
 
 ;; * ctx-tsk rank
-;; ;; keep
-;; (cl-defmethod occ-calculate-rank-with ((obj occ-tsk)
-;;                                        (ctx occ-ctx))
-;;   ;; too much output
-;;   (occ-debug :debug "occ-rank-with(obj=%s ctx=%s)" obj ctx)
-;;   (let ((tsk-rank (occ-rank obj))
-;;         (rank
-;;          (reduce #'+
-;;                  (mapcar #'(lambda (slot)
-;;                              (occ-rankprop-with obj ctx (downcase-sym slot)))
-;;                          (occ-properties-to-calculate-rank-with obj ctx)))))
-;;     (+ rank tsk-rank)))
-
-
-;; (cl-defmethod occ-rankprop ((obj  occ-obj-ctx-tsk)
-;;                             (prop symbol))
-;;   (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop)
-;;   (let ((tsk (occ-obj-tsk obj))
-;;         (ctx (occ-obj-ctx obj)))
-;;     (occ-rankprop-with tsk ctx prop)))
 
 (cl-defmethod occ-rankprop ((obj  occ-obj-ctx-tsk)
                             (prop symbol))
   (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop)
   (occ-rankprop obj prop))
-
-;; (cl-defmethod occ-calculate-rank ((obj occ-obj-ctx-tsk))
-;;   ;; too much output
-;;   (occ-debug :debug "occ-rank(obj=%s)" obj)
-;;   (let ((tsk (occ-obj-tsk obj))
-;;         (ctx (occ-obj-ctx obj)))
-;;     (let ((tsk-rank (occ-rank obj))
-;;           (rank
-;;            (reduce #'+
-;;                    (mapcar #'(lambda (slot)
-;;                                (occ-rankprop-with tsk ctx (downcase-sym slot)))
-;;                            (occ-properties-to-calculate-rank-with obj ctx)))))
-;;       (+ rank tsk-rank))))
 
 (cl-defmethod occ-calculate-rank ((obj occ-obj-ctx-tsk))
   ;; too much output

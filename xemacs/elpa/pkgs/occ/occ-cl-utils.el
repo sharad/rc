@@ -93,14 +93,13 @@
     (remove
      nil
      (mapcar
-      #'funcall
-      (mapcar
-       #'(lambda (fspec)
+      #'(lambda (fspec)
+          (funcall
            `(lambda ()
               (pcase ',fspec
                 (,param-spec ,val)
-                (_ nil))))
-       (cl-method-param-signs method))))))
+                (_ nil)))))
+      (cl-method-param-signs method)))))
 
 ;; (cl-defun cl-method-param-case-with-value (signature-val-spec obj)
 ;;   "signature-val-spec = (METHOD PARAMS VAL)"
