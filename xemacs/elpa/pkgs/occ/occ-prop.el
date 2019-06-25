@@ -192,18 +192,18 @@
       (memq operation '(mget mput madd mremove member))
     (memq operation '(add get put remove))))
 
-(cl-defgeneric occ-org-operate-property (pom
-                                         prop
-                                         operation
-                                         values)
-  "occ-org-operate-property")
-
-(cl-defmethod occ-org-operate-property ((pom marker)
-                                        (prop string)
+(cl-defgeneric occ-org-update-property (pom
+                                        prop
                                         operation
                                         values)
+  "occ-org-update-property")
+
+(cl-defmethod occ-org-update-property ((pom marker)
+                                       (prop string)
+                                       operation
+                                       values)
   ;; (unless (occ-valid-p prop operation)
-  ;;   (error "occ-org-operate-property: operation %s is not allowed for prop %s" operation prop))
+  ;;   (error "occ-org-update-property: operation %s is not allowed for prop %s" operation prop))
   (let ((list-p (occ-list-p prop)))
     (case operation)
     ((get)    (if list-p
@@ -222,37 +222,37 @@
 
 
 
-(cl-defmethod occ-org-operate-property-at-point ((mrk marker)
-                                                 (prop symbol)
-                                                 operation
-                                                 values)
+(cl-defmethod occ-org-update-property-at-point ((mrk marker)
+                                                (prop symbol)
+                                                operation
+                                                values)
   (unless (occ-valid-p prop operation)
-    (error "occ-org-operate-property: operation %s is not allowed for prop %s" operation prop))
+    (error "occ-org-update-property: operation %s is not allowed for prop %s" operation prop))
   (lotus-with-marker mrk
     (unless (org-get-property-block)
       ;; create property drawer
       ;; TODO: NOTE: only create property block if 100% sure value is going to be set.
-      (occ-debug :debug "occ-org-operate-property-at-point: property block not exist so creating it.")
+      (occ-debug :debug "occ-org-update-property-at-point: property block not exist so creating it.")
       (let* ((range (org-get-property-block (point) 'force))
              (start (when (consp range) (1- (car range)))))
         (if (and range start)
             (when (numberp start)
               (goto-char start))
-          (error "occ-org-operate-property-at-point: not able to create property block to add property %s: %s"
+          (error "occ-org-update-property-at-point: not able to create property block to add property %s: %s"
                  prop values))))
 
     (if (org-get-property-block)
         (progn
           (occ-debug :debug
-                     "occ-org-operate-property-at-point: adding prop: %s value: %s using (org-set-property)."
+                     "occ-org-update-property-at-point: adding prop: %s value: %s using (org-set-property)."
                      prop values)
-          (let ((retval (occ-org-operate-property mrk
-                                                  (symbol-name prop)
-                                                  operation
-                                                  values)))
-            (occ-debug :debug "occ-org-operate-property: (occ-org-operate-property mrk) returned %s" retval)
+          (let ((retval (occ-org-update-property mrk
+                                                 (symbol-name prop)
+                                                 operation
+                                                 values)))
+            (occ-debug :debug "occ-org-update-property: (occ-org-update-property mrk) returned %s" retval)
             retval))
-        (error "occ-org-operate-property-at-point: can not get property block to add property %s: %s"
+        (error "occ-org-update-property-at-point: can not get property block to add property %s: %s"
                prop values))))
 
 
@@ -391,9 +391,9 @@
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
     (let* ((mrk    (or (occ-obj-marker tsk) (point)))
-           (values (occ-org-operate-property-at-point mrk
-                                                      prop
-                                                      'get)))
+           (values (occ-org-update-property-at-point mrk
+                                                     prop
+                                                     'get)))
       (mapcar #'(lambda (v)
                   (occ-prop-elem-from-org prop v))
               values))))
@@ -408,10 +408,10 @@
            (values (mapcar #'(lambda (v)
                                (occ-prop-elem-to-org prop v))
                            values)))
-      (occ-org-operate-property-at-point (point)
-                                         prop
-                                         'put
-                                         values))))
+      (occ-org-update-property-at-point (point)
+                                        prop
+                                        'put
+                                        values))))
 
 
 (cl-defgeneric occ-select-operation (prop)
@@ -448,11 +448,11 @@
     (let ((operation  (or operation (occ-select-operation prop)))
           (prop-value (or value     (occ-readprop-elem-from-user obj prop))))
       (let ((retval
-             (occ-org-operate-property-at-point mrk
+             (occ-org-update-property-at-point mrk
                                                 prop
                                                 operation
                                                 (list prop-value))))
-        (occ-debug :debug "occ-editprop: (occ-org-operate-property-at-point mrk) returnd %s" retval)
+        (occ-debug :debug "occ-editprop: (occ-org-update-property-at-point mrk) returnd %s" retval)
         (when retval
           (occ-update-property obj
                                prop
@@ -470,11 +470,11 @@
     (let ((operation  (or operation (occ-select-operation prop)))
           (prop-value (or value     (occ-readprop-elem-from-user obj prop))))
       (let ((retval
-             (occ-org-operate-property-at-point mrk
+             (occ-org-update-property-at-point mrk
                                                 prop
                                                 operation
                                                 (list prop-value))))
-        (occ-debug :debug "occ-editprop-with: (occ-org-operate-property-at-point mrk) returnd %s" retval)
+        (occ-debug :debug "occ-editprop-with: (occ-org-update-property-at-point mrk) returnd %s" retval)
         (when retval
           (occ-update-property obj
                                prop
@@ -576,6 +576,15 @@
 ;;    (occ-properties-to-edit obj)))
 
 
+(cl-defmethod occ-method-required-p ((obj occ-tsk)
+                                     (prop symbol)
+                                     operation
+                                     value)
+  (case operation
+    ((add)    (not (occ-has-p obj prop value)))
+    ((remove) (occ-has-p obj prop value))))
+
+
 (cl-defmethod occ-method-required-p ((obj occ-obj-ctx-tsk)
                                      (prop symbol)
                                      operation
@@ -584,14 +593,26 @@
     ((add)    (not (occ-has-p obj prop value)))
     ((remove) (occ-has-p obj prop value))))
 
+(cl-defmethod occ-gen-method-if-required ((obj occ-tsk)
+                                          (prop symbol)
+                                          operation
+                                          value)
+  (when (occ-method-required-p obj
+                               prop
+                               operation
+                               value)
+    (occ-gen-prompt-method obj prop operation value)))
+
 (cl-defmethod occ-gen-method-if-required ((obj occ-obj-ctx-tsk)
                                           (prop symbol)
                                           operation
                                           value)
-  (when (occ-method-required-p obj prop operation value)
+  (when (occ-method-required-p obj
+                               prop
+                               operation
+                               value)
     (occ-gen-prompt-method obj prop operation value)))
 
-
 
 (cl-defmethod occ-gen-methods-for-add ((obj occ-obj-ctx-tsk))
   (let ((props (occ-properties-to-edit obj))
@@ -614,7 +635,7 @@
   (remove nil
           (mapcar #'(lambda (prop) (gen-remove-action prop))
                   props)))
-
+
 
 (cl-defmethod occ-gen-methods-for-add-remove ((obj occ-obj-ctx-tsk))
   (let ((props (occ-properties-to-edit obj))
