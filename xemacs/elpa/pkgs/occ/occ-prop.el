@@ -43,32 +43,16 @@
 ;; TODO: multi-value property https://orgmode.org/manual/Using-the-property-API.html
 
 
-;; (defun occ-readprop-props () ;;TODO: check about them
-;;   (cl-method-param-case
-;;    ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
-;;    '(occ-readprop-elem-from-user-with (`(occ-tsk occ-ctx (eql ,val)) val))))
-
 (defun occ-readprop-props () ;;TODO: check about them
   (cl-method-param-case
-   ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
    '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))))
 
 
 (cl-defgeneric occ-match-prop-method-args (obj)
   "occ-match-prop-method-args")
 
-;; (occ-match-prop-method-args (occ-make-ctx-at-point))
-
 (cl-defmethod occ-match-prop-method-args ((obj occ-tsk))
   (cl-method-param-case '(occ-readprop-elem-from-user (`(occ-tsk (eql ,val)) val))))
-
-;; (cl-defmethod occ-match-prop-method-args-with ((obj occ-tsk)
-;;                                                (ctx occ-ctx))
-;;   (cl-method-sigs-matched-arg
-;;    ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
-;;    '(occ-readprop-elem-from-user-with (`(occ-tsk occ-ctx (eql ,val)) val))
-;;    '(occ-get-property  (`(occ-ctx (eql ,val)) val))
-;;    ctx))
 
 (cl-defmethod occ-match-prop-method-args ((obj occ-obj-ctx-tsk))
   (cl-method-sigs-matched-arg
