@@ -52,56 +52,56 @@
 ;; (require 'occ-property-rank-methods)
 
 
-(cl-defgeneric occ-select-propetry (tsk
-                                    ctx
+(cl-defgeneric occ-select-propetry (obj
                                     &optional prompt)
   "occ-select-propetry")
 
-(cl-defmethod occ-select-propetry ((obj occ-tsk)
-                                   (ctx occ-ctx)
+(cl-defmethod occ-select-propetry ((obj occ-obj-ctx-tsk)
                                    &optional prompt)
-  (occ-debug :debug "occ-select-propetry: %s" (occ-format obj 'capitalize))
-  (let ((prompt (or prompt "proptery: "))
-        (fixed-keys '(edit done))
-        (keys       (occ-properties-to-edit (occ-build-ctsk-with obj ctx))))
-    (if keys
-        (let ((maxkeylen (apply
-                          #'max
-                          (mapcar #'(lambda (sym) ;https://www.gnu.org/software/emacs/manual/html_node/elisp/Formatting-Strings.html
-                                      (length (symbol-name sym)))
-                                  (append keys fixed-keys))))
-              (key-vals  (occ-get-properties obj keys)))
-          (occ-debug-uncond "occ-select-propetry: for %s with keys =%s got key-vals = %s"
-                            (occ-format obj 'capitalize)
-                            keys
-                            key-vals)
-          (if key-vals
-              (let* ((key-val-collection
-                      (mapcar
-                       #'(lambda (key-val)
-                           (cons
-                            (if (cdr key-val)
-                                (format "%s: %s" (car key-val) (cdr key-val))
-                              (symbol-name (car key-val)))
-                            (car key-val)))
-                       key-vals))
-                     (key-val-collection (append
-                                          key-val-collection
-                                          (mapcar #'(lambda (fk) (cons (symbol-name fk) fk))
-                                                  fixed-keys))))
-                (if key-val-collection
-                    (let ((sel
-                           (assoc
-                            (occ-completing-read prompt
-                                                 key-val-collection
-                                                 nil
-                                                 t)
-                            key-val-collection)))
-                      (occ-debug :debug "selected option %s" sel)
-                      (cdr sel))
-                  (error "Not Keys Vals Collection %s for %s" key-val-collection (occ-format obj 'capitalize))))
-            (error "Not Keys Vals for %s" (occ-format obj 'capitalize))))
-      (occ-debug :debug "Not Keys for %s" (occ-format obj 'capitalize)))))
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+    (occ-debug :debug "occ-select-propetry: %s" (occ-format tsk 'capitalize))
+    (let ((prompt (or prompt "proptery: "))
+          (fixed-keys '(edit done))
+          (keys       (occ-properties-to-edit obj)))
+      (if keys
+          (let ((maxkeylen (apply
+                            #'max
+                            (mapcar #'(lambda (sym) ;https://www.gnu.org/software/emacs/manual/html_node/elisp/Formatting-Strings.html
+                                        (length (symbol-name sym)))
+                                    (append keys fixed-keys))))
+                (key-vals  (occ-get-properties tsk keys)))
+            (occ-debug-uncond "occ-select-propetry: for %s with keys =%s got key-vals = %s"
+                              (occ-format tsk 'capitalize)
+                              keys
+                              key-vals)
+            (if key-vals
+                (let* ((key-val-collection
+                        (mapcar
+                         #'(lambda (key-val)
+                             (cons
+                              (if (cdr key-val)
+                                  (format "%s: %s" (car key-val) (cdr key-val))
+                                (symbol-name (car key-val)))
+                              (car key-val)))
+                         key-vals))
+                       (key-val-collection (append
+                                            key-val-collection
+                                            (mapcar #'(lambda (fk) (cons (symbol-name fk) fk))
+                                                    fixed-keys))))
+                  (if key-val-collection
+                      (let ((sel
+                             (assoc
+                              (occ-completing-read prompt
+                                                   key-val-collection
+                                                   nil
+                                                   t)
+                              key-val-collection)))
+                        (occ-debug :debug "selected option %s" sel)
+                        (cdr sel))
+                    (error "Not Keys Vals Collection %s for %s" key-val-collection (occ-format tsk 'capitalize))))
+              (error "Not Keys Vals for %s" (occ-format tsk 'capitalize))))
+        (occ-debug :debug "Not Keys for %s" (occ-format tsk 'capitalize))))))
 
 
 (defun org-get-flag-proprty-drawer (&optional force)
@@ -238,14 +238,12 @@
     (let ((prop nil))
       (while (not
               (member
-               (setq prop (occ-select-propetry obj ctx))
+               (setq prop (occ-select-propetry obj))
                '(edit done)))
         ;; TODO: handle (occ-select-propetry obj ctx) return NIL
-        ;; (occ-editprop-with prop obj ctx)
         (let ((retval
-               ;; (occ-editprop-with obj ctx prop)
                (occ-editprop obj prop)))
-          (when retval ;; (occ-editprop prop ctx)
+          (when retval
             ;; (occ-tsk-update-tsks t)
             (occ-debug :debug "occ-props-edit-with: done with retval %s" retval)
             retval))))))

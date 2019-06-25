@@ -112,7 +112,7 @@
          (let ((currfile (occ-ctx-file ctx)))
            currfile))
 
-       (cl-defmethod occ-prop-is-list ((prop (eql currfile)))
+       (cl-defmethod occ-is-list-p ((prop (eql currfile)))
          t)
 
        (cl-defmethod occ-prop-elem-to-org   ((prop (eql currfile)) value)
@@ -173,7 +173,7 @@
         (let ((file (occ-ctx-file ctx)))
           (when file (dirname-of-file file))))
 
-       (cl-defmethod occ-prop-is-list ((prop (eql root)))
+       (cl-defmethod occ-is-list-p ((prop (eql root)))
          t)
 
        (cl-defmethod occ-prop-elem-to-org   ((prop (eql root)) value)
@@ -217,7 +217,7 @@
         "occ-get-property"
         0)
 
-      (cl-defmethod occ-prop-is-list ((prop (eql timebeing)))
+      (cl-defmethod occ-is-list-p ((prop (eql timebeing)))
          nil)
 
       (cl-defmethod occ-prop-elem-to-org   ((prop (eql timebeing)) value)
