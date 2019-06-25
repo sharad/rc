@@ -255,22 +255,6 @@
 
 
 
-(cl-defgeneric occ-candidate (obj)
-  "occ-candidate")
-
-(cl-defmethod occ-candidate ((obj marker))
-  "Insert a line for the clock selection menu.
-And return a cons cell with the selection character integer and the obj
-pointing to it."
-  (cons (occ-format obj) obj))
-
-(cl-defmethod occ-candidate ((obj occ-obj-tsk))
-  "Insert a line for the clock selection menu.
-And return a cons cell with the selection character integer and the marker
-pointing to it."
-  (cons (occ-format obj) obj))
-
-
 ;; global-object - accessors
 (cl-defmethod occ-collect-tsks (collection
                                 &optional

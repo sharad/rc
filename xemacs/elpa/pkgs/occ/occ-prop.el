@@ -40,6 +40,11 @@
 (require 'occ-rank)
 
 
+(require 'ert)
+(require 'ert-x)
+(require 'el-mock)
+
+
 ;; TODO: multi-value property https://orgmode.org/manual/Using-the-property-API.html
 
 
@@ -111,8 +116,20 @@
 ;;     (let ((class 'occ-obj-ctx-tsk))
 ;;       (cl-method-param-case '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val))))))
 
+(cl-defmethod occ-properties-to-calculate-rank ((obj occ-tsk))
+  (let ((class 'occ-tsk))
+    (let ((exclass (list '\` `(,class (eql ,'(\, val))))))
+      (funcall
+       `(lambda ()
+          (cl-method-param-case (quote (occ-rankprop (,exclass val)))))))))
 
-
+(cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-ctx-tsk))
+  (let ((class 'occ-obj-ctx-tsk))
+    (let ((exclass (list '\` `(,class (eql ,'(\, val))))))
+      (funcall
+       `(lambda ()
+          (cl-method-param-case (quote (occ-rankprop (,exclass val)))))))))
+
 ;; (cl-destructuring-bind (method (param-spec val)) signature-val-spec
 ;;   (remove
 ;;    nil
@@ -145,26 +162,22 @@
 ;; (let ((class 'occ-tsk))
 ;;   `(cl-method-param-case '(occ-rankprop  ,`(`(class (eql ,val)) val))))
 
-;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-tsk))
+;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj))
 ;;   (let ((class (cl-classname obj)))
-;;     (let ((exclass (list '\` `,`(,class (eql ,'(\, val))))))
+;;     (let ((exclass (list '\` `(,class (eql ,'(\, val))))))
 ;;       (funcall
 ;;        `(lambda ()
 ;;           (cl-method-param-case (quote (occ-rankprop (,exclass val)))))))))
 
-;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-ctx-tsk))
-;;   (let ((class (cl-classname obj)))
-;;     (let ((exclass (list '\` `,`(,class (eql ,'(\, val))))))
-;;       (funcall
-;;        `(lambda ()
-;;           (cl-method-param-case (quote (occ-rankprop (,exclass val)))))))))
+;; (occ-properties-to-calculate-rank (occ-build-ctsk-with
+;;                                    (nth 2 (occ-collect-list (occ-collection-object)))
+;;                                    (occ-make-ctx-at-point)))
 
-(cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj))
-  (let ((class (cl-classname obj)))
-    (let ((exclass (list '\` `,`(,class (eql ,'(\, val))))))
-      (funcall
-       `(lambda ()
-          (cl-method-param-case (quote (occ-rankprop (,exclass val)))))))))
+;; (let ((class 'occ-tsk))
+;;   (let ((exclass (list '\` `(,class (eql ,'(\, val))))))
+;;     (funcall
+;;      `(lambda ()
+;;         (cl-method-param-case (quote (occ-rankprop (,exclass val))))))))
 
 ;; (let ((class 'occ-tsk))
 ;;   `(`(,class)))

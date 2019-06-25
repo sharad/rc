@@ -27,13 +27,12 @@
 (provide 'occ-test)
 
 
+
 (require 'ert)
 (require 'ert-x)
 (require 'el-mock)
-
-
-
 
+
 ;; https://www.gnu.org/software/emacs/manual/html_node/ert/index.html
 ;;;###auoload
 (ert-deftest ert-occ-test-occ-insinuated ()
