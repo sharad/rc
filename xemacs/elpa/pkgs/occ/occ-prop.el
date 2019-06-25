@@ -43,10 +43,15 @@
 ;; TODO: multi-value property https://orgmode.org/manual/Using-the-property-API.html
 
 
+;; (defun occ-readprop-props () ;;TODO: check about them
+;;   (cl-method-param-case
+;;    ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
+;;    '(occ-readprop-elem-from-user-with (`(occ-tsk occ-ctx (eql ,val)) val))))
+
 (defun occ-readprop-props () ;;TODO: check about them
   (cl-method-param-case
    ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
-   '(occ-readprop-elem-from-user-with (`(occ-tsk occ-ctx (eql ,val)) val))))
+   '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))))
 
 ;; (defun occ-get-property-props () ;;TODO: check about them
 ;;   (cl-method-param-case
@@ -185,38 +190,6 @@
 
 ;; (let ((class 'occ-tsk))
 ;;   (cl-method-param-case `'(occ-rankprop  (,``(,,class (eql ,val)) val))))
-
-
-
-
-
-;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-tsk))
-;;   (let ((class 'occ-ctx))
-;;     (cl-method-param-case '(occ-rankprop (`(occ-tsk (eql ,val)) val)))))
-
-;; (cl-defmethod occ-properties-to-calculate-rank-with ((obj occ-tsk)
-;;                                                      (ctx occ-ctx))
-;;   (let ((class 'occ-ctx))
-;;     (cl-method-param-case '(occ-rankprop-with (`(occ-tsk occ-ctx (eql ,val)) val)))))
-
-;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-ctx-tsk))
-;;   (let ((tsk (occ-obj-tsk obj))
-;;         (ctx (occ-obj-ctx obj)))
-;;     (occ-properties-to-calculate-rank-with tsk ctx)))
-
-;; (occ-properties-to-calculate-rank
-;;  (occ-build-ctxual-tsk-with (nth 2 (occ-collect-list (occ-collection-object)))
-;;                             (occ-make-ctx-at-point)))
-
-;; (occ-properties-to-calculate-rank
-;;  (nth 2 (occ-collect-list (occ-collection-object))))
-
-;; (defun occ-max-call ()
-;;   (interactive)
-;;   (occ-properties-to-calculate-rank
-;;    (occ-build-ctxual-tsk-with (nth 2 (occ-collect-list (occ-collection-object)))
-;;                               (occ-make-ctx-at-point))))
-
 
 
 
