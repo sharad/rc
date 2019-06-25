@@ -72,9 +72,28 @@
 (cl-defmethod occ-match-prop-method-args ((obj occ-obj-ctx-tsk))
   (cl-method-sigs-matched-arg
    ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
-   '(occ-readprop-elem-from-user-with (`(occ-obj-ctx-tsk (eql ,val)) val))
+   '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))
    '(occ-get-property  (`(occ-ctx (eql ,val)) val))
    (occ-obj-ctx obj)))
+
+(ert-deftest ert-occ-test-match-prop-method-args ()
+  "Test"
+  :expected-result :passed
+  :tags '(occ)
+  (should
+   (equal
+    (cl-method-sigs-matched-arg
+     '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))
+     '(occ-get-property  (`(occ-ctx (eql ,val)) val))
+     (occ-make-ctx-at-point))
+    '(timebeing)))
+  (should
+   (equal
+    (cl-method-sigs-matched-arg
+     '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))
+     '(occ-get-property  (`(occ-ctx (eql ,val)) val))
+     (occ-make-ctx-at-point))
+    '(timebeing root currfile))))
 
 
 (cl-defgeneric occ-properties-to-edit (obj)
