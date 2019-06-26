@@ -61,7 +61,7 @@
         (occ-make-return label value))))
 
 (defun occ-return-tranform (action)
-  "Will make all action except first to return occ-return-label."
+  "Will make all action except first to return OCC-RETURN-SELECT-LABEL."
   (cons
    (cons                                ;add default select operation.
     occ-return-select-name

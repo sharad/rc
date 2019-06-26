@@ -209,6 +209,7 @@
                                 &key
                                 filters
                                 builder
+                                return-transform
                                 action
                                 action-transformer
                                 timeout)
@@ -218,12 +219,14 @@
                                &key
                                filters
                                builder
+                               return-transform
                                action
                                action-transformer
                                timeout)
   (let ((ctx-tsk (occ-select obj
                              :filters            filters
                              :builder            builder
+                             :return-transform   return-transform
                              :action             action
                              :action-transformer action-transformer
                              :timeout            timeout)))

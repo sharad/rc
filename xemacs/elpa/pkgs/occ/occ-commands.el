@@ -34,35 +34,65 @@
 ;; example of clos in cl-struct-js2-export-binding-node is a variable defined in ‘js2-mode.el’.
 
 ;;;###autoload
-(defun occ-helm-match-select ()
-  (interactive)
+(defun occ-helm-match-select (ctx)
+  (interactive
+   (list (occ-make-ctx-at-point)))
   (let ((filters            (occ-match-filters))
         (builder            #'occ-build-ctxual-tsk-with)
         (action             (occ-helm-intractive-command-actions))
         (action-transformer #'(lambda (action candidate)
                                 (occ-helm-intractive-command-actions)))
         (timeout            occ-idle-timeout))
-   (occ-helm-select (occ-make-ctx-at-point)
+   (occ-helm-select ctx
                     :filters            filters
                     :builder            builder
                     :action             action
                     :action-transformer action-transformer
                     :timeout            timeout)))
 
-(defun occ-helm-list-select ()
-  (interactive)
+(defun occ-helm-list-select (ctx)
+  (interactive
+   (list (occ-make-ctx-at-point)))
   (let ((filters            (occ-list-filters))
         (builder            #'occ-build-ctsk-with)
         (action             (occ-helm-intractive-command-actions))
         (action-transformer #'(lambda (action candidate)
                                 (occ-helm-intractive-command-actions)))
         (timeout            occ-idle-timeout))
-   (occ-helm-select (occ-make-ctx-at-point)
+   (occ-helm-select ctx
                     :filters            filters
                     :builder            builder
                     :action             action
                     :action-transformer action-transformer
                     :timeout            timeout)))
+
+(defun occ-helm-list-debug-select (ctx)
+  (interactive
+   (list (occ-make-ctx-at-point)))
+  (let ((filters            (occ-list-filters))
+        (builder            #'occ-build-ctsk-with)
+        (action             (occ-helm-intractive-command-actions))
+        (return-transform   t)
+        (action-transformer #'(lambda (action candidate)
+                                (occ-helm-intractive-command-actions)))
+        (timeout            occ-idle-timeout))
+    (let ((retval-ctx-tsk (occ-helm-select ctx
+                                           :filters            filters
+                                           :builder            builder
+                                           :return-transform   return-transform
+                                           :action             action
+                                           :action-transformer action-transformer
+                                           :timeout            timeout)))
+      (occ-debug-uncond "occ-helm-list-debug-select((obj occ-ctx)): selected original: %s, retval: %s with label %s"
+                        retval-ctx-tsk
+                        (occ-format (occ-return-get-value retval-ctx-tsk) 'capitalize)
+                        (occ-return-get-label retval-ctx-tsk))
+      (when (and
+             (occ-return-in-labels-p retval-ctx-tsk occ-return-select-label)
+             (occ-return-get-value retval-ctx-tsk))
+        (prog1
+            (occ-return-get-value retval-ctx-tsk)
+          (occ-debug-uncond "occ-helm-list-debug-select((obj occ-ctx)): No selection"))))))
 
 
 ;;;###autoload

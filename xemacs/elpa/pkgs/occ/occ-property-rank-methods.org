@@ -198,10 +198,9 @@
 *** Timebeing property of task (not fully implemented) will use for keeping a task clocked in for given time
     #+begin_src elisp
 
-      (cl-defmethod occ-rankprop ((obj occ-obj-ctx-tsk)
+      (cl-defmethod occ-rankprop ((obj occ-tsk)
                                   (prop (eql timebeing)))
-        (let ((tsk (occ-obj-tsk obj))
-              (ctx (occ-obj-ctx obj)))
+        (let ((tsk (occ-obj-tsk obj)))
           (let ((timebeing (occ-get-property tsk 'timebeing)))
             (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
                   (clocked-time   (occ-get-property tsk 'clock-sum)))
@@ -211,11 +210,6 @@
                    (> timebeing-time clocked-time))
                   (- timebeing-time clocked-time)
                 0)))))
-
-      (cl-defmethod occ-get-property ((ctx occ-ctx)
-                                      (prop (eql timebeing)))
-        "occ-get-property"
-        0)
 
       (cl-defmethod occ-list-p ((prop (eql timebeing)))
          nil)
@@ -230,14 +224,11 @@
             (or (string-to-number value) 0)
           0))
 
-      (cl-defmethod occ-readprop-elem-from-user ((obj occ-obj-ctx-tsk)
+      (cl-defmethod occ-readprop-elem-from-user ((obj occ-tsk)
                                                  (prop (eql timebeing)))
         "READ"
-        (let ((tsk (occ-obj-tsk obj))
-              (ctx (occ-obj-ctx obj)))
-          (let* ((ctx-file   (when ctx (occ-ctx-file ctx)))
-                 (ctx-dir    (when (stringp ctx-file) (file-name-directory ctx-file)))
-                 (prompt     (concat (symbol-name prop) ": ")))
+        (let ((tsk (occ-obj-tsk obj)))
+          (let* ((prompt     (concat (symbol-name prop) ": ")))
             (read-number "Timebeing mins: "))))
       
     #+end_src

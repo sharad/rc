@@ -301,32 +301,33 @@
                                    (prop symbol)
                                    operation
                                    values)
-  (let ((values
-         (mapcar #'(lambda (v)
-                     (occ-prop-elem-from-org prop v))
-                 values)))
-    (occ-debug :debug "occ-update-property: operation %s values %s"
-               operation values)
-    (let ((list-p (occ-list-p prop)))
-      (case operation
-        ((get)    (if lisp-p
-                      (occ-org-entry-get nil prop)
-                    (list (occ-org-entry-get nil prop))))
-        ((add)    (if lisp-p
-                      (occ-set-property obj prop
-                                        (nconc
-                                         (occ-get-property obj prop)
-                                         (list (car values))))
-                    (occ-set-property obj prop (car values))))
-        ((put)    (if lisp-p
-                      (occ-set-property obj prop values)
-                    (occ-set-property obj prop (car values))))
-        ((remove) (if lisp-p
-                      (occ-set-property obj prop (remove
-                                                  (car values)
-                                                  (occ-get-property obj prop)))
-                    (error "Implement it.")))
-        ((member) (occ-has-p obj prop (car values)))))))
+  (let ((tsk ((occ-obj-tsk obj))))
+    (let ((values
+           (mapcar #'(lambda (v)
+                       (occ-prop-elem-from-org prop v))
+                   values)))
+      (occ-debug :debug "occ-update-property: operation %s values %s"
+                 operation values)
+      (let ((list-p (occ-list-p prop)))
+        (case operation
+          ((get)    (if lisp-p
+                        (occ-org-entry-get nil prop)
+                      (list (occ-org-entry-get nil prop))))
+          ((add)    (if lisp-p
+                        (occ-set-property tsk prop
+                                          (nconc
+                                           (occ-get-property tsk prop)
+                                           (list (car values))))
+                      (occ-set-property tsk prop (car values))))
+          ((put)    (if lisp-p
+                        (occ-set-property tsk prop values)
+                      (occ-set-property tsk prop (car values))))
+          ((remove) (if lisp-p
+                        (occ-set-property tsk prop (remove
+                                                    (car values)
+                                                    (occ-get-property tsk prop)))
+                      (error "Implement it.")))
+          ((member) (occ-has-p tsk prop (car values))))))))
 
 (cl-defmethod occ-update-property ((obj occ-obj-ctx-tsk)
                                    (prop symbol)
@@ -449,9 +450,9 @@
           (prop-value (or value     (occ-readprop-elem-from-user obj prop))))
       (let ((retval
              (occ-org-update-property-at-point mrk
-                                                prop
-                                                operation
-                                                (list prop-value))))
+                                               prop
+                                               operation
+                                               (list prop-value))))
         (occ-debug :debug "occ-editprop: (occ-org-update-property-at-point mrk) returnd %s" retval)
         (when retval
           (occ-update-property obj
