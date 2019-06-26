@@ -24,18 +24,57 @@
 
 ;;; Code:
 
+
+(defun lotus-powerline-setup ()
+  (interactive)
+  (when (boundp 'powerline-scale)
+    (unless (boundp 'powerline-scale-old)
+      (setq powerline-scale-old nil))
+    (unless powerline-scale-old
+      (setq
+       powerline-scale-old              powerline-scale
+       powerline-height-old             powerline-height
+       powerline-text-scale-factor-old  powerline-text-scale-factor
+       powerline-default-separator-old  powerline-default-separator)
+      (setq
+       powerline-scale              0.8 ;; 1.1
+       powerline-height             10
+       powerline-text-scale-factor  nil
+       powerline-default-separator 'alternate))))
+
+(defun lotus-powerline-reset ()
+  (interactive)
+  (when (boundp 'powerline-scale)
+    (unless (boundp 'powerline-scale-old)
+      (setq powerline-scale-old nil))
+    (when powerline-scale-old
+      (setq
+       powerline-scale              powerline-scale-old
+       powerline-height             powerline-height-old
+       powerline-text-scale-factor  powerline-text-scale-factor-old
+       powerline-default-separator  powerline-default-separator-old)
+      (setq
+       powerline-scale-old              nil
+       powerline-height-old             nil
+       powerline-text-scale-factor-old  nil
+       powerline-default-separator-old  nil))))
+
+
 (defun percent (num percent &optional base)
   (let ((base (or base 100)))
     (/ (* num percent) base)))
 
-(defvar lotus-mode-line-reduce-percent 70)
+(defvar lotus-mode-line-reduce-percent 90)
 
 (defun face-applied-attribute (face attrib)
   (let ((value (face-attribute face attrib)))
     (if (eq 'unspecified value)
-        (let ((inherit-face (face-attribute face 'inherit)))
-          (if (eq 'unspecified inherit-face)
-              value
+        (let* ((inherit-face (face-attribute face :inherit))
+               (inherit-face (when inherit-face
+                               (if (eq 'unspecified inherit-face)
+                                   'default
+                                 inherit-face))))
+          (when inherit-face
             (face-applied-attribute inherit-face attrib)))
       value)))
 
@@ -46,12 +85,24 @@
          (percent-height (percent height percent)))
     (when (and percent-height
                (not (eq 'unspecified percent-height)))
-      (face-attribute 'mode-line nil :height percent-height)
-      (face-attribute 'mode-line nil :width 'normal))))
+      (set-face-attribute 'mode-line nil :height percent-height)
+      (set-face-attribute 'mode-line nil :width 'normal))))
+
+(defun lotus-mode-line-reset ()
+  (interactive)
+  ;; (set-face-attribute 'mode-line nil :height 'unspecifed)
+  (set-face-attribute 'mode-line nil
+                      :height (face-attribute 'default :height)))
+
+;; (percent (face-attribute 'default :height) 90)
 
 ;; (face-attribute 'mode-line :inherit)
+;; (face-attribute 'default :inherit)
 
+;; (face-applied-attribute 'mode-line :height)
 ;; (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
+;; (lotus-mode-line-reset)
+
 
 (defun increase-font-size (size)
   (custom-set-faces

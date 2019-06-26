@@ -372,7 +372,6 @@
       ;; (global-set-key-if-unbind [H-down]  'elscreen-previous)
       ;;}}
 
-
 (defun lotus-emacs-user-init-begin ()
   (message "loading lotus-emacs-user-init-begin begin")
   (let ((osetup
@@ -416,8 +415,8 @@
     (push "~/.xemacs/pkgrepos/mypkgs/gnus-session-start" load-path)
     (push "~/.xemacs/pkgrepos/world/misc/misc" load-path)
     (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path))
-    ;; (push "~/.xemacs/pkgrepos/mypkgs/pa-planner" load-path)
-    ;; (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path)
+  ;; (push "~/.xemacs/pkgrepos/mypkgs/pa-planner" load-path)
+  ;; (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path)
 
 
   ;; (push
@@ -852,6 +851,7 @@ variable."
   ;; limiting gnus messages
   (setq gnus-verbose 1)
   (set-default-face-height-by-resolution)
+  ;; (lotus-powerline-setup)
 
   (progn
     ;; BUG TODO INQ(inquery)
