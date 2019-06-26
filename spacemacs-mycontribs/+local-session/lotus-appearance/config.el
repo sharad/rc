@@ -24,48 +24,11 @@
 
 ;;; Code:
 
-
-(defun lotus-powerline-setup ()
-  (interactive)
-  (when (boundp 'powerline-scale)
-    (unless (boundp 'powerline-scale-old)
-      (setq powerline-scale-old nil))
-    (unless powerline-scale-old
-      (setq
-       powerline-scale-old              powerline-scale
-       powerline-height-old             powerline-height
-       powerline-text-scale-factor-old  powerline-text-scale-factor
-       powerline-default-separator-old  powerline-default-separator)
-      (setq
-       powerline-scale              0.8 ;; 1.1
-       powerline-height             10
-       powerline-text-scale-factor  nil
-       powerline-default-separator 'alternate))))
-
-(defun lotus-powerline-reset ()
-  (interactive)
-  (when (boundp 'powerline-scale)
-    (unless (boundp 'powerline-scale-old)
-      (setq powerline-scale-old nil))
-    (when powerline-scale-old
-      (setq
-       powerline-scale              powerline-scale-old
-       powerline-height             powerline-height-old
-       powerline-text-scale-factor  powerline-text-scale-factor-old
-       powerline-default-separator  powerline-default-separator-old)
-      (setq
-       powerline-scale-old              nil
-       powerline-height-old             nil
-       powerline-text-scale-factor-old  nil
-       powerline-default-separator-old  nil))))
-
-
-
 (defun percent (num percent &optional base)
   (let ((base (or base 100)))
     (/ (* num percent) base)))
 
-(defvar lotus-mode-line-reduce-percent 90)
+(defvar lotus-mode-line-reduce-percent 80)
 
 (defun face-applied-attribute (face attrib)
   (let ((value (face-attribute face attrib)))
@@ -85,7 +48,9 @@
          (height (face-applied-attribute 'mode-line :height))
          (percent-height (percent height percent)))
     (when (and percent-height
-               (not (eq 'unspecified percent-height)))
+               (not (eq 'unspecified percent-height))
+               (not (= height 0))
+               (not (= percent-height 0)))
       (set-face-attribute 'mode-line nil :height percent-height)
       (set-face-attribute 'mode-line nil :width 'normal))))
 
@@ -103,6 +68,57 @@
 ;; (face-applied-attribute 'mode-line :height)
 ;; (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
 ;; (lotus-mode-line-reset)
+
+
+;; (/ 72.00 90.0000)
+;; (/ (* 0.88 90.00) 72.00)
+;; (/ 72.00 0.88)
+;; (/ 8 7.000)
+(lotus-mode-line-reset)
+(lotus-mode-line-reduce lotus-mode-line-reduce-percent)
+
+
+(defun lotus-powerline-setup-text-scale-factor ()
+  (let ((text-scale-factor (/ (* (float (face-attribute 'mode-line :height)) 1.0920)
+                              (float (face-attribute 'default :height)))))
+    (when (numberp text-scale-factor)
+      (setq
+       powerline-text-scale-factor text-scale-factor))))
+
+(defun lotus-powerline-setup ()
+  (interactive)
+  (when (boundp 'powerline-scale)
+    (unless (boundp 'powerline-scale-old)
+      (setq powerline-scale-old nil))
+    (unless powerline-scale-old
+      (setq
+       powerline-scale-old              powerline-scale
+       powerline-height-old             powerline-height
+       powerline-text-scale-factor-old  powerline-text-scale-factor
+       powerline-default-separator-old  powerline-default-separator)
+      (setq
+       powerline-scale              0.8
+       powerline-height             10
+       powerline-text-scale-factor  (lotus-powerline-setup-text-scale-factor)
+       powerline-default-separator 'alternate))))
+
+(defun lotus-powerline-reset ()
+  (interactive)
+  (when (boundp 'powerline-scale)
+    (unless (boundp 'powerline-scale-old)
+      (setq powerline-scale-old nil))
+    (when powerline-scale-old
+      (setq
+       powerline-scale              powerline-scale-old
+       powerline-height             powerline-height-old
+       powerline-text-scale-factor  powerline-text-scale-factor-old
+       powerline-default-separator  powerline-default-separator-old)
+      (setq
+       powerline-scale-old              nil
+       powerline-height-old             nil
+       powerline-text-scale-factor-old  nil
+       powerline-default-separator-old  nil))))
+
 
 
 (defun increase-font-size (size)
