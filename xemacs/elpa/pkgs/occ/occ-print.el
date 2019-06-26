@@ -95,25 +95,24 @@ pointing to it."
 
 
 (cl-defgeneric occ-format (obj
-                           &optional case)
+                           &optional case rank)
   "occ-format")
 
 (cl-defmethod occ-format (obj
-                          &optional case)
+                          &optional case rank)
   (concat (when case (concat (occ-title obj case) ": "))
           (format "%s" obj)))
 
 (cl-defmethod occ-format ((obj marker)
-                          &optional case)
+                          &optional case rank)
   (concat (when case (concat (occ-title obj case) ": "))
           (occ-fontify-like-in-org-mode obj)))
 
 (defvar occ-format-tsk-tag-alignment 100 "occ-format-tsk-tag-alignment")
 
-(cl-defmethod occ-format-norank ((obj occ-tsk)
-                                 &optional case)
-  (let* ((rank       (or (occ-tsk-rank obj) -128))
-         (align      occ-format-tsk-tag-alignment)
+(cl-defmethod occ-format ((obj occ-tsk)
+                          &optional case rank)
+  (let* ((align      occ-format-tsk-tag-alignment)
          (heading    (occ-fontify-like-in-org-mode obj))
          (headinglen (length heading))
          (tags       (occ-get-property obj 'tags))
@@ -121,57 +120,44 @@ pointing to it."
                          (concat ":" (mapconcat #'identity tags ":") ":")
                        "")))
     (concat (when case (concat (occ-title obj case) ": "))
+            (when rank (format "[%4d] " (or (occ-tsk-rank obj) -128)))
             (format
              (format (if tags "%%-%ds         %%s" "%%s")
                      align
                      (if (< headinglen align) (- align headinglen) 0))
              heading tagstr))))
 
-(cl-defmethod occ-format ((obj occ-tsk)
-                          &optional case)
-  (let ((rank (or (occ-rank obj) -128)))
-    (format "[%4d] %s" rank (occ-format-norank obj))))
-
-(cl-defmethod occ-format-norank ((obj occ-ctx)
-                                 &optional case)
-  (format "%s" obj))
-
 (cl-defmethod occ-format ((obj occ-ctx)
                           &optional case)
-  (occ-format-norank obj))
+  (format "%s" obj))
 
-(cl-defmethod occ-format-norank ((obj occ-obj-ctx-tsk)
-                                 &optional case)
+(cl-defmethod occ-format ((obj occ-obj-ctx-tsk)
+                          &optional case rank)
   (let ((tsk (occ-ctsk-tsk obj)))
     (concat (when case (concat (occ-title obj case) ": "))
             ;; (occ-fontify-like-in-org-mode tsk)
             (occ-format tsk case))))
 
-(cl-defmethod occ-format ((obj occ-obj-ctx-tsk)
-                          &optional case)
-  (occ-format-norank obj))
-;; (cl-defmethod occ-format ((obj occ-ctsk)
-;;                           &optional case)
-;;   (let ((tsk (occ-ctsk-tsk obj)))
-;;     (concat (when case (concat (occ-title obj case) ": "))
-;;             (occ-format tsk case))))
-
-(cl-defmethod occ-format-norank ((obj occ-ctxual-tsk)
-                                 &optional case)
+(cl-defmethod occ-format ((obj occ-ctxual-tsk)
+                          &optional case rank)
   (let ((tsk (occ-ctxual-tsk-tsk obj)))
     (concat (when case (concat (occ-title obj case) ": "))
+            (when rank (format "[%4d] " (or (occ-rank obj) -128)))
             (format "%s"
-                    ;; (or (occ-ctxual-tsk-rank obj) -128)
-                    ;; (occ-fontify-like-in-org-mode tsk)
                     (occ-format tsk case)))))
-
-(cl-defmethod occ-format ((obj occ-ctxual-tsk)
-                          &optional case)
-  (let ((rank (or (occ-rank obj) -128)))
-    (format "[%4d] %s" rank (occ-format-norank obj))))
 
 
-(cl-defmethod occ-print-rank ((obj occ-obj-ctx-tsk))
+;; (cl-defmethod occ-print-rank ((obj occ-tsk))
+;;   (occ-message "Rank for %s is %d"
+;;                (occ-format obj 'capitalize)
+;;                (occ-rank obj)))
+
+;; (cl-defmethod occ-print-rank ((obj occ-obj-ctx-tsk))
+;;   (occ-message "Rank for %s is %d"
+;;                (occ-format obj 'capitalize)
+;;                (occ-rank obj)))
+
+(cl-defmethod occ-print-rank ((obj occ-obj-tsk))
   (occ-message "Rank for %s is %d"
                (occ-format obj 'capitalize)
                (occ-rank obj)))

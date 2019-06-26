@@ -212,13 +212,13 @@
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the obj
 pointing to it."
-  (cons (occ-format obj) obj))
+  (cons (occ-format obj nil t) obj))
 
 (cl-defmethod occ-candidate ((obj occ-obj-tsk))
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
-  (cons (occ-format obj) obj))
+  (cons (occ-format obj nil t) obj))
 
 
 (cl-defmethod occ-current-tsk-with ((sym null))

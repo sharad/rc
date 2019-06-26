@@ -597,17 +597,6 @@
                     props)))))
 
 
-(cl-defmethod occ-print-rank ((obj occ-tsk))
-  (occ-message "Rank for %s is %d"
-               (occ-format obj 'capitalize)
-               (occ-rank obj)))
-
-(cl-defmethod occ-print-rank ((obj occ-obj-ctx-tsk))
-  (occ-message "Rank for %s is %d"
-               (occ-format obj 'capitalize)
-               (occ-rank obj)))
-
-
 (cl-defmethod occ-increase-timeout ((obj occ-obj-ctx-tsk))
   (occ-gen-prompt-method obj 'timeout add 100))
 
