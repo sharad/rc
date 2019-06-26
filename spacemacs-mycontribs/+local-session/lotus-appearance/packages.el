@@ -35,12 +35,10 @@
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-appearance-packages
-  '()
+  '(
     ;; (PACKAGE :location local)
-    ;; powerline
-    ;; powerline-vim-theme
-
-
+    powerline
+    powerline-vim-theme)
 
   "The list of Lisp packages required by the lotus-appearance layer.
 
@@ -97,11 +95,11 @@ Each entry is either:
       (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
       (lotus-powerline-setup))))
 
-(defun lotus-appearance/init-PACKAGE ()
-  (use-package PACKAGE
-    :defer t
-    :config
-    (progn
-      (setq face-scale-div-max-min '(110 210 100 92)))))
+;; (defun lotus-appearance/init-PACKAGE ()
+;;   (use-package PACKAGE
+;;     :defer t
+;;     :config
+;;     (progn
+;;       (setq face-scale-div-max-min '(110 210 100 92)))))
 
 ;;; packages.el ends here

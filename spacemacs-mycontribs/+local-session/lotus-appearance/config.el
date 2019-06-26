@@ -60,6 +60,7 @@
        powerline-default-separator-old  nil))))
 
 
+
 (defun percent (num percent &optional base)
   (let ((base (or base 100)))
     (/ (* num percent) base)))
