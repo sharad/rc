@@ -187,6 +187,98 @@
   nil)
 
 
+(cl-defmethod occ-prop-elem-to-org ((prop symbol)
+                                    value)
+  "Method convert value VALUE of property PROP from occ to org string representation."
+  ;; (error "Implement method occ-prop-elem-to-org for prop %s" prop)
+  (occ-debug :debug "occ-prop-elem-to-org: no method for prop %s using default." prop)
+  value)
+(cl-defmethod occ-prop-elem-from-org ((prop symbol)
+                                      value)
+  "Method convert value VALUE of property PROP from org string to occ representation."
+  ;; (error "Implement method occ-prop-elem-from-org for prop %s" prop)
+  (occ-debug :debug
+             "occ-prop-elem-from-org: no method for prop %s using default." prop)
+  value)
+
+
+(cl-defmethod occ-prop-to-org ((prop symbol)
+                               values)
+  "Method convert value VALUE of property PROP from occ to org string representation."
+  ;; (error "Implement method occ-prop-to-org for prop %s" prop)
+  (occ-debug :debug "occ-prop-to-org: no method for prop %s using default." prop)
+  (mapcar #'(lambda (v)
+              (occ-prop-elem-to-org prop v))
+          values))
+(cl-defmethod occ-prop-from-org ((prop symbol)
+                                 values)
+  "Method convert value VALUE of property PROP from org string to occ representation."
+  ;; (error "Implement method occ-prop-from-org for prop %s" prop)
+  (occ-debug :debug
+             "occ-prop-from-org: no method for prop %s using default." prop)
+  (mapcar #'(lambda (v)
+              (occ-prop-elem-from-org prop v))
+          values))
+
+
+;; TODO: should not we make them to be converted to OCC value here.
+(cl-defmethod occ-readprop-elem-from-user ((obj occ-obj-tsk)
+                                           (prop symbol))
+  "Read value of element of list for property PROP from user for OCC-TSK OBJ."
+  (error "Implement method occ-readprop-elem-from-user for prop %s" prop))
+
+(cl-defmethod occ-readprop-from-user ((obj occ-obj-tsk)
+                                      (prop symbol))
+  "Read value of element of list for property PROP from user for OCC-TSK OBJ."
+  (error "Implement method occ-readprop-from-user for prop %s" prop))
+
+;; (cl-defmethod occ-readprop-elem-from-user ((obj occ-obj-ctx-tsk)
+;;                                            (prop symbol))
+;;   "Read value of element of list for property PROP from user for OCC-OBJ-CTX-TSK OBJ."
+;;   (let ((tsk (occ-obj-tsk obj))
+;;         (ctx (occ-obj-ctx obj)))
+;;     (occ-readprop-elem-from-user tsk prop)))
+
+;; (cl-defmethod occ-readprop-from-user ((obj occ-obj-ctx-tsk)
+;;                                       (prop symbol))
+;;   "Read complete values list for property PROP from user for OCC-OBJ-CTX-TSK OBJ."
+;;   (let ((tsk (occ-obj-tsk obj))
+;;         (ctx (occ-obj-ctx obj)))
+;;     (occ-readprop-from-user tsk prop)))
+
+
+(cl-defgeneric occ-checkout (obj
+                             prop)
+  "Checkout property in case of force clock-in.")
+
+(cl-defmethod occ-checkout ((obj occ-obj-tsk)
+                            (prop symbol))
+  "Checkout property in case of force clock-in."
+  (error "Implement it for %s: Checkout property in case of force clock-in." prop))
+
+
+(cl-defmethod occ-rereadprop-value ((prop symbol)
+                                    value)
+  "Read org string property PROP to occ representation."
+  (cl-assert (not (consp value)))
+  (if (occ-list-p prop)
+      (let* ((values (and value (split-string value))))
+        (mapcar #'(lambda (v) (occ-prop-elem-from-org prop v))
+                (mapcar #'org-entry-restore-space values)))
+    (occ-prop-elem-from-org prop value)))
+
+(cl-defmethod occ-reread-props ((obj occ-tsk))
+  "Read all org string properties for task TSK to occ representation."
+  (let ((props-by-is-list (cl-method-param-case
+                           '(occ-list-p (`((eql ,val)) val))))
+        (props-by-converter (cl-method-param-case
+                             '(occ-prop-elem-from-org (`((eql ,val) t) val)))))
+    (let ((props (-union props-by-is-list props-by-converter))) ;dash
+      (dolist (p props)
+        (occ-set-property obj p
+                          (occ-rereadprop-value p (occ-get-property obj p)))))))
+
+
 (cl-defmethod occ-valid-p ((prop symbol)
                            operation)
   (memq operation '(add remove get put member)))
@@ -218,9 +310,9 @@
     ((remove) (if list-p
                   (occ-org-entry-remove-from-multivalued-property pom prop (car values))
                 (error "Implement it.")))
-    ((member) (occ-org-entry-member-in-from-multivalued-property pom prop (car values)))))
-
-
+    ((member) (if lisp-p
+                  (occ-org-entry-member-in-from-multivalued-property pom prop (car values))
+                (string= (car values) (occ-org-entry-get pom prop))))))
 
 (cl-defmethod occ-org-update-property-at-point ((mrk marker)
                                                 (prop symbol)
@@ -256,122 +348,6 @@
                prop values))))
 
 
-(cl-defmethod occ-prop-elem-to-org ((prop symbol)
-                                    value)
-  "Method convert value VALUE of property PROP from occ to org string representation."
-  ;; (error "Implement method occ-prop-elem-to-org for prop %s" prop)
-  (occ-debug :debug "occ-prop-elem-to-org: no method for prop %s using default." prop)
-  value)
-(cl-defmethod occ-prop-elem-from-org ((prop symbol)
-                                      value)
-  "Method convert value VALUE of property PROP from org string to occ representation."
-  ;; (error "Implement method occ-prop-elem-from-org for prop %s" prop)
-  (occ-debug :debug
-             "occ-prop-elem-from-org: no method for prop %s using default." prop)
-  value)
-
-
-(cl-defgeneric occ-has-p (obj
-                          prop
-                          value)
-  "occ-has-p")
-
-(cl-defmethod occ-has-p ((obj occ-obj-tsk)
-                         (prop symbol)
-                         value)
-  (let ((tsk (occ-obj-tsk obj)))
-    (if (occ-list-p prop)
-        (memq value (occ-get-property tsk prop))
-      (equal value (occ-get-property tsk prop)))))
-
-
-(cl-defgeneric occ-update-property (obj
-                                    prop
-                                    operation
-                                    values)
-  "occ-update-property")
-
-(cl-defmethod occ-update-property ((obj occ-obj-tsk)
-                                   (prop symbol)
-                                   operation
-                                   values)
-  (let ((tsk ((occ-obj-tsk obj))))
-    (let ((values
-           (mapcar #'(lambda (v)
-                       (occ-prop-elem-from-org prop v))
-                   values)))
-      (occ-debug :debug "occ-update-property: operation %s values %s"
-                 operation values)
-      (let ((list-p (occ-list-p prop)))
-        (case operation
-          ((get)    (if lisp-p
-                        (occ-org-entry-get nil prop)
-                      (list (occ-org-entry-get nil prop))))
-          ((add)    (if lisp-p
-                        (occ-set-property tsk prop
-                                          (nconc
-                                           (occ-get-property tsk prop)
-                                           (list (car values))))
-                      (occ-set-property tsk prop (car values))))
-          ((put)    (if lisp-p
-                        (occ-set-property tsk prop values)
-                      (occ-set-property tsk prop (car values))))
-          ((remove) (if lisp-p
-                        (occ-set-property tsk prop (remove
-                                                    (car values)
-                                                    (occ-get-property tsk prop)))
-                      (error "Implement it.")))
-          ((member) (occ-has-p tsk prop (car values))))))))
-
-
-(cl-defmethod occ-readprop-elem-from-user ((obj occ-obj-tsk)
-                                           (prop symbol))
-  "Read value of element of list for property PROP from user for OCC-TSK OBJ."
-  (error "Implement method occ-readprop-elem-from-user for prop %s" prop))
-
-(cl-defmethod occ-readprop-from-user ((obj occ-obj-tsk)
-                                      (prop symbol))
-  "Read value of element of list for property PROP from user for OCC-TSK OBJ."
-  (error "Implement method occ-readprop-from-user for prop %s" prop))
-
-
-;; (cl-defmethod occ-readprop-elem-from-user ((obj occ-obj-ctx-tsk)
-;;                                            (prop symbol))
-;;   "Read value of element of list for property PROP from user for OCC-OBJ-CTX-TSK OBJ."
-;;   (let ((tsk (occ-obj-tsk obj))
-;;         (ctx (occ-obj-ctx obj)))
-;;     (occ-readprop-elem-from-user tsk prop)))
-
-;; (cl-defmethod occ-readprop-from-user ((obj occ-obj-ctx-tsk)
-;;                                       (prop symbol))
-;;   "Read complete values list for property PROP from user for OCC-OBJ-CTX-TSK OBJ."
-;;   (let ((tsk (occ-obj-tsk obj))
-;;         (ctx (occ-obj-ctx obj)))
-;;     (occ-readprop-from-user tsk prop)))
-
-
-(cl-defmethod occ-rereadprop-value ((prop symbol)
-                                    value)
-  "Read org string property PROP to occ representation."
-  (cl-assert (not (consp value)))
-  (if (occ-list-p prop)
-      (let* ((values (and value (split-string value))))
-        (mapcar #'(lambda (v) (occ-prop-elem-from-org prop v))
-                (mapcar #'org-entry-restore-space values)))
-    (occ-prop-elem-from-org prop value)))
-
-(cl-defmethod occ-reread-props ((obj occ-tsk))
-  "Read all org string properties for task TSK to occ representation."
-  (let ((props-by-is-list (cl-method-param-case
-                           '(occ-list-p (`((eql ,val)) val))))
-        (props-by-converter (cl-method-param-case
-                             '(occ-prop-elem-from-org (`((eql ,val) t) val)))))
-    (let ((props (-union props-by-is-list props-by-converter))) ;dash
-      (dolist (p props)
-        (occ-set-property obj p
-                          (occ-rereadprop-value p (occ-get-property obj p)))))))
-
-
 (cl-defmethod occ-readprop-org ((obj occ-obj-ctx-tsk)
                                 (prop symbol))
   "Read property PROP of OBJ-CTX-TSK OBJ from its corresponding org file entry."
@@ -399,6 +375,55 @@
                                         prop
                                         'put
                                         values))))
+
+
+(cl-defgeneric occ-has-p (obj
+                          prop
+                          value)
+  "occ-has-p")
+
+(cl-defmethod occ-has-p ((obj occ-obj-tsk)
+                         (prop symbol)
+                         value)
+  (let ((tsk (occ-obj-tsk obj)))
+    (if (occ-list-p prop)
+        (memq value (occ-get-property tsk prop))
+      (equal value (occ-get-property tsk prop)))))
+
+
+(cl-defgeneric occ-update-property (obj
+                                    prop
+                                    operation
+                                    values)
+  "occ-update-property")
+
+(cl-defmethod occ-update-property ((obj occ-obj-tsk)
+                                   (prop symbol)
+                                   operation
+                                   values)
+  (let ((tsk ((occ-obj-tsk obj)))
+        (list-p (occ-list-p prop)))
+    (occ-debug :debug "occ-update-property: operation %s values %s"
+                 operation values)
+    (case operation
+      ((get)    (if lisp-p
+                    (occ-org-entry-get nil prop)
+                  (list (occ-org-entry-get nil prop))))
+      ((add)    (if lisp-p
+                    (occ-set-property tsk prop
+                                      (nconc
+                                       (occ-get-property tsk prop)
+                                       (list (car values))))
+                  (occ-set-property tsk prop (car values))))
+      ((put)    (if lisp-p
+                    (occ-set-property tsk prop values)
+                  (occ-set-property tsk prop (car values))))
+      ((remove) (if lisp-p
+                    (occ-set-property tsk prop (remove
+                                                (car values)
+                                                (occ-get-property tsk prop)))
+                  (error "Implement it.")))
+      ((member) (occ-has-p tsk prop (car values))))))
 
 
 (cl-defgeneric occ-select-operation (prop)
@@ -429,6 +454,8 @@
                             &optional
                             operation
                             value)
+  ;; TODO: change this to use OCC VALUE like with corresponding changes to occ-readprop-elem-from-user
+  "VALUE will be from org value or string, VALUE is not occ value."
   (occ-debug :debug
              "occ-editprop: prop: %s, value: %s" prop value)
   (let ((mrk (occ-obj-marker obj)))
@@ -444,7 +471,8 @@
           (occ-update-property obj
                                prop
                                operation
-                               (list prop-value)))))))
+                               (occ-prop-from-org prop
+                                                  (list prop-value))))))))
 
 
 (cl-defgeneric occ-gen-method (obj
@@ -533,9 +561,8 @@
   (let ((props (occ-properties-to-edit obj))
         (gen-add-action
          #'(lambda (prop)
-             (let ((value (occ-prop-elem-from-org prop
-                                                  (occ-get-property (occ-obj-ctx obj) prop))))
-               (occ-gen-method-if-required obj prop 'add value))))))
+             (occ-gen-method-if-required obj prop 'add
+                                         (occ-get-property (occ-obj-ctx obj) prop))))))
   (remove nil
           (mapcar #'(lambda (prop) (gen-add-action prop))
                   props)))
@@ -544,9 +571,8 @@
   (let ((props (occ-properties-to-edit obj))
         (gen-remove-action
          #'(lambda (prop)
-             (let ((value (occ-prop-elem-from-org prop
-                                                 (occ-get-property (occ-obj-ctx obj) prop))))
-               (occ-gen-method-if-required obj prop 'remove value))))))
+             (occ-gen-method-if-required obj prop 'remove
+                                         (occ-get-property (occ-obj-ctx obj) prop))))))
   (remove nil
           (mapcar #'(lambda (prop) (gen-remove-action prop))
                   props)))
@@ -556,14 +582,12 @@
   (let ((props (occ-properties-to-edit obj))
         (gen-add-action
          #'(lambda (prop)
-             (let ((value (occ-prop-elem-from-org prop
-                                                  (occ-get-property (occ-obj-ctx obj) prop))))
-               (occ-gen-method-if-required obj prop 'add value))))
+             (occ-gen-method-if-required obj prop 'add
+                                         (occ-get-property (occ-obj-ctx obj) prop))))
         (gen-remove-action
          #'(lambda (prop)
-             (let ((value (occ-prop-elem-from-org prop
-                                                  (occ-get-property (occ-obj-ctx obj) prop))))
-               (occ-gen-method-if-required obj prop 'remove value)))))
+             (occ-gen-method-if-required obj prop 'remove
+                                         (occ-get-property (occ-obj-ctx obj) prop)))))
     (remove nil
             (apply #'append
                    (mapcar
