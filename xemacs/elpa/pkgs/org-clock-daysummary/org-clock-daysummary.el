@@ -58,7 +58,9 @@
 
 (defvar org-clock-work-day-start 10)
 (defvar org-clock-work-day-lunch-break-hour 1)
-(defvar org-clock-work-day-end (+ org-clock-work-day-start org-clock-work-day-lunch-break-hour org-clock-work-day-hours))
+(defvar org-clock-work-day-end (+ org-clock-work-day-start
+                                  org-clock-work-day-lunch-break-hour
+                                  org-clock-work-day-hours))
 
 (defvar org-clock-work-day-msg nil)
 
@@ -78,9 +80,8 @@
   (setq org-clock-get-work-day-start-timer
         (run-at-time "00:01am" (* 24 60 60) 'org-clock-get-work-day-clock-string t)))
 
-
 (defface org-mode-line-wday
-    '((t (:inherit mode-line)))
+  '((t (:inherit mode-line)))
   "Face used for clock display in mode line."
   :group 'org-faces)
 
@@ -254,6 +255,14 @@ If not, show simply the clocked time like 01:50."
     org-clock-monitor-files
     (directory-files-recursive monitor-dir "\\.org$" 2 "\\(rip\\|stage\\)"))))
 
+(defun org-clock-monitor-files-add-files (&rest monitor-files)
+  ;; (interactive "Dadd org clock monitor files: ")
+  (setq
+   org-clock-monitor-files
+   (append
+    org-clock-monitor-files
+    monitor-files)))
+
 ;;;###autoload
 (defun org-clock-work-day-update-mode-line-internal (&optional force)
   ;; (defun org-clock-work-day-update-mode-line ()
@@ -309,7 +318,7 @@ If not, show simply the clocked time like 01:50."
 
   (when (fboundp 'spaceline-define-segment)
     (spaceline-define-segment workdaysummary
-      "Test"
+      ;; "Test"
       (powerline-raw
        (s-trim org-mode-work-day-mode-line-string)))
     (spaceline-toggle-workdaysummary-on)

@@ -35,10 +35,11 @@
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-appearance-packages
-  '(
+  '()
     ;; (PACKAGE :location local)
-    powerline
-    )
+    ;; powerline
+    ;; powerline-vim-theme)
+
   "The list of Lisp packages required by the lotus-appearance layer.
 
 Each entry is either:
@@ -67,24 +68,47 @@ Each entry is either:
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
 
-(defun lotus-appearance/init-powerline ()
-  (interactive)
-  (use-package powerline
-    :init
-    (progn
-      (setq
-       powerline-scale              0.8
-       powerline-height             10
-       powerline-text-scale-factor  0.5
-       powerline-default-separator 'alternate))
-    :defer t
-    :config
-    (progn
-      (setq
-       powerline-scale              0.8
-       powerline-height             10
-       powerline-text-scale-factor  0.5
-       powerline-default-separator 'alternate))))
+;; (defun lotus-appearance/init-powerline ()
+;;   (interactive)
+;;   (use-package powerline
+;;     :init
+;;     (progn
+;;       (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
+;;       (setq
+;;        powerline-scale              0.8
+;;        powerline-height             10
+;;        powerline-text-scale-factor  0.5
+;;        powerline-default-separator 'alternate))
+;;     :defer t
+;;     :config
+;;     (progn
+;;       (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
+;;       (setq
+;;        powerline-scale              0.8
+;;        powerline-height             10
+;;        powerline-text-scale-factor  0.5
+;;        powerline-default-separator 'alternate))))
+
+;; (defun lotus-appearance/post-init-powerline-vim-theme ()
+;;   ;; (interactive)
+;;   (use-package powerline-vim-theme
+;;     :init
+;;     (progn
+;;       (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
+;;       (setq
+;;        powerline-scale              0.8
+;;        powerline-height             10
+;;        powerline-text-scale-factor  0.5
+;;        powerline-default-separator 'alternate))
+;;     :defer t
+;;     :config
+;;     (progn
+;;       (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
+;;       (setq
+;;        powerline-scale              0.8
+;;        powerline-height             10
+;;        powerline-text-scale-factor  0.5
+;;        powerline-default-separator 'alternate))))
 
 (defun lotus-appearance/init-PACKAGE ()
   (use-package PACKAGE
@@ -93,5 +117,19 @@ Each entry is either:
     (progn
       (setq face-scale-div-max-min '(110 210 100 92)))))
 
+(when nil
+  (face-attribute 'default :height)
+  (set-face-attribute 'mode-line nil
+                      :height (/ (face-attribute 'default :height) 2))
+  (face-attribute 'mode-line :foreground)
+  (face-attribute 'mode-line :height)
 
+  (face-attribute 'mode-line :background)
+
+  (set-face-attribute 'mode-line nil
+                      :height 57 :width 'normal)
+
+  (set-face-attribute 'mode-line nil
+                      :height 'unspecified :width 'unspecified)
+  )
 ;;; packages.el ends here

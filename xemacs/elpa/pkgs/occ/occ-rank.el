@@ -80,13 +80,10 @@
   (occ-debug :debug "occ-rank(obj=%s)" obj)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (let ((tsk-rank (occ-rank tsk))
-          (rank
-           (reduce #'+
-                   (mapcar #'(lambda (slot)
-                               (occ-rankprop obj (downcase-sym slot)))
-                           (occ-properties-to-calculate-rank obj)))))
-      (+ rank tsk-rank))))
+    (reduce #'+
+            (mapcar #'(lambda (slot)
+                        (occ-rankprop obj (downcase-sym slot)))
+                    (occ-properties-to-calculate-rank obj)))))
 
 
 (cl-defmethod occ-calculate-avgrank ((obj occ-ctx))

@@ -24,6 +24,35 @@
 
 ;;; Code:
 
+(defun percent (num percent &optional base)
+  (let ((base (or base 100)))
+    (/ (* num percent) base)))
+
+(defvar lotus-mode-line-reduce-percent 70)
+
+(defun face-applied-attribute (face attrib)
+  (let ((value (face-attribute face attrib)))
+    (if (eq 'unspecified value)
+        (let ((inherit-face (face-attribute face 'inherit)))
+          (if (eq 'unspecified inherit-face)
+              value
+            (face-applied-attribute inherit-face attrib)))
+      value)))
+
+(defun lotus-mode-line-reduce (percent)
+  (interactive "Npercent: ")
+  (let* ((percent (or percent lotus-mode-line-reduce-percent))
+         (height (face-applied-attribute 'mode-line :height))
+         (percent-height (percent height percent)))
+    (when (and percent-height
+               (not (eq 'unspecified percent-height)))
+      (face-attribute 'mode-line nil :height percent-height)
+      (face-attribute 'mode-line nil :width 'normal))))
+
+;; (face-attribute 'mode-line :inherit)
+
+;; (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
+
 (defun increase-font-size (size)
   (custom-set-faces
    '(default

@@ -55,7 +55,7 @@
     activity
     org-clock-resolve-advanced
     timesheet
-    wakatime-mode
+    ;; wakatime-mode
     task-manager
     startup-hooks
     counsel-org-clock
@@ -384,83 +384,91 @@ Each entry is either:
 (defun lotus-orgclocktask/init-org-clock-daysummary ()
   (progn
     (use-package org-clock-daysummary
-        ;; :defer t
-        :defer t
-        :commands (org-clock-work-day-mode-line-add)
-        :config
-        (progn
-          (use-package publishing
-              :defer t
-              :config
-              (progn
+      ;; :defer t
+      :defer t
+      :commands (org-clock-work-day-mode-line-add)
+      :config
+      (progn
+        (use-package publishing
+          :defer t
+          :config
+          (progn
+            (progn
+              (use-package task-manager
+                :defer t
+                :commands (office-mode
+                           task-current-party-select-set
+                           task-current-party task-party-dir
+                           task-select-party-dir
+                           find-task-dir)
+                :config
                 (progn
-                  (use-package task-manager
-                      :defer t
-                      :commands (office-mode
-                                 task-current-party-select-set
-                                 task-current-party task-party-dir
-                                 task-select-party-dir
-                                 find-task-dir)
-                      :config
-                      (progn
-                        (progn
-                          ;; (message "test1")
-                          (unless (task-current-party)
-                            (task-current-party "meru"))
-                          (when (task-current-party)
-                            (let ((monitor-dir (task-party-dir)))
-                              (if (file-directory-p monitor-dir)
-                                  (progn
-                                    (org-clock-monitor-files-set-from-dir monitor-dir)
-                                    (org-clock-work-day-mode-line-add t))
-                                  (message "[1]org monitor dir %s not exists." monitor-dir)))))
+                  (progn
+                    ;; (message "test1")
+                    (unless (task-current-party)
+                      (task-current-party "meru"))
+                    (when (task-current-party)
+                      (let* ((monitor-dir (task-party-dir))
+                             (unnamed-file (expand-file-name "../Unnamed.org" monitor-dir)))
+                        (if (file-directory-p monitor-dir)
+                            (progn
+                              (org-clock-monitor-files-set-from-dir monitor-dir)
+                              (when (file-exists-p unnamed-file)
+                                (org-clock-monitor-files-add-files unnamed-file))
+                              (org-clock-work-day-mode-line-add t))
+                          (message "[1]org monitor dir %s not exists." monitor-dir)))))
 
-                        (progn
-                          (add-to-task-current-party-change-hook
-                           #'(lambda ()
-                               ;; (unless (task-current-party)
-                               ;;   (task-current-party "meru"))
-                               (message "test2")
-                               (when (task-current-party)
-                                 (let ((monitor-dir (task-party-dir)))
-                                   (if (file-directory-p monitor-dir)
-                                       (progn
-                                         (org-clock-monitor-files-set-from-dir monitor-dir)
-                                         (org-clock-work-day-mode-line-add t))
-                                       (message "[2]org monitor dir %s not exists." monitor-dir))))))))))))))
+                  (progn
+                    (add-to-task-current-party-change-hook
+                     #'(lambda ()
+                         ;; (unless (task-current-party)
+                         ;;   (task-current-party "meru"))
+                         ;; (message "test2")
+                         (when (task-current-party)
+                           (let* ((monitor-dir (task-party-dir))
+                                  (unnamed-file (expand-file-name "../Unnamed.org" monitor-dir)))
+                             (if (file-directory-p monitor-dir)
+                                 (progn
+                                   (org-clock-monitor-files-set-from-dir monitor-dir)
+                                   (when (file-exists-p unnamed-file)
+                                     (org-clock-monitor-files-add-files unnamed-file))
+                                   (org-clock-work-day-mode-line-add t))
+                               (message "[2]org monitor dir %s not exists." monitor-dir))))))))))))))
 
     (use-package startup-hooks
-        :defer t
-        :config
+      :defer t
+      :config
+      (progn
         (progn
-          (progn
-            (add-to-enable-login-session-interrupting-feature-hook
-             #'(lambda ()
-                 (message "test3")
-                 (org-clock-work-day-mode-line-add t)) t)
+          (add-to-enable-login-session-interrupting-feature-hook
+           #'(lambda ()
+               ;; (message "test3")
+               (org-clock-work-day-mode-line-add t)) t)
 
-            (when nil
-              (add-to-enable-startup-interrupting-feature-hook
-               #'(lambda ()
-                   (message "test4")
-                   (condition-case err
-                       (when (fboundp 'task-current-party)
-                         (unless (task-current-party)
-                           (task-current-party "meru"))
-                         (unless (and
-                                  (boundp 'org-clock-monitor-files)
-                                  org-clock-monitor-files)
+          (when nil
+            (add-to-enable-startup-interrupting-feature-hook
+             #'(lambda ()
+                 ;; (message "test4")
+                 (condition-case err
+                     (when (fboundp 'task-current-party)
+                       (unless (task-current-party)
+                         (task-current-party "meru"))
+                       (unless (and
+                                (boundp 'org-clock-monitor-files)
+                                org-clock-monitor-files)
+                         (when (task-current-party)
                            (when (task-current-party)
-                             (let ((monitor-dir (task-party-dir)))
+                             (let* ((monitor-dir (task-party-dir))
+                                    (unnamed-file (expand-file-name "../Unnamed.org" monitor-dir)))
                                (if (file-directory-p monitor-dir)
-                                   (if (fboundp 'org-clock-monitor-files-set-from-dir)
-                                       (progn
-                                         (org-clock-monitor-files-set-from-dir monitor-dir)
-                                         (org-clock-work-day-mode-line-add t)))
-                                 (message "[4]org monitor dir %s not exists." monitor-dir)))))
-                         (org-clock-work-day-mode-line-add t))
-                     ((error) (message "Error: %s" err))
-                    t)))))))))
+                                   (progn
+                                     (org-clock-monitor-files-set-from-dir monitor-dir)
+                                     (when (file-exists-p unnamed-file)
+                                       (org-clock-monitor-files-add-files unnamed-file))
+                                     (org-clock-work-day-mode-line-add t))
+                                 (message "[4]org monitor dir %s not exists." monitor-dir))))))
+                       (org-clock-work-day-mode-line-add t))
+                   ((error) (message "Error: %s" err))) t))))))))
 
 (defun lotus-orgclocktask/init-org-clock-table-misc-lotus ()
   (use-package org-clock-table-misc-lotus
@@ -617,13 +625,13 @@ Each entry is either:
     (progn
       )))
 
-(defun lotus-orgclocktask/post-init-wakatime-mode ()
-  ;; https://github.com/tmarble/timesheet.el
-  (use-package wakatime-mode
-      :defer t
-      :config
-      (progn)))                            ;do not need it now. will see later.
-        ;; (global-wakatime-mode)
+;; (defun lotus-orgclocktask/post-init-wakatime-mode ()
+;;   ;; https://github.com/tmarble/timesheet.el
+;;   (use-package wakatime-mode
+;;       :defer t
+;;       :config
+;;       (progn)))                            ;do not need it now. will see later.
+;;         ;; (global-wakatime-mode)
 
 
 (defun lotus-orgclocktask/init-task-manager ()
