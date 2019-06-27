@@ -251,7 +251,8 @@
     ;; (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer t)
     (add-hook 'switch-buffer-functions #'occ-switch-buffer-run-curr-ctx-timer-function)
     (add-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode))
-  (dolist (prop (cl-method-sig-matched-arg '(occ-readprop (`((head ,val) occ-ctx) val)) nil))
+  (dolist (prop (cl-method-sig-matched-arg
+                 '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val)) nil))
     (let ((propstr
            (upcase (if (keywordp prop)
                        (substring (symbol-name prop) 1)
@@ -277,7 +278,8 @@
     ;; (remove-hook 'after-save-hook             'occ-after-save-hook-fun t)
     (remove-hook 'switch-buffer-functions #'occ-switch-buffer-run-curr-ctx-timer-function)
     (remove-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode))
-  (dolist (prop (cl-method-sig-matched-arg '(occ-readprop (`((head ,val) occ-ctx) val)) nil))
+  (dolist (prop (cl-method-sig-matched-arg
+                 '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val)) nil))
     (let ((propstr
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)
