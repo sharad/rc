@@ -29,32 +29,13 @@
 
 (require 'occ-macros)
 (require 'occ-util-common)
+(require 'occ-prop-intf)
 
 ;; TODO: graded ranking where ranking will be under priority of properties, where one can not go beyond above one, normally
-
-(cl-defgeneric occ-rankprop (obj
-                             prop)
-  "occ-rankprop")
 
 (cl-defgeneric occ-calculate-rank (obj)
   "occ-rank")
 
-
-(cl-defmethod occ-rankprop (obj
-                            prop)
-  ;; too much output
-  ;; (occ-debug :debug "occ-rank(tsk-pair=%s ctx=%s)" tsk-pair ctx)
-  (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop)
-  0)
-
-
-;; * tsk rank
-(cl-defmethod occ-rankprop ((obj  occ-tsk)
-                            (prop symbol))
-  (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)"
-             obj
-             prop)
-  0)
 
 (cl-defmethod occ-calculate-rank ((obj occ-tsk))
   ;; too much output
@@ -67,13 +48,6 @@
                          (occ-properties-to-calculate-rank obj)))))
     rank))
 
-
-;; * ctx-tsk rank
-
-(cl-defmethod occ-rankprop ((obj  occ-obj-ctx-tsk)
-                            (prop symbol))
-  (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop)
-  (occ-rankprop obj prop))
 
 (cl-defmethod occ-calculate-rank ((obj occ-obj-ctx-tsk))
   ;; too much output

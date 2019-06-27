@@ -40,7 +40,6 @@
   ;; (occ-debug :debug "occ-rank(tsk-pair=%s ctx=%s)" tsk-pair ctx)
   (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop)
   0)
-
 
 (cl-defmethod occ-rankprop ((obj  occ-tsk)
                             (prop symbol))
@@ -48,7 +47,6 @@
              obj
              prop)
   0)
-
 
 (cl-defmethod occ-rankprop ((obj  occ-obj-ctx-tsk)
                             (prop symbol))
