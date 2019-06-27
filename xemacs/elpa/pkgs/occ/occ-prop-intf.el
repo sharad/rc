@@ -28,6 +28,7 @@
 
 
 (require 'occ-util-common)
+(require 'occ-obj)
 
 
 (cl-defgeneric occ-rankprop (obj
@@ -102,7 +103,7 @@
 ;;         (ctx (occ-obj-ctx obj)))
 ;;     (occ-readprop-from-user tsk prop)))
 
-(cl-defmethod occ-get-property ((obj occ-obj-ctx)
+(cl-defmethod occ-get-property ((obj occ-ctx)
                                 (prop symbol))
   "must return occ compatible value."
   (error "must return occ compatible value."))

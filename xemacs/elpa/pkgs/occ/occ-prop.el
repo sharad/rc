@@ -477,7 +477,7 @@
    (occ-gen-method obj prop operation value)))
 
 
-;; (defmethod occ-gen-operation-for-add (obj occ-obj-tsk)
+;; (cl-defmethod occ-gen-operation-for-add (obj occ-obj-tsk)
 ;;   (mapcar
 ;;    #'(lambda (prop)
 ;;        (occ-gen-prompt-method obj prop
@@ -485,7 +485,7 @@
 ;;                                              (occ-get-property obj prop)))
 ;;    (occ-properties-to-edit obj)))
 
-;; (defmethod occ-gen-operation-for-remove (obj occ-obj-tsk)
+;; (cl-defmethod occ-gen-operation-for-remove (obj occ-obj-tsk)
 ;;   (mapcar
 ;;    #'(lambda (prop)
 ;;        (occ-gen-prompt-method obj prop

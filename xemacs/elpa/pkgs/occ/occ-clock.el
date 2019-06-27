@@ -368,6 +368,9 @@
     (occ-debug-uncond "occ-clock-in-if-not((obj occ-ctx)): begin")
     (if (or
          (occ-clock-marker-unnamed-clock-p)
+         ;; TODO: BUG: Here provide option to user in case of non-unnamed tsk to
+         ;; increase time prop or other prop or continue to other clock. or
+         ;; force checkout for clock.
          (not (occ-associable-p (occ-current-ctxual-tsk ctx))))
         (prog1                ;current clock is not matching
             t
