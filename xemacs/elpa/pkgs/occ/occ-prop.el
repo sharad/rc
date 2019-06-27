@@ -221,15 +221,25 @@
           values))
 
 
+(cl-defmethod occ-readprop-elem-from-user :around ((obj occ-obj-tsk)
+                                                   (prop symbol))
+              "Read value of element of list for property PROP from user for OCC-TSK OBJ."
+              (occ-prop-elem-from-org (call-next-method)))
+
+(cl-defmethod occ-readprop-from-user :around ((obj occ-obj-tsk)
+                                              (prop symbol))
+              "Read value of element of list for property PROP from user for OCC-TSK OBJ."
+              (occ-prop-from-org (call-next-method)))
+
 ;; TODO: should not we make them to be converted to OCC value here.
 (cl-defmethod occ-readprop-elem-from-user ((obj occ-obj-tsk)
                                            (prop symbol))
-  "Read value of element of list for property PROP from user for OCC-TSK OBJ."
-  (error "Implement method occ-readprop-elem-from-user for prop %s" prop))
+  "Read value of element of list for property PROP from user for OCC-TSK OBJ, must return ORG compatible value."
+  (error "Implement method occ-readprop-elem-from-user for prop %s " prop))
 
 (cl-defmethod occ-readprop-from-user ((obj occ-obj-tsk)
                                       (prop symbol))
-  "Read value of element of list for property PROP from user for OCC-TSK OBJ."
+  "Read value of element of list for property PROP from user for OCC-TSK OBJ, must return ORG compatible value."
   (error "Implement method occ-readprop-from-user for prop %s" prop))
 
 ;; (cl-defmethod occ-readprop-elem-from-user ((obj occ-obj-ctx-tsk)
@@ -245,6 +255,17 @@
 ;;   (let ((tsk (occ-obj-tsk obj))
 ;;         (ctx (occ-obj-ctx obj)))
 ;;     (occ-readprop-from-user tsk prop)))
+
+(defmethod occ-get-property ((obj occ-obj-ctx)
+                             (prop symbol))
+  "must return occ compatible value."
+  (error "must return occ compatible value."))
+
+(defmethod occ-format-prop ((obj occ-obj-tsk)
+                            (prop symbol)
+                            value)
+  "Should return format printable value"
+  value)
 
 
 (cl-defgeneric occ-checkout (obj
@@ -294,6 +315,7 @@
                                        (prop string)
                                        operation
                                        values)
+  "Accept org compatible VALUES"
   ;; (unless (occ-valid-p prop operation)
   ;;   (error "occ-org-update-property: operation %s is not allowed for prop %s" operation prop))
   (let ((list-p (occ-list-p prop)))
@@ -318,6 +340,7 @@
                                                 (prop symbol)
                                                 operation
                                                 values)
+  "Accept org compatible VALUES"
   (unless (occ-valid-p prop operation)
     (error "occ-org-update-property: operation %s is not allowed for prop %s" operation prop))
   (lotus-with-marker mrk
@@ -395,12 +418,13 @@
                                     prop
                                     operation
                                     values)
-  "occ-update-property")
+  "Accept occ compatible VALUES")
 
 (cl-defmethod occ-update-property ((obj occ-obj-tsk)
                                    (prop symbol)
                                    operation
                                    values)
+  "Accept occ compatible VALUES"
   (let ((tsk ((occ-obj-tsk obj)))
         (list-p (occ-list-p prop)))
     (occ-debug :debug "occ-update-property: operation %s values %s"
@@ -447,7 +471,7 @@
                              &optional
                              operation
                              value)
-  "occ-editprop")
+  "Accept occ compatible VALUES")
 
 (cl-defmethod occ-editprop ((obj occ-obj-tsk)
                             (prop symbol)
@@ -455,7 +479,7 @@
                             operation
                             value)
   ;; TODO: change this to use OCC VALUE like with corresponding changes to occ-readprop-elem-from-user
-  "VALUE will be from org value or string, VALUE is not occ value."
+  "Accept occ compatible VALUES"
   (occ-debug :debug
              "occ-editprop: prop: %s, value: %s" prop value)
   (let ((mrk (occ-obj-marker obj)))
@@ -465,14 +489,14 @@
              (occ-org-update-property-at-point mrk
                                                prop
                                                operation
-                                               (list prop-value))))
+                                               (occ-prop-to-org
+                                                (list prop-value)))))
         (occ-debug :debug "occ-editprop: (occ-org-update-property-at-point mrk) returnd %s" retval)
         (when retval
           (occ-update-property obj
                                prop
                                operation
-                               (occ-prop-from-org prop
-                                                  (list prop-value))))))))
+                               (list prop-value)))))))
 
 
 (cl-defgeneric occ-gen-method (obj
@@ -502,7 +526,8 @@
                 (if list-p "Add" "Replace")
               "Remove")
             (if list-p "in" "from")
-            value prop)))
+            (occ-format-prop obj prop value)
+            prop)))
 
 
 (cl-defgeneric occ-gen-prompt-method (obj
@@ -515,10 +540,9 @@
                                      (prop symbol)
                                      operation
                                      value)
-  (let ((value (occ-prop-elem-to-org prop value)))
-    (cons
-     (occ-gen-prompt obj prop operation value)
-     (occ-gen-method obj prop operation value))))
+  (cons
+   (occ-gen-prompt obj prop operation value)
+   (occ-gen-method obj prop operation value)))
 
 
 ;; (defmethod occ-gen-operation-for-add (obj occ-obj-tsk)

@@ -136,14 +136,14 @@ pointing to it."
   (let ((tsk (occ-ctsk-tsk obj)))
     (concat (when case (concat (occ-title obj case) ": "))
             (when rank (format "[%4d] " (or (occ-rank obj) -128)))
-            (occ-format tsk case))))
+            (occ-format tsk case nil))))
 
-;; (cl-defmethod occ-format ((obj occ-ctxual-tsk)
-;;                           &optional case rank)
-;;   (let ((tsk (occ-ctxual-tsk-tsk obj)))
-;;     (concat (when case (concat (occ-title obj case) ": "))
-;;             (when rank (format "[%4d] " (or (occ-rank obj) -128)))
-;;             (format "%s" (occ-format tsk case rank)))))
+(cl-defmethod occ-format ((obj occ-ctxual-tsk)
+                          &optional case rank)
+  (let ((tsk (occ-ctxual-tsk-tsk obj)))
+    (concat (when case (concat (occ-title obj case) ": "))
+            (when rank (format "[%4d] " (or (occ-rank obj) -128)))
+            (format "%s" (occ-format tsk case rank)))))
 
 
 ;; (cl-defmethod occ-print-rank ((obj occ-tsk))

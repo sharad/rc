@@ -28,7 +28,7 @@
   (let ((base (or base 100)))
     (/ (* num percent) base)))
 
-(defvar lotus-mode-line-reduce-percent 80)
+(defvar lotus-mode-line-reduce-percent 84)
 
 (defun face-applied-attribute (face attrib)
   (let ((value (face-attribute face attrib)))
@@ -74,12 +74,15 @@
 ;; (/ (* 0.88 90.00) 72.00)
 ;; (/ 72.00 0.88)
 ;; (/ 8 7.000)
-(lotus-mode-line-reset)
-(lotus-mode-line-reduce lotus-mode-line-reduce-percent)
+;; (/ (+ 72 90) 2)
+
+
+;; (lotus-mode-line-reset)
+;; (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
 
 
 (defun lotus-powerline-setup-text-scale-factor ()
-  (let ((text-scale-factor (/ (* (float (face-attribute 'mode-line :height)) 1.0920)
+  (let ((text-scale-factor (/ (* (float (face-attribute 'mode-line :height)) 1.0002)
                               (float (face-attribute 'default :height)))))
     (when (numberp text-scale-factor)
       (setq
@@ -99,7 +102,7 @@
       (setq
        powerline-scale              0.8
        powerline-height             10
-       powerline-text-scale-factor  (lotus-powerline-setup-text-scale-factor)
+       powerline-text-scale-factor  nil ;; (lotus-powerline-setup-text-scale-factor)
        powerline-default-separator 'alternate))))
 
 (defun lotus-powerline-reset ()
