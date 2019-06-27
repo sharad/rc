@@ -102,14 +102,14 @@
 ;;         (ctx (occ-obj-ctx obj)))
 ;;     (occ-readprop-from-user tsk prop)))
 
-(defmethod occ-get-property ((obj occ-obj-ctx)
-                             (prop symbol))
+(cl-defmethod occ-get-property ((obj occ-obj-ctx)
+                                (prop symbol))
   "must return occ compatible value."
   (error "must return occ compatible value."))
 
-(defmethod occ-format-prop ((obj occ-obj-tsk)
-                            (prop symbol)
-                            value)
+(cl-defmethod occ-format-prop ((obj occ-obj-tsk)
+                               (prop symbol)
+                               value)
   "Should return format printable value"
   value)
 
