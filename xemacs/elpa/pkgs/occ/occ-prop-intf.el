@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2019  s
 
-;; Author: s <sh4r4d@gmail.com>
+;; Author: s <>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -25,6 +25,35 @@
 ;;; Code:
 
 (provide 'occ-prop-intf)
+
+
+(require 'occ-util-common)
+
+
+(cl-defgeneric occ-rankprop (obj
+                             prop)
+  "occ-rankprop")
+
+(cl-defmethod occ-rankprop (obj
+                            prop)
+  ;; too much output
+  ;; (occ-debug :debug "occ-rank(tsk-pair=%s ctx=%s)" tsk-pair ctx)
+  (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop)
+  0)
+
+
+(cl-defmethod occ-rankprop ((obj  occ-tsk)
+                            (prop symbol))
+  (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)"
+             obj
+             prop)
+  0)
+
+
+(cl-defmethod occ-rankprop ((obj  occ-obj-ctx-tsk)
+                            (prop symbol))
+  (occ-debug :debug "occ-rankprop(obj=%s symbol=%s)" obj prop)
+  (occ-rankprop obj prop))
 
 
 (cl-defmethod occ-list-p ((prop symbol))
