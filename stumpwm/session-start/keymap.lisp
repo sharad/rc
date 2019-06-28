@@ -14,7 +14,7 @@
     `(progn ,@ks)))
 
 (defmacro defkey-root (key cmd)
-  `(define-key *root-map* (kbd ,key) ,cmd))
+  `(define-key stumpwm:*root-map* (kbd ,key) ,cmd))
 
 (defmacro defkeys-root (&rest keys)
   (let ((ks (mapcar #'(lambda (k) (cons 'defkey-root k)) keys)))
@@ -82,8 +82,8 @@
 
 
 
-;; (macroexpand-1 (sdefine-key *root-map* (("@" "eval"))))
-;; (macroexpand-1 '(setkey *root-map* "@" "eval"))
+;; (macroexpand-1 (sdefine-key stumpwm:*root-map* (("@" "eval"))))
+;; (macroexpand-1 '(setkey stumpwm:*root-map* "@" "eval"))
 
 ;; (set-key *gcal-map*
 ;;          (("w" "gcal-week")
@@ -107,11 +107,11 @@
 (set-prefix-key (kbd "C-quoteleft"))
 (setf *mouse-focus-policy* :ignore)
 ;;When not in Stumpwm mode, we want Insert to be bound to enter Stumpwm mode
-(define-key *top-map* (kbd "Menu") '*root-map*)
+(define-key *top-map* (kbd "Menu") 'stumpwm:*root-map*)
 ;;When in Stumpwm mode, act like hitting the prefix again would.
-(define-key *root-map* (kbd "Menu") "next")
-(define-key *root-map* (kbd "]") "next")
-(define-key *root-map* (kbd "[") "prev")
+(define-key stumpwm:*root-map* (kbd "Menu") "next")
+(define-key stumpwm:*root-map* (kbd "]") "next")
+(define-key stumpwm:*root-map* (kbd "[") "prev")
 ;;}}}
 
 ;;{{ When Other profile came in
@@ -135,119 +135,117 @@
 (define-key *top-map* (kbd "XF86AudioPlay") "mpd-play")
 
 ;;Root map --------------------------------------------------------------------
-(define-key *root-map* (kbd "SPC") "scratchpad")
+(define-key stumpwm:*root-map* (kbd "SPC") "scratchpad")
 ;;Terminals
-; (define-key *root-map* (kbd "c") "urxvt")
-; (define-key *root-map* (kbd "/") "xscreen")
-;; (define-key *root-map* (kbd "C") "mrxvt")
-(define-key *root-map* (kbd "&") "screen-to")
+; (define-key stumpwm:*root-map* (kbd "c") "urxvt")
+; (define-key stumpwm:*root-map* (kbd "/") "xscreen")
+;; (define-key stumpwm:*root-map* (kbd "C") "mrxvt")
+(define-key stumpwm:*root-map* (kbd "&") "screen-to")
 ;;Applications
-(define-key *root-map* (kbd "E") "ebib")
-(define-key *root-map* (kbd "e") "emacsclient")
-(define-key *root-map* (kbd "C-e") "emacsclient")
-;; (define-key *root-map* (kbd "m") "conkeror")
-(define-key *root-map* (kbd "m") "xbrowser")
-;; (define-key *root-map* (kbd "i") "inkscape") ;; ??
-;; (define-key *root-map* (kbd "M") "mutt") ;; -- I am able to read through Gnus
-;; (define-key *root-map* (kbd "l") "slrn") ;; -- I am able to read through Gnus
-;; (define-key *root-map* (kbd "g") "gimp")
+(define-key stumpwm:*root-map* (kbd "E") "ebib")
+(define-key stumpwm:*root-map* (kbd "e") "emacsclient")
+(define-key stumpwm:*root-map* (kbd "C-e") "emacsclient")
+;; (define-key stumpwm:*root-map* (kbd "m") "conkeror")
+(define-key stumpwm:*root-map* (kbd "m") "xbrowser")
+;; (define-key stumpwm:*root-map* (kbd "i") "inkscape") ;; ??
+;; (define-key stumpwm:*root-map* (kbd "M") "mutt") ;; -- I am able to read through Gnus
+;; (define-key stumpwm:*root-map* (kbd "l") "slrn") ;; -- I am able to read through Gnus
+;; (define-key stumpwm:*root-map* (kbd "g") "gimp")
 
 ;; Controls
-(define-key *root-map* (kbd "T") "toggle-touchpad")
-(define-key *root-map* (kbd "I") "show-window-properties")
-(define-key *root-map* (kbd "S-r") "repack-window-number")
-(define-key *root-map* (kbd ")") '*mpd-map*)
-;; (define-key *root-map* (kbd "x") "exec xlock")
-(define-key *root-map* (kbd "x") "exec xautolock -locknow")
+(define-key stumpwm:*root-map* (kbd "T") "toggle-touchpad")
+(define-key stumpwm:*root-map* (kbd "I") "show-window-properties")
+(define-key stumpwm:*root-map* (kbd "S-r") "repack-window-number")
+(define-key stumpwm:*root-map* (kbd ")") '*mpd-map*)
+;; (define-key stumpwm:*root-map* (kbd "x") "exec xlock")
+(define-key stumpwm:*root-map* (kbd "x") "exec xautolock -locknow")
 
 ;;Screen management
-(define-key *root-map* (kbd "*") "snext")
-(define-key *root-map* (kbd "ugrave") "sprev")
+(define-key stumpwm:*root-map* (kbd "*") "snext")
+(define-key stumpwm:*root-map* (kbd "ugrave") "sprev")
 
 ;;Window Management
-(define-key *root-map* (kbd "eacute") "mark")
-(define-key *root-map* (kbd "=") "balance-frames")
-(define-key *root-map* (kbd "C-=") "next-in-frame")
-(define-key *root-map* (kbd "C-p") "prev-in-frame")
-(define-key *root-map* (kbd "n") "pull-hidden-next")
-(define-key *root-map* (kbd "p") "pull-hidden-previous")
-(define-key *root-map* (kbd "C-SPC") "pull-hidden-other")
-(define-key *root-map* (kbd "M-=") "next")
-(define-key *root-map* (kbd "M-p") "prev")
-(define-key *root-map* (kbd "M-w") "windows")
-(define-key *root-map* (kbd "k") "delete")
-(define-key *root-map* (kbd "K") "kill")
-(define-key *root-map* (kbd "b") "banish")
-(define-key *root-map* (kbd "P") "show-pointer")
-(define-key *root-map* (kbd "a") "time")
-(define-key *root-map* (kbd "'") "select")
-(define-key *root-map* (kbd "\"") "windowlist")
-(define-key *root-map* (kbd "M-SPC") "other-in-frame")
-(define-key *root-map* (kbd "!") "exec")
-(define-key *root-map* (kbd "C-g") "abort")
-(define-key *root-map* (kbd "R") "remove")
-(define-key *root-map* (kbd "s") "vsplit")
-(define-key *root-map* (kbd "S") "hsplit")
-(define-key *root-map* (kbd "r") "iresize")
-(define-key *root-map* (kbd "t") "exchange-direction")
-(define-key *root-map* (kbd "C-t") "exchange-direction")
+(define-key stumpwm:*root-map* (kbd "eacute") "mark")
+(define-key stumpwm:*root-map* (kbd "=") "balance-frames")
+(define-key stumpwm:*root-map* (kbd "C-=") "next-in-frame")
+(define-key stumpwm:*root-map* (kbd "C-p") "prev-in-frame")
+(define-key stumpwm:*root-map* (kbd "n") "pull-hidden-next")
+(define-key stumpwm:*root-map* (kbd "p") "pull-hidden-previous")
+(define-key stumpwm:*root-map* (kbd "C-SPC") "pull-hidden-other")
+(define-key stumpwm:*root-map* (kbd "M-=") "next")
+(define-key stumpwm:*root-map* (kbd "M-p") "prev")
+(define-key stumpwm:*root-map* (kbd "M-w") "windows")
+(define-key stumpwm:*root-map* (kbd "k") "delete")
+(define-key stumpwm:*root-map* (kbd "K") "kill")
+(define-key stumpwm:*root-map* (kbd "b") "banish")
+(define-key stumpwm:*root-map* (kbd "P") "show-pointer")
+(define-key stumpwm:*root-map* (kbd "a") "time")
+(define-key stumpwm:*root-map* (kbd "'") "select")
+(define-key stumpwm:*root-map* (kbd "\"") "windowlist")
+(define-key stumpwm:*root-map* (kbd "M-SPC") "other-in-frame")
+(define-key stumpwm:*root-map* (kbd "!") "exec")
+(define-key stumpwm:*root-map* (kbd "C-g") "abort")
+(define-key stumpwm:*root-map* (kbd "R") "remove")
+(define-key stumpwm:*root-map* (kbd "s") "vsplit")
+(define-key stumpwm:*root-map* (kbd "S") "hsplit")
+(define-key stumpwm:*root-map* (kbd "r") "iresize")
+(define-key stumpwm:*root-map* (kbd "t") "exchange-direction")
+(define-key stumpwm:*root-map* (kbd "C-t") "exchange-direction")
 
 ;;Frame management
-(define-key *root-map* (kbd "dead_circumflex") "fnext")
-(define-key *root-map* (kbd "$") "fprev")
-(define-key *root-map* (kbd "TAB") "fother")
-(define-key *root-map* (kbd "f") "fselect")
-(define-key *root-map* (kbd "F") "curframe")
+(define-key stumpwm:*root-map* (kbd "dead_circumflex") "fnext")
+(define-key stumpwm:*root-map* (kbd "$") "fprev")
+(define-key stumpwm:*root-map* (kbd "TAB") "fother")
+(define-key stumpwm:*root-map* (kbd "f") "fselect")
+(define-key stumpwm:*root-map* (kbd "F") "curframe")
 
-(define-key *root-map* (kbd "Up")       "move-focus up")
-(define-key *root-map* (kbd "Down")     "move-focus down")
-(define-key *root-map* (kbd "Left")     "move-focus left")
-(define-key *root-map* (kbd "Right")    "move-focus right")
-(define-key *root-map* (kbd "C-Up")     "exchange-direction up")
-(define-key *root-map* (kbd "C-Down")   "exchange-direction down")
-(define-key *root-map* (kbd "C-Left")   "exchange-direction left")
-(define-key *root-map* (kbd "C-Right")  "exchange-direction right")
-(define-key *root-map* (kbd "M-Up")     "move-window up")
-(define-key *root-map* (kbd "M-Down")   "move-window down")
-(define-key *root-map* (kbd "M-Left")   "move-window left")
-(define-key *root-map* (kbd "M-Right")  "move-window right")
+(define-key stumpwm:*root-map* (kbd "Up")       "move-focus up")
+(define-key stumpwm:*root-map* (kbd "Down")     "move-focus down")
+(define-key stumpwm:*root-map* (kbd "Left")     "move-focus left")
+(define-key stumpwm:*root-map* (kbd "Right")    "move-focus right")
+(define-key stumpwm:*root-map* (kbd "C-Up")     "exchange-direction up")
+(define-key stumpwm:*root-map* (kbd "C-Down")   "exchange-direction down")
+(define-key stumpwm:*root-map* (kbd "C-Left")   "exchange-direction left")
+(define-key stumpwm:*root-map* (kbd "C-Right")  "exchange-direction right")
+(define-key stumpwm:*root-map* (kbd "M-Up")     "move-window up")
+(define-key stumpwm:*root-map* (kbd "M-Down")   "move-window down")
+(define-key stumpwm:*root-map* (kbd "M-Left")   "move-window left")
+(define-key stumpwm:*root-map* (kbd "M-Right")  "move-window right")
 
-(define-key *root-map* (kbd "RET") "fullscreen")
+(define-key stumpwm:*root-map* (kbd "RET") "fullscreen")
 ;;Commands, evaluation, help ...
-(define-key *root-map* (kbd ";") "colon")
-(define-key *root-map* (kbd ":") "eval")
-(define-key *root-map* (kbd "C-h") "help")
-(define-key *root-map* (kbd "-") "fclear")
-(define-key *root-map* (kbd "Q") "only")
-(define-key *root-map* (kbd "v") "version")
-;; (define-key *root-map* (kbd "?") "help")
-(define-key *root-map* (kbd "+") "balance-frames")
-(define-key *root-map* (kbd "A") "title")
-(define-key *root-map* (kbd "h") '*help-map*)
-(define-key *root-map* (kbd "q") '*web-jump-map*)
-(define-key *root-map* (kbd "C-m") "lastmsg")
-(define-key *root-map* (kbd "t") "meta Menu")
-(define-key *root-map* (kbd "y") "paste")
-(define-key *root-map* (kbd "B") "mode-line")
+(define-key stumpwm:*root-map* (kbd ";") "colon")
+(define-key stumpwm:*root-map* (kbd ":") "eval")
+(define-key stumpwm:*root-map* (kbd "C-h") "help")
+(define-key stumpwm:*root-map* (kbd "-") "fclear")
+(define-key stumpwm:*root-map* (kbd "Q") "only")
+(define-key stumpwm:*root-map* (kbd "v") "version")
+;; (define-key stumpwm:*root-map* (kbd "?") "help")
+(define-key stumpwm:*root-map* (kbd "+") "balance-frames")
+(define-key stumpwm:*root-map* (kbd "A") "title")
+(define-key stumpwm:*root-map* (kbd "h") '*help-map*)
+(define-key stumpwm:*root-map* (kbd "q") '*web-jump-map*)
+(define-key stumpwm:*root-map* (kbd "C-m") "lastmsg")
+(define-key stumpwm:*root-map* (kbd "t") "meta Menu")
+(define-key stumpwm:*root-map* (kbd "y") "paste")
+(define-key stumpwm:*root-map* (kbd "B") "mode-line")
 
 ;; ;;Groups
-;; (define-key *root-map* (kbd "G") "vgroups")
-;; ;; (define-key *root-map* (kbd "Menu") '*groups-map*)
-;; (define-key *root-map* (kbd "F1") "gselect 1")
-;; (define-key *root-map* (kbd "F2") "gselect 2")
-;; (define-key *root-map* (kbd "F3") "gselect 3")
-;; (define-key *root-map* (kbd "F4") "gselect 4")
-;; (define-key *root-map* (kbd "F5") "gselect 5")
-;; (define-key *root-map* (kbd "F6") "gselect 6")
-;; (define-key *root-map* (kbd "F7") "gselect 7")
-;; (define-key *root-map* (kbd "F8") "gselect 8")
-;; (define-key *root-map* (kbd "F9") "gselect 9")
-;;Notifications
-(define-key *root-map* (kbd "F10") '*notifications-map*)
+;; (define-key stumpwm:*root-map* (kbd "G") "vgroups")
+;; ;; (define-key stumpwm:*root-map* (kbd "Menu") '*groups-map*)
+;; (define-key stumpwm:*root-map* (kbd "F1") "gselect 1")
+;; (define-key stumpwm:*root-map* (kbd "F2") "gselect 2")
+;; (define-key stumpwm:*root-map* (kbd "F3") "gselect 3")
+;; (define-key stumpwm:*root-map* (kbd "F4") "gselect 4")
+;; (define-key stumpwm:*root-map* (kbd "F5") "gselect 5")
+;; (define-key stumpwm:*root-map* (kbd "F6") "gselect 6")
+;; (define-key stumpwm:*root-map* (kbd "F7") "gselect 7")
+;; (define-key stumpwm:*root-map* (kbd "F8") "gselect 8")
+;; (define-key stumpwm:*root-map* (kbd "F9") "gselect 9")
 ;;gcal
-(define-key *root-map* (kbd "F11") '*gcal-map*)
+(define-key stumpwm:*root-map* (kbd "F11") '*gcal-map*)
 ;;Mails
-(define-key *root-map* (kbd "F12") '*mail-map*)
+(define-key stumpwm:*root-map* (kbd "F12") '*mail-map*)
 ;;Group map----------------------------------------------
 ;;(setf *groups-map*
       ;; ;;(append *groups-map*
@@ -259,18 +257,18 @@
 (define-key *groups-map* (kbd "f"  ) "gnew-float")
 (define-key *groups-map* (kbd "n"  ) "gnext")
 
-(define-key *root-map*   (kbd ">"  ) "gnext")
-(define-key *root-map*   (kbd "M->"  ) "gnext-with-window")
+(define-key stumpwm:*root-map*   (kbd ">"  ) "gnext")
+(define-key stumpwm:*root-map*   (kbd "M->"  ) "gnext-with-window")
 (define-key *groups-map* (kbd "N"  ) "gnext-with-window")
 
-(define-key *root-map*   (kbd "."  ) "gnext-with-window")
+(define-key stumpwm:*root-map*   (kbd "."  ) "gnext-with-window")
 (define-key *groups-map* (kbd "p"  ) "gprev")
 
-(define-key *root-map*   (kbd "<"  ) "gprev")
-(define-key *root-map*   (kbd "M-<"  ) "gprev-with-window")
+(define-key stumpwm:*root-map*   (kbd "<"  ) "gprev")
+(define-key stumpwm:*root-map*   (kbd "M-<"  ) "gprev-with-window")
 (define-key *groups-map* (kbd "P"  ) "gprev-with-window")
 
-(define-key *root-map*   (kbd ","  ) "gprev-with-window")
+(define-key stumpwm:*root-map*   (kbd ","  ) "gprev-with-window")
 (define-key *groups-map* (kbd "'"  ) "gselect")
 (define-key *groups-map* (kbd "\"" ) "grouplist")
 (define-key *groups-map* (kbd "m"  ) "gmove")
@@ -293,7 +291,7 @@
 (define-key *groups-map* (kbd "9"  ) "gselect 9")
 (define-key *groups-map* (kbd "0"  ) "gselect 10")
 (define-key *groups-map* (kbd ";"  ) "jump-to-new-window")
-(define-key *root-map*   (kbd "|"  ) "jump-to-new-window")
+(define-key stumpwm:*root-map*   (kbd "|"  ) "jump-to-new-window")
 
 ;;                m))
 ;;gcal map------------------------------------------------
@@ -355,17 +353,20 @@
 ;; (macroexpand-1 '(make-web-jump imdb "http://www.imdb.com/find?q=~a" "i"))
 
 
+
 
-(setf *system-map*
-  (let ((m (make-sparse-keymap)))
-     (define-key m (kbd "s") "sys-suspend")
-     (define-key m (kbd "h") "sys-hibernate")
-     (define-key m (kbd "r") "sys-reboot")
-     (define-key m (kbd "e") "sys-halt")
-     m))
+(setf stumpwm::*system-map*
+  (let ((m (stumpwm:make-sparse-keymap)))
+    (define-key m (kbd "s") "sys-suspend")
+    (define-key m (kbd "h") "sys-hibernate")
+    (define-key m (kbd "H") "sys-suspend-then-hibernate")
+    (define-key m (kbd "r") "sys-reboot")
+    (define-key m (kbd "e") "sys-halt")
+    (define-key m (kbd "p") "sys-poweroff")
+    m))
 
-(define-key *root-map* (kbd "~") '*system-map*)
-
+(define-key stumpwm:*root-map* (kbd "~") 'stumpwm::*system-map*)
+
 
 ;; (setf *spare-map*
 ;;   (let ((m (make-sparse-keymap)))
@@ -501,9 +502,10 @@
 ;;  '(fill-keymap *window-commands-map*
 ;;    (kbd "d") "disappear-window"))
 
-(undefine-key *top-map* (kbd "s-p"))
+(undefine-key stumpwm:*top-map* (kbd "s-p"))
 
 
 ;;{{{ Notification
-(define-key *root-map* (kbd "N") '*notifications-map*)
+(define-key stumpwm:*root-map* (kbd "F10") 'notifications:*notifications-map*)
+(define-key stumpwm:*root-map* (kbd "N")   'notifications:*notifications-map*)
 ;;}}}

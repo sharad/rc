@@ -44,41 +44,27 @@
 
 (defun lotus-mode-line-reduce (percent)
   (interactive "Npercent: ")
-  (let* ((percent (or percent lotus-mode-line-reduce-percent))
-         (height (face-applied-attribute 'mode-line :height))
-         (percent-height (percent height percent)))
-    (when (and percent-height
-               (not (eq 'unspecified percent-height))
-               (not (= height 0))
-               (not (= percent-height 0)))
-      (set-face-attribute 'mode-line nil :height percent-height)
-      (set-face-attribute 'mode-line nil :width 'normal))))
+  (if (= (face-applied-attribute 'mode-line :height)
+         (face-applied-attribute 'default :height))
+      (let* ((percent (or percent lotus-mode-line-reduce-percent))
+             (height (face-applied-attribute 'mode-line :height))
+             (percent-height (percent height percent)))
+        (when (and percent-height
+                   (not (eq 'unspecified percent-height))
+                   (not (= height 0))
+                   (not (= percent-height 0)))
+          (set-face-attribute 'mode-line nil :height percent-height)
+          (set-face-attribute 'mode-line nil :width 'normal)))
+    (error "Already modeline is reduced, not doing anything")))
 
 (defun lotus-mode-line-reset ()
   (interactive)
   ;; (set-face-attribute 'mode-line nil :height 'unspecifed)
-  (set-face-attribute 'mode-line nil
-                      :height (face-attribute 'default :height)))
-
-;; (percent (face-attribute 'default :height) 90)
-
-;; (face-attribute 'mode-line :inherit)
-;; (face-attribute 'default :inherit)
-
-;; (face-applied-attribute 'mode-line :height)
-;; (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
-;; (lotus-mode-line-reset)
-
-
-;; (/ 72.00 90.0000)
-;; (/ (* 0.88 90.00) 72.00)
-;; (/ 72.00 0.88)
-;; (/ 8 7.000)
-;; (/ (+ 72 90) 2)
-
-
-;; (lotus-mode-line-reset)
-;; (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
+  (if (= (face-applied-attribute 'mode-line :height)
+         (face-applied-attribute 'default :height))
+      (error "Modeline is not modified, so not reseting it.")
+    (set-face-attribute 'mode-line nil
+                        :height (face-attribute 'default :height))))
 
 
 (defun lotus-powerline-setup-text-scale-factor ()
@@ -88,7 +74,7 @@
       (setq
        powerline-text-scale-factor text-scale-factor))))
 
-(defun lotus-powerline-setup ()
+(defun lotus-powerline-attrib-setup ()
   (interactive)
   (when (boundp 'powerline-scale)
     (unless (boundp 'powerline-scale-old)
@@ -102,10 +88,10 @@
       (setq
        powerline-scale              0.8
        powerline-height             10
-       powerline-text-scale-factor  nil ;; (lotus-powerline-setup-text-scale-factor)
+       powerline-text-scale-factor  nil ;; (lotus-powerline-attrib-setup-text-scale-factor)
        powerline-default-separator 'alternate))))
 
-(defun lotus-powerline-reset ()
+(defun lotus-powerline-attrib-reset ()
   (interactive)
   (when (boundp 'powerline-scale)
     (unless (boundp 'powerline-scale-old)
@@ -121,7 +107,17 @@
        powerline-height-old             nil
        powerline-text-scale-factor-old  nil
        powerline-default-separator-old  nil))))
+
 
+(defun lotus-powerline-setup ()
+  (interactive)
+  (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
+  (lotus-powerline-attrib-setup))
+
+(defun lotus-powerline-reset ()
+  (interactive)
+  (lotus-mode-line-reset)
+  (lotus-powerline-attrib-reset))
 
 
 (defun increase-font-size (size)

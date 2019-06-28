@@ -74,12 +74,10 @@ Each entry is either:
     :init
     (progn
       ;; ;; (lotus-mode-line-reset)
-      (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
       (lotus-powerline-setup))
     :defer t
     :config
     (progn
-      (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
       (lotus-powerline-setup))))
 
 (defun lotus-appearance/post-init-powerline-vim-theme ()
@@ -87,12 +85,10 @@ Each entry is either:
   (use-package powerline-vim-theme
     :init
     (progn
-      (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
       (lotus-powerline-setup))
     :defer t
     :config
     (progn
-      (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
       (lotus-powerline-setup))))
 
 ;; (defun lotus-appearance/init-PACKAGE ()

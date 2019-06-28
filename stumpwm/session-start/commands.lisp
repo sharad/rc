@@ -640,27 +640,36 @@
                    }'"))
 
 (define-key *root-map* (kbd "X") "refocus-conkeror")
+
 
 (stumpwm:defcommand sys-halt () ()
-  (run-shell-command "poweroff"))
+  (run-shell-command "systemctl poweroff"))
+
+(stumpwm:defcommand sys-poweroff () ()
+  (run-shell-command "systemctl poweroff"))
 
 (stumpwm:defcommand sys-suspend () ()
-  (run-shell-command "pmi action suspend"))
+  (run-shell-command "systemctl suspend"))
+
+(stumpwm:defcommand sys-suspend-then-hibernate () ()
+  (run-shell-command "systemctl suspend-then-hibernate"))
 
 (stumpwm:defcommand sys-hibernate () ()
-  (run-shell-command "pmi action hibernate"))
+  (run-shell-command "systemctl hibernate"))
 
 (stumpwm:defcommand sys-reboot () ()
-  (run-shell-command "reb00t"))
+  ;; (run-shell-command "reb00t")
+  (run-shell-command "systemctl reboot"))
+
 
 (stumpwm:defcommand start-wm-components () ()
- (message "started start-wm-components")
- (prog1
-     (run-shell-command
-      (concat
-       (getenv "HOME")
-       "/.rsetup/wmlogin/run"))
-   (message "done start-wm-components")))
+  (message "started start-wm-components")
+  (prog1
+      (run-shell-command
+       (concat
+        (getenv "HOME")
+        "/.rsetup/wmlogin/run"))
+    (message "done start-wm-components")))
 
 
 (stumpwm:defcommand start-wm-test-components () ()
