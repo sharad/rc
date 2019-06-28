@@ -276,25 +276,29 @@ pointing to it."
                                 force)
   (error "first argument should be of type (or occ-tree-collection occ-list-collection)"))
 
+;; FIND: what it mean by tsks collection-tree are same ?
 (cl-defmethod occ-collect-tsks ((collection occ-tree-collection)
                                 &optional
                                 force)
   (unless (occ-tree-collection-tree collection)
     (setf
      (occ-tree-collection-tree collection)
-     (occ-tree-tsk-build
-      #'(lambda ()
-          (or
-           (occ-make-tsk-at-point (occ-tsk-builder))
-           (make-occ-tree-tsk :name "empty tree tsk" :subtree nil)))
-      ;; TODO: note: only using first file of roots, add support for all files
-      (car (occ-tree-collection-roots collection)) 0)))
+     (mapcar
+      #'(lambda (file)
+          (occ-tree-tsk-build
+           #'(lambda ()
+               (or
+                (occ-make-tsk-at-point (occ-tsk-builder))
+                (funcall (occ-tsk-builder) :name "empty tree tsk" :subtree nil)))
+           file 0))
+      (occ-tree-collection-roots collection))))
 
   (occ-tree-collection-tree collection))
 
-
 ;; TODO: In list-tsk also add support for FILE tsk like in tree-tsk, whcih is
 ;; provided via (occ-tree-tsk-build) function
+;; guess it is already present.
+;; (org-map-entries) is org function it is not providing it.
 (cl-defmethod occ-collect-tsks ((collection occ-list-collection)
                                 force)
   (unless (occ-list-collection-list collection)
@@ -306,7 +310,7 @@ pointing to it."
                   (or
                    ;; (occ-make-tsk-at-point #'make-occ-list-tsk)
                    (occ-make-tsk-at-point (occ-tsk-builder))
-                   (make-occ-list-tsk :name "empty list tsk")))
+                   (funcall (occ-tsk-builder) :name "empty list tsk")))
               t
               (occ-list-collection-roots collection))))))
 
@@ -322,11 +326,16 @@ pointing to it."
              (delete-dups
               (let ((tsks (occ-collection collection))
                     (files '()))
-                (occ-mapc-tree-tsks
-                 #'(lambda (tsk args)
-                     (push (occ-tsk-file tsk) files))
-                 tsks
-                 nil)
+
+                (mapc
+                 #'(lambda (tsk)
+                     (occ-mapc-tree-tsks
+                      #'(lambda (tsk args)
+                          (push (occ-tsk-file tsk) files))
+                      tsk
+                      nil))
+                 tsks)
+
                 files)))))
   (occ-tree-collection-files collection))
 
@@ -349,10 +358,14 @@ pointing to it."
   (unless (occ-tree-collection-list collection)
     (let ((tsks (occ-collection collection))
           (tsk-list '()))
-      (occ-mapc-tree-tsks
-       #'(lambda (tsk args) (setf tsk-list (nconc tsk-list (list tsk))))
-       tsks
-       nil)
+      (mapc
+       #'(lambda (tsk)
+           (occ-mapc-tree-tsks
+            #'(lambda (subtsk args) (setf tsk-list (nconc tsk-list (list subtsk))))
+            tsk
+            nil))
+       tsks)
+
       (setf (occ-tree-collection-list collection)
             tsk-list)))
   (occ-tree-collection-list collection))

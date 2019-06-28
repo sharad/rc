@@ -70,3 +70,4 @@
 ** statistics addition
 
 ** caching ctxual-tsk or ctsk
+** Fast clocking/child clocking with property addition like fast property addition
