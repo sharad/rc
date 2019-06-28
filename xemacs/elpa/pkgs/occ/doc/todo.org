@@ -1,53 +1,66 @@
 
-* Helm goes into state where no key are defined so here is not way to come out excelt sending signal SIGUSR2
+* Bugs
+** Helm goes into state where no key are defined so here is not way to come out excelt sending signal SIGUSR2
 
-I had noticed this happens when another read through minibuuffer command also triggered
-in below case it is "Save the LSDB mpw ?"
+ I had noticed this happens when another read through minibuuffer command also triggered
+ in below case it is "Save the LSDB mpw ?"
 
-#+begin_src log
-Sending via mail...
-Mark set
-nnimap read 0k from localhost
-Mark set [4 times]
-Sending...done
-Deleting article /home/s/hell/.emacs.d/.cache/autoconfig/gnus/News/drafts/drafts/2 in drafts...
-Delay header missing for article 1
-C-g is undefined [2 times]
-C-a is undefined
-C-g is undefined [7 times]
-M-x is undefined
-ESC is undefined [11 times]
-<up> is undefined [4 times]
-<down> is undefined [4 times]
-<next> is undefined [4 times]
-<switch-frame> is undefined [2 times]
-<up> is undefined
-<switch-frame> is undefined
-<up> is undefined
-<switch-frame> is undefined
-<up> is undefined
-C-g is undefined [14 times]
-<switch-frame> is undefined
-ESC is undefined
-<switch-frame> is undefined
-ESC is undefined
-<switch-frame> is undefined
-ESC is undefined
-<switch-frame> is undefined
-ESC is undefined
-<switch-frame> is undefined
-ESC is undefined
-<switch-frame> is undefined
-ESC is undefined
-<switch-frame> is undefined
-<down> is undefined [6 times]
-Entering debugger...
-<down> is undefined [6 times]
-C-g is undefined
-Entering debugger...
-Back to top level
-Delay header missing for article 1
-Save the LSDB now? (y or n) y
-The LSDB was saved successfully.
+ #+begin_src log
+ Sending via mail...
+ Mark set
+ nnimap read 0k from localhost
+ Mark set [4 times]
+ Sending...done
+ Deleting article /home/s/hell/.emacs.d/.cache/autoconfig/gnus/News/drafts/drafts/2 in drafts...
+ Delay header missing for article 1
+ C-g is undefined [2 times]
+ C-a is undefined
+ C-g is undefined [7 times]
+ M-x is undefined
+ ESC is undefined [11 times]
+ <up> is undefined [4 times]
+ <down> is undefined [4 times]
+ <next> is undefined [4 times]
+ <switch-frame> is undefined [2 times]
+ <up> is undefined
+ <switch-frame> is undefined
+ <up> is undefined
+ <switch-frame> is undefined
+ <up> is undefined
+ C-g is undefined [14 times]
+ <switch-frame> is undefined
+ ESC is undefined
+ <switch-frame> is undefined
+ ESC is undefined
+ <switch-frame> is undefined
+ ESC is undefined
+ <switch-frame> is undefined
+ ESC is undefined
+ <switch-frame> is undefined
+ ESC is undefined
+ <switch-frame> is undefined
+ ESC is undefined
+ <switch-frame> is undefined
+ <down> is undefined [6 times]
+ Entering debugger...
+ <down> is undefined [6 times]
+ C-g is undefined
+ Entering debugger...
+ Back to top level
+ Delay header missing for article 1
+ Save the LSDB now? (y or n) y
+ The LSDB was saved successfully.
 
-#+end_src
+ #+end_src
+
+* Todos
+
+** Deep interaction for non to unnamed, unnammed to named, named to named etc
+
+** creation of task in file node
+
+** non tsk org entries
+
+** statistics addition
+
+** caching ctxual-tsk or ctsk
