@@ -69,7 +69,6 @@ Each entry is either:
 
 
 (defun lotus-appearance/init-powerline ()
-  (interactive)
   (use-package powerline
     :init
     (progn
@@ -81,7 +80,6 @@ Each entry is either:
       (lotus-powerline-setup))))
 
 (defun lotus-appearance/post-init-powerline-vim-theme ()
-  ;; (interactive)
   (use-package powerline-vim-theme
     :init
     (progn

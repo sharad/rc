@@ -41,9 +41,8 @@ URxvt_color*foreground: light grey
 !! Added Hindi fonts for dict -d hin-eng word, dict -d eng-hin word
 
 !! define([SETUP_fontsize],eval(SETUP_XWIDTH / 200))
-
 URxvt.font: \
-   xft:DejaVu Sans Mono:size=SETUP_fontsize:spacing=1,\
+   xft:DejaVu Sans Mono::style=Book:antialias=true:size=SETUP_fontsize:spacing=1,\
    xft:KacstNaskh:style=Regular:size=SETUP_fontsize:style=Regular:spacing=1,\
    xft:FreeSans:style=Bold:size=SETUP_fontsize:spacing=1,\
    xft:FreeSans:style=Regular:size=SETUP_fontsize:spacing=1,\
@@ -69,7 +68,8 @@ URxvt.font: \
    xft:Lohit Sindhi:style=Regular:size=SETUP_fontsize:spacing=1
 
 Urxvt.scaleHeight: 1.01
-
+URxvt.scaleHeight: 1.01
+URxvt*scaleHeight: 1.01
 
 
 !! URxvt.xftAntialias:      false

@@ -124,6 +124,17 @@
                                  (occ-tree-collection-list (occ-collection-object))))
 
 
+;; Debugger entered--Lisp error: (error "Capture template ‘nil’: Before first headline at position 1 in buffer CAPTURE-report.org<personal>")
+;;   signal(error ("Capture template ‘nil’: Before first headline at position 1 in buffer CAPTURE-report.org<personal>"))
+;;   error("Capture template `%s': %s" nil "Before first headline at position 1 in buffer CAPTURE-report.org<personal>")
+;;   org-capture-plus(entry (marker #<marker at 1 in report.org<personal>>) "*
+;;   MILESTONE %? %^g\n %i\n [%a]\n\n" :before-finalize (closure (marker) (let
+;;   ((tmptsk (occ-make-tsk marker))) (occ-props-edit (occ-make-ctsk-with tmptsk
+;;   ctx)) t)) :after-finalize (closure (marker) (let ((child-tsk (occ-make-tsk
+;;   marker))) (if child-tsk (progn (occ-induct-child tsk child-tsk) (if
+;;   clock-in-p (occ-try-clock-in (occ-build-ctxual-tsk-with child-tsk
+;;   ctx))))))) :empty-lines 1)
+
 (cl-defgeneric occ-capture (obj
                             &optional clock-in-p)
   "occ-capture")
@@ -141,15 +152,9 @@
   (let ((mrk (occ-tsk-marker obj)))
     (occ-capture mrk)))
 
-;; (cl-defmethod occ-capture ((obj occ-obj-ctx-tsk)
-;;                            &optional clock-in-p)
-;;   (let ((tsk        (occ-obj-tsk obj))
-;;         (ctx        (occ-obj-ctx obj)))
-;;     (occ-capture-with tsk ctx clock-in-p)))
-
 (cl-defmethod occ-capture ((obj occ-obj-ctx-tsk)
                            &optional clock-in-p)
-  (let* ((mrk      (occ-tsk-marker tsk))
+  (let* ((mrk      (occ-obj-marker obj))
          (template (occ-capture+-helm-select-template)))
     (when template
       (with-org-capture+ marker 'entry `(marker ,mrk) template '(:empty-lines 1)

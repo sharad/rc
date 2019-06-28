@@ -155,7 +155,7 @@ XTerm*VT100*font1: nil2
 !! https://superuser.com/a/867368
 !! https://wiki.archlinux.org/index.php/Xterm
 !! Search DejaVu
-XTerm.vt100.faceName: DejaVu Sans Mono:style=Book:antialias=false
+XTerm.vt100.faceName: DejaVu Sans Mono:style=Book:antialias=true
 XTerm.vt100.faceNameDoublesize: WenQuanYi WenQuanYi Bitmap Song
 XTerm.vt100.faceSize: 8
 XTerm.scaleHeight: 1.01
