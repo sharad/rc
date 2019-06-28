@@ -286,11 +286,15 @@ pointing to it."
       #'(lambda ()
           (or
            (occ-make-tsk-at-point (occ-tsk-builder))
-           (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of roots
+           (make-occ-tree-tsk :name "empty tree tsk" :subtree nil)))
+      ;; TODO: note: only using first file of roots, add support for all files
       (car (occ-tree-collection-roots collection)) 0)))
 
   (occ-tree-collection-tree collection))
 
+
+;; TODO: In list-tsk also add support for FILE tsk like in tree-tsk, whcih is
+;; provided via (occ-tree-tsk-build) function
 (cl-defmethod occ-collect-tsks ((collection occ-list-collection)
                                 force)
   (unless (occ-list-collection-list collection)

@@ -124,17 +124,6 @@
                                  (occ-tree-collection-list (occ-collection-object))))
 
 
-;; Debugger entered--Lisp error: (error "Capture template ‘nil’: Before first headline at position 1 in buffer CAPTURE-report.org<personal>")
-;;   signal(error ("Capture template ‘nil’: Before first headline at position 1 in buffer CAPTURE-report.org<personal>"))
-;;   error("Capture template `%s': %s" nil "Before first headline at position 1 in buffer CAPTURE-report.org<personal>")
-;;   org-capture-plus(entry (marker #<marker at 1 in report.org<personal>>) "*
-;;   MILESTONE %? %^g\n %i\n [%a]\n\n" :before-finalize (closure (marker) (let
-;;   ((tmptsk (occ-make-tsk marker))) (occ-props-edit (occ-make-ctsk-with tmptsk
-;;   ctx)) t)) :after-finalize (closure (marker) (let ((child-tsk (occ-make-tsk
-;;   marker))) (if child-tsk (progn (occ-induct-child tsk child-tsk) (if
-;;   clock-in-p (occ-try-clock-in (occ-build-ctxual-tsk-with child-tsk
-;;   ctx))))))) :empty-lines 1)
-
 (cl-defgeneric occ-capture (obj
                             &optional clock-in-p)
   "occ-capture")
@@ -160,17 +149,16 @@
          (template (occ-capture+-helm-select-template)))
     (when template
       (with-org-capture+ marker 'entry `(marker ,mrk) template '(:empty-lines 1)
-        (let ((tmptsk (occ-make-tsk marker)))
-          ;; (occ-props-edit-with tmptsk ctx)
-          (occ-props-edit (occ-build-ctsk-with tmptsk ctx))
-          ;; (occ-props-window-edit-with tsk ctx :timeout occ-idle-timeout)
+        (let* ((tmp-tsk  (occ-make-tsk marker))
+               (tmp-ctsk (occ-build-ctsk-with tmp-tsk ctx)))
+          (occ-props-edit tmp-ctsk)
           t)
-        (let ((child-tsk (occ-make-tsk marker)))
+        (let* ((child-tsk        (occ-make-tsk marker))
+               (child-ctxual-tsk (occ-build-ctxual-tsk-with child-tsk ctx)))
           (when child-tsk
             (occ-induct-child tsk child-tsk)
             (if clock-in-p
-                ;; (occ-try-clock-in-with child-tsk ctx)
-                (occ-try-clock-in (occ-build-ctxual-tsk-with child-tsk ctx)))))))))
+                (occ-try-clock-in child-ctxual-tsk))))))))
 
 
 (cl-defgeneric occ-procreate-child (obj)

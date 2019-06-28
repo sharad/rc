@@ -506,6 +506,8 @@
 
 
 ;;{{{ Notification
+#+notifications
+(progn
 (define-key stumpwm:*root-map* (kbd "F10") 'notifications:*notifications-map*)
-(define-key stumpwm:*root-map* (kbd "N")   'notifications:*notifications-map*)
+(define-key stumpwm:*root-map* (kbd "N")   'notifications:*notifications-map*))
 ;;}}}

@@ -57,8 +57,14 @@
 
 ** Deep interaction for non to unnamed, unnammed to named, named to named etc
 
-** creation of task in file node
+** CLOSED creation of task in file node
+   CLOSED: [2019-06-28 Fri 20:39]
+   :LOGBOOK:
+   - State "CLOSED"     from              [2019-06-28 Fri 20:39]
+   :END:
 
+** file list-tsk for list-tsk
+** multi file tree-tsk on top
 ** non tsk org entries
 
 ** statistics addition

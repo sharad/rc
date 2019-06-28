@@ -25,93 +25,91 @@
 
 
 
-
-
 (provide 'occ-tree)
 
 
-(progn ;; "tree api"
-  (defun tree-mapcar-nodes (subtreefn fn tree args)
-    "Tree mapcar return result for FN for all TREE nodes with ARGS, function SUBTREEFN require to find nonleaf node"
-    (list
-     (funcall fn tree args)
-     :subtree
-     (mapcar
-      #'(lambda (e)
-          (tree-mapcar-nodes subtreefn fn e args))
-      (funcall subtreefn tree))))
+
 
-  (defun tree-mapc-nodes (subtreefn fn tree args)
-    "Tree mapc run FN for all TREE nodes with ARGS, function SUBTREEFN require to find nonleaf node"
-    (funcall fn tree args)
-    (mapc
-     #'(lambda (e)
-         (tree-mapc-nodes subtreefn fn e args))
-     (funcall subtreefn tree)))
+;; tree api
+(defun tree-mapcar-nodes (subtreefn fn tree args)
+  "Tree mapcar return result for FN for all TREE nodes with ARGS, function SUBTREEFN require to find nonleaf node"
+  (list
+   (funcall fn tree args)
+   :subtree
+   (mapcar
+    #'(lambda (e)
+        (tree-mapcar-nodes subtreefn fn e args))
+    (funcall subtreefn tree))))
 
-  (defun tree-remove-if-not-nodes (subtreefn predicate tree args)
-    "Tree remove if return TREE with all node and its subtree removed if node return nil for PREDICATE, function SUBTREEFN require to find nonleaf node"
-    (if (funcall subtreefn tree)
-        (let ((rootele
-               (if (funcall predicate tree args) tree))
-              (subtree
-               (remove
-                nil
-                (mapcar
-                 #'(lambda (e)
-                     (tree-remove-if-not-nodes subtreefn predicate e args))
-                 (funcall subtreefn tree)))))
-          (if (or rootele subtree)
-              (plist-put tree :subtree subtree)))
-      (if (funcall predicate tree args) tree)))
+(defun tree-mapc-nodes (subtreefn fn tree args)
+  "Tree mapc run FN for all TREE nodes with ARGS, function SUBTREEFN require to find nonleaf node"
+  (funcall fn tree args)
+  (mapc
+   #'(lambda (e)
+       (tree-mapc-nodes subtreefn fn e args))
+   (funcall subtreefn tree)))
 
-  ;; (testing
-  ;;  (setq
-  ;;   testxx-remove
-  ;;   (tree-remove-if-not-tsks
-  ;;    #'(lambda (e) (eq (plist-get e :pre-blank) 4))
-  ;;    testxx))
+(defun tree-remove-if-not-nodes (subtreefn predicate tree args)
+  "Tree remove if return TREE with all node and its subtree removed if node return nil for PREDICATE, function SUBTREEFN require to find nonleaf node"
+  (if (funcall subtreefn tree)
+      (let ((rootele
+             (if (funcall predicate tree args) tree))
+            (subtree
+             (remove
+              nil
+              (mapcar
+               #'(lambda (e)
+                   (tree-remove-if-not-nodes subtreefn predicate e args))
+               (funcall subtreefn tree)))))
+        (if (or rootele subtree)
+            (plist-put tree :subtree subtree)))
+    (if (funcall predicate tree args) tree)))
 
-  ;;  (setq testxxmapcar
-  ;;        (tree-mapcar-nodes #'(lambda (tx) (plist-get tx :subtree))
-  ;;                           #'(lambda (tx) (plist-get tx :title))
-  ;;                           ;; testxx
-  ;;                           (car (plist-get testxx :subtree))
-  ;;                           ))
+;; (testing
+;;  (setq
+;;   testxx-remove
+;;   (tree-remove-if-not-tsks
+;;    #'(lambda (e) (eq (plist-get e :pre-blank) 4))
+;;    testxx))
 
-  ;;  (setq testxxmapc
-  ;;        (tree-mapc-nodes #'(lambda (tx) (plist-get tx :subtree))
-  ;;                         #'(lambda (tx) (plist-get tx :title))
-  ;;                         ;; testxx
-  ;;                         (car (plist-get testxx :subtree))
-  ;;                         )))
-  )
+;;  (setq testxxmapcar
+;;        (tree-mapcar-nodes #'(lambda (tx) (plist-get tx :subtree))
+;;                           #'(lambda (tx) (plist-get tx :title))
+;;                           ;; testxx
+;;                           (car (plist-get testxx :subtree))
+;;                           ))
 
+;;  (setq testxxmapc
+;;        (tree-mapc-nodes #'(lambda (tx) (plist-get tx :subtree))
+;;                         #'(lambda (tx) (plist-get tx :title))
+;;                         ;; testxx
+;;                         (car (plist-get testxx :subtree))
+;;                         )))
+
 
+(defun occ-tree-tsk-node-p (tx)
+  "Test org TX is org tsks tree non-leaf node"
+  (occ-get-property tx 'subtree))
 
-(progn
-  (defun occ-tree-tsk-node-p (tx)
-    "Test org TX is org tsks tree non-leaf node"
-    (occ-get-property tx 'subtree))
+(defun occ-tree-tsk-subtree (tx)
+  "Test org TX is org tsks tree non-leaf node"
+  (occ-get-property tx 'subtree))
 
-  (defun occ-tree-tsk-subtree (tx)
-    "Test org TX is org tsks tree non-leaf node"
-    (occ-get-property tx 'subtree))
+(defun occ-mapcar-tree-tsks (fn tree args)
+  "Tree mapcar return result for FN for all TREE nodes with ARGS"
+  (tree-mapcar-nodes
+   'occ-tree-tsk-subtree fn tree args))
 
-  (defun occ-mapcar-tree-tsks (fn tree args)
-    "Tree mapcar return result for FN for all TREE nodes with ARGS"
-    (tree-mapcar-nodes
-     'occ-tree-tsk-subtree fn tree args))
+(defun occ-mapc-tree-tsks (fn tree args)
+  "Tree mapc run FN for all TREE nodes with ARGS"
+  (tree-mapc-nodes
+   'occ-tree-tsk-subtree fn tree args))
 
-  (defun occ-mapc-tree-tsks (fn tree args)
-    "Tree mapc run FN for all TREE nodes with ARGS"
-    (tree-mapc-nodes
-     'occ-tree-tsk-subtree fn tree args))
-
-  (defun occ-remove-if-not-tree-tsks (fn tree args)
-    "Tree remove if return TREE with all node and its subtree removed if node return nil for PREDICATE"
-    (tree-remove-if-not-nodes
-     'occ-tree-tsk-subtree fn tree args)))
+(defun occ-remove-if-not-tree-tsks (fn tree args)
+  "Tree remove if return TREE with all node and its subtree removed if node return nil for PREDICATE"
+  (tree-remove-if-not-nodes
+   'occ-tree-tsk-subtree fn tree args))
+
 
 (defun occ-org-map-subheading (fun)
   "Call FUN for every heading underneath the current heading"
@@ -127,7 +125,10 @@
             (setf
              collection (nconc collection (list (funcall fun)))))))
     collection))
+
 
+;; TODO: ADD support for non existing file. and suppose it buffer is present but not file.
+;; should work with any changes
 (defun occ-tree-tsk-build (tsk-builder &optional file subtree-level)
   "Build recursive org tsks from org FILE (or current buffer) using TSK-BUILDER function e.g. occ-collect-tsk"
   (with-current-buffer (if file
@@ -163,36 +164,5 @@
                                                                             (or subtree-level 0)))))))))))
           (when sub-tree      (occ-set-property entry 'subtree sub-tree))
           entry)))))
-
-;; (defun occ-tree-tsk-build (tsk-builder &optional file)
-;;   "Build recursive org tsks from org FILE (or current buffer) using TSK-BUILDER function e.g. occ-collect-tsk"
-;;   (with-current-buffer (if file
-;;                            (find-file-noselect file)
-;;                          (current-buffer))
-;;     (if file (goto-char (point-min)))
-;;     (let ((entry (funcall tsk-builder)))
-;;       (when entry
-;;         (let* ((sub-tree
-;;                 (append
-;;                  (occ-org-map-subheading #'(lambda ()
-;;                                              (occ-tree-tsk-build tsk-builder nil)))
-;;                  (let ((subtree-file-prop (occ-get-property entry :SUBTREEFILE)))
-;;                    (when subtree-file-prop
-;;                      (let* ((file (if file file (buffer-file-name)))
-;;                             (subtree-file
-;;                              (if (and subtree-file-prop
-;;                                       (file-relative-name subtree-file-prop))
-;;                                  (expand-file-name subtree-file-prop
-;;                                                    (if file
-;;                                                        (file-name-directory file)
-;;                                                      default-directory))
-;;                                subtree-file)))
-;;                        (if (and
-;;                             subtree-file
-;;                             (file-readable-p subtree-file))
-;;                            (list
-;;                             (occ-tree-tsk-build tsk-builder subtree-file)))))))))
-;;           (when sub-tree      (occ-set-property entry 'subtree sub-tree))
-;;           entry)))))
-
+
 ;;; occ-tree.el ends here
