@@ -485,5 +485,13 @@
                   ;; (occ-debug :nodisplay full-msg)
                   (occ-message full-msg))))))
       (occ-debug :nodisplay "occ-clock-in-if-chg: not enough time passed."))))
+
+
+
+
+(cl-defmethod occ-try-clock-in-timeout ()
+  (let ((ctx             (occ-make-ctx-at-point))
+        (curr-ctxual-tsk (occ-current-ctxual-tsk ctx)))
+    ()))
 
 ;;; occ-clock.el ends here

@@ -44,7 +44,7 @@
 
 (defun occ-stats-aggregate (num &rest nums)
   (let ((nums (cons num nums)))
-    (reduce #'+ nums)))
+    (apply #'+ nums)))
 
 (defun occ-stats-mean (num &rest nums)
   (let ((nums (cons num nums)))
@@ -67,7 +67,7 @@
 (defun occ-stats-mode (num &rest nums)
   ;; https://stackoverflow.com/questions/6050033/elegant-way-to-count-items
   (let ((nums (cons num nums)))
-    (let ((nums-pair
+    (let ((num-pairs
            (reduce
             #'(lambda (r e)
                 (if (and r (= (caar r) e))
@@ -75,53 +75,65 @@
                      (cons (caar r) (1+ (cdar r)))
                      (cdr r))
                   (cons (cons e  1) r)))
-            (sort nums #'<)
+            (sort nums #'>)
             :initial-value nil)))
-      (let ((nums-pair
-             (sort nums-pair
+      (let ((num-pairs
+             (sort num-pairs
                    #'(lambda (a b)
                        (> (cdr a) (cdr b))))))
         (mapcar
          #'car
          (remove-if-not
-          #'(lambda (pair) (= (cdr pair)(cdar nums-pair)))
-          nums-pair))))))
+          #'(lambda (pair)
+              (= (cdr pair) (cdar num-pairs)))
+          num-pairs))))))
 
-(when nil
-  (reduce (lambda (r e)
-            (if (and r (= (caar r) e))
-                (cons
-                 (cons (caar r) (1+ (cdar r)))
-                 (cdr r))
-              (cons (cons e  1) r)))
-          (sort (list 1 1 2 3 3 3 4 5 5 5 ) #'<)
-          :initial-value nil)
-
-  (occ-stats-mode 1 1 2 3 3 3 4 5 5 5 5 5 5)
-
-  (sort
-   '((5 . 3) (4 . 1) (3 . 3) (2 . 1) (1 . 2)) #'(lambda (a b) (> (cdr a) (cdr b)))))
+(defun occ-stats-variance-internal (average &rest nums)
+  (if (> (length nums) 0)
+      (sqrt
+       (/
+        (apply #'occ-stats-aggregate
+               (mapcar #'(lambda (rank) (expt (- rank average) 2)) nums))
+        (length nums)))
+    0))
 
 (defun occ-stats-variance (num &rest nums)
   (let ((nums (cons num nums)))
-   (let ((average (occ-stats-average nums)))
-     (if (> (length nums) 0)
-         (sqrt
-          (/
-           (apply #'occ-stats-aggregate
-                  (mapcar #'(lambda (rank) (expt (- rank average) 2)) nums))
-           (length nums)))
-       0))))
+    (occ-stats-variance-internal (occ-stats-average nums)
+                                 nums)))
+
+(defun occ-stats-stddev-internal (average &rest nums)
+  (if (> (length nums) 0)
+      (sqrt
+       (/
+        (apply #'occ-stats-aggregate
+               (mapcar #'(lambda (rank) (expt (- rank average) 2)) nums))
+        (length nums)))
+    0))
 
 (defun occ-stats-stddev (num &rest nums)
   (let ((nums (cons num nums)))
-   (let ((average (occ-stats-average nums)))
-     (if (> (length nums) 0)
-         (sqrt
-          (/
-           (apply #'occ-stats-aggregate
-                  (mapcar #'(lambda (rank) (expt (- rank average) 2)) nums))
-           (length nums)))
-       0))))
+    (occ-stats-stddev-internal (occ-stats-average nums)
+                               nums)))
+
+
+(ert-deftest occ-test-stats-mode ()
+  (should (equal
+           '(3 5)
+           (occ-stats-mode 3 5 5 3 3 3 3 4 5 5 5 5 1 1 2 3)))
+  (should (equal
+           (sort
+            '((5 . 3) (4 . 1) (3 . 3) (2 . 1) (1 . 2)) #'(lambda (a b) (> (cdr a) (cdr b))))
+           '((5 . 3) (3 . 3) (1 . 2) (4 . 1) (2 . 1))))
+  (should (equal
+           (reduce (lambda (r e)
+                     (if (and r (= (caar r) e))
+                         (cons
+                          (cons (caar r) (1+ (cdar r)))
+                          (cdr r))
+                       (cons (cons e  1) r)))
+                   (sort (list 1 1 2 3 3 3 4 5 5 5 ) #'>)
+                   :initial-value nil)
+           '((1 . 2) (2 . 1) (3 . 3) (4 . 1) (5 . 3)))))
 
 ;;; occ-statistics.el ends here

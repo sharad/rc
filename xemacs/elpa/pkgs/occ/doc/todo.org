@@ -55,7 +55,11 @@
 
 * Todos
 
+** Launcher
+
 ** Deep interaction for non to unnamed, unnammed to named, named to named etc
+
+** statistics addition
 
 ** CLOSED creation of task in file node
    CLOSED: [2019-06-28 Fri 20:39]
@@ -63,15 +67,17 @@
    - State "CLOSED"     from              [2019-06-28 Fri 20:39]
    :END:
 
-** file list-tsk for list-tsk
+** CLOSED file list-tsk for list-tsk
+   CLOSED: [2019-06-29 Sat 13:56]
+   :LOGBOOK:
+   - State "CLOSED"     from              [2019-06-29 Sat 13:56]
+   :END:
 ** CLOSED multi file tree-tsk on top
    CLOSED: [2019-06-29 Sat 00:06]
    :LOGBOOK:
    - State "CLOSED"     from              [2019-06-29 Sat 00:06]
    :END:
 ** non tsk org entries
-
-** statistics addition
 
 ** caching ctxual-tsk or ctsk
 ** Fast clocking/child clocking with property addition like fast property addition

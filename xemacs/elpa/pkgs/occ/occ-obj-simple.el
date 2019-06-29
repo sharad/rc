@@ -194,7 +194,6 @@
               title)))))
 
 
-
 (cl-defgeneric occ-procreate-child-clock-in (obj)
   "occ-child-clock-in")
 
