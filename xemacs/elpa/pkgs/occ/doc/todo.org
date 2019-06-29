@@ -92,3 +92,5 @@
 
 ** caching ctxual-tsk or ctsk
 ** Fast clocking/child clocking with property addition like fast property addition
+** Resolve clock occ integration
+** Rich menu with many class todo info note etc for capture

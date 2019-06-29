@@ -35,6 +35,13 @@
 
 
 (defvar occ-global-tsk-collection-spec        nil)
+
+(defun occ-add-to-spec (file)
+  (interactive "Ffile: ")
+  (setq occ-global-tsk-collection-spec
+        (append occ-global-tsk-collection-spec (list file))))
+
+
 (defvar occ-global-tsk-collection             nil)
 (defvar occ-global-tsk-collection-change-hook nil
   "run when occ-global-tsk-collection-change-hook get changed.")
