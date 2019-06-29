@@ -26,6 +26,7 @@
 (provide 'occ-obj-accessor)
 
 
+(require 'occ-tsk.el)
 (require 'occ-print)
 (require 'occ-obj-ctor)
 (require 'occ-rank)
@@ -283,7 +284,8 @@ pointing to it."
   (unless (occ-tree-collection-tree collection)
     (setf
      (occ-tree-collection-tree collection)
-     (mapcar #'occ-tree-tsk-build (occ-tree-collection-roots collection))))
+     (mapcar #'occ-tree-tsk-build
+             (occ-tree-collection-roots collection))))
 
   (occ-tree-collection-tree collection))
 
@@ -292,20 +294,31 @@ pointing to it."
 ;; provided via (occ-tree-tsk-build) function
 ;; guess it is already present.
 ;; (org-map-entries) is org function it is not providing it.
+;; (cl-defmethod occ-collect-tsks ((collection occ-list-collection)
+;;                                 force)
+;;   (unless (occ-list-collection-list collection)
+;;     (setf
+;;      (occ-list-collection-list collection)
+;;      (remove nil
+;;              (org-map-entries
+;;               #'(lambda ()
+;;                   (or
+;;                    ;; (occ-make-tsk-at-point #'make-occ-list-tsk)
+;;                    (occ-make-tsk-at-point (occ-tsk-builder))
+;;                    (funcall (occ-tsk-builder) :name "empty list tsk")))
+;;               t
+;;               (occ-list-collection-roots collection))))))
+
 (cl-defmethod occ-collect-tsks ((collection occ-list-collection)
                                 force)
   (unless (occ-list-collection-list collection)
     (setf
      (occ-list-collection-list collection)
-     (remove nil
-             (org-map-entries
-              #'(lambda ()
-                  (or
-                   ;; (occ-make-tsk-at-point #'make-occ-list-tsk)
-                   (occ-make-tsk-at-point (occ-tsk-builder))
-                   (funcall (occ-tsk-builder) :name "empty list tsk")))
-              t
-              (occ-list-collection-roots collection))))))
+     (append
+      (mapcar #'occ-list-tsk-build
+              (occ-list-collection-roots collection)))))
+
+  (occ-list-collection-list collection))
 
 
 (cl-defmethod occ-collect-files ((collection occ-tree-collection)
