@@ -125,7 +125,7 @@
 
                        (def@ @@ :init ()
                          (@^:init)
-                         (@:message "@activity-base :init")
+                         (@:debug :warning "@activity-base :init")
                          (setf @:_occuredon (current-time)))
 
                        (def@ @@ :occuredon ()

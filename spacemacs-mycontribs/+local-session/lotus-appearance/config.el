@@ -55,14 +55,14 @@
                    (not (= percent-height 0)))
           (set-face-attribute 'mode-line nil :height percent-height)
           (set-face-attribute 'mode-line nil :width 'normal)))
-    (error "Already modeline is reduced, not doing anything")))
+    (lwarn 'lotus-spacemacs :warning "Already modeline is reduced, not doing anything")))
 
 (defun lotus-mode-line-reset ()
   (interactive)
   ;; (set-face-attribute 'mode-line nil :height 'unspecifed)
   (if (= (face-applied-attribute 'mode-line :height)
          (face-applied-attribute 'default :height))
-      (error "Modeline is not modified, so not reseting it.")
+      (lwarn 'lotus-spacemacs :warning "Modeline is not modified, so not reseting it.")
     (set-face-attribute 'mode-line nil
                         :height (face-attribute 'default :height))))
 
@@ -429,20 +429,14 @@
 
 
 (defvar lotus-dotspacemacs-default-font-list
-  '(("DejaVu Sans Mono:style=Book:size=7.5:antialias=true" :size 9 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
+  '(("DejaVu Sans Mono:style=Book:antialias=true" :size 10 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
     ("DejaVu Sans Mono:size=8:antialias=true" :size 9 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
     ("DejaVu Sans Mono" :size 9 :weight normal :width normal :powerline-scale 1.1)
     ("Source Code Pro:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
     ("Source Code Pro" :size 9 :weight normal :width normal :powerline-scale 1.1)))
 
 (setq
- dotspacemacs-default-font '("DejaVu Sans Mono:style=Book:size=7.5:antialias=true"
-                             :size 9
-                             :weight normal
-                             :width  normal
-                             :powerline-scale 0.8
-                             :powerline-text-scale-factor 0.5
-                             :powerline-default-separator 'curve))
+ dotspacemacs-default-font (car lotus-dotspacemacs-default-font-list))
 (spacemacs/set-default-font dotspacemacs-default-font)
 
 (defun lotus-set-default-face (font)
