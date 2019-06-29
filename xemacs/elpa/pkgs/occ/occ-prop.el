@@ -92,27 +92,38 @@
 (cl-defgeneric occ-properties-to-edit (obj)
   "occ-properties-to-edit")
 
+(cl-defgeneric occ-properties-to-inherit (obj)
+  "occ-properties-to-inherit")
+
 (cl-defgeneric occ-properties-to-calculate-rank (obj)
   "occ-properties-to-calculate-rank")
 
 
 (cl-defmethod occ-properties-to-edit ((obj occ-tsk))
-  (occ-match-prop-method-args obj))
+  (cl-method-param-case
+   '(occ-readprop-elem-from-user (`(occ-tsk (eql ,val)) val))))
 
 (cl-defmethod occ-properties-to-edit ((obj occ-obj-ctx-tsk))
-  (occ-match-prop-method-args obj))
+  (cl-method-sigs-matched-arg
+   ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
+   '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))
+   '(occ-get-property  (`(occ-ctx (eql ,val)) val))
+   (occ-obj-ctx obj)))
 
 
-;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-tsk))
-;;   (let ((class 'occ-tsk))
-;;     (cl-method-param-case '(occ-rankprop (`(occ-tsk (eql ,val)) val)))))
 
-;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-ctx-tsk))
-;;   (let ((tsk (occ-obj-tsk obj))
-;;         (ctx (occ-obj-ctx obj)))
-;;     (let ((class 'occ-obj-ctx-tsk))
-;;       (cl-method-param-case '(occ-rankprop (`(occ-obj-ctx-tsk (eql ,val)) val))))))
+(cl-defmethod occ-properties-to-inherit ((obj null))
+  (cl-method-param-case
+   '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))))
 
+(cl-defmethod occ-properties-to-inherit ((obj occ-tsk))
+  (cl-method-param-case
+   '(occ-readprop-elem-from-user (`(occ-tsk (eql ,val)) val))))
+
+(cl-defmethod occ-properties-to-inherit ((obj occ-obj-ctx-tsk))
+  (cl-method-param-case
+   '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))))
+
 (cl-defmethod occ-properties-to-calcuate-rank ((obj symbol))
   (let ((class obj))
     (let ((exclass (list '\` `(,class (eql ,'(\, val))))))

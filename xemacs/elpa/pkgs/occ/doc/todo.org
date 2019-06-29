@@ -65,6 +65,13 @@
 
 ** statistics addition
 
+*** CLOSED Functions
+    CLOSED: [2019-06-29 Sat 22:12]
+    :LOGBOOK:
+    - State "CLOSED"     from              [2019-06-29 Sat 22:12]
+    :END:
+
+*** Application
 ** CLOSED creation of task in file node
    CLOSED: [2019-06-28 Fri 20:39]
    :LOGBOOK:

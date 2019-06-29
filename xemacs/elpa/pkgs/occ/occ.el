@@ -1,7 +1,7 @@
 ;;; occ.el --- occ               -*- lexical-binding: t; -*-
 ;; Copyright (C) 2016  sharad
 
-;; Author: sharad <sh4r4d _at_ _G-mail_>
+;; Author: sharad <>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -30,6 +30,7 @@
 
 
 (require 'occ-main)
+(require 'occ-commands)
 (require 'occ-test)
 
 
