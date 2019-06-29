@@ -576,14 +576,14 @@
   (package-initialize)
 
   ;;   (font-family-list)
-  (setq
-   dotspacemacs-default-font '("DejaVu Sans Mono:size=8:antialias=true"
-                               :size 9
-                               :weight normal
-                               :width normal
-                               :powerline-scale 0.8
-                               :powerline-text-scale-factor 0.5
-                               :powerline-default-separator 'curve))
+  ;; (setq
+  ;;  dotspacemacs-default-font '("DejaVu Sans Mono:size=8:antialias=true"
+  ;;                              :size 9
+  ;;                              :weight normal
+  ;;                              :width normal
+  ;;                              :powerline-scale 0.8
+  ;;                              :powerline-text-scale-factor 0.5
+  ;;                              :powerline-default-separator 'curve))
   ;; (spacemacs/set-default-font dotspacemacs-default-font)
 
   (when nil

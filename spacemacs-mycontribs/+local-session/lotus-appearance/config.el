@@ -429,17 +429,20 @@
 
 
 (defvar lotus-dotspacemacs-default-font-list
-  '(("DejaVu Sans Mono:size=8:antialias=true" :size 9 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
+  '(("DejaVu Sans Mono:style=Book:size=7.5:antialias=true" :size 9 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
+    ("DejaVu Sans Mono:size=8:antialias=true" :size 9 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
     ("DejaVu Sans Mono" :size 9 :weight normal :width normal :powerline-scale 1.1)
     ("Source Code Pro:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
     ("Source Code Pro" :size 9 :weight normal :width normal :powerline-scale 1.1)))
 
 (setq
- dotspacemacs-default-font '("DejaVu Sans Mono:size=8:antialias=true"
+ dotspacemacs-default-font '("DejaVu Sans Mono:style=Book:size=7.5:antialias=true"
                              :size 9
                              :weight normal
-                             :width normal
-                             :powerline-scale 1.1))
+                             :width  normal
+                             :powerline-scale 0.8
+                             :powerline-text-scale-factor 0.5
+                             :powerline-default-separator 'curve))
 (spacemacs/set-default-font dotspacemacs-default-font)
 
 (defun lotus-set-default-face (font)

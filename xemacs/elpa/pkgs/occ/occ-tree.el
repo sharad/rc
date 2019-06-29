@@ -28,8 +28,6 @@
 (provide 'occ-tree)
 
 
-
-
 ;; tree api
 (defun tree-mapcar-nodes (subtreefn fn tree args)
   "Tree mapcar return result for FN for all TREE nodes with ARGS, function SUBTREEFN require to find nonleaf node"
@@ -129,40 +127,92 @@
 
 ;; TODO: ADD support for non existing file. and suppose it buffer is present but not file.
 ;; should work with any changes
-(defun occ-tree-tsk-build (tsk-builder &optional file subtree-level)
+(defun occ-tree-tsk-build (&optional
+                           file
+                           tsk-builder
+                           subtree-level)
   "Build recursive org tsks from org FILE (or current buffer) using TSK-BUILDER function e.g. occ-collect-tsk"
-  (with-current-buffer (if file
-                           (find-file-noselect file)
-                         (current-buffer))
-    (if file (goto-char (point-min)))
-    (let ((entry         (funcall tsk-builder))
-          (subtree-level (if subtree-level subtree-level 0)))
-      (when (numberp subtree-level)
-        (occ-set-property entry 'subtree-level subtree-level))
-      (cl-assert (numberp subtree-level))
-      (when entry
-        (let* ((sub-tree
-                (append
-                 (occ-org-map-subheading #'(lambda ()
-                                             (occ-tree-tsk-build tsk-builder nil subtree-level)))
-                 (let ((subtree-file-prop (occ-get-property entry :SUBTREEFILE)))
-                   (when subtree-file-prop
-                     (let* ((file (if file file (buffer-file-name)))
-                            (subtree-file
-                             (if (and subtree-file-prop
-                                      (file-relative-name subtree-file-prop))
-                                 (expand-file-name subtree-file-prop
-                                                   (if file
-                                                       (file-name-directory file)
-                                                     default-directory))
-                               subtree-file)))
-                       (if (and
-                            subtree-file
-                            (file-readable-p subtree-file))
-                           (list
-                            (occ-tree-tsk-build tsk-builder subtree-file (+ (or (occ-get-property entry 'level) 0)
-                                                                            (or subtree-level 0)))))))))))
-          (when sub-tree      (occ-set-property entry 'subtree sub-tree))
-          entry)))))
+  (let ((subtree-level (or subtree-level 0))
+        (tsk-builder   (or tsk-builder #'occ-make-tsk-at-point)))
+   (with-current-buffer (if file
+                            (find-file-noselect file)
+                          (current-buffer))
+     (if file (goto-char (point-min)))
+     (let ((entry         (funcall tsk-builder))
+           (subtree-level (if subtree-level subtree-level 0)))
+       (when (numberp subtree-level)
+         (occ-set-property entry 'subtree-level subtree-level))
+       (cl-assert (numberp subtree-level))
+       (when entry
+         (let* ((sub-tree
+                 (append
+                  (occ-org-map-subheading #'(lambda ()
+                                              (occ-tree-tsk-build nil tsk-builder subtree-level)))
+                  (let ((subtree-file-prop (occ-get-property entry :SUBTREEFILE)))
+                    (when subtree-file-prop
+                      (let* ((file (if file file (buffer-file-name)))
+                             (subtree-file
+                              (if (and subtree-file-prop
+                                       (file-relative-name subtree-file-prop))
+                                  (expand-file-name subtree-file-prop
+                                                    (if file
+                                                        (file-name-directory file)
+                                                      default-directory))
+                                subtree-file)))
+                        (if (and
+                             subtree-file
+                             (file-readable-p subtree-file))
+                            (list
+                             (occ-tree-tsk-build subtree-file
+                                                 tsk-builder
+                                                 (+ (or (occ-get-property entry 'level) 0)
+                                                    (or subtree-level 0)))))))))))
+           (when sub-tree      (occ-set-property entry 'subtree sub-tree))
+           entry))))))
 
+
+
+(defun occ-list-tsk-build (&optional
+                           file
+                           tsk-builder
+                           subtree-level)
+  "Build recursive org tsks from org FILE (or current buffer) using TSK-BUILDER function e.g. occ-collect-tsk"
+  (let ((subtree-level (or subtree-level 0))
+        (tsk-builder   (or tsk-builder #'occ-make-tsk-at-point)))
+   (with-current-buffer (if file
+                            (find-file-noselect file)
+                          (current-buffer))
+     (if file (goto-char (point-min)))
+     (let ((entry         (funcall tsk-builder))
+           (subtree-level (if subtree-level subtree-level 0)))
+       (when (numberp subtree-level)
+         (occ-set-property entry 'subtree-level subtree-level))
+       (cl-assert (numberp subtree-level))
+       (when entry
+         (let* ((sub-tree
+                 (append
+                  (occ-org-map-subheading #'(lambda ()
+                                              (occ-tree-tsk-build nil tsk-builder subtree-level)))
+                  (let ((subtree-file-prop (occ-get-property entry :SUBTREEFILE)))
+                    (when subtree-file-prop
+                      (let* ((file (if file file (buffer-file-name)))
+                             (subtree-file
+                              (if (and subtree-file-prop
+                                       (file-relative-name subtree-file-prop))
+                                  (expand-file-name subtree-file-prop
+                                                    (if file
+                                                        (file-name-directory file)
+                                                      default-directory))
+                                subtree-file)))
+                        (if (and
+                             subtree-file
+                             (file-readable-p subtree-file))
+                            (list
+                             (occ-tree-tsk-build subtree-file
+                                                 tsk-builder
+                                                 (+ (or (occ-get-property entry 'level) 0)
+                                                    (or subtree-level 0)))))))))))
+           (when sub-tree      (occ-set-property entry 'subtree sub-tree))
+           entry))))))
+
 ;;; occ-tree.el ends here

@@ -283,17 +283,10 @@ pointing to it."
   (unless (occ-tree-collection-tree collection)
     (setf
      (occ-tree-collection-tree collection)
-     (mapcar
-      #'(lambda (file)
-          (occ-tree-tsk-build
-           #'(lambda ()
-               (or
-                (occ-make-tsk-at-point (occ-tsk-builder))
-                (funcall (occ-tsk-builder) :name "empty tree tsk" :subtree nil)))
-           file 0))
-      (occ-tree-collection-roots collection))))
+     (mapcar #'occ-tree-tsk-build (occ-tree-collection-roots collection))))
 
   (occ-tree-collection-tree collection))
+
 
 ;; TODO: In list-tsk also add support for FILE tsk like in tree-tsk, whcih is
 ;; provided via (occ-tree-tsk-build) function
