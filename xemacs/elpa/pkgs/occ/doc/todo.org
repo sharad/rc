@@ -64,7 +64,11 @@
    :END:
 
 ** file list-tsk for list-tsk
-** multi file tree-tsk on top
+** CLOSED multi file tree-tsk on top
+   CLOSED: [2019-06-29 Sat 00:06]
+   :LOGBOOK:
+   - State "CLOSED"     from              [2019-06-29 Sat 00:06]
+   :END:
 ** non tsk org entries
 
 ** statistics addition
