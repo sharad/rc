@@ -38,8 +38,9 @@
 
 (defun occ-add-to-spec (file)
   (interactive "Ffile: ")
-  (setq occ-global-tsk-collection-spec
-        (append occ-global-tsk-collection-spec (list file))))
+  (unless (memq file (cdr occ-global-tsk-collection-spec))
+    (setq occ-global-tsk-collection-spec
+          (append occ-global-tsk-collection-spec (list file)))))
 
 
 (defvar occ-global-tsk-collection             nil)
@@ -157,6 +158,10 @@
                             &optional builder)
   (occ-debug :debug "current pos %s" (point-marker))
   (occ-make-tsk (point-marker) builder))
+
+(cl-defmethod occ-make-tsk ((obj occ-tsk)
+                            &optional builder)
+  obj)
 
 
 (cl-defmethod occ-make-ctx-at-point (&optional mrk)
@@ -192,6 +197,9 @@
 
 (cl-defmethod occ-make-ctx ((obj null))
   (occ-make-ctx-at-point (point-marker)))
+
+(cl-defmethod occ-make-ctx ((obj occ-ctx))
+  obj)
 
 
 (cl-defgeneric occ-make-ctsk-with (tsk ctx)
@@ -205,9 +213,8 @@
    :tsk     tsk
    :ctx     ctx))
 
-(cl-defmethod occ-build-ctsk-with ((tsk occ-tsk) ;ctor
-                                   (ctx occ-ctx))
-  (occ-make-ctsk-with tsk ctx))
+(cl-defmethod occ-make-ctsk ((obj occ-ctsk))
+  obj)
 
 (cl-defmethod occ-make-ctsk ((obj occ-ctxual-tsk))
   ;; use occ-build-ctsk-with
@@ -218,13 +225,12 @@
      :tsk     tsk
      :ctx     ctx)))
 
+(cl-defmethod occ-build-ctsk-with ((tsk occ-tsk) ;ctor
+                                   (ctx occ-ctx))
+  (occ-make-ctsk-with tsk ctx))
+
 (cl-defmethod occ-build-ctsk ((obj occ-ctxual-tsk))
   (occ-make-ctsk obj))
-
-
-(cl-defmethod occ-make-ctsk ((obj occ-ctsk))
-  ;; use occ-build-ctsk-with
-  obj)
 
 (cl-defmethod occ-build-ctsk ((obj occ-ctsk))
   obj)
@@ -261,15 +267,15 @@
      :ctx     ctx
      :rank    rank)))
 
+(cl-defmethod occ-make-ctxual-tsk ((obj ctxual-tsk)
+                                   &optional
+                                   rank)
+  obj)
+
 (cl-defmethod occ-build-ctxual-tsk ((obj occ-ctsk)
                                     &optional
                                     rank)
   (occ-make-ctxual-tsk obj rank))
-
-(cl-defmethod occ-make-ctxual-tsk ((obj occ-ctxual-tsk)
-                                   &optional
-                                   rank)
-  obj)
 
 (cl-defmethod occ-build-ctxual-tsk ((obj occ-ctxual-tsk)
                                     &optional
