@@ -55,7 +55,11 @@
 
 * Todos
 
-** Launcher
+** CLOSED Launcher
+   CLOSED: [2019-06-29 Sat 22:07]
+   :LOGBOOK:
+   - State "CLOSED"     from              [2019-06-29 Sat 22:07]
+   :END:
 
 ** Deep interaction for non to unnamed, unnammed to named, named to named etc
 
