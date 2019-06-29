@@ -87,12 +87,13 @@
                         retval-ctx-tsk
                         (occ-format (occ-return-get-value retval-ctx-tsk) 'capitalize)
                         (occ-return-get-label retval-ctx-tsk))
-      (when (and
-             (occ-return-in-labels-p retval-ctx-tsk occ-return-select-label)
-             (occ-return-get-value retval-ctx-tsk))
-        (prog1
-            (occ-return-get-value retval-ctx-tsk)
-          (occ-debug-uncond "occ-helm-list-debug-select((obj occ-ctx)): No selection"))))))
+      (if (and
+           (occ-return-in-labels-p retval-ctx-tsk occ-return-select-label)
+           (occ-return-get-value retval-ctx-tsk))
+          (let ((ctsk     (occ-return-get-value retval-ctx-tsk))
+                (launcher (cdr (assoc (completing-read "Action: " action) action))))
+            (funcall launcher ctsk))
+        (occ-debug-uncond "occ-helm-list-debug-select((obj occ-ctx)): No selection")))))
 
 (defun occ-helm-list-launch (ctx)
   (interactive
@@ -104,23 +105,25 @@
         (action-transformer #'(lambda (action candidate)
                                 (occ-helm-intractive-command-actions)))
         (timeout            occ-idle-timeout))
-     (let ((returned-ctsk
-            (occ-helm-select ctx
-                             :filters            filters
-                             :builder            builder
-                             :return-transform   return-transform
-                             :action             action
-                             :action-transformer action-transformer
-                             :timeout            timeout)))
-       (occ-debug-uncond "occ-helm-list-launch((obj occ-ctx)): selected  returned-ctsk=%s ret-label=%s value=%s"
-                         returned-ctsk
-                         (occ-return-in-labels-p returned-ctsk occ-return-select-label)
-                         (occ-format (occ-return-get-value returned-ctsk)))
-       (if (occ-return-in-labels-p returned-ctsk ;TODO: should return t if action were done than select[=identity] ;; occ-return-label
-                                   occ-return-select-label)
-           (let ((ctsk     (occ-return-get-value returned-ctsk))
-                 (launcher (cdr (assoc (completing-read "Action: " action) action))))
-             (funcall launcher ctsk))))))
+    (let ((retval-ctx-tsk (occ-helm-select ctx
+                                           :filters            filters
+                                           :builder            builder
+                                           :return-transform   return-transform
+                                           :action             action
+                                           :action-transformer action-transformer
+                                           :timeout            timeout)))
+       (occ-debug-uncond "occ-helm-list-debug-select((obj occ-ctx)): selected original: %s, retval: %s with label %s"
+                         retval-ctx-tsk
+                         (occ-format (occ-return-get-value retval-ctx-tsk) 'capitalize)
+                         (occ-return-get-label retval-ctx-tsk))
+       (if (and
+            (occ-return-in-labels-p retval-ctx-tsk occ-return-select-label)
+            (occ-return-get-value retval-ctx-tsk))
+           (let* ((action      (occ-helm-intractive-launch-actions))
+                  (ctx-tsk     (occ-return-get-value retval-ctx-tsk))
+                  (launcher    (cdr (assoc (completing-read "Action: " action) action))))
+             (funcall launcher ctx-tsk))
+         (occ-debug-uncond "occ-helm-list-debug-select((obj occ-ctx)): No selection")))))
 
 
 ;;;###autoload

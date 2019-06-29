@@ -65,6 +65,7 @@
 
   (setq occ-helm-actions-plist nil)
 
+  (occ-helm-action-add :ignore                   "Ignore"                   #'ignore)
   (occ-helm-action-add :identity                 "Select"                   #'identity)
   (occ-helm-action-add :clock-in                 "Clock-in"                 #'occ-clock-in)
   (occ-helm-action-add :try-clock-in             "Try Clock-in"             #'occ-try-clock-in)
@@ -88,6 +89,18 @@
 
 (defun occ-helm-intractive-command-actions ()
   (occ-helm-actions-get :try-clock-in
+                        :procreate-child
+                        :procreate-child-clock-in
+                        :proprty-window-edit
+                        :try-clock-in
+                        :goto
+                        :rank
+                        :tsk))
+
+(defun occ-helm-intractive-launch-actions ()
+  (occ-helm-actions-get :ignore
+                        :identity
+                        :try-clock-in
                         :procreate-child
                         :procreate-child-clock-in
                         :proprty-window-edit
@@ -230,9 +243,8 @@
                              :action             action
                              :action-transformer action-transformer
                              :timeout            timeout)))
-    (when (occ-obj-ctx-tsk-p ctx-tsk)
-      (occ-debug :debug "Selected ctxual-tsk %s" (occ-format ctx-tsk 'capitalize))
-      ctx-tsk)))
+    (occ-debug :debug "Selected ctxual-tsk %s" (occ-format ctx-tsk 'capitalize))
+    ctx-tsk))
 
 
 (defun occ-helm-select-XYZ (obj
