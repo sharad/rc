@@ -28,7 +28,7 @@
 
 
 (require 'occ-tree)
-(require 'occ-ctor)
+(require 'occ-obj-ctor)
 
 
 (defun occ-tree-tsk-node-p (tx)

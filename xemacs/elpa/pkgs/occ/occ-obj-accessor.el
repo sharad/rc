@@ -26,7 +26,7 @@
 (provide 'occ-obj-accessor)
 
 
-(require 'occ-tsk.el)
+(require 'occ-tsk)
 (require 'occ-print)
 (require 'occ-obj-ctor)
 (require 'occ-rank)
