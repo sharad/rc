@@ -27,6 +27,7 @@
 (provide 'occ-commands)
 
 
+(require 'occ)
 (require 'occ-main)
 (require 'occ-obj-utils)
 
@@ -275,6 +276,7 @@
   (interactive)
   (occ-debug :debug "occ-insinuate: begin")
   (occ-message "occ-insinuate: begin")
+  (occ-initialize)
   (progn
     (setq occ-global-tsk-collection        nil)
     ;; (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)
@@ -298,6 +300,7 @@
   (interactive)
   (occ-debug :debug "occ-uninsinuate: begin")
   (occ-message "occ-uninsinuate: begin")
+  (occ-uninitialize)
   (progn
     (setq occ-global-tsk-collection            nil)
     ;; (setq buffer-list-update-hook nil)

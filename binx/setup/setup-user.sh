@@ -115,7 +115,7 @@ DEB_PKG_LANG_HASKELL="ghc alex happy haddock hlint"
 # https://hostpresto.com/community/tutorials/how-to-install-erlang-on-ubuntu-16-04/
 DEB_PKG_LANG_ERLANG="elixir esl-erlang"
 # https://askubuntu.com/questions/77657/how-to-enable-arabic-support-in-gnome-terminal
-DEB_PKG_LANGUAGE="bicon libfribidi0 libfribidi-dev"
+DEB_PKG_LANGUAGE="dict dict-freedict-eng-hin bicon libfribidi0 libfribidi-dev"
 
 PY_PIP_PKG="termdown "
 NODE_PKG="tern "

@@ -111,8 +111,12 @@
 
 (defun lotus-powerline-setup ()
   (interactive)
+  (setq
+   dotspacemacs-default-font (car lotus-dotspacemacs-default-font-list))
+  (spacemacs/set-default-font dotspacemacs-default-font)
   (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
-  (lotus-powerline-attrib-setup))
+  (lotus-powerline-attrib-setup)
+  (set-default-face-height-by-resolution))
 
 (defun lotus-powerline-reset ()
   (interactive)
@@ -428,16 +432,16 @@
           #'(lambda (frame) (set-default-face-height-by-resolution)) t)
 
 
-(defvar lotus-dotspacemacs-default-font-list
-  '(("DejaVu Sans Mono:style=Book:antialias=true" :size 11 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
-    ("DejaVu Sans Mono:size=8:antialias=true" :size 9 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
-    ("DejaVu Sans Mono" :size 9 :weight normal :width normal :powerline-scale 1.1)
-    ("Source Code Pro:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
-    ("Source Code Pro" :size 9 :weight normal :width normal :powerline-scale 1.1)))
-
-(setq
- dotspacemacs-default-font (car lotus-dotspacemacs-default-font-list))
-(spacemacs/set-default-font dotspacemacs-default-font)
+(progn
+  (setq lotus-dotspacemacs-default-font-list
+        '(("DejaVu Sans Mono:style=Book:antialias=true" :size 10 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
+          ("DejaVu Sans Mono:size=8:antialias=true" :size 9 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
+          ("DejaVu Sans Mono" :size 9 :weight normal :width normal :powerline-scale 1.1)
+          ("Source Code Pro:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
+          ("Source Code Pro" :size 9 :weight normal :width normal :powerline-scale 1.1)))
+  (setq
+   dotspacemacs-default-font (car lotus-dotspacemacs-default-font-list))
+  (spacemacs/set-default-font dotspacemacs-default-font))
 
 (defun lotus-set-default-face (font)
   (interactive
@@ -448,5 +452,4 @@
   (setq dotspacemacs-default-font font)
   (spacemacs/set-default-font font))
 
-
 ;;; config.el ends here

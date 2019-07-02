@@ -164,6 +164,9 @@
   obj)
 
 
+(cl-defgeneric occ-make-ctx (obj)
+  "occ-make-ctx")
+
 (cl-defmethod occ-make-ctx-at-point (&optional mrk)
   (let* ((mrk (or mrk (point-marker)))
          (buff (marker-buffer mrk))
@@ -183,9 +186,6 @@
                :file file
                :buffer buff)))
     ctx))
-
-(cl-defgeneric occ-make-ctx (obj)
-  "occ-make-ctx")
 
 (cl-defmethod occ-make-ctx ((obj buffer))
   (let ((mrk (make-marker)))
@@ -267,7 +267,7 @@
      :ctx     ctx
      :rank    rank)))
 
-(cl-defmethod occ-make-ctxual-tsk ((obj ctxual-tsk)
+(cl-defmethod occ-make-ctxual-tsk ((obj occ-ctxual-tsk)
                                    &optional
                                    rank)
   obj)

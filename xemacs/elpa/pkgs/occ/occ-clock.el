@@ -326,6 +326,7 @@
                 :action-transformer action-transformer
                 :timeout            timeout))
 
+
 ;; BUG: solve it.
 ;; Debugger entered--Lisp error: (error "Marker points into wrong buffer" #<marker at 28600 in report.org>)
 ;;   comment-region-default(#<marker at 28600 in report.org> #<marker (moves after insertion) at 28600 in report.org> nil)
@@ -341,7 +342,6 @@
 
 (defun occ-clock-out ()
   (error "Implement it."))
-
 
 
 (defcustom *occ-last-buff-sel-time*            (current-time) "*occ-last-buff-sel-time*")
@@ -366,12 +366,7 @@
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
     (occ-debug-uncond "occ-clock-in-if-not((obj occ-ctx)): begin")
-    (if (or
-         (occ-clock-marker-unnamed-clock-p)
-         ;; TODO: BUG: Here provide option to user in case of non-unnamed tsk to
-         ;; increase time prop or other prop or continue to other clock. or
-         ;; force checkout for clock.
-         (not (occ-associable-p (occ-current-ctxual-tsk ctx))))
+    (if (occ-clock-unassociated-p (occ-make-ctx-at-point))
         (prog1                ;current clock is not matching
             t
           (occ-debug :debug
@@ -421,6 +416,7 @@
         (occ-debug :debug
                    "occ-clock-in-if-not: Current tsk already associate to %s"
                    (occ-format ctx 'captilize))))))
+;; occ-clock-in-if-not
 
 (defvar occ-clock-in-ctx-auto-select-if-only t)
 
@@ -438,19 +434,14 @@
          (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
          (timeout            (or timeout occ-idle-timeout)))
     (occ-debug-uncond "occ-clock-in-if-chg((obj occ-ctx)): begin")
-    (if (>
-         (float-time (time-since *occ-last-buff-sel-time*))
-         *occ-tsk-current-ctx-time-interval*)
-        (let* ((buff (occ-ctx-buffer ctx)))
+    (if (occ-consider-for-clockin-in-p)
+        (progn
+
           (setq *occ-tsk-current-ctx* ctx)
-          (occ-debug-uncond "occ-clock-in-if-chg((obj occ-ctx)): pass1")
-          (if (and
-               (occ-chgable-p)
-               buff (buffer-live-p buff)
-               (not (minibufferp buff))
-               (not (ignore-p buff))
-               (not              ;BUG: Reconsider whether it is catching case after some delay.
-                (equal *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
+          ;; (occ-debug-uncond "occ-clock-in-if-chg((obj occ-ctx)): pass1")
+
+          (if (occ-try-to-clock-in-p *occ-tsk-current-ctx*
+                                     *occ-tsk-previous-ctx*)
               (when (occ-clock-in-if-not ctx
                                          :filters             filters
                                          :builder             builder
@@ -465,33 +456,94 @@
               ;; BUG *occ-tsk-previous-ctx* *occ-tsk-current-ctx* not getting
               ;; updated with simple buffer switch as idle tiem occur. IS IT CORRECT OR BUG
               ;; TODO: here describe reason for not trying properly, need to print where necessary.
-              (let ((msg (cond
-                           ((not (occ-chgable-p))
-                            (format "clock is not changeable now."))
-                           ((not buff)
-                            (format "context buffer is null"))
-                           ((not (buffer-live-p buff))
-                            (format "context buffer is not live now."))
-                           ((minibufferp buff)
-                            (format "context buffer is minibuffer."))
-                           ((ignore-p buff)
-                            (format "context buffer is ignored buffer."))
-                           ((equal *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)
-                            (format "context is not changed."))
-                           (t (format "Unknown reason.")))))
-                (let ((full-msg (format "occ-clock-in-if-chg: ctx %s not suitable to associate as %s"
-                                        (occ-format ctx 'capitalize)
-                                        msg)))
-                  ;; (occ-debug :nodisplay full-msg)
-                  (occ-message full-msg))))))
+              (occ-describe-try-to-clock-in-p *occ-tsk-current-ctx*
+                                              *occ-tsk-previous-ctx*))))
       (occ-debug :nodisplay "occ-clock-in-if-chg: not enough time passed."))))
-
-
+;; occ-clock-in-if-chg
 
 
-(cl-defmethod occ-try-clock-in-timeout ()
-  (let ((ctx             (occ-make-ctx-at-point))
-        (curr-ctxual-tsk (occ-current-ctxual-tsk ctx)))
-    ()))
+(defvar *occ-last-buff-sel-time*            (current-time) "*occ-last-buff-sel-time*")
+(defvar *occ-buff-sel-timer*                nil)
+(defvar *occ-tsk-current-ctx-time-interval* 7)
+(defvar *occ-tsk-previous-ctx*              nil)
+(defvar *occ-tsk-current-ctx*               nil)
+
+(cl-defmethod occ-clock-unassociated-p ((ctx occ-ctx))
+  (or
+   (occ-clock-marker-unnamed-clock-p)
+   ;; TODO: BUG: Here provide option to user in case of non-unnamed tsk to
+   ;; increase time prop or other prop or continue to other clock. or
+   ;; force checkout for clock.
+   (not (occ-associable-p (occ-current-ctxual-tsk ctx)))))
+
+(cl-defmethod occ-consider-for-clockin-in-p ()
+  (>
+   (float-time (time-since *occ-last-buff-sel-time*))
+   *occ-tsk-current-ctx-time-interval*))
+
+(cl-defmethod occ-try-to-clock-in-p ((curr occ-ctx)
+                                     (prev occ-ctx))
+  (let ((buff (occ-ctx-buffer curr)))
+   (and
+     (occ-chgable-p)
+     buff (buffer-live-p buff)
+     (not (minibufferp buff))
+     (not (ignore-p buff))
+     (not              ;BUG: Reconsider whether it is catching case after some delay.
+      (equal curr prev)))))
+
+(cl-defmethod occ-describe-try-to-clock-in-p ((curr occ-ctx)
+                                              (prev occ-ctx))
+  (let ((buff (occ-ctx-buffer curr)))
+    (let ((msg (cond
+                 ((not (occ-chgable-p))
+                  (format "clock is not changeable now."))
+                 ((not buff)
+                  (format "context buffer is null"))
+                 ((not (buffer-live-p buff))
+                  (format "context buffer is not live now."))
+                 ((minibufferp buff)
+                  (format "context buffer is minibuffer."))
+                 ((ignore-p buff)
+                  (format "context buffer is ignored buffer."))
+                 ((equal prev curr)
+                  (format "context is not changed."))
+                 (t (format "Unknown reason.")))))
+      (let ((full-msg (format "occ-clock-in-if-chg: ctx %s not suitable to associate as %s"
+                              (occ-format curr 'capitalize)
+                              msg)))
+         ;; (occ-debug :nodisplay full-msg)
+        (occ-message full-msg)))))
+
+(defun occ-clock-in-curr-ctx-if-not-timer-function ()
+  (occ-debug-uncond "occ-clock-in-curr-ctx-if-not-timer-function: begin")
+  (unwind-protect
+      (occ-clock-in-curr-ctx-if-not)
+   (occ-run-curr-ctx-timer)))
+
+(cl-defmethod occ-try-clock-in-next-timeout ()
+  "Get next timeout to try clock-in"
+  (occ-debug-uncond "occ-try-clock-in-next-timeout: begin")
+  (let* ((ctx             (occ-make-ctx-at-point))
+         (curr-ctxual-tsk (occ-current-ctxual-tsk ctx)))
+    (1+ *occ-tsk-current-ctx-time-interval*)))
+
+(defun occ-run-curr-ctx-timer ()
+  (occ-debug-uncond "occ-run-curr-ctx-timer: begin")
+  (setq *occ-last-buff-sel-time* (current-time))
+  (when *occ-buff-sel-timer*
+    (cancel-timer *occ-buff-sel-timer*)
+    (setq *occ-buff-sel-timer* nil))
+  (setq *occ-buff-sel-timer*
+        ;; distrubing while editing.
+        ;; run-with-timer
+        (run-with-idle-timer
+         (occ-try-clock-in-next-timeout)
+         nil
+         'occ-clock-in-curr-ctx-if-not-timer-function)))
+
+(defun occ-switch-buffer-run-curr-ctx-timer-function (prev next)
+  (occ-debug-uncond "occ-switch-buffer-run-curr-ctx-timer-function: begin")
+  (occ-run-curr-ctx-timer))
 
 ;;; occ-clock.el ends here

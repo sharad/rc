@@ -61,11 +61,11 @@
 
 (defmacro set-key (map mapping)
   `(loop for pair in ,mapping
-      do (if (consp pair)
-             (if (null (second pair))
-                 (throw 'stumpwm::error "Abort.")
-                 (define-key ,map (kbd (first pair)) (second pair)))
-             (undefine-key pair))))
+         do (if (consp pair)
+                (if (null (second pair))
+                    (throw 'stumpwm::error "Abort.")
+                    (define-key ,map (kbd (first pair)) (second pair)))
+                (undefine-key pair))))
 
 ; (documentation 'getf 'function)
 
@@ -510,4 +510,8 @@
 (progn
 (define-key stumpwm:*root-map* (kbd "F10") 'notifications:*notifications-map*)
 (define-key stumpwm:*root-map* (kbd "N")   'notifications:*notifications-map*))
+;;}}}
+
+;;{{{ Coursor
+(define-key *root-map* (kbd "C-M-l")        "find-cousor")
 ;;}}}

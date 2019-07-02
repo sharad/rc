@@ -742,9 +742,9 @@
       (let* ((var (format nil "~a" var))
              (value (getenv var))
              (changed-value
-              (read-one-line (current-screen)
-                             (format nil "env[~a]: " var)
-                             :initial-input value)))
+               (read-one-line (current-screen)
+                              (format nil "env[~a]: " var)
+                              :initial-input value)))
         (if (and
              value
              (stringp value)
@@ -756,3 +756,7 @@
             (message "env[~a] unchanged" var)
             (if (setf (getenv var) changed-value)
                 (message "env[~a]: ~a" var changed-value))))))
+
+(stumpwm:defcommand find-cousor () ()
+  (run-shell-command "~/bin/find-cursor --color black")
+  (run-shell-command "~/bin/find-cursor --color white"))
