@@ -255,29 +255,30 @@
   "occ-org-update-property")
 
 (cl-defmethod occ-org-update-property ((pom marker)
-                                       (prop string)
+                                       (prop symbol)
                                        operation
                                        values)
   "Accept org compatible VALUES"
   ;; (unless (occ-valid-p prop operation)
   ;;   (error "occ-org-update-property: operation %s is not allowed for prop %s" operation prop))
-  (let ((list-p (occ-list-p prop)))
-    (case operation)
-    ((get)    (if list-p
-                  (occ-org-entry-get-multivalued-property pom prop)
-                (list (occ-org-entry-get pom prop))))
-    ((add)    (if list-p
-                  (occ-org-entry-add-to-multivalued-property pom prop (car values))
-                (occ-org-entry-put pom prop (car values))))
-    ((put)    (if list-p
-                  (occ-org-entry-put-multivalued-property pom prop values)
-                (occ-org-entry-put pom prop (car values))))
-    ((remove) (if list-p
-                  (occ-org-entry-remove-from-multivalued-property pom prop (car values))
-                (error "Implement it.")))
-    ((member) (if lisp-p
-                  (occ-org-entry-member-in-from-multivalued-property pom prop (car values))
-                (string= (car values) (occ-org-entry-get pom prop))))))
+  (let ((list-p      (occ-list-p prop))
+        (prop-string (symbol-name prop)))
+    (case operation
+      ((get)    (if list-p
+                    (occ-org-entry-get-multivalued-property pom prop-string)
+                  (list (occ-org-entry-get pom prop-string))))
+      ((add)    (if list-p
+                    (occ-org-entry-add-to-multivalued-property pom prop-string (car values))
+                  (occ-org-entry-put pom prop-string (car values))))
+      ((put)    (if list-p
+                    (occ-org-entry-put-multivalued-property pom prop-string values)
+                  (occ-org-entry-put pom prop-string (car values))))
+      ((remove) (if list-p
+                    (occ-org-entry-remove-from-multivalued-property pom prop-string (car values))
+                  (error "Implement it.")))
+      ((member) (if list-p
+                    (occ-org-entry-member-in-from-multivalued-property pom prop-string (car values))
+                  (string= (car values) (occ-org-entry-get pom prop-string)))))))
 
 (cl-defmethod occ-org-update-property-at-point ((mrk marker)
                                                 (prop symbol)
@@ -305,7 +306,7 @@
                      "occ-org-update-property-at-point: adding prop: %s value: %s using (org-set-property)."
                      prop values)
           (let ((retval (occ-org-update-property mrk
-                                                 (symbol-name prop)
+                                                 prop
                                                  operation
                                                  values)))
             (occ-debug :debug "occ-org-update-property: (occ-org-update-property mrk) returned %s" retval)
@@ -368,24 +369,24 @@
                                    operation
                                    values)
   "Accept occ compatible VALUES"
-  (let ((tsk ((occ-obj-tsk obj)))
+  (let ((tsk    (occ-obj-tsk obj))
         (list-p (occ-list-p prop)))
     (occ-debug :debug "occ-update-property: operation %s values %s"
                  operation values)
     (case operation
-      ((get)    (if lisp-p
+      ((get)    (if list-p
                     (occ-org-entry-get nil prop)
                   (list (occ-org-entry-get nil prop))))
-      ((add)    (if lisp-p
+      ((add)    (if list-p
                     (occ-set-property tsk prop
                                       (nconc
                                        (occ-get-property tsk prop)
                                        (list (car values))))
                   (occ-set-property tsk prop (car values))))
-      ((put)    (if lisp-p
+      ((put)    (if list-p
                     (occ-set-property tsk prop values)
                   (occ-set-property tsk prop (car values))))
-      ((remove) (if lisp-p
+      ((remove) (if list-p
                     (occ-set-property tsk prop (remove
                                                 (car values)
                                                 (occ-get-property tsk prop)))
@@ -432,8 +433,8 @@
              (occ-org-update-property-at-point mrk
                                                prop
                                                operation
-                                               (occ-prop-to-org
-                                                (list prop-value)))))
+                                               (occ-prop-to-org prop
+                                                                (list prop-value)))))
         (occ-debug :debug "occ-editprop: (occ-org-update-property-at-point mrk) returnd %s" retval)
         (when retval
           (occ-update-property obj

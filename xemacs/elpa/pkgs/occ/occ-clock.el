@@ -440,8 +440,9 @@
           (setq *occ-tsk-current-ctx* ctx)
           ;; (occ-debug-uncond "occ-clock-in-if-chg((obj occ-ctx)): pass1")
 
-          (if (occ-try-to-clock-in-p *occ-tsk-current-ctx*
-                                     *occ-tsk-previous-ctx*)
+          (if (and
+               (not (occ-ignore-p ctx))
+               (occ-try-to-clock-in-p ctx *occ-tsk-previous-ctx*))
               (when (occ-clock-in-if-not ctx
                                          :filters             filters
                                          :builder             builder
@@ -485,7 +486,7 @@
 
 (defun occ-add-ignore-buffer-names ()
   (interactive)
-  (let ((buffname (buffer-name (current-buffer))))
+  (let ((buffname (buffer-name (currggent-buffer))))
     (push buffname occ-ignore-buffer-names)))
 
 (cl-defmethod occ-ignore-p (ctx occ-ctx)
