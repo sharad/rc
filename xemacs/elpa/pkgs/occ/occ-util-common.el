@@ -47,6 +47,15 @@
 (defun occ-disable-debug ()
   (interactive)
   (setq occ-debug nil))
+
+;;;###autoload
+(defun occ-enable-debug-uncond ()
+  (interactive)
+  (setq occ-debug-uncond t))
+;;;###autoload
+(defun occ-disable-debug-uncond ()
+  (interactive)
+  (setq occ-debug-uncond nil))
 
 
 (defun occ-debug (level &rest args)

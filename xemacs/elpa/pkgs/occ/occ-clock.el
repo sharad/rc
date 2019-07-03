@@ -481,16 +481,25 @@
    (float-time (time-since *occ-last-buff-sel-time*))
    *occ-tsk-current-ctx-time-interval*))
 
-(cl-defmethod occ-try-to-clock-in-p ((curr occ-ctx)
-                                     (prev occ-ctx))
-  (let ((buff (occ-ctx-buffer curr)))
-   (and
+(defvar occ-ignore-buffer-names '(" *helm" "*Help*") "occ-ignore-buffer-names")
+
+(defun occ-add-ignore-buffer-names ()
+  (interactive)
+  (let ((buffname (buffer-name (current-buffer))))
+    (push buffname occ-ignore-buffer-names)))
+
+(cl-defmethod occ-ignore-p (ctx occ-ctx)
+  (let ((buff (occ-ctx-buffer ctx)))
+    (and
      (occ-chgable-p)
      buff (buffer-live-p buff)
      (not (minibufferp buff))
-     (not (ignore-p buff))
-     (not              ;BUG: Reconsider whether it is catching case after some delay.
-      (equal curr prev)))))
+     (not (ignore-p buff)))))
+
+(cl-defmethod occ-try-to-clock-in-p ((curr occ-ctx)
+                                     (prev occ-ctx))
+  (not              ;BUG: Reconsider whether it is catching case after some delay.
+   (equal curr prev)))
 
 (cl-defmethod occ-describe-try-to-clock-in-p ((curr occ-ctx)
                                               (prev occ-ctx))

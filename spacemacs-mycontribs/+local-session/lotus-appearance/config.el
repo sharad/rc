@@ -28,7 +28,7 @@
   (let ((base (or base 100)))
     (/ (* num percent) base)))
 
-(defvar lotus-mode-line-reduce-percent 84)
+(defvar lotus-mode-line-reduce-percent 75)
 
 (defun face-applied-attribute (face attrib)
   (let ((value (face-attribute face attrib)))
@@ -47,7 +47,9 @@
   (if (= (face-applied-attribute 'mode-line :height)
          (face-applied-attribute 'default :height))
       (let* ((percent (or percent lotus-mode-line-reduce-percent))
-             (height (face-applied-attribute 'mode-line :height))
+             (height (or
+                      (face-applied-attribute 'default :height)
+                      (face-applied-attribute 'mode-line :height)))
              (percent-height (percent height percent)))
         (when (and percent-height
                    (not (eq 'unspecified percent-height))

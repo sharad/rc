@@ -82,10 +82,12 @@
   (occ-reset-collection-object))
 
 
+;;;###autoload
 (defun occ-initialize ()
   "occ-initialize"
  (setq *occ-tsk-previous-ctx* (occ-make-ctx-at-point)))
 
+;;;###autoload
 (defun occ-uninitialize ()
   "occ-uninitialize")
 
