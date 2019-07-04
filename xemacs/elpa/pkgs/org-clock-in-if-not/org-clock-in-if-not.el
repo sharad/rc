@@ -28,6 +28,8 @@
 
 
 (require 'lotus-misc-utils)
+(eval-when-compile
+  '(require 'lotus-misc-utils))
 
 
 (defvar org-ci-if-not-debug nil "Debug org-ci-if-not")
@@ -76,7 +78,7 @@
   (interactive)
   (org-ci-if-not-debug :debug "%s: org-clock-in-if-not: begin" (time-stamp-string))
   (org-ci-if-not-debug :debug "%s: org-clock-in-if-not: begin" (time-stamp-string))
-  (run-unobtrusively                    ;heavy task
+  (lotus-run-unobtrusively                    ;heavy task
     (lotus-with-no-active-minibuffer-if
         (lotus-with-other-frame-event-debug "org-clock-in-if-not" :restart
           (progn

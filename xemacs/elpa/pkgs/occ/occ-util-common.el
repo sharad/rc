@@ -199,7 +199,7 @@
   nil)
 
 
-(defmacro run-unobtrusively (&rest body)
+(defmacro occ-run-unobtrusively (&rest body)
   `(if (called-interactively-p 'any)
        (progn
          ,@body)
@@ -207,7 +207,7 @@
       (redisplay)
       ,@body)))
 
-(defmacro run-unobtrusively (&rest body)
+(defmacro occ-run-unobtrusively (&rest body)
   `(if (called-interactively-p 'any)
        (progn ,@body)
     (let ((retval (while-no-input

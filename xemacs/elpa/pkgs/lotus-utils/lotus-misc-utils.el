@@ -787,61 +787,61 @@
 (put 'lotus-cancel-with-other-frame-event 'lisp-indent-function 1)
 
 
-(defmacro run-when-idle (secs &rest body)
+(defmacro lotus-run-when-idle (secs &rest body)
   `(letrec ((timer nil)
             (fn
              (lambda ()
                (let ((retval
                       (while-no-input (redisplay)
                                       ,@body
-                                      :complete)))
-                 ))))
+                                      :complete)))))))
+
      (setq
       timer
-      (run-with-idle-timer secs nil
-                           ))
-     `(while-no-input (redisplay)
-                      )))
+      (run-with-idle-timer secs nil))
 
-(defmacro run-unobtrusively (&rest body)
+     `(while-no-input (redisplay))))
+
+
+(defmacro lotus-run-unobtrusively (&rest body)
   `(let ((retval (while-no-input
                    (redisplay)
                    ,@body)))
      (when (eq retval t)
        (message "user input %s retval %s" last-input-event retval))
      retval))
-(put 'run-unobtrusively 'lisp-indent-function 0)
+(put 'lotus-run-unobtrusively 'lisp-indent-function 0)
 
-(defmacro run-unobtrusively-throw-on-input (&rest body) ;throw
+(defmacro lotus-run-unobtrusively-throw-on-input (&rest body) ;throw
   `(while-no-input
      (redisplay)
      ,@body))
-(put 'run-unobtrusively-throw-on-input 'lisp-indent-function 0)
+(put 'lotus-run-unobtrusively-throw-on-input 'lisp-indent-function 0)
 
 ;; TODO complete it using letrec
-(defmacro run-unobtrusively-complete-when-idle (idletime &rest body) ;throw
+(defmacro lotus-run-unobtrusively-complete-when-idle (idletime &rest body) ;throw
   `(let ((retval
           (while-no-input
             (redisplay)
             ,@body)))
      retval))
-(put 'run-unobtrusively-complete-when-idle 'lisp-indent-function 0)
-
+(put 'lotus-run-unobtrusively-complete-when-idle 'lisp-indent-function 0)
+
 
 ;; https://stackoverflow.com/questions/3811448/can-call-with-current-continuation-be-implemented-only-with-lambdas-and-closures
 ;; CALL/CC
 
-(defun has-focus-p ()
+(defun lotus-has-focus-p ()
   )
 
-(defmacro run-with-idle-timer-and-focus (sec repeat fn arg)
+(defmacro lotus-run-with-idle-timer-and-focus (sec repeat fn arg)
   ;; todo: how to cancel the timer later
   (let ((timer nil)
         (frame (selected-frame)))
     (letrec ((focusfn
               (lambda ()
                 (if (and
-                     (has-focus-p)
+                     (lotus-has-focus-p)
                      (eq frame (selected-frame))
                      (frame-visible-p (selected-frame)))
                     (funcall fn arg)

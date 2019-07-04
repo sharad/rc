@@ -34,34 +34,6 @@
 (require 'occ-test)
 
 
-;;;###autoload
-(defun occ-run-curr-ctx-timer ()
-  (setq *occ-last-buff-sel-time* (current-time))
-  (when *occ-buff-sel-timer*
-    (cancel-timer *occ-buff-sel-timer*)
-    (setq *occ-buff-sel-timer* nil))
-  (setq *occ-buff-sel-timer*
-        ;; distrubing while editing.
-        ;; run-with-timer
-        (run-with-idle-timer
-         (1+ *occ-tsk-current-ctx-time-interval*)
-         nil
-         'occ-clock-in-curr-ctx-if-not)))
-
-(defun occ-run-curr-ctx-timer ()
-  (setq *occ-last-buff-sel-time* (current-time))
-  (when *occ-buff-sel-timer*
-    (cancel-timer *occ-buff-sel-timer*)
-    (setq *occ-buff-sel-timer* nil))
-  (setq *occ-buff-sel-timer*
-        ;; distrubing while editing.
-        ;; run-with-timer
-        (run-with-idle-timer
-         (1+ *occ-tsk-current-ctx-time-interval*)
-         nil
-         'occ-clock-in-curr-ctx-if-not)))
-
-
 ;; ;;;###autoload
 ;; (defun occ-switch-buffer-run-curr-ctx-timer-function (prev next)
 ;;   (occ-run-curr-ctx-timer))

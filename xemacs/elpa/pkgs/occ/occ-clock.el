@@ -468,6 +468,52 @@
 (defvar *occ-tsk-current-ctx-time-interval* 7)
 (defvar *occ-tsk-previous-ctx*              nil)
 (defvar *occ-tsk-current-ctx*               nil)
+
+
+;;;###autoload
+(defun occ-clock-in-curr-ctx (&optional force)
+  (interactive "P")
+  (let ((ctx (occ-make-ctx-at-point)))
+    (let ((filters             (or filters (occ-match-filters)))
+          (builder             (or builder #'occ-build-ctxual-tsk-with))
+          (action              (occ-helm-actions ctx))
+          (action-transformer  #'occ-helm-action-transformer-fun)
+          (auto-select-if-only nil) ; occ-clock-in-ctx-auto-select-if-only)
+          (timeout             occ-idle-timeout))
+      (occ-clock-in-if-not ctx
+                           :filters             filters
+                           :builder             builder
+                           :action              action
+                           :action-transformer  action-transformer
+                           :auto-select-if-only auto-select-if-only
+                           :timeout             timeout))))
+
+;;;###autoload
+(defun occ-clock-in-curr-ctx-if-not (&optional force)
+  (interactive "P")
+  ;; TODO: Add code to which check if only focus present than only trigger
+  ;; else postpone it by calling run-with-idle-plus-timer
+  (occ-debug :debug "begin occ-clock-in-curr-ctx-if-not")
+  (lotus-with-other-frame-event-debug "occ-clock-in-curr-ctx-if-not" :cancel
+    (occ-debug :debug "%s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug" (time-stamp-string))
+    (if force
+        (occ-clock-in-curr-ctx force)
+      (let ((ctx (occ-make-ctx-at-point)))
+        (let ((filters             (occ-match-filters))
+              (builder             #'occ-build-ctxual-tsk-with)
+              (action              (occ-helm-actions ctx))
+              (action-transformer  #'occ-helm-action-transformer-fun)
+              (auto-select-if-only occ-clock-in-ctx-auto-select-if-only)
+              (timeout             occ-idle-timeout))
+          (occ-clock-in-if-chg ctx
+                               :filters             filters
+                               :builder             builder
+                               :action              action
+                               :action-transformer  action-transformer
+                               :auto-select-if-only auto-select-if-only
+                               :timeout             timeout)))))
+  (occ-debug :nodisplay "%s: end occ-clock-in-curr-ctx-if-not" (time-stamp-string)))
+
 
 (cl-defmethod occ-clock-unassociated-p ((ctx occ-ctx))
   (or
@@ -489,7 +535,7 @@
   (let ((buffname (buffer-name (currggent-buffer))))
     (push buffname occ-ignore-buffer-names)))
 
-(cl-defmethod occ-ignore-p (ctx occ-ctx)
+(cl-defmethod occ-ignore-p ((ctx occ-ctx))
   (let ((buff (occ-ctx-buffer ctx)))
     (and
      (occ-chgable-p)
@@ -528,7 +574,7 @@
 (defun occ-clock-in-curr-ctx-if-not-timer-function ()
   (occ-debug-uncond "occ-clock-in-curr-ctx-if-not-timer-function: begin")
   (unwind-protect
-      (occ-clock-in-curr-ctx-if-not)
+      (occ-clock-in-curr-ctx-if-not nil)
    (occ-run-curr-ctx-timer)))
 
 (cl-defmethod occ-try-clock-in-next-timeout ()
@@ -537,6 +583,35 @@
   (let* ((ctx             (occ-make-ctx-at-point))
          (curr-ctxual-tsk (occ-current-ctxual-tsk ctx)))
     (1+ *occ-tsk-current-ctx-time-interval*)))
+
+
+
+;;;###autoload
+(defun occ-run-curr-ctx-timer ()
+  (setq *occ-last-buff-sel-time* (current-time))
+  (when *occ-buff-sel-timer*
+    (cancel-timer *occ-buff-sel-timer*)
+    (setq *occ-buff-sel-timer* nil))
+  (setq *occ-buff-sel-timer*
+        ;; distrubing while editing.
+        ;; run-with-timer
+        (run-with-idle-timer
+         (1+ *occ-tsk-current-ctx-time-interval*)
+         nil
+         'occ-clock-in-curr-ctx-if-not)))
+
+(defun occ-run-curr-ctx-timer ()
+  (setq *occ-last-buff-sel-time* (current-time))
+  (when *occ-buff-sel-timer*
+    (cancel-timer *occ-buff-sel-timer*)
+    (setq *occ-buff-sel-timer* nil))
+  (setq *occ-buff-sel-timer*
+        ;; distrubing while editing.
+        ;; run-with-timer
+        (run-with-idle-timer
+         (1+ *occ-tsk-current-ctx-time-interval*)
+         nil
+         'occ-clock-in-curr-ctx-if-not)))
 
 (defun occ-run-curr-ctx-timer ()
   (occ-debug-uncond "occ-run-curr-ctx-timer: begin")
@@ -551,6 +626,7 @@
          (occ-try-clock-in-next-timeout)
          nil
          'occ-clock-in-curr-ctx-if-not-timer-function)))
+
 
 (defun occ-switch-buffer-run-curr-ctx-timer-function (prev next)
   (occ-debug-uncond "occ-switch-buffer-run-curr-ctx-timer-function: begin")

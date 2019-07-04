@@ -118,6 +118,7 @@
   (spacemacs/set-default-font dotspacemacs-default-font)
   (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
   (lotus-powerline-attrib-setup)
+  (run-with-idle-timer 3 nil #'set-default-face-height-by-resolution)
   (set-default-face-height-by-resolution))
 
 (defun lotus-powerline-reset ()

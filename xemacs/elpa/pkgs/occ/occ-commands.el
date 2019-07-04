@@ -160,51 +160,6 @@
 
 
 ;;;###autoload
-(defun occ-clock-in-curr-ctx (&optional force)
-  (interactive "P")
-  (let ((ctx (occ-make-ctx-at-point)))
-    (let ((filters             (or filters (occ-match-filters)))
-          (builder             (or builder #'occ-build-ctxual-tsk-with))
-          (action              (occ-helm-actions ctx))
-          (action-transformer  #'occ-helm-action-transformer-fun)
-          (auto-select-if-only nil) ; occ-clock-in-ctx-auto-select-if-only)
-          (timeout             occ-idle-timeout))
-      (occ-clock-in-if-not ctx
-                           :filters             filters
-                           :builder             builder
-                           :action              action
-                           :action-transformer  action-transformer
-                           :auto-select-if-only auto-select-if-only
-                           :timeout             timeout))))
-
-;;;###autoload
-(defun occ-clock-in-curr-ctx-if-not (&optional force)
-  (interactive "P")
-  ;; TODO: Add code to which check if only focus present than only trigger
-  ;; else postpone it by calling run-with-idle-plus-timer
-  (occ-debug :debug "begin occ-clock-in-curr-ctx-if-not")
-  (lotus-with-other-frame-event-debug "occ-clock-in-curr-ctx-if-not" :cancel
-    (occ-debug :debug "%s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug" (time-stamp-string))
-    (if force
-        (occ-clock-in-curr-ctx force)
-      (let ((ctx (occ-make-ctx-at-point)))
-        (let ((filters             (occ-match-filters))
-              (builder             #'occ-build-ctxual-tsk-with)
-              (action              (occ-helm-actions ctx))
-              (action-transformer  #'occ-helm-action-transformer-fun)
-              (auto-select-if-only occ-clock-in-ctx-auto-select-if-only)
-              (timeout             occ-idle-timeout))
-          (occ-clock-in-if-chg ctx
-                               :filters             filters
-                               :builder             builder
-                               :action              action
-                               :action-transformer  action-transformer
-                               :auto-select-if-only auto-select-if-only
-                               :timeout             timeout)))))
-  (occ-debug :nodisplay "%s: end occ-clock-in-curr-ctx-if-not" (time-stamp-string)))
-
-
-;;;###autoload
 (defun occ-reset-collection-object ()
   (interactive)
   (setq occ-global-tsk-collection nil)

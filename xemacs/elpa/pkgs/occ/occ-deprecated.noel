@@ -79,7 +79,7 @@
           (occ-debug :debug "in occ-clock-in occ-ctx 1")
           (let* ((ctx (or ctx (occ-make-ctx-at-point)))
                  (matched-ctxual-tsks
-                  (run-unobtrusively           ;heavy task
+                  (occ-run-unobtrusively           ;heavy task
 
                     ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)
 
@@ -547,7 +547,7 @@
         (occ-debug :debug "in occ-clock-in occ-ctx 1")
         (let* ((obj (or obj (occ-make-ctx)))
                (matched-ctxual-tsks
-                (run-unobtrusively           ;heavy task
+                (occ-run-unobtrusively           ;heavy task
 
                   ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)
 
