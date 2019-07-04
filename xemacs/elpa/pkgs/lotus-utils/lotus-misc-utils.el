@@ -808,7 +808,7 @@
                    (redisplay)
                    ,@body)))
      (when (eq retval t)
-       (message "user input %s retval %s" last-input-event retval))
+       (lwarn 'event-input :debug "user input %s retval %s" last-input-event retval))
      retval))
 (put 'lotus-run-unobtrusively 'lisp-indent-function 0)
 

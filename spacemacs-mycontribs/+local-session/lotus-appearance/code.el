@@ -1,6 +1,6 @@
 ;; -*- truncate-lines: t; -*-
 
-(require 'init-config "~/.xemacs/init-config.el")
+;; (require 'init-config "~/.xemacs/init-config.el")
 
 (defun increase-font-size (size)
   (custom-set-faces

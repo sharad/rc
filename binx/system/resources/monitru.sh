@@ -1,9 +1,11 @@
 #!/bin/zsh
 
 
-processes=(firefox skype)
-max_cpu=100
-max_mem=50
+processes=(firefox skype emacs)
+# max_cpu=100
+# max_mem=50
+max_cpu=200
+max_mem=80
 WM=stumpwm
 
 function main() {

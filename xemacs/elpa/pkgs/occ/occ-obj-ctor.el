@@ -236,7 +236,8 @@
   obj)
 
 
-(cl-defgeneric occ-make-ctxual-tsk-with (tsk ctx
+(cl-defgeneric occ-make-ctxual-tsk-with (tsk
+                                         ctx
                                          &optional
                                          rank)
   "occ-make-ctxual-tsk-with")
@@ -255,6 +256,10 @@
 (cl-defmethod occ-build-ctxual-tsk-with ((tsk occ-tsk) ;ctor
                                          (ctx occ-ctx))
   (occ-make-ctxual-tsk-with tsk ctx))
+
+(cl-defmethod occ-build-ctxual-tsk-with ((tsk occ-ctxual-tsk) ;ctor
+                                         (ctx occ-ctx))
+  (debug))
 
 (cl-defmethod occ-make-ctxual-tsk ((obj occ-ctsk)
                                    &optional

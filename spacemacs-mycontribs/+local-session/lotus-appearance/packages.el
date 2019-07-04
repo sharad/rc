@@ -73,21 +73,21 @@ Each entry is either:
     :init
     (progn
       ;; ;; (lotus-mode-line-reset)
-      (lotus-powerline-setup))
+      (lotus-appearance-setup))
     :defer t
     :config
     (progn
-      (lotus-powerline-setup))))
+      (lotus-appearance-setup))))
 
 (defun lotus-appearance/post-init-powerline-vim-theme ()
   (use-package powerline-vim-theme
     :init
     (progn
-      (lotus-powerline-setup))
+      (lotus-appearance-setup))
     :defer t
     :config
     (progn
-      (lotus-powerline-setup))))
+      (lotus-appearance-setup))))
 
 ;; (defun lotus-appearance/init-PACKAGE ()
 ;;   (use-package PACKAGE

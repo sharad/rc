@@ -436,13 +436,12 @@
     (occ-debug-uncond "occ-clock-in-if-chg((obj occ-ctx)): begin")
     (if (occ-consider-for-clockin-in-p)
         (progn
-
           (setq *occ-tsk-current-ctx* ctx)
           ;; (occ-debug-uncond "occ-clock-in-if-chg((obj occ-ctx)): pass1")
-
           (if (and
-               (not (occ-ignore-p ctx))
-               (occ-try-to-clock-in-p ctx *occ-tsk-previous-ctx*))
+               (occ-ignore-p ctx)
+               (occ-try-to-clock-in-p ctx
+                                      *occ-tsk-previous-ctx*))
               (when (occ-clock-in-if-not ctx
                                          :filters             filters
                                          :builder             builder
@@ -474,8 +473,8 @@
 (defun occ-clock-in-curr-ctx (&optional force)
   (interactive "P")
   (let ((ctx (occ-make-ctx-at-point)))
-    (let ((filters             (or filters (occ-match-filters)))
-          (builder             (or builder #'occ-build-ctxual-tsk-with))
+    (let ((filters             (occ-match-filters))
+          (builder             #'occ-build-ctxual-tsk-with)
           (action              (occ-helm-actions ctx))
           (action-transformer  #'occ-helm-action-transformer-fun)
           (auto-select-if-only nil) ; occ-clock-in-ctx-auto-select-if-only)
@@ -573,9 +572,10 @@
 
 (defun occ-clock-in-curr-ctx-if-not-timer-function ()
   (occ-debug-uncond "occ-clock-in-curr-ctx-if-not-timer-function: begin")
-  (unwind-protect
-      (occ-clock-in-curr-ctx-if-not nil)
-   (occ-run-curr-ctx-timer)))
+  ;; (unwind-protect                       ;BUG: could be the cause of high MEM usage
+  ;;     (occ-clock-in-curr-ctx-if-not nil)
+  ;;   (occ-run-curr-ctx-timer))
+  (occ-clock-in-curr-ctx-if-not nil))
 
 (cl-defmethod occ-try-clock-in-next-timeout ()
   "Get next timeout to try clock-in"

@@ -111,22 +111,6 @@
        powerline-default-separator-old  nil))))
 
 
-(defun lotus-powerline-setup ()
-  (interactive)
-  (setq
-   dotspacemacs-default-font (car lotus-dotspacemacs-default-font-list))
-  (spacemacs/set-default-font dotspacemacs-default-font)
-  (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
-  (lotus-powerline-attrib-setup)
-  (run-with-idle-timer 3 nil #'set-default-face-height-by-resolution)
-  (set-default-face-height-by-resolution))
-
-(defun lotus-powerline-reset ()
-  (interactive)
-  (lotus-mode-line-reset)
-  (lotus-powerline-attrib-reset))
-
-
 (defun increase-font-size (size)
   (custom-set-faces
    '(default
@@ -207,171 +191,175 @@
   ;; (face-attribute 'default :height)
   ;; (face-attribute 'default :width))
 
-;; (list-colors-display)
-;; http://www.emacswiki.org/emacs/CustomizingFaces
-;; http://www.emacswiki.org/emacs/font-lock-color-test.el
-;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Colors.html
-;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Faces.html
-;; http://david.rothlis.net/emacs/customize_colors.html
-;; http://david.rothlis.net/emacs/customize_colors.html
+  ;; (list-colors-display)
+  ;; http://www.emacswiki.org/emacs/CustomizingFaces
+  ;; http://www.emacswiki.org/emacs/font-lock-color-test.el
+  ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Colors.html
+  ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Faces.html
+  ;; http://david.rothlis.net/emacs/customize_colors.html
+  ;; http://david.rothlis.net/emacs/customize_colors.html
   )
 
 ;; (face-attribute 'default :width nil)
 
-(progn ;; "face size"
+
+
+
+;; "face size"
+(defvar face-scale-div-max-min '(110 600 120 80))
+
+(setq face-scale-div-max-min '(110 224 120 92))
+
+;; (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
+
+(defun maxmin-optimized-value (val scale div &optional max min)
+  (let ((opt (/ (* val scale) div)))
+    (if (and max
+             (> max 0)
+             (> opt max))
+        max
+      (if (and min
+               (> min 0)
+               (< opt min))
+          min
+        opt))))
 
 
-  (defvar face-scale-div-max-min '(110 600 120 80))
-
-  (setq face-scale-div-max-min '(110 224 120 92))
-
-  ;; (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
-
-  (defun maxmin-optimized-value (val scale div &optional max min)
-    (let ((opt (/ (* val scale) div)))
-      (if (and max
-               (> max 0)
-               (> opt max))
-          max
-        (if (and min
-                 (> min 0)
-                 (< opt min))
-            min
-          opt))))
-
-
-  ;; set attributes
-
-
-
-  ;; (mycustom-face-set)
-  ;;:font FONT)
-  ;; get attributes
-  ;; (face-attribute 'default :font)
-  ;; (face-attribute 'default :height)
+;; set attributes
 
 
 
-  (defvar face-size-display-matrix
-    '(
-      ((1080 1920 285 508) (:height 87 :width normal :machine "lispm"))
-      ((900  2966 238 784) (:height 71 :width normal :machine "think530-spratap"))
-      ((900  2966 237 781) (:height 71 :width normal :machine "think530-spratap"))
-      ((900  2966 238 784) (:height 72 :width normal :machine "think530-spratap"))
-      ((900  2966 237 781) (:height 72 :width normal :machine "think530-spratap"))
-      ((1080 3286 285 868) (:height 71 :width normal :machine "latitude5480-spratap"))
-      ((1080 1920 285 508) (:height 68 :width normal :machine "latitude5480-spratap"))
-      ((1080 3286 285 867) (:height 68 :width normal :machine "latitude5480-spratap"))
-      ((1080 3286 285 869) (:height 71 :width normal :machine "latitude5480-spratap"))
-      )
-    "Enter here all machine details of
+;; (mycustom-face-set)
+;;:font FONT)
+;; get attributes
+;; (face-attribute 'default :font)
+;; (face-attribute 'default :height)
+
+
+
+(defvar face-size-display-matrix
+  '(
+    ((1080 1920 285 508) (:height 87 :width normal :machine "lispm"))
+    ((900  2966 238 784) (:height 71 :width normal :machine "think530-spratap"))
+    ((900  2966 237 781) (:height 71 :width normal :machine "think530-spratap"))
+    ((900  2966 238 784) (:height 72 :width normal :machine "think530-spratap"))
+    ((900  2966 237 781) (:height 72 :width normal :machine "think530-spratap"))
+    ((1080 3286 285 868) (:height 71 :width normal :machine "latitude5480-spratap"))
+    ((1080 1920 285 508) (:height 68 :width normal :machine "latitude5480-spratap"))
+    ((1080 3286 285 867) (:height 68 :width normal :machine "latitude5480-spratap"))
+    ((1080 3286 285 869) (:height 71 :width normal :machine "latitude5480-spratap"))
+    )
+  "Enter here all machine details of
 
    ((pixel-height pixel-width mm-height mm-width) . (height width))")
 
-  (defun assoc-attribs-in-matrix ()
-    (let ((phy-attribs
-           (list
-            (x-display-pixel-height)
-            (x-display-pixel-width)
-            (x-display-mm-height)
-            (x-display-mm-width))))
-      (cadr (assoc phy-attribs face-size-display-matrix))))
+(defun assoc-attribs-in-matrix ()
+  (let ((phy-attribs
+         (list
+          (x-display-pixel-height)
+          (x-display-pixel-width)
+          (x-display-mm-height)
+          (x-display-mm-width))))
+    (cadr (assoc phy-attribs face-size-display-matrix))))
 
-  (defun get-current-attribes-matrix-row ()
-    (interactive)
-    (let ((disp-attribs (cons
-                         (list
-                          (x-display-pixel-height)
-                          (x-display-pixel-width)
-                          (x-display-mm-height)
-                          (x-display-mm-width))
-                         (list
-                          (list
-                           :height (face-attribute 'default :height nil)
-                           :width (face-attribute 'default :width nil)
-                           :machine (system-name))))))
-      (if (interactive-p)
-          (progn
-            (message "copies %s to kill-ring"
-                     (prin1-to-string disp-attribs))
-            (kill-new (prin1-to-string disp-attribs))))
-      disp-attribs))
+(defun get-current-attribes-matrix-row ()
+  (interactive)
+  (let ((disp-attribs (cons
+                       (list
+                        (x-display-pixel-height)
+                        (x-display-pixel-width)
+                        (x-display-mm-height)
+                        (x-display-mm-width))
+                       (list
+                        (list
+                         :height (face-attribute 'default :height nil)
+                         :width (face-attribute 'default :width nil)
+                         :machine (system-name))))))
+    (if (interactive-p)
+        (progn
+          (message "copies %s to kill-ring"
+                   (prin1-to-string disp-attribs))
+          (kill-new (prin1-to-string disp-attribs))))
+    disp-attribs))
 
-  (defvar *custom-xface-factor* 7)
+(defvar *custom-xface-factor* 7)
 
-  (defun set-default-face-height-by-resolution (&optional height width)
-    (interactive
-     (let* ((disp-attrib (assoc-attribs-in-matrix))
-            (height
-             (read-number "Face height: "
-                          (or
-                           (plist-get disp-attrib :height)
-                           (if (and (featurep 'x)
-                                    window-system
-                                    (x-display-mm-height))
-                               (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
-                             (face-attribute 'default :height)))))
-            (width
-             (read
-              (prin1-to-string
-               (read-minibuffer "Face width: "
-                                (prin1-to-string (or
-                                                  (plist-get disp-attrib :width)
-                                                  (face-attribute 'default :width))))))))
-       (list height width)))
-    (if (and (featurep 'x) window-system)
-        (let* ((disp-attrib (assoc-attribs-in-matrix))
-               (height
-                (or
-                 height
-                 (plist-get disp-attrib :height)
-                 (if (and (featurep 'x)
-                          window-system
-                          (x-display-mm-height))
-                     (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
-                   (face-attribute 'default :height))))
-               (width
-                (or
-                 width
-                 (plist-get disp-attrib :width)
-                 (face-attribute 'default :width))))
-          (if (x-display-mm-height)
-              (if (any-frame-opened-p)
-                  (progn
-                    (spacemacs/set-default-font dotspacemacs-default-font)
-                    (when height (set-face-attribute 'default nil :height height))
-                    (when width (set-face-attribute 'default nil :width width)))
-                (message "no frame is open now."))
-            (message "(x-display-pixel-height) return nil")))
-      (message
-       "set-default-face-height-by-resolution: Not in Graphical Window system, window-system %s" window-system)))
+(defun set-default-face-height-by-resolution (&optional height width)
+  (interactive
+   (let* ((disp-attrib (assoc-attribs-in-matrix))
+          (height
+           (read-number "Face height: "
+                        (or
+                         (plist-get disp-attrib :height)
+                         (if (and (featurep 'x)
+                                  window-system
+                                  (x-display-mm-height))
+                             (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
+                           (face-attribute 'default :height)))))
+          (width
+           (read
+            (prin1-to-string
+             (read-minibuffer "Face width: "
+                              (prin1-to-string (or
+                                                (plist-get disp-attrib :width)
+                                                (face-attribute 'default :width))))))))
+     (list height width)))
+  (if (and (featurep 'x) window-system)
+      (let* ((disp-attrib (assoc-attribs-in-matrix))
+             (height
+              (or
+               height
+               (plist-get disp-attrib :height)
+               (if (and (featurep 'x)
+                        window-system
+                        (x-display-mm-height))
+                   (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
+                 (face-attribute 'default :height))))
+             (width
+              (or
+               width
+               (plist-get disp-attrib :width)
+               (face-attribute 'default :width))))
+        (if (x-display-mm-height)
+            (if (any-frame-opened-p)
+                (progn
+                  (spacemacs/set-default-font dotspacemacs-default-font)
+                  (when height (set-face-attribute 'default nil :height height))
+                  (when width  (set-face-attribute 'default nil :width width)))
+              (message "no frame is open now."))
+          (message "(x-display-pixel-height) return nil")))
+    (message
+     "set-default-face-height-by-resolution: Not in Graphical Window system, window-system %s" window-system)))
 
-  (when (fboundp 'set-default-face-height-by-resolution)
-    (defalias 'mycustom-face-set #'set-default-face-height-by-resolution))
-  ;; (use-package startup-hooks
-  ;;              :defer t
-  ;;              :config
-  ;;              (add-to-enable-startup-interrupting-feature-hook
-  ;;               '(lambda ()
-  ;;                  (run-at-time-or-now 3 '(lambda () (set-default-face-height-by-resolution))))))
-  )
-
-(progn ;; "face help"
-  ;; http://stackoverflow.com/questions/1242352/get-font-face-under-cursor-in-emacs
-  (defun what-face (pos)
-    (interactive "d")
-    (let ((face (or (get-char-property (point) 'read-face-name)
-                    (get-char-property (point) 'face))))
-      (if face (message "Face: %s" face) (message "No face at %d" pos))))
+(when (fboundp 'set-default-face-height-by-resolution)
+  (defalias 'mycustom-face-set #'set-default-face-height-by-resolution))
+;; (use-package startup-hooks
+;;              :defer t
+;;              :config
+;;              (add-to-enable-startup-interrupting-feature-hook
+;;               '(lambda ()
+;;                  (run-at-time-or-now 3 '(lambda () (set-default-face-height-by-resolution))))))
+
 
 
-  ;; what-cursor-position with a prefix argument shows the face under point, among other information.
-  ;; Keyboard shortcut is C-u C-x =
+
+;; "face help"
+;; http://stackoverflow.com/questions/1242352/get-font-face-under-cursor-in-emacs
+(defun what-face (pos)
+  (interactive "d")
+  (let ((face (or (get-char-property (point) 'read-face-name)
+                  (get-char-property (point) 'face))))
+    (if face
+        (message "Face: %s" face)
+      (message "No face at %d" pos))))
 
 
-  ;; C-u M-x describe-face
+;; what-cursor-position with a prefix argument shows the face under point, among other information.
+;; Keyboard shortcut is C-u C-x =
 
-  )
+
+;; C-u M-x describe-face
+
 
 
 ;;
@@ -396,55 +384,55 @@
 
 
 
-(progn ;; "Fonts"
-  (progn ;; "gist"
-    (defun font-is-mono-p (font-family)
-      ;; with-selected-window
-      (let ((wind (selected-window))
-            m-width l-width)
-        ;; (with-current-buffer (get-buffer-create "asdf")
-        (with-temp-buffer
-          (set-window-buffer (selected-window) (current-buffer))
-          (text-scale-set 4)
-          (insert (propertize "l l l l l" 'face `((:family ,font-family))))
-          (goto-char (line-end-position))
-          (setq l-width (car (posn-x-y (posn-at-point))))
-          (newline)
-          (forward-line)
-          (insert (propertize "m m m m m" 'face `((:family ,font-family) italic)))
-          (goto-char (line-end-position))
-          (setq m-width (car (posn-x-y (posn-at-point))))
-          (eq l-width m-width))))
 
-    (defun compare-monospace-fonts (&optioanal mono)
-      "Display a list of all monospace font faces."
-      (interactive)
-      (pop-to-buffer "*Monospace Fonts*")
-      (erase-buffer)
-      (dolist (font-family (font-family-list))
-        (when (or mono (font-is-mono-p font-family))
-          (let ((str font-family))
-            (newline)
-            (insert
-             (propertize (concat "The quick brown fox jumps over the lazy dog 1 l; 0 O o ("
-                                 font-family ")\n") 'face `((:family ,font-family)))
-             (propertize (concat "The quick brown fox jumps over the lazy dog 1 l; 0 O o ("
-                                 font-family ")\n") 'face `((:family ,font-family) italic)))))))))
-
-(add-hook 'after-make-frame-functions
-          #'(lambda (frame) (set-default-face-height-by-resolution)) t)
 
 
-(progn
-  (setq lotus-dotspacemacs-default-font-list
-        '(("DejaVu Sans Mono:style=Book:antialias=true" :size 10 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
-          ("DejaVu Sans Mono:size=8:antialias=true" :size 9 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
-          ("DejaVu Sans Mono" :size 9 :weight normal :width normal :powerline-scale 1.1)
-          ("Source Code Pro:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
-          ("Source Code Pro" :size 9 :weight normal :width normal :powerline-scale 1.1)))
-  (setq
-   dotspacemacs-default-font (car lotus-dotspacemacs-default-font-list))
-  (spacemacs/set-default-font dotspacemacs-default-font))
+;; "Fonts"
+;; "gist"
+(defun font-is-mono-p (font-family)
+  ;; with-selected-window
+  (let ((wind (selected-window))
+        m-width l-width)
+    ;; (with-current-buffer (get-buffer-create "asdf")
+    (with-temp-buffer
+      (set-window-buffer (selected-window) (current-buffer))
+      (text-scale-set 4)
+      (insert (propertize "l l l l l" 'face `((:family ,font-family))))
+      (goto-char (line-end-position))
+      (setq l-width (car (posn-x-y (posn-at-point))))
+      (newline)
+      (forward-line)
+      (insert (propertize "m m m m m" 'face `((:family ,font-family) italic)))
+      (goto-char (line-end-position))
+      (setq m-width (car (posn-x-y (posn-at-point))))
+      (eq l-width m-width))))
+
+(defun compare-monospace-fonts (&optioanal mono)
+  "Display a list of all monospace font faces."
+  (interactive)
+  (pop-to-buffer "*Monospace Fonts*")
+  (erase-buffer)
+  (dolist (font-family (font-family-list))
+    (when (or mono (font-is-mono-p font-family))
+      (let ((str font-family))
+        (newline)
+        (insert
+         (propertize (concat "The quick brown fox jumps over the lazy dog 1 l; 0 O o ("
+                             font-family ")\n") 'face `((:family ,font-family)))
+         (propertize (concat "The quick brown fox jumps over the lazy dog 1 l; 0 O o ("
+                             font-family ")\n") 'face `((:family ,font-family) italic)))))))
+
+
+
+(setq lotus-dotspacemacs-default-font-list
+      '(("DejaVu Sans Mono:style=Book:antialias=true" :size 10 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
+        ("DejaVu Sans Mono:size=8:antialias=true" :size 9 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
+        ("DejaVu Sans Mono" :size 9 :weight normal :width normal :powerline-scale 1.1)
+        ("Source Code Pro:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
+        ("Source Code Pro" :size 9 :weight normal :width normal :powerline-scale 1.1)))
+(setq
+ dotspacemacs-default-font (car lotus-dotspacemacs-default-font-list))
+(spacemacs/set-default-font dotspacemacs-default-font)
 
 (defun lotus-set-default-face (font)
   (interactive
@@ -454,5 +442,29 @@
   (message "Setting font: %s" font)
   (setq dotspacemacs-default-font font)
   (spacemacs/set-default-font font))
+
+
+(defun lotus-appearance-setup ()
+  (interactive)
+  (setq
+   dotspacemacs-default-font (car lotus-dotspacemacs-default-font-list))
+  (spacemacs/set-default-font dotspacemacs-default-font)
+  (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
+  (lotus-powerline-attrib-setup)
+  (run-with-idle-timer 3 nil #'set-default-face-height-by-resolution)
+  (set-default-face-height-by-resolution))
+
+(defun lotus-appearance-reset ()
+  (interactive)
+  (lotus-mode-line-reset)
+  (lotus-powerline-attrib-reset))
+
+
+(add-hook 'after-make-frame-functions
+          #'(lambda (frame)
+              ;; (set-default-face-height-by-resolution)
+              (lotus-appearance-reset)
+              (lotus-appearance-setup))
+          t)
 
 ;;; config.el ends here

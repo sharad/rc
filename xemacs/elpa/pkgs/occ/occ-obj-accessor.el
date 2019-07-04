@@ -241,34 +241,32 @@ pointing to it."
                     (occ-tsk-builder))))
           tsk)))))
 
-(defun occ-current-tsk (&optional occ-other-allowed)
-  (let ((tsk (car
-              *occ-clocked-ctxual-tsk-ctx-history*)))
+(defun occ-current-ctxual-tsk (&optional occ-other-allowed)
+  (let* ((ctxual-tsk (car *occ-clocked-ctxual-tsk-ctx-history*)))
     (let ((clock-marker    (occ-valid-marker org-clock-marker))
           (clock-hd-marker (occ-valid-marker org-clock-hd-marker)))
       (let ((clock (or clock-marker
                        clock-hd-marker)))
-        (if (and tsk
+        (if (and ctxual-tsk
                  clock
-                 (occ-marker= tsk clock))
-            tsk
+                 (occ-marker= ctxual-tsk clock))
+            ctxual-tsk
           (when clock
             (let ((msg
-                   (if tsk
-                       (format "occ-current-tsk: %s from head of *occ-clocked-ctxual-tsk-ctx-history* is not equal to current clocking clock %s"
-                               (occ-format tsk   'captilize)
+                   (if ctxual-tsk
+                       (format "occ-current-ctxual-tsk: %s from head of *occ-clocked-ctxual-tsk-ctx-history* is not equal to current clocking clock %s"
+                               (occ-format ctxual-tsk   'captilize)
                                (occ-format clock 'captilize))
-                     (format "occ-current-tsk: %s is outside of occ"
+                     (format "occ-current-ctxual-tsk: %s is outside of occ"
                              (occ-format clock 'captilize)))))
               (if occ-other-allowed
                   (occ-debug :warning msg)
                 (error msg))
-              (occ-current-tsk-with clock))))))))
+              (occ-build-ctxual-tsk-with (occ-current-tsk-with clock)
+                                         (occ-make-ctx-at-point)))))))))
 
-(cl-defmethod occ-current-ctxual-tsk ((ctx occ-ctx) &optional occ-other-allowed)
-  (let ((tsk (occ-current-tsk occ-other-allowed)))
-    (when tsk
-     (occ-build-ctxual-tsk-with tsk ctx))))
+(defun occ-current-tsk (&optional occ-other-allowed)
+  (occ-obj-tsk (occ-current-ctxual-tsk occ-other-allowed)))
 
 
 ;; global-object - accessors
