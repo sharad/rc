@@ -25,8 +25,9 @@
 ;;; Code:
 
 (provide 'lotus-misc-utils)
-
 
+
+(require 'lotus-utils-debug)
 (require 'timer)
 (require 'timer-utils-lotus)
 (require 'lotus-idle-utils)
@@ -422,85 +423,85 @@
                #'(lambda ()
                    (if sel-frame-adviced-p
                        (unless (select-frame-set-input-focus-no-raise-p)
-                         (lwarn 'event-input :debug "%s: %s: readfn: <%s> add quiet 5 as already was present" (time-stamp-string) 'lotus-with-other-frame-event ,action)
+                         (lotus-utils-debug :debug "%s: %s: readfn: <%s> add quiet 5 as already was present" (time-stamp-string) 'lotus-with-other-frame-event ,action)
                          (select-frame-set-input-disable-raise))
                      (when (select-frame-set-input-focus-no-raise-p)
-                       (lwarn 'event-input :debug "%s: %s: readfn: <%s> remove quiet 5 as already was present" (time-stamp-string) 'lotus-with-other-frame-event ,action)
+                       (lotus-utils-debug :debug "%s: %s: readfn: <%s> remove quiet 5 as already was present" (time-stamp-string) 'lotus-with-other-frame-event ,action)
                        (select-frame-set-input-enable-raise)))))
               (readfn
                #'(lambda ()
                    (progn
                      (setq frame (selected-frame))
-                     (lwarn 'event-input :debug "%s: %s: readfn: <%s> frame %s" (time-stamp-string) 'lotus-with-other-frame-event ,action frame)
-                     (lwarn 'event-input :debug "%s: %s: readfn: <%s> 1 pre-command-hook %s" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook)
+                     (lotus-utils-debug :debug "%s: %s: readfn: <%s> frame %s" (time-stamp-string) 'lotus-with-other-frame-event ,action frame)
+                     (lotus-utils-debug :debug "%s: %s: readfn: <%s> 1 pre-command-hook %s" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook)
                      (add-hook
                       'pre-command-hook
                       (lambda ()
                         (funcall hookfn)))
-                     (lwarn 'event-input :debug "%s: %s: readfn: <%s> 2 pre-command-hook %s" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook)
+                     (lotus-utils-debug :debug "%s: %s: readfn: <%s> 2 pre-command-hook %s" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook)
                      ;; (unless sel-frame-adviced-p
                      ;;   (select-frame-set-input-enable-raise)
-                     ;;   (lwarn 'event-input :debug "readfn: removed quiet-sel-frame"))
+                     ;;   (lotus-utils-debug :debug "readfn: removed quiet-sel-frame"))
                      (condition-case nil
                          (progn
                            (funcall set-advice-fn)
-                           (lwarn 'event-input :debug "%s: %s: readfn: <%s> 3 running orginal code minibuffer<%s> " (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                           (lotus-utils-debug :debug "%s: %s: readfn: <%s> 3 running orginal code minibuffer<%s> " (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                            ,@body
-                           (lwarn 'event-input :debug "%s: %s: readfn: <%s> 4 pre-command-hook %s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook (active-minibuffer-window))
+                           (lotus-utils-debug :debug "%s: %s: readfn: <%s> 4 pre-command-hook %s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook (active-minibuffer-window))
                            (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                            (funcall set-advice-fn))
                        (quit
-                        (lwarn 'event-input :debug "%: %s: <%s> quit" (time-stamp-string) 'lotus-with-other-frame-event ,action))))))
+                        (lotus-utils-debug :debug "%: %s: <%s> quit" (time-stamp-string) 'lotus-with-other-frame-event ,action))))))
 
               (hookfn1
                #'(lambda ()
-                   (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> last-input-event: %s last-event-frame: %s frame: %s"
+                   (lotus-utils-debug :debug "%s: %s: hookfn1: <%s> last-input-event: %s last-event-frame: %s frame: %s"
                           (time-stamp-string)
                           'lotus-with-other-frame-event ,action
                           last-input-event
                           last-event-frame
                           frame)
-                   (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> removing hook 1" (time-stamp-string) 'lotus-with-other-frame-event ,action )
-                   (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> 1 pre-command-hook %s" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook)
+                   (lotus-utils-debug :debug "%s: %s: hookfn1: <%s> removing hook 1" (time-stamp-string) 'lotus-with-other-frame-event ,action )
+                   (lotus-utils-debug :debug "%s: %s: hookfn1: <%s> 1 pre-command-hook %s" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook)
                    (remove-hook 'pre-command-hook (lambda () (funcall hookfn1)))
-                   (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> 2 pre-command-hook %s" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook)
+                   (lotus-utils-debug :debug "%s: %s: hookfn1: <%s> 2 pre-command-hook %s" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook)
                    (if (eql last-event-frame frame)
                        (progn
                          (setq frame nil)
-                         (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> removing hook 2" (time-stamp-string) 'lotus-with-other-frame-event ,action)
+                         (lotus-utils-debug :debug "%s: %s: hookfn1: <%s> removing hook 2" (time-stamp-string) 'lotus-with-other-frame-event ,action)
                          (remove-hook 'pre-command-hook
                                       (lambda ()
                                         (funcall hookfn1))))
                      (progn
                        (setq frame nil)
                        (with-selected-frame last-event-frame
-                         (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> with-selected-frame running timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                         (lotus-utils-debug :debug "%s: %s: hookfn1: <%s> with-selected-frame running timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                          (run-with-timer 0 nil #'(lambda () (funcall readfn)))
-                         (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> adding quiet-sel-frame minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                         (lotus-utils-debug :debug "%s: %s: hookfn1: <%s> adding quiet-sel-frame minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                          (select-frame-set-input-disable-raise)
-                         (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> going to run abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                         (lotus-utils-debug :debug "%s: %s: hookfn1: <%s> going to run abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                          (when (active-minibuffer-window)
-                           (lwarn 'event-input :debug "%s: %s: hookfn1: <%s> running abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                           (lotus-utils-debug :debug "%s: %s: hookfn1: <%s> running abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                            (abort-recursive-edit)))))))
 
               (hookfn
                #'(lambda ()
-                   (lwarn 'event-input :debug "%s: %s: hookfn: <%s> last-input-event: %s last-event-frame: %s frame: %s minibuffer<%s>"
+                   (lotus-utils-debug :debug "%s: %s: hookfn: <%s> last-input-event: %s last-event-frame: %s frame: %s minibuffer<%s>"
                           (time-stamp-string)
                           'lotus-with-other-frame-event ,action
                           last-input-event
                           last-event-frame
                           frame
                           (active-minibuffer-window))
-                   (lwarn 'event-input :debug "%s: %s: hookfn: <%s> removing hook 1 minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
-                   (lwarn 'event-input :debug "%s: %s: hookfn: <%s> 1 pre-command-hook %s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook (active-minibuffer-window))
+                   (lotus-utils-debug :debug "%s: %s: hookfn: <%s> removing hook 1 minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                   (lotus-utils-debug :debug "%s: %s: hookfn: <%s> 1 pre-command-hook %s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook (active-minibuffer-window))
                    (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                   (lwarn 'event-input :debug "%s: %s: hookfn: <%s> 2 pre-command-hook %s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook (active-minibuffer-window))
+                   (lotus-utils-debug :debug "%s: %s: hookfn: <%s> 2 pre-command-hook %s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook (active-minibuffer-window))
                    (if (eql last-event-frame frame)
                        (progn
                          (setq frame nil)
                          ;; (select-frame-set-input-enable-raise)
-                         ;; (lwarn 'event-input :debug "hookfn: removing hook 2")
+                         ;; (lotus-utils-debug :debug "hookfn: removing hook 2")
                          ;; (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                          t)
                      (with-selected-frame last-event-frame
@@ -511,7 +512,7 @@
                                              (progn
                                                ;; (setq frame (selected-frame))
                                                ;; (setq debug-on-quit nil)
-                                               (lwarn 'event-input :debug "%s: %s: hookfn: <%s> with-selected-frame running timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                                               (lotus-utils-debug :debug "%s: %s: hookfn: <%s> with-selected-frame running timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                                                ;; (funcall set-advice-fn)
                                                ,@(cond
                                                   ((or
@@ -529,13 +530,13 @@
                                                     (null action))
                                                    nil)))))
                          (progn
-                           (lwarn 'event-input :debug "%s: %s: hookfn: <%s> adding quiet-sel-frame minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                           (lotus-utils-debug :debug "%s: %s: hookfn: <%s> adding quiet-sel-frame minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                            (select-frame-set-input-disable-raise)
-                           (lwarn 'event-input :debug "%s: %s: hookfn: <%s> going to run abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                           (lotus-utils-debug :debug "%s: %s: hookfn: <%s> going to run abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                            (when (active-minibuffer-window)
-                             (lwarn 'event-input :debug "%s: %s: hookfn: <%s> running abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                             (lotus-utils-debug :debug "%s: %s: hookfn: <%s> running abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                              (abort-recursive-edit)))))))))
-       (lwarn 'event-input :debug "%s: %s: <%s> calling readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+       (lotus-utils-debug :debug "%s: %s: <%s> calling readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
        (funcall readfn))))
 
 (defmacro lotus-with-other-frame-event (action &rest body)
@@ -546,10 +547,10 @@
                #'(lambda ()
                    (if sel-frame-adviced-p
                        (unless (select-frame-set-input-focus-no-raise-p)
-                         (lwarn 'event-input :debug "%s: %s: readfn: <%s> add quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                         (lotus-utils-debug :debug "%s: %s: readfn: <%s> add quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                          (select-frame-set-input-disable-raise))
                      (when (select-frame-set-input-focus-no-raise-p)
-                       (lwarn 'event-input :debug "%s: %s: readfn: <%s> remove quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                       (lotus-utils-debug :debug "%s: %s: readfn: <%s> remove quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                        (select-frame-set-input-enable-raise)))))
               (readfn
                #'(lambda ()
@@ -567,7 +568,7 @@
                        (quit nil)))))
               (hookfn
                #'(lambda ()
-                   ;; (lwarn 'event-input :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
+                   ;; (lotus-utils-debug :debug "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
                    ;;          last-input-event
                    ;;          last-event-frame
                    ;;          frame)
@@ -576,7 +577,7 @@
                        (progn
                          (setq frame nil)
                          ;; (select-frame-set-input-enable-raise)
-                         ;; (lwarn 'event-input :debug "hookfn: removing hook 2")
+                         ;; (lotus-utils-debug :debug "hookfn: removing hook 2")
                          ;; (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                          t)
                      (with-selected-frame last-event-frame
@@ -618,8 +619,8 @@
                #'(lambda ()
                    (if sel-frame-adviced-p
                        (unless (select-frame-set-input-focus-no-raise-p)
-                         (lwarn 'event-input :debug "%s: %s: set-advice-fn: %s <%s> add quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
-                         (lwarn 'event-input :debug "%s: %s: set-advice-fn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
+                         (lotus-utils-debug :debug "%s: %s: set-advice-fn: %s <%s> add quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
+                         (lotus-utils-debug :debug "%s: %s: set-advice-fn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                                 (time-stamp-string) 'lotus-with-other-frame-event-debug
                                 ,name ,action
                                 last-input-event
@@ -628,8 +629,8 @@
                                 (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
                          (select-frame-set-input-disable-raise))
                      (when (select-frame-set-input-focus-no-raise-p)
-                       (lwarn 'event-input :debug "%s: %s: readfn: %s <%s> remove quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
-                       (lwarn 'event-input :debug "%s: %s: set-advice-fn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
+                       (lotus-utils-debug :debug "%s: %s: readfn: %s <%s> remove quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
+                       (lotus-utils-debug :debug "%s: %s: set-advice-fn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                               (time-stamp-string) 'lotus-with-other-frame-event-debug
                               ,name ,action
                               last-input-event
@@ -643,8 +644,8 @@
                      (setq frame (selected-frame))
                      (add-hook 'pre-command-hook (lambda () (funcall hookfn)))
                      (progn
-                       (lwarn 'event-input :debug "%s: %s: readfn: %s <%s> inside readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
-                       (lwarn 'event-input :debug "%s: %s: readfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
+                       (lotus-utils-debug :debug "%s: %s: readfn: %s <%s> inside readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
+                       (lotus-utils-debug :debug "%s: %s: readfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                               (time-stamp-string) 'lotus-with-other-frame-event-debug
                               ,name ,action
                               last-input-event
@@ -659,8 +660,8 @@
                          (funcall set-advice-fn)))
                      ;; (condition-case nil
                      ;;     (progn
-                     ;;       (lwarn 'event-input :debug "%s: %s: readfn: %s <%s> inside readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
-                     ;;       (lwarn 'event-input :debug "%s: %s: readfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
+                     ;;       (lotus-utils-debug :debug "%s: %s: readfn: %s <%s> inside readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
+                     ;;       (lotus-utils-debug :debug "%s: %s: readfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                      ;;              (time-stamp-string) 'lotus-with-other-frame-event-debug
                      ;;              ,name ,action
                      ;;              last-input-event
@@ -675,7 +676,7 @@
                      )))
               (hookfn
                #'(lambda ()
-                   (lwarn 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
+                   (lotus-utils-debug :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                           (time-stamp-string) 'lotus-with-other-frame-event-debug
                           ,name ,action
                           last-input-event
@@ -687,13 +688,13 @@
                        (progn
                          (setq frame nil)
                          ;; (select-frame-set-input-enable-raise)
-                         ;; (lwarn 'event-input :debug "hookfn: removing hook 2")
+                         ;; (lotus-utils-debug :debug "hookfn: removing hook 2")
                          ;; (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                          t)
                      (with-selected-frame last-event-frame
                        (progn
-                         (lwarn 'event-input :debug "%s: %s: hookfn: %s <%s> running readfn from hookfn outside timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
-                         (lwarn 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
+                         (lotus-utils-debug :debug "%s: %s: hookfn: %s <%s> running readfn from hookfn outside timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
+                         (lotus-utils-debug :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                                 (time-stamp-string) 'lotus-with-other-frame-event-debug
                                 ,name ,action
                                 last-input-event
@@ -706,8 +707,8 @@
                                              (progn
                                                ;; (setq frame (selected-frame))
                                                ;; (setq debug-on-quit nil)
-                                               (lwarn 'event-input :debug "%s: %s: hookfn: %s <%s> timer remove quiet 1 minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
-                                               (lwarn 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
+                                               (lotus-utils-debug :debug "%s: %s: hookfn: %s <%s> timer remove quiet 1 minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
+                                               (lotus-utils-debug :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                                                       (time-stamp-string) 'lotus-with-other-frame-event-debug
                                                       ,name ,action
                                                       last-input-event
@@ -723,8 +724,8 @@
                                                         (eq t action))
                                                        `(
                                                          (with-selected-frame last-event-frame
-                                                           (lwarn 'event-input :debug "%s: %s: hookfn: %s <%s> running readfn from hookfn inside timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
-                                                           (lwarn 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
+                                                           (lotus-utils-debug :debug "%s: %s: hookfn: %s <%s> running readfn from hookfn inside timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
+                                                           (lotus-utils-debug :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                                                                   (time-stamp-string) 'lotus-with-other-frame-event-debug
                                                                   ,name ,action
                                                                   last-input-event
@@ -741,7 +742,7 @@
                                                         (eq :cancel action)
                                                         (null action))
                                                        nil))
-                                                 (lwarn 'event-input :debug
+                                                 (lotus-utils-debug :debug
                                                         "%s: %s: hookfn: %s <%s> finished running %s frame=%s minibuffer<%s>"
                                                         (time-stamp-string)
                                                         'lotus-with-other-frame-event-debug
@@ -750,7 +751,7 @@
                                                         ,action
                                                         (selected-frame)
                                                         (active-minibuffer-window))
-                                                 (lwarn 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
+                                                 (lotus-utils-debug :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                                                         (time-stamp-string) 'lotus-with-other-frame-event-debug
                                                         ,name ,action
                                                         last-input-event
@@ -759,8 +760,8 @@
                                                         (selected-frame)
                                                         (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))))))
                          (progn
-                           (lwarn 'event-input :debug "%s: %s: hookfn: %s <%s> add quiet 2 frame=%s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (selected-frame) (active-minibuffer-window))
-                           (lwarn 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
+                           (lotus-utils-debug :debug "%s: %s: hookfn: %s <%s> add quiet 2 frame=%s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (selected-frame) (active-minibuffer-window))
+                           (lotus-utils-debug :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                                   (time-stamp-string) 'lotus-with-other-frame-event-debug
                                   ,name ,action
                                   last-input-event
@@ -808,7 +809,7 @@
                    (redisplay)
                    ,@body)))
      (when (eq retval t)
-       (lwarn 'event-input :debug "user input %s retval %s" last-input-event retval))
+       (lotus-utils-debug :debug "user input %s retval %s" last-input-event retval))
      retval))
 (put 'lotus-run-unobtrusively 'lisp-indent-function 0)
 
