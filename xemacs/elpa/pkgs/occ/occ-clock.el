@@ -194,7 +194,7 @@
   "Clock-in selected CTXUAL-TSK for occ-ctx OBJ or open interface for adding properties to heading."
   (unless builder (error "Builder can not be nil"))
   (occ-debug :debug "occ-clock-in(occ-ctx=%s)" obj)
-  (if (occ-clockable-p ctx)
+  (if (occ-clockable-p obj)
     (let ((filters            (or filters (occ-match-filters)))
           (builder            (or builder #'occ-build-ctxual-tsk-with))
           (action             (or action (occ-helm-actions obj)))
@@ -366,24 +366,24 @@
 
 (cl-defmethod occ-ctxual-current-tsk ((obj occ-ctx))
   (let ((curr-tsk (occ-current-tsk)))
-    (occ-build-ctxual-tsk-with curr-tsk obj)))
+    (when curr-tsk
+      (occ-build-ctxual-tsk-with curr-tsk obj))))
 
-(cl-defmethod occ-clock-unassociated-p ((ctx occ-ctx))
+(cl-defmethod occ-clock-unassociated-p ((obj occ-ctx))
   (or
    (occ-clock-marker-unnamed-clock-p)
    ;; TODO: BUG: Here provide option to user in case of non-unnamed tsk to
    ;; increase time prop or other prop or continue to other clock. or
    ;; force checkout for clock.
-   (not (occ-associable-p (occ-ctxual-current-tsk ctx)))))
+   (not (occ-associable-p (occ-ctxual-current-tsk obj)))))
 
-(cl-defmethod occ-edit-clock-if-unassociated ((ctx occ-ctx))
+(cl-defmethod occ-edit-clock-if-unassociated ((obj occ-ctx))
   (let  ((curr-tsk        (occ-current-tsk))
          (ctxual-curr-tsk (occ-build-ctxual-tsk-with curr-tsk obj)))
     (if curr-tsk
         (not (occ-associable-p ctxual-curr-tsk)))))
 
-
-(cl-defmethod occ-clock-in-if-not ((ctx occ-ctx)
+(cl-defmethod occ-clock-in-if-not ((obj occ-ctx)
                                    &key
                                    filters
                                    builder
@@ -395,11 +395,11 @@
   (let ((filters            (or filters (occ-match-filters)))
         (builder            (or builder #'occ-build-ctxual-tsk-with))
         (return-transform   t) ;as return value is going to be used.)
-        (action             (or action  (occ-helm-actions ctx)))
+        (action             (or action  (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
     (occ-debug-uncond "occ-clock-in-if-not((obj occ-ctx)): begin")
-    (if (occ-clock-unassociated-p ctx)
+    (if (occ-clock-unassociated-p obj)
         (prog1                ;current clock is not matching
             t
           (occ-debug :debug
@@ -408,7 +408,7 @@
           ;; TODO: if (occ-current-tsk) is not unnamed than ask confirmation by :auto-select-if-only 'confirm
           (occ-debug :debug
              "TODO: if (occ-current-tsk) is not unnamed than ask confirmation by :auto-select-if-only 'confirm")
-          (let ((retval (occ-clock-in ctx
+          (let ((retval (occ-clock-in obj
                                       :filters             filters
                                       :builder             builder
                                       :return-transform    return-transform
@@ -425,7 +425,7 @@
                                         occ-return-quit-label
                                         occ-return-timeout-label)
                 (unless (occ-return-get-value retval)
-                  ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not ctx) and (occ-clock-in ctx)
+                  ;; BUG Urgent TODO: SOLVE ASAP ???? at (occ-clock-in-if-not obj) and (occ-clock-in obj)
                   ;; begin occ-clock-in-curr-ctx-if-not
                   ;; 2019-03-06 22:55:31 s: occ-clock-in-curr-ctx-if-not: lotus-with-other-frame-event-debug
                   ;; occ-clock-in-if-not: Now really going to clock.
@@ -440,7 +440,7 @@
                       (progn
                         (occ-debug :debug "trying to create unnamed tsk.")
                         (occ-message "trying to create unnamed tsk.")
-                        (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))))
+                        (occ-maybe-create-clockedin-unnamed-ctxual-tsk obj))))
               (occ-debug-uncond "occ-clock-in-if-not: Can not operate on %s"
                                 (occ-format (occ-return-get-value retval)))))
           (occ-debug :debug "occ-clock-in-if-not: Now really clock done."))
@@ -448,7 +448,7 @@
           nil
         (occ-debug :debug
                    "occ-clock-in-if-not: Current tsk already associate to %s"
-                   (occ-format ctx 'captilize))))))
+                   (occ-format obj 'captilize))))))
 ;; occ-clock-in-if-not
 
 
@@ -464,7 +464,7 @@
 
 (defvar occ-clock-in-ctx-auto-select-if-only t)
 
-(cl-defmethod occ-clock-in-if-chg ((ctx occ-ctx)
+(cl-defmethod occ-clock-in-if-chg ((obj occ-ctx)
                                    &key
                                    filters
                                    builder
@@ -474,16 +474,16 @@
                                    timeout)
   (let* ((filters            (or filters (occ-match-filters)))
          (builder            (or builder #'occ-build-ctxual-tsk-with))
-         (action             (or action  (occ-helm-actions ctx)))
+         (action             (or action  (occ-helm-actions obj)))
          (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
          (timeout            (or timeout occ-idle-timeout)))
     (occ-debug-uncond "occ-clock-in-if-chg((obj occ-ctx)): begin")
     (if (occ-consider-for-clockin-in-p)
         (progn
-          (setq *occ-tsk-current-ctx* ctx)
+          (setq *occ-tsk-current-ctx* obj)
 
-          (if (occ-try-to-clock-in-p ctx *occ-tsk-previous-ctx*)
-              (when (occ-clock-in-if-not ctx
+          (if (occ-try-to-clock-in-p obj *occ-tsk-previous-ctx*)
+              (when (occ-clock-in-if-not obj
                                          :filters             filters
                                          :builder             builder
                                          :action              action
