@@ -54,6 +54,9 @@
   "contextual task")
 
 
+(cl-defmethod occ-obj-tsk ((obj null))
+  nil)
+
 (cl-defmethod occ-obj-tsk ((obj occ-tsk))
   obj)
 
@@ -61,12 +64,18 @@
   (occ-ctsk-tsk obj))
 
 
+(cl-defmethod occ-obj-ctx ((obj null))
+  nil)
+
 (cl-defmethod occ-obj-ctx ((obj occ-ctx))
   obj)
 
 (cl-defmethod occ-obj-ctx ((obj occ-ctsk))
   (occ-ctsk-ctx obj))
 
+
+(cl-defmethod occ-obj-marker ((obj null))
+  nil)
 
 (cl-defmethod occ-obj-marker ((obj marker))
   obj)
@@ -279,7 +288,9 @@ pointing to it."
                                          (occ-make-ctx-at-point)))))))))
 
 (defun occ-current-tsk (&optional occ-other-allowed)
-  (occ-obj-tsk (occ-current-ctxual-tsk occ-other-allowed)))
+  (let ((curr-ctxual-tsk (occ-current-ctxual-tsk occ-other-allowed)))
+    (when curr-ctxual-tsk
+        (occ-obj-tsk occ-obj-tsk))))
 
 
 ;; global-object - accessors

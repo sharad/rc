@@ -288,13 +288,13 @@
   obj)
 
 
-(cl-defmethod occ-build-obj-with ((tsk occ-tsk)
-                                  (obj occ-ctx))
-   (occ-build-ctxual-tsk-with tsk obj))
+(cl-defmethod occ-build-obj-with ((obj occ-tsk)
+                                  (ctx occ-ctx))
+   (occ-build-ctxual-tsk-with obj ctx))
 
-(cl-defmethod occ-build-obj-with ((tsk occ-tsk)
-                                  (obj null))
-  tsk)
+(cl-defmethod occ-build-obj-with ((obj occ-tsk)
+                                  (ctx null))
+  (occ-build-obj-with obj (occ-make-ctx-at-point)))
 
 
 (cl-defmethod occ-make-tsk-collection ((file-spec (head :tree)))
