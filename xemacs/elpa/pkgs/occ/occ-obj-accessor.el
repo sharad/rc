@@ -290,7 +290,7 @@ pointing to it."
 (defun occ-current-tsk (&optional occ-other-allowed)
   (let ((curr-ctxual-tsk (occ-current-ctxual-tsk occ-other-allowed)))
     (when curr-ctxual-tsk
-        (occ-obj-tsk occ-obj-tsk))))
+      (occ-obj-tsk curr-ctxual-tsk))))
 
 
 ;; global-object - accessors

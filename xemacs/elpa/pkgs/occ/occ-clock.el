@@ -171,8 +171,8 @@
           retval)))))
 
 
-(cl-defmethod occ-ignore-p ((ctx occ-ctx))
-  (let ((buff (occ-ctx-buffer ctx)))
+(cl-defmethod occ-ignore-p ((obj occ-ctx))
+  (let ((buff (occ-ctx-buffer obj)))
     (and
      (occ-chgable-p)
      buff (buffer-live-p buff)
@@ -180,7 +180,12 @@
      (not (ignore-p buff)))))
 
 (cl-defmethod occ-clockable-p ((obj occ-ctx))
-  (not occ-ignore-p))
+  (let ((buff (occ-ctx-buffer obj)))
+    (and
+     (occ-chgable-p)
+     buff (buffer-live-p buff)
+     (not (minibufferp buff))
+     (not (ignore-p buff)))))
 
 (cl-defmethod occ-clock-in ((obj occ-ctx)
                             &key
@@ -246,7 +251,7 @@
                                                     :action             action
                                                     :action-transformer action-transformer
                                                     :timeout            timeout)))))
-    (occ-debug :debug "ctx %s is not clockable." ctx)))
+    (occ-debug :debug "ctx %s is not clockable." obj)))
 
 
 (cl-defmethod occ-clock-in-if-associable ((obj occ-obj-ctx-tsk)
@@ -380,8 +385,10 @@
 (cl-defmethod occ-edit-clock-if-unassociated ((obj occ-ctx))
   (let  ((curr-tsk        (occ-current-tsk))
          (ctxual-curr-tsk (occ-build-ctxual-tsk-with curr-tsk obj)))
-    (if curr-tsk
-        (not (occ-associable-p ctxual-curr-tsk)))))
+    (if (and
+         ctxual-curr-tsk
+         (not (occ-associable-p ctxual-curr-tsk)))
+        (occ-prop-p))))
 
 (cl-defmethod occ-clock-in-if-not ((obj occ-ctx)
                                    &key
