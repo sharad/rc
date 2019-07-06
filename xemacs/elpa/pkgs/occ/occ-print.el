@@ -65,15 +65,15 @@ pointing to it."
 
            org-heading))))))
 
-(cl-defmethod occ-fontify-like-in-org-mode ((tsk occ-tsk))
-  (let* ((level    (or (occ-get-property tsk 'level) 0))
-         (subtree-level (or (occ-get-property tsk 'subtree-level) 0))
-         (filename (occ-get-property tsk 'file))
+(cl-defmethod occ-fontify-like-in-org-mode ((obj occ-tsk))
+  (let* ((level    (or (occ-get-property obj 'level) 0))
+         (subtree-level (or (occ-get-property obj 'subtree-level) 0))
+         (filename (occ-get-property obj 'file))
          (filename-prefix (concat (make-string
                                    (1+ subtree-level)
                                    occ-fontify-like-org-file-bullet)
                                   " "))
-         (heading  (occ-get-property tsk 'heading-prop))
+         (heading  (occ-get-property obj 'heading-prop))
          (heading-prefix  " ")
          (prefix  (concat (make-string (+ level subtree-level) ?\*) " ")))
     ;; (occ-debug-uncond "fontify: %s subtree-level=%s" heading subtree-level)
@@ -92,6 +92,9 @@ pointing to it."
           ;; (concat prefix heading (format " l=%d s=%d" level subtree-level))
           (concat prefix heading)
           org-odd-levels-only))))))
+
+(cl-defmethod occ-build-format-string ((obj occ-tsk))
+  (occ-fontify-like-in-org-mode obj))
 
 
 (cl-defgeneric occ-format (obj
@@ -113,7 +116,7 @@ pointing to it."
 (cl-defmethod occ-format ((obj occ-tsk)
                           &optional case rank)
   (let* ((align      occ-format-tsk-tag-alignment)
-         (heading    (occ-fontify-like-in-org-mode obj))
+         (heading    (occ-format-string obj))
          (headinglen (length heading))
          (tags       (occ-get-property obj 'tags))
          (tagstr     (if tags

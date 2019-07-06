@@ -154,6 +154,19 @@
   (setf (occ-ctxual-tsk-rank ctxask) value))
 
 
+;; occ-tsk - accessors
+(cl-defmethod occ-format-string ((obj occ-tsk))
+  (occ-debug :debug "occ-tsk-get-format-string(occ-tsk=%s)" obj)
+  (let ((format-string (occ-tsk-format-string obj)))
+    (unless format-string
+      (setf (occ-tsk-format-string obj) (occ-build-format-string obj)))
+    (occ-tsk-format-string obj)))
+
+(cl-defmethod (setf occ-format-string) (value (obj occ-tsk))
+  (occ-debug :debug "occ-tsk-get-format-string(occ-tsk=%s)" obj)
+  (setf (occ-tsk-format-string obj) value))
+
+
 ;; occ-ctx - accessors
 (cl-defmethod occ-avgrank ((obj occ-ctx))
   (occ-debug :debug "occ-avgrank(occ-ctx=%s)" obj)

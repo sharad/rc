@@ -170,6 +170,18 @@
               (setq buffer-read-only old-buff-read-only)))
           retval)))))
 
+
+(cl-defmethod occ-ignore-p ((ctx occ-ctx))
+  (let ((buff (occ-ctx-buffer ctx)))
+    (and
+     (occ-chgable-p)
+     buff (buffer-live-p buff)
+     (not (minibufferp buff))
+     (not (ignore-p buff)))))
+
+(cl-defmethod occ-clockable-p ((obj occ-ctx))
+  (not occ-ignore-p))
+
 (cl-defmethod occ-clock-in ((obj occ-ctx)
                             &key
                             filters
@@ -182,57 +194,59 @@
   "Clock-in selected CTXUAL-TSK for occ-ctx OBJ or open interface for adding properties to heading."
   (unless builder (error "Builder can not be nil"))
   (occ-debug :debug "occ-clock-in(occ-ctx=%s)" obj)
-  (let ((filters            (or filters (occ-match-filters)))
-        (builder            (or builder #'occ-build-ctxual-tsk-with))
-        (action             (or action (occ-helm-actions obj)))
-        (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
-        (timeout            (or timeout occ-idle-timeout)))
-    (occ-debug-uncond "occ-clock-in((obj occ-ctx)): begin")
-    (let ((returned-ctxual-tsk
-             (occ-select obj ;TODO: if only one match then where it is selecting that.
-                         :filters             filters
-                         :builder             builder
-                         :return-transform    t ;Here I know return value is going to be used, so passing t
-                         :action              action ;as return value is going to be used.
-                         :action-transformer  action-transformer
-                         :auto-select-if-only auto-select-if-only
-                         :timeout             timeout)))
-      (occ-debug-uncond "occ-clock-in((obj occ-ctx)): selected  returned-ctxual-tsk=%s ret-label=%s value=%s"
-                        returned-ctxual-tsk
-                        (occ-return-in-labels-p returned-ctxual-tsk occ-return-select-label)
-                        (occ-format (occ-return-get-value returned-ctxual-tsk)))
-      (if (occ-return-in-labels-p returned-ctxual-tsk ;TODO: should return t if action were done than select[=identity] ;; occ-return-label
-                                  occ-return-select-label)
-          (let ((ctxual-tsk (occ-return-get-value returned-ctxual-tsk)))
-            (prog1
-                (when return-transform ;Here caller know if return value is going to be used.
-                     (occ-make-return occ-return-true-label nil))
-              (if (occ-ctxual-tsk-p ctxual-tsk)
-                  (occ-clock-in ctxual-tsk
-                                :filters            filters
-                                :builder            builder
-                                :action             action
-                                :action-transformer action-transformer
-                                :timeout            timeout)
-                (occ-message "%s is not ctxual-tsk" (occ-format ctxual-tsk 'capitalize)))))
-        (progn
-          ;; here create unnamed tsk, no need
-          (setq *occ-update-current-ctx-msg* "null clock")
-          (occ-debug :debug
-                     "No clock found please set a match for this ctx %s, add it using M-x occ-prop-edit-safe."
-                     obj)
-          (occ-debug :debug
-                     "occ-clock-in(ctx):  with this-command=%s" this-command)
-          ;; (occ-delayed-select-obj-prop-edit-when-idle obj obj occ-idle-timeout)
-          (occ-debug-uncond "occ-clock-in((obj occ-ctx)): calling occ-safe-ignore-quit-props-window-edit")
-          (occ-message "occ-clock-in: Edit properties of a tsk to make associable to current context.")
-          (occ-safe-ignore-quit-props-window-edit obj
-                                                  :filters            #'occ-list-filters
-                                                  :builder            #'occ-build-ctsk-with
-                                                  :return-transform   return-transform ;Here caller know if return value is going to be used.
-                                                  :action             action
-                                                  :action-transformer action-transformer
-                                                  :timeout            timeout))))))
+  (if (occ-clockable-p ctx)
+    (let ((filters            (or filters (occ-match-filters)))
+          (builder            (or builder #'occ-build-ctxual-tsk-with))
+          (action             (or action (occ-helm-actions obj)))
+          (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+          (timeout            (or timeout occ-idle-timeout)))
+      (occ-debug-uncond "occ-clock-in((obj occ-ctx)): begin")
+      (let ((returned-ctxual-tsk
+               (occ-select obj ;TODO: if only one match then where it is selecting that.
+                           :filters             filters
+                           :builder             builder
+                           :return-transform    t ;Here I know return value is going to be used, so passing t
+                           :action              action ;as return value is going to be used.
+                           :action-transformer  action-transformer
+                           :auto-select-if-only auto-select-if-only
+                           :timeout             timeout)))
+        (occ-debug-uncond "occ-clock-in((obj occ-ctx)): selected  returned-ctxual-tsk=%s ret-label=%s value=%s"
+                          returned-ctxual-tsk
+                          (occ-return-in-labels-p returned-ctxual-tsk occ-return-select-label)
+                          (occ-format (occ-return-get-value returned-ctxual-tsk)))
+        (if (occ-return-in-labels-p returned-ctxual-tsk ;TODO: should return t if action were done than select[=identity] ;; occ-return-label
+                                    occ-return-select-label)
+            (let ((ctxual-tsk (occ-return-get-value returned-ctxual-tsk)))
+              (prog1
+                  (when return-transform ;Here caller know if return value is going to be used.
+                       (occ-make-return occ-return-true-label nil))
+                (if (occ-ctxual-tsk-p ctxual-tsk)
+                    (occ-clock-in ctxual-tsk
+                                  :filters            filters
+                                  :builder            builder
+                                  :action             action
+                                  :action-transformer action-transformer
+                                  :timeout            timeout)
+                  (occ-message "%s is not ctxual-tsk" (occ-format ctxual-tsk 'capitalize)))))
+          (progn
+            ;; here create unnamed tsk, no need
+            (setq *occ-update-current-ctx-msg* "null clock")
+            (occ-debug :debug
+                       "No clock found please set a match for this ctx %s, add it using M-x occ-prop-edit-safe."
+                       obj)
+            (occ-debug :debug
+                       "occ-clock-in(ctx):  with this-command=%s" this-command)
+            ;; (occ-delayed-select-obj-prop-edit-when-idle obj obj occ-idle-timeout)
+            (occ-debug-uncond "occ-clock-in((obj occ-ctx)): calling occ-safe-ignore-quit-props-window-edit")
+            (occ-message "occ-clock-in: Edit properties of a tsk to make associable to current context.")
+            (occ-safe-ignore-quit-props-window-edit obj
+                                                    :filters            #'occ-list-filters
+                                                    :builder            #'occ-build-ctsk-with
+                                                    :return-transform   return-transform ;Here caller know if return value is going to be used.
+                                                    :action             action
+                                                    :action-transformer action-transformer
+                                                    :timeout            timeout)))))
+    (occ-debug :debug "ctx %s is not clockable." ctx)))
 
 
 (cl-defmethod occ-clock-in-if-associable ((obj occ-obj-ctx-tsk)
@@ -350,6 +364,25 @@
 (defvar    *occ-tsk-previous-ctx*              nil)
 (defvar    *occ-tsk-current-ctx*               nil)
 
+(cl-defmethod occ-ctxual-current-tsk ((obj occ-ctx))
+  (let ((curr-tsk (occ-current-tsk)))
+    (occ-build-ctxual-tsk-with curr-tsk obj)))
+
+(cl-defmethod occ-clock-unassociated-p ((ctx occ-ctx))
+  (or
+   (occ-clock-marker-unnamed-clock-p)
+   ;; TODO: BUG: Here provide option to user in case of non-unnamed tsk to
+   ;; increase time prop or other prop or continue to other clock. or
+   ;; force checkout for clock.
+   (not (occ-associable-p (occ-ctxual-current-tsk ctx)))))
+
+(cl-defmethod occ-edit-clock-if-unassociated ((ctx occ-ctx))
+  (let  ((curr-tsk        (occ-current-tsk))
+         (ctxual-curr-tsk (occ-build-ctxual-tsk-with curr-tsk obj)))
+    (if curr-tsk
+        (not (occ-associable-p ctxual-curr-tsk)))))
+
+
 (cl-defmethod occ-clock-in-if-not ((ctx occ-ctx)
                                    &key
                                    filters
@@ -366,7 +399,7 @@
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
     (occ-debug-uncond "occ-clock-in-if-not((obj occ-ctx)): begin")
-    (if (occ-clock-unassociated-p (occ-make-ctx-at-point))
+    (if (occ-clock-unassociated-p ctx)
         (prog1                ;current clock is not matching
             t
           (occ-debug :debug
@@ -417,6 +450,17 @@
                    "occ-clock-in-if-not: Current tsk already associate to %s"
                    (occ-format ctx 'captilize))))))
 ;; occ-clock-in-if-not
+
+
+(cl-defmethod occ-consider-for-clockin-in-p ()
+  (>
+   (float-time (time-since *occ-last-buff-sel-time*))
+   *occ-tsk-current-ctx-time-interval*))
+
+(cl-defmethod occ-try-to-clock-in-p ((curr occ-ctx)
+                                     (prev occ-ctx))
+  (not              ;BUG: Reconsider whether it is catching case after some delay.
+   (equal curr prev)))
 
 (defvar occ-clock-in-ctx-auto-select-if-only t)
 
@@ -437,11 +481,8 @@
     (if (occ-consider-for-clockin-in-p)
         (progn
           (setq *occ-tsk-current-ctx* ctx)
-          ;; (occ-debug-uncond "occ-clock-in-if-chg((obj occ-ctx)): pass1")
-          (if (and
-               (occ-ignore-p ctx)
-               (occ-try-to-clock-in-p ctx
-                                      *occ-tsk-previous-ctx*))
+
+          (if (occ-try-to-clock-in-p ctx *occ-tsk-previous-ctx*)
               (when (occ-clock-in-if-not ctx
                                          :filters             filters
                                          :builder             builder
@@ -467,6 +508,37 @@
 (defvar *occ-tsk-current-ctx-time-interval* 7)
 (defvar *occ-tsk-previous-ctx*              nil)
 (defvar *occ-tsk-current-ctx*               nil)
+
+
+(defvar occ-ignore-buffer-names '(" *helm" "*Help*") "occ-ignore-buffer-names")
+
+(defun occ-add-ignore-buffer-names ()
+  (interactive)
+  (let ((buffname (buffer-name (current-buffer))))
+    (push buffname occ-ignore-buffer-names)))
+
+(cl-defmethod occ-describe-try-to-clock-in-p ((curr occ-ctx)
+                                              (prev occ-ctx))
+  (let ((buff (occ-ctx-buffer curr)))
+    (let ((msg (cond
+                 ((not (occ-chgable-p))
+                  (format "clock is not changeable now."))
+                 ((not buff)
+                  (format "context buffer is null"))
+                 ((not (buffer-live-p buff))
+                  (format "context buffer is not live now."))
+                 ((minibufferp buff)
+                  (format "context buffer is minibuffer."))
+                 ((ignore-p buff)
+                  (format "context buffer is ignored buffer."))
+                 ((equal prev curr)
+                  (format "context is not changed."))
+                 (t (format "Unknown reason.")))))
+      (let ((full-msg (format "occ-clock-in-if-chg: ctx %s not suitable to associate as %s"
+                              (occ-format curr 'capitalize)
+                              msg)))
+         ;; (occ-debug :nodisplay full-msg)
+        (occ-message full-msg)))))
 
 
 ;;;###autoload
@@ -514,62 +586,6 @@
   (occ-debug :nodisplay "%s: end occ-clock-in-curr-ctx-if-not" (time-stamp-string)))
 
 
-(cl-defmethod occ-clock-unassociated-p ((ctx occ-ctx))
-  (or
-   (occ-clock-marker-unnamed-clock-p)
-   ;; TODO: BUG: Here provide option to user in case of non-unnamed tsk to
-   ;; increase time prop or other prop or continue to other clock. or
-   ;; force checkout for clock.
-   (not (occ-associable-p (occ-current-ctxual-tsk ctx)))))
-
-(cl-defmethod occ-consider-for-clockin-in-p ()
-  (>
-   (float-time (time-since *occ-last-buff-sel-time*))
-   *occ-tsk-current-ctx-time-interval*))
-
-(defvar occ-ignore-buffer-names '(" *helm" "*Help*") "occ-ignore-buffer-names")
-
-(defun occ-add-ignore-buffer-names ()
-  (interactive)
-  (let ((buffname (buffer-name (currggent-buffer))))
-    (push buffname occ-ignore-buffer-names)))
-
-(cl-defmethod occ-ignore-p ((ctx occ-ctx))
-  (let ((buff (occ-ctx-buffer ctx)))
-    (and
-     (occ-chgable-p)
-     buff (buffer-live-p buff)
-     (not (minibufferp buff))
-     (not (ignore-p buff)))))
-
-(cl-defmethod occ-try-to-clock-in-p ((curr occ-ctx)
-                                     (prev occ-ctx))
-  (not              ;BUG: Reconsider whether it is catching case after some delay.
-   (equal curr prev)))
-
-(cl-defmethod occ-describe-try-to-clock-in-p ((curr occ-ctx)
-                                              (prev occ-ctx))
-  (let ((buff (occ-ctx-buffer curr)))
-    (let ((msg (cond
-                 ((not (occ-chgable-p))
-                  (format "clock is not changeable now."))
-                 ((not buff)
-                  (format "context buffer is null"))
-                 ((not (buffer-live-p buff))
-                  (format "context buffer is not live now."))
-                 ((minibufferp buff)
-                  (format "context buffer is minibuffer."))
-                 ((ignore-p buff)
-                  (format "context buffer is ignored buffer."))
-                 ((equal prev curr)
-                  (format "context is not changed."))
-                 (t (format "Unknown reason.")))))
-      (let ((full-msg (format "occ-clock-in-if-chg: ctx %s not suitable to associate as %s"
-                              (occ-format curr 'capitalize)
-                              msg)))
-         ;; (occ-debug :nodisplay full-msg)
-        (occ-message full-msg)))))
-
 (defun occ-clock-in-curr-ctx-if-not-timer-function ()
   (occ-debug-uncond "occ-clock-in-curr-ctx-if-not-timer-function: begin")
   ;; (unwind-protect                       ;BUG: could be the cause of high MEM usage
@@ -581,38 +597,11 @@
   "Get next timeout to try clock-in"
   (occ-debug-uncond "occ-try-clock-in-next-timeout: begin")
   (let* ((ctx             (occ-make-ctx-at-point))
-         (curr-ctxual-tsk (occ-current-ctxual-tsk ctx)))
+         (ctxual-curr-tsk (occ-ctxual-current-tsk ctx)))
     (1+ *occ-tsk-current-ctx-time-interval*)))
-
 
 
 ;;;###autoload
-(defun occ-run-curr-ctx-timer ()
-  (setq *occ-last-buff-sel-time* (current-time))
-  (when *occ-buff-sel-timer*
-    (cancel-timer *occ-buff-sel-timer*)
-    (setq *occ-buff-sel-timer* nil))
-  (setq *occ-buff-sel-timer*
-        ;; distrubing while editing.
-        ;; run-with-timer
-        (run-with-idle-timer
-         (1+ *occ-tsk-current-ctx-time-interval*)
-         nil
-         'occ-clock-in-curr-ctx-if-not)))
-
-(defun occ-run-curr-ctx-timer ()
-  (setq *occ-last-buff-sel-time* (current-time))
-  (when *occ-buff-sel-timer*
-    (cancel-timer *occ-buff-sel-timer*)
-    (setq *occ-buff-sel-timer* nil))
-  (setq *occ-buff-sel-timer*
-        ;; distrubing while editing.
-        ;; run-with-timer
-        (run-with-idle-timer
-         (1+ *occ-tsk-current-ctx-time-interval*)
-         nil
-         'occ-clock-in-curr-ctx-if-not)))
-
 (defun occ-run-curr-ctx-timer ()
   (occ-debug-uncond "occ-run-curr-ctx-timer: begin")
   (setq *occ-last-buff-sel-time* (current-time))

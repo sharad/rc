@@ -92,6 +92,7 @@
   clock-sum
   file-level
   plist
+  format-string
   ;; rank
   rank)
 
