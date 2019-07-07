@@ -380,19 +380,22 @@
 
 (cl-defgeneric occ-edit-properties (obj &rest ops))
 
-(cl-defmethod occ-edity-properties ((obj occ-ctxual-tsk)
-                                    &rest
-                                    ops)
+(cl-defmethod occ-edit-properties ((obj occ-ctxual-tsk)
+                                   &rest
+                                   ops)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-    (let ((retval (helm
-                   (helm-build-sync-source "edit"
-                     :candidates (append
-                                  (apply #'occ-gen-params tsk ops)
-                                  (occ-gen-edits-for-add obj :param-only t)
-                                  ;; (occ-checkout obj)
-                                  '(("Checkout" . checkout)
-                                    ("Continue" . t)))))))
+    (let ((retval
+           (helm-timed 7
+             (occ-debug :debug "running sacha/helm-select-clock")
+             (helm
+              (helm-build-sync-source "edit"
+                :candidates (append
+                             (apply #'occ-gen-params tsk ops)
+                             (occ-gen-edits-for-add obj :param-only t)
+                             ;; (occ-checkout obj)
+                             '(("Checkout" . checkout)
+                               ("Continue" . t))))))))
       (when nil
        (if (eq retval t)
           t
@@ -400,7 +403,6 @@
              nil
            (apply #'occ-editprop obj retval))))
       retval)))
-
 
 (cl-defmethod occ-edit-until-associable ((obj occ-ctxual-tsk))
   (let ((retval nil))
@@ -418,7 +420,7 @@
          (not (occ-associable-p ctxual-curr-tsk)))
         (occ-edit-until-associable ctxual-curr-tsk))))
 
-;; (occ-edity-properties (occ-current-ctxual-tsk) '(timebeing add 10))
+;; (occ-edit-properties (occ-current-ctxual-tsk) '(timebeing add 10))
 
 
 (cl-defmethod occ-clock-in-if-not ((obj occ-ctx)
