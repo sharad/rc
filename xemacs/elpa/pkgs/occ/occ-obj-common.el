@@ -84,7 +84,7 @@
            (if (occ-plist-get (cl-obj-plist-value obj) prop)
                prop
              (upcase-sym prop))))
-      (occ-debug-uncond "occ-set-property: got %s using %s" prop plist-prop)
+      (occ-debug :debug "occ-set-property: got %s using %s" prop plist-prop)
       (occ-plist-set
        ;; NOTE: as Property block keys return by (org-element-at-point) are in
        ;; UPCASE even in actual org file it is lower or camel case. so our obj

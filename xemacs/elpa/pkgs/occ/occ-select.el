@@ -78,7 +78,7 @@
                                                  :action-transformer  action-transformer
                                                  :auto-select-if-only auto-select-if-only
                                                  :timeout             timeout)))
-         (occ-debug-uncond "occ-list-select: selected = %s" selected)
+         (occ-debug :debug "occ-list-select: selected = %s" selected)
          (if return-transform
              (or ;as return value is going to be used.
               selected
@@ -105,7 +105,7 @@
                           timeout)
   "return interactively selected TSK or NIL"
   (unless builder (error "Builder can not be nil"))
-  (occ-debug-uncond "occ-select((obj occ-ctx)): begin")
+  (occ-debug :debug "occ-select((obj occ-ctx)): begin")
   (let ((action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
@@ -119,7 +119,7 @@
                                          :action-transformer  action-transformer
                                          :auto-select-if-only auto-select-if-only
                                          :timeout             timeout)))
-            (occ-debug-uncond "occ-select((obj occ-ctx)): occ-list-select returned %s"
+            (occ-debug :debug "occ-select((obj occ-ctx)): occ-list-select returned %s"
                               (occ-format retval 'capitalize))
             retval)
         (prog1
@@ -136,7 +136,7 @@
                           action-transformer
                           auto-select-if-only
                           timeout)
-  (occ-debug-uncond "occ-select((obj null)): begin")
+  (occ-debug :debug "occ-select((obj null)): begin")
   (let ((retval (occ-select (occ-make-ctx-at-point)
                             :filters             filters
                             :builder             builder
@@ -145,7 +145,7 @@
                             :action-transformer  action-transformer
                             :auto-select-if-only auto-select-if-only
                             :timeout             timeout)))
-    (occ-debug-uncond "occ-select((obj null)): occ-select((obj occ-ctx)) returned %s"
+    (occ-debug :debug "occ-select((obj null)): occ-select((obj occ-ctx)) returned %s"
                       (occ-format retval 'capitalize))
     retval))
 

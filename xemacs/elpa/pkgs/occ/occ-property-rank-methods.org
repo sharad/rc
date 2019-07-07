@@ -87,7 +87,7 @@
          "Predicate funtion to check if ctx matches to tsk's file attribute."
          (let ((tsk (occ-obj-tsk obj))
                (ctx (occ-obj-ctx obj)))
-           (occ-debug-uncond "occ-rankprop-with: currfile begin")
+           (occ-debug :debug "occ-rankprop-with: currfile begin")
            (occ-aggrigate-list-rank tsk-currfile (occ-get-property tsk prop) #'+
              (let* ((tsk-currfile (if tsk-currfile (file-truename tsk-currfile)))
                     (ctx-file     (occ-ctx-file ctx))
@@ -107,7 +107,7 @@
        (cl-defmethod occ-get-property ((ctx occ-ctx)
                                        (prop (eql currfile)))
          "occ-get-property"
-         (occ-debug-uncond "calling occ-get-property(ctx occ-ctx)")
+         (occ-debug :debug "calling occ-get-property(ctx occ-ctx)")
          (let ((currfile (occ-ctx-file ctx)))
            currfile))
 

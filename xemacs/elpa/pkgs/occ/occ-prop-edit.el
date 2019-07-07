@@ -71,7 +71,7 @@
                                         (length (symbol-name sym)))
                                     (append keys fixed-keys))))
                 (key-vals  (occ-get-properties tsk keys)))
-            (occ-debug-uncond "occ-select-propetry: for %s with keys =%s got key-vals = %s"
+            (occ-debug :debug "occ-select-propetry: for %s with keys =%s got key-vals = %s"
                               (occ-format tsk 'capitalize)
                               keys
                               key-vals)
@@ -284,7 +284,7 @@
     (let* ((local-cleanup
               #'(lambda ()
                   (occ-debug :warning "occ-props-window-edit(obj occ-obj-ctx-tsk): local-cleanup called")
-                  (occ-debug-uncond "occ-props-window-edit(obj occ-obj-ctx-tsk): local-cleanup called")
+                  (occ-debug :debug "occ-props-window-edit(obj occ-obj-ctx-tsk): local-cleanup called")
                   (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and occ-select-propetry
                     (abort-recursive-edit)))))
         (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
@@ -292,7 +292,7 @@
             (condition-case-control err
               (let ((prop (occ-props-edit-in-cloned-buffer obj)))
                 (occ-props-edit-handle-response prop timeout timer cleanup local-cleanup win)
-                (occ-debug-uncond "occ-props-window-edit(obj occ-obj-ctx-tsk) noquit: label %s value %s"
+                (occ-debug :debug "occ-props-window-edit(obj occ-obj-ctx-tsk) noquit: label %s value %s"
                                   occ-return-true-label obj)
                 (if return-transform ;Here caller know if return value is going to be used.
                     (occ-make-return occ-return-true-label obj)
@@ -300,11 +300,11 @@
               ((quit)
                (progn
                  (occ-debug :warning "occ-props-window-edit(obj occ-obj-ctx-tsk): canceling timer")
-                 (occ-debug-uncond "occ-props-window-edit(obj occ-obj-ctx-tsk): canceling timer")
+                 (occ-debug :debug "occ-props-window-edit(obj occ-obj-ctx-tsk): canceling timer")
                  (funcall cleanup win local-cleanup)
                  (if timer (cancel-timer timer))
                  (signal (car err) (cdr err))
-                 (occ-debug-uncond "occ-props-window-edit(obj occ-obj-ctx-tsk) quit: label %s value %s"
+                 (occ-debug :debug "occ-props-window-edit(obj occ-obj-ctx-tsk) quit: label %s value %s"
                                    occ-return-quit-label nil)
                  (when return-transform ;Here caller know if return value is going to be used.
                    (occ-make-return occ-return-quit-label nil)))))))))
@@ -334,9 +334,9 @@
                                           :action             action
                                           :action-transformer action-transformer
                                           :timeout            timeout)))
-          ;; (occ-debug-uncond "occ-props-window-edit((obj occ-ctx)): action-transformer: %s action %s"
+          ;; (occ-debug :debug "occ-props-window-edit((obj occ-ctx)): action-transformer: %s action %s"
           ;;                   action-transformer action)
-          (occ-debug-uncond "occ-props-window-edit((obj occ-ctx)): selected original: %s, retval: %s with label %s"
+          (occ-debug :debug "occ-props-window-edit((obj occ-ctx)): selected original: %s, retval: %s with label %s"
                             retval-ctx-tsk
                             (occ-format (occ-return-get-value retval-ctx-tsk) 'capitalize)
                             (occ-return-get-label retval-ctx-tsk))
@@ -347,8 +347,8 @@
               (occ-props-window-edit (occ-return-get-value retval-ctx-tsk)
                                      :return-transform   return-transform
                                      :timeout timeout)
-              (occ-debug-uncond "occ-props-window-edit((obj occ-ctx)): No selection"))
-          (occ-debug-uncond "occ-props-window-edit((obj occ-ctx)): returning original: %s, retval: %s with label %s operate: %s"
+              (occ-debug :debug "occ-props-window-edit((obj occ-ctx)): No selection"))
+          (occ-debug :debug "occ-props-window-edit((obj occ-ctx)): returning original: %s, retval: %s with label %s operate: %s"
                             retval-ctx-tsk
                             (occ-format (occ-return-get-value retval-ctx-tsk) 'capitalize)
                             (occ-return-get-label retval-ctx-tsk)
@@ -357,7 +357,7 @@
         (occ-debug :debug "occ-props-window-edit((obj occ-ctx)): not running  as context buff is deleted or not live 1 %s, 2 %s"
                      (buffer-live-p buff)
                      (not (occ-helm-buffer-p buff)))
-        (occ-debug-uncond "occ-props-window-edit((obj occ-ctx)): not running  as context buff is deleted or not live 1 %s, 2 %s"
+        (occ-debug :debug "occ-props-window-edit((obj occ-ctx)): not running  as context buff is deleted or not live 1 %s, 2 %s"
                           (buffer-live-p buff)
                           (not (occ-helm-buffer-p buff)))
         (when return-transform ;Here caller know if return value is going to be used.
@@ -371,7 +371,7 @@
                                      action
                                      action-transformer
                                      timeout)
-  (occ-debug-uncond "occ-select-obj-prop-edit((obj null)):")
+  (occ-debug :debug "occ-select-obj-prop-edit((obj null)):")
   (let ((filters            (or filters nil))
         (builder            (or builder #'occ-build-ctsk-with))
         (action             (or action (occ-helm-actions obj)))
@@ -397,7 +397,7 @@
   "add-ctx-to-org-heading"
   ;; TODO: make helm conditional when it is used than only it should be handled.
   (interactive '((occ-make-ctx-at-point) occ-idle-timeout))
-  (occ-debug-uncond "occ-safe-props-window-edit((obj occ-ctx)): begin")
+  (occ-debug :debug "occ-safe-props-window-edit((obj occ-ctx)): begin")
   (let ((filters            (or filters nil))
         (builder            (or builder #'occ-build-ctsk-with))
         (action             (or action (occ-helm-actions obj)))
@@ -435,7 +435,7 @@
                                           action
                                           action-transformer
                                           timeout)
-  (occ-debug-uncond "occ-safe-props-window-edit((obj marker)): begin")
+  (occ-debug :debug "occ-safe-props-window-edit((obj marker)): begin")
   (let ((selected (occ-safe-props-window-edit (occ-make-ctx marker)
                                               :filters            filters
                                               :builder            builder
@@ -443,7 +443,7 @@
                                               :action             action
                                               :action-transformer action-transformer
                                               :timeout            timeout)))
-    (occ-debug-uncond "occ-safe-props-window-edit((obj marker)): returning %s" selected)
+    (occ-debug :debug "occ-safe-props-window-edit((obj marker)): returning %s" selected)
     selected))
 
 (cl-defmethod occ-safe-ignore-quit-props-window-edit ((obj occ-ctx)
@@ -463,7 +463,7 @@
   ;; NOTE: presently it is not running on idle time, it simply runs immediately
 
   "Return value is important to decide next action to (create unnamed tsk.)"
-  (occ-debug-uncond "occ-safe-ignore-quit-props-window-edit((obj occ-ctx)): begin")
+  (occ-debug :debug "occ-safe-ignore-quit-props-window-edit((obj occ-ctx)): begin")
   (let ((filters            (or filters nil))
         (builder            (or builder #'occ-build-ctsk-with))
         (action             (or action (occ-helm-actions obj)))

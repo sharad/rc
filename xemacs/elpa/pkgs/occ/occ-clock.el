@@ -205,7 +205,7 @@
           (action             (or action (occ-helm-actions obj)))
           (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
           (timeout            (or timeout occ-idle-timeout)))
-      (occ-debug-uncond "occ-clock-in((obj occ-ctx)): begin")
+      (occ-debug :debug "occ-clock-in((obj occ-ctx)): begin")
       (let ((returned-ctxual-tsk
                (occ-select obj ;TODO: if only one match then where it is selecting that.
                            :filters             filters
@@ -215,7 +215,7 @@
                            :action-transformer  action-transformer
                            :auto-select-if-only auto-select-if-only
                            :timeout             timeout)))
-        (occ-debug-uncond "occ-clock-in((obj occ-ctx)): selected  returned-ctxual-tsk=%s ret-label=%s value=%s"
+        (occ-debug :debug "occ-clock-in((obj occ-ctx)): selected  returned-ctxual-tsk=%s ret-label=%s value=%s"
                           returned-ctxual-tsk
                           (occ-return-in-labels-p returned-ctxual-tsk occ-return-select-label)
                           (occ-format (occ-return-get-value returned-ctxual-tsk)))
@@ -242,7 +242,7 @@
             (occ-debug :debug
                        "occ-clock-in(ctx):  with this-command=%s" this-command)
             ;; (occ-delayed-select-obj-prop-edit-when-idle obj obj occ-idle-timeout)
-            (occ-debug-uncond "occ-clock-in((obj occ-ctx)): calling occ-safe-ignore-quit-props-window-edit")
+            (occ-debug :debug "occ-clock-in((obj occ-ctx)): calling occ-safe-ignore-quit-props-window-edit")
             (occ-message "occ-clock-in: Edit properties of a tsk to make associable to current context.")
             (occ-safe-ignore-quit-props-window-edit obj
                                                     :filters            #'occ-list-filters
@@ -430,7 +430,7 @@
         (action             (or action  (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
-    (occ-debug-uncond "occ-clock-in-if-not((obj occ-ctx)): begin")
+    (occ-debug :debug "occ-clock-in-if-not((obj occ-ctx)): begin")
     (if (occ-clock-unassociated-p obj)
         (prog1                ;current clock is not matching
             t
@@ -448,7 +448,7 @@
                                       :action-transformer  action-transformer
                                       :auto-select-if-only auto-select-if-only
                                       :timeout             timeout)))
-            (occ-debug-uncond "occ-clock-in-if-not: operate %s retval %s"
+            (occ-debug :debug "occ-clock-in-if-not: operate %s retval %s"
                               (occ-return-in-labels-p retval
                                                       occ-return-quit-label
                                                       occ-return-timeout-label)
@@ -473,7 +473,7 @@
                         (occ-debug :debug "trying to create unnamed tsk.")
                         (occ-message "trying to create unnamed tsk.")
                         (occ-maybe-create-clockedin-unnamed-ctxual-tsk obj))))
-              (occ-debug-uncond "occ-clock-in-if-not: Can not operate on %s"
+              (occ-debug :debug "occ-clock-in-if-not: Can not operate on %s"
                                 (occ-format (occ-return-get-value retval)))))
           (occ-debug :debug "occ-clock-in-if-not: Now really clock done."))
       (prog1
@@ -509,7 +509,7 @@
          (action             (or action  (occ-helm-actions obj)))
          (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
          (timeout            (or timeout occ-idle-timeout)))
-    (occ-debug-uncond "occ-clock-in-if-chg((obj occ-ctx)): begin")
+    (occ-debug :debug "occ-clock-in-if-chg((obj occ-ctx)): begin")
     (if (occ-consider-for-clockin-in-p)
         (progn
           (setq *occ-tsk-current-ctx* obj)
@@ -522,7 +522,7 @@
                                          :action-transformer  action-transformer
                                          :auto-select-if-only auto-select-if-only
                                          :timeout             timeout)
-                (occ-debug-uncond "occ-clock-in-if-chg((obj occ-ctx)): calling occ-clock-in-if-not")
+                (occ-debug :debug "occ-clock-in-if-chg((obj occ-ctx)): calling occ-clock-in-if-not")
                 (setq *occ-tsk-previous-ctx* *occ-tsk-current-ctx*))
             (prog1
                 nil
@@ -619,7 +619,7 @@
 
 
 (defun occ-clock-in-curr-ctx-if-not-timer-function ()
-  (occ-debug-uncond "occ-clock-in-curr-ctx-if-not-timer-function: begin")
+  (occ-debug :debug "occ-clock-in-curr-ctx-if-not-timer-function: begin")
   ;; (unwind-protect                       ;BUG: could be the cause of high MEM usage
   ;;     (occ-clock-in-curr-ctx-if-not nil)
   ;;   (occ-run-curr-ctx-timer))
@@ -627,7 +627,7 @@
 
 (cl-defmethod occ-try-clock-in-next-timeout ()
   "Get next timeout to try clock-in"
-  (occ-debug-uncond "occ-try-clock-in-next-timeout: begin")
+  (occ-debug :debug "occ-try-clock-in-next-timeout: begin")
   (let* ((ctx             (occ-make-ctx-at-point))
          (ctxual-curr-tsk (occ-ctxual-current-tsk ctx)))
     (1+ *occ-tsk-current-ctx-time-interval*)))
@@ -635,7 +635,7 @@
 
 ;;;###autoload
 (defun occ-run-curr-ctx-timer ()
-  (occ-debug-uncond "occ-run-curr-ctx-timer: begin")
+  (occ-debug :debug "occ-run-curr-ctx-timer: begin")
   (setq *occ-last-buff-sel-time* (current-time))
   (when *occ-buff-sel-timer*
     (cancel-timer *occ-buff-sel-timer*)
@@ -650,7 +650,7 @@
 
 
 (defun occ-switch-buffer-run-curr-ctx-timer-function (prev next)
-  (occ-debug-uncond "occ-switch-buffer-run-curr-ctx-timer-function: begin")
+  (occ-debug :debug "occ-switch-buffer-run-curr-ctx-timer-function: begin")
   (occ-run-curr-ctx-timer))
 
 ;;; occ-clock.el ends here

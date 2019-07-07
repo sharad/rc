@@ -76,7 +76,7 @@ pointing to it."
          (heading  (occ-get-property obj 'heading-prop))
          (heading-prefix  " ")
          (prefix  (concat (make-string (+ level subtree-level) ?\*) " ")))
-    ;; (occ-debug-uncond "fontify: %s subtree-level=%s" heading subtree-level)
+    ;; (occ-debug :debug "fontify: %s subtree-level=%s" heading subtree-level)
     (if nil ;; if test without else with prefix
         (substring
          (org-fontify-like-in-org-mode

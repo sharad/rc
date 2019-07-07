@@ -129,7 +129,7 @@
              (varirank   (occ-calculate-variance rankslist)))
         ;; (occ-debug :debug "occ-collection-obj-matches :around finish")
         (occ-debug :debug "matched ctxtsks %s" (length objs))
-        (occ-debug-uncond "occ-filter-mutual-deviation: avgrank = %d varirank = %d"
+        (occ-debug :debug "occ-filter-mutual-deviation: avgrank = %d varirank = %d"
                           avgrank varirank)
         (remove-if-not
          #'(lambda (obj)
