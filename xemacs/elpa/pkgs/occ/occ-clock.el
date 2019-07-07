@@ -310,26 +310,21 @@
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj))
         (ctxtual-tsk (occ-build-ctxual-tsk obj)))
-    (let* ((total-tries 3))
-         (try         total-tries))
-    (while (and
-            (> try 0)
-            (not (occ-associable-p ctxtual-tsk)))
-      (setq try (1- try))
+    (occ-try-until 3 (not (occ-associable-p ctxtual-tsk))
       (occ-message "occ-try-clock-in %s is not associable with %s [try %d]"
                    (occ-format tsk 'capitalize)
                    (occ-format ctx 'capitalize)
                    (- total-tries try))
-      (occ-props-edit ctxtual-tsk)))
-  (unless (occ-clock-in-if-associable ctxtual-tsk
-                                      :filters            filters
-                                      :builder            builder
-                                      :action             action
-                                      :action-transformer action-transformer
-                                      :timeout            timeout)
-    (occ-message "%s is not associable with %s not clocking-in."
-                 (occ-format tsk 'capitalize)
-                 (occ-format ctx 'capitalize))))
+      (occ-props-edit ctxtual-tsk))
+    (unless (occ-clock-in-if-associable ctxtual-tsk
+                                        :filters            filters
+                                        :builder            builder
+                                        :action             action
+                                        :action-transformer action-transformer
+                                        :timeout            timeout)
+      (occ-message "%s is not associable with %s not clocking-in."
+                   (occ-format tsk 'capitalize)
+                   (occ-format ctx 'capitalize)))))
 
 (cl-defmethod occ-try-clock-in ((obj null)
                                 &key
@@ -383,17 +378,32 @@
    ;; force checkout for clock.
    (not (occ-associable-p (occ-ctxual-current-tsk obj)))))
 
+(cl-defgeneric occ-edit-properties (obj &rest ops))
+
 (cl-defmethod occ-edit-properties ((obj occ-ctxual-tsk)
+                                   &rest
                                    ops)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
-   (helm
-    :sources
-    `((name .  "edit")
-      (candidates . ,(append
-                      (occ-gen-methods-for-edit tsk ops)
-                      (occ-gen-methods-for-add obj)
-                      '(("Continue" . t))))))))
+    (let ((retval (helm
+                   (helm-build-sync-source "edit"
+                     :candidates (append
+                                  (apply #'occ-gen-params-for-edit tsk ops)
+                                  (occ-gen-methods-for-add obj)
+                                  '(("Continue" . t)))))))
+      (if (eq retval t)
+          t
+        (prog1
+            nil
+          (apply #'occ-edit-prop tsk retval))))))
+
+(cl-defmethod occ-edit-until-associable ((obj occ-ctxual-tsk))
+  (let ((retval nil))
+    (occ-try-until 3 (or (not (eq t retval))
+                         (occ-associable-p obj))
+      (setq retval
+            (occ-edit-properties obj '(timebeing add 10))))
+    retval))
 
 (cl-defmethod occ-edit-clock-if-unassociated ((obj occ-ctx))
   (let*  ((curr-tsk        (occ-current-tsk))
@@ -401,9 +411,7 @@
     (if (and
          ctxual-curr-tsk
          (not (occ-associable-p ctxual-curr-tsk)))
-        (occ-edit-properties ctxual-curr-tsk '((timebeing add 10))))))
-
-(occ-edit-clock-if-unassociated (occ-make-ctx-at-point))
+        (occ-edit-until-associable ctxual-curr-tsk))))
 
 
 (cl-defmethod occ-clock-in-if-not ((obj occ-ctx)

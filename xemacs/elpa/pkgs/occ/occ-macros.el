@@ -42,6 +42,16 @@
 (put 'occ-debug-return 'lisp-indent-function 1)
 
 
+(defmacro occ-try-until (tries test &rest body)
+  `(let* ((total-tries ,tries)
+          (try         total-tries))
+     (while (and (> try 0)
+                 ,test)
+       (setq try (1- try))
+       ,@body)))
+(put 'occ-try-until 'lisp-indent-function 2)
+
+
 (defmacro occ-aggrigate-list-rank (value values aggregator &rest body)
   `(let ((values    (if (consp ,values) ,values (list ,values)))
          (total-rank 0))

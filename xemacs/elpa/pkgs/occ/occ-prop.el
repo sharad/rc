@@ -443,21 +443,46 @@
                                (list prop-value)))))))
 
 
+(cl-defmethod occ-gen-edit ((obj occ-obj-tsk)
+                            (prop symbol)
+                            operation
+                            value
+                            &key param-only)
+  (if param-only
+      (list prop
+            operation
+            value)
+    #'(lambda (obj)
+        (occ-editprop obj
+                      prop
+                      operation
+                      value))))
+
+
 (cl-defgeneric occ-gen-method (obj
                                prop
                                operation
                                value)
   "occ-generated-operation-method")
 
+
+(cl-defgeneric occ-gen-param (obj
+                              prop
+                              operation
+                              value)
+  "occ-generated-operation-param")
+
 (cl-defmethod occ-gen-method ((obj occ-obj-tsk)
                               (prop symbol)
                               operation
                               value)
-  #'(lambda (obj)
-      (occ-editprop obj
-                    prop
-                    operation
-                    value)))
+  (occ-gen-edit obj prop operation value :param-only nil))
+
+(cl-defmethod occ-gen-param ((obj occ-obj-tsk)
+                             (prop symbol)
+                             operation
+                             value)
+  (occ-gen-edit obj prop operation value :param-only t))
 
 
 (cl-defmethod occ-gen-prompt ((obj occ-obj-tsk)
@@ -489,21 +514,19 @@
    (occ-gen-method obj prop operation value)))
 
 
-;; (cl-defmethod occ-gen-operation-for-add (obj occ-obj-tsk)
-;;   (mapcar
-;;    #'(lambda (prop)
-;;        (occ-gen-prompt-method obj prop
-;;                                              (occ-add-operation prop)
-;;                                              (occ-get-property obj prop)))
-;;    (occ-properties-to-edit obj)))
+(cl-defgeneric occ-gen-prompt-param (obj
+                                     prop
+                                     operation
+                                     value)
+  "occ-gen-prompt-param")
 
-;; (cl-defmethod occ-gen-operation-for-remove (obj occ-obj-tsk)
-;;   (mapcar
-;;    #'(lambda (prop)
-;;        (occ-gen-prompt-method obj prop
-;;                                              (occ-remove-operation prop)
-;;                                              (occ-get-property obj prop)))
-;;    (occ-properties-to-edit obj)))
+(cl-defmethod occ-gen-prompt-param ((obj occ-obj-tsk)
+                                    (prop symbol)
+                                    operation
+                                    value)
+  (cons
+   (occ-gen-prompt obj prop operation value)
+   (occ-gen-param  obj prop operation value)))
 
 
 (cl-defmethod occ-method-required-p ((obj occ-obj-tsk)
@@ -522,7 +545,8 @@
                                prop
                                operation
                                value)
-    (occ-gen-prompt-method obj prop operation value)))
+    (occ-gen-prompt-method obj
+                           prop operation value)))
 
 
 (cl-defmethod occ-gen-methods-for-add ((obj occ-obj-ctx-tsk))
@@ -565,9 +589,16 @@
                     props)))))
 
 
-(cl-defmethod occ-gen-methods-for-edit ((obj occ-obj-tsk) ops)
+(cl-defmethod occ-gen-methods-for-edit ((obj occ-obj-tsk)
+                                        &rest ops)
   (mapcar #'(lambda (op)
               (apply #'occ-gen-prompt-method obj op))
+          ops))
+
+(cl-defmethod occ-gen-params-for-edit ((obj occ-obj-tsk)
+                                       &rest ops)
+  (mapcar #'(lambda (op)
+              (apply #'occ-gen-prompt-param obj op))
           ops))
 
 
