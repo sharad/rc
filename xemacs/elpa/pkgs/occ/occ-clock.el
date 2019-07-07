@@ -393,12 +393,14 @@
                                   ;; (occ-checkout obj)
                                   '(("Checkout" . checkout)
                                     ("Continue" . t)))))))
-      (if (eq retval t)
+      (when nil
+       (if (eq retval t)
           t
-        (prog1
-            nil)))))
-          ;; (apply #'occ-editprop obj retval)
-          
+         (prog1
+             nil
+           (apply #'occ-editprop obj retval))))
+      retval)))
+
 
 (cl-defmethod occ-edit-until-associable ((obj occ-ctxual-tsk))
   (let ((retval nil))
@@ -416,7 +418,7 @@
          (not (occ-associable-p ctxual-curr-tsk)))
         (occ-edit-until-associable ctxual-curr-tsk))))
 
-;; (occ-edity-properties (occ-current-ctxual-tsk) '((timebeing add 10)))
+;; (occ-edity-properties (occ-current-ctxual-tsk) '(timebeing add 10))
 
 
 (cl-defmethod occ-clock-in-if-not ((obj occ-ctx)

@@ -126,12 +126,12 @@
   (occ-helm-actions obj))
 
 (cl-defmethod occ-helm-action-transformer ((obj occ-obj-ctx-tsk) actions)
-  (message "occ-helm-action-transformer: %s"
-           (occ-gen-methods-for-add-remove obj))
+  ;; (message "occ-helm-action-transformer: %s"
+  ;;          (occ-gen-edits-for-add-remove obj))
   ;; (occ-helm-actions obj)
   (append
    (occ-helm-actions obj)
-   (occ-gen-methods-for-add-remove obj)))
+   (occ-gen-edits-for-add-remove obj)))
 
 (cl-defun occ-helm-action-transformer-fun (action candidate)
   (occ-helm-action-transformer candidate action))

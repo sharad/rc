@@ -490,24 +490,26 @@
    (occ-gen-edit obj prop operation value :param-only param-only)))
 
 
-(cl-defmethod occ-edit-required-p ((obj occ-obj-tsk
-                                     (prop symbol)
-                                     operation
-                                     value))
+(cl-defmethod occ-edit-required-p ((obj occ-obj-tsk)
+                                   (prop symbol)
+                                   operation
+                                   value)
   (case operation
     ((add)    (not (occ-has-p obj prop value)))
     ((remove) (occ-has-p obj prop value))))
 
-(cl-defmethod occ-gen-edit-if-required ((obj occ-obj-tsk
-                                          (prop symbol)
-                                          operation
-                                          value))
+(cl-defmethod occ-gen-edit-if-required ((obj occ-obj-tsk)
+                                        (prop symbol)
+                                        operation
+                                        value
+                                        &key param-only)
   (when (occ-edit-required-p obj
-                               prop
-                               operation
-                               value)
+                             prop
+                             operation
+                             value)
     (occ-gen-prompt-edit obj
-                           prop operation value)))
+                         prop operation value
+                         :param-only param-only)))
 
 
 (cl-defmethod occ-gen-edits-for-add ((obj occ-obj-ctx-tsk)
@@ -558,17 +560,15 @@
 
 
 (cl-defmethod occ-gen-edits ((obj occ-obj-tsk)
-                             ops &key param-only)
+                             ops
+                             &key param-only)
   (mapcar #'(lambda (op)
-              (apply #'occ-gen-prompt-edit obj op :param-only param-only))
+              (apply #'occ-gen-prompt-edit obj (append op (list :param-only param-only))))
           ops))
-
 
 (cl-defmethod occ-gen-params ((obj occ-obj-tsk)
-                              ops)
-  (mapcar #'(lambda (op)
-              (apply #'occ-gen-edits obj :param-only t op))
-          ops))
+                              &rest ops)
+  (occ-gen-edits obj ops :param-only t))
 
 
 (cl-defmethod occ-increase-timeout ((obj occ-obj-ctx-tsk))
