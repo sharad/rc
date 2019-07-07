@@ -380,23 +380,25 @@
 
 (cl-defgeneric occ-edit-properties (obj &rest ops))
 
-(cl-defmethod occ-edit-properties ((obj occ-ctxual-tsk)
-                                   &rest
-                                   ops)
+(cl-defmethod occ-edity-properties ((obj occ-ctxual-tsk)
+                                    &rest
+                                    ops)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
     (let ((retval (helm
                    (helm-build-sync-source "edit"
                      :candidates (append
-                                  (apply #'occ-gen-params-for-edit tsk ops)
-                                  (occ-gen-methods-for-add obj)
-                                  ;; occ-checkout
-                                  '(("Continue" . t)))))))
+                                  (apply #'occ-gen-params tsk ops)
+                                  (occ-gen-edits-for-add obj :param-only t)
+                                  ;; (occ-checkout obj)
+                                  '(("Checkout" . checkout)
+                                    ("Continue" . t)))))))
       (if (eq retval t)
           t
         (prog1
-            nil
-          (apply #'occ-editprop obj retval))))))
+            nil)))))
+          ;; (apply #'occ-editprop obj retval)
+          
 
 (cl-defmethod occ-edit-until-associable ((obj occ-ctxual-tsk))
   (let ((retval nil))
@@ -413,6 +415,8 @@
          ctxual-curr-tsk
          (not (occ-associable-p ctxual-curr-tsk)))
         (occ-edit-until-associable ctxual-curr-tsk))))
+
+;; (occ-edity-properties (occ-current-ctxual-tsk) '((timebeing add 10)))
 
 
 (cl-defmethod occ-clock-in-if-not ((obj occ-ctx)
@@ -431,7 +435,7 @@
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
     (occ-debug :debug "occ-clock-in-if-not((obj occ-ctx)): begin")
-    (if (occ-clock-unassociated-p obj)
+    (if (occ-edit-clock-if-unassociated obj) ;; (occ-clock-unassociated-p obj) ;; (occ-edit-clock-if-unassociated obj)
         (prog1                ;current clock is not matching
             t
           (occ-debug :debug

@@ -61,7 +61,7 @@
    - State "CLOSED"     from              [2019-06-29 Sat 22:07]
    :END:
 
-** Deep interaction for non to unnamed, unnammed to named, named to named etc
+** STARTED Deep interaction for non to unnamed, unnammed to named, named to named etc
 
 ** statistics addition
 
@@ -91,6 +91,6 @@
 ** non tsk org entries
 
 ** caching ctxual-tsk or ctsk
-** Fast clocking/child clocking with property addition like fast property addition
-** Resolve clock occ integration
-** Rich menu with many class todo info note etc for capture
+** NEXT Fast clocking/child clocking with property addition like fast property addition
+** NEXT Resolve clock occ integration
+** NEXT Rich menu with many class todo info note etc for capture

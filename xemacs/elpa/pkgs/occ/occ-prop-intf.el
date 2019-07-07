@@ -115,12 +115,12 @@
   value)
 
 
-(cl-defgeneric occ-checkout (obj
-                             prop)
+(cl-defgeneric occ-checkout-prop (obj
+                                  prop)
   "Checkout property in case of force clock-in.")
 
-(cl-defmethod occ-checkout ((obj occ-obj-tsk)
-                            (prop symbol))
+(cl-defmethod occ-checkout-prop ((obj occ-obj-tsk)
+                                 (prop symbol))
   "Checkout property in case of force clock-in."
   (error "Implement it for %s: Checkout property in case of force clock-in." prop))
 
