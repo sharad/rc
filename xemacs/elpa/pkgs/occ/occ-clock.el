@@ -390,12 +390,13 @@
                      :candidates (append
                                   (apply #'occ-gen-params-for-edit tsk ops)
                                   (occ-gen-methods-for-add obj)
+                                  ;; occ-checkout
                                   '(("Continue" . t)))))))
       (if (eq retval t)
           t
         (prog1
             nil
-          (apply #'occ-edit-prop tsk retval))))))
+          (apply #'occ-editprop obj retval))))))
 
 (cl-defmethod occ-edit-until-associable ((obj occ-ctxual-tsk))
   (let ((retval nil))
