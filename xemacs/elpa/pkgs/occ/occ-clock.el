@@ -368,6 +368,7 @@
 (defvar    *occ-tsk-current-ctx-time-interval* 7)
 (defvar    *occ-tsk-previous-ctx*              nil)
 (defvar    *occ-tsk-current-ctx*               nil)
+
 
 (cl-defmethod occ-ctxual-current-tsk ((obj occ-ctx))
   (let ((curr-tsk (occ-current-tsk)))
@@ -382,13 +383,27 @@
    ;; force checkout for clock.
    (not (occ-associable-p (occ-ctxual-current-tsk obj)))))
 
+(cl-defmethod occ-edit-properties ((obj occ-ctxual-tsk))
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+   (helm
+    :sources
+    `((name .  "edit")
+      (candidates . ,(append
+                      (occ-gen-methods-for-edit tsk
+                                                '((timebeing add 10)))
+                      '(("Continue" . t))))))))
+
 (cl-defmethod occ-edit-clock-if-unassociated ((obj occ-ctx))
-  (let  ((curr-tsk        (occ-current-tsk))
-         (ctxual-curr-tsk (occ-build-ctxual-tsk-with curr-tsk obj)))
+  (let*  ((curr-tsk        (occ-current-tsk))
+          (ctxual-curr-tsk (occ-build-ctxual-tsk-with curr-tsk obj)))
     (if (and
          ctxual-curr-tsk
          (not (occ-associable-p ctxual-curr-tsk)))
-        (occ-prop-p))))
+        (occ-edit-properties ctxual-curr-tsk))))
+
+(occ-edit-clock-if-unassociated (occ-make-ctx-at-point))
+
 
 (cl-defmethod occ-clock-in-if-not ((obj occ-ctx)
                                    &key

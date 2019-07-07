@@ -565,7 +565,13 @@
                     props)))))
 
 
+(cl-defmethod occ-gen-methods-for-edit ((obj occ-obj-tsk) ops)
+  (mapcar #'(lambda (op)
+              (apply #'occ-gen-prompt-method obj op))
+          ops))
+
+
 (cl-defmethod occ-increase-timeout ((obj occ-obj-ctx-tsk))
   (occ-gen-prompt-method obj 'timeout add 100))
 
-;;; occprop.el ends here
+;;; occ-prop.el ends here
