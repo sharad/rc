@@ -383,15 +383,16 @@
    ;; force checkout for clock.
    (not (occ-associable-p (occ-ctxual-current-tsk obj)))))
 
-(cl-defmethod occ-edit-properties ((obj occ-ctxual-tsk))
+(cl-defmethod occ-edit-properties ((obj occ-ctxual-tsk)
+                                   ops)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
    (helm
     :sources
     `((name .  "edit")
       (candidates . ,(append
-                      (occ-gen-methods-for-edit tsk
-                                                '((timebeing add 10)))
+                      (occ-gen-methods-for-edit tsk ops)
+                      (occ-gen-methods-for-add obj)
                       '(("Continue" . t))))))))
 
 (cl-defmethod occ-edit-clock-if-unassociated ((obj occ-ctx))
@@ -400,7 +401,7 @@
     (if (and
          ctxual-curr-tsk
          (not (occ-associable-p ctxual-curr-tsk)))
-        (occ-edit-properties ctxual-curr-tsk))))
+        (occ-edit-properties ctxual-curr-tsk '((timebeing add 10))))))
 
 (occ-edit-clock-if-unassociated (occ-make-ctx-at-point))
 

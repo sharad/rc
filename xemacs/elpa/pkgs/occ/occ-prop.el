@@ -530,20 +530,20 @@
         (gen-add-action
          #'(lambda (prop)
              (occ-gen-method-if-required obj prop 'add
-                                         (occ-get-property (occ-obj-ctx obj) prop))))))
-  (remove nil
-          (mapcar #'(lambda (prop) (gen-add-action prop))
-                  props)))
+                                         (occ-get-property (occ-obj-ctx obj) prop)))))
+   (remove nil
+           (mapcar #'(lambda (prop) (funcall gen-add-action prop))
+                   props))))
 
 (cl-defmethod occ-gen-methods-for-remove ((obj occ-obj-ctx-tsk))
   (let ((props (occ-properties-to-edit obj))
         (gen-remove-action
          #'(lambda (prop)
              (occ-gen-method-if-required obj prop 'remove
-                                         (occ-get-property (occ-obj-ctx obj) prop))))))
-  (remove nil
-          (mapcar #'(lambda (prop) (gen-remove-action prop))
-                  props)))
+                                         (occ-get-property (occ-obj-ctx obj) prop)))))
+   (remove nil
+           (mapcar #'(lambda (prop) (funcall gen-remove-action prop))
+                   props))))
 
 
 (cl-defmethod occ-gen-methods-for-add-remove ((obj occ-obj-ctx-tsk))
