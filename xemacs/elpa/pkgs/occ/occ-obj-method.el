@@ -74,11 +74,11 @@
              (helm
               (helm-build-sync-source "edit"
                 :candidates (append
+                             '(("Continue" . t)
+                               ("Checkout" . checkout))
                              (apply #'occ-gen-params tsk ops)
-                             (occ-gen-edits-for-add obj :param-only t)
+                             (occ-gen-edits-for-add obj :param-only t)))))))
                              ;; (occ-checkout obj)
-                             '(("Checkout" . checkout)
-                               ("Continue" . t))))))))
       (if (eq retval t)
           t
         (prog1
