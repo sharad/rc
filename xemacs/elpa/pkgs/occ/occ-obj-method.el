@@ -71,7 +71,6 @@
         (ctx (occ-obj-ctx obj)))
     (let ((retval
            (helm-timed 7
-             (occ-debug :debug "running sacha/helm-select-clock")
              (helm
               (helm-build-sync-source "edit"
                 :candidates (append
@@ -80,13 +79,11 @@
                              ;; (occ-checkout obj)
                              '(("Checkout" . checkout)
                                ("Continue" . t))))))))
-      (when nil
-       (if (eq retval t)
+      (if (eq retval t)
           t
-         (prog1
-             nil
-           (apply #'occ-editprop obj retval))))
-      retval)))
+        (prog1
+            nil
+          (apply #'occ-editprop obj retval))))))
 
 (cl-defmethod occ-edit-until-associable ((obj occ-ctxual-tsk))
   (let ((retval nil))
@@ -100,10 +97,12 @@
   (let*  ((curr-tsk        (occ-current-tsk))
           (ctxual-curr-tsk (occ-build-ctxual-tsk-with curr-tsk obj)))
     (if (and
+         (not
+          (occ-clock-marker-unnamed-clock-p))
          ctxual-curr-tsk
          (not (occ-associable-p ctxual-curr-tsk)))
-        (occ-edit-until-associable ctxual-curr-tsk))))
-
+        (occ-edit-until-associable ctxual-curr-tsk)
+      t)))
 ;; (occ-edit-properties (occ-current-ctxual-tsk) '(timebeing add 10))
 
 
@@ -185,6 +184,10 @@
                                      (prev occ-ctx))
   (not              ;BUG: Reconsider whether it is catching case after some delay.
    (equal curr prev)))
+
+(cl-defmethod occ-try-to-clock-in-p ((curr occ-ctx)
+                                     (prev null))
+  t)
 
 (defvar occ-clock-in-ctx-auto-select-if-only t)
 

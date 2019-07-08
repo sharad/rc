@@ -261,6 +261,10 @@
                                          (ctx occ-ctx))
   (debug))
 
+(cl-defmethod occ-build-ctxual-tsk-with ((tsk null) ;ctor
+                                         (ctx occ-ctx))
+  nil)
+
 (cl-defmethod occ-make-ctxual-tsk ((obj occ-ctsk)
                                    &optional
                                    rank)
