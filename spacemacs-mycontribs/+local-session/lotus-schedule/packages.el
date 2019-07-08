@@ -242,8 +242,9 @@ Each entry is either:
               (defun lotus-midnight-include-occ-files-in-never-kill ()
                 (dolist (f (occ-files))
                   (let ((fbuff (find-buffer-visiting f)))
-                    (pushnew (buffer-name fbuff)
-                             (add-to-list 'clean-buffer-list-kill-never-buffer-names el)))))
+                    (add-to-list
+                     'clean-buffer-list-kill-never-buffer-names
+                     (buffer-name fbuff)))))
 
               (occ-run-with-global-tsk-collection
                #'lotus-midnight-include-occ-files-in-never-kill))))
@@ -268,6 +269,8 @@ Each entry is either:
            lotus-clean-buffer-list-kill-regexps '("\\`\\*Customize .*\\*\\'"
                                                   "\\`\\*\\(Wo\\)?Man .*\\*\\'"
                                                   "\.*.org\\'"
+                                                  "\.*.lisp\\'"
+                                                  "\.*.sch\\'"
                                                   "\.*.xml\\'"
                                                   "\.*.sh\\'"
                                                   "\.*.h\\'"
@@ -288,7 +291,6 @@ Each entry is either:
 
         (dolist (el lotus-clean-buffer-list-kill-regexps)
           ;; """\\`*.org\\'"      ;all org files TODO only required.
-
           (add-to-list 'clean-buffer-list-kill-regexps el))
 
         (dolist (el lotus-clean-buffer-list-kill-never-buffer-names)

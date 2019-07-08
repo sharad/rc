@@ -374,7 +374,7 @@
 
 (defun lotus-emacs-user-init-begin ()
   (message "loading lotus-emacs-user-init-begin begin")
-  (debug-on-entry 'org-mode)
+  ;; (debug-on-entry 'org-mode)
   (let ((osetup
          (expand-file-name
           ".repos/git/main/resource/userorg/main/readwrite/public/user/osetup" "~")))

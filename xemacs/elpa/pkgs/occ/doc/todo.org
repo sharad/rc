@@ -96,3 +96,6 @@
 ** NEXT Fast clocking/child clocking with property addition like fast property addition
 ** NEXT Resolve clock occ integration
 ** NEXT Rich menu with many class todo info note etc for capture
+** setup occ buffer with necessary hooks and cleanup etc
+** SCHEDULE and DEADLINE should only be enforced on non-repeatitive task.
+

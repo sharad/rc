@@ -499,29 +499,39 @@
 
                  ("~/org/review/month.html"))))))))
 
+    (progn
+      ;; * http://orgmode.org/worg/agenda-optimization.html
+      ;;
+      ;; * Inhibit startup when preparing agenda buffers.
+      ;; When this variable is t, the initialization of the Org agenda
+      ;; buffers is inhibited: e.g. the visibility state is not set, the
+      ;; tables are not re-aligned, etc.
+      ;;
+      ;; (setq org-agenda-inhibit-startup t)
+      (setq org-agenda-inhibit-startup t))
 
-
-    (setq
-     org-columns-default-format-org "%25ITEM %TODO %3PRIORITY %TAGS"
-     org-columns-default-format     "%TODO %70ITEM(Task) %8Effort(Effort){:} %8CLOCKSUM{:} %8CLOCKSUM_T(Today){:} %CLOSED")
-
-    (defun org-reset-agenda-files ()
-      (interactive)
+    (progn
       (setq
-       org-agenda-files (directory-files-recursive
-                         (expand-file-name
-                          "~/Documents/CreatedContent/contents/virtual/org/default")
-                         "\\.org$"
-                         2
-                         "\\(rip\\|stage\\)")))
+       org-columns-default-format-org "%25ITEM %TODO %3PRIORITY %TAGS"
+       org-columns-default-format     "%TODO %70ITEM(Task) %8Effort(Effort){:} %8CLOCKSUM{:} %8CLOCKSUM_T(Today){:} %CLOSED"))
 
-    ;; (org-reset-agenda-files)
-    ;; http://orgmode.org/worg/agenda-optimization.html
-    ;; (setq org-agenda-inhibit-startup t)
+    (progn
+      (use-package occ
+        :defer t
+        :config
+        (progn
+          (defun org-reset-agenda-files ()
+            (interactive)
+            ;; (setq
+            ;;  org-agenda-files (directory-files-recursive
+            ;;                    (expand-file-name
+            ;;                     "~/Documents/CreatedContent/contents/virtual/org/default")
+            ;;                    "\\.org$"
+            ;;                    2
+            ;;                    "\\(rip\\|stage\\)"))
+            (setq org-agenda-files (occ-files)))
 
-    (progn)))
-
-
+          (org-reset-agenda-files))))))
 
 (defun lotus-orgmode-config/post-init-ob-tangle ()
   (progn
