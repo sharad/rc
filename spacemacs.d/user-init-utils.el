@@ -374,6 +374,7 @@
 
 (defun lotus-emacs-user-init-begin ()
   (message "loading lotus-emacs-user-init-begin begin")
+  (debug-on-entry 'org-mode)
   (let ((osetup
          (expand-file-name
           ".repos/git/main/resource/userorg/main/readwrite/public/user/osetup" "~")))
@@ -480,7 +481,7 @@
 
 
   (when (require 'cl nil) ; a rare necessary use of REQUIRE
-    ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
+                                        ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
     (defvar *emacs-load-start* (current-time)))
 
   (defconst *work-dir*

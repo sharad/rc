@@ -28,6 +28,7 @@
 
 
 (require 'occ-obj-ctor)
+(require 'occ-util-common)
 
 
 (defun occ-list-tsk-build (&optional
@@ -38,6 +39,7 @@
     (with-current-buffer (if file
                              (find-file-noselect file)
                            (current-buffer))
+      (occ-setup-buffer)
       (if file (goto-char (point-min)))
       (cons entry
             (org-map-entries tsk-builder t file)))))

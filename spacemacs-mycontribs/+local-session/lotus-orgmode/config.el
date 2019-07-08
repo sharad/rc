@@ -57,9 +57,10 @@
 
     (progn
       (with-eval-after-load "org-publishing"
-        (setq
-         org-directory          (org-publish-get-attribute "notes" "org" :base-directory)
-         org-default-notes-file (expand-file-name "notes.org" org-directory))))
+        (let ((publish-dir (org-publish-get-attribute "notes" "org" :base-directory)))
+          (setq
+           org-directory          publish-dir
+           org-default-notes-file (expand-file-name "notes.org" publish-dir)))))
     (progn
       (setq org-log-into-drawer "LOGBOOK"))
     (progn
@@ -75,16 +76,16 @@
          (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(C@/!)" "PHONE" "MEETING"))
 
        org-todo-keyword-faces ;; http://doc.norang.ca/org-mode.html#sec-5
-       '(("TODO" :foreground "red" :weight bold)
-         ("STARTED" :foreground "red" :weight bold)
-         ("NEXT" :foreground "blue" :weight bold)
-         ("DONE" :foreground "forest green" :weight bold)
-         ("CLOSED" :foreground "forest green" :weight bold)
-         ("WAITING" :foreground "orange" :weight bold)
-         ("HOLD" :foreground "magenta" :weight bold)
+       '(("TODO"      :foreground "red"          :weight bold)
+         ("STARTED"   :foreground "red"          :weight bold)
+         ("NEXT"      :foreground "blue"         :weight bold)
+         ("DONE"      :foreground "forest green" :weight bold)
+         ("CLOSED"    :foreground "forest green" :weight bold)
+         ("WAITING"   :foreground "orange"       :weight bold)
+         ("HOLD"      :foreground "magenta"      :weight bold)
          ("CANCELLED" :foreground "forest green" :weight bold)
-         ("MEETING" :foreground "forest green" :weight bold)
-         ("PHONE" :foreground "forest green" :weight bold))))
+         ("MEETING"   :foreground "forest green" :weight bold)
+         ("PHONE"     :foreground "forest green" :weight bold))))
 
     (progn ;; "url"
       ;; http://orgmode.org/worg/org-hacks.html
@@ -121,11 +122,11 @@
 
     (progn ;; "babel"
       ;; http://draketo.de/book/export/html/41
-      ; And add babel inline code execution
-      ; babel, for executing code in org-mode.
+                                        ; And add babel inline code execution
+                                        ; babel, for executing code in org-mode.
       (org-babel-do-load-languages
        'org-babel-load-languages
-       ; load all language marked with (lang . t).
+                                        ; load all language marked with (lang . t).
        '((C . t)
          ;; (R . t)
          (asymptote)
@@ -213,8 +214,8 @@
                       (if (find-buffer-visiting f)
                           (with-current-buffer (find-buffer-visiting f)
                             (setq buffer-read-only t
-                                  view-read-only t
-                                  view-mode t)))))))
+                                  view-read-only   t
+                                  view-mode        t)))))))
 
       (defun org-template-set-file-writable (xfile)
         (if (consp xfile)
@@ -287,8 +288,8 @@
     (progn
       ;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
       (setq
-       org-refile-use-outline-path 'file ;; default nil
-       org-outline-path-complete-in-steps nil ;; default t
+       org-refile-use-outline-path            'file ;; default nil
+       org-outline-path-complete-in-steps     nil   ;; default t
        org-refile-allow-creating-parent-nodes 'confirm)) ;; default nil
 
 
@@ -296,14 +297,14 @@
     (progn
       ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org0c5d380
       (setq
-       org-expiry-inactive-timestamps t
-       org-clock-idle-time 5
-       org-log-done 'time
-       org-clock-continuously nil
-       org-clock-persist t
-       org-clock-in-switch-to-state "STARTED"
-       org-clock-in-resume nil
-       org-show-notification-handler nil ; must be nil
+       org-expiry-inactive-timestamps         t
+       org-clock-idle-time                    5
+       org-log-done                           'time
+       org-clock-continuously                 nil
+       org-clock-persist                      t
+       org-clock-in-switch-to-state           "STARTED"
+       org-clock-in-resume                    nil
+       org-show-notification-handler          nil ; must be nil
        org-clock-report-include-clocking-task t))
 
     (progn
@@ -398,8 +399,8 @@
      '("c" . "My Custom Agendas")
      '("cu" "Unscheduled TODO"
        ((todo ""
-         ((org-agenda-overriding-header "\nUnscheduled TODO")
-          (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp)))))
+              ((org-agenda-overriding-header "\nUnscheduled TODO")
+               (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp)))))
        nil
        nil))
 
@@ -407,99 +408,98 @@
 
     (when nil                     ;moved to lotus-publishing
       (use-package publishing
-          :defer t
-          :config
-          (progn
-            (let ((task-dir
-                   (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))))
-              (when (file-directory-p task-dir)
-                (add-to-org-agenda-custom-commands
-                 `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
-                   "Meru Today" ;;  search ""
-                   ((agenda ""
-                            ((org-agenda-span 'day)
-                             (org-agenda-prefix-format  "%e")))
-                    (org-agenda-files
-                     ',(directory-files-recursive task-dir
-                                                  "\\.org$" 2 "\\(rip\\|stage\\)"))
-                    ;; (org-agenda-sorting-strategy '(priority-up effort-down))
-                    )
-                   ;; ("~/computer.html")
-                   ))))))
-      )
+        :defer t
+        :config
+        (progn
+          (let ((task-dir
+                 (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))))
+            (when (file-directory-p task-dir)
+              (add-to-org-agenda-custom-commands
+               `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
+                 "Meru Today" ;;  search ""
+                 ((agenda ""
+                          ((org-agenda-span 'day)
+                           (org-agenda-prefix-format  "%e")))
+                  (org-agenda-files
+                   ',(directory-files-recursive task-dir
+                                                "\\.org$" 2 "\\(rip\\|stage\\)"))))))))))
+    ;; (org-agenda-sorting-strategy '(priority-up effort-down))
+
+    ;; ("~/computer.html")
+
+
 
     (progn ;; "Review Aganda" ;;http://stackoverflow.com/a/22440571
       ;; define "R" as the prefix key for reviewing what happened in various
       ;; time periods
       (add-to-org-agenda-custom-commands
-       '("R" . "Review" ))
+       '("R" . "Review"))
 
       (when nil                     ;moved to lotus-publishing
-        (use-package publishing
-            :defer t
-            :config
-            (progn
-              (progn ;; "org-publishing"
+        (use-package org-publishing
+          :defer t
+          :config
+          (progn
+            (progn ;; "org-publishing"
 
-                ;; COMMON settings for all reviews
-                (setq efs/org-agenda-review-settings
-                      `((org-agenda-files
-                         ',(let ((task-dir (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))))
-                             (if (file-directory-p task-dir)
-                                 (directory-files-recursive
-                                  task-dir
-                                  "\\.org$" 2 "\\(rip\\|stage\\)"))))
-                        (org-agenda-show-all-dates t)
-                        (org-agenda-start-with-log-mode t)
-                        (org-agenda-start-with-clockreport-mode t)
-                        (org-agenda-archives-mode t)
-                        ;; I don't care if an entry was archived
-                        (org-agenda-hide-tags-regexp
-                         (concat org-agenda-hide-tags-regexp
-                                 "\\|ARCHIVE"))
-                        ))
+              ;; COMMON settings for all reviews
+              (setq efs/org-agenda-review-settings
+                    `((org-agenda-files
+                       ',(let ((task-dir (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))))
+                           (if (file-directory-p task-dir)
+                               (directory-files-recursive
+                                task-dir
+                                "\\.org$" 2 "\\(rip\\|stage\\)"))))
+                      (org-agenda-show-all-dates t)
+                      (org-agenda-start-with-log-mode t)
+                      (org-agenda-start-with-clockreport-mode t)
+                      (org-agenda-archives-mode t)
+                      ;; I don't care if an entry was archived
+                      (org-agenda-hide-tags-regexp
+                       (concat org-agenda-hide-tags-regexp
+                               "\\|ARCHIVE"))))
 
 
-                ;; Show the agenda with the log turn on, the clock table show and
-                ;; archived entries shown.  These commands are all the same exept for
-                ;; the time period.
-                (add-to-org-agenda-custom-commands
-                 `("Rw" "Week in review"
-                        agenda ""
-                        ;; agenda settings
-                        ,(append
-                          efs/org-agenda-review-settings
-                          '((org-agenda-span 'week)
-                            (org-agenda-start-on-weekday 0)
-                            (org-agenda-overriding-header "Week in Review"))
-                          )
-                        ("~/org/review/week.html")))
+              ;; Show the agenda with the log turn on, the clock table show and
+              ;; archived entries shown.  These commands are all the same exept for
+              ;; the time period.
+              (add-to-org-agenda-custom-commands
+               `("Rw" "Week in review"
+                 agenda ""
+                 ;; agenda settings
+                 ,(append
+                   efs/org-agenda-review-settings
+                   '((org-agenda-span 'week)
+                     (org-agenda-start-on-weekday 0)
+                     (org-agenda-overriding-header "Week in Review")))
 
-                (add-to-org-agenda-custom-commands
-                 `("Rd" "Day in review"
-                        agenda ""
-                        ;; agenda settings
-                        ,(append
-                          efs/org-agenda-review-settings
-                          '((org-agenda-span 'day)
-                            (org-agenda-overriding-header "Week in Review"))
-                          )
-                        ("~/org/review/day.html")))
+                 ("~/org/review/week.html")))
 
-                (add-to-org-agenda-custom-commands
-                 `("Rm" "Month in review"
-                        agenda ""
-                        ;; agenda settings
-                        ,(append
-                          efs/org-agenda-review-settings
-                          '((org-agenda-span 'month)
-                            (org-agenda-start-day "01")
-                            (org-read-date-prefer-future nil)
-                            (org-agenda-overriding-header "Month in Review"))
-                          )
-                        ("~/org/review/month.html")))))))
+              (add-to-org-agenda-custom-commands
+               `("Rd" "Day in review"
+                 agenda ""
+                 ;; agenda settings
+                 ,(append
+                   efs/org-agenda-review-settings
+                   '((org-agenda-span 'day)
+                     (org-agenda-overriding-header "Week in Review")))
 
-      )
+                 ("~/org/review/day.html")))
+
+              (add-to-org-agenda-custom-commands
+               `("Rm" "Month in review"
+                 agenda ""
+                 ;; agenda settings
+                 ,(append
+                   efs/org-agenda-review-settings
+                   '((org-agenda-span 'month)
+                     (org-agenda-start-day "01")
+                     (org-read-date-prefer-future nil)
+                     (org-agenda-overriding-header "Month in Review")))
+
+                 ("~/org/review/month.html"))))))))
+
+
 
     (setq
      org-columns-default-format-org "%25ITEM %TODO %3PRIORITY %TAGS"
@@ -515,13 +515,13 @@
                          2
                          "\\(rip\\|stage\\)")))
 
-    (org-reset-agenda-files)
+    ;; (org-reset-agenda-files)
+    ;; http://orgmode.org/worg/agenda-optimization.html
+    ;; (setq org-agenda-inhibit-startup t)
+
+    (progn)))
 
 
-    (setq
-     ;; http://orgmode.org/worg/agenda-optimization.html
-     ;; org-agenda-inhibit-startup t
-     )))
 
 (defun lotus-orgmode-config/post-init-ob-tangle ()
   (progn

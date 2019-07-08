@@ -241,6 +241,19 @@
         (occ-debug :debug "file %s not resetting global-tsk-collection" file)))))
 
 
+(defun occ-warn-on-buffer-kill ()
+  (let ((curr-buff (current-buffer)))
+    (if (memq curr-buff
+              (mapcar #'find-buffer-visiting (occ-files)))
+        (y-or-n-p (format "%s is being used in occ, should kill it." (current-buffer)))
+      t)))
+
+(defun occ-setup-buffer ()
+  ;; BUG: do necessary steps for occ-buffers
+  (add-hook 'kill-buffer-query-functions
+            'occ-warn-on-buffer-kill t t))
+
+
 ;;;###autoload
 (defun occ-run-with-global-tsk-collection (fn)
   (if occ-global-tsk-collection

@@ -257,11 +257,8 @@ If not, show simply the clocked time like 01:50."
 
 (defun org-clock-monitor-files-add-files (&rest monitor-files)
   ;; (interactive "Dadd org clock monitor files: ")
-  (setq
-   org-clock-monitor-files
-   (append
-    org-clock-monitor-files
-    monitor-files)))
+  (dolist (f monitor-files)
+    (pushnew f org-clock-monitor-files)))
 
 ;;;###autoload
 (defun org-clock-work-day-update-mode-line-internal (&optional force)

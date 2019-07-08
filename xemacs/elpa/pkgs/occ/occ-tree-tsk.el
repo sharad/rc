@@ -27,6 +27,7 @@
 (provide 'occ-tree-tsk)
 
 
+(require 'occ-util-common)
 (require 'occ-tree)
 (require 'occ-obj-ctor)
 
@@ -83,6 +84,7 @@
    (with-current-buffer (if file
                             (find-file-noselect file)
                           (current-buffer))
+     (occ-setup-buffer)
      (if file (goto-char (point-min)))
      (let ((entry         (funcall tsk-builder))
            (subtree-level (if subtree-level subtree-level 0)))

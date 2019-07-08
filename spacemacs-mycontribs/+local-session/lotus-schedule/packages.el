@@ -235,6 +235,21 @@ Each entry is either:
       (progn
 
         (progn
+          (use-package occ
+            :defer t
+            :config
+            (progn
+              (defun lotus-midnight-include-occ-files-in-never-kill ()
+                (dolist (f (occ-files))
+                  (let ((fbuff (find-buffer-visiting f)))
+                    (pushnew (buffer-name fbuff)
+                             (add-to-list 'clean-buffer-list-kill-never-buffer-names el)))))
+
+              (occ-run-with-global-tsk-collection
+               #'lotus-midnight-include-occ-files-in-never-kill))))
+
+        (progn
+          ;; BUG: arrange not to kill occ-files
           (setq                           ;;never kill these
            lotus-clean-buffer-list-kill-never-regexps      '("\\` \\*Minibuf-.*\\*\\'")
            lotus-clean-buffer-list-kill-never-buffer-names '(
@@ -252,8 +267,12 @@ Each entry is either:
           (setq                           ;;do kill these
            lotus-clean-buffer-list-kill-regexps '("\\`\\*Customize .*\\*\\'"
                                                   "\\`\\*\\(Wo\\)?Man .*\\*\\'"
-                                                  "\.*.cpp\\'"
+                                                  "\.*.org\\'"
+                                                  "\.*.xml\\'"
+                                                  "\.*.sh\\'"
                                                   "\.*.h\\'"
+                                                  "\.*.c\\'"
+                                                  "\.*.cpp\\'"
                                                   "\.*.js\\'"
                                                   "\.*.el\\'")
            lotus-clean-buffer-list-kill-buffer-names '("*buffer-selection*"
@@ -283,9 +302,9 @@ Each entry is either:
         (setq
          clean-buffer-list-delay-general 1       ;day
          ;; clean-buffer-list-delay-special (* 3 60 60)
-         clean-buffer-list-delay-special (* 1 60 60)) ;hour min sec
+         clean-buffer-list-delay-special (* 1 60 60))) ;hour min sec
 
-        )
+
 
 
 

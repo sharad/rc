@@ -389,6 +389,20 @@ Each entry is either:
       :commands (org-clock-work-day-mode-line-add)
       :config
       (progn
+        (use-package occ
+          :defer t
+          :config
+          (progn
+            (defun lotus-day-summary-add-occ-files ()
+              (dolist (f (occ-files))
+                (org-clock-monitor-files-add-files f))
+              (org-clock-work-day-mode-line-add t))
+
+            (lotus-day-summary-add-occ-files)
+
+            (occ-run-with-global-tsk-collection
+             #'lotus-day-summary-add-occ-files)))
+
         (use-package publishing
           :defer t
           :config
@@ -412,7 +426,7 @@ Each entry is either:
                              (unnamed-file (expand-file-name "../Unnamed.org" monitor-dir)))
                         (if (file-directory-p monitor-dir)
                             (progn
-                              (org-clock-monitor-files-set-from-dir monitor-dir)
+                              ;; (org-clock-monitor-files-set-from-dir monitor-dir)
                               (when (file-exists-p unnamed-file)
                                 (org-clock-monitor-files-add-files unnamed-file))
                               (org-clock-work-day-mode-line-add t))
@@ -429,7 +443,7 @@ Each entry is either:
                                   (unnamed-file (expand-file-name "../Unnamed.org" monitor-dir)))
                              (if (file-directory-p monitor-dir)
                                  (progn
-                                   (org-clock-monitor-files-set-from-dir monitor-dir)
+                                   ;; (org-clock-monitor-files-set-from-dir monitor-dir)
                                    (when (file-exists-p unnamed-file)
                                      (org-clock-monitor-files-add-files unnamed-file))
                                    (org-clock-work-day-mode-line-add t))
@@ -462,7 +476,7 @@ Each entry is either:
                                     (unnamed-file (expand-file-name "../Unnamed.org" monitor-dir)))
                                (if (file-directory-p monitor-dir)
                                    (progn
-                                     (org-clock-monitor-files-set-from-dir monitor-dir)
+                                     ;; (org-clock-monitor-files-set-from-dir monitor-dir)
                                      (when (file-exists-p unnamed-file)
                                        (org-clock-monitor-files-add-files unnamed-file))
                                      (org-clock-work-day-mode-line-add t))
