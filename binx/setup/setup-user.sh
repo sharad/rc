@@ -13,6 +13,8 @@
 ## parted
 
 
+# BUG: ~/.setup/.config/dirs.d/home.d/ is wrongly getting created.
+
 DEBUG=1
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 
