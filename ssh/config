@@ -85,3 +85,9 @@ Host  qa-private-pontiac-* internal-x*
      ProxyCommand ssh -q -W $(resolveip %h):%p qa-private-pontiac
 
 ##finish via2
+
+
+
+
+Host ayanbuild.merunetworks.com
+     hostname ayan-build.merunetworks.com

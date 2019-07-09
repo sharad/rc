@@ -7,9 +7,13 @@ var bookmark_groups = {
         "https://www.mojarto.com/blogs/top-6-krishna-artworks-for-your-walls-this-janmashtami?pfrom=home-specialprojects",
     ],
     "Business": [
+        "https://wikifinancepedia.com/finance/top-10-best-financial-websites-india",
         "https://www.bloombergquint.com",
         "https://www.bloomberg.com",
+        "https://www.wsj.com/",
         "https://www.bbc.com/news/business",
+        "https://www.ndtv.com/business",
+        "https://economictimes.indiatimes.com",
     ],
     "Crypto": [
         "http://news.mit.edu/topic/cryptography",
