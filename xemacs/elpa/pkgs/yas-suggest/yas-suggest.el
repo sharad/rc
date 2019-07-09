@@ -26,12 +26,29 @@
 
 ;; Commentary:
 
-
-
-
 (provide 'yas-suggest)
+
 
-;;{{
+(require yasnippet)
+
+
+;; from http://www.lothar.com/blog/2-emacs/
+(defun char-isalpha-p (thechar)
+  "Check to see if thechar is a letter"
+  (and (or (and (>= thechar ?a)
+                (<= thechar ?z))
+           (and (>= thechar ?A)
+                (<= thechar ?Z)))))
+
+(defun char-isnum-p (thechar)
+  "Check to see if thechar is a number"
+  (and (>= thechar ?0) (<= thechar ?9)))
+
+(defun char-isalnum-p (thechar)
+  (or (char-isalpha-p thechar)
+      (char-isnum-p thechar)))
+
+
 ;; /usr/share/emacs23/site-lisp/dictionaries-common/flyspell.el
 (defun yas/expandable-at-point ()
   "Return non-nil if a snippet can be expanded here."
@@ -64,8 +81,7 @@ the template of a snippet in the current snippet-table."
         (skip-syntax-backward syntax)
         (setq start (point))
         (skip-syntax-forward syntax)
-        (setq end (point))
-        )
+        (setq end (point)))
       ;; (message "start %d end %d" start end)
       (setq templates
             (mapcan #'(lambda (table)
@@ -123,10 +139,7 @@ Mostly we check word delimiters."
        (and pc
             (char-isalnum-p pc)))
      (let ((con (yas/current-key-0)))
-       (when (car con)
-         (cdr con)))
-     ;; 'aaa
-     )))
+       (when (consp con) (cdr con))))))
 
 (defun yas-post-command-hook ()
   "The `post-command-hook' used by flyspell to check a word on-the-fly."
@@ -181,23 +194,26 @@ for the overlay."
     ;;        (overlay-put overlay 'after-string
     ;;                     flyspell-after-incorrect-word-string)))
     overlay))
-  ;;}}
+
 
 (define-minor-mode yas-suggest-mode
-    "Prepare for working with collarative office project."
+  "Prepare for working with collarative office project."
   :init-value 1
   :lighter " yas/sugg" ;; " rl"
   :global nil
   (if yas-suggest-mode
       (add-hook 'post-command-hook (function yas-post-command-hook) t)
-      (progn
-        (dolist (o yas-overlays)
-          (delete-overlay o))
-        (setq yas-overlays nil)
-        (remove-hook 'post-command-hook (function yas-post-command-hook) t))))
+    (progn
+      (dolist (o yas-overlays)
+        (delete-overlay o))
+      (setq yas-overlays nil)
+      (remove-hook 'post-command-hook (function yas-post-command-hook) t))))
 
 (defun yas-suggest-activate ()
   (yas-suggest-mode 1))
 
+;;;###autoload
 (add-element-to-lists 'yas-suggest-activate pgm-langs)
 ;; (remove-element-from-lists 'yas-suggest-activate pgm-langs)
+
+;; yas-suggest.el ends here
