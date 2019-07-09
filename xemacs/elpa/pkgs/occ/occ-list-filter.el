@@ -35,6 +35,7 @@
 (require 'occ-print)
 (require 'occ-predicate)
 (require 'occ-rank)
+(require 'occ-statistics)
 
 
 (defvar occ-filters-plist nil)
