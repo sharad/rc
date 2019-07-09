@@ -146,6 +146,8 @@
 
 (defun occ-match-filters () '(:positive :mutual-deviation))
 
-(defun occ-never-filters () '(:nonnegative))
+(defun occ-never-filters ()
+  "Used to filter mainly non-tsk"
+  '(:nonnegative))
 
 ;;; occ-list-filter.el ends here

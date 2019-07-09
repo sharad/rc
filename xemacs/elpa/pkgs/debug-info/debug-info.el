@@ -96,6 +96,8 @@
       (process-monitor-memory-usage-stop pid))))
 
 (defun process-attrib-diff (alist)
+  ;; TODO: Create a diff function and use it in process-check-mem-usage-diff function and notify-memory-usage macro.
+  "Diff function."
   ())
 
 ;;;###autoload
