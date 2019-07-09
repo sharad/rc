@@ -460,12 +460,15 @@
   (lotus-powerline-attrib-reset))
 
 
+(add-hook 'after-make-frame-functions
+          #'(lambda (frame)
+              (set-default-face-height-by-resolution)) t)
 (when nil
- (add-hook 'after-make-frame-functions
-           #'(lambda (frame)
-               ;; (set-default-face-height-by-resolution)
-               (lotus-appearance-reset)
-               (lotus-appearance-setup))
-           t))
+  (add-hook 'after-make-frame-functions
+            #'(lambda (frame)
+                ;; (set-default-face-height-by-resolution)
+                (lotus-appearance-reset)
+                (lotus-appearance-setup))
+            t))
 
 ;;; config.el ends here
