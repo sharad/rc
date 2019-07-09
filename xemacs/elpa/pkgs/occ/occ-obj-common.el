@@ -162,5 +162,4 @@
      (cl-method-param-case method-sig1))))
 
 
-
 ;;; occ-obj-common.el ends here

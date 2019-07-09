@@ -30,63 +30,60 @@
 ;; https://www.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/mean-median-basics/a/mean-median-and-mode-review
 ;; https://www150.statcan.gc.ca/n1/edu/power-pouvoir/ch12/5214891-eng.htm
 
-(defun occ-stats-max (num &rest nums)
-  (apply #'max num nums))
+(defun occ-stats-max (&rest nums)
+  (apply #'max nums))
 
-(defun occ-stats-min (num &rest nums)
-  (apply #'min num nums))
+(defun occ-stats-min (&rest nums)
+  (apply #'min nums))
 
-(defun occ-stats-range (num &rest nums)
-  (let ((nums (cons num nums)))
-    (-
-     (apply #'occ-stats-max nums)
-     (apply #'occ-stats-min nums))))
+(defun occ-stats-range (&rest nums)
+  (-
+   (apply #'occ-stats-max nums)
+   (apply #'occ-stats-min nums)))
 
-(defun occ-stats-aggregate (num &rest nums)
-  (let ((nums (cons num nums)))
-    (apply #'+ nums)))
+(defun occ-stats-aggregate (&rest nums)
+  (apply #'+ nums))
 
-(defun occ-stats-mean (num &rest nums)
-  (let ((nums (cons num nums)))
-    (if (> (length nums) 0)
-        (/
-         (apply #'occ-stats-aggregate nums)
-         (length nums))
-      0)))
+(defun occ-stats-mean (&rest nums)
+  (if (> (length nums) 0)
+      (/
+       (apply #'occ-stats-aggregate nums)
+       (length nums))
+    0))
+(defun occ-stats-average (&rest nums)
+  (apply #'occ-stats-mean nums))
 
-(defun occ-stats-median (num &rest nums)
-  (let ((nums (cons num nums)))
-    (let ((nums   (sort nums #'<))
-          (length (length nums)))
-      (if (evenp length)
-          (occ-stats-mean
-           (nth (1- (/ length 2)) nums)
-           (nth (/ length 2)      nums))
-        (nth (/ (1- length) 2) nums)))))
+(defun occ-stats-median (&rest nums)
+  (let ((nums   (sort nums #'<))
+        (length (length nums)))
+    (if (evenp length)
+        (occ-stats-mean
+         (nth (1- (/ length 2)) nums)
+         (nth (/ length 2)      nums))
+      (nth (/ (1- length) 2) nums))))
 
-(defun occ-stats-mode (num &rest nums)
+(defun occ-stats-mode (&rest nums)
   ;; https://stackoverflow.com/questions/6050033/elegant-way-to-count-items
-  (let ((nums (cons num nums)))
+  (let ((num-pairs
+         (reduce
+          #'(lambda (r e)
+              (if (and r (= (caar r) e))
+                  (cons
+                   (cons (caar r) (1+ (cdar r)))
+                   (cdr r))
+                (cons (cons e  1) r)))
+          (sort nums #'>)
+          :initial-value nil)))
     (let ((num-pairs
-           (reduce
-            #'(lambda (r e)
-                (if (and r (= (caar r) e))
-                    (cons
-                     (cons (caar r) (1+ (cdar r)))
-                     (cdr r))
-                  (cons (cons e  1) r)))
-            (sort nums #'>)
-            :initial-value nil)))
-      (let ((num-pairs
-             (sort num-pairs
-                   #'(lambda (a b)
-                       (> (cdr a) (cdr b))))))
-        (mapcar
-         #'car
-         (remove-if-not
-          #'(lambda (pair)
-              (= (cdr pair) (cdar num-pairs)))
-          num-pairs))))))
+           (sort num-pairs
+                 #'(lambda (a b)
+                     (> (cdr a) (cdr b))))))
+      (mapcar
+       #'car
+       (remove-if-not
+        #'(lambda (pair)
+            (= (cdr pair) (cdar num-pairs)))
+        num-pairs)))))
 
 (defun occ-stats-variance-internal (average &rest nums)
   (if (> (length nums) 0)
@@ -97,10 +94,8 @@
         (length nums)))
     0))
 
-(defun occ-stats-variance (num &rest nums)
-  (let ((nums (cons num nums)))
-    (occ-stats-variance-internal (occ-stats-average nums)
-                                 nums)))
+(defun occ-stats-variance (&rest nums)
+  (apply #'occ-stats-variance-internal (apply #'occ-stats-average nums) nums))
 
 (defun occ-stats-stddev-internal (average &rest nums)
   (if (> (length nums) 0)
@@ -111,10 +106,8 @@
         (length nums)))
     0))
 
-(defun occ-stats-stddev (num &rest nums)
-  (let ((nums (cons num nums)))
-    (occ-stats-stddev-internal (occ-stats-average nums)
-                               nums)))
+(defun occ-stats-stddev (&rest nums)
+  (apply #'occ-stats-stddev-internal (apply #'occ-stats-average nums) nums))
 
 
 (ert-deftest occ-test-stats-mode ()

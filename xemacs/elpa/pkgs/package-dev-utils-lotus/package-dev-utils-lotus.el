@@ -164,6 +164,7 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
 (defun package-load-package-from-dir (dir)
   (message "loading file from %s" dir)
   (let ((default-directory dir))
+    (add-to-list 'load-path dir)
     (dolist (file (directory-files-recursively dir ".el$"))
       (unless (or
                (string-match "^.*-pkg.el$" file)

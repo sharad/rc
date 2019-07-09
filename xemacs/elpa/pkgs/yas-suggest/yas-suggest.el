@@ -29,7 +29,7 @@
 (provide 'yas-suggest)
 
 
-(require yasnippet)
+(require 'yasnippet)
 
 
 ;; from http://www.lothar.com/blog/2-emacs/
@@ -213,7 +213,8 @@ for the overlay."
   (yas-suggest-mode 1))
 
 ;;;###autoload
-(add-element-to-lists 'yas-suggest-activate pgm-langs)
+(when (fboundp 'add-element-to-lists)
+  (add-element-to-lists 'yas-suggest-activate pgm-langs))
 ;; (remove-element-from-lists 'yas-suggest-activate pgm-langs)
 
-;; yas-suggest.el ends here
+;;; yas-suggest.el ends here

@@ -245,7 +245,7 @@
             (occ-debug :debug "occ-clock-in((obj occ-ctx)): calling occ-safe-ignore-quit-props-window-edit")
             (occ-message "occ-clock-in: Edit properties of a tsk to make associable to current context.")
             (occ-safe-ignore-quit-props-window-edit obj
-                                                    :filters            #'occ-list-filters
+                                                    :filters            (occ-list-filters)
                                                     :builder            #'occ-build-ctsk-with
                                                     :return-transform   return-transform ;Here caller know if return value is going to be used.
                                                     :action             action

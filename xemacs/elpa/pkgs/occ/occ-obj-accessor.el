@@ -293,6 +293,18 @@ pointing to it."
       (occ-obj-tsk curr-ctxual-tsk))))
 
 
+(defun occ-collection-object ()
+  (unless occ-global-tsk-collection
+    (if occ-global-tsk-collection-spec
+        (progn
+          (occ-make-tsk-collection occ-global-tsk-collection-spec)
+          (occ-collect-tsks occ-global-tsk-collection t))
+      (progn
+        (occ-message "occ-global-tsk-collection-spec is nil, set using occ-set-global-tsk-collection-spec")
+        (error "occ-global-tsk-collection-spec is nil"))))
+  occ-global-tsk-collection)
+
+
 ;; global-object - accessors
 (cl-defmethod occ-collect-tsks (collection
                                 &optional
@@ -417,15 +429,49 @@ pointing to it."
   (occ-list-collection-list occ-global-tsk-collection))
 
 
-(defun occ-collection-object ()
-  (unless occ-global-tsk-collection
-    (if occ-global-tsk-collection-spec
-        (progn
-          (occ-make-tsk-collection occ-global-tsk-collection-spec)
-          (occ-collect-tsks occ-global-tsk-collection t))
-      (progn
-        (occ-message "occ-global-tsk-collection-spec is nil, set using occ-set-global-tsk-collection-spec")
-        (error "occ-global-tsk-collection-spec is nil"))))
-  occ-global-tsk-collection)
+(cl-defmethod occ-collection-obj-list ((collection occ-collection)
+                                       (obj occ-ctx)
+                                       &key
+                                       builder)
+  "return CTSKs list"
+  (let ((builder (or builder #'occ-build-ctsk-with)))
+    (let ((ctsks
+            (occ-run-unobtrusively
+              (let ((tsks (occ-collect-list collection))) ;;????TODO
+                (when tsks
+                  (mapcar #'(lambda (tsk) (funcall builder tsk obj))
+                          tsks))))))
+       (unless (eq t ctsks)
+         ctsks))))
+
+(cl-defmethod occ-collection-obj-list ((collection occ-collection)
+                                       (obj null)
+                                       &key builder)
+  "return CTSKs list"
+  (occ-collection-obj-list collection
+                           (occ-make-ctx-at-point)
+                           :builder builder))
+
+
+;; http://sachachua.com/blog/2015/03/getting-helm-org-refile-clock-create-tasks/
+
+(cl-defgeneric occ-list (obj
+                         &key
+                         builder)
+  "occ-list")
+
+(cl-defmethod occ-list ((obj occ-ctx)
+                        &key
+                        builder)
+  "return CTXUAL-TSKs container"
+  (occ-collection-obj-list (occ-collection-object)
+                           obj
+                           :builder builder))
+
+(cl-defmethod occ-list ((obj null)
+                        &key builder)
+  "return TSKs container"
+  (occ-list (occ-make-ctx-at-point)
+            :builder builder))
 
 ;;; occ-obj-accessor.el ends here
