@@ -36,6 +36,7 @@
 
 (cl-defun occ-list-select-internal (candidates
                                     &key
+                                    unfiltered-count
                                     action
                                     action-transformer
                                     auto-select-if-only
@@ -49,19 +50,21 @@
              auto-select-if-only
              (= 1 (length candidates)))
             (let* ((candidate (car candidates))
-                   (action (car (funcall action-transformer action candidate)))
-                   (action (if (consp action) (cdr action) action)))
+                   (action    (car (funcall action-transformer action candidate)))
+                   (action    (if (consp action) (cdr action) action)))
               (funcall action candidate))
             (helm
              ;; :keymap occ-helm-map
              (occ-helm-build-candidates-source
               candidates
-              :action action
+              :unfiltered-count   unfiltered-count
+              :action             action
               :action-transformer action-transformer))))
     (occ-debug :debug "Running occ-sacha-helm-select1")))
 
 (cl-defun occ-list-select (candidates
                            &key
+                           unfiltered-count
                            action
                            return-transform
                            action-transformer
@@ -73,11 +76,12 @@
       (occ-debug :debug "running sacha/helm-select-clock")
       (let ((action             (if return-transform (occ-return-tranform action) action)) ;as return value is going to be used.
             (action-transformer (if return-transform (occ-return-tranformer-fun-transform action-transformer) action-transformer)))
-       (let ((selected (occ-list-select-internal candidates
-                                                 :action              action
-                                                 :action-transformer  action-transformer
-                                                 :auto-select-if-only auto-select-if-only
-                                                 :timeout             timeout)))
+        (let ((selected (occ-list-select-internal candidates
+                                                  :unfiltered-count   unfiltered-count
+                                                  :action              action
+                                                  :action-transformer  action-transformer
+                                                  :auto-select-if-only auto-select-if-only
+                                                  :timeout             timeout)))
          (occ-debug :debug "occ-list-select: selected = %s" selected)
          (if return-transform
              (or ;as return value is going to be used.
@@ -109,11 +113,14 @@
   (let ((action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
-    (let ((candidates (occ-filter obj
-                                  filters
-                                  :builder builder)))
-      (if candidates
-          (let ((retval (occ-list-select candidates
+    (let* ((candidates-unfiltered (occ-list obj :builder builder))
+           (unfiltered-count      (length candidates-unfiltered))
+           (candidates-filtered   (occ-filter obj
+                                              filters
+                                              candidates-unfiltered)))
+      (if candidates-filtered
+          (let ((retval (occ-list-select candidates-filtered
+                                         :unfiltered-count    unfiltered-count
                                          :return-transform    return-transform
                                          :action              action
                                          :action-transformer  action-transformer
@@ -125,7 +132,8 @@
         (prog1
             (when return-transform
               (occ-make-return occ-return-nocndidate-label nil))
-          (occ-message "occ-select((obj occ-ctx)): no candidates available."))))))
+          (occ-message "occ-select((obj occ-ctx)): no candidates available from %d."
+                       unfiltered-count))))))
 
 (cl-defmethod occ-select ((obj null)
                           &key

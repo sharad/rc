@@ -31,11 +31,13 @@
   `(let ((marker ,marker))
      (progn
        ,@body)))
+(put 'occ-with-marker 'lisp-indent-function 1)
 
 (defmacro occ-debug-return (label &rest body)
   `(let ((retval
           (progn ,@body)))
      (occ-message "%s: returns %s\n" ,label retval)))
+(put 'occ-debug-return 'lisp-indent-function 1)
 
 (defmacro occ-debug-return (label &rest body)
   `(progn ,@body))

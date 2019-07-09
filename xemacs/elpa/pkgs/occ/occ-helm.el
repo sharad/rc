@@ -192,15 +192,21 @@
 ;; add occ-child-clock-in in action
 
 
-(cl-defun occ-helm-build-candidates-source (candidates &key action action-transformer)
-  (when candidates
-    (helm-build-sync-source (concat
-                             "Select matching "
-                             (symbol-name (cl-classname (car candidates))))
-      :candidates (mapcar #'occ-candidate candidates)
-      ;; :action actions
-      :action-transformer action-transformer
-      :history 'org-refile-history)))
+(cl-defun occ-helm-build-candidates-source (candidates
+                                            &key
+                                            unfiltered-count
+                                            action
+                                            action-transformer)
+  (let ((unfiltered-count (or unfiltered-count 0)))
+   (when candidates
+     (helm-build-sync-source (format "Select matching %s(%d/%d)"
+                                     (symbol-name (cl-classname (car candidates)))
+                                     (length candidates)
+                                     unfiltered-count)
+       :candidates (mapcar #'occ-candidate candidates)
+       ;; :action actions
+       :action-transformer action-transformer
+       :history 'org-refile-history))))
 ;; (helm-build-dummy-source "Create tsk"
 ;;   :action (helm-make-actions
 ;;            "Create tsk"

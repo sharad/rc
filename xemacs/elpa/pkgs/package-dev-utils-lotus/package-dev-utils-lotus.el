@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2012  Sharad Pratap
 
-;; Author: Sharad Pratap <sh4r4d _at_ _G-mail_>
+;; Author: Sharad Pratap
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -22,20 +22,25 @@
 
 ;;; Code:
 
+(provide 'package-dev-utils-lotus)
+
 
 (require 'package)
 (require 'package-x)
 (require 'package-build "~/.emacs.d/core/libs/package-build.el")
+
 
 (defvar package-source-path "~/.xemacs/elpa/pkgs" "Source code path for packages.")
 (defvar package-archive-upload-base "~/.xemacs/elpa/upload")
 (defvar package-local-dev-archive "local" "Local archive specified in package-archives")
 (defvar *package-install-packages-wait-secs-in-install* 7)
+
 
 (unless (assoc package-local-dev-archive package-archives)
   (push
    (cons package-local-dev-archive package-archive-upload-base)
    package-archives))
+
 
 (unless (functionp 'directory-files-recursively)
   (defun directory-files-recursively (directory regexp &optional include-directories)
@@ -58,22 +63,23 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
       (while current-directory-list
         (let ((f (car current-directory-list)))
           (cond
-            ((and
-              (file-directory-p f)
-              (file-readable-p f)
-              (if include-directories (not (string-match regexp f)) t)
-              (not (string-equal ".." (substring f -2)))
-              (not (string-equal "." (substring f -1))))
-             ;; recurse only if necessary
-             (setq files-list (append files-list (directory-files-recursively f regexp include-directories))))
-            ((and
-              (file-regular-p f)
-              (file-readable-p f)
-              (string-match regexp f))
-             (setq files-list (cons f files-list)))
-            (t)))
+           ((and
+             (file-directory-p f)
+             (file-readable-p f)
+             (if include-directories (not (string-match regexp f)) t)
+             (not (string-equal ".." (substring f -2)))
+             (not (string-equal "." (substring f -1))))
+            ;; recurse only if necessary
+            (setq files-list (append files-list (directory-files-recursively f regexp include-directories))))
+           ((and
+             (file-regular-p f)
+             (file-readable-p f)
+             (string-match regexp f))
+            (setq files-list (cons f files-list)))
+           (t)))
         (setq current-directory-list (cdr current-directory-list)))
       files-list)))
+
 
 (defun package-install-local (pkg-desc)
   (let ((package-archives (list
@@ -153,12 +159,7 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
                       contents))))
                 `(define-package ,pkg-name ,version ,(format "%s" pkg-name) nil)))))
     (cadr (nth 4 pkg-def))))
-
-
-
-
-
-
+
 
 ;;;###autoload
 (defun package-load-package-from-dir (dir)
@@ -226,7 +227,8 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
         (dolist (org-file (directory-files dir-of-current-file t "'\*\.org$"))
           (org-babel-tangle-file org-file)))
       (copy-directory dir-of-current-file pkg-dir nil t t)
-      (package-load-package-from-dir pkg-dir)
+      (when current-prefix-arg
+        (package-load-package-from-dir pkg-dir))
       ;; delete unnecessary files
       (let ((default-directory pkg-dir))
         (dolist (del-file (directory-files-recursively pkg-dir "'\*~$\\|'RCS$"))
@@ -260,7 +262,8 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
       (let ((pkgdir-def-file (expand-file-name (format "%s-pkg.el" pkg-name) pkg-dir)))
         (with-current-buffer
             (or (find-buffer-visiting pkgdir-def-file)
-                (find-file-noselect pkgdir-def-file))
+                (find-file-noselect pkgdir-def-file)
+                (find-file-literally pkgdir-def-file))
           ;; (expand-file-name (format "%s-pkg.el" pkg-name) pkg-dir)
           (set-buffer-file-coding-system
            (if (coding-system-p 'utf-8-emacs)
@@ -531,7 +534,7 @@ will be deleted."
                     (package-delete (cadr (assq p package-alist)) t))
                   removable))
           (message "Nothing to autoremove")))))
-
+
 
 
 ;; check about
@@ -566,7 +569,5 @@ will be deleted."
     (dolist (p (reverse pkgs))
       (package-install p)))
   (message "finished package-resolve-org-plus-contrib-upgrade"))
-
-
-(provide 'package-dev-utils-lotus)
+
 ;;; package-dev-utils-lotus.el ends here

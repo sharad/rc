@@ -58,6 +58,20 @@
     funs))
 
 
+(defun occ-internal-get-filter-method (methods)
+  (cond
+   ((functionp methods)
+    (occ-internal-get-filter-method (funcall methods)))
+   ((and (symbolp   methods)
+         (listp (symbol-value methods)))
+    (occ-internal-get-filter-method (symbol-value methods)))
+   ((and (symbolp   methods)
+         (functionp (symbol-value methods)))
+    (occ-internal-get-filter-method (functionp (symbol-value methods))))
+   ((listp methods) methods)
+   (t (error "Wrong %s methods" methods))))
+
+
 (cl-defmethod occ-apply-recursively ((obj occ-ctx)
                                      methods
                                      seq)
@@ -70,10 +84,11 @@
 
 (cl-defmethod occ-filter ((obj occ-ctx)
                           methods
-                          &key builder)
-  (occ-apply-recursively obj
-                         (apply #'occ-filters-get methods)
-                         (occ-list obj :builder builder)))
+                          seq)
+  (let ((methods (occ-internal-get-filter-method methods)))
+    (occ-apply-recursively obj
+                           (apply #'occ-filters-get methods)
+                           seq)))
 
 
 (cl-defmethod occ-filter-mutual-deviation ((obj occ-ctx)
@@ -130,10 +145,7 @@
 (defun occ-list-filters () '(:nonnegative))
 
 (defun occ-match-filters () '(:positive :mutual-deviation))
-
 
-(apply #'occ-filters-get (occ-match-filters))
-(apply #'occ-filters-get (occ-list-filters))
-
+(defun occ-never-filters () '(:nonnegative))
 
 ;;; occ-list-filter.el ends here

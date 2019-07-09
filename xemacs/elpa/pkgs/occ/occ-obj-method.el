@@ -189,7 +189,7 @@
                                      (prev null))
   t)
 
-(defvar occ-clock-in-ctx-auto-select-if-only t)
+(defvar occ-clock-in-ctx-auto-select-if-only t "occ-clock-in-ctx-auto-select-if-only")
 
 (cl-defmethod occ-clock-in-if-chg ((obj occ-ctx)
                                    &key
