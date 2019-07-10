@@ -305,7 +305,8 @@
                                                 (face-attribute 'default :width))))))))
      (list height width)))
   (if (and (featurep 'x) window-system)
-      (let* ((disp-attrib (assoc-attribs-in-matrix))
+      (let* ((frame       nil)
+             (disp-attrib (assoc-attribs-in-matrix))
              (height
               (or
                height
@@ -324,8 +325,8 @@
             (if (any-frame-opened-p)
                 (progn
                   (spacemacs/set-default-font dotspacemacs-default-font)
-                  (when height (set-face-attribute 'default nil :height height))
-                  (when width  (set-face-attribute 'default nil :width width)))
+                  (when height (set-face-attribute 'default frame :height height))
+                  (when width  (set-face-attribute 'default frame :width width)))
               (message "no frame is open now."))
           (message "(x-display-pixel-height) return nil")))
     (message
@@ -462,6 +463,7 @@
 
 (add-hook 'after-make-frame-functions
           #'(lambda (frame)
+              (run-with-idle-timer 3 nil #'set-default-face-height-by-resolution)
               (set-default-face-height-by-resolution)) t)
 (when nil
   (add-hook 'after-make-frame-functions

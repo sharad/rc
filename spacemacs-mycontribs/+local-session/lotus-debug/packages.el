@@ -37,6 +37,7 @@
 (defconst lotus-debug-packages
   '(
     memory-usage
+    debug-info
     )
   "The list of Lisp packages required by the lotus-debug layer.
 
@@ -67,9 +68,16 @@ Each entry is either:
 
 (defun lotus-debug/init-memory-usage ()
   (use-package memory-usage
-      :defer t
-      :config
-      (progn
-        )))
+    :defer t
+    :config
+    (progn
+      )))
 
+(defun lotus-debug/init-debug-info ()
+  (use-package debug-info
+    :defer t
+    :config
+    (progn
+      (let ((pid (emacs-pid)))
+        (process-monitor-memory-usage pid)))))
 ;;; packages.el ends here

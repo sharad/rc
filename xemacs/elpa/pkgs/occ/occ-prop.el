@@ -93,7 +93,7 @@
   "occ-properties-to-edit")
 
 (cl-defgeneric occ-properties-to-inherit (obj)
-  "occ-properties-to-inherit")o
+  "occ-properties-to-inherit")
 
 (cl-defgeneric occ-properties-to-calculate-rank (obj)
   "occ-properties-to-calculate-rank")
@@ -210,12 +210,12 @@
           values))
 
 
-(cl-defmethod occ-readprop-elem-from-user :around ((obj occ-obj-tsk)
+(cl-defmethod occ-readprop-elem-from-user :around ((obj  occ-obj-tsk)
                                                    (prop symbol))
               "Read value of element of list for property PROP from user for OCC-TSK OBJ."
               (occ-prop-elem-from-org (call-next-method)))
 
-(cl-defmethod occ-readprop-from-user :around ((obj occ-obj-tsk)
+(cl-defmethod occ-readprop-from-user :around ((obj  occ-obj-tsk)
                                               (prop symbol))
               "Read value of element of list for property PROP from user for OCC-TSK OBJ."
               (occ-prop-from-org (call-next-method)))
@@ -254,7 +254,7 @@
                                         values)
   "occ-org-update-property")
 
-(cl-defmethod occ-org-update-property ((pom marker)
+(cl-defmethod occ-org-update-property ((pom  marker)
                                        (prop symbol)
                                        operation
                                        values)
@@ -280,7 +280,7 @@
                     (occ-org-entry-member-in-from-multivalued-property pom prop-string (car values))
                   (string= (car values) (occ-org-entry-get pom prop-string)))))))
 
-(cl-defmethod occ-org-update-property-at-point ((mrk marker)
+(cl-defmethod occ-org-update-property-at-point ((mrk  marker)
                                                 (prop symbol)
                                                 operation
                                                 values)
@@ -315,7 +315,7 @@
                prop values))))
 
 
-(cl-defmethod occ-readprop-org ((obj occ-obj-ctx-tsk)
+(cl-defmethod occ-readprop-org ((obj  occ-obj-ctx-tsk)
                                 (prop symbol))
   "Read property PROP of OBJ-CTX-TSK OBJ from its corresponding org file entry."
   (let ((tsk (occ-obj-tsk obj))
@@ -328,7 +328,7 @@
                   (occ-prop-elem-from-org prop v))
               values))))
 
-(cl-defmethod occ-writeprop-org ((obj occ-obj-ctx-tsk)
+(cl-defmethod occ-writeprop-org ((obj  occ-obj-ctx-tsk)
                                  (prop symbol))
   "Write property PROP of OBJ-CTX-TSK OBJ from its corresponding org file entry."
   (let ((tsk (occ-obj-tsk obj))
@@ -349,7 +349,7 @@
                           value)
   "occ-has-p")
 
-(cl-defmethod occ-has-p ((obj occ-obj-tsk)
+(cl-defmethod occ-has-p ((obj  occ-obj-tsk)
                          (prop symbol)
                          value)
   (let ((tsk (occ-obj-tsk obj)))
@@ -364,7 +364,7 @@
                                     values)
   "Accept occ compatible VALUES")
 
-(cl-defmethod occ-update-property ((obj occ-obj-tsk)
+(cl-defmethod occ-update-property ((obj  occ-obj-tsk)
                                    (prop symbol)
                                    operation
                                    values)
@@ -417,7 +417,7 @@
                              value)
   "Accept occ compatible VALUES")
 
-(cl-defmethod occ-editprop ((obj occ-obj-tsk)
+(cl-defmethod occ-editprop ((obj  occ-obj-tsk)
                             (prop symbol)
                             &optional
                             operation
@@ -443,7 +443,7 @@
                                (list prop-value)))))))
 
 
-(cl-defmethod occ-gen-edit ((obj occ-obj-tsk)
+(cl-defmethod occ-gen-edit ((obj  occ-obj-tsk)
                             (prop symbol)
                             operation
                             value
@@ -459,7 +459,7 @@
                       value))))
 
 
-(cl-defmethod occ-gen-prompt ((obj occ-obj-tsk)
+(cl-defmethod occ-gen-prompt ((obj  occ-obj-tsk)
                               (prop symbol)
                               operation
                               value)
@@ -480,7 +480,7 @@
                                     &key param-only)
   "occ-gen-prompt-edit")
 
-(cl-defmethod occ-gen-prompt-edit ((obj occ-obj-tsk)
+(cl-defmethod occ-gen-prompt-edit ((obj  occ-obj-tsk)
                                    (prop symbol)
                                    operation
                                    value
@@ -490,7 +490,7 @@
    (occ-gen-edit obj prop operation value :param-only param-only)))
 
 
-(cl-defmethod occ-edit-required-p ((obj occ-obj-tsk)
+(cl-defmethod occ-edit-required-p ((obj  occ-obj-tsk)
                                    (prop symbol)
                                    operation
                                    value)
@@ -498,7 +498,7 @@
     ((add)    (not (occ-has-p obj prop value)))
     ((remove) (occ-has-p obj prop value))))
 
-(cl-defmethod occ-gen-edit-if-required ((obj occ-obj-tsk)
+(cl-defmethod occ-gen-edit-if-required ((obj  occ-obj-tsk)
                                         (prop symbol)
                                         operation
                                         value
