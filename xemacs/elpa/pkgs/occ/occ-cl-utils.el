@@ -101,24 +101,6 @@
                 (_ nil)))))
       (cl-method-param-signs method)))))
 
-;; (cl-defun cl-method-param-case-with-value (signature-val-spec obj)
-;;   "signature-val-spec = (METHOD PARAMS VAL)"
-;;   (cl-destructuring-bind (method (param-spec val)) signature-val-spec
-;;     (remove
-;;      nil
-;;      (mapcar
-;;       #'(lambda (fspec)
-;;           (let ((first-arg
-;;                  (eval
-;;                   `(pcase ',fspec
-;;                      (,param-spec ,val)
-;;                      (_ nil)))))
-;;             (when (and
-;;                    first-arg
-;;                    (funcall method (cons first-arg obj)))
-;;               first-arg)))
-;;       (cl-method-param-signs method)))))
-
 (cl-defun cl-method-param-case-with-value (signature-val-spec obj)
   "signature-val-spec = (METHOD PARAMS VAL)"
   (cl-destructuring-bind (method (param-spec val)) signature-val-spec
@@ -137,25 +119,6 @@
                    (funcall method (cons first-arg obj)))
               first-arg)))
       (cl-method-param-signs method)))))
-
-;; (defun cl-method-param-case-with-value-new (signature-val-spec obj)
-;;   "signature-val-spec = (METHOD PARAMS VAL)"
-;;   (cl-destructuring-bind (method (param-spec val)) signature-val-spec
-;;     (remove
-;;      nil
-;;      (mapcar
-;;       #'(lambda (fspec)
-;;           (let ((first-arg
-;;                  (eval
-;;                   `(pcase ',fspec
-;;                      (,param-spec ,val)
-;;                      (_ nil)))))
-;;             (when (and
-;;                    first-arg
-;;                    ;; (funcall method (cons first-arg obj))) -- TODO BUG make it general
-;;                    (funcall method obj first-arg))
-;;               first-arg)))
-;;       (cl-method-param-signs method)))))
 
 (defun cl-method-param-case-with-value-new (signature-val-spec obj)
   "signature-val-spec = (METHOD PARAMS VAL)"
@@ -198,8 +161,4 @@
          (when (funcall method (cons first-arg obj)) first-arg)))
    (cl-method-param-signs method)))
 
-
-
-
-
 ;;; occ-cl-utils.el ends here

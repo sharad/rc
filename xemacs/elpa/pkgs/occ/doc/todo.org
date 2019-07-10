@@ -1,5 +1,14 @@
 
-* Org Context Clock
+* STARTED Org Context Clock
+  :PROPERTIES:
+  :root:     /home/s/hell/.xemacs/elpa/pkgs/occ
+  :Effort:   3h
+  :END:
+  :LOGBOOK:
+  CLOCK: [2019-07-10 Wed 21:32]
+  - Note taken on [2019-07-10 Wed 21:31] \\
+    clocking in to here from last clock <Unnamed task 996>
+  :END:
 ** Bugs
 *** Helm goes into state where no key are defined so here is not way to come out excelt sending signal SIGUSR2
 
@@ -56,23 +65,58 @@
 
 ** Todos
 
+
+
+*** STARTED Deep interaction for non to unnamed, unnammed to named, named to named etc :DESIGN:
+*** NEXT Fast clocking/child clocking with property addition like fast property addition
+**** Fast property edit function for TSK
+**** Fast property edit with try-clockin
+*** caching ctxual-tsk or ctsk                                       :DESIGN:
+ Here add support for per filter members
+**** statistics addition                                             :DESIGN:
+***** CLOSED Functions
+      CLOSED: [2019-06-29 Sat 22:12]
+      :LOGBOOK:
+      - State "CLOSED"     from              [2019-06-29 Sat 22:12]
+      :END:
+
+***** Application
+*** Rank Calculation                                                 :DESIGN:
+**** Resolve TSK rank CTUAL_TSK rank issue                           :DESIGN:
+**** Mutual relativity in property ranks MAX MIN etc                 :DESIGN:
+
+*** NEXT Resolve clock occ integration                     :DESIGN:USABILITY:
+
+
+
+
+
+
+*** Create anonymous child task mainly for FAST DISPATCH          :USABILITY:
+*** Create Single line task mainly for FAST DISPATCH              :USABILITY:
+*** non tsk org entries                                              :DESIGN:
+
+
+
+
+
+*** NEXT Rich menu with many class todo info note etc for capture
+*** move filtering in helm selection.                             :USABILITY:
+*** STARTED setup occ buffer with necessary hooks and cleanup etc   :TRIVIAL:
+*** SCHEDULE and DEADLINE should only be enforced on non-repeatitive task. :USABILITY:
+*** Addition of useful property methods                          :COMPLETION:
+
+
+
+
+
+
 *** CLOSED Launcher
     CLOSED: [2019-06-29 Sat 22:07]
     :LOGBOOK:
     - State "CLOSED"     from              [2019-06-29 Sat 22:07]
     :END:
 
-*** STARTED Deep interaction for non to unnamed, unnammed to named, named to named etc :DESIGN:
-
-*** statistics addition                                              :DESIGN:
-
-**** CLOSED Functions
-     CLOSED: [2019-06-29 Sat 22:12]
-     :LOGBOOK:
-     - State "CLOSED"     from              [2019-06-29 Sat 22:12]
-     :END:
-
-**** Application
 *** CLOSED creation of task in file node
     CLOSED: [2019-06-28 Fri 20:39]
     :LOGBOOK:
@@ -89,19 +133,3 @@
     :LOGBOOK:
     - State "CLOSED"     from              [2019-06-29 Sat 00:06]
     :END:
-*** Create anonymous child task mainly for FAST DISPATCH          :USABILITY:
-*** Create Single line task mainly for FAST DISPATCH              :USABILITY:
-*** non tsk org entries                                              :DESIGN:
-
-*** caching ctxual-tsk or ctsk                                       :DESIGN:
- Here add support for per filter members
-*** NEXT Fast clocking/child clocking with property addition like fast property addition
-**** Fast property edit function for TSK
-**** Fast property edit with try-clockin
-*** NEXT Resolve clock occ integration
-*** NEXT Rich menu with many class todo info note etc for capture
-*** Rank Calculation                                                 :DESIGN:
-**** Mutual relativity in property ranks MAX MIN etc
-**** move filtering in helm directly.
-*** STARTED setup occ buffer with necessary hooks and cleanup etc
-*** SCHEDULE and DEADLINE should only be enforced on non-repeatitive task. :USABILITY:
