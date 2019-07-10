@@ -511,19 +511,19 @@ will be deleted."
              (format-message
               "`package-selected-packages' is empty! Really remove ALL packages? ")))
     (let* ((removable
-             (package--removable-packages))
+            (package--removable-packages))
 
            (removable
-             (remove-if-not
-               #'(lambda (p)
-                   (let* ((pdesc
-                            (cadr (assq p package-alist)))
-                          (dir (if pdesc
-                                   (package-desc-dir pdesc))))
-                     (string-prefix-p (file-name-as-directory
-                                       (expand-file-name package-user-dir))
-                                      (expand-file-name dir))))
-               removable)))
+            (remove-if-not
+             #'(lambda (p)
+                 (let* ((pdesc
+                         (cadr (assq p package-alist)))
+                        (dir (if pdesc
+                                 (package-desc-dir pdesc))))
+                   (string-prefix-p (file-name-as-directory
+                                     (expand-file-name package-user-dir))
+                                    (expand-file-name dir))))
+             removable)))
 
       (if removable
           (when (y-or-n-p
@@ -533,9 +533,8 @@ will be deleted."
             (mapc (lambda (p)
                     (package-delete (cadr (assq p package-alist)) t))
                   removable))
-          (message "Nothing to autoremove")))))
+        (message "Nothing to autoremove")))))
 
-
 
 ;; check about
 ;; package-compute-transaction

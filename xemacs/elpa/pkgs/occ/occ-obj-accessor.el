@@ -300,8 +300,8 @@ pointing to it."
           (occ-make-tsk-collection occ-global-tsk-collection-spec)
           (occ-collect-tsks occ-global-tsk-collection t))
       (progn
-        (occ-message "occ-global-tsk-collection-spec is nil, set using occ-set-global-tsk-collection-spec")
-        (error "occ-global-tsk-collection-spec is nil"))))
+        (occ-message "occ-global-tsk-collection-spec is nil, set it using M-x occ-build-spec or set occ-global-tsk-collection-spec")
+        (error "occ-global-tsk-collection-spec is nil, set it using M-x occ-build-spec or set occ-global-tsk-collection-spec"))))
   occ-global-tsk-collection)
 
 

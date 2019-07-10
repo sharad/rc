@@ -35,12 +35,6 @@
 
 
 (defvar occ-global-tsk-collection-spec        nil)
-
-(defun occ-add-to-spec (file)
-  (interactive "Ffile: ")
-  (unless (memq file (cdr occ-global-tsk-collection-spec))
-    (setq occ-global-tsk-collection-spec
-          (append occ-global-tsk-collection-spec (list file)))))
 
 
 (defvar occ-global-tsk-collection             nil)
@@ -162,6 +156,13 @@
 (cl-defmethod occ-make-tsk ((obj occ-tsk)
                             &optional builder)
   obj)
+
+
+(cl-defmethod occ-make-filter (&key average stddev variance)
+  (make-occ-filter
+   :average  average
+   :stddev   stddev
+   :variance variance))
 
 
 (cl-defgeneric occ-make-ctx (obj)

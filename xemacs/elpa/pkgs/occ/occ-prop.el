@@ -93,7 +93,7 @@
   "occ-properties-to-edit")
 
 (cl-defgeneric occ-properties-to-inherit (obj)
-  "occ-properties-to-inherit")
+  "occ-properties-to-inherit")o
 
 (cl-defgeneric occ-properties-to-calculate-rank (obj)
   "occ-properties-to-calculate-rank")

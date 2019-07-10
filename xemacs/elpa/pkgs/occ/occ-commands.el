@@ -29,6 +29,7 @@
 
 (require 'occ)
 (require 'occ-main)
+(require 'occ-cl-utils)
 (require 'occ-obj-utils)
 
 
@@ -221,19 +222,58 @@
 ;; TODO: direct prop edit/add/replace/remove etc from helm menu
 
 
-(defun occ-reload (&optional uncompiled)
-  (interactive "P")
-  (occ-reload-lib uncompiled))
+;;;###autoload
+(defun occ-reset-spec ()
+  (interactive)
+  (setq occ-global-tsk-collection-spec nil))
+
+;;;###autoload
+(defun occ-make-spec ()
+  (interactive)
+  (if occ-global-tsk-collection-spec
+      (occ-message "spec: %s already present, first reset it with occ-reset-spec"
+                   occ-global-tsk-collection-spec)
+    (let ((spec (completing-read "Spec: "(occ-specs))))
+      (when spec
+        (push (intern spec)
+              occ-global-tsk-collection-spec)
+        (occ-reset-collection-object)))))
+
+;;;###autoload
+(defun occ-add-to-spec (file)
+  (interactive "FSpec file: ")
+  (unless (memq file (cdr occ-global-tsk-collection-spec))
+    (let ((spec       (car occ-global-tsk-collection-spec))
+          (spec-files (cdr occ-global-tsk-collection-spec)))
+     (setq spec-files
+           (if current-prefix-arg
+               (nconc spec-files (list file))
+             (nconc (list file) spec-files)))
+     (setq occ-global-tsk-collection-spec
+           (nconc (list spec) spec-files)))
+    (prog1
+        occ-global-tsk-collection-spec
+      (occ-reset-collection-object))))
+
+;;;###autoload
+(defun occ-build-spec ()
+  (interactive)
+  (occ-make-spec)
+  (wehn (car occ-global-tsk-collection-spec)
+        (occ-add-to-spec (read-file-name "Spec file: ")))
+  (prog1
+      occ-global-tsk-collection-spec
+    (occ-reset-collection-object)))
 
 
 ;;;###autoload
-(defun occ-insinuate ()
+(defun occ-insinuate (&optional spec)
   (interactive)
   (occ-debug :debug "occ-insinuate: begin")
   (occ-message "occ-insinuate: begin")
   (occ-initialize)
   (progn
-    (setq occ-global-tsk-collection        nil)
+    (occ-reset-collection-object)
     ;; (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)
     ;; (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer t)
     ;; (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer t)
@@ -246,6 +286,12 @@
                      (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)
         (push propstr org-use-property-inheritance))))
+  (progn
+    (unless occ-global-tsk-collection-spec
+      (if (occ-valid-spec-p spec)
+          (setq occ-global-tsk-collection-spec spec)
+        (when (called-interactively-p 'interactive)
+          (occ-build-spec)))))
   (org-clock-load) ;; newly added
  (occ-debug :debug "occ-insinuate: finish")
  (occ-message "occ-insinuate: finish"))
@@ -257,7 +303,7 @@
   (occ-message "occ-uninsinuate: begin")
   (occ-uninitialize)
   (progn
-    (setq occ-global-tsk-collection            nil)
+    (occ-reset-collection-object)
     ;; (setq buffer-list-update-hook nil)
 
     ;; (remove-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer)
@@ -296,6 +342,11 @@
                 (eq major-mode 'org-mode)))
           (occ-files))))
     (occ-message "files not in org-mode %s" files)))
+
+
+(defun occ-reload (&optional uncompiled)
+  (interactive "P")
+  (occ-reload-lib uncompiled))
 
 
 (defun occ-version (&optional here full message)

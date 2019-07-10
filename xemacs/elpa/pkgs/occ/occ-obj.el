@@ -65,15 +65,24 @@
 (cl-defstruct (occ-obj-ctx-tsk (:include occ-obj-tsk))
   "Will hold ctsk occ-ctxual-tsk")
 
-(cl-defstruct (occ-obj-prop (:include occ-obj))
-  "Will hold prop")
+;; (cl-defstruct (occ-obj-prop (:include occ-obj))
+;;   "Will hold prop")
 
-(cl-defstruct (occ-obj-collection (:include occ-obj))
+(cl-defstruct (occ-filter (:include occ-obj))
+  average
+  stddev
+  variance)
+
+(cl-defstruct (occ-obj-ctx (:include occ-obj))
+  "Will hold ctx"
+  filter-plist)
+
+(cl-defstruct (occ-obj-collection (:include occ-obj-ctx))
   "Will hold collection")
 
 
-(cl-defstruct (occ-prop (:include occ-obj-prop))
-  value)
+;; (cl-defstruct (occ-prop (:include occ-obj-prop))
+;;   value)
 
 ;; NOTE: Remember when adding new attributes, nned to destroy existing object, else it will cause miss-match.
 (cl-defstruct (occ-tsk (:include occ-obj-tsk))
@@ -103,9 +112,7 @@
   )
 
 
-(cl-defstruct (occ-ctx (:include occ-obj))
-  avgrank
-  varirank
+(cl-defstruct (occ-ctx (:include occ-obj-ctx))
   buffer
   file)
 
