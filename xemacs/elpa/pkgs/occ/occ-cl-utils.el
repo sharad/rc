@@ -64,8 +64,6 @@
   (cl-obj-slot-value obj 'plist))
 
 
-;; TODO: find how to do calculation without eval here.
-
 (cl-defun cl-method-param-signs (method)
   "Get params signatures for all defined methods"
   (let ((method-instances (cl--generic method)))
@@ -73,19 +71,6 @@
     #'(lambda (x) (aref x 1))
     (if method-instances
         (aref method-instances 3)))))
-
-;; (cl-defun cl-method-param-case (signature-val-spec)
-;;    "signature-val-spec = (METHOD (PARAMS VAL))"
-;;    (cl-destructuring-bind (method (param-spec val)) signature-val-spec
-;;      (remove
-;;       nil
-;;       (mapcar
-;;        #'(lambda (fspec)
-;;            (eval
-;;             `(pcase ',fspec
-;;                (,param-spec ,val)
-;;                (_ nil))))
-;;        (cl-method-param-signs method)))))
 
 (cl-defun cl-method-param-case (signature-val-spec)
   "signature-val-spec = (METHOD (PARAMS VAL))"
@@ -139,7 +124,6 @@
                    (funcall method obj first-arg))
               first-arg)))
       (cl-method-param-signs method)))))
-
 
 (defun cl-method-arg-get (method fn)
   (mapcar
