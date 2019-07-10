@@ -1,11 +1,20 @@
 
 * STARTED Org Context Clock
+  DEADLINE: <2019-07-12 Fri> SCHEDULED: <2019-07-10 Wed>
   :PROPERTIES:
   :root:     /home/s/hell/.xemacs/elpa/pkgs/occ
   :Effort:   3h
   :END:
   :LOGBOOK:
-  CLOCK: [2019-07-10 Wed 21:32]
+  - Note taken on [2019-07-10 Wed 23:23] \\
+    clocking out to clockin to <STARTED Deep interaction for non to unnamed, unnammed to named, named to named etc>
+  - Note taken on [2019-07-10 Wed 22:37] \\
+    Changed to buffer occ-obj-method.el from todo.org
+  - Note taken on [2019-07-10 Wed 22:35] \\
+    Changed to buffer *scratch* from *Messages*
+  - Note taken on [2019-07-10 Wed 21:33] \\
+    Changed to buffer occ-obj-method.el from occ-util-common.el
+  CLOCK: [2019-07-10 Wed 21:32]--[2019-07-10 Wed 23:23] =>  1:51
   - Note taken on [2019-07-10 Wed 21:31] \\
     clocking in to here from last clock <Unnamed task 996>
   :END:
@@ -68,6 +77,16 @@
 
 
 *** STARTED Deep interaction for non to unnamed, unnammed to named, named to named etc :DESIGN:
+    :PROPERTIES:
+    :Effort:   2h
+    :END:
+    :LOGBOOK:
+    - Note taken on [2019-07-10 Wed 23:23] \\
+      Changed to buffer occ-cl-utils.el from i.org.gpg
+    CLOCK: [2019-07-10 Wed 23:23]--[2019-07-10 Wed 23:24] =>  0:01
+    - Note taken on [2019-07-10 Wed 23:23] \\
+      clocking in to here from last clock <Org Context Clock>
+    :END:
 *** NEXT Fast clocking/child clocking with property addition like fast property addition
 **** Fast property edit function for TSK
 **** Fast property edit with try-clockin
