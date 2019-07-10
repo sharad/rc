@@ -321,15 +321,17 @@
       (defun auto-publish-blog-hook ()
         "Auto publish blog on save"
         ;; check if saved file is part of blog
-        (if (org-publish-get-project-from-filename
-             (buffer-file-name (buffer-base-buffer)) 'up)
-            (save-excursion (org-publish-current-file)
-                            (message "auto published blog") nil)))
+        (when (org-publish-get-project-from-filename
+               (buffer-file-name (buffer-base-buffer)) 'up)
+          (save-excursion
+            (org-publish-current-file)
+            (message "auto published blog") nil)))
 
       ;; Enable auto-publish when a org file in blog is saved
-      (add-hook 'org-mode-hook
-                #'(lambda ()
-                    (add-hook 'after-save-hook 'auto-publish-blog-hook t t))))))
+      (when nil
+       (add-hook 'org-mode-hook
+                 #'(lambda ()
+                     (add-hook 'after-save-hook 'auto-publish-blog-hook t t)))))))
 
 
 

@@ -62,9 +62,9 @@
     - State "CLOSED"     from              [2019-06-29 Sat 22:07]
     :END:
 
-*** STARTED Deep interaction for non to unnamed, unnammed to named, named to named etc
+*** STARTED Deep interaction for non to unnamed, unnammed to named, named to named etc :DESIGN:
 
-*** statistics addition
+*** statistics addition                                              :DESIGN:
 
 **** CLOSED Functions
      CLOSED: [2019-06-29 Sat 22:12]
@@ -89,17 +89,19 @@
     :LOGBOOK:
     - State "CLOSED"     from              [2019-06-29 Sat 00:06]
     :END:
-*** Create anonymous child task mainly for FAST DISPATCH
-*** Create Single line task mainly for FAST DISPATCH
-*** non tsk org entries
+*** Create anonymous child task mainly for FAST DISPATCH          :USABILITY:
+*** Create Single line task mainly for FAST DISPATCH              :USABILITY:
+*** non tsk org entries                                              :DESIGN:
 
-*** caching ctxual-tsk or ctsk
+*** caching ctxual-tsk or ctsk                                       :DESIGN:
  Here add support for per filter members
 *** NEXT Fast clocking/child clocking with property addition like fast property addition
+**** Fast property edit function for TSK
+**** Fast property edit with try-clockin
 *** NEXT Resolve clock occ integration
 *** NEXT Rich menu with many class todo info note etc for capture
-*** Rank Calculation
+*** Rank Calculation                                                 :DESIGN:
 **** Mutual relativity in property ranks MAX MIN etc
 **** move filtering in helm directly.
-*** setup occ buffer with necessary hooks and cleanup etc
-*** SCHEDULE and DEADLINE should only be enforced on non-repeatitive task.
+*** STARTED setup occ buffer with necessary hooks and cleanup etc
+*** SCHEDULE and DEADLINE should only be enforced on non-repeatitive task. :USABILITY:

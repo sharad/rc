@@ -57,22 +57,22 @@
 
 
 (defun occ-heading-content-only ()
-  (if (org-at-heading-p)
-      (save-excursion
-        (save-restriction
-          (let ((start (progn
-                         (goto-char (org-element-property
-                                     :contents-begin (org-element-at-point)))
-                         (while (org-at-drawer-p)
-                           (goto-char (org-element-property :end
-                                                            (org-element-at-point))))
-                         (point))))
-            (unless (org-at-heading-p)
-              (progn
-                (outline-next-heading)
-                ;; (outline-next-visible-heading 1)
-                (backward-char)
-                (buffer-substring start (point)))))))))
+  (when (org-at-heading-p)
+    (save-excursion
+      (save-restriction
+        (let ((start (progn
+                       (goto-char (org-element-property
+                                   :contents-begin (org-element-at-point)))
+                       (while (org-at-drawer-p)
+                         (goto-char (org-element-property :end
+                                                          (org-element-at-point))))
+                       (point))))
+          (unless (org-at-heading-p)
+            (progn
+              (outline-next-heading)
+              ;; (outline-next-visible-heading 1)
+              (backward-char)
+              (buffer-substring start (point)))))))))
 
 
 (defun occ-make-tsk-at-point (&optional builder)
@@ -143,7 +143,7 @@
   (occ-debug :debug "point %s" obj)
   (if (and
        (marker-buffer obj)
-       (numberp (marker-position obj)))
+       (numberp       (marker-position obj)))
       (with-current-buffer (marker-buffer obj)
         (if (<= (marker-position obj) (point-max))
             (occ-make-tsk (marker-position obj) builder)))))
