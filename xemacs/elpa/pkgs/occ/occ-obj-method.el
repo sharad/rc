@@ -353,12 +353,13 @@
 (defun occ-clock-in-curr-ctx-if-not-timer-function ()
   (occ-debug :debug "occ-clock-in-curr-ctx-if-not-timer-function: begin")
   ;;BUG: could be the cause of high MEM usage
-  (let ((ctx (occ-make-ctx-at-point)))
-    (prog1
-        (if (occ-try-to-clock-in-p ctx *occ-tsk-previous-ctx*)
-            (occ-run-curr-ctx-chg-timer)
-          (occ-run-curr-ctx-timer))
-      (occ-try-clock-schedule-next-timeout))))
+  (unwind-protect
+      (let ((ctx (occ-make-ctx-at-point)))
+        (prog1
+            (if (occ-try-to-clock-in-p ctx *occ-tsk-previous-ctx*)
+                (occ-run-curr-ctx-chg-timer)
+              (occ-run-curr-ctx-timer))))
+    (occ-try-clock-schedule-next-timeout)))
 
 
 ;;;###autoload
