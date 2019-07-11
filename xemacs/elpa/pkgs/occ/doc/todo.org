@@ -87,7 +87,7 @@
     - Note taken on [2019-07-10 Wed 23:23] \\
       clocking in to here from last clock <Org Context Clock>
     :END:
-*** NEXT Fast clocking/child clocking with property addition like fast property addition
+*** NEXT Fast clocking/child clocking with property addition like fast property addition :DESIGN:USABILITY:
 **** Fast property edit function for TSK
 **** Fast property edit with try-clockin
 *** caching ctxual-tsk or ctsk                                       :DESIGN:
@@ -112,7 +112,7 @@
 
 *** TODO In editprop propagate property to childs also
 
-*** Create anonymous child task mainly for FAST DISPATCH          :USABILITY:
+*** Create manual unnamed/anonymous (different from automatic) child task mainly for FAST DISPATCH :USABILITY:
 *** Create Single line task mainly for FAST DISPATCH              :USABILITY:
 *** non tsk org entries                                              :DESIGN:
 
@@ -125,6 +125,13 @@
 *** STARTED setup occ buffer with necessary hooks and cleanup etc   :TRIVIAL:
 *** SCHEDULE and DEADLINE should only be enforced on non-repeatitive task. :USABILITY:
 *** Addition of useful property methods                          :COMPLETION:
+**** SubTree
+**** timebeing
+**** gitbranch
+**** last clockout time
+**** deadline
+**** schedule
+**** repetition
 
 
 
