@@ -246,12 +246,10 @@
   (unless (memq file (cdr occ-global-tsk-collection-spec))
     (let ((spec       (car occ-global-tsk-collection-spec))
           (spec-files (cdr occ-global-tsk-collection-spec)))
-     (setq spec-files
+      (setq occ-global-tsk-collection-spec
            (if current-prefix-arg
                (nconc (list file) spec-files)
-             (nconc spec-files (list file))))
-     (setq occ-global-tsk-collection-spec
-           (nconc (list spec) spec-files)))
+             (nconc spec-files (list file)))))
     (prog1
         occ-global-tsk-collection-spec
       (occ-reset-collection-object))))

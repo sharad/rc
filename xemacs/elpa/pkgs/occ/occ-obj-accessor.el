@@ -323,26 +323,6 @@ pointing to it."
 
   (occ-tree-collection-tree collection))
 
-
-;; TODO: In list-tsk also add support for FILE tsk like in tree-tsk, whcih is
-;; provided via (occ-tree-tsk-build) function
-;; guess it is already present.
-;; (org-map-entries) is org function it is not providing it.
-;; (cl-defmethod occ-collect-tsks ((collection occ-list-collection)
-;;                                 force)
-;;   (unless (occ-list-collection-list collection)
-;;     (setf
-;;      (occ-list-collection-list collection)
-;;      (remove nil
-;;              (org-map-entries
-;;               #'(lambda ()
-;;                   (or
-;;                    ;; (occ-make-tsk-at-point #'make-occ-list-tsk)
-;;                    (occ-make-tsk-at-point (occ-tsk-builder))
-;;                    (funcall (occ-tsk-builder) :name "empty list tsk")))
-;;               t
-;;               (occ-list-collection-roots collection))))))
-
 (cl-defmethod occ-collect-tsks ((collection occ-list-collection)
                                 force)
   (unless (occ-list-collection-list collection)
