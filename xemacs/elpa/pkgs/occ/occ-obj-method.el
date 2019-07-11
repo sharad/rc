@@ -339,18 +339,17 @@
          'occ-clock-in-curr-ctx-if-not-timer-function)))
 
 
-;;;###autoload
 (defun occ-run-curr-ctx-timer ()
   (occ-debug :debug "occ-run-curr-ctx-chg-timer: begin")
   (occ-clock-in-curr-ctx nil))
 
-;;;###autoload
 (defun occ-run-curr-ctx-chg-timer ()
   (occ-debug :debug "occ-run-curr-ctx-chg-timer: begin")
   (occ-clock-in-curr-ctx-if-not nil))
 
 
 ;; TODO: find some better name
+;;;###autoload
 (defun occ-clock-in-curr-ctx-if-not-timer-function ()
   (occ-debug :debug "occ-clock-in-curr-ctx-if-not-timer-function: begin")
   ;;BUG: could be the cause of high MEM usage
@@ -362,6 +361,7 @@
       (occ-try-clock-schedule-next-timeout))))
 
 
+;;;###autoload
 (defun occ-switch-buffer-run-curr-ctx-timer-function (prev next)
   (occ-debug :debug "occ-switch-buffer-run-curr-ctx-timer-function: begin")
   (setq *occ-last-buff-sel-time* (current-time))
