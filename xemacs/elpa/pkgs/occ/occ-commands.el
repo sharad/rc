@@ -242,13 +242,14 @@
 ;;;###autoload
 (defun occ-add-to-spec (file)
   (interactive "FSpec file: ")
+  ;; TODO: Improve to create direct tree from here rather than resetting whole occ-global-collection-object
   (unless (memq file (cdr occ-global-tsk-collection-spec))
     (let ((spec       (car occ-global-tsk-collection-spec))
           (spec-files (cdr occ-global-tsk-collection-spec)))
      (setq spec-files
            (if current-prefix-arg
-               (nconc spec-files (list file))
-             (nconc (list file) spec-files)))
+               (nconc (list file) spec-files)
+             (nconc spec-files (list file))))
      (setq occ-global-tsk-collection-spec
            (nconc (list spec) spec-files)))
     (prog1

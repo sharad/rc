@@ -76,8 +76,10 @@ Each entry is either:
 (defun lotus-debug/init-debug-info ()
   (use-package debug-info
     :defer t
-    :config
+    :init
     (progn
       (let ((pid (emacs-pid)))
-        (process-monitor-memory-usage pid)))))
+        (process-monitor-memory-usage pid)))
+    :config
+    (progn)))
 ;;; packages.el ends here

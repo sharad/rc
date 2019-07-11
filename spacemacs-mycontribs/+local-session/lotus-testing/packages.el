@@ -37,14 +37,14 @@
 (defconst lotus-testing-packages
   '(
     (ert :location local)
+    ertx
+    (ert-x :location local)
     (ert-async :location local)
     (ert-expectations :location local)
-    (ert-junit :location local)
-    (ert-modeline :location local)
-    (ert-runner :location local)
-    (ert-x :location local)
-    (ertx :location local)
-    (ert :location local)
+    ert-junit
+    ert-modeline
+    ert-runner
+    fakir
     )
   "The list of Lisp packages required by the LAYER layer.
 
@@ -75,9 +75,57 @@ Each entry is either:
 
 (defun lotus-testing/init-ert ()
   (use-package ert
-      :defer t
-      :config
-      (progn
-        )))
+    :defer t
+    :config
+    (progn
+      )))
 
+(defun lotus-testing/init-ertx ()
+  (use-package ertx
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-testing/init-ert-x ()
+  (use-package ert-x
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-testing/init-ert-async ()
+  (use-package ert-async
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-testing/init-ert-expectations ()
+  (use-package ert-expectations
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-testing/init-ert-junit ()
+  (use-package ert-junit
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-testing/init-ert-modeline ()
+  (use-package ert-modeline
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-testing/init-ert-runner ()
+  (use-package ert-runner
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-testing/init-fakir ()
+  (use-package fakir
+    :defer t
+    :config
+    (progn)))
+
 ;;; packages.el ends here

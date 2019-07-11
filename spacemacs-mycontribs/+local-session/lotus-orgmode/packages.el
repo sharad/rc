@@ -67,7 +67,9 @@
     org-mru-clock
     org-noter
     org-repo-todo
-    org-snooze)
+    org-snooze
+    org-randomnote
+    )
   ;; abgaben
 
 
@@ -346,6 +348,12 @@ Each entry is either:
 
 (defun lotus-orgmode/init-org-snooze ()
   (use-package org-snooze
+    :defer t
+    :config
+    (progn)))
+
+(defun lotus-orgmode/init-org-randomnote ()
+  (use-package org-randomnote
     :defer t
     :config
     (progn)))

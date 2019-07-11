@@ -110,6 +110,7 @@
 
 
 
+*** TODO In editprop propagate property to childs also
 
 *** Create anonymous child task mainly for FAST DISPATCH          :USABILITY:
 *** Create Single line task mainly for FAST DISPATCH              :USABILITY:
@@ -125,6 +126,16 @@
 *** SCHEDULE and DEADLINE should only be enforced on non-repeatitive task. :USABILITY:
 *** Addition of useful property methods                          :COMPLETION:
 
+
+
+
+*** Try to use a org file itself for configurations e.g. kind of TODOs, mini max value in rank case etc.
+*** See what org-pua annotation can help here.
+*** Task categorys
+**** Some task are todo now.
+**** Some can need to be done in week, similarly fortnight, month
+**** Some are in future, here schedule/deadline should not be asked
+**** Some are in future but uncertain (they are to track.), here also schedule/deadline should not be asked
 
 
 
@@ -152,3 +163,5 @@
     :LOGBOOK:
     - State "CLOSED"     from              [2019-06-29 Sat 00:06]
     :END:
+** Miscellaneous
+*** Read https://github.com/roman/clocker.el
