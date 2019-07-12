@@ -317,28 +317,6 @@
 ;;; Timers
 ;; TODO: Add method/function descriptions
 
-(cl-defmethod occ-try-clock-in-next-timeout ()
-  "Get next timeout to try clock-in"
-  (occ-debug :debug "occ-try-clock-in-next-timeout: begin")
-  (let* ((ctx             (occ-make-ctx-at-point))
-         (ctxual-curr-tsk (occ-ctxual-current-tsk ctx)))
-    (1+ *occ-tsk-current-ctx-time-interval*)))
-
-(cl-defmethod occ-try-clock-schedule-next-timeout ()
-  "Get next timeout to try clock-in"
-  (occ-debug :debug "occ-try-clock-schedule-next-timeout: begin")
-  (when *occ-buff-sel-timer*
-    (cancel-timer *occ-buff-sel-timer*)
-    (setq *occ-buff-sel-timer* nil))
-  (setq *occ-buff-sel-timer*
-        ;; distrubing while editing.
-        ;; run-with-timer
-        (run-with-idle-timer
-         (occ-try-clock-in-next-timeout)
-         nil
-         'occ-clock-in-curr-ctx-if-not-timer-function)))
-
-
 (defun occ-run-curr-ctx-timer ()
   (occ-debug :debug "occ-run-curr-ctx-chg-timer: begin")
   (occ-clock-in-curr-ctx nil))
@@ -350,22 +328,50 @@
 
 ;; TODO: find some better name
 ;;;###autoload
-(defun occ-clock-in-curr-ctx-if-not-timer-function ()
+(defun occ-clock-in-curr-ctx-if-not-timer-function (event)
   (occ-debug :debug "occ-clock-in-curr-ctx-if-not-timer-function: begin")
   ;;BUG: could be the cause of high MEM usage
   (unwind-protect
-      (let ((ctx (occ-make-ctx-at-point)))
-        (prog1
-            (if (occ-try-to-clock-in-p ctx *occ-tsk-previous-ctx*)
-                (occ-run-curr-ctx-chg-timer)
-              (occ-run-curr-ctx-timer))))
-    (occ-try-clock-schedule-next-timeout)))
+      (progn
+        (when *occ-buff-sel-timer*
+          (cancel-timer *occ-buff-sel-timer*)
+          (setq *occ-buff-sel-timer* nil))
+        (if (eq 'buffer-switch event)
+            (occ-run-curr-ctx-chg-timer)
+          (occ-run-curr-ctx-timer)))
+    ;; to bypass QUIT
+    (occ-try-clock-schedule-next-timeout nil)))
+
+
+(cl-defmethod occ-try-clock-in-next-timeout ()
+  "Get next timeout to try clock-in"
+  (occ-debug :debug "occ-try-clock-in-next-timeout: begin")
+  (let* ((ctx             (occ-make-ctx-at-point))
+         (ctxual-curr-tsk (occ-ctxual-current-tsk ctx)))
+    (cond
+     ((null ctxual-curr-tsk)          3)
+     ((occ-unnamed-p ctxual-curr-tsk) (1+ *occ-tsk-current-ctx-time-interval*))
+     (t                               20))))
+
+(cl-defmethod occ-try-clock-schedule-next-timeout (event)
+  "Get next timeout to try clock-in"
+  (occ-debug :debug "occ-try-clock-schedule-next-timeout: begin")
+  (when *occ-buff-sel-timer*
+    (cancel-timer *occ-buff-sel-timer*)
+    (setq *occ-buff-sel-timer* nil))
+  (setq *occ-buff-sel-timer*
+        ;; distrubing while editing.
+        ;; run-with-timer
+        (run-with-idle-timer
+         (occ-try-clock-in-next-timeout)
+         nil
+         'occ-clock-in-curr-ctx-if-not-timer-function event)))
 
 
 ;;;###autoload
 (defun occ-switch-buffer-run-curr-ctx-timer-function (prev next)
   (occ-debug :debug "occ-switch-buffer-run-curr-ctx-timer-function: begin")
   (setq *occ-last-buff-sel-time* (current-time))
-  (occ-clock-in-curr-ctx-if-not-timer-function))
+  (occ-try-clock-schedule-next-timeout 'buffer-switch))
 
 ;;; occ-obj-method.el ends here
