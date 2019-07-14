@@ -38,6 +38,28 @@
 (require 'occ-statistics)
 
 
+(cl-defmethod occ-average ((obj occ-filter) sequence)
+  (unless (occ-filter-average obj)
+    (setf (occ-filter-average obj) (apply #'occ-stats-average sequence)))
+  (occ-filter-average obj))
+
+(cl-defmethod occ-stddev ((obj occ-filter) sequence)
+  (unless (occ-filter-stddev obj)
+    (setf (occ-filter-stddev obj) (apply #'occ-stats-stddev sequence)))
+  (occ-filter-stddev obj))
+
+(cl-defmethod occ-variance ((obj occ-filter) sequence)
+  (unless (occ-filter-variance obj)
+    (setf (occ-filter-variance obj) (apply #'occ-stats-variance sequence)))
+  (occ-filter-variance obj))
+
+
+(cl-defmethod occ-ctx-filter ((obj occ-obj-ctx) filter)
+  (unless (plist-get (occ-obj-ctx-filter-plist obj) filter)
+    (plist-put (occ-obj-ctx-filter-plist obj) filter (occ-make-filter)))
+  (plist-get (occ-obj-ctx-filter-plist obj) filter))
+
+
 (defvar occ-filters-plist nil)
 
 (defun occ-filter-add (key fun)

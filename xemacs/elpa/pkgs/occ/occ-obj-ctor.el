@@ -158,7 +158,7 @@
   obj)
 
 
-(defvar occ-ctx-hash (make-hash-table :test #'eql :size 100 :rehash-size 20))
+(defvar occ-ctx-hash (make-hash-table :test #'equal :size 100 :rehash-size 20))
 (defun occ-ctx-puthash (plist ctx)
   (puthash plist ctx occ-ctx-hash))
 (defun occ-ctx-gethash (plist)
@@ -167,7 +167,10 @@
   (remhash plist occ-ctx-hash))
 (defun occ-ctx-clrhash ()
   (clrhash occ-ctx-hash))
+(defun occ-ctx-hashlen ()
+ (hash-table-count occ-ctx-hash))
 
+
 (cl-defmethod occ-make-filter (&key average stddev variance)
   (make-occ-filter
    :average  average
