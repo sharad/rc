@@ -85,7 +85,7 @@
   (let* ((funkw-rank (car methods)))
     (let ((funkw      (if (consp funkw-rank) (car funkw-rank) funkw-rank))
           (rank       (if (consp funkw-rank) (cadr funkw-rank) rank)))
-     (occ-message "occ-apply-recursively: trying funkw-rank= %s funkw= %s" funkw-rank funkw)
+     ;; (occ-message "occ-apply-recursively: trying funkw-rank= %s funkw= %s" funkw-rank funkw)
      (if funkw
          (let ((fun  (or (occ-filter-get funkw) funkw #'identity)))
            (occ-apply-recursively obj
@@ -165,7 +165,10 @@
   '(:nonnegative))
 
 (defun occ-match-filters ()
-  '(:positive :mutual-deviation (:positive #'occ-member-tsk-rank) (:mutual-deviation #'occ-member-tsk-rank)))
+  (list :positive
+        :mutual-deviation
+        (list :positive         #'occ-member-tsk-rank)))
+        ;; (list :mutual-deviation #'occ-member-tsk-rank)
 
 (defun occ-never-filters ()
   "Used to filter mainly non-tsk"

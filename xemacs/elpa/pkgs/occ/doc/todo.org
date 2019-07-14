@@ -20,6 +20,7 @@
   - Note taken on [2019-07-10 Wed 21:31] \\
     clocking in to here from last clock <Unnamed task 996>
   :END:
+
 ** Bugs
 *** Helm goes into state where no key are defined so here is not way to come out excelt sending signal SIGUSR2
 
@@ -73,11 +74,44 @@
   The LSDB was saved successfully.
 
   #+end_src
+*** Even when matched ctxual-tsk's present, ctsk's were present for property edit
+It might be shown only if wait timeout happens.
 
 ** Todos
 
+*** NEXT caching ctxual-tsk or ctsk                                  :DESIGN:
+ Here add support for per filter members
+**** statistics addition                                             :DESIGN:
+***** CLOSED Functions
+      CLOSED: [2019-06-29 Sat 22:12]
+      :LOGBOOK:
+      - State "CLOSED"     from              [2019-06-29 Sat 22:12]
+      :END:
 
+***** STARTED Application
+      :PROPERTIES:
+      :Effort:   1h
+      :END:
+      :LOGBOOK:
+      CLOCK: [2019-07-14 Sun 20:35]
+      - Note taken on [2019-07-14 Sun 20:35] \\
+        clocking in to here from last clock <Unnamed task 1006>
+      :END:
+*** NEXT Fast clocking/child clocking with property addition like fast property addition :DESIGN:USABILITY:
+**** Fast property edit function for TSK
+**** Fast property edit with try-clockin
 
+*** Rank Calculation                                                 :DESIGN:
+**** CLOSED Resolve TSK rank CTUAL_TSK rank issue                    :DESIGN:
+     CLOSED: [2019-07-14 Sun 18:45]
+     :LOGBOOK:
+     - State "CLOSED"     from              [2019-07-14 Sun 18:45]
+     :END:
+     It was though that CTXUAL_TSK rank is correct rank to consider when CTX is
+     involved but is it is always involved.
+**** Mutual relativity in property ranks MAX MIN etc                 :DESIGN:
+
+*** NEXT Resolve clock occ integration                     :DESIGN:USABILITY:
 *** STARTED Deep interaction for non to unnamed, unnammed to named, named to named etc :DESIGN:
     :PROPERTIES:
     :Effort:   2h
@@ -89,26 +123,11 @@
     - Note taken on [2019-07-10 Wed 23:23] \\
       clocking in to here from last clock <Org Context Clock>
     :END:
-*** NEXT Fast clocking/child clocking with property addition like fast property addition :DESIGN:USABILITY:
-**** Fast property edit function for TSK
-**** Fast property edit with try-clockin
-*** caching ctxual-tsk or ctsk                                       :DESIGN:
- Here add support for per filter members
-**** statistics addition                                             :DESIGN:
-***** CLOSED Functions
-      CLOSED: [2019-06-29 Sat 22:12]
-      :LOGBOOK:
-      - State "CLOSED"     from              [2019-06-29 Sat 22:12]
-      :END:
 
-***** Application
-*** Rank Calculation                                                 :DESIGN:
-**** Resolve TSK rank CTUAL_TSK rank issue                           :DESIGN:
-     It was though that CTXUAL_TSK rank is correct rank to consider when CTX is
-     involved but is it is always involved.
-**** Mutual relativity in property ranks MAX MIN etc                 :DESIGN:
 
-*** NEXT Resolve clock occ integration                     :DESIGN:USABILITY:
+
+
+
 
 
 

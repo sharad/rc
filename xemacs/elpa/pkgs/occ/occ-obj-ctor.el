@@ -158,6 +158,16 @@
   obj)
 
 
+(defvar occ-ctx-hash (make-hash-table :test #'eql :size 100 :rehash-size 20))
+(defun occ-ctx-puthash (plist ctx)
+  (puthash plist ctx occ-ctx-hash))
+(defun occ-ctx-gethash (plist)
+  (gethash plist occ-ctx-hash))
+(defun occ-ctx-remhash (plist)
+  (remhash plist occ-ctx-hash))
+(defun occ-ctx-clrhash ()
+  (clrhash occ-ctx-hash))
+
 (cl-defmethod occ-make-filter (&key average stddev variance)
   (make-occ-filter
    :average  average
@@ -182,11 +192,16 @@
                  (window-buffer)))
          (buf (org-base-buffer buf))
          (file (buffer-file-name buff))
-         (ctx (make-occ-ctx
-               :name (buffer-name buff)
-               :file file
-               :buffer buff)))
-    ctx))
+         (plist (list
+                 :name (buffer-name buff)
+                 :file file
+                 :buffer buff)))
+    (unless (occ-ctx-gethash plist)
+      (occ-ctx-puthash plist (make-occ-ctx
+                              :name (buffer-name buff)
+                              :file file
+                              :buffer buff)))
+    (occ-ctx-gethash plist)))
 
 (cl-defmethod occ-make-ctx ((obj buffer))
   (let ((mrk (make-marker)))

@@ -427,8 +427,27 @@ pointing to it."
                 (when tsks
                   (mapcar #'(lambda (tsk) (funcall builder tsk obj))
                           tsks))))))
-       (unless (eq t ctsks)
-         ctsks))))
+      (unless (eq t ctsks)
+        ;; BUG: TODO: convey it tpo occ-select occ-clock-in
+        (occ-message "Busy user input %s" last-input-event)
+        ctsks))))
+
+;; FOr now.
+(cl-defmethod occ-collection-obj-list ((collection occ-collection)
+                                       (obj occ-ctx)
+                                       &key
+                                       builder)
+  "return CTSKs list"
+  (let ((builder (or builder #'occ-build-ctsk-with)))
+    (let ((ctsks
+           (let ((tsks (occ-collect-list collection))) ;;????TODO
+             (when tsks
+               (mapcar #'(lambda (tsk) (funcall builder tsk obj))
+                       tsks)))))
+      (unless (eq t ctsks)
+        ;; BUG: TODO: convey it tpo occ-select occ-clock-in
+        (occ-message "Busy user input %s" last-input-event)
+        ctsks))))
 
 (cl-defmethod occ-collection-obj-list ((collection occ-collection)
                                        (obj null)
