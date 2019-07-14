@@ -151,16 +151,22 @@
 
 
 ;; occ-ctxual-tsk - accessors
-(cl-defmethod occ-rank ((ctxask occ-ctxual-tsk))
-  (occ-debug :debug "occ-rank(occ-ctxual-tsk=%s)" ctxask)
-  (let ((rank (occ-ctxual-tsk-rank ctxask)))
+(cl-defmethod occ-rank ((obj occ-ctxual-tsk))
+  (occ-debug :debug "occ-rank(occ-ctxual-tsk=%s)" obj)
+  (let ((rank (occ-ctxual-tsk-rank obj)))
     (unless rank
-      (setf (occ-ctxual-tsk-rank ctxask) (occ-calculate-rank ctxask)))
-    (occ-ctxual-tsk-rank ctxask)))
+      (setf (occ-ctxual-tsk-rank obj) (occ-calculate-rank obj)))
+    (occ-ctxual-tsk-rank obj)))
 
-(cl-defmethod (setf occ-rank) (value (ctxask occ-ctxual-tsk))
-  (occ-debug :debug "occ-rank(occ-ctxual-tsk=%s)" ctxask)
-  (setf (occ-ctxual-tsk-rank ctxask) value))
+(cl-defmethod (setf occ-rank) (value (obj occ-ctxual-tsk))
+  (occ-debug :debug "occ-rank(occ-ctxual-tsk=%s)" obj)
+  (setf (occ-ctxual-tsk-rank obj) value))
+
+
+(cl-defmethod occ-member-tsk-rank ((obj occ-ctxual-tsk))
+  (occ-debug :debug "occ-rank(occ-ctxual-tsk=%s)" obj)
+  (let ((tsk (occ-ctxual-tsk-tsk obj)))
+    (occ-rank tsk)))
 
 
 ;; occ-tsk - accessors

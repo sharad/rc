@@ -233,7 +233,7 @@
   (if occ-global-tsk-collection-spec
       (occ-message "spec: %s already present, first reset it with occ-reset-spec"
                    occ-global-tsk-collection-spec)
-    (let ((spec (completing-read "Spec: "(occ-specs))))
+    (let ((spec (completing-read "Spec: " (occ-specs))))
       (when spec
         (push (intern spec)
               occ-global-tsk-collection-spec)
@@ -242,14 +242,15 @@
 ;;;###autoload
 (defun occ-add-to-spec (file)
   (interactive "FSpec file: ")
-  ;; TODO: Improve to create direct tree from here rather than resetting whole occ-global-collection-object
+  ;; TODO: Improve to create direct tree from here rather than resetting whole occ-global-tsk-collection
   (unless (memq file (cdr occ-global-tsk-collection-spec))
     (let ((spec       (car occ-global-tsk-collection-spec))
           (spec-files (cdr occ-global-tsk-collection-spec)))
-      (setq occ-global-tsk-collection-spec
+      (setq spec-files
            (if current-prefix-arg
                (nconc (list file) spec-files)
-             (nconc spec-files (list file)))))
+             (nconc spec-files (list file))))
+      (setq occ-global-tsk-collection-spec (cons spec spec-files)))
     (prog1
         occ-global-tsk-collection-spec
       (occ-reset-collection-object))))
@@ -258,7 +259,7 @@
 (defun occ-build-spec ()
   (interactive)
   (occ-make-spec)
-  (wehn (car occ-global-tsk-collection-spec)
+  (when (car occ-global-tsk-collection-spec)
         (occ-add-to-spec (read-file-name "Spec file: ")))
   (prog1
       occ-global-tsk-collection-spec

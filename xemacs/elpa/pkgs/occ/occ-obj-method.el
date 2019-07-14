@@ -350,8 +350,8 @@
          (ctxual-curr-tsk (occ-ctxual-current-tsk ctx)))
     (cond
      ((null ctxual-curr-tsk)          3)
-     ((occ-unnamed-p ctxual-curr-tsk) (1+ *occ-tsk-current-ctx-time-interval*))
-     (t                               20))))
+     ((occ-unnamed-p ctxual-curr-tsk) (+ *occ-tsk-current-ctx-time-interval* 10))
+     (t                               30))))
 
 (cl-defmethod occ-try-clock-schedule-next-timeout (event)
   "Get next timeout to try clock-in"

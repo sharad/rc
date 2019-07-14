@@ -6,6 +6,8 @@
   :Effort:   3h
   :END:
   :LOGBOOK:
+  - Note taken on [2019-07-13 Sat 21:05] \\
+    clocking in to here from last clock <Unnamed task 1003>
   - Note taken on [2019-07-10 Wed 23:23] \\
     clocking out to clockin to <STARTED Deep interaction for non to unnamed, unnammed to named, named to named etc>
   - Note taken on [2019-07-10 Wed 22:37] \\
@@ -102,6 +104,8 @@
 ***** Application
 *** Rank Calculation                                                 :DESIGN:
 **** Resolve TSK rank CTUAL_TSK rank issue                           :DESIGN:
+     It was though that CTXUAL_TSK rank is correct rank to consider when CTX is
+     involved but is it is always involved.
 **** Mutual relativity in property ranks MAX MIN etc                 :DESIGN:
 
 *** NEXT Resolve clock occ integration                     :DESIGN:USABILITY:
@@ -132,11 +136,11 @@
 **** deadline
 **** schedule
 **** repetition
+**** level
 
 
 
-
-*** Try to use a org file itself for configurations e.g. kind of TODOs, mini max value in rank case etc.
+*** TRY to use a org file itself for configurations e.g. kind of TODOs, mini max value in rank case etc.
 *** See what org-pua annotation can help here.
 *** Task categorys
 **** Some task are todo now.
