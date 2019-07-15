@@ -30,6 +30,8 @@
 (require 'helm)
 
 
+;; * Dynamic Match based templates
+
 (defvar org-capture+-helm-templates-alist
   '(("TODO"
      "* TODO %? %^g\n %i\n [%a]\n"
