@@ -89,11 +89,16 @@ It might be shown only if wait timeout happens.
       :END:
 
 ***** STARTED Application
+      DEADLINE: <2019-07-14 Sun> SCHEDULED: <2019-07-14 Sun>
       :PROPERTIES:
       :Effort:   1h
       :END:
       :LOGBOOK:
-      CLOCK: [2019-07-14 Sun 20:35]
+      - Note taken on [2019-07-14 Sun 20:39] \\
+        Changed to buffer occ-obj-ctor.el from *Backtrace*
+      - Note taken on [2019-07-14 Sun 20:35] \\
+        Changed to buffer occ-obj.el from occ-util-common.el
+      CLOCK: [2019-07-14 Sun 20:35]--[2019-07-14 Sun 21:26] =>  0:51
       - Note taken on [2019-07-14 Sun 20:35] \\
         clocking in to here from last clock <Unnamed task 1006>
       :END:
@@ -101,7 +106,8 @@ It might be shown only if wait timeout happens.
 **** Fast property edit function for TSK
 **** Fast property edit with try-clockin
 
-*** Rank Calculation                                                 :DESIGN:
+*** NEXT Resolve clock occ integration                     :DESIGN:USABILITY:
+*** STARTED Rank Calculation                                         :DESIGN:
 **** CLOSED Resolve TSK rank CTUAL_TSK rank issue                    :DESIGN:
      CLOSED: [2019-07-14 Sun 18:45]
      :LOGBOOK:
@@ -111,7 +117,6 @@ It might be shown only if wait timeout happens.
      involved but is it is always involved.
 **** Mutual relativity in property ranks MAX MIN etc                 :DESIGN:
 
-*** NEXT Resolve clock occ integration                     :DESIGN:USABILITY:
 *** STARTED Deep interaction for non to unnamed, unnammed to named, named to named etc :DESIGN:
     :PROPERTIES:
     :Effort:   2h
@@ -138,6 +143,10 @@ It might be shown only if wait timeout happens.
 *** Create manual unnamed/anonymous (different from automatic) child task mainly for FAST DISPATCH :USABILITY:
 *** Create Single line task mainly for FAST DISPATCH              :USABILITY:
 *** non tsk org entries                                              :DESIGN:
+
+
+
+
 
 
 
