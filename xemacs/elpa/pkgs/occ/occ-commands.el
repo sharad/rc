@@ -201,7 +201,7 @@
   (error "Implement it."))
 
 
-(defun occ-curr-tsk-continyue-for (mins)
+(defun occ-curr-tsk-continue-for (mins)
   (error "Implement it."))
 
 
@@ -222,6 +222,13 @@
 ;; TODO: direct prop edit/add/replace/remove etc from helm menu
 
 
+(defun occ-keep-quite ())
+
+(defun occ-keep-quite-for (mins))
+
+
+(defun occ-make-anonymous ())
+
 ;;;###autoload
 (defun occ-reset-spec ()
   (interactive)
