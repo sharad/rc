@@ -45,6 +45,7 @@
 (eval-when-compile
   (require 'org-clock-utils-lotus))
 (require 'org-clock-utils-lotus)
+(require 'org-rl-intf)
 
 
 
@@ -83,13 +84,23 @@
         (lotus-org-with-safe-modification
           (org-entry-put nil "Effort" "10")))
 
-      (org-clock-clock-in
+      (org-rl-intf-clock-clock-in
        (org-rl-clock-for-clock-in clock)
        resume start-time)
 
       (setf (org-rl-clock-marker clock) org-clock-marker)
       (setf (org-rl-clock-current clock) t)
       clock)))
+
+
+(defun org-rl-org-clock-clock-in (clock &optional resume start-time)
+  (org-rl-straight-org-clock-clock-in clock resume start-time))
+
+(defun org-rl-org-clock-out (&optional switch-to-state fail-quietly at-time)
+  (org-rl-intf-clock-out switch-to-state fail-quietly at-time))
+
+(defun org-rl-org-clock-clock-out (clock &optional fail-quietly at-time)
+  (org-rl-intf-clock-clock-out clock fail-quietly at-time))
 
 
 (defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
@@ -434,7 +445,7 @@
   (if (not org-clock-clocking-in)
     (if (org-rl-clock-real-p clock)
         (if (time-p (org-rl-clock-start-time clock))
-            (org-rl-straight-org-clock-clock-in
+            (org-rl-org-clock-clock-in
              clock
              resume
              (org-rl-clock-start-time clock))
@@ -459,14 +470,14 @@
                        (org-is-active-clock (org-rl-clock-for-clock-op clock))
                        (org-rl-clock-current clock))                   ;TODO: check for current clock? find some other way to find active clock like matching with org-clock-marker
                       (progn
-                        (org-clock-out org-clock-out-switch-to-state
-                                       fail-quietly
-                                       (org-rl-clock-stop-time clock))
+                        (org-rl-org-clock-out org-clock-out-switch-to-state
+                                              fail-quietly
+                                              (org-rl-clock-stop-time clock))
                         (setf (org-rl-clock-current clock) nil)
                         (setf (org-rl-clock-marker clock) (car org-clock-history)))
-                    (org-clock-clock-out (org-rl-clock-for-clock-out clock)
-                                         fail-quietly
-                                         (org-rl-clock-stop-time clock)))
+                    (org-rl-org-clock-clock-out (org-rl-clock-for-clock-out clock)
+                                                fail-quietly
+                                                (org-rl-clock-stop-time clock)))
                   (setf (org-rl-clock-current clock) nil))
               (org-rl-clock-replace clock))
           (error "org-rl-clock-clock-out: %s stop time is null" (org-rl-clock-stop-time clock)))
@@ -661,12 +672,7 @@
 ;;;###autoload
 (defun org-rl-select-other-clock (&optional target)
   (interactive)
-  (org-rl-debug nil "org-rl-select-other-clock: target[%s]" target)
-  (org-with-refile
-      file loc (or target org-refile-targets) "Refile other org heading"
-    (let ((marker (make-marker)))
-      (set-marker marker loc)
-      marker)))
+  (org-rl-intf-select-other-clock target))
 
 
 (defvar org-rl-clock-fixed-heading
@@ -706,30 +712,6 @@
                   org-rl-clock-fixed-heading)))
 
 
-(defvar org-rl-capture+-helm-templates-alist org-capture+-helm-templates-alist)
-
-;; (setq
-;;  org-rl-capture+-helm-templates-alist
-;;  '(("TODO" "* TODO %? %^g% %i [%a]" "* MILESTONE %? %^g %i [%a]")
-;;    ("MEETING" "* MEETING %? %^g %i [%a]")))
-
-;; (defun org-rl-build-capture+-option (interval prompt-fn options-fn default-fn)
-;;   "To create new org entry"
-;;   (let ((action #'(lambda ()
-;;                     (let ((template (occ-capture+-helm-select-template)))
-;;                       (when template
-;;                         (let ((mrk (get-marker)))
-;;                           (with-org-capture+ 'entry `(marker ,mrk) template '(:empty-lines 1)
-;;                             (let ((capture-clock (make-org-rl-clock (point))))
-;;                               t))))))))
-;;     (helm-build-sync-source name
-;;       :candidates (if (functionp options-fn)
-;;                       (funcall options-fn)
-;;                     options-fn)
-;;       :action (list
-;;                (cons "New Task" 'new-task))
-;;       :action-transformer #'(lambda (actions candidate)
-;;                               (list (cons "select"))))))
 (cl-defgeneric org-rl-find-all-new-template-options (prev
                                                      next
                                                      maxtimelen-secs
@@ -758,7 +740,7 @@
                        (cons 'include-in-new template)
                        prev next maxtimelen-secs resume fail-quietly resume-clocks))
                   (cdr list)))))
-   org-rl-capture+-helm-templates-alist))
+   (org-rl-intf-capture+-helm-templates-alist)))
 
 
 (cl-defmethod org-rl-clock-opts-common ((prev org-rl-clock)
