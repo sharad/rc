@@ -78,7 +78,37 @@
               (cdr list))
     list))
 
+(defun collect-elem-cond (list nodep predicate)
+  (if (funcall nodep list)
+      list
+    (when (funcall predicate list)
+      (remove nil
+              (mapcar #'(lambda (e) (collect-elem-cond e nodep predicate))
+                      (cdr list))))))
+
+
 (collect-elem xmatch-kk)
+
+(collect-elem-cond xmatch-kk
+                   #'(lambda (x) (not (listp x)))
+                   #'(lambda (list)
+                       (or
+                        (<= (max-depth list) 0)
+                        (memq (car list) '(t)))))
+
+(max-depth '(t "i" "l"  (pred1 (pred2 "y" "k") "n" "x") (pred3 "z") "a"))
+(max-depth '())
+
+
+(defun collect-with-depth (tree depth)
+  (collect-elem-cond tree
+                     #'(lambda (x) (not (listp x)))
+                     #'(lambda (list)
+                         (or
+                          (<= (max-depth list) depth)
+                          (memq (car list) '(t))))))
+
+(collect-with-depth xmatch-kk 3)
 
 
 
