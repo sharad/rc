@@ -32,12 +32,55 @@
 
 ;; * Dynamic Match based templates
 
-(defvar org-capture+-helm-templates-alist
-  '(("TODO"
-     "* TODO %? %^g\n %i\n [%a]\n"
-     "* MILESTONE %? %^g\n %i\n [%a]\n")
-    ("MEETING"
-     "* MEETING %? %^g\n %i\n [%a]\n")))
+(defvar org-capture+-helm-templates-alist nil)
+
+
+(defun org-capture+-helm-template-add (scope heading template)
+  (unless (assoc heading org-capture+-helm-templates-alist)
+    (pushnew (list heading) org-capture+-helm-templates-alist))
+  (pushnew template
+           (cdr (assoc heading org-capture+-helm-templates-alist))))
+
+(org-capture+-helm-template-add 'test "TODO" "* TODO %? %^g\n %i\n [%a]\n")
+(org-capture+-helm-template-add 'test "TODO" "* MILESTONE %? %^g\n %i\n [%a]\n")
+(org-capture+-helm-template-add 'test "MEETING" "* MEETING %? %^g\n %i\n [%a]\n")
+
+
+(t (pred1 (pred2 "y" "k") "x") (pred3 "z") "a")
+
+(defun max-depth (tree)
+  (if (atom tree)
+      0
+    (1+ (reduce #'max (mapcar #'max-depth tree)))))
+
+(setq xmatch-kk '(t  (pred1 (pred2 "y" "k") "n" "x") (pred3 "z") "a"))
+
+(defun x-match-preds (depth preds list)
+  (if (<= depth (max-depth list))
+      ()))
+
+(max-depth xmatch-kk)
+
+
+(defun collect-elem (list)
+  (if (and
+       (listp list)
+       (consp (cadr list)))
+      (mapcar #'(lambda (e) (collect-elem e))
+              (cdr list))
+    (if (listp list) (cdr list) list)))
+
+(setq xmatch-kk '(t "i" "l"  (pred1 (pred2 "y" "k") "n" "x") (pred3 "z") "a"))
+
+(defun collect-elem (list)
+  (if (listp list)
+      (mapcar #'(lambda (e) (collect-elem e))
+              (cdr list))
+    list))
+
+(collect-elem xmatch-kk)
+
+
 
 ;;;###autoload
 (defun org-capture+-build-helm-template-source (name attrib-list &rest templates)
