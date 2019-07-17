@@ -44,72 +44,37 @@
 (org-capture+-helm-template-add 'test "TODO" "* TODO %? %^g\n %i\n [%a]\n")
 (org-capture+-helm-template-add 'test "TODO" "* MILESTONE %? %^g\n %i\n [%a]\n")
 (org-capture+-helm-template-add 'test "MEETING" "* MEETING %? %^g\n %i\n [%a]\n")
-
 
 
 ;; https://kitchingroup.cheme.cmu.edu/blog/2016/01/24/Modern-use-of-helm-sortable-candidates/
-
-(t (pred1 (pred2 "y" "k") "x") (pred3 "z") "a")
 
 (defun max-depth (tree)
   (if (atom tree)
       0
     (1+ (reduce #'max (mapcar #'max-depth tree)))))
 
-(setq xmatch-kk '(t  (pred1 (pred2 "y" "k") "n" "x") (pred3 "z") "a"))
-
-(defun x-match-preds (depth preds list)
-  (if (<= depth (max-depth list))
-      ()))
-
-(max-depth xmatch-kk)
-
-
-(defun collect-elem (list)
-  (if (and
-       (listp list)
-       (consp (cadr list)))
-      (mapcar #'(lambda (e) (collect-elem e))
-              (cdr list))
-    (if (listp list) (cdr list) list)))
-
-(setq xmatch-kk '(t "i" "l"  (pred1 (pred2 "y" "k") "n" "x") (pred3 "z") "a"))
-
-(defun collect-elem (list)
-  (if (listp list)
-      (mapcar #'(lambda (e) (collect-elem e))
-              (cdr list))
-    list))
-
-(defun collect-elem-cond (list nodep predicate)
-  (if (funcall nodep list)
-      list
-    (when (funcall predicate list)
+(defun collect-elem-cond (tree nodep predicate)
+  (if (funcall nodep tree)
+      tree
+    (when (funcall predicate tree)
       (remove nil
               (mapcar #'(lambda (e) (collect-elem-cond e nodep predicate))
-                      (cdr list))))))
+                      (cdr tree))))))
 
-
-(collect-elem xmatch-kk)
-
-(collect-elem-cond xmatch-kk
-                   #'(lambda (x) (not (listp x)))
-                   #'(lambda (list)
-                       (or
-                        (<= (max-depth list) 0)
-                        (memq (car list) '(t)))))
-
-(max-depth '(t "i" "l"  (pred1 (pred2 "y" "k") "n" "x") (pred3 "z") "a"))
-(max-depth '())
-
+(defun collect-elem-cond-depth (tree nodep predicate depth)
+  (collect-elem-cond tree
+                     nodep
+                     #'(lambda (subtree)
+                         (or
+                          (<= (max-depth subtree) depth)
+                          (funcall predicate subtree)))))
 
 (defun collect-with-depth (tree depth)
-  (collect-elem-cond tree
-                     #'(lambda (x) (not (listp x)))
-                     #'(lambda (list)
-                         (or
-                          (<= (max-depth list) depth)
-                          (memq (car list) '(t))))))
+  (collect-elem-cond-depth tree
+                           #'(lambda (x)
+                               (not (listp x)))
+                           #'(lambda (subtree)
+                               (memq (car subtree) '(t)))))
 
 (-flatten (collect-with-depth xmatch-kk 1))
 
@@ -143,59 +108,44 @@
 
 
 
-(defmacro with-org-capture-plus (marker type target template plist before-body &rest after-body)
-  `(let* ((before-finalize #'(lambda (,marker) ,before-body))
-          (after-finalize  #'(lambda (,marker) ,@after-body))
-          (plist (append
-                  (list :before-finalize before-finalize
-                        :after-finalize  after-finalize)
-                  ,plist)))
-     (org-capture+-debug :debug "plist %s \n" plist)
-     (apply #'org-capture-plus
-            ,type
-            ,target
-            ,template
-            plist)))
-(put 'with-org-capture-plus 'lisp-indent-function 6)
 
-(defmacro with-org-capture+ (marker type target template plist before-body &rest after-body)
-  `(with-org-capture-plus ,marker ,type ,target ,template ,plist ,before-body ,@after-body))
-(put 'with-org-capture+ 'lisp-indent-function 6)
-
 
-(defmacro after-org-capture-plus (marker type target template plist &rest body)
-  `(let* ((after-finalize #'(lambda (,marker) ,@body))
-          (plist (append
-                  (list :after-finalize after-finalize)
-                  ,plist)))
-     (org-capture+-debug :debug "plist %s \n" plist)
-     (apply #'org-capture-plus
-            ,type
-            ,target
-            ,template
-            plist)))
-(put 'after-org-capture-plus 'lisp-indent-function 5)
 
-(defmacro after-org-capture+ (marker type target template plist &rest body)
-  `(after-org-capture-plus ,marker ,type ,target ,template ,plist ,@body))
-(put 'with-org-capture+ 'lisp-indent-function 5)
-
 
-(defmacro before-org-capture-plus (marker type target template plist &rest body)
-  `(let* ((before-finalize #'(lambda (,marker) ,@body))
-          (plist (append
-                  (list :before-finalize before-finalize)
-                  ,plist)))
-     (org-capture+-debug :debug "plist %s \n" plist)
-     (apply #'org-capture-plus
-            ,type
-            ,target
-            ,template
-            plist)))
-(put 'before-org-capture-plus 'lisp-indent-function 5)
+;; (t (pred1 (pred2 "y" "k") "x") (pred3 "z") "a")
 
-(defmacro before-org-capture+ (marker type target template plist &rest body)
-  `(before-org-capture-plus ,marker ,type ,target ,template ,plist ,@body))
-(put 'with-org-capture+ 'lisp-indent-function 5)
-
+;; (setq xmatch-kk '(t  (pred1 (pred2 "y" "k") "n" "x") (pred3 "z") "a"))
+
+;; (defun collect-elem (list)
+;;   (if (and
+;;        (listp list)
+;;        (consp (cadr list)))
+;;       (mapcar #'(lambda (e) (collect-elem e))
+;;               (cdr list))
+;;     (if (listp list) (cdr list) list)))
+
+;; (setq xmatch-kk '(t "i" "l"  (pred1 (pred2 "y" "k") "n" "x") (pred3 "z") "a"))
+
+;; (defun collect-elem (list)
+;;   (if (listp list)
+;;       (mapcar #'(lambda (e) (collect-elem e))
+;;               (cdr list))
+;;     list))
+
+
+;; (collect-elem xmatch-kk)
+
+;; (collect-elem-cond xmatch-kk
+;;                    #'(lambda (x) (not (listp x)))
+;;                    #'(lambda (list)
+;;                        (or
+;;                         (<= (max-depth list) 0)
+;;                         (memq (car list) '(t)))))
+
+;; (max-depth '(t "i" "l"  (pred1 (pred2 "y" "k") "n" "x") (pred3 "z") "a"))
+;; (max-depth '())
+
+
+
+
 ;;; org-capture+-helm.el ends here

@@ -26,7 +26,7 @@
 
 
 
-;; Check for C-h v helm-source-sync
+;; Check for C-h f helm-source-sync
 
 (defun h-candidates ()
   '("aaaa" "bbb"))
@@ -34,16 +34,11 @@
 
 (defun h-candidate-transformer (candidates source)
   (message "called")
+  ;; (mapcar #'(lambda (x) (concat "xx" helm-pattern x)) candidates)
   (mapcar #'(lambda (x) (concat "xx" helm-pattern x)) candidates))
 
-;; (defun h-action-transformer (actions candidate)
-;;   "Candidate is the result selected."
-;;   (if (evenp (plist-get candidate :num))
-;;       '(("Even" . identity))
-;;     '(("Odd" . identity))))
-
 (defun h-action-transformer (actions candidate)
-  `(("Even" . identity)))
+  '(("Even" . identity)))
 
 (setq h-source
       (helm-build-sync-source "number-selector"
@@ -56,4 +51,26 @@
 
 (helm :sources 'h-source)
 
-;;; my-trans.el ends here
+
+(defun h-candidates ()
+  '("aaaa" "bbb" "ccc"))
+
+
+(defun h-candidate-transformer (candidate)
+  (concat "xx" helm-pattern candidate))
+
+(defun h-action-transformer (actions candidate)
+  '(("Even" . identity)))
+
+(setq h-source
+      (helm-build-sync-source "number-selector"
+        ;; :keymap h-map
+        ;; :requires-pattern nil
+        :match (list #'(lambda (c) t))
+        :candidates #'h-candidates
+        :filter-one-by-one #'h-candidate-transformer
+        :action-transformer #'h-action-transformer))
+
+(helm :sources 'h-source)
+
+;;; my-trans.el ends here
