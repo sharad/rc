@@ -46,6 +46,9 @@
 (org-capture+-helm-template-add 'test "MEETING" "* MEETING %? %^g\n %i\n [%a]\n")
 
 
+
+;; https://kitchingroup.cheme.cmu.edu/blog/2016/01/24/Modern-use-of-helm-sortable-candidates/
+
 (t (pred1 (pred2 "y" "k") "x") (pred3 "z") "a")
 
 (defun max-depth (tree)
@@ -108,7 +111,7 @@
                           (<= (max-depth list) depth)
                           (memq (car list) '(t))))))
 
-(collect-with-depth xmatch-kk 3)
+(-flatten (collect-with-depth xmatch-kk 1))
 
 
 

@@ -333,15 +333,18 @@
   ;;BUG: could be the cause of high MEM usage
   (unwind-protect
       (progn
-        (when *occ-buff-sel-timer*
-          (cancel-timer *occ-buff-sel-timer*)
-          (setq *occ-buff-sel-timer* nil))
+        (occ-cancel-timer)
         (if (eq 'buffer-switch event)
             (occ-run-curr-ctx-chg-timer)
           (occ-run-curr-ctx-timer)))
     ;; to bypass QUIT
     (occ-try-clock-schedule-next-timeout nil)))
 
+
+(defun occ-cancel-timer ()
+  (when *occ-buff-sel-timer*
+    (cancel-timer *occ-buff-sel-timer*)
+    (setq *occ-buff-sel-timer* nil)))
 
 (cl-defmethod occ-try-clock-in-next-timeout ()
   "Get next timeout to try clock-in"
@@ -356,9 +359,7 @@
 (cl-defmethod occ-try-clock-schedule-next-timeout (event)
   "Get next timeout to try clock-in"
   (occ-debug :debug "occ-try-clock-schedule-next-timeout: begin")
-  (when *occ-buff-sel-timer*
-    (cancel-timer *occ-buff-sel-timer*)
-    (setq *occ-buff-sel-timer* nil))
+  (occ-cancel-timer)
   (setq *occ-buff-sel-timer*
         ;; distrubing while editing.
         ;; run-with-timer

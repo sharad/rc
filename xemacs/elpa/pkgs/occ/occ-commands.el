@@ -280,6 +280,7 @@
   (occ-message "occ-insinuate: begin")
   (occ-initialize)
   (progn
+    (occ-cancel-timer)
     (occ-reset-collection-object)
     ;; (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)
     ;; (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer t)
@@ -310,6 +311,7 @@
   (occ-message "occ-uninsinuate: begin")
   (occ-uninitialize)
   (progn
+    (occ-cancel-timer)
     (occ-reset-collection-object)
     ;; (setq buffer-list-update-hook nil)
 
