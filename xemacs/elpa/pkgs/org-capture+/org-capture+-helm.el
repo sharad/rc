@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2019  Sharad
 
-;; Author: Sharad <sh4r4d@gmail.com>
+;; Author: Sharad
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -27,13 +27,11 @@
 (provide 'org-capture+-helm)
 
 
+(require 'dash)
 (require 'helm)
 
 
-;; * Dynamic Match based templates
-
 (defvar org-capture+-helm-templates-alist nil)
-
 
 (defun org-capture+-helm-template-add (scope heading template)
   (unless (assoc heading org-capture+-helm-templates-alist)
@@ -44,40 +42,6 @@
 (org-capture+-helm-template-add 'test "TODO" "* TODO %? %^g\n %i\n [%a]\n")
 (org-capture+-helm-template-add 'test "TODO" "* MILESTONE %? %^g\n %i\n [%a]\n")
 (org-capture+-helm-template-add 'test "MEETING" "* MEETING %? %^g\n %i\n [%a]\n")
-
-
-;; https://kitchingroup.cheme.cmu.edu/blog/2016/01/24/Modern-use-of-helm-sortable-candidates/
-
-(defun max-depth (tree)
-  (if (atom tree)
-      0
-    (1+ (reduce #'max (mapcar #'max-depth tree)))))
-
-(defun collect-elem-cond (tree nodep predicate)
-  (if (funcall nodep tree)
-      tree
-    (when (funcall predicate tree)
-      (remove nil
-              (mapcar #'(lambda (e) (collect-elem-cond e nodep predicate))
-                      (cdr tree))))))
-
-(defun collect-elem-cond-depth (tree nodep predicate depth)
-  (collect-elem-cond tree
-                     nodep
-                     #'(lambda (subtree)
-                         (or
-                          (<= (max-depth subtree) depth)
-                          (funcall predicate subtree)))))
-
-(defun collect-with-depth (tree depth)
-  (collect-elem-cond-depth tree
-                           #'(lambda (x)
-                               (not (listp x)))
-                           #'(lambda (subtree)
-                               (memq (car subtree) '(t)))))
-
-(-flatten (collect-with-depth xmatch-kk 1))
-
 
 
 ;;;###autoload
@@ -105,6 +69,49 @@
           (org-capture+-build-helm-template-sources attrib-list alist))))
 
 ;; (org-capture+-helm-select-template)
+
+
+;; * Dynamic Match based templates
+;; https://kitchingroup.cheme.cmu.edu/blog/2016/01/24/Modern-use-of-helm-sortable-candidates/
+
+(defvar org-capture+-helm-templates-alist nil)
+
+(defun max-depth (tree &optional nodep)
+  (let ((nodep (or nodep #'atom)))
+    (if (nodep tree)
+        0
+      (1+ (reduce #'max (mapcar #'max-depth tree))))))
+
+(defun collect-elem-cond (tree nodep predicate)
+  (if (funcall nodep tree)
+      tree
+    (when (funcall predicate tree)
+      (remove nil
+              (mapcar #'(lambda (subtree)
+                          (collect-elem-cond subtree nodep predicate))
+                      (cdr tree))))))
+
+(defun collect-elem-cond-depth (tree nodep predicate depth)
+  (collect-elem-cond tree
+                     nodep
+                     #'(lambda (subtree)
+                         (or
+                          (<= (max-depth subtree nodep) depth)
+                          (funcall predicate subtree)))))
+
+(defun collect-with-depth (tree depth)
+  (collect-elem-cond-depth tree
+                           #'(lambda (x)
+                               (not (listp x)))
+                           #'(lambda (subtree)
+                               (memq (car subtree) '(t)))
+                           depth))
+
+(-flatten (collect-with-depth xmatch-kk 1))
+
+
+
+
 
 
 
