@@ -74,7 +74,11 @@
 ;; * Dynamic Match based templates
 ;; https://kitchingroup.cheme.cmu.edu/blog/2016/01/24/Modern-use-of-helm-sortable-candidates/
 
-(defvar org-capture+-helm-templates-alist nil)
+(defvar org-capture+-helm-templates-plist nil)
+(defvar org-capture+-helm-templates-tree  nil)
+
+
+
 
 (defun max-depth (tree &optional nodep)
   (let ((nodep (or nodep #'atom)))
@@ -108,15 +112,44 @@
                            depth))
 
 (-flatten (collect-with-depth xmatch-kk 1))
+
 
+(defvar h-map
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map helm-map)
+    (define-key map (kbd "M-<down>")   'h-sort)
+    map)
+  "keymap for a helm source.")
+
+(defvar h-sort-fn nil)
+
+(defun h-sort ()
+  (interactive))
+
+(defun h-candidates ()
+  '("aaaa" "bbb" "ccc"))
+
+(defun h-candidate-transformer (candidates source)
+  (reverse (h-candidates)))
+
+(defun h-action-transformer (actions candidate)
+  '(("Even" . identity)))
+
+(setq h-source
+      (helm-build-sync-source "number-selector"
+        :keymap h-map
+        ;; :requires-pattern nil
+        :match (list #'(lambda (c) t))
+        :candidates #'h-candidates
+        :filtered-candidate-transformer #'h-candidate-transformer
+        ;; :filter-one-by-one #'h-candidate-transformer
+        :action-transformer #'h-action-transformer))
+
+(helm :sources 'h-source)
 
 
 
 
-
-
-
-
 
 
 ;; (t (pred1 (pred2 "y" "k") "x") (pred3 "z") "a")

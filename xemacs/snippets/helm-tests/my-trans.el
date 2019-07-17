@@ -73,4 +73,27 @@
 
 (helm :sources 'h-source)
 
-;;; my-trans.el ends here
+
+
+(defun h-candidates ()
+  '("aaaa" "bbb" "ccc"))
+
+(defun h-candidate-transformer (candidates source)
+  (reverse (h-candidates)))
+
+(defun h-action-transformer (actions candidate)
+  '(("Even" . identity)))
+
+(setq h-source
+      (helm-build-sync-source "number-selector"
+        ;; :keymap h-map
+        ;; :requires-pattern nil
+        :match (list #'(lambda (c) t))
+        :candidates #'h-candidates
+        :filtered-candidate-transformer #'h-candidate-transformer
+        ;; :filter-one-by-one #'h-candidate-transformer
+        :action-transformer #'h-action-transformer))
+
+(helm :sources 'h-source)
+
+;;; my-trans.el ends here
