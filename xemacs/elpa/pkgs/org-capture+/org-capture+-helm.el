@@ -103,6 +103,24 @@
                                (memq (car subtree) '(t)))
                            depth))
 
+(defun tree-add (keys item list)
+  (let ((key (car keys)))
+    (if (cdr list)
+        (if key
+            (progn
+              (unless (assoc key (cdr list))
+                (nconc (cdr list) (list (list key))))
+              (tree-add (cdr keys) item (assoc key (cdr list))))
+          (unless (memq item (cdr list))
+            (nconc (cdr list) (list item))))
+      (progn
+        (when key (nconc list (list (list key))))
+        (if (cdr keys)
+            (tree-add (cdr keys) item (assoc key (cdr list)))
+          (if key
+              (nconc (assoc key (cdr list)) (list item))
+            (nconc list (list item))))))))
+
 (-flatten (collect-with-depth xmatch-kk 1))
 
 
