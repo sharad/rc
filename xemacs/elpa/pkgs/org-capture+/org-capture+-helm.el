@@ -162,7 +162,6 @@
 
 (setq org-capture+-helm-templates-tree '(t))
 
-
 (defun tree-add (keys item list)
   (let ((key (car keys)))
     (if (cdr list)
@@ -171,18 +170,23 @@
               (unless (assoc key (cdr list))
                 (nconc (cdr list) (list (list key))))
               (tree-add (cdr keys) item (assoc key (cdr list))))
-          (nconc (cdr list) (list  item)))
+          (unless (memq item (cdr list))
+            (nconc (cdr list) (list item))))
       (progn
-        (nconc list (list (list key)))
+        (when key (nconc list (list (list key))))
         (if (cdr keys)
             (tree-add (cdr keys) item (assoc key (cdr list)))
-          (nconc (assoc key (cdr list)) (list  item)))))))
+          (if key
+              (nconc (assoc key (cdr list)) (list item))
+            (nconc list (list item))))))))
 
 (setq org-capture+-helm-templates-tree '(t))
 (tree-add '(x z) 'y org-capture+-helm-templates-tree)
 (tree-add '(x z) 'k org-capture+-helm-templates-tree)
 (tree-add '(a z) 'k org-capture+-helm-templates-tree)
 (tree-add '(x n) 'i org-capture+-helm-templates-tree)
+(tree-add '(x n b) 'i org-capture+-helm-templates-tree)
+
 
 
 (defvar h-map
