@@ -121,7 +121,7 @@
               (nconc (assoc key (cdr list)) (list item))
             (nconc list (list item))))))))
 
-(-flatten (collect-with-depth xmatch-kk 1))
+;; (-flatten (collect-with-depth xmatch-kk 1))
 
 
 ;; * Dynamic Match based templates
@@ -136,6 +136,7 @@
 (setq org-capture+-helm-templates-tree
       (list t))
 
+
 ;; https://stackoverflow.com/questions/4387570/in-common-lisp-how-can-i-insert-an-element-into-a-list-in-place
 (setq org-capture+-helm-templates-tree '(t))
 
@@ -147,6 +148,7 @@
 (tree-add 'x org-capture+-helm-templates-tree)
 (tree-add 'y org-capture+-helm-templates-tree)
 
+
 (setf testy-list '(a bar))
 (defun modify (list)
   (setf (first list) 'foo))
@@ -180,9 +182,8 @@
 (tree-add '(x n) 'i org-capture+-helm-templates-tree)
 (tree-add '(x n b) 'i org-capture+-helm-templates-tree)
 (tree-add '(x #'(lambda () t) x) 'c org-capture+-helm-templates-tree)
-
-
 
+
 (defvar h-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map helm-map)
