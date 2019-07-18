@@ -71,20 +71,12 @@
 ;; (org-capture+-helm-select-template)
 
 
-;; * Dynamic Match based templates
-;; https://kitchingroup.cheme.cmu.edu/blog/2016/01/24/Modern-use-of-helm-sortable-candidates/
-
-(defvar org-capture+-helm-templates-plist nil)
-(defvar org-capture+-helm-templates-tree  nil)
-
-
-
-
 (defun max-depth (tree &optional nodep)
   (let ((nodep (or nodep #'atom)))
     (if (nodep tree)
         0
-      (1+ (reduce #'max (mapcar #'max-depth tree))))))
+      (1+ (reduce #'max
+                  (mapcar #'max-depth tree))))))
 
 (defun collect-elem-cond (tree nodep predicate)
   (if (funcall nodep tree)
@@ -103,7 +95,7 @@
                           (<= (max-depth subtree nodep) depth)
                           (funcall predicate subtree)))))
 
-(defun collect-with-depth (tree depth)
+(defun collect-elem-simple-depth (tree depth)
   (collect-elem-cond-depth tree
                            #'(lambda (x)
                                (not (listp x)))
@@ -114,6 +106,85 @@
 (-flatten (collect-with-depth xmatch-kk 1))
 
 
+;; * Dynamic Match based templates
+;; https://kitchingroup.cheme.cmu.edu/blog/2016/01/24/Modern-use-of-helm-sortable-candidates/
+
+(defvar org-capture+-helm-templates-plist nil)
+(defvar org-capture+-helm-templates-tree  nil)
+
+
+(setq org-capture+-helm-templates-plist '(:todo))
+
+(setq org-capture+-helm-templates-tree
+      (list t))
+
+
+(defun tree-add (preds templates tree)
+  (if preds
+      (if (assoc (car preds) (cdr tree))
+          (pushnew
+           (tree-add (cdr preds) templates (cdr tree))
+           (cdr (assoc (car preds) (cdr tree))))
+        (setcdr
+         tree
+         (list
+          (car preds)
+          (tree-add (cdr preds) templates (cdr tree)))))
+    templates))
+
+(setq org-capture+-helm-templates-tree '(t))
+
+(pushnew
+ (cons 'x 'y)
+ (cdr (assoc 'x (cdr org-capture+-helm-templates-tree))))
+
+(nconc org-capture+-helm-templates-tree (list 'x 'y))
+
+(tree-add '(x n) 'k org-capture+-helm-templates-tree)
+
+
+;; https://stackoverflow.com/questions/4387570/in-common-lisp-how-can-i-insert-an-element-into-a-list-in-place
+(setq org-capture+-helm-templates-tree '(t))
+
+(defun tree-add (z list)
+  (if (cdr list)
+      (setf (cdr list) (list z))
+    (nconc list (list z))))
+
+(tree-add 'x org-capture+-helm-templates-tree)
+(tree-add 'y org-capture+-helm-templates-tree)
+
+(setf testy-list '(a bar))
+(defun modify (list)
+  (setf (first list) 'foo))
+(modify testy-list)
+
+
+(setq org-capture+-helm-templates-tree '(t))
+
+
+(defun tree-add (keys item list)
+  (let ((key (car keys)))
+    (if (cdr list)
+        (if key
+            (progn
+              (unless (assoc key (cdr list))
+                (nconc (cdr list) (list (list key))))
+              (tree-add (cdr keys) item (assoc key (cdr list))))
+          (nconc (cdr list) (list  item)))
+      (progn
+        (nconc list (list (list key)))
+        (if (cdr keys)
+            (tree-add (cdr keys) item (assoc key (cdr list)))
+          (nconc (assoc key (cdr list)) (list  item)))))))
+
+(setq org-capture+-helm-templates-tree '(t))
+(tree-add '(x z) 'y org-capture+-helm-templates-tree)
+(tree-add '(x z) 'k org-capture+-helm-templates-tree)
+(tree-add '(a z) 'k org-capture+-helm-templates-tree)
+(tree-add '(x n) 'i org-capture+-helm-templates-tree)
+
+
 (defvar h-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map helm-map)

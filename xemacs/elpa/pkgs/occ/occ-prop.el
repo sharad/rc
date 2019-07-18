@@ -111,7 +111,6 @@
    (occ-obj-ctx obj)))
 
 
-
 (cl-defmethod occ-properties-to-inherit ((obj null))
   (cl-method-param-case
    '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))))
@@ -124,12 +123,20 @@
   (cl-method-param-case
    '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))))
 
+
 (cl-defmethod occ-properties-to-calcuate-rank ((obj symbol))
   (let ((class obj))
     (let ((exclass (list '\` `(,class (eql ,'(\, val))))))
       (funcall
        `(lambda ()
           (cl-method-param-case (quote (occ-rankprop (,exclass val)))))))))
+
+(cl-defmethod occ-properties-to-calcuate-rank ((obj symbol))
+  (let ((class obj))
+    (let ((exclass (list '\` `(,class (eql ,'(\, val))))))
+      (funcall
+       `(lambda ()
+          (cl-method-param-case '(occ-rankprop (,exclass val))))))))
 
 (cl-defmethod occ-properties-to-calculate-rank ((obj occ-tsk))
   (occ-properties-to-calcuate-rank 'occ-tsk))

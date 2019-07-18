@@ -91,5 +91,4 @@
 
 (helm :sources 'h-source)
 
-
 ;;; kitchen-dyntrans.el ends here
