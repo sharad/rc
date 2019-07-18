@@ -118,31 +118,6 @@
 (setq org-capture+-helm-templates-tree
       (list t))
 
-
-(defun tree-add (preds templates tree)
-  (if preds
-      (if (assoc (car preds) (cdr tree))
-          (pushnew
-           (tree-add (cdr preds) templates (cdr tree))
-           (cdr (assoc (car preds) (cdr tree))))
-        (setcdr
-         tree
-         (list
-          (car preds)
-          (tree-add (cdr preds) templates (cdr tree)))))
-    templates))
-
-(setq org-capture+-helm-templates-tree '(t))
-
-(pushnew
- (cons 'x 'y)
- (cdr (assoc 'x (cdr org-capture+-helm-templates-tree))))
-
-(nconc org-capture+-helm-templates-tree (list 'x 'y))
-
-(tree-add '(x n) 'k org-capture+-helm-templates-tree)
-
-
 ;; https://stackoverflow.com/questions/4387570/in-common-lisp-how-can-i-insert-an-element-into-a-list-in-place
 (setq org-capture+-helm-templates-tree '(t))
 
@@ -186,6 +161,7 @@
 (tree-add '(a z) 'k org-capture+-helm-templates-tree)
 (tree-add '(x n) 'i org-capture+-helm-templates-tree)
 (tree-add '(x n b) 'i org-capture+-helm-templates-tree)
+(tree-add '(x #'(lambda () t) x) 'c org-capture+-helm-templates-tree)
 
 
 
