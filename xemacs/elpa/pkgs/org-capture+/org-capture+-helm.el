@@ -71,59 +71,6 @@
 ;; (org-capture+-helm-select-template)
 
 
-(defun max-depth (tree &optional nodep)
-  (let ((nodep (or nodep #'atom)))
-    (if (nodep tree)
-        0
-      (1+ (reduce #'max
-                  (mapcar #'max-depth tree))))))
-
-(defun collect-elem-cond (tree nodep predicate)
-  (if (funcall nodep tree)
-      tree
-    (when (funcall predicate tree)
-      (remove nil
-              (mapcar #'(lambda (subtree)
-                          (collect-elem-cond subtree nodep predicate))
-                      (cdr tree))))))
-
-(defun collect-elem-cond-depth (tree nodep predicate depth)
-  (collect-elem-cond tree
-                     nodep
-                     #'(lambda (subtree)
-                         (or
-                          (<= (max-depth subtree nodep) depth)
-                          (funcall predicate subtree)))))
-
-(defun collect-elem-simple-depth (tree depth)
-  (collect-elem-cond-depth tree
-                           #'(lambda (x)
-                               (not (listp x)))
-                           #'(lambda (subtree)
-                               (memq (car subtree) '(t)))
-                           depth))
-
-(defun tree-add (keys item list)
-  (let ((key (car keys)))
-    (if (cdr list)
-        (if key
-            (progn
-              (unless (assoc key (cdr list))
-                (nconc (cdr list) (list (list key))))
-              (tree-add (cdr keys) item (assoc key (cdr list))))
-          (unless (memq item (cdr list))
-            (nconc (cdr list) (list item))))
-      (progn
-        (when key (nconc list (list (list key))))
-        (if (cdr keys)
-            (tree-add (cdr keys) item (assoc key (cdr list)))
-          (if key
-              (nconc (assoc key (cdr list)) (list item))
-            (nconc list (list item))))))))
-
-;; (-flatten (collect-with-depth xmatch-kk 1))
-
-
 ;; * Dynamic Match based templates
 ;; https://kitchingroup.cheme.cmu.edu/blog/2016/01/24/Modern-use-of-helm-sortable-candidates/
 
@@ -135,53 +82,24 @@
 
 (setq org-capture+-helm-templates-tree
       (list t))
-
 
-;; https://stackoverflow.com/questions/4387570/in-common-lisp-how-can-i-insert-an-element-into-a-list-in-place
-(setq org-capture+-helm-templates-tree '(t))
+(defun org-capture+-add-template (keys template)
+  (tree-add keys
+            (list :template template)
+            org-capture+-helm-templates-tree))
 
-(defun tree-add (z list)
-  (if (cdr list)
-      (setf (cdr list) (list z))
-    (nconc list (list z))))
+(defun org-capture+-template-predicate (template)
+  (eql :template (car template)))
 
-(tree-add 'x org-capture+-helm-templates-tree)
-(tree-add 'y org-capture+-helm-templates-tree)
-
+(defun org-capture+-tree-predicate (key)
+  (cond))
 
-(setf testy-list '(a bar))
-(defun modify (list)
-  (setf (first list) 'foo))
-(modify testy-list)
-
-
-(setq org-capture+-helm-templates-tree '(t))
-
-(defun tree-add (keys item list)
-  (let ((key (car keys)))
-    (if (cdr list)
-        (if key
-            (progn
-              (unless (assoc key (cdr list))
-                (nconc (cdr list) (list (list key))))
-              (tree-add (cdr keys) item (assoc key (cdr list))))
-          (unless (memq item (cdr list))
-            (nconc (cdr list) (list item))))
-      (progn
-        (when key (nconc list (list (list key))))
-        (if (cdr keys)
-            (tree-add (cdr keys) item (assoc key (cdr list)))
-          (if key
-              (nconc (assoc key (cdr list)) (list item))
-            (nconc list (list item))))))))
-
-(setq org-capture+-helm-templates-tree '(t))
-(tree-add '(x z) 'y org-capture+-helm-templates-tree)
-(tree-add '(x z) 'k org-capture+-helm-templates-tree)
-(tree-add '(a z) 'k org-capture+-helm-templates-tree)
-(tree-add '(x n) 'i org-capture+-helm-templates-tree)
-(tree-add '(x n b) 'i org-capture+-helm-templates-tree)
-(tree-add '(x #'(lambda () t) x) 'c org-capture+-helm-templates-tree)
+(defun org-capture+-collect-template ()
+  (let ((templates-tree
+         (collect-elem-cond-depth org-capture+-helm-templates-tree
+                                  #'org-capture+-template-predicate
+                                  #'org-capture+-collect-predicate)))
+    (-flatten templates-tree)))
 
 
 (defvar h-map
@@ -217,45 +135,4 @@
 
 (helm :sources 'h-source)
 
-
-
-
-
-
-;; (t (pred1 (pred2 "y" "k") "x") (pred3 "z") "a")
-
-;; (setq xmatch-kk '(t  (pred1 (pred2 "y" "k") "n" "x") (pred3 "z") "a"))
-
-;; (defun collect-elem (list)
-;;   (if (and
-;;        (listp list)
-;;        (consp (cadr list)))
-;;       (mapcar #'(lambda (e) (collect-elem e))
-;;               (cdr list))
-;;     (if (listp list) (cdr list) list)))
-
-;; (setq xmatch-kk '(t "i" "l"  (pred1 (pred2 "y" "k") "n" "x") (pred3 "z") "a"))
-
-;; (defun collect-elem (list)
-;;   (if (listp list)
-;;       (mapcar #'(lambda (e) (collect-elem e))
-;;               (cdr list))
-;;     list))
-
-
-;; (collect-elem xmatch-kk)
-
-;; (collect-elem-cond xmatch-kk
-;;                    #'(lambda (x) (not (listp x)))
-;;                    #'(lambda (list)
-;;                        (or
-;;                         (<= (max-depth list) 0)
-;;                         (memq (car list) '(t)))))
-
-;; (max-depth '(t "i" "l"  (pred1 (pred2 "y" "k") "n" "x") (pred3 "z") "a"))
-;; (max-depth '())
-
-
-
-
 ;;; org-capture+-helm.el ends here

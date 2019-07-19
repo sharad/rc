@@ -78,4 +78,13 @@
               (nconc (assoc key (cdr list)) (list item))
             (nconc list (list item))))))))
 
+
+(setq org-capture+-helm-templates-tree '(t))
+(tree-add '(x z) 'y org-capture+-helm-templates-tree)
+(tree-add '(x z) 'k org-capture+-helm-templates-tree)
+(tree-add '(a z) 'k org-capture+-helm-templates-tree)
+(tree-add '(x n) 'i org-capture+-helm-templates-tree)
+(tree-add '(x n b) 'i org-capture+-helm-templates-tree)
+(tree-add '(x #'(lambda () t) x) 'c org-capture+-helm-templates-tree)
+
 ;;; tree-lib.el ends here
