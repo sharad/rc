@@ -94,24 +94,30 @@
 (defun org-capture+-template-predicate (template)
   (eql :template (car template)))
 
-(defun org-capture+-tree-predicate (key arg)
-  (memq key arg))
+(defun org-capture+-tree-predicate (key-tree arg)
+  (message "key-tree %s arg %s" key-tree arg)
+  (memq (car key-tree) arg))
 
 (defun org-capture+-tree-gen-predicate (arg)
   #'(lambda (key)
       (org-capture+-tree-predicate key arg)))
 
-(defun org-capture+-collect-template-alist (&optional arg)
+(defun org-capture+-collect-template-alist (arg)
   (let ((templates-tree
          (collect-elem-cond-depth org-capture+-helm-templates-tree
                                   #'org-capture+-template-predicate
-                                  (org-capture+-tree-gen-predicate arg))))
+                                  (org-capture+-tree-gen-predicate arg)
+                                  0)))
     (-flatten-n 1 templates-tree)))
 
 
+(defun collect-alist (alist)
+  ())
+
 (defun org-capture+-collect-templates (candidates source)
   (org-capture+-helm-select-template nil
-                                     (org-capture+-collect-template-alist '(xx yy zz))))
+                                     (mapcar #'cadr
+                                             (org-capture+-collect-template-alist '(t xx zz yy)))))
 
 
 (org-capture+-add-template '(xx) '("TODO"    "* TODO %? %^g\n %i\n [%a]\n"))
@@ -119,6 +125,9 @@
 (org-capture+-add-template '(yy) '("MEETING" "* MEETING %? %^g\n %i\n [%a]\n"))
 
 
+(org-capture+-collect-templates nil nil)
+
+
 (defvar h-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map helm-map)

@@ -29,7 +29,7 @@
 
 (defun max-depth (tree &optional nodep)
   (let ((nodep (or nodep #'atom)))
-    (if (nodep tree)
+    (if (funcall nodep tree)
         0
       (1+ (reduce #'max
                   (mapcar #'max-depth tree))))))
@@ -58,6 +58,7 @@
                            #'(lambda (subtree)
                                (memq (car subtree) '(t)))
                            depth))
+
 
 (defun tree-add (keys item list)
   (let ((key (car keys)))
