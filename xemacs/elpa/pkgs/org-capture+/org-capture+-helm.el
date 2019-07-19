@@ -42,8 +42,8 @@
   (pushnew template
            (cdr (assoc heading org-capture+-helm-templates-alist))))
 
-(org-capture+-helm-template-add 'test "TODO" "* TODO %? %^g\n %i\n [%a]\n")
-(org-capture+-helm-template-add 'test "TODO" "* MILESTONE %? %^g\n %i\n [%a]\n")
+(org-capture+-helm-template-add 'test "TODO"    "* TODO %? %^g\n %i\n [%a]\n")
+(org-capture+-helm-template-add 'test "TODO"    "* MILESTONE %? %^g\n %i\n [%a]\n")
 (org-capture+-helm-template-add 'test "MEETING" "* MEETING %? %^g\n %i\n [%a]\n")
 
 
@@ -67,7 +67,7 @@
 ;;;###autoload
 (defun org-capture+-helm-select-template (&optional attrib-list alist)
   (let ((attrib-list (or attrib-list '((action . identity))))
-        (alist       (or alist org-capture+-helm-templates-alist)))
+        (alist       (or alist       org-capture+-helm-templates-alist)))
     (helm :sources
           (org-capture+-build-helm-template-sources attrib-list alist))))
 
@@ -78,7 +78,7 @@
 ;; https://kitchingroup.cheme.cmu.edu/blog/2016/01/24/Modern-use-of-helm-sortable-candidates/
 
 (defvar org-capture+-helm-templates-plist nil)
-(defvar org-capture+-helm-templates-tree  nil)
+(defvar org-capture+-helm-templates-tree  '(t))
 
 
 (setq org-capture+-helm-templates-plist '(:todo))
@@ -109,8 +109,17 @@
     (-flatten-n 1 templates-tree)))
 
 
-(org-capture+-add-template '(xx))
+(defun org-capture+-test)
+
+(defun org-capture+-collector (candidates source)
+  (org-capture+-collect-template '(xx yy zz)))
 
+
+(org-capture+-add-template '(xx) '("TODO"    "* TODO %? %^g\n %i\n [%a]\n"))
+(org-capture+-add-template '(zz) '("TODO"    "* MILESTONE %? %^g\n %i\n [%a]\n"))
+(org-capture+-add-template '(yy) '("MEETING" "* MEETING %? %^g\n %i\n [%a]\n"))
+
+
 (defvar h-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map helm-map)
@@ -127,7 +136,7 @@
   '("aaaa" "bbb" "ccc"))
 
 (defun h-candidate-transformer (candidates source)
-  (org-capture+-collect-template '(xx yy zz)))
+  (org-capture+-collector candidates source))
 
 (defun h-action-transformer (actions candidate)
   '(("Even" . identity)))
