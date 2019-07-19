@@ -91,10 +91,11 @@
 (defun org-capture+-template-predicate (template)
   (eql :template (car template)))
 
-(defun org-capture+-tree-predicate (key)
-  (cond))
+(defun org-capture+-tree-gen-predicate (key arg)
+  #'(lambda (arg)
+      (cond)))
 
-(defun org-capture+-collect-template ()
+(defun org-capture+-collect-template (&optional arg)
   (let ((templates-tree
          (collect-elem-cond-depth org-capture+-helm-templates-tree
                                   #'org-capture+-template-predicate
