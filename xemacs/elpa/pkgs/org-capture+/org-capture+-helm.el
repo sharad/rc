@@ -109,6 +109,8 @@
     (-flatten-n 1 templates-tree)))
 
 
+(org-capture+-add-template '(xx))
+
 (defvar h-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map helm-map)
