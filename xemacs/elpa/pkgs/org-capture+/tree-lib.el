@@ -70,7 +70,8 @@
           (unless (memq item (cdr list))
             (nconc (cdr list) (list item))))
       (progn
-        (when key (nconc list (list (list key))))
+        (when key
+          (nconc list (list (list key))))
         (if (cdr keys)
             (tree-add (cdr keys) item (assoc key (cdr list)))
           (if key
