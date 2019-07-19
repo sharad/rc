@@ -31,6 +31,9 @@
 (require 'helm)
 
 
+(require 'tree-lib)
+
+
 (defvar org-capture+-helm-templates-alist nil)
 
 (defun org-capture+-helm-template-add (scope heading template)
@@ -91,16 +94,19 @@
 (defun org-capture+-template-predicate (template)
   (eql :template (car template)))
 
-(defun org-capture+-tree-gen-predicate (key arg)
-  #'(lambda (arg)
-      (cond)))
+(defun org-capture+-tree-predicate (key arg)
+  (memq key arg))
+
+(defun org-capture+-tree-gen-predicate (arg)
+  #'(lambda (key)
+      (org-capture+-tree-predicate key arg)))
 
 (defun org-capture+-collect-template (&optional arg)
   (let ((templates-tree
          (collect-elem-cond-depth org-capture+-helm-templates-tree
                                   #'org-capture+-template-predicate
-                                  #'org-capture+-collect-predicate)))
-    (-flatten templates-tree)))
+                                  (org-capture+-tree-gen-predicate arg))))
+    (-flatten-n 1 templates-tree)))
 
 
 (defvar h-map
@@ -119,7 +125,7 @@
   '("aaaa" "bbb" "ccc"))
 
 (defun h-candidate-transformer (candidates source)
-  (reverse (h-candidates)))
+  (org-capture+-collect-template '(xx yy zz)))
 
 (defun h-action-transformer (actions candidate)
   '(("Even" . identity)))
