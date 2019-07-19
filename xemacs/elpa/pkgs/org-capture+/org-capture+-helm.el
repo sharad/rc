@@ -101,7 +101,7 @@
   #'(lambda (key)
       (org-capture+-tree-predicate key arg)))
 
-(defun org-capture+-collect-template (&optional arg)
+(defun org-capture+-collect-template-alist (&optional arg)
   (let ((templates-tree
          (collect-elem-cond-depth org-capture+-helm-templates-tree
                                   #'org-capture+-template-predicate
@@ -109,10 +109,9 @@
     (-flatten-n 1 templates-tree)))
 
 
-(defun org-capture+-test)
-
-(defun org-capture+-collector (candidates source)
-  (org-capture+-collect-template '(xx yy zz)))
+(defun org-capture+-collect-templates (candidates source)
+  (org-capture+-helm-select-template nil
+                                     (org-capture+-collect-template-alist '(xx yy zz))))
 
 
 (org-capture+-add-template '(xx) '("TODO"    "* TODO %? %^g\n %i\n [%a]\n"))
@@ -136,7 +135,7 @@
   '("aaaa" "bbb" "ccc"))
 
 (defun h-candidate-transformer (candidates source)
-  (org-capture+-collector candidates source))
+  (org-capture+-collect-templates candidates source))
 
 (defun h-action-transformer (actions candidate)
   '(("Even" . identity)))
