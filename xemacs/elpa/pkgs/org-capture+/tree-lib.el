@@ -32,7 +32,11 @@
     (if (funcall nodep tree)
         0
       (1+ (reduce #'max
-                  (mapcar #'max-depth tree))))))
+                  (mapcar #'(lambda (subtree)
+                              (if (consp subtree)
+                                  (max-depth subtree nodep)
+                                0))
+                          tree))))))
 
 (defun collect-elem-cond (tree nodep predicate)
   (if (funcall nodep tree)

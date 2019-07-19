@@ -95,7 +95,6 @@
   (eql :template (car template)))
 
 (defun org-capture+-tree-predicate (key-tree arg)
-  (message "key-tree %s arg %s" key-tree arg)
   (memq (car key-tree) arg))
 
 (defun org-capture+-tree-gen-predicate (arg)
@@ -111,13 +110,26 @@
     (-flatten-n 1 templates-tree)))
 
 
-(defun collect-alist (alist)
-  ())
+;; (defun collect-alist (alist)
+;;   (let ((ulist nil))
+;;     (dolist (pair alist)
+;;       (if (assoc (car pair) ulist)
+;;           (nconc (assoc (car pair) ulist) (cdr pair))
+;;         ;; (pushnew pair ulist)
+;;         (setf ulist (append ulist (list pair)))))
+;;     ulist))
+
+(defun collect-alist (alist) alist)
 
 (defun org-capture+-collect-templates (candidates source)
-  (org-capture+-helm-select-template nil
-                                     (mapcar #'cadr
-                                             (org-capture+-collect-template-alist '(t xx zz yy)))))
+  (let ((alist (mapcar #'cadr
+                       (org-capture+-collect-template-alist '(t xx zz yy)))))
+    ;; (org-capture+-build-helm-template-sources nil (collect-alist alist))
+    (org-capture+-helm-select-template nil (collect-alist alist))))
+
+(collect-alist
+ (mapcar #'cadr
+         (org-capture+-collect-template-alist '(t xx zz yy))))
 
 
 (org-capture+-add-template '(xx) '("TODO"    "* TODO %? %^g\n %i\n [%a]\n"))
