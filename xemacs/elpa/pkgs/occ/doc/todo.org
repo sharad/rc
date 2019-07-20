@@ -143,7 +143,7 @@ It might be shown only if wait timeout happens.
 *** Create manual unnamed/anonymous (different from automatic) child task mainly for FAST DISPATCH :USABILITY:
 *** Create Single line task mainly for FAST DISPATCH              :USABILITY:
 *** non tsk org entries                                              :DESIGN:
-
+*** Property other methods like Increase/Decrease for integer, parent/child dir for dir property etc.
 
 
 

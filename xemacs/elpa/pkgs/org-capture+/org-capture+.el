@@ -413,7 +413,13 @@ Store them in the capture property list."
                  (set-buffer (marker-buffer hd-marker))
                  (org-capture-put-target-region-and-position)
                  (widen)
-                 (goto-char hd-marker))
+                 (goto-char hd-marker)
+                 (progn
+                   (org-capture-put :exact-position (point))
+                   (setq target-entry-p
+                         (and
+                          (derived-mode-p 'org-mode)
+                          (org-at-heading-p)))))
              (error "No running clock that could be used as capture target"))))
         (target (error "Invalid capture target specification: %S" target)))
 

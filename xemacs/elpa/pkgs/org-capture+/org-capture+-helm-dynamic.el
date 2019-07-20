@@ -45,9 +45,14 @@
 
 (setq org-capture+-helm-templates-tree   (list t))
 
-(defun org-capture+-add-template (keys template)
+;; (defun org-capture+-add-template (keys template)
+;;   (tree-add keys
+;;             (list :template template)
+;;             org-capture+-helm-templates-tree))
+
+(defun org-capture+-add-heading-template (keys heading &rest templates)
   (tree-add keys
-            (list :template template)
+            (list :template (cons heading templates))
             org-capture+-helm-templates-tree))
 
 (defun org-capture+-template-p (template)
@@ -79,11 +84,12 @@
     ulist))
 
 
-(org-capture+-add-template '(xx) '("TODO"    "* TODO %? %^g\n %i\n [%a]\n"))
-(org-capture+-add-template '(zz) '("TODO"    "* MILESTONE %? %^g\n %i\n [%a]\n"))
-(org-capture+-add-template '(yy) '("MEETING" "* MEETING %? %^g\n %i\n [%a]\n"))
+(org-capture+-add-heading-template '(xx) "TODO"    "* TODO %? %^g\n %i\n [%a]\n")
+(org-capture+-add-heading-template '(zz) "TODO"    "* MILESTONE %? %^g\n %i\n [%a]\n")
+(org-capture+-add-heading-template '(yy) "MEETING" "* MEETING %? %^g\n %i\n [%a]\n")
 
 
+;; TODO: keyword replacement
 (defun org-capture+-collect-templates-alist (fn arg level)
   (let* ((fn    (or fn #'org-capture+-tree-predicate))
          (arg   (or arg '(t xx yy)))
@@ -142,5 +148,11 @@
         (helm :sources source))))
 
 ;; (funcall (helm-template-gen-selector #'org-capture+-tree-predicate '(t xx yy) nil))
+(when nil
+  (helm :sources (list (helm-build-sync-source "Templates0" :candidates '(c d))
+                       (helm-build-sync-source "Templates1" :candidates nil)
+                       (helm-build-sync-source "Templates2" :candidates '(a b))))
+
+  (helm :sources (list (helm-build-sync-source "Templates1" :candidates nil))))
 
 ;;; org-capture+-helm-dynamic.el ends here
