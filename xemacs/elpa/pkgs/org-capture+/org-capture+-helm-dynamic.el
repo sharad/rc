@@ -106,9 +106,9 @@
 
 
 (defun helm-template-gen-selector (predicate arg level)
-  (let* ((level     (or level 0))
-         (arg       (or arg '(t xx yy)))
-         (predicate (or predicate #'org-capture+-tree-predicate))
+  (let* ((level        (or level     0))
+         (arg          (or arg       '(t xx yy)))
+         (predicate    (or predicate #'org-capture+-tree-predicate))
          (level-inc-fn #'(lambda ()
                            (interactive)
                            (setf level (1+ level))
@@ -123,7 +123,7 @@
             (define-key map (kbd "M-<up>")     level-inc-fn)
             (define-key map (kbd "M-<down>")   level-dec-fn)
             map))
-         (h-action-transformer    (lambda (actions candidate)
+         (h-action-transformer    #'(lambda (actions candidate)
                                       '(("Even" . identity))))
          (h-candidates            #'(lambda ()
                                       (org-capture+-collect-templates predicate arg level)))
