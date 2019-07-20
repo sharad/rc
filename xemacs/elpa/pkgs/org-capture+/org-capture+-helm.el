@@ -83,53 +83,40 @@
 
 (setq org-capture+-helm-templates-plist '(:todo))
 
-(setq org-capture+-helm-templates-tree
-      (list t))
+(setq org-capture+-helm-templates-tree   (list t))
 
 (defun org-capture+-add-template (keys template)
   (tree-add keys
             (list :template template)
             org-capture+-helm-templates-tree))
 
-(defun org-capture+-template-predicate (template)
+(defun org-capture+-template-p (template)
   (eql :template (car template)))
 
 (defun org-capture+-tree-predicate (key-tree arg)
   (memq (car key-tree) arg))
 
-(defun org-capture+-tree-gen-predicate (arg)
+(defun org-capture+-tree-gen-predicate (predicate arg)
   #'(lambda (key)
-      (org-capture+-tree-predicate key arg)))
+      (funcall predicate key arg)))
 
-(defun org-capture+-collect-template-alist (arg)
-  (let ((templates-tree
-         (collect-elem-cond-depth org-capture+-helm-templates-tree
-                                  #'org-capture+-template-predicate
-                                  (org-capture+-tree-gen-predicate arg)
-                                  0)))
+(defun org-capture+-collect-template-alist (predicate arg level)
+  (let* ((level (or level 0))
+         (templates-tree
+          (collect-elem-cond-depth org-capture+-helm-templates-tree
+                                   #'org-capture+-template-p
+                                   (org-capture+-tree-gen-predicate predicate arg)
+                                   level)))
     (-flatten-n 1 templates-tree)))
-
 
-;; (defun collect-alist (alist)
-;;   (let ((ulist nil))
-;;     (dolist (pair alist)
-;;       (if (assoc (car pair) ulist)
-;;           (nconc (assoc (car pair) ulist) (cdr pair))
-;;         ;; (pushnew pair ulist)
-;;         (setf ulist (append ulist (list pair)))))
-;;     ulist))
-
-(defun collect-alist (alist) alist)
-
-(defun org-capture+-collect-templates (candidates source)
-  (let ((alist (mapcar #'cadr
-                       (org-capture+-collect-template-alist '(t xx zz yy)))))
-    ;; (org-capture+-build-helm-template-sources nil (collect-alist alist))
-    (org-capture+-helm-select-template nil (collect-alist alist))))
-
-(collect-alist
- (mapcar #'cadr
-         (org-capture+-collect-template-alist '(t xx zz yy))))
+(defun collect-alist (alist)
+  (let ((ulist nil))
+    (dolist (pair (copy-tree alist))
+      (if (assoc (car pair) ulist)
+          (nconc (assoc (car pair) ulist) (cdr pair))
+        ;; (pushnew pair ulist)
+        (setf ulist (append ulist (list pair)))))
+    ulist))
 
 
 (org-capture+-add-template '(xx) '("TODO"    "* TODO %? %^g\n %i\n [%a]\n"))
@@ -137,40 +124,63 @@
 (org-capture+-add-template '(yy) '("MEETING" "* MEETING %? %^g\n %i\n [%a]\n"))
 
 
-(org-capture+-collect-templates nil nil)
+(defun org-capture+-collect-templates-alist (fn arg level)
+  (let* ((fn    (or fn #'org-capture+-tree-predicate))
+         (arg   (or arg '(t xx yy)))
+         (alist (mapcar #'cadr
+                        (org-capture+-collect-template-alist fn arg level))))
+    (let ((templates-alist (collect-alist alist)))
+      templates-alist)))
 
+(defun org-capture+-collect-templates (fn arg level)
+  (let* ((fn    (or fn #'org-capture+-tree-predicate))
+         (arg   (or arg '(t xx yy)))
+         (alist (mapcar #'cadr
+                        (org-capture+-collect-template-alist fn arg level))))
+    (let ((templates (apply #'append (mapcar #'cdr (collect-alist alist)))))
+      templates)))
 
-(defvar h-map
-  (let ((map (make-sparse-keymap)))
-    (set-keymap-parent map helm-map)
-    (define-key map (kbd "M-<down>")   'h-sort)
-    map)
-  "keymap for a helm source.")
 
-(defvar h-sort-fn nil)
+;; (org-capture+-collect-templates-alist nil nil 0)
+;; (org-capture+-collect-templates nil nil 0)
+
 
-(defun h-sort ()
-  (interactive))
+(defun helm-template-gen-selector (predicate arg level)
+  (let* ((level     (or level 0))
+         (arg       (or arg '(t xx yy)))
+         (predicate (or predicate #'org-capture+-tree-predicate))
+         (level-inc-fn #'(lambda ()
+                           (interactive)
+                           (setf level (1+ level))
+                           (helm-refresh)))
+         (level-dec-fn #'(lambda ()
+                           (interactive)
+                           (setf level (1- level))
+                           (helm-refresh)))
+         (h-map
+          (let ((map (make-sparse-keymap)))
+            (set-keymap-parent map helm-map)
+            (define-key map (kbd "M-<up>")     level-inc-fn)
+            (define-key map (kbd "M-<down>")   level-dec-fn)
+            map))
+         (h-action-transformer    (lambda (actions candidate)
+                                      '(("Even" . identity))))
+         (h-candidates            #'(lambda ()
+                                      (org-capture+-collect-templates predicate arg level)))
+         (h-candidate-transformer #'(lambda (candidates source)
+                                      (org-capture+-collect-templates predicate arg level)))
+         (source (helm-build-sync-source "Templates"
+                   :keymap                         h-map
+                   ;; :requires-pattern nil
+                   ;; :match (list #'(lambda (c) t))
+                   :candidates                     h-candidates
+                   :multiline                      t
+                   :filtered-candidate-transformer h-candidate-transformer
+                   ;; :filter-one-by-one #'h-candidate-transformer
+                   :action-transformer             h-action-transformer)))
+    #'(lambda ()
+        (helm :sources source))))
 
-(defun h-candidates ()
-  '("aaaa" "bbb" "ccc"))
-
-(defun h-candidate-transformer (candidates source)
-  (org-capture+-collect-templates candidates source))
-
-(defun h-action-transformer (actions candidate)
-  '(("Even" . identity)))
-
-(setq h-source
-      (helm-build-sync-source "number-selector"
-        :keymap h-map
-        ;; :requires-pattern nil
-        :match (list #'(lambda (c) t))
-        :candidates #'h-candidates
-        :filtered-candidate-transformer #'h-candidate-transformer
-        ;; :filter-one-by-one #'h-candidate-transformer
-        :action-transformer #'h-action-transformer))
-
-(helm :sources 'h-source)
+(funcall (helm-template-gen-selector #'org-capture+-tree-predicate '(t xx yy) nil))
 
 ;;; org-capture+-helm.el ends here
