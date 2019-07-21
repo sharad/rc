@@ -57,11 +57,52 @@
 ;;;###autoload
 (defun occ-initialize ()
   "occ-initialize"
- (setq *occ-tsk-previous-ctx* (occ-make-ctx-at-point)))
+  (setq *occ-tsk-previous-ctx* (occ-make-ctx-at-point))
+  (progn
+    (occ-cancel-timer)
+    (occ-reset-collection-object)
+    (occ-ctx-clrhash)
+    ;; (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)
+    ;; (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer t)
+    ;; (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer t)
+    (add-hook 'switch-buffer-functions #'occ-switch-buffer-run-curr-ctx-timer-function)
+    (add-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode))
+  (dolist (prop (occ-properties-to-inherit nil))
+    (let ((propstr
+           (upcase (if (keywordp prop)
+                       (substring (symbol-name prop) 1)
+                     (symbol-name prop)))))
+      (unless (member propstr org-use-property-inheritance)
+        (push propstr org-use-property-inheritance))))
+  (progn
+    (unless occ-global-tsk-collection-spec
+      (if (occ-valid-spec-p spec)
+          (setq occ-global-tsk-collection-spec spec)
+        (when (called-interactively-p 'interactive)
+          (occ-build-spec)))))
+  ;; newly added
+  (org-clock-load))
 
 ;;;###autoload
 (defun occ-uninitialize ()
-  "occ-uninitialize")
+  "occ-uninitialize"
+  (progn
+    (occ-cancel-timer)
+    (occ-reset-collection-object)
+    (occ-ctx-clrhash)
+    ;; (setq buffer-list-update-hook nil)
+
+    ;; (remove-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer)
+    ;; (remove-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer)
+    ;; (remove-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer)
+    ;; (remove-hook 'after-save-hook             'occ-after-save-hook-fun t)
+    (remove-hook 'switch-buffer-functions #'occ-switch-buffer-run-curr-ctx-timer-function)
+    (remove-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode))
+  (dolist (prop (occ-properties-to-inherit nil))
+    (let ((propstr
+           (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
+      (unless (member propstr org-use-property-inheritance)
+        (delete propstr org-use-property-inheritance)))))
 
 (defmacro occ-find-library-dir (library)
   `(file-name-directory

@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2019  s
 
-;; Author: s <spratap@merunetworks.com>
+;; Author:
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify

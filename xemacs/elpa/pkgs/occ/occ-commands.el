@@ -276,58 +276,16 @@
 ;;;###autoload
 (defun occ-insinuate (&optional spec)
   (interactive)
-  (occ-debug :debug "occ-insinuate: begin")
   (occ-message "occ-insinuate: begin")
   (occ-initialize)
-  (progn
-    (occ-cancel-timer)
-    (occ-reset-collection-object)
-    ;; (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)
-    ;; (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer t)
-    ;; (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer t)
-    (add-hook 'switch-buffer-functions #'occ-switch-buffer-run-curr-ctx-timer-function)
-    (add-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode))
-  (dolist (prop (occ-properties-to-inherit nil))
-    (let ((propstr
-           (upcase (if (keywordp prop)
-                       (substring (symbol-name prop) 1)
-                     (symbol-name prop)))))
-      (unless (member propstr org-use-property-inheritance)
-        (push propstr org-use-property-inheritance))))
-  (progn
-    (unless occ-global-tsk-collection-spec
-      (if (occ-valid-spec-p spec)
-          (setq occ-global-tsk-collection-spec spec)
-        (when (called-interactively-p 'interactive)
-          (occ-build-spec)))))
-  (org-clock-load) ;; newly added
- (occ-debug :debug "occ-insinuate: finish")
- (occ-message "occ-insinuate: finish"))
+  (occ-message "occ-insinuate: finish"))
 
 ;;;###autoload
 (defun occ-uninsinuate ()
   (interactive)
-  (occ-debug :debug "occ-uninsinuate: begin")
   (occ-message "occ-uninsinuate: begin")
   (occ-uninitialize)
-  (progn
-    (occ-cancel-timer)
-    (occ-reset-collection-object)
-    ;; (setq buffer-list-update-hook nil)
-
-    ;; (remove-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer)
-    ;; (remove-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer)
-    ;; (remove-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer)
-    ;; (remove-hook 'after-save-hook             'occ-after-save-hook-fun t)
-    (remove-hook 'switch-buffer-functions #'occ-switch-buffer-run-curr-ctx-timer-function)
-    (remove-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode))
-  (dolist (prop (occ-properties-to-inherit nil))
-    (let ((propstr
-           (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
-      (unless (member propstr org-use-property-inheritance)
-        (delete propstr org-use-property-inheritance))))
- (occ-debug :debug "occ-uninsinuate: finish")
- (occ-message "occ-uninsinuate: finish"))
+  (occ-message "occ-uninsinuate: finish"))
 
 
 ;; testing verification

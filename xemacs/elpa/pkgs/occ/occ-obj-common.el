@@ -162,12 +162,4 @@
      (cl-method-param-case method-sig1))))
 
 
-
-(defun occ-specs ()
-  (cl-method-param-case
-   '(occ-make-tsk-collection (`((head ,val)) val))))
-
-(defun occ-valid-spec-p (spec)
-  t)
-
 ;;; occ-obj-common.el ends here

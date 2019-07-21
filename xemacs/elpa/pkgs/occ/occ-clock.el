@@ -285,7 +285,6 @@
                 :action-transformer action-transformer
                 :timeout            timeout))
 
-
 (cl-defmethod occ-try-clock-in ((obj occ-obj-tsk)
                                 &key
                                 filters
@@ -341,6 +340,45 @@
                 :timeout            timeout))
 
 
+(cl-defmethod occ-try-fast-clock-in ((obj marker)
+                                     &key
+                                     filters
+                                     builder
+                                     action
+                                     action-transformer
+                                     timeout)
+  (occ-clock-in obj
+                :filters            filters
+                :builder            builder
+                :action             action
+                :action-transformer action-transformer
+                :timeout            timeout))
+
+
+(cl-defmethod occ-try-fast-clock-in ((obj occ-ctsk)
+                                     &key
+                                     filters
+                                     builder
+                                     action
+                                     action-transformer
+                                     timeout)
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj))
+        (ctxtual-tsk (occ-build-ctxual-tsk obj)))
+    (occ-try-until 3 (or (not (eq t retval))
+                         (occ-associable-p obj))
+      (setq retval
+            (occ-edit-properties obj '(timebeing add 10))))
+    (unless (occ-clock-in-if-associable ctxtual-tsk
+                                        :filters            filters
+                                        :builder            builder
+                                        :action             action
+                                        :action-transformer action-transformer
+                                        :timeout            timeout)
+      (occ-message "%s is not associable with %s not clocking-in."
+                   (occ-format tsk 'capitalize)
+                   (occ-format ctx 'capitalize)))))
+
 ;; BUG: solve it.
 ;; Debugger entered--Lisp error: (error "Marker points into wrong buffer" #<marker at 28600 in report.org>)
 ;;   comment-region-default(#<marker at 28600 in report.org> #<marker (moves after insertion) at 28600 in report.org> nil)

@@ -113,4 +113,11 @@
   (occ-return-label retval))
 
 
+(defun occ-specs ()
+  (cl-method-param-case
+   '(occ-make-tsk-collection (`((head ,val)) val))))
+
+(defun occ-valid-spec-p (spec)
+  t)
+
 ;;; occ-obj-utils.el ends here
