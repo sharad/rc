@@ -257,6 +257,63 @@
         '(add remove get put member)))
 
 
+(cl-defgeneric occ-org-prop-operation (pom
+                                       operation
+                                       prop
+                                       values)
+  "occ-org-prop-operation")
+
+(cl-defmethod occ-org-prop-operation ((pom  marker)
+                                      (operation (eql get))
+                                      (prop symbol)
+                                      values)
+  (let ((list-p      (occ-list-p prop))
+        (prop-string (symbol-name prop)))
+    (if list-p
+        (occ-org-entry-get-multivalued-property pom prop-string)
+      (list (occ-org-entry-get pom prop-string)))))
+
+(cl-defmethod occ-org-prop-operation ((pom  marker)
+                                      (operation (eql add))
+                                      (prop symbol)
+                                      values)
+  (let ((list-p      (occ-list-p prop))
+        (prop-string (symbol-name prop)))
+    (if list-p
+        (occ-org-entry-add-to-multivalued-property pom prop-string (car values))
+      (occ-org-entry-put pom prop-string (car values)))))
+
+(cl-defmethod occ-org-prop-operation ((pom  marker)
+                                      (operation (eql put))
+                                      (prop symbol)
+                                      values)
+  (let ((list-p      (occ-list-p prop))
+        (prop-string (symbol-name prop)))
+    (if list-p
+        (occ-org-entry-put-multivalued-property pom prop-string values)
+      (occ-org-entry-put pom prop-string (car values)))))
+
+(cl-defmethod occ-org-prop-operation ((pom  marker)
+                                      (operation (eql remove))
+                                      (prop symbol)
+                                      values)
+  (let ((list-p      (occ-list-p prop))
+        (prop-string (symbol-name prop)))
+    (if list-p
+        (occ-org-entry-remove-from-multivalued-property pom prop-string (car values))
+      (error "Implement it."))))
+
+(cl-defmethod occ-org-prop-operation ((pom  marker)
+                                      (operation (eql member))
+                                      (prop symbol)
+                                      values)
+  (let ((list-p      (occ-list-p prop))
+        (prop-string (symbol-name prop)))
+    (if list-p
+        (occ-org-entry-member-in-from-multivalued-property pom prop-string (car values))
+      (string= (car values) (occ-org-entry-get pom prop-string)))))
+
+
 (cl-defgeneric occ-org-update-property (pom
                                         prop
                                         operation
@@ -265,29 +322,12 @@
 
 (cl-defmethod occ-org-update-property ((pom  marker)
                                        (prop symbol)
-                                       operation
+                                       (operation symbol)
                                        values)
   "Accept org compatible VALUES"
   ;; (unless (occ-valid-p prop operation)
   ;;   (error "occ-org-update-property: operation %s is not allowed for prop %s" operation prop))
-  (let ((list-p      (occ-list-p prop))
-        (prop-string (symbol-name prop)))
-    (case operation
-      ((get)    (if list-p
-                    (occ-org-entry-get-multivalued-property pom prop-string)
-                  (list (occ-org-entry-get pom prop-string))))
-      ((add)    (if list-p
-                    (occ-org-entry-add-to-multivalued-property pom prop-string (car values))
-                  (occ-org-entry-put pom prop-string (car values))))
-      ((put)    (if list-p
-                    (occ-org-entry-put-multivalued-property pom prop-string values)
-                  (occ-org-entry-put pom prop-string (car values))))
-      ((remove) (if list-p
-                    (occ-org-entry-remove-from-multivalued-property pom prop-string (car values))
-                  (error "Implement it.")))
-      ((member) (if list-p
-                    (occ-org-entry-member-in-from-multivalued-property pom prop-string (car values))
-                  (string= (car values) (occ-org-entry-get pom prop-string)))))))
+  (occ-org-prop-operation pom prop operation values))
 
 (cl-defmethod occ-org-update-property-at-point ((mrk  marker)
                                                 (prop symbol)
@@ -380,6 +420,12 @@
 
 (cl-method-param-signs 'occ-prop-operation)
 
+(cl-defgeneric occ-prop-operation (obj
+                                   operation
+                                   prop
+                                   values)
+  "occ-prop-operation")
+
 (cl-defmethod occ-prop-operation ((obj occ-obj-tsk)
                                   (operation (eql get))
                                   (prop symbol)
@@ -457,7 +503,19 @@
                                    operation
                                    values)
   "Accept occ compatible VALUES"
-  (occ-prop-operation obj operation prop values))
+  ;; (occ-org-update-property-at-point)
+  (let ((mrk (occ-obj-marker obj)))
+    (let ((retval
+           (occ-org-update-property-at-point mrk
+                                             prop
+                                             operation
+                                             (occ-prop-to-org prop values))))
+      (occ-debug :debug "occ-editprop: (occ-org-update-property-at-point mrk) returnd %s" retval)
+      (when retval
+        (occ-prop-operation obj
+                            prop
+                            operation
+                            values)))))
 
 
 (cl-defgeneric occ-select-operation (prop)
@@ -492,21 +550,14 @@
   "Accept occ compatible VALUES"
   (occ-debug :debug
              "occ-editprop: prop: %s, value: %s" prop value)
-  (let ((mrk (occ-obj-marker obj)))
-    (let ((operation  (or operation (occ-select-operation prop)))
-          (prop-value (or value     (occ-readprop-elem-from-user obj prop))))
-      (let ((retval
-             (occ-org-update-property-at-point mrk
-                                               prop
-                                               operation
-                                               (occ-prop-to-org prop
-                                                                (list prop-value)))))
-        (occ-debug :debug "occ-editprop: (occ-org-update-property-at-point mrk) returnd %s" retval)
-        (when retval
-          (occ-update-property obj
-                               prop
-                               operation
-                               (list prop-value)))))))
+  (let ((operation  (or operation (occ-select-operation prop)))
+        (prop-value (or value     (occ-readprop-elem-from-user obj prop))))
+    (occ-update-property obj
+                         prop
+                         operation
+                         (if (consp prop-value)
+                             prop-value
+                           (list prop-value)))))
 
 
 ;; TODO: also accommodate increase decrease etc.
