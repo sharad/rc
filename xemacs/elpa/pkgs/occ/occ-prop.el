@@ -407,18 +407,43 @@
       (equal value (occ-get-property tsk prop)))))
 
 
-(cl-defmethod occ-operations-for-prop ((class symbol))
-                                      (prop symbol)
+(cl-defmethod occ-operations-for-prop ((class symbol)
+                                       (prop symbol))
   (let ((class class))
-    (let ((exclass (list '\` `(,class (eql ,'(\, val))))))
+    (let ((params-general
+           (list '\` `(,class (eql ,'(\, val)) symbol t)))
+          (params-with-prop
+           (list '\` `(,class (eql ,'(\, val)) (eql ,prop) t))))
       (funcall
        `(lambda ()
-          (cl-method-param-case '(occ-rankprop (,exclass val))))))))
+          (append
+           (cl-method-param-case '(occ-prop-operation (,params-general val)))
+           (cl-method-param-case '(occ-prop-operation (,params-with-prop val)))))))))
 
-((cl-method-param-case
+(occ-operations-for-prop 'occ-obj-tsk 'x)
+
+(list
+ (cl-method-param-case
   '(occ-prop-operation (`(occ-obj-tsk (eql ,val) symbol t) val))))
 
+
+(let ((class 'occ-obj-tsk)
+      (prop 'x))
+  (let ((exclass
+         (list '\` `(,class (eql ,'(\, val)) (eql ,prop) t))))
+    (funcall
+     `(lambda ()
+        (cl-method-param-case '(occ-prop-operation (,exclass val)))))))
+
 (cl-method-param-signs 'occ-prop-operation)
+
+
+
+(cl-defmethod occ-prop-operation ((obj occ-obj-tsk)
+                                  (operation (eql XYZ))
+                                  (prop      (eql x))
+                                  values)
+  ())
 
 (cl-defgeneric occ-prop-operation (obj
                                    operation
@@ -430,9 +455,8 @@
                                   (operation (eql get))
                                   (prop symbol)
                                   values)
-  (let ((tsk    (occ-obj-tsk obj))
-        (list-p (occ-list-p prop)))
-    (if list-p
+  (let ((tsk    (occ-obj-tsk obj)))
+    (if (occ-list-p prop)
         (occ-get-property tsk prop)
       (list (occ-get-property tsk prop)))))
 
@@ -440,9 +464,8 @@
                                   (operation (eql add))
                                   (prop symbol)
                                   values)
-  (let ((tsk    (occ-obj-tsk obj))
-        (list-p (occ-list-p prop)))
-    (if list-p
+  (let ((tsk    (occ-obj-tsk obj)))
+    (if (occ-list-p prop)
         (occ-set-property tsk prop
                           (nconc
                            (occ-get-property tsk prop)
@@ -453,9 +476,8 @@
                                   (operation (eql put))
                                   (prop symbol)
                                   values)
-  (let ((tsk    (occ-obj-tsk obj))
-        (list-p (occ-list-p prop)))
-    (if list-p
+  (let ((tsk    (occ-obj-tsk obj)))
+    (if (occ-list-p prop)
         (occ-set-property tsk prop values)
       (occ-set-property tsk prop (car values)))))
 
@@ -463,9 +485,8 @@
                                   (operation (eql put))
                                   (prop symbol)
                                   values)
-  (let ((tsk    (occ-obj-tsk obj))
-        (list-p (occ-list-p prop)))
-    (if list-p
+  (let ((tsk    (occ-obj-tsk obj)))
+    (if (occ-list-p prop)
         (occ-set-property tsk prop (remove
                                     (car values)
                                     (occ-get-property tsk prop)))
@@ -475,9 +496,8 @@
                                   (operation (eql remove))
                                   (prop symbol)
                                   values)
-  (let ((tsk    (occ-obj-tsk obj))
-        (list-p (occ-list-p prop)))
-    (if list-p
+  (let ((tsk    (occ-obj-tsk obj)))
+    (if (occ-list-p prop)
         (occ-set-property tsk prop (remove
                                     (car values)
                                     (occ-get-property tsk prop)))
@@ -487,8 +507,7 @@
                                   (operation (eql member))
                                   (prop symbol)
                                   values)
-  (let ((tsk    (occ-obj-tsk obj))
-        (list-p (occ-list-p prop)))
+  (let ((tsk    (occ-obj-tsk obj)))
     (occ-has-p tsk prop (car values))))
 
 
@@ -568,9 +587,7 @@
                             value
                             &key param-only)
   (if param-only
-      (list prop
-            operation
-            value)
+      (list prop operation value)
     #'(lambda (obj)
         (occ-editprop obj
                       prop
