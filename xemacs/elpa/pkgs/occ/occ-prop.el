@@ -405,6 +405,8 @@
       (equal value (occ-get-property tsk prop)))))
 
 
+
+;; TODO: Get base classes of class
 (cl-defmethod occ-operations-for-prop ((class symbol)
                                        (prop symbol))
   (let ((class class))
