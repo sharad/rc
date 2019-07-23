@@ -257,59 +257,54 @@
         '(add remove get put member)))
 
 
-(cl-defgeneric occ-org-prop-operation (pom
-                                       operation
-                                       prop
-                                       values)
-  "occ-org-prop-operation")
+(cl-defgeneric occ-org-operation (pom
+                                  operation
+                                  prop
+                                  values)
+  "occ-org-operation")
 
-(cl-defmethod occ-org-prop-operation ((pom  marker)
-                                      (operation (eql get))
-                                      (prop symbol)
-                                      values)
-  (let ((list-p      (occ-list-p prop))
-        (prop-string (symbol-name prop)))
-    (if list-p
+(cl-defmethod occ-org-operation ((pom  marker)
+                                 (operation (eql get))
+                                 (prop symbol)
+                                 values)
+  (let ((prop-string (symbol-name prop)))
+    (if (occ-list-p prop)
         (occ-org-entry-get-multivalued-property pom prop-string)
       (list (occ-org-entry-get pom prop-string)))))
 
-(cl-defmethod occ-org-prop-operation ((pom  marker)
-                                      (operation (eql add))
-                                      (prop symbol)
-                                      values)
-  (let ((list-p      (occ-list-p prop))
-        (prop-string (symbol-name prop)))
-    (if list-p
+(cl-defmethod occ-org-operation ((pom  marker)
+                                 (operation (eql add))
+                                 (prop symbol)
+                                 values)
+  (let ((prop-string (symbol-name prop)))
+    (if (occ-list-p prop)
         (occ-org-entry-add-to-multivalued-property pom prop-string (car values))
       (occ-org-entry-put pom prop-string (car values)))))
 
-(cl-defmethod occ-org-prop-operation ((pom  marker)
-                                      (operation (eql put))
-                                      (prop symbol)
-                                      values)
-  (let ((list-p      (occ-list-p prop))
-        (prop-string (symbol-name prop)))
-    (if list-p
+(cl-defmethod occ-org-operation ((pom  marker)
+                                 (operation (eql put))
+                                 (prop symbol)
+                                 values)
+  (let ((prop-string (symbol-name prop)))
+    (if (occ-list-p prop)
         (occ-org-entry-put-multivalued-property pom prop-string values)
       (occ-org-entry-put pom prop-string (car values)))))
 
-(cl-defmethod occ-org-prop-operation ((pom  marker)
-                                      (operation (eql remove))
-                                      (prop symbol)
-                                      values)
-  (let ((list-p      (occ-list-p prop))
-        (prop-string (symbol-name prop)))
-    (if list-p
+(cl-defmethod occ-org-operation ((pom  marker)
+                                 (operation (eql remove))
+                                 (prop symbol)
+                                 values)
+  (let ((prop-string (symbol-name prop)))
+    (if (occ-list-p prop)
         (occ-org-entry-remove-from-multivalued-property pom prop-string (car values))
       (error "Implement it."))))
 
-(cl-defmethod occ-org-prop-operation ((pom  marker)
-                                      (operation (eql member))
-                                      (prop symbol)
-                                      values)
-  (let ((list-p      (occ-list-p prop))
-        (prop-string (symbol-name prop)))
-    (if list-p
+(cl-defmethod occ-org-operation ((pom  marker)
+                                 (operation (eql member))
+                                 (prop symbol)
+                                 values)
+  (let ((prop-string (symbol-name prop)))
+    (if (occ-list-p prop)
         (occ-org-entry-member-in-from-multivalued-property pom prop-string (car values))
       (string= (car values) (occ-org-entry-get pom prop-string)))))
 
@@ -327,7 +322,10 @@
   "Accept org compatible VALUES"
   ;; (unless (occ-valid-p prop operation)
   ;;   (error "occ-org-update-property: operation %s is not allowed for prop %s" operation prop))
-  (occ-org-prop-operation pom prop operation values))
+  (occ-org-operation pom
+                     prop
+                     operation
+                     values))
 
 (cl-defmethod occ-org-update-property-at-point ((mrk  marker)
                                                 (prop symbol)
@@ -417,15 +415,14 @@
       (funcall
        `(lambda ()
           (append
-           (cl-method-param-case '(occ-prop-operation (,params-general val)))
-           (cl-method-param-case '(occ-prop-operation (,params-with-prop val)))))))))
+           (cl-method-param-case '(occ-operation (,params-general val)))
+           (cl-method-param-case '(occ-operation (,params-with-prop val)))))))))
 
 (occ-operations-for-prop 'occ-obj-tsk 'x)
 
 (list
  (cl-method-param-case
-  '(occ-prop-operation (`(occ-obj-tsk (eql ,val) symbol t) val))))
-
+  '(occ-operation (`(occ-obj-tsk (eql ,val) symbol t) val))))
 
 (let ((class 'occ-obj-tsk)
       (prop 'x))
@@ -433,37 +430,43 @@
          (list '\` `(,class (eql ,'(\, val)) (eql ,prop) t))))
     (funcall
      `(lambda ()
-        (cl-method-param-case '(occ-prop-operation (,exclass val)))))))
+        (cl-method-param-case '(occ-operation (,exclass val)))))))
 
-(cl-method-param-signs 'occ-prop-operation)
+(cl-method-param-signs 'occ-operation)
+
 
-
-
-(cl-defmethod occ-prop-operation ((obj occ-obj-tsk)
-                                  (operation (eql XYZ))
-                                  (prop      (eql x))
-                                  values)
-  ())
-
-(cl-defgeneric occ-prop-operation (obj
-                                   operation
-                                   prop
-                                   values)
+(cl-defgeneric occ-operation (obj
+                              operation
+                              prop
+                              values)
   "occ-prop-operation")
 
-(cl-defmethod occ-prop-operation ((obj occ-obj-tsk)
-                                  (operation (eql get))
-                                  (prop symbol)
-                                  values)
+(cl-defgeneric occ-required-p (obj
+                               operation
+                               prop
+                               values)
+  "occ-prop-operation")
+
+
+(cl-defmethod occ-operation ((obj occ-obj-tsk)
+                             (operation (eql XYZ))
+                             (prop      (eql x))
+                             values)
+  ())
+
+(cl-defmethod occ-operation ((obj occ-obj-tsk)
+                             (operation (eql get))
+                             (prop symbol)
+                             values)
   (let ((tsk    (occ-obj-tsk obj)))
     (if (occ-list-p prop)
         (occ-get-property tsk prop)
       (list (occ-get-property tsk prop)))))
 
-(cl-defmethod occ-prop-operation ((obj occ-obj-tsk)
-                                  (operation (eql add))
-                                  (prop symbol)
-                                  values)
+(cl-defmethod occ-operation ((obj occ-obj-tsk)
+                             (operation (eql add))
+                             (prop symbol)
+                             values)
   (let ((tsk    (occ-obj-tsk obj)))
     (if (occ-list-p prop)
         (occ-set-property tsk prop
@@ -472,19 +475,19 @@
                            (list (car values))))
       (occ-set-property tsk prop (car values)))))
 
-(cl-defmethod occ-prop-operation ((obj occ-obj-tsk)
-                                  (operation (eql put))
-                                  (prop symbol)
-                                  values)
+(cl-defmethod occ-operation ((obj occ-obj-tsk)
+                             (operation (eql put))
+                             (prop symbol)
+                             values)
   (let ((tsk    (occ-obj-tsk obj)))
     (if (occ-list-p prop)
         (occ-set-property tsk prop values)
       (occ-set-property tsk prop (car values)))))
 
-(cl-defmethod occ-prop-operation ((obj occ-obj-tsk)
-                                  (operation (eql put))
-                                  (prop symbol)
-                                  values)
+(cl-defmethod occ-operation ((obj occ-obj-tsk)
+                             (operation (eql put))
+                             (prop symbol)
+                             values)
   (let ((tsk    (occ-obj-tsk obj)))
     (if (occ-list-p prop)
         (occ-set-property tsk prop (remove
@@ -492,10 +495,10 @@
                                     (occ-get-property tsk prop)))
       (error "Implement it."))))
 
-(cl-defmethod occ-prop-operation ((obj occ-obj-tsk)
-                                  (operation (eql remove))
-                                  (prop symbol)
-                                  values)
+(cl-defmethod occ-operation ((obj occ-obj-tsk)
+                             (operation (eql remove))
+                             (prop symbol)
+                             values)
   (let ((tsk    (occ-obj-tsk obj)))
     (if (occ-list-p prop)
         (occ-set-property tsk prop (remove
@@ -503,14 +506,26 @@
                                     (occ-get-property tsk prop)))
       (error "Implement it."))))
 
-(cl-defmethod occ-prop-operation ((obj occ-obj-tsk)
-                                  (operation (eql member))
-                                  (prop symbol)
-                                  values)
+(cl-defmethod occ-operation ((obj occ-obj-tsk)
+                             (operation (eql member))
+                             (prop symbol)
+                             values)
   (let ((tsk    (occ-obj-tsk obj)))
     (occ-has-p tsk prop (car values))))
 
 
+(cl-defmethod occ-require-p ((obj occ-obj-tsk)
+                             (operation (eql add))
+                             (prop      (eql x))
+                             values)
+  (not (occ-has-p obj prop value)))
+
+(cl-defmethod occ-require-p ((obj occ-obj-tsk)
+                             (operation (eql remove))
+                             (prop      (eql x))
+                             values)
+  (occ-has-p obj prop value))
+
 (cl-defgeneric occ-update-property (obj
                                     prop
                                     operation
@@ -531,10 +546,10 @@
                                              (occ-prop-to-org prop values))))
       (occ-debug :debug "occ-editprop: (occ-org-update-property-at-point mrk) returnd %s" retval)
       (when retval
-        (occ-prop-operation obj
-                            prop
-                            operation
-                            values)))))
+        (occ-operation obj
+                       prop
+                       operation
+                       values)))))
 
 
 (cl-defgeneric occ-select-operation (prop)
@@ -648,6 +663,7 @@
                          :param-only param-only)))
 
 
+
 (cl-defmethod occ-gen-edits-for-add ((obj occ-obj-ctx-tsk)
                                      &key param-only)
   (let ((props (occ-properties-to-edit obj))
@@ -672,6 +688,19 @@
            (mapcar #'(lambda (prop)
                        (funcall gen-remove-action prop))
                    props))))
+
+(cl-defmethod occ-gen-edits-for-operations ((obj occ-obj-ctx-tsk)
+                                            &key param-only)
+  (let ((props (occ-properties-to-edit obj)))
+    (mapcar (occ-operations-for-prop)
+     (let ((gen-add-action)
+           #'(lambda (prop)
+               (occ-gen-edit-if-required obj prop 'add
+                                         (occ-get-property (occ-obj-ctx obj) prop)
+                                         :param-only param-only)))
+       (remove nil
+               (mapcar #'(lambda (prop) (funcall gen-add-action prop))
+                       props))))))
 
 
 (cl-defmethod occ-gen-edits-for-add-remove ((obj occ-obj-ctx-tsk)
