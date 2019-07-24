@@ -125,25 +125,27 @@
    '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))))
 
 
-(cl-defmethod occ-properties-to-calcuate-rank ((obj symbol))
-  (let ((class obj))
-    (let ((exclass (list '\` `(,class (eql ,'(\, val))))))
-      (funcall
-       `(lambda ()
-          (cl-method-param-case (quote (occ-rankprop (,exclass val)))))))))
+;; (cl-defmethod occ-properties-to-calcuate-rank ((obj symbol))
+;;   (let ((class obj))
+;;     (let ((exclass (list '\` `(,class (eql ,'(\, val))))))
+;;       (funcall
+;;        `(lambda ()
+;;           (cl-method-param-case (quote (occ-rankprop (,exclass val)))))))))
 
-(cl-defmethod occ-properties-to-calcuate-rank ((obj symbol))
-  (let ((class obj))
-    (let ((exclass (list '\` `(,class (eql ,'(\, val))))))
-      (funcall
-       `(lambda ()
-          (cl-method-param-case '(occ-rankprop (,exclass val))))))))
+(cl-defmethod occ-properties-to-calcuate-rank ((class symbol))
+  (let ((exclass (list '\` `(,class (eql ,'(\, val))))))
+    (funcall
+     `(lambda ()
+        (cl-method-param-case '(occ-rankprop (,exclass val)))))))
 
-(cl-defmethod occ-properties-to-calculate-rank ((obj occ-tsk))
-  (occ-properties-to-calcuate-rank 'occ-tsk))
+(cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-tsk))
+  (apply #'append
+         (mapcar #'(lambda (class)
+                     (occ-properties-to-calcuate-rank class))
+                 (cl-inst-class-parent-names obj))))
 
-(cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-ctx-tsk))
-  (occ-properties-to-calcuate-rank 'occ-obj-ctx-tsk))
+;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-ctx-tsk))
+;;   (occ-properties-to-calcuate-rank 'occ-obj-ctx-tsk))
 
 
 (defun occ-org-entry-get (pom
@@ -420,7 +422,14 @@
            (cl-method-param-case '(occ-operation (,params-general val)))
            (cl-method-param-case '(occ-operation (,params-with-prop val)))))))))
 
-(occ-operations-for-prop 'occ-obj-tsk 'x)
+(cl-defmethod occ-operations-for-prop ((obj  occ-obj-tsk)
+                                       (prop symbol))
+  (apply #'append
+         (mapcar #'(lambda (class)
+                     (occ-operations-for-prop class prop))
+                 (cl-inst-class-parent-names obj))))
+
+;; (occ-operations-for-prop 'occ-obj-tsk 'x)
 
 (list
  (cl-method-param-case
@@ -676,7 +685,7 @@
                                                 operation
                                                 value
                                                 :param-only param-only))
-                  (occ-operations-for-prop (cl-inst-classname obj) prop))))
+                  (occ-operations-for-prop obj prop))))
 
 (cl-defmethod occ-gen-edit-if-required ((obj occ-obj-tsk)
                                         (prop null)

@@ -65,6 +65,9 @@
 (cl-class-parent-names (cl-class tsk-test))
 
 (cl-inst-class-parent-names tsk-test)
+
+(occ-operations-for-prop tsk-test 'root)
+
 
 
 (defun occ-flatten (L)
