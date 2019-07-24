@@ -53,6 +53,7 @@
     (project-buffer-occur :location local)
     (project-buffer-mode+ :location local)
     (sln-mode :location local)
+    term-projectile
     )
   "The list of Lisp packages required by the lotus-project layer.
 
@@ -443,5 +444,13 @@ Each entry is either:
       (progn
         (progn
           (autoload 'find-sln "sln-mode")))))
+
+(defun lotus-project/init-term-projectile()
+  (use-package term-projectile
+    :defer t
+    :config
+    (progn
+      (progn
+        ))))
 
 ;;; packages.el ends here
