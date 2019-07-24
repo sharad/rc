@@ -194,10 +194,10 @@
   (when nil ;; https://curiousprogrammer.wordpress.com/2010/07/19/emacs-defstruct-vs-other-languages/
 
     (defun cl-get-field (object field)
-      (cl-struct-slot-value (cl-classname object) field object))
+      (cl-struct-slot-value (cl-inst-classname object) field object))
 
     (defun cl-set-field (object field value)
-      (setf (cl-struct-slot-value (cl-classname object) field object) value))
+      (setf (cl-struct-slot-value (cl-inst-classname object) field object) value))
 
     (get-field dave 'name)
     (set-field dave 'name "Simon Smith"))
@@ -248,7 +248,7 @@
 
   (cl-set-field occ-gtree 'subtree 1)
 
-  (cl-class-slots (cl-classname occ-gtree))
+  (cl-class-slots (cl-inst-classname occ-gtree))
   ;; (type-of occ-gtree)
 
   (setf

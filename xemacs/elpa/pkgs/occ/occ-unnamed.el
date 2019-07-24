@@ -90,7 +90,7 @@
 
 
 (when nil
-  (cl-classname (occ-make-tsk org-clock-hd-marker (occ-tsk-builder)))
+  (cl-inst-classname (occ-make-tsk org-clock-hd-marker (occ-tsk-builder)))
   (setq unnamed-test (occ-make-tsk org-clock-hd-marker (occ-tsk-builder)))
   (occ-tsk-marker unnamed-test)
   (type-of (lotus-org-unnamed-task-clock-marker)))

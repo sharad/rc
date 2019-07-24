@@ -200,7 +200,7 @@
   (let ((unfiltered-count (or unfiltered-count 0)))
    (when candidates
      (helm-build-sync-source (format "Select matching %s(%d/%d)"
-                                     (symbol-name (cl-classname (car candidates)))
+                                     (symbol-name (cl-inst-classname (car candidates)))
                                      (length candidates)
                                      unfiltered-count)
        :candidates (mapcar #'occ-candidate candidates)

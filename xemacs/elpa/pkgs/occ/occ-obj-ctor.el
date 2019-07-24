@@ -45,7 +45,7 @@
 (defun occ-tsk-builder ()
   (unless occ-global-tsk-collection (occ-collection-object))
   (if occ-global-tsk-collection
-      (let ((classname (cl-classname (occ-collection-object))))
+      (let ((classname (cl-inst-classname (occ-collection-object))))
         (cond
          ((eq 'occ-list-collection classname)
           #'make-occ-list-tsk)

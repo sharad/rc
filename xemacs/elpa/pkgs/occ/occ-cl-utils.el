@@ -33,15 +33,86 @@
 (require 'cl-generic)
 
 
-(defun cl-classname (inst)
-  (intern
-   (substring
-    (symbol-name (aref inst 0))
-    (length "cl-struct-"))))
+(setq tsk-test (occ-make-tsk-at-point))
+
+(cl-structure-class cl-struct-occ-tree-tsk)
+
+(cl-structure-class- cl-struct-occ-tree-tsk)
+
+(cl-structure-class tsk-test)
+
+(cl--struct-get-class tsk-test)
+
+(cl--struct-class-slots cl-struct-occ-tree-tsk)
+
+(cl--struct-get-class cl-struct-occ-tree-tsk)
+
+(cl--struct-class-slots cl-struct-cl-structure-class)
+
+(cl-structure-class-parents cl-struct-cl-structure-class)
+
+(cl-struct-slot-value 'cl-structure-class 'parents cl-struct-cl-structure-class)
+
+(cl-struct-slot-value 'cl-structure-class 'parents cl-struct-occ-tree-tsk)
+
+(cl--struct-get-class tsk-test)
+
+(cl-struct-slot-value 'cl-structure-class 'name (symbol-value (aref tsk-test 0)))
+
+(cl--struct-class-slots (symbol-value (aref tsk-test 0)))
+
+
+(cl-class-parent-names (cl-class tsk-test))
+
+(cl-inst-class-parent-names tsk-test)
+
+
+(defun occ-flatten (L)
+  ;; https://stackoverflow.com/a/19967639
+  "Converts a list to single level."
+  (if (null L)
+      nil
+    (if (atom (first L))
+        (cons (first L) (occ-flatten (rest L)))
+      (append (occ-flatten (first L)) (occ-flatten (rest L))))))
+
+
+(defun cl-class (inst)
+  (symbol-value (aref inst 0)))
+
+(defun cl-classname (class)
+  (cl-struct-slot-value 'cl-structure-class
+                        'name
+                        class))
+
+(defun cl-class-parents (class)
+  (cl-struct-slot-value 'cl-structure-class
+                        'parents
+                        class))
+
+(defun cl-class-parent-names (class)
+  (mapcar
+   #'(lambda (parent)
+       (cons
+        (cl-struct-slot-value 'cl-structure-class
+                              'name
+                              parent)
+        (when parent (cl-class-parent-names parent))))
+   (cl-class-parents class)))
+
+
+(defun cl-inst-classname (inst)
+  (cl-classname (cl-class inst)))
+
+(defun cl-inst-class-parent-names (inst)
+  (occ-flatten
+   (cl-class-parent-names (cl-class inst))))
+
+
 (defun cl-get-field (object field)
-  (cl-struct-slot-value (cl-classname object) field object))
+  (cl-struct-slot-value (cl-inst-classname object) field object))
 (defun cl-set-field (object field value)
-  (setf (cl-struct-slot-value (cl-classname object) field object) value))
+  (setf (cl-struct-slot-value (cl-inst-classname object) field object) value))
 (defun cl-get-fields (object fields)
   (mapcar
    #'(lambda (field)
@@ -53,13 +124,13 @@
    (cl--struct-class-slots
     (cl--struct-get-class class))))
 ;; (defun cl-class-slot-value (obj slot)
-;;   (when (member slot (cl-class-slots (cl-classname obj)))
-;;     (cl-struct-slot-value (cl-classname obj) slot obj)))
+;;   (when (member slot (cl-class-slots (cl-inst-classname obj)))
+;;     (cl-struct-slot-value (cl-inst-classname obj) slot obj)))
 (defun cl-class-obj-slot-value (class slot obj)
   (when (member slot (cl-class-slots class))
     (cl-struct-slot-value class slot obj)))
 (defun cl-obj-slot-value (obj slot)
-  (cl-class-obj-slot-value (cl-classname obj) slot obj))
+  (cl-class-obj-slot-value (cl-inst-classname obj) slot obj))
 (defun cl-obj-plist-value (obj)
   (cl-obj-slot-value obj 'plist))
 

@@ -68,7 +68,7 @@
 (cl-defmethod occ-get-property ((obj occ-obj)
                                 (prop symbol))
   ;; mainly used by occ-tsk only.
-  (if (memq prop (cl-class-slots (cl-classname obj)))
+  (if (memq prop (cl-class-slots (cl-inst-classname obj)))
       (cl-get-field obj prop)
     (or
      (occ-plist-get (cl-obj-plist-value obj) prop)
@@ -78,8 +78,8 @@
                                 prop
                                 val)
   ;; mainly used by occ-tsk only
-  (if (memq prop (cl-class-slots (cl-classname obj)))
-      (setf (cl-struct-slot-value (cl-classname obj) prop obj) val)
+  (if (memq prop (cl-class-slots (cl-inst-classname obj)))
+      (setf (cl-struct-slot-value (cl-inst-classname obj) prop obj) val)
     (let ((plist-prop
            (if (occ-plist-get (cl-obj-plist-value obj) prop)
                prop
@@ -90,7 +90,7 @@
        ;; UPCASE even in actual org file it is lower or camel case. so our obj
        ;; (tsk) also must have to be in line of it as it also got created with
        ;; same function (org-element-at-point).
-       (cl-struct-slot-value (cl-classname obj) 'plist obj)
+       (cl-struct-slot-value (cl-inst-classname obj) 'plist obj)
        plist-prop val))))
 
 
@@ -106,7 +106,7 @@
 (cl-defmethod occ-class-slots ((obj occ-obj))
   (let* ((plist (cl-obj-plist-value obj))
          (plist-keys (occ-plist-get-keys plist))
-         (slots (cl-class-slots (cl-classname obj))))
+         (slots (cl-class-slots (cl-inst-classname obj))))
     (append slots
             (mapcar #'key2sym plist-keys))))
 (cl-defmethod occ-obj-defined-slots ((obj occ-obj))
@@ -114,7 +114,7 @@
          (plist-keys (occ-plist-get-keys plist))
          (slots
           (append
-           (cl-class-slots (cl-classname obj))
+           (cl-class-slots (cl-inst-classname obj))
            (mapcar #'key2sym plist-keys))))
     slots))
 (cl-defmethod occ-obj-defined-slots-with-value ((obj occ-obj))
