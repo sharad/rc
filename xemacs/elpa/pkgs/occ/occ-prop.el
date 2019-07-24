@@ -474,24 +474,11 @@
 (cl-method-param-signs 'occ-operation)
 
 
-(cl-defgeneric occ-operation (obj
-                              operation
-                              prop
-                              values)
-  "occ-prop-operation")
-
-(cl-defgeneric occ-required-p (obj
-                               operation
-                               prop
-                               values)
-  "occ-prop-operation")
-
-
-(cl-defmethod occ-operation ((obj occ-obj-tsk)
-                             (operation (eql XYZ))
-                             (prop      (eql x))
-                             values)
-  ())
+;; (cl-defmethod occ-operation ((obj occ-obj-tsk)
+;;                              (operation (eql XYZ))
+;;                              (prop      (eql x))
+;;                              values)
+;;   ())
 
 (cl-defmethod occ-operation ((obj occ-obj-tsk)
                              (operation (eql get))
@@ -524,17 +511,6 @@
       (occ-set-property tsk prop (car values)))))
 
 (cl-defmethod occ-operation ((obj occ-obj-tsk)
-                             (operation (eql put))
-                             (prop symbol)
-                             values)
-  (let ((tsk    (occ-obj-tsk obj)))
-    (if (occ-list-p prop)
-        (occ-set-property tsk prop (remove
-                                    (car values)
-                                    (occ-get-property tsk prop)))
-      (error "Implement it."))))
-
-(cl-defmethod occ-operation ((obj occ-obj-tsk)
                              (operation (eql remove))
                              (prop symbol)
                              values)
@@ -554,16 +530,34 @@
 
 
 (cl-defmethod occ-require-p ((obj occ-obj-tsk)
+                             (operation (eql get))
+                             (prop      symbol)
+                             values)
+  nil)
+
+(cl-defmethod occ-require-p ((obj occ-obj-tsk)
                              (operation (eql add))
-                             (prop      (eql x))
+                             (prop      symbol)
                              values)
   (not (occ-has-p obj prop value)))
 
 (cl-defmethod occ-require-p ((obj occ-obj-tsk)
+                             (operation (eql put))
+                             (prop      symbol)
+                             values)
+  nil)
+
+(cl-defmethod occ-require-p ((obj occ-obj-tsk)
                              (operation (eql remove))
-                             (prop      (eql x))
+                             (prop      symbol)
                              values)
   (occ-has-p obj prop value))
+
+(cl-defmethod occ-require-p ((obj occ-obj-tsk)
+                             (operation (eql member))
+                             (prop      symbol)
+                             values)
+  nil)
 
 (cl-defgeneric occ-update-property (obj
                                     prop
@@ -725,13 +719,11 @@
                                          &key param-only)
   (remove nil
           (mapcar #'(lambda (prop)
-                      (occ-gen-edit-if-required obj
-                                                prop
-                                                operation
-                                                value
+                      (occ-gen-edits-if-required obj
+                                                 prop
+                                                 operation
                                                 :param-only param-only))
                   (occ-properties-to-edit obj))))
-
 
 (cl-defmethod occ-gen-edits-if-required ((obj occ-obj-tsk)
                                          (prop null)
@@ -739,61 +731,60 @@
                                          &key param-only)
   (apply #'append
          (mapcar #'(lambda (prop)
-                     (occ-gen-edit-if-required obj
-                                               prop
-                                               operation
-                                               value
-                                               :param-only param-only))
+                     (occ-gen-edits-if-required obj
+                                                prop
+                                                operation
+                                                :param-only param-only))
                  (occ-properties-to-edit obj))))
 
 
 
-(cl-defmethod occ-gen-edits-for-add ((obj occ-obj-ctx-tsk)
-                                     &key param-only)
-  (let ((props (occ-properties-to-edit obj))
-        (gen-add-action
-         #'(lambda (prop)
-             (occ-gen-edit-if-required obj prop 'add
-                                       (occ-get-property (occ-obj-ctx obj) prop)
-                                       :param-only param-only))))
-   (remove nil
-           (mapcar #'(lambda (prop) (funcall gen-add-action prop))
-                   props))))
+;; (cl-defmethod occ-gen-edits-for-add ((obj occ-obj-ctx-tsk)
+;;                                      &key param-only)
+;;   (let ((props (occ-properties-to-edit obj))
+;;         (gen-add-action
+;;          #'(lambda (prop)
+;;              (occ-gen-edit-if-required obj prop 'add
+;;                                        (occ-get-property (occ-obj-ctx obj) prop)
+;;                                        :param-only param-only))))
+;;    (remove nil
+;;            (mapcar #'(lambda (prop) (funcall gen-add-action prop))
+;;                    props))))
 
-(cl-defmethod occ-gen-edits-for-remove ((obj occ-obj-ctx-tsk)
-                                        &key param-only)
-  (let ((props (occ-properties-to-edit obj))
-        (gen-remove-action
-         #'(lambda (prop)
-             (occ-gen-edit-if-required obj prop 'remove
-                                       (occ-get-property (occ-obj-ctx obj) prop)
-                                       :param-only param-only))))
-   (remove nil
-           (mapcar #'(lambda (prop)
-                       (funcall gen-remove-action prop))
-                   props))))
+;; (cl-defmethod occ-gen-edits-for-remove ((obj occ-obj-ctx-tsk)
+;;                                         &key param-only)
+;;   (let ((props (occ-properties-to-edit obj))
+;;         (gen-remove-action
+;;          #'(lambda (prop)
+;;              (occ-gen-edit-if-required obj prop 'remove
+;;                                        (occ-get-property (occ-obj-ctx obj) prop)
+;;                                        :param-only param-only))))
+;;    (remove nil
+;;            (mapcar #'(lambda (prop)
+;;                        (funcall gen-remove-action prop))
+;;                    props))))
 
 
-(cl-defmethod occ-gen-edits-for-add-remove ((obj occ-obj-ctx-tsk)
-                                            &key param-only)
-  (let ((props (occ-properties-to-edit obj))
-        (gen-add-action
-         #'(lambda (prop)
-             (occ-gen-edit-if-required obj prop 'add
-                                       (occ-get-property (occ-obj-ctx obj) prop)
-                                       :param-only param-only)))
-        (gen-remove-action
-         #'(lambda (prop)
-             (occ-gen-edit-if-required obj prop 'remove
-                                       (occ-get-property (occ-obj-ctx obj) prop)
-                                       :param-only param-only))))
-    (remove nil
-            (apply #'append
-                   (mapcar
-                    #'(lambda (prop)
-                        (list (funcall gen-add-action prop)
-                              (funcall gen-remove-action prop)))
-                    props)))))
+;; (cl-defmethod occ-gen-edits-for-add-remove ((obj occ-obj-ctx-tsk)
+;;                                             &key param-only)
+;;   (let ((props (occ-properties-to-edit obj))
+;;         (gen-add-action
+;;          #'(lambda (prop)
+;;              (occ-gen-edit-if-required obj prop 'add
+;;                                        (occ-get-property (occ-obj-ctx obj) prop)
+;;                                        :param-only param-only)))
+;;         (gen-remove-action
+;;          #'(lambda (prop)
+;;              (occ-gen-edit-if-required obj prop 'remove
+;;                                        (occ-get-property (occ-obj-ctx obj) prop)
+;;                                        :param-only param-only))))
+;;     (remove nil
+;;             (apply #'append
+;;                    (mapcar
+;;                     #'(lambda (prop)
+;;                         (list (funcall gen-add-action prop)
+;;                               (funcall gen-remove-action prop)))
+;;                     props)))))
 
 
 (cl-defmethod occ-gen-edits ((obj occ-obj-tsk)
