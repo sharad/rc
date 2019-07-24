@@ -131,7 +131,9 @@
   ;; (occ-helm-actions obj)
   (append
    (occ-helm-actions obj)
-   (occ-gen-edits-for-add-remove obj)))
+   ;; (occ-gen-edits-for-add-remove obj)
+   (occ-gen-edits-if-required obj nil nil)))
+
 
 (cl-defun occ-helm-action-transformer-fun (action candidate)
   (occ-helm-action-transformer candidate action))

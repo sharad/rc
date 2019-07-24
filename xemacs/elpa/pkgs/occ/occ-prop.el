@@ -700,26 +700,29 @@
     (occ-gen-prompt-edit obj
                          prop operation value
                          :param-only param-only)))
+
 
-(cl-defmethod occ-gen-edit-if-required ((obj occ-obj-tsk)
-                                        (prop symbol)
-                                        (operation null)
-                                        value
-                                        &key param-only)
+(cl-defmethod occ-gen-edits-if-required ((obj       occ-obj-tsk)
+                                         (prop      symbol)
+                                         (operation null)
+                                         &key param-only)
   (remove nil
           (mapcar #'(lambda (operation)
-                      (occ-gen-edit-if-required obj
-                                                prop
-                                                operation
-                                                value
-                                                :param-only param-only))
+                      (let ((value (occ-prop-default-value obj
+                                                           prop
+                                                           operation)))
+                        (when value
+                          (occ-gen-edit-if-required obj
+                                                    prop
+                                                    operation
+                                                    value
+                                                    :param-only param-only))))
                   (occ-operations-for-prop obj prop))))
 
-(cl-defmethod occ-gen-edit-if-required ((obj occ-obj-tsk)
-                                        (prop null)
-                                        (operation symbol)
-                                        value
-                                        &key param-only)
+(cl-defmethod occ-gen-edits-if-required ((obj occ-obj-tsk)
+                                         (prop null)
+                                         (operation symbol)
+                                         &key param-only)
   (remove nil
           (mapcar #'(lambda (prop)
                       (occ-gen-edit-if-required obj
@@ -730,11 +733,10 @@
                   (occ-properties-to-edit obj))))
 
 
-(cl-defmethod occ-gen-edit-if-required ((obj occ-obj-tsk)
-                                        (prop null)
-                                        (operation null)
-                                        value
-                                        &key param-only)
+(cl-defmethod occ-gen-edits-if-required ((obj occ-obj-tsk)
+                                         (prop null)
+                                         (operation null)
+                                         &key param-only)
   (apply #'append
          (mapcar #'(lambda (prop)
                      (occ-gen-edit-if-required obj

@@ -86,7 +86,7 @@
   (occ-debug :debug "occ-prop-elem-to-org: no method for prop %s using default." prop)
   value)
 (cl-defmethod occ-prop-elem-from-org ((prop symbol)
-                                      value)
+                                      (value string))
   "Method convert value VALUE of property PROP from org string to occ representation."
   ;; (error "Implement method occ-prop-elem-from-org for prop %s" prop)
   (occ-debug :debug
@@ -129,6 +129,22 @@
                                value)
   "Should return format printable value"
   value)
+
+
+(cl-defgeneric occ-prop-default-value (obj
+                                       prop
+                                       operation)
+  "occ-prop-default-value")
+
+(cl-defmethod occ-prop-default-value ((obj occ-obj-tsk)
+                                      (prop symbol)
+                                      (operation symbol))
+  nil)
+
+(cl-defmethod occ-prop-default-value ((obj occ-obj-ctx-tsk)
+                                      (prop symbol)
+                                      (operation symbol))
+  (occ-get-property (occ-obj-ctx obj) prop))
 
 
 (cl-defgeneric occ-checkout-prop (obj
