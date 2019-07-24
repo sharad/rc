@@ -54,18 +54,18 @@
    '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))))
 
 
-(cl-defgeneric occ-match-prop-method-args (obj)
-  "occ-match-prop-method-args")
+;; (cl-defgeneric occ-match-prop-method-args (obj)
+;;   "occ-match-prop-method-args")
 
-(cl-defmethod occ-match-prop-method-args ((obj occ-tsk))
-  (cl-method-param-case '(occ-readprop-elem-from-user (`(occ-tsk (eql ,val)) val))))
+;; (cl-defmethod occ-match-prop-method-args ((obj occ-tsk))
+;;   (cl-method-param-case '(occ-readprop-elem-from-user (`(occ-tsk (eql ,val)) val))))
 
-(cl-defmethod occ-match-prop-method-args ((obj occ-obj-ctx-tsk))
-  (cl-method-sigs-matched-arg
-   ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
-   '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))
-   '(occ-get-property  (`(occ-ctx (eql ,val)) val))
-   (occ-obj-ctx obj)))
+;; (cl-defmethod occ-match-prop-method-args ((obj occ-obj-ctx-tsk))
+;;   (cl-method-sigs-matched-arg
+;;    ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
+;;    '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))
+;;    '(occ-get-property  (`(occ-ctx (eql ,val)) val))
+;;    (occ-obj-ctx obj)))
 
 (ert-deftest ert-occ-test-match-prop-method-args ()
   "Test"
@@ -99,9 +99,17 @@
   "occ-properties-to-calculate-rank")
 
 
+(cl-defmethod occ-properties-to-edit ((class symbol))
+  (cl-method-param-values 'occ-readprop-elem-from-user
+                          (list '\` `(,class (eql ,'(\, val))))
+                          'val))
+
+;; (cl-defmethod occ-properties-to-edit ((obj occ-tsk))
+;;   (cl-method-param-case
+;;    '(occ-readprop-elem-from-user (`(occ-tsk (eql ,val)) val))))
+
 (cl-defmethod occ-properties-to-edit ((obj occ-tsk))
-  (cl-method-param-case
-   '(occ-readprop-elem-from-user (`(occ-tsk (eql ,val)) val))))
+  (cl-collect-on-classes #'occ-readprop-elem-from-user obj))
 
 (cl-defmethod occ-properties-to-edit ((obj occ-obj-ctx-tsk))
   (cl-method-sigs-matched-arg
@@ -112,17 +120,35 @@
 
 
 
-(cl-defmethod occ-properties-to-inherit ((obj null))
-  (cl-method-param-case
-   '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))))
+;; (cl-defmethod occ-properties-to-inherit ((obj null))
+;;   (cl-method-param-case
+;;    '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))))
 
-(cl-defmethod occ-properties-to-inherit ((obj occ-tsk))
-  (cl-method-param-case
-   '(occ-readprop-elem-from-user (`(occ-tsk (eql ,val)) val))))
+;; (cl-defmethod occ-properties-to-inherit ((obj occ-tsk))
+;;   (cl-method-param-case
+;;    '(occ-readprop-elem-from-user (`(occ-tsk (eql ,val)) val))))
 
-(cl-defmethod occ-properties-to-inherit ((obj occ-obj-ctx-tsk))
-  (cl-method-param-case
-   '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))))
+;; (cl-defmethod occ-properties-to-inherit ((obj occ-obj-ctx-tsk))
+;;   (cl-method-param-case
+;;    '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))))
+
+
+(cl-defmethod occ-properties-to-inherit ((class symbol))
+  (cl-method-param-values 'occ-readprop-elem-from-user
+                          (list '\` `(,class (eql ,'(\, val))))
+                          'val))
+
+;; (cl-defmethod occ-properties-to-inherit ((obj occ-obj-tsk))
+;;   (apply #'append
+;;          (mapcar #'(lambda (class)
+;;                      (occ-properties-to-inherit class))
+;;                  (cl-inst-class-names obj))))
+
+(cl-defmethod occ-properties-to-inherit ((obj occ-obj-tsk))
+  (cl-collect-on-classes #'occ-properties-to-inherit obj))
+
+;; (cl-collect-on-classes #'occ-properties-to-inherit obj)
+
 
 
 ;; (cl-defmethod occ-properties-to-calcuate-rank ((obj symbol))
@@ -142,7 +168,7 @@
   (apply #'append
          (mapcar #'(lambda (class)
                      (occ-properties-to-calcuate-rank class))
-                 (cl-inst-class-parent-names obj))))
+                 (cl-inst-class-names obj))))
 
 ;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-ctx-tsk))
 ;;   (occ-properties-to-calcuate-rank 'occ-obj-ctx-tsk))
@@ -430,6 +456,8 @@
                  (cl-inst-class-parent-names obj))))
 
 ;; (occ-operations-for-prop 'occ-obj-tsk 'x)
+
+;; (cl-collect-on-classes #'occ-operations-for-prop obj)
 
 (list
  (cl-method-param-case

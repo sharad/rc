@@ -32,41 +32,44 @@
 (require 'cl-macs)
 (require 'cl-generic)
 
+(when nil
+  (progn
 
-(setq tsk-test (occ-make-tsk-at-point))
+    (setq tsk-test (occ-make-tsk-at-point))
 
-(cl-structure-class cl-struct-occ-tree-tsk)
+    (cl-structure-class cl-struct-occ-tree-tsk)
 
-(cl-structure-class- cl-struct-occ-tree-tsk)
+    (cl-structure-class- cl-struct-occ-tree-tsk)
 
-(cl-structure-class tsk-test)
+    (cl-structure-class tsk-test)
 
-(cl--struct-get-class tsk-test)
+    (cl--struct-get-class tsk-test)
 
-(cl--struct-class-slots cl-struct-occ-tree-tsk)
+    (cl--struct-class-slots cl-struct-occ-tree-tsk)
 
-(cl--struct-get-class cl-struct-occ-tree-tsk)
+    (cl--struct-get-class cl-struct-occ-tree-tsk)
 
-(cl--struct-class-slots cl-struct-cl-structure-class)
+    (cl--struct-class-slots cl-struct-cl-structure-class)
 
-(cl-structure-class-parents cl-struct-cl-structure-class)
+    (cl-structure-class-parents cl-struct-cl-structure-class)
 
-(cl-struct-slot-value 'cl-structure-class 'parents cl-struct-cl-structure-class)
+    (cl-struct-slot-value 'cl-structure-class 'parents cl-struct-cl-structure-class)
 
-(cl-struct-slot-value 'cl-structure-class 'parents cl-struct-occ-tree-tsk)
+    (cl-struct-slot-value 'cl-structure-class 'parents cl-struct-occ-tree-tsk)
 
-(cl--struct-get-class tsk-test)
+    (cl--struct-get-class tsk-test)
 
-(cl-struct-slot-value 'cl-structure-class 'name (symbol-value (aref tsk-test 0)))
+    (cl-struct-slot-value 'cl-structure-class 'name (symbol-value (aref tsk-test 0)))
 
-(cl--struct-class-slots (symbol-value (aref tsk-test 0)))
+    (cl--struct-class-slots (symbol-value (aref tsk-test 0)))
 
 
-(cl-class-parent-names (cl-class tsk-test))
+    (cl-class-parent-names (cl-class tsk-test))
 
-(cl-inst-class-parent-names tsk-test)
+    (cl-inst-class-parent-names tsk-test)
 
-(occ-operations-for-prop tsk-test 'root)
+    (occ-operations-for-prop tsk-test 'root)))
+
 
 
 
@@ -110,6 +113,12 @@
 (defun cl-inst-class-parent-names (inst)
   (occ-flatten
    (cl-class-parent-names (cl-class inst))))
+
+(defun cl-inst-class-names (inst)
+  (cons
+   (cl-inst-classname inst)
+   (occ-flatten
+    (cl-class-parent-names (cl-class inst)))))
 
 
 (defun cl-get-field (object field)
@@ -218,5 +227,19 @@
        (let ((first-arg (cadar fspec)))
          (when (funcall method (cons first-arg obj)) first-arg)))
    (cl-method-param-signs method)))
+
+
+(defun cl-method-param-values (method param-exp val)
+  (funcall
+   `(lambda ()
+      (cl-method-param-case '(,method (,param-exp ,val))))))
+
+
+(defun cl-collect-on-classes (fn inst)
+  (apply #'append
+         (mapcar #'(lambda (class)
+                     (funcall fn class))
+                 (cl-inst-class-names inst))))
+
 
 ;;; occ-cl-utils.el ends here
