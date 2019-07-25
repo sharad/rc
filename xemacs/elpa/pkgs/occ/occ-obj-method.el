@@ -77,7 +77,8 @@
                              '(("Continue" . t)
                                ("Checkout" . checkout))
                              (apply #'occ-gen-params tsk ops)
-                             (occ-gen-edits-for-add obj :param-only t)))))))
+                             ;; (occ-gen-edits-for-add obj :param-only t)
+                             (occ-gen-edits-if-required obj nil nil :param-only t)))))))
                              ;; (occ-checkout obj)
       (if (eq retval t)
           t

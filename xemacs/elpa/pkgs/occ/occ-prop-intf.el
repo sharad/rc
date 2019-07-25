@@ -131,6 +131,11 @@
   value)
 
 
+(cl-defgeneric occ-has-p (obj
+                          prop
+                          value)
+  "occ-has-p")
+
 (cl-defgeneric occ-operation (obj
                               operation
                               prop

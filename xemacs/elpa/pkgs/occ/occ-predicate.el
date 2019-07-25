@@ -42,7 +42,23 @@
 
 (cl-defmethod occ-marker= ((obj occ-obj-tsk)
                            (mrk marker))
-  (occ-marker= (occ-obj-marker obj) mrk))
+  (occ-marker= (occ-obj-marker obj) (occ-obj-marker mrk)))
+
+(cl-defmethod occ-marker= ((obj marker)
+                           (tsk occ-obj-tsk))
+  (occ-marker= (occ-obj-marker obj) (occ-obj-marker tsk)))
+
+(cl-defmethod occ-marker= ((obj occ-obj-tsk)
+                           (mrk null))
+  nil)
+
+(cl-defmethod occ-marker= ((obj null)
+                           (tsk occ-obj-tsk))
+  nil)
+
+(cl-defmethod occ-marker= ((obj occ-obj-tsk)
+                           (tsk occ-obj-tsk))
+  (occ-marker= (occ-obj-marker obj) (occ-obj-marker tsk)))
 
 
 (cl-defmethod occ-current-associated-p ((ctx occ-ctx))
@@ -71,5 +87,9 @@
 (cl-defmethod occ-unnamed-p ((obj occ-obj-tsk))
   (occ-debug :debug "occ-unnamed-p(occ-tsk=%s)" obj)
   (occ-unnamed-p (occ-obj-marker obj)))
+
+
+(cl-defmethod occ-current-p ((obj occ-tsk))
+  (occ-marker= (occ-current-tsk) obj))
 
 ;;; occ-predicate.el ends here

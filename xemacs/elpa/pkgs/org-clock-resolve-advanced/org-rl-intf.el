@@ -32,6 +32,10 @@
 (defun org-rl-intf-unregister ())
 
 
+(defun org-rl-intf-clock-p (clock)
+  t)
+
+
 (defun org-rl-intf-clock-clock-in (clock &optional resume start-time)
   (org-rl-straight-org-clock-clock-in clock resume start-time))
 

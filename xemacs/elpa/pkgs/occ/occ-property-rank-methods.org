@@ -229,6 +229,37 @@
         (let ((tsk (occ-obj-tsk obj)))
           (let* ((prompt     (concat (symbol-name prop) ": ")))
             (read-number "Timebeing mins: "))))
+
+      (cl-defmethod occ-require-p ((obj occ-obj-tsk)
+                                   (operation (eql increment))
+                                   (prop (eql timebeing))
+                                   values)
+        (occ-current-p obj))
+
+      (cl-defmethod occ-prop-default-value ((obj occ-obj-tsk)
+                                            (prop (eql timebeing))
+                                            (operation (eql increment)))
+        (when (occ-current-p obj)
+          10))
+
+      (cl-defmethod occ-operation ((obj occ-obj-tsk)
+                                   (operation (eql increment))
+                                   (prop (eql timebeing))
+                                   values)
+        (let ((tsk    (occ-obj-tsk obj)))
+          (if (occ-list-p prop)
+              (error "Implement it.")
+            (error "Implement it."))))
+
+      (cl-defmethod occ-org-operation ((obj occ-obj-tsk)
+                                       (operation (eql increment))
+                                       (prop (eql timebeing))
+                                       values)
+        (let ((prop-string (symbol-name prop)))
+          (if (occ-list-p prop)
+              (error "Implement it.")
+            (error "Implement it."))))
+
       
     #+end_src
 

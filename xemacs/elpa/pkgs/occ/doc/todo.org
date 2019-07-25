@@ -103,7 +103,11 @@ It might be shown only if wait timeout happens.
         clocking in to here from last clock <Unnamed task 1006>
       :END:
 *** NEXT Fast clocking/child clocking with property addition like fast property addition :DESIGN:USABILITY:
-**** Fast property edit function for TSK
+**** CLOSED Fast property edit function for TSK
+     CLOSED: [2019-07-25 Thu 21:18]
+     :LOGBOOK:
+     - State "CLOSED"     from              [2019-07-25 Thu 21:18]
+     :END:
 **** Fast property edit with try-clockin
 
 *** NEXT Resolve clock occ integration                     :DESIGN:USABILITY:
@@ -143,7 +147,7 @@ It might be shown only if wait timeout happens.
 *** Create manual unnamed/anonymous (different from automatic) child task mainly for FAST DISPATCH :USABILITY:
 *** Create Single line task mainly for FAST DISPATCH              :USABILITY:
 *** non tsk org entries                                              :DESIGN:
-*** Property other methods like Increase/Decrease for integer, parent/child dir for dir property etc.
+*** STARTED Property other methods like Increase/Decrease for integer, parent/child dir for dir property etc.
 
 
 

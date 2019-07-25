@@ -250,24 +250,22 @@ pointing to it."
   (cons (occ-format obj nil t) obj))
 
 
-(cl-defmethod occ-current-tsk-with ((sym null))
-  nil)
+;; (cl-defmethod occ-marker-tsk-with ((sym null))
+;;   nil)
 
-(cl-defmethod occ-current-tsk-with ((mrk marker))
-  "return created occ-tsk from marker"
-  (when (and
-         mrk
-         (markerp mrk)
-         (> (marker-position-nonil mrk) 0))
-    (org-with-cloned-marker mrk "<tree>"
-      (let ((view-read-only nil)
-            (buffer-read-only t))
-        (read-only-mode)
-        (org-previous-visible-heading 1)
-        (let ((tsk (occ-make-tsk
-                    (or org-clock-hd-marker mrk)
-                    (occ-tsk-builder))))
-          tsk)))))
+;; (cl-defmethod occ-marker-tsk-with ((mrk marker))
+;;   "return created occ-tsk from marker"
+;;   (when (and
+;;          mrk
+;;          (markerp mrk)
+;;          (> (marker-position-nonil mrk) 0))
+;;     (org-with-cloned-marker mrk "<tree>"
+;;       (let ((view-read-only nil)
+;;             (buffer-read-only t))
+;;         (read-only-mode)
+;;         (org-previous-visible-heading 1)
+;;         (let ((tsk (occ-make-tsk mrk (occ-tsk-builder))))
+;;           tsk)))))
 
 (defun occ-current-ctxual-tsk (&optional occ-other-allowed)
   (let* ((ctxual-tsk (car *occ-clocked-ctxual-tsk-ctx-history*)))
@@ -290,7 +288,7 @@ pointing to it."
               (if occ-other-allowed
                   (occ-debug :warning msg)
                 (error msg))
-              (occ-build-ctxual-tsk-with (occ-current-tsk-with clock)
+              (occ-build-ctxual-tsk-with (and clock (occ-make-tsk clock))
                                          (occ-make-ctx-at-point)))))))))
 
 (defun occ-current-tsk (&optional occ-other-allowed)

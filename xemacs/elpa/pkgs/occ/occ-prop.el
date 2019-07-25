@@ -100,7 +100,7 @@
                           'val))
 
 (cl-defmethod occ-properties-to-edit ((obj occ-tsk))
-  (cl-collect-on-classes #'occ-readprop-elem-from-user
+  (cl-collect-on-classes #'occ-properties-to-edit
                          obj))
 
 ;; TODO: improve
@@ -572,7 +572,6 @@
 
 
 ;; TODO: also accommodate increase decrease etc.
-
 (cl-defmethod occ-gen-edit ((obj occ-obj-tsk)
                             (prop symbol)
                             (operation symbol)
@@ -676,22 +675,26 @@
 
 
 
-(cl-defmethod occ-gen-edits ((obj occ-obj-tsk)
-                             ops
-                             &key param-only)
-  (mapcar #'(lambda (op)
-              (apply #'occ-gen-prompt-edit
-                     obj
-                     (append op (list :param-only param-only))))
-          ops))
-
-(cl-defmethod occ-gen-params ((obj occ-obj-tsk)
-                              &rest ops)
-  (occ-gen-edits obj ops :param-only t))
+;; (setq tsk-test (occ-make-tsk-at-point))
+;; (occ-gen-edits-if-required tsk-test nil nil)
 
 
-(cl-defmethod occ-increase-timeout ((obj occ-obj-ctx-tsk))
-  (occ-gen-prompt-method obj 'timeout add 100))
+;; (cl-defmethod occ-gen-edits ((obj occ-obj-tsk)
+;;                              ops
+;;                              &key param-only)
+;;   (mapcar #'(lambda (op)
+;;               (apply #'occ-gen-prompt-edit
+;;                      obj
+;;                      (append op (list :param-only param-only))))
+;;           ops))
+
+;; (cl-defmethod occ-gen-params ((obj occ-obj-tsk)
+;;                               &rest ops)
+;;   (occ-gen-edits obj ops :param-only t))
+
+
+;; (cl-defmethod occ-increase-timeout ((obj occ-obj-ctx-tsk))
+;;   (occ-gen-prompt-method obj 'timeout add 100))
 
 
 (cl-defgeneric occ-checkout (obj)
