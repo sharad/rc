@@ -27,27 +27,17 @@
 (provide 'org-rl-intf)
 
 
-(defun org-rl-intf-register ())
+(defvar org-rl-capture+-helm-templates-alist org-capture+-helm-templates-alist)
 
-(defun org-rl-intf-unregister ())
-
-
-(defun org-rl-intf-clock-p (clock)
+(defun org-default-rl-clock-p (clock)
   t)
-
-
-(defun org-rl-intf-clock-clock-in (clock &optional resume start-time)
+(defun org-default-rl-clock-clock-in (clock &optional resume start-time)
   (org-rl-straight-org-clock-clock-in clock resume start-time))
-
-(defun org-rl-intf-clock-out (&optional switch-to-state fail-quietly at-time)
+(defun org-default-rl-clock-out (&optional switch-to-state fail-quietly at-time)
   (org-clock-out switch-to-state fail-quietly at-time))
-
-(defun org-rl-intf-clock-clock-out (clock &optional fail-quietly at-time)
+(defun org-default-rl-clock-clock-out (clock &optional fail-quietly at-time)
   (org-clock-clock-out clock fail-quietly at-time))
-
-
-;;;###autoload
-(defun org-rl-intf-select-other-clock (&optional target)
+(defun org-default-rl-select-other-clock (&optional target)
   (interactive)
   (org-rl-debug nil "org-rl-select-other-clock: target[%s]" target)
   (org-with-refile
@@ -55,9 +45,88 @@
     (let ((marker (make-marker)))
       (set-marker marker loc)
       marker)))
+(defun org-default-rl-capture+-helm-templates-alist ()
+  org-rl-capture+-helm-templates-alist)
+
 
+(defvar org-rl-interfaces
+  '((default
+      :org-rl-clock-p                       org-default-rl-clock-p
+      :org-rl-clock-clock-in                org-default-rl-clock-clock-in
+      :org-rl-clock-out                     org-default-rl-clock-out
+      :org-rl-select-other-clock            org-default-rl-select-other-clock
+      :org-rl-capture+-helm-templates-alist org-default-rl-capture+-helm-templates-alist)))
 
-(defvar org-rl-capture+-helm-templates-alist org-capture+-helm-templates-alist)
+(defun org-rl-interface-get (intf key)
+  (plist-get (cdr (assoc intf org-rl-interfaces)) key))
+
+(defun org-rl-interface-put (intf key value)
+  (plist-set (cdr (assoc intf org-rl-interfaces)) key value))
+
+(defun org-rl-find-intf (clock)
+  (some #'(lambda (intf)
+            (let ((clock-p (org-rl-interface-get (car intf) :org-rl-clock-p)))
+              (when (and clock-p
+                         (funcall clock-p clock))
+                (car intf))))
+        org-rl-interfaces))
+
+
+(defun org-rl-find-intf-clock-p (clock)
+  (org-rl-interface-get (org-rl-find-intf clock) :org-rl-clock-p))
+
+(defun org-rl-find-intf-clock-clock-in (clock)
+  (org-rl-interface-get (org-rl-find-intf clock) :org-rl-clock-clock-in))
+
+(defun org-rl-find-intf-clock-out (clock)
+  (org-rl-interface-get (org-rl-find-intf clock) :org-rl-clock-out))
+
+(defun org-rl-find-intf-select-other-clock (clock)
+  (org-rl-interface-get (org-rl-find-intf clock) :org-rl-select-other-clock))
+
+(defun org-rl-find-intf-capture+-helm-templates-alist (clock)
+  (org-rl-interface-get (org-rl-find-intf clock) :org-rl-capture+-helm-templates-alist))
+
+
+(defun org-rl-intf-register (tag plist)
+  (pushnew (cons tag plist) org-rl-interfaces))
+
+(defun org-rl-intf-unregister (tag))
+
+
+(defun org-rl-intf-clock-p (clock)
+  (let ((fun (org-rl-find-intf-clock-p clock)))
+    (if fun
+        (funcall fun)
+      (error "Not found org-rl-clock-p"))))
+
+
+(defun org-rl-intf-clock-clock-in (clock &optional resume start-time)
+  (let ((fun (org-rl-find-intf-clock-clock-in clock)))
+    (if fun
+        (funcall fun clock resume start-time)
+      (error "Not found org-rl-clock-clock-in"))))
+
+(defun org-rl-intf-clock-out (&optional switch-to-state fail-quietly at-time)
+  (let ((fun (if org-clock-marker
+                 (org-rl-find-intf-clock-out org-clock-marker))))
+    (if fun
+        (funcall fun switch-to-state fail-quietly at-time)
+      (error "Not found org-rl-clock-out"))))
+
+(defun org-rl-intf-clock-clock-out (clock &optional fail-quietly at-time)
+  (let ((fun (org-rl-find-intf-clock-clock-out clock)))
+    (if fun
+        (funcall fun clock fail-quietly at-time)
+      (error "Not found org-rl-clock-clock-out"))))
+
+;;;###autoload
+(defun org-rl-intf-select-other-clock (clock &optional target)
+  (interactive)
+  (let ((fun (org-rl-find-intf-select-other-clock clock)))
+    (if fun
+        (funcall fun target)
+      (error "Not found org-rl-select-other-clock"))))
 
 ;; (setq
 ;;  org-rl-capture+-helm-templates-alist
@@ -82,6 +151,9 @@
 ;;       :action-transformer #'(lambda (actions candidate)
 ;;                               (list (cons "select"))))))
 
-(defun org-rl-intf-capture+-helm-templates-alist ()
-  org-rl-capture+-helm-templates-alist)
+(defun org-rl-intf-capture+-helm-templates-alist (clock)
+  (let ((fun (org-rl-find-intf-capture+-helm-templates-alist clock)))
+    (if fun
+        (funcall fun)
+      (error "Not found org-rl-capture+-helm-templates-alist"))))
 ;;; org-rl-intf.el ends here

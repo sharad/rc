@@ -178,8 +178,6 @@
                                                  resume
                                                  fail-quietly
                                                  resume-clocks)
-
-
   (org-rl-debug nil "begin %s" 'org-rl-clock-opt-include-in-other)
   (org-rl-debug nil "begin %s: prev=%s next=%s other-marker-%s timelen-mins=%d"
                 'org-rl-clock-opt-include-in-other
@@ -189,17 +187,14 @@
                 timelen-mins)
 
   (let ((maxtimelen-secs   (org-rl-get-time-gap-secs prev next))
-        (other-marker (or other-marker (org-rl-select-other-clock)))
-        (resume-alist nil))
-
-
+        (other-marker      (or other-marker
+                               (org-rl-org-select-other-clock (org-rl-marker (some #'org-rl-clock-real-p prev next)))))
+        (resume-alist      nil))
     (progn
       (setf prev (org-rl-clock-clock-out prev fail-quietly))     ;if necessary
       (setf next (org-rl-clock-clock-out next fail-quietly))     ;if necessary
-
       (push (cons :prev prev) resume-alist)
       (push (cons :next next) resume-alist))
-
     (if (> timelen-mins 0)
         (setq prev
               (org-rl-clock-clock-in-out
@@ -250,7 +245,8 @@
                 'org-rl-clock-opt-include-in-new
                 template)
 
-  (let ((mrk (org-rl-select-other-clock)))
+  (let ((mrk (org-rl-org-select-other-clock
+              (org-rl-marker (some #'org-rl-clock-real-p prev next)))))
     (org-rl-debug nil "begin %s: org-rl-select-other-clock: %s" 'org-rl-clock-opt-include-in-new mrk)
     (org-rl-debug nil "begin %s: template: %s" 'org-rl-clock-opt-include-in-new template)
     (after-org-capture+ mrk 'entry `(marker ,mrk) template '(:empty-lines 1)

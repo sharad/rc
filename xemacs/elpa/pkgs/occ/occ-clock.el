@@ -367,6 +367,7 @@
         (ctxtual-tsk (occ-build-ctxual-tsk obj)))
     (occ-try-until 3 (or (not (eq t retval))
                          (occ-associable-p obj))
+      ;; (helm (occ-gen-edits-if-required obj nil nil))
       (setq retval
             (occ-edit-properties obj '(timebeing add 10))))
     (unless (occ-clock-in-if-associable ctxtual-tsk

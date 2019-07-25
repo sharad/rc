@@ -110,7 +110,7 @@ It might be shown only if wait timeout happens.
      :END:
 **** Fast property edit with try-clockin
 
-*** NEXT Resolve clock occ integration                     :DESIGN:USABILITY:
+*** STARTED Resolve clock occ integration                  :DESIGN:USABILITY:
 *** STARTED Rank Calculation                                         :DESIGN:
 **** CLOSED Resolve TSK rank CTUAL_TSK rank issue                    :DESIGN:
      CLOSED: [2019-07-14 Sun 18:45]
@@ -206,5 +206,6 @@ It might be shown only if wait timeout happens.
     :LOGBOOK:
     - State "CLOSED"     from              [2019-06-29 Sat 00:06]
     :END:
+
 ** Miscellaneous
 *** Read https://github.com/roman/clocker.el

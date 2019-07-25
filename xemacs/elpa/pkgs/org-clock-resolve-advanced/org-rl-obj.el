@@ -45,62 +45,7 @@
 (eval-when-compile
   (require 'org-clock-utils-lotus))
 (require 'org-clock-utils-lotus)
-(require 'org-rl-intf)
-
-
-
-(defvar org-rl-debug nil "Debug org advanced resolve clock")
-
-(defun org-rl-debug (level &rest args)
-  (let* ((ilevel (or level :debug))
-         (ts (time-stamp-string))
-         (fmt (format "%s: %s" ts (car args)))
-         (args (append (list fmt) (cdr args))))
-    (when org-rl-debug
-      (apply #'lwarn 'org-rl-clock ilevel args)
-      (when level
-        (message
-         "%s"
-         (concat
-          (format "org-rl-clock %s: " ilevel)
-          (apply #'format args)))))))
-
-
-(defvar org-rl-org-clock-persist nil "Control org-clock-persist at time of org-resolve clock-in")
-(defvar org-rl-org-clock-auto-clock-resolution nil "Control occ-org-clock-auto-clock-resolution at time of org-resolev clock-in")
-
-;; lotus-with-file-pos-new-win: selecting buf report.org<hostapdng> [2 times]
-;; org--align-node-property: Match data clobbered by buffer modification hooks
-;; TODO: FIX: org--align-node-property: Match data clobbered by buffer modification hooks
-;; BUG: TODO: need to use (occ-clock-in occ-ctxtual-tsk)
-(defun org-rl-straight-org-clock-clock-in (clock &optional resume start-time)
-  (progn
-    (org-rl-debug nil "org-rl-straight-org-clock-clock-in: begin")
-    (lotus-org-clock-load-only)
-    (let ((org-clock-persist               org-rl-org-clock-persist)
-          (org-clock-auto-clock-resolution org-rl-org-clock-auto-clock-resolution))
-
-      (org-with-narrow-to-marker (org-rl-clock-marker clock)
-        (lotus-org-with-safe-modification
-          (org-entry-put nil "Effort" "10")))
-
-      (org-rl-intf-clock-clock-in
-       (org-rl-clock-for-clock-in clock)
-       resume start-time)
-
-      (setf (org-rl-clock-marker clock) org-clock-marker)
-      (setf (org-rl-clock-current clock) t)
-      clock)))
-
-
-(defun org-rl-org-clock-clock-in (clock &optional resume start-time)
-  (org-rl-straight-org-clock-clock-in clock resume start-time))
-
-(defun org-rl-org-clock-out (&optional switch-to-state fail-quietly at-time)
-  (org-rl-intf-clock-out switch-to-state fail-quietly at-time))
-
-(defun org-rl-org-clock-clock-out (clock &optional fail-quietly at-time)
-  (org-rl-intf-clock-clock-out clock fail-quietly at-time))
+(require 'org-rl-utils)
 
 
 (defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
@@ -197,6 +142,12 @@
           time)
       (error "Wring time %s passed." time))))
 
+
+(cl-defmethod org-rl-marker (clock null)
+  nil)
+
+(cl-defmethod org-rl-marker (clock org-rl-clock)
+  (org-rl-clock-marker clock))
 
 (cl-defmethod org-rl-format (time)
   (let ((fmt (cdr org-time-stamp-formats)))
@@ -301,7 +252,8 @@
 
 (cl-defmethod org-rl-clock-real-p ((clock org-rl-clock))
   (let ((marker (org-rl-clock-marker clock)))
-    (not (org-rl-clock-null clock))))
+    (when (not (org-rl-clock-null clock))
+      clock)))
 
 (cl-defmethod org-rl-clock-duration ((clock org-rl-clock))
   (let ((start (org-rl-clock-start-time clock))
@@ -668,11 +620,6 @@
     (-
      (float-time (org-rl-get-time-gap-mins prev next))
      (abs timelen-mins))))
-
-;;;###autoload
-(defun org-rl-select-other-clock (&optional target)
-  (interactive)
-  (org-rl-intf-select-other-clock target))
 
 
 (defvar org-rl-clock-fixed-heading
@@ -740,7 +687,8 @@
                        (cons 'include-in-new template)
                        prev next maxtimelen-secs resume fail-quietly resume-clocks))
                   (cdr list)))))
-   (org-rl-intf-capture+-helm-templates-alist)))
+   (org-rl-org-capture+-helm-templates-alist
+    (org-rl-marker (some #'org-rl-clock-real-p prev next)))))
 
 
 (cl-defmethod org-rl-clock-opts-common ((prev org-rl-clock)
