@@ -61,10 +61,12 @@
     (let ((org-clock-persist               org-rl-org-clock-persist)
           (org-clock-auto-clock-resolution org-rl-org-clock-auto-clock-resolution))
 
+      ;; TODO: BUG: Broken
       (org-with-narrow-to-marker (org-rl-clock-marker clock)
         (lotus-org-with-safe-modification
           (org-entry-put nil "Effort" "10")))
 
+      ;; TODO: BUG: Broken
       (org-rl-intf-clock-clock-in
        (org-rl-clock-for-clock-in clock)
        resume start-time)
@@ -80,6 +82,8 @@
 (defun org-rl-org-clock-out (&optional switch-to-state fail-quietly at-time)
   (org-rl-intf-clock-out switch-to-state fail-quietly at-time))
 
+
+;; TODO: BUG: Broken
 (defun org-rl-org-clock-clock-out (clock &optional fail-quietly at-time)
   (org-rl-intf-clock-clock-out clock fail-quietly at-time))
 

@@ -102,7 +102,7 @@
 
 
 (defun org-rl-intf-clock-clock-in (clock &optional resume start-time)
-  (let ((fun (org-rl-find-intf-clock-clock-in clock)))
+  (let ((fun (org-rl-find-intf-clock-clock-in (car clock))))
     (if fun
         (funcall fun clock resume start-time)
       (error "Not found org-rl-clock-clock-in"))))
@@ -115,7 +115,7 @@
       (error "Not found org-rl-clock-out"))))
 
 (defun org-rl-intf-clock-clock-out (clock &optional fail-quietly at-time)
-  (let ((fun (org-rl-find-intf-clock-clock-out clock)))
+  (let ((fun (org-rl-find-intf-clock-clock-out (car clock))))
     (if fun
         (funcall fun clock fail-quietly at-time)
       (error "Not found org-rl-clock-clock-out"))))
