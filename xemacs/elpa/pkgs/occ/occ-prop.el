@@ -49,11 +49,6 @@
 ;; TODO: multi-value property https://orgmode.org/manual/Using-the-property-API.html
 
 
-(defun occ-readprop-props () ;;TODO: check about them
-  (cl-method-param-case
-   '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))))
-
-
 ;; (cl-defgeneric occ-match-prop-method-args (obj)
 ;;   "occ-match-prop-method-args")
 
@@ -104,74 +99,53 @@
                           (list '\` `(,class (eql ,'(\, val))))
                           'val))
 
-;; (cl-defmethod occ-properties-to-edit ((obj occ-tsk))
-;;   (cl-method-param-case
-;;    '(occ-readprop-elem-from-user (`(occ-tsk (eql ,val)) val))))
-
 (cl-defmethod occ-properties-to-edit ((obj occ-tsk))
-  (cl-collect-on-classes #'occ-readprop-elem-from-user obj))
+  (cl-collect-on-classes #'occ-readprop-elem-from-user
+                         obj))
 
+;; TODO: improve
 (cl-defmethod occ-properties-to-edit ((obj occ-obj-ctx-tsk))
   (cl-method-sigs-matched-arg
-   ;; '(occ-readprop-with (`(occ-tsk occ-ctx (eql ,val)) val))
    '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))
    '(occ-get-property  (`(occ-ctx (eql ,val)) val))
    (occ-obj-ctx obj)))
 
-
-
-;; (cl-defmethod occ-properties-to-inherit ((obj null))
-;;   (cl-method-param-case
-;;    '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))))
-
-;; (cl-defmethod occ-properties-to-inherit ((obj occ-tsk))
-;;   (cl-method-param-case
-;;    '(occ-readprop-elem-from-user (`(occ-tsk (eql ,val)) val))))
-
-;; (cl-defmethod occ-properties-to-inherit ((obj occ-obj-ctx-tsk))
-;;   (cl-method-param-case
-;;    '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))))
-
 
 (cl-defmethod occ-properties-to-inherit ((class symbol))
   (cl-method-param-values 'occ-readprop-elem-from-user
                           (list '\` `(,class (eql ,'(\, val))))
                           'val))
 
-;; (cl-defmethod occ-properties-to-inherit ((obj occ-obj-tsk))
-;;   (apply #'append
-;;          (mapcar #'(lambda (class)
-;;                      (occ-properties-to-inherit class))
-;;                  (cl-inst-class-names obj))))
-
 (cl-defmethod occ-properties-to-inherit ((obj occ-obj-tsk))
-  (cl-collect-on-classes #'occ-properties-to-inherit obj))
-
-;; (cl-collect-on-classes #'occ-properties-to-inherit obj)
-
+  (cl-collect-on-classes #'occ-properties-to-inherit
+                         obj))
 
 
-;; (cl-defmethod occ-properties-to-calcuate-rank ((obj symbol))
-;;   (let ((class obj))
-;;     (let ((exclass (list '\` `(,class (eql ,'(\, val))))))
-;;       (funcall
-;;        `(lambda ()
-;;           (cl-method-param-case (quote (occ-rankprop (,exclass val)))))))))
+(defun occ-readprop-props () ;;TODO: check about them
+  (occ-properties-to-inherit 'occ-obj-ctx-tsk))
+
+
+;; (cl-defmethod occ-properties-to-calcuate-rank ((class symbol))
+;;   (let ((exclass (list '\` `(,class (eql ,'(\, val))))))
+;;     (funcall
+;;      `(lambda ()
+;;         (cl-method-param-case '(occ-rankprop (,exclass val)))))))
+
+;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-tsk))
+;;   (apply #'append
+;;          (mapcar #'(lambda (class)
+;;                      (occ-properties-to-calcuate-rank class))
+;;                  (cl-inst-class-names obj))))
+
 
 (cl-defmethod occ-properties-to-calcuate-rank ((class symbol))
-  (let ((exclass (list '\` `(,class (eql ,'(\, val))))))
-    (funcall
-     `(lambda ()
-        (cl-method-param-case '(occ-rankprop (,exclass val)))))))
+  (cl-method-param-values 'occ-rankprop
+                          (list '\` `(,class (eql ,'(\, val))))
+                          'val))
 
 (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-tsk))
-  (apply #'append
-         (mapcar #'(lambda (class)
-                     (occ-properties-to-calcuate-rank class))
-                 (cl-inst-class-names obj))))
-
-;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-ctx-tsk))
-;;   (occ-properties-to-calcuate-rank 'occ-obj-ctx-tsk))
+  (cl-collect-on-classes #'occ-properties-to-calcuate-rank
+                         obj))
 
 
 (defun occ-org-entry-get (pom
@@ -433,52 +407,23 @@
       (equal value (occ-get-property tsk prop)))))
 
 
-
-;; TODO: Get base classes of class
 (cl-defmethod occ-operations-for-prop ((class symbol)
                                        (prop symbol))
-  (let ((class class))
-    (let ((params-general
-           (list '\` `(,class (eql ,'(\, val)) symbol t)))
-          (params-with-prop
-           (list '\` `(,class (eql ,'(\, val)) (eql ,prop) t))))
-      (funcall
-       `(lambda ()
-          (append
-           (cl-method-param-case '(occ-operation (,params-general val)))
-           (cl-method-param-case '(occ-operation (,params-with-prop val)))))))))
+  (delete-dups
+   (append
+    (cl-method-param-values 'occ-operation
+                            (list '\` `(,class (eql ,'(\, val)) symbol t))
+                            'val)
+    (cl-method-param-values 'occ-operation
+                            (list '\` `(,class (eql ,'(\, val)) (eql ,prop) t))
+                            'val))))
 
 (cl-defmethod occ-operations-for-prop ((obj  occ-obj-tsk)
                                        (prop symbol))
-  (apply #'append
-         (mapcar #'(lambda (class)
-                     (occ-operations-for-prop class prop))
-                 (cl-inst-class-parent-names obj))))
-
-;; (occ-operations-for-prop 'occ-obj-tsk 'x)
-
-;; (cl-collect-on-classes #'occ-operations-for-prop obj)
-
-(list
- (cl-method-param-case
-  '(occ-operation (`(occ-obj-tsk (eql ,val) symbol t) val))))
-
-(let ((class 'occ-obj-tsk)
-      (prop 'x))
-  (let ((exclass
-         (list '\` `(,class (eql ,'(\, val)) (eql ,prop) t))))
-    (funcall
-     `(lambda ()
-        (cl-method-param-case '(occ-operation (,exclass val)))))))
-
-(cl-method-param-signs 'occ-operation)
+  (delete-dups
+   (cl-collect-on-classes #'(lambda (class) (occ-operations-for-prop class prop))
+                          obj)))
 
-
-;; (cl-defmethod occ-operation ((obj occ-obj-tsk)
-;;                              (operation (eql XYZ))
-;;                              (prop      (eql x))
-;;                              values)
-;;   ())
 
 (cl-defmethod occ-operation ((obj occ-obj-tsk)
                              (operation (eql get))
@@ -570,7 +515,6 @@
                                    operation
                                    values)
   "Accept occ compatible VALUES"
-  ;; (occ-org-update-property-at-point)
   (let ((mrk (occ-obj-marker obj)))
     (let ((retval
            (occ-org-update-property-at-point mrk
@@ -730,54 +674,6 @@
                                                 :param-only param-only))
                  (occ-properties-to-edit obj))))
 
-
-
-;; (cl-defmethod occ-gen-edits-for-add ((obj occ-obj-ctx-tsk)
-;;                                      &key param-only)
-;;   (let ((props (occ-properties-to-edit obj))
-;;         (gen-add-action
-;;          #'(lambda (prop)
-;;              (occ-gen-edit-if-required obj prop 'add
-;;                                        (occ-get-property (occ-obj-ctx obj) prop)
-;;                                        :param-only param-only))))
-;;    (remove nil
-;;            (mapcar #'(lambda (prop) (funcall gen-add-action prop))
-;;                    props))))
-
-;; (cl-defmethod occ-gen-edits-for-remove ((obj occ-obj-ctx-tsk)
-;;                                         &key param-only)
-;;   (let ((props (occ-properties-to-edit obj))
-;;         (gen-remove-action
-;;          #'(lambda (prop)
-;;              (occ-gen-edit-if-required obj prop 'remove
-;;                                        (occ-get-property (occ-obj-ctx obj) prop)
-;;                                        :param-only param-only))))
-;;    (remove nil
-;;            (mapcar #'(lambda (prop)
-;;                        (funcall gen-remove-action prop))
-;;                    props))))
-
-
-;; (cl-defmethod occ-gen-edits-for-add-remove ((obj occ-obj-ctx-tsk)
-;;                                             &key param-only)
-;;   (let ((props (occ-properties-to-edit obj))
-;;         (gen-add-action
-;;          #'(lambda (prop)
-;;              (occ-gen-edit-if-required obj prop 'add
-;;                                        (occ-get-property (occ-obj-ctx obj) prop)
-;;                                        :param-only param-only)))
-;;         (gen-remove-action
-;;          #'(lambda (prop)
-;;              (occ-gen-edit-if-required obj prop 'remove
-;;                                        (occ-get-property (occ-obj-ctx obj) prop)
-;;                                        :param-only param-only))))
-;;     (remove nil
-;;             (apply #'append
-;;                    (mapcar
-;;                     #'(lambda (prop)
-;;                         (list (funcall gen-add-action prop)
-;;                               (funcall gen-remove-action prop)))
-;;                     props)))))
 
 
 (cl-defmethod occ-gen-edits ((obj occ-obj-tsk)

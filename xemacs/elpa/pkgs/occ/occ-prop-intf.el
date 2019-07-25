@@ -144,6 +144,13 @@
   "occ-require-p")
 
 
+;; (cl-defmethod occ-operation ((obj occ-obj-tsk)
+;;                              (operation (eql XYZ))
+;;                              (prop      (eql x))
+;;                              values)
+;;   ())
+
+
 (cl-defgeneric occ-prop-default-value (obj
                                        prop
                                        operation)
