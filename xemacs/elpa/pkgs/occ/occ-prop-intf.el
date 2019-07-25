@@ -135,13 +135,13 @@
                               operation
                               prop
                               values)
-  "occ-prop-operation")
+  "occ-operation")
 
-(cl-defgeneric occ-required-p (obj
-                               operation
-                               prop
-                               values)
-  "occ-prop-operation")
+(cl-defgeneric occ-require-p (obj
+                              operation
+                              prop
+                              values)
+  "occ-require-p")
 
 
 (cl-defgeneric occ-prop-default-value (obj

@@ -539,7 +539,7 @@
                              (operation (eql add))
                              (prop      symbol)
                              values)
-  (not (occ-has-p obj prop value)))
+  (not (occ-has-p obj prop values)))
 
 (cl-defmethod occ-require-p ((obj occ-obj-tsk)
                              (operation (eql put))
@@ -551,7 +551,7 @@
                              (operation (eql remove))
                              (prop      symbol)
                              values)
-  (occ-has-p obj prop value))
+  (occ-has-p obj prop values))
 
 (cl-defmethod occ-require-p ((obj occ-obj-tsk)
                              (operation (eql member))
@@ -647,11 +647,10 @@
                               (prop symbol)
                               (operation symbol)
                               value)
+  ;; TODO: Improve it.
   (let ((list-p (occ-list-p prop)))
     (format "%s %s %s property %s"
-            (if (equal operation 'add)
-                (if list-p "Add" "Replace")
-              "Remove")
+            (symbol-name operation)
             (occ-format-prop obj prop value)
             (if list-p "in" "from")
             prop)))
@@ -674,25 +673,19 @@
    (occ-gen-edit obj prop operation value :param-only param-only)))
 
 
-;; (cl-defmethod occ-edit-required-p ((obj occ-obj-tsk)
-;;                                    (prop symbol)
-;;                                    (operation symbol)
-;;                                    value)
-;;   (case operation
-;;     ((add)    (not (occ-has-p obj prop value)))
-;;     ((remove) (occ-has-p obj prop value))))
-
 (cl-defmethod occ-gen-edit-if-required ((obj occ-obj-tsk)
                                         (prop symbol)
                                         (operation symbol)
                                         value
                                         &key param-only)
-  (when (occ-required-p obj
-                        prop
+  (when (occ-require-p obj
                         operation
+                        prop
                         value)
     (occ-gen-prompt-edit obj
-                         prop operation value
+                         prop
+                         operation
+                         value
                          :param-only param-only)))
 
 
