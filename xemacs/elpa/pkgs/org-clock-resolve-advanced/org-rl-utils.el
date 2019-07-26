@@ -30,21 +30,33 @@
 (require 'org-rl-intf)
 
 
-(defvar org-rl-debug nil "Debug org advanced resolve clock")
+(defvar org-rl-capture+-helm-templates-alist org-capture+-helm-templates-alist)
 
-(defun org-rl-debug (level &rest args)
-  (let* ((ilevel (or level :debug))
-         (ts (time-stamp-string))
-         (fmt (format "%s: %s" ts (car args)))
-         (args (append (list fmt) (cdr args))))
-    (when org-rl-debug
-      (apply #'lwarn 'org-rl-clock ilevel args)
-      (when level
-        (message
-         "%s"
-         (concat
-          (format "org-rl-clock %s: " ilevel)
-          (apply #'format args)))))))
+(defun org-default-rl-clock-p (clock-marker)
+  t)
+(defun org-default-rl-clock-clock-in (clock-marker &optional resume start-time)
+  (org-rl-straight-org-clock-clock-in clock-marker resume start-time))
+(defun org-default-rl-clock-out (&optional switch-to-state fail-quietly at-time)
+  (org-clock-out switch-to-state fail-quietly at-time))
+(defun org-default-rl-clock-clock-out (clock-marker &optional fail-quietly at-time)
+  (org-clock-clock-out clock-marker fail-quietly at-time))
+(defun org-default-rl-select-other-clock (clock-marker &optional target)
+  (interactive)
+  (org-rl-debug nil "org-rl-select-other-clock: target[%s]" target)
+  (org-with-refile
+      file loc (or target org-refile-targets) "Refile other org heading"
+    (let ((marker (make-marker)))
+      (set-marker marker loc)
+      marker)))
+(defun org-default-rl-capture+-helm-templates-alist (clock-marker)
+  org-rl-capture+-helm-templates-alist)
+
+(org-rl-intf-register 'default (list
+                                 :org-rl-clock-p                       org-default-rl-clock-p
+                                 :org-rl-clock-clock-in                org-default-rl-clock-clock-in
+                                 :org-rl-clock-out                     org-default-rl-clock-out
+                                 :org-rl-select-other-clock            org-default-rl-select-other-clock
+                                 :org-rl-capture+-helm-templates-alist org-default-rl-capture+-helm-templates-alist))
 
 
 (defvar org-rl-org-clock-persist nil "Control org-clock-persist at time of org-resolve clock-in")
@@ -84,6 +96,23 @@
 (defun org-rl-org-select-other-clock (clock-marker &optional target)
   (interactive)
   (org-rl-intf-select-other-clock clock-marker target))
+
+
+(defvar org-rl-debug nil "Debug org advanced resolve clock")
+
+(defun org-rl-debug (level &rest args)
+  (let* ((ilevel (or level :debug))
+         (ts (time-stamp-string))
+         (fmt (format "%s: %s" ts (car args)))
+         (args (append (list fmt) (cdr args))))
+    (when org-rl-debug
+      (apply #'lwarn 'org-rl-clock ilevel args)
+      (when level
+        (message
+         "%s"
+         (concat
+          (format "org-rl-clock %s: " ilevel)
+          (apply #'format args)))))))
 
 
 (defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)

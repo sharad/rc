@@ -26,11 +26,22 @@
 
 (provide 'occ-resolve-clock)
 
-(defun occ-rl-clock-p (clock))
-(defun occ-rl-clock-clock-in (clock &optional resume start-time))
+
+(require 'org-rl-intf)
+
+(defun occ-rl-clock-p (clock-marker))
+(defun occ-rl-clock-clock-in (clock-marker &optional resume start-time))
 (defun occ-rl-clock-out (&optional switch-to-state fail-quietly at-time))
-(defun occrl-clock-clock-out (clock &optional fail-quietly at-time))
-(defun occ-rl-select-other-clock (&optional target))
-(defun occ-rl-capture+-helm-templates-alist ())
+(defun occrl-clock-clock-out (clock-marker &optional fail-quietly at-time))
+(defun occ-rl-select-other-clock (clock-marker &optional target))
+(defun occ-rl-capture+-helm-templates-alist (clock-marker))
+
+
+(org-rl-intf-register 'occ (list
+                            :org-rl-clock-p                       occ-rl-clock-p
+                            :org-rl-clock-clock-in                occ-rl-clock-clock-in
+                            :org-rl-clock-out                     occ-rl-clock-out
+                            :org-rl-select-other-clock            occ-rl-select-other-clock
+                            :org-rl-capture+-helm-templates-alist occ-rl-capture+-helm-templates-alist))
 
 ;;; occ-resolve-clock.el ends here

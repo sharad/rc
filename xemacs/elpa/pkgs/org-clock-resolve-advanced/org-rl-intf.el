@@ -27,35 +27,7 @@
 (provide 'org-rl-intf)
 
 
-(defvar org-rl-capture+-helm-templates-alist org-capture+-helm-templates-alist)
-
-(defun org-default-rl-clock-p (clock-marker)
-  t)
-(defun org-default-rl-clock-clock-in (clock-marker &optional resume start-time)
-  (org-rl-straight-org-clock-clock-in clock-marker resume start-time))
-(defun org-default-rl-clock-out (&optional switch-to-state fail-quietly at-time)
-  (org-clock-out switch-to-state fail-quietly at-time))
-(defun org-default-rl-clock-clock-out (clock-marker &optional fail-quietly at-time)
-  (org-clock-clock-out clock-marker fail-quietly at-time))
-(defun org-default-rl-select-other-clock (clock-marker &optional target)
-  (interactive)
-  (org-rl-debug nil "org-rl-select-other-clock: target[%s]" target)
-  (org-with-refile
-      file loc (or target org-refile-targets) "Refile other org heading"
-    (let ((marker (make-marker)))
-      (set-marker marker loc)
-      marker)))
-(defun org-default-rl-capture+-helm-templates-alist (clock-marker)
-  org-rl-capture+-helm-templates-alist)
-
-
-(defvar org-rl-interfaces
-  '((default
-      :org-rl-clock-p                       org-default-rl-clock-p
-      :org-rl-clock-clock-in                org-default-rl-clock-clock-in
-      :org-rl-clock-out                     org-default-rl-clock-out
-      :org-rl-select-other-clock            org-default-rl-select-other-clock
-      :org-rl-capture+-helm-templates-alist org-default-rl-capture+-helm-templates-alist)))
+(defvar org-rl-interfaces nil)
 
 (defun org-rl-interface-get (intf key)
   (plist-get (cdr (assoc intf org-rl-interfaces)) key))
