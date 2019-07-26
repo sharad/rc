@@ -54,45 +54,93 @@
 ;; org--align-node-property: Match data clobbered by buffer modification hooks
 ;; TODO: FIX: org--align-node-property: Match data clobbered by buffer modification hooks
 ;; BUG: TODO: need to use (occ-clock-in occ-ctxtual-tsk)
-(defun org-rl-straight-org-clock-clock-in (clock &optional resume start-time)
+(defun org-rl-straight-org-clock-clock-in (clock-marker &optional resume start-time)
   (progn
     (org-rl-debug nil "org-rl-straight-org-clock-clock-in: begin")
     (lotus-org-clock-load-only)
     (let ((org-clock-persist               org-rl-org-clock-persist)
           (org-clock-auto-clock-resolution org-rl-org-clock-auto-clock-resolution))
-
-      ;; TODO: BUG: Broken
-      (org-with-narrow-to-marker (org-rl-clock-marker clock)
+      (org-with-narrow-to-marker clock-marker
         (lotus-org-with-safe-modification
           (org-entry-put nil "Effort" "10")))
 
-      ;; TODO: BUG: Broken
-      (org-rl-intf-clock-clock-in
-       (org-rl-clock-for-clock-in clock)
-       resume start-time)
+      (org-rl-intf-clock-clock-in clock-marker resume start-time))))
 
-      (setf (org-rl-clock-marker clock) org-clock-marker)
-      (setf (org-rl-clock-current clock) t)
-      clock)))
 
 
-(defun org-rl-org-clock-clock-in (clock &optional resume start-time)
-  (org-rl-intf-clock-clock-in clock resume start-time))
+(defun org-rl-org-clock-clock-in (clock-marker &optional resume start-time)
+  (org-rl-straight-org-clock-clock-in clock-marker resume start-time))
 
 (defun org-rl-org-clock-out (&optional switch-to-state fail-quietly at-time)
   (org-rl-intf-clock-out switch-to-state fail-quietly at-time))
 
+(defun org-rl-org-clock-clock-out (clock-marker &optional fail-quietly at-time)
+  (org-rl-intf-clock-clock-out clock-marker fail-quietly at-time))
 
-;; TODO: BUG: Broken
-(defun org-rl-org-clock-clock-out (clock &optional fail-quietly at-time)
-  (org-rl-intf-clock-clock-out clock fail-quietly at-time))
-
-(defun org-rl-org-capture+-helm-templates-alist (clock)
-  (org-rl-intf-capture+-helm-templates-alist clock))
+(defun org-rl-org-capture+-helm-templates-alist (clock-marker)
+  (org-rl-intf-capture+-helm-templates-alist clock-marker))
 
 ;;;###autoload
-(defun org-rl-org-select-other-clock (clock &optional target)
+(defun org-rl-org-select-other-clock (clock-marker &optional target)
   (interactive)
-  (org-rl-intf-select-other-clock clock target))
+  (org-rl-intf-select-other-clock clock-marker target))
+
+
+(defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
+  (with-select-frame-set-input-disable-raise
+    (with-timeout (interval
+                   (time-aware-completing-read interval prompt-fn options-fn default-fn))
+      (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
+            (options (if (functionp options-fn) (funcall options-fn) options-fn))
+            (default (if (functionp default-fn) (funcall default-fn) default-fn)))
+        (completing-read prompt options)))))
+
+(defun time-aware-read-number (interval prompt-fn default-fn)
+  (with-select-frame-set-input-disable-raise
+    (with-timeout (interval
+                   (time-aware-read-number interval prompt-fn default-fn))
+      (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
+            (default (if (functionp default-fn) (funcall default-fn) default-fn)))
+        (read-number prompt default)))))
+
+
+(defun time-p (time)
+  (or
+   (eq 'now time)
+   (and
+    (consp time)
+    (nth 1 time))))
+
+(defun time-eq (time1 time2)
+  (< (abs (time-to-seconds (time-subtract time1 time2))) 60))
+
+
+(defun time-get-time (time)
+  (when time
+    (if (time-p time)
+        (if (eq time 'now)
+            (current-time)
+          time)
+      (error "Wring time %s passed." time))))
+
+
+(defun org-get-heading-from-marker (mrk)
+  (org-rl-debug :warning "org-get-heading-from-marker: marker = %s, (markerp mrk) = %s, (marker-buffer mrk) = %s"
+                mrk
+                (markerp mrk)
+                (if (markerp mrk) (marker-buffer mrk) mrk))
+  (let ((heading
+         (if (and
+              (markerp mrk)
+              (marker-buffer mrk))
+             (lotus-with-marker mrk
+               (org-get-heading t))
+           "imaginary")))
+    (org-rl-debug :warning "org-rl-clock-heading: heading = %s" heading)
+    heading))
+
+(defun org-get-heading-from-clock (clock)
+  (let ((mrk (car clock)))
+    (org-get-heading-from-marker mrk)))
 
 ;;; org-rl-utils.el ends here

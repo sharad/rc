@@ -48,35 +48,6 @@
 (require 'org-rl-utils)
 
 
-(defun time-aware-completing-read (interval prompt-fn options-fn &optional default-fn)
-  (with-select-frame-set-input-disable-raise
-    (with-timeout (interval
-                   (time-aware-completing-read interval prompt-fn options-fn default-fn))
-      (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
-            (options (if (functionp options-fn) (funcall options-fn) options-fn))
-            (default (if (functionp default-fn) (funcall default-fn) default-fn)))
-        (completing-read prompt options)))))
-
-(defun time-aware-read-number (interval prompt-fn default-fn)
-  (with-select-frame-set-input-disable-raise
-    (with-timeout (interval
-                   (time-aware-read-number interval prompt-fn default-fn))
-      (let ((prompt (if (functionp prompt-fn) (funcall prompt-fn) prompt-fn))
-            (default (if (functionp default-fn) (funcall default-fn) default-fn)))
-        (read-number prompt default)))))
-
-
-(defun time-p (time)
-  (or
-   (eq 'now time)
-   (and
-    (consp time)
-    (nth 1 time))))
-
-(defun time-eq (time1 time2)
-  (< (abs (time-to-seconds (time-subtract time1 time2))) 60))
-
-
 (cl-defstruct org-rl-time
   time)
 
@@ -134,15 +105,6 @@
   (make-org-rl-time :time 'now))
 
 
-(defun time-get-time (time)
-  (when time
-    (if (time-p time)
-        (if (eq time 'now)
-            (current-time)
-          time)
-      (error "Wring time %s passed." time))))
-
-
 (cl-defmethod org-rl-marker (clock null)
   nil)
 
@@ -156,25 +118,6 @@
 (cl-defmethod org-rl-format ((time org-rl-time))
   (let ((fmt (cdr org-time-stamp-formats)))
     (format-time-string fmt (org-rl-time-get-time time))))
-
-(defun org-get-heading-from-marker (mrk)
-  (org-rl-debug :warning "org-get-heading-from-marker: marker = %s, (markerp mrk) = %s, (marker-buffer mrk) = %s"
-                mrk
-                (markerp mrk)
-                (if (markerp mrk) (marker-buffer mrk) mrk))
-  (let ((heading
-         (if (and
-              (markerp mrk)
-              (marker-buffer mrk))
-             (lotus-with-marker mrk
-               (org-get-heading t))
-           "imaginary")))
-    (org-rl-debug :warning "org-rl-clock-heading: heading = %s" heading)
-    heading))
-
-(defun org-get-heading-from-clock (clock)
-  (let ((mrk (car clock)))
-    (org-get-heading-from-marker mrk)))
 
 (cl-defmethod org-rl-clock-heading ((clock org-rl-clock))
   (let ((mrk (org-rl-clock-marker clock)))
@@ -397,10 +340,13 @@
   (if (not org-clock-clocking-in)
     (if (org-rl-clock-real-p clock)
         (if (time-p (org-rl-clock-start-time clock))
-            (org-rl-org-clock-clock-in
-             clock
-             resume
-             (org-rl-clock-start-time clock))
+            (progn
+              (org-rl-org-clock-clock-in (org-rl-clock-for-clock-in clock)
+                                         resume
+                                         (org-rl-clock-start-time clock))
+              (setf (org-rl-clock-marker clock) org-clock-marker)
+              (setf (org-rl-clock-current clock) t)
+              clock)
           (error "%s start time is null" (org-rl-clock-start-time clock)))
       (org-rl-debug :warning "org-rl-clock-clock-in: clock %s is not real."
                     (org-rl-format clock)))
