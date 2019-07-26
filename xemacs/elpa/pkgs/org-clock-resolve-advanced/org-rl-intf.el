@@ -73,7 +73,7 @@
 (defun org-rl-intf-clock-p (clock-marker)
   (let ((fun (org-rl-find-intf-clock-p clock-marker)))
     (if fun
-        (funcall fun)
+        (funcall fun clock-marker)
       (error "Not found org-rl-clock-p"))))
 
 

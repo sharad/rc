@@ -233,15 +233,12 @@
                                                resume
                                                fail-quietly
                                                resume-clocks)
-
   (org-rl-debug nil "begin %s" 'org-rl-clock-opt-include-in-new)
-
   (org-rl-debug nil "begin %s: prev=%s next=%s timelen-mins=%d"
                 'org-rl-clock-opt-include-in-new
                 prev
                 next
                 timelen-mins)
-
   (org-rl-debug nil "begin %s: template=%s"
                 'org-rl-clock-opt-include-in-new
                 template)

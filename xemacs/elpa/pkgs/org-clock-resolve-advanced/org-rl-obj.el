@@ -571,6 +571,7 @@
      (abs timelen-mins))))
 
 
+;; TODO: BUG: put this in interface
 (defvar org-rl-clock-fixed-heading
   '())
 
@@ -605,6 +606,7 @@
                            (format "Include in %s" heading)
                            (cons 'include-in-other marker)
                            prev next maxtimelen-secs resume fail-quietly resume-clocks))))
+                  ;; TODO: BUG: put this in interface
                   org-rl-clock-fixed-heading)))
 
 
@@ -854,25 +856,4 @@
         (time-aware-read-number interval-secs prompt-fn maxtimelen-mins-fn))
        60))))
 
-
-(defun helm-cand-sel ()
-  (interactive)
-  (let ((retval
-         (helm :sources '((name . "HELM")
-                          (match (lambda (_candidate)
-                                   (lwarn 'test :warning "_candidate %s (helm-get-selection) %s" _candidate (helm-get-selection))
-                                   (evenp (string-to-number _candidate))))
-                          (candidates . (1 2 3 4))
-                          (action . (("open" . (lambda (candidate)
-                                                 (list
-                                                  (when (minibufferp (current-buffer))
-                                                    (with-current-buffer "* Minibuffer 1"
-                                                      (minibuffer-contents-no-properties)))
-
-                                                  (with-current-buffer "* Minibuffer 1"
-                                                    (minibuffer-contents-no-properties))
-                                                  candidate
-                                                  (helm-get-selection))))))))))
-    (org-rl-debug nil "retval %s" retval)))
-
 ;;; org-rl-obj.el ends here
