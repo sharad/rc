@@ -29,6 +29,7 @@
 
 (require 'org-rl-intf nil nil)
 
+
 (defun occ-rl-clock-p (clock-marker))
 (defun occ-rl-clock-clock-in (clock-marker &optional resume start-time))
 (defun occ-rl-clock-out (&optional switch-to-state fail-quietly at-time))

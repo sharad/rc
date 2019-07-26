@@ -105,10 +105,13 @@
   (make-org-rl-time :time 'now))
 
 
-(cl-defmethod org-rl-marker (clock null)
+(cl-defgeneric org-rl-marker (clock)
+  "org-rl-marker")
+
+(cl-defmethod org-rl-marker ((clock null))
   nil)
 
-(cl-defmethod org-rl-marker (clock org-rl-clock)
+(cl-defmethod org-rl-marker ((clock org-rl-clock))
   (org-rl-clock-marker clock))
 
 (cl-defmethod org-rl-format (time)

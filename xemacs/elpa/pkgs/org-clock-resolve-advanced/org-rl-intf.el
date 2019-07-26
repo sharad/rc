@@ -39,7 +39,7 @@
   (some #'(lambda (intf)
             (let ((clock-p (org-rl-interface-get (car intf) :org-rl-clock-p)))
               (when (and clock-p
-                         (funcall clock-p clock))
+                         (funcall clock-p clock-marker))
                 (car intf))))
         org-rl-interfaces))
 
