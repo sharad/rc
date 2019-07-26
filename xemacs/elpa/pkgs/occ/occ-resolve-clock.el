@@ -27,7 +27,7 @@
 (provide 'occ-resolve-clock)
 
 
-(require 'org-rl-intf)
+(require 'org-rl-intf nil nil)
 
 (defun occ-rl-clock-p (clock-marker))
 (defun occ-rl-clock-clock-in (clock-marker &optional resume start-time))
@@ -37,11 +37,17 @@
 (defun occ-rl-capture+-helm-templates-alist (clock-marker))
 
 
-(org-rl-intf-register 'occ (list
-                            :org-rl-clock-p                       occ-rl-clock-p
-                            :org-rl-clock-clock-in                occ-rl-clock-clock-in
-                            :org-rl-clock-out                     occ-rl-clock-out
-                            :org-rl-select-other-clock            occ-rl-select-other-clock
-                            :org-rl-capture+-helm-templates-alist occ-rl-capture+-helm-templates-alist))
+(defun occ-register-resolve-clock ()
+  (when (featurep 'org-rl-intf)
+    (org-rl-intf-register 'occ (list
+                                :org-rl-clock-p                       #'occ-rl-clock-p
+                                :org-rl-clock-clock-in                #'occ-rl-clock-clock-in
+                                :org-rl-clock-out                     #'occ-rl-clock-out
+                                :org-rl-select-other-clock            #'occ-rl-select-other-clock
+                                :org-rl-capture+-helm-templates-alist #'occ-rl-capture+-helm-templates-alist))))
+
+(defun occ-unregister-resolve-clock ()
+  (when (featurep 'org-rl-intf)
+    (org-rl-intf-uregister 'occ)))
 
 ;;; occ-resolve-clock.el ends here

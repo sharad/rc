@@ -634,7 +634,8 @@
                        prev next maxtimelen-secs resume fail-quietly resume-clocks))
                   (cdr list)))))
    (org-rl-org-capture+-helm-templates-alist
-    (org-rl-marker (some #'org-rl-clock-real-p prev next)))))
+    (org-rl-marker (some #'org-rl-clock-real-p
+                         (list prev next))))))
 
 
 (cl-defmethod org-rl-clock-opts-common ((prev org-rl-clock)

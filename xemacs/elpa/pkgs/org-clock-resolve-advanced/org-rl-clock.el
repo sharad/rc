@@ -188,7 +188,8 @@
 
   (let ((maxtimelen-secs   (org-rl-get-time-gap-secs prev next))
         (other-marker      (or other-marker
-                               (org-rl-org-select-other-clock (org-rl-marker (some #'org-rl-clock-real-p prev next)))))
+                               (org-rl-org-select-other-clock (org-rl-marker (some #'org-rl-clock-real-p
+                                                                                   (list prev next))))))
         (resume-alist      nil))
     (progn
       (setf prev (org-rl-clock-clock-out prev fail-quietly))     ;if necessary
@@ -246,7 +247,8 @@
                 template)
 
   (let ((mrk (org-rl-org-select-other-clock
-              (org-rl-marker (some #'org-rl-clock-real-p prev next)))))
+              (org-rl-marker (some #'org-rl-clock-real-p
+                                   (list prev next))))))
     (org-rl-debug nil "begin %s: org-rl-select-other-clock: %s" 'org-rl-clock-opt-include-in-new mrk)
     (org-rl-debug nil "begin %s: template: %s" 'org-rl-clock-opt-include-in-new template)
     (after-org-capture+ mrk 'entry `(marker ,mrk) template '(:empty-lines 1)

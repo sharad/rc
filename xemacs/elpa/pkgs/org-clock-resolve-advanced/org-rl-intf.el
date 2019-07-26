@@ -61,9 +61,13 @@
 
 
 (defun org-rl-intf-register (tag plist)
-  (pushnew (cons tag plist) org-rl-interfaces))
+  (org-rl-intf-unregister tag)
+  (pushnew (cons tag plist)
+           org-rl-interfaces))
 
-(defun org-rl-intf-unregister (tag))
+(defun org-rl-intf-unregister (tag)
+  (setq org-rl-interfaces
+        (assoc-delete-all tag org-rl-interfaces)))
 
 
 (defun org-rl-intf-clock-p (clock-marker)

@@ -59,6 +59,7 @@
   "occ-initialize"
   (setq *occ-tsk-previous-ctx* (occ-make-ctx-at-point))
   (progn
+    (occ-register-resolve-clock)
     (occ-cancel-timer)
     (occ-reset-collection-object)
     (occ-ctx-clrhash)
@@ -87,6 +88,7 @@
 (defun occ-uninitialize ()
   "occ-uninitialize"
   (progn
+    (occ-unregister-resolve-clock)
     (occ-cancel-timer)
     (occ-reset-collection-object)
     (occ-ctx-clrhash)

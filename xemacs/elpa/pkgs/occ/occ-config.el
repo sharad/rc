@@ -27,9 +27,11 @@
 (provide 'occ-config)
 
 
-(defcustom occ-unnamed t "occ-unnamed")
+(defcustom occ-unnamed t
+  "occ-unnamed")
 
-(defcustom occ-clockout-unassociable-to-unnamed 'ask "occ-clockout-unassociable-to-unnamed") ;; TODO: or could ask to continue for TIME(m/h) with current task.
+(defcustom occ-clockout-unassociable-to-unnamed 'ask
+  "occ-clockout-unassociable-to-unnamed") ;; TODO: or could ask to continue for TIME(m/h) with current task.
 
 
 
