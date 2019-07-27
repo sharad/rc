@@ -55,6 +55,7 @@
               (funcall action candidate))
             (helm
              ;; :keymap occ-helm-map
+             :sources
              (occ-helm-build-candidates-source
               candidates
               :unfiltered-count   unfiltered-count

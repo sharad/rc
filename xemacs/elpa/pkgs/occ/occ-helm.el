@@ -196,23 +196,6 @@
 ;; add occ-child-clock-in in action
 
 
-(cl-defun occ-helm-build-candidates-source (candidates
-                                            &key
-                                            unfiltered-count
-                                            action
-                                            action-transformer)
-  (let ((unfiltered-count (or unfiltered-count 0)))
-   (when candidates
-     (helm-build-sync-source (format "Select matching %s(%d/%d)"
-                                     (symbol-name (cl-inst-classname (car candidates)))
-                                     (length candidates)
-                                     unfiltered-count)
-       :candidates (mapcar #'occ-candidate candidates)
-       ;; :action actions
-       :filtered-candidate-transformer nil
-       :action-transformer action-transformer
-       :history 'org-refile-history))))
-
 ;;
 ;; https://sachachua.com/blog/2015/03/getting-helm-org-refile-clock-create-tasks/
 
@@ -231,6 +214,25 @@
   (occ-helm-build-candidates-source
    (occ-list obj)
    actions))
+
+(cl-defun occ-helm-build-candidates-source (candidates
+                                            &key
+                                            unfiltered-count
+                                            action
+                                            action-transformer)
+  (list
+   (occ-helm-dummy-source)
+   (let ((unfiltered-count (or unfiltered-count 0)))
+     (when candidates
+       (helm-build-sync-source (format "Select matching %s(%d/%d)"
+                                       (symbol-name (cl-inst-classname (car candidates)))
+                                       (length candidates)
+                                       unfiltered-count)
+         :candidates (mapcar #'occ-candidate candidates)
+         ;; :action actions
+         :filtered-candidate-transformer nil
+         :action-transformer action-transformer
+         :history 'org-refile-history)))))
 
 
 (cl-defgeneric occ-helm-select (obj
@@ -268,28 +270,6 @@
 (org-capture+-add-heading-template '(occ tsk todo) "TODO"    "* MILESTONE %? %^g\n %i\n [%a]\n")
 ;;;###autoload
 (org-capture+-add-heading-template '(occ tsk meeting) "MEETING" "* MEETING %? %^g\n %i\n [%a]\n")
-
-;; (org-capture+-collect-templates-alist nil '(t occ tsk todo meeting) 0)
-
-;; (org-capture+-collect-template-alist  nil '(t occ tsk todo meeting) 0)
-
-;; (org-capture+-collect-templates nil '(t occ tsk todo meeting ) 0)
-;; (org-capture+-collect-templates nil '(t occ tsk todo meeting) 0)
-
-;; working
-;; (org-capture+-collect-template-alist #'org-capture+-tree-predicate '(t occ tsk todo meeting) 0)
-
-;; (org-capture+-collect-templates nil '(t occ tsk todo meeting) 0)
-
-
-;; (org-capture+-collect-templates-alist nil nil 0)
-;; (org-capture+-collect-templates nil '(t xx yy) 0)
-
-;; org-capture+-helm-templates-tree
-
-;; (setq testxx
-;;       ;; (org-capture+-collect-templates nil '(t occ tsk todo meeting) 0)
-;;       (org-capture+-collect-templates nil '(t occ tsk todo meeting ) 0))
 
 ;; (setq org-capture+-helm-templates-tree   (list t))
 ;; (org-capture+-add-heading-template '(xx) "TODO"    "* TODO %? %^g\n %i\n [%a]\n")
