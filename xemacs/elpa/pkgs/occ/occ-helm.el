@@ -68,6 +68,7 @@
   (occ-helm-action-add :ignore                   "Ignore"                   #'ignore)
   (occ-helm-action-add :identity                 "Select"                   #'identity)
   (occ-helm-action-add :clock-in                 "Clock-in"                 #'occ-clock-in)
+  (occ-helm-action-add :try-fast-clock-in        "Try Fast Clock-in"        #'occ-try-fast-clock-in)
   (occ-helm-action-add :try-clock-in             "Try Clock-in"             #'occ-try-clock-in)
   (occ-helm-action-add :procreate-child          "Procreate Child"          #'occ-procreate-child)
   (occ-helm-action-add :procreate-child-clock-in "Procreate Child Clock-in" #'occ-procreate-child-clock-in)
@@ -207,8 +208,13 @@
                                      unfiltered-count)
        :candidates (mapcar #'occ-candidate candidates)
        ;; :action actions
+       :filtered-candidate-transformer nil
        :action-transformer action-transformer
        :history 'org-refile-history))))
+
+;;
+;; https://sachachua.com/blog/2015/03/getting-helm-org-refile-clock-create-tasks/
+
 ;; (helm-build-dummy-source "Create tsk"
 ;;   :action (helm-make-actions
 ;;            "Create tsk"

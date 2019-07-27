@@ -27,6 +27,7 @@
 (provide 'org-rl-intf)
 
 
+;;;###autoload
 (defvar org-rl-interfaces nil)
 
 (defun org-rl-interface-get (intf key)
@@ -60,14 +61,19 @@
   (org-rl-interface-get (org-rl-find-intf clock-marker) :org-rl-capture+-helm-templates-alist))
 
 
+;;;###autoload
 (defun org-rl-intf-register (tag plist)
   (org-rl-intf-unregister tag)
-  (pushnew (cons tag plist)
-           org-rl-interfaces))
+  (if org-rl-interfaces
+      (pushnew (cons tag plist)
+               org-rl-interfaces)
+    (setq org-rl-interfaces (cons tag plist))))
 
+;;;###autoload
 (defun org-rl-intf-unregister (tag)
-  (setq org-rl-interfaces
-        (assoc-delete-all tag org-rl-interfaces)))
+  (if org-rl-interfaces
+      (setq org-rl-interfaces
+            (assq-delete-all tag org-rl-interfaces))))
 
 
 (defun org-rl-intf-clock-p (clock-marker)

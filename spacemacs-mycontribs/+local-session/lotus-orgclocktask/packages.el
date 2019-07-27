@@ -627,9 +627,12 @@ Each entry is either:
     :config
     (progn
       (progn
-        (if (functionp 'org-clock-resolve-advanced-insinuate)
-            (org-clock-resolve-advanced-insinuate)
-          (warn "function org-clock-resolve-advanced-insinuate not available."))))))
+        (add-to-enable-startup-interrupting-feature-hook
+         #'(lambda ()
+             (if (functionp 'org-clock-resolve-advanced-insinuate)
+                 (org-clock-resolve-advanced-insinuate)
+               (warn "function org-clock-resolve-advanced-insinuate not available.")))
+         t)))))
 
 (defun lotus-orgclocktask/init-timesheet ()
   ;; https://github.com/tmarble/timesheet.el
