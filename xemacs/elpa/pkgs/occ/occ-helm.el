@@ -288,7 +288,8 @@
 ;; org-capture+-helm-templates-tree
 
 (setq testxx
-      (org-capture+-collect-template-alist #'org-capture+-tree-predicate '(t xx zz yy occ tsk todo meeting) 0))
+      ;; (org-capture+-collect-templates nil '(t occ tsk todo meeting) 0)
+      (org-capture+-collect-templates nil '(t occ tsk todo meeting ) 0))
 
 
 

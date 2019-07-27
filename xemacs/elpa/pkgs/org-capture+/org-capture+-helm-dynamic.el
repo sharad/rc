@@ -93,7 +93,6 @@
 ;; TODO: keyword replacement
 (defun org-capture+-collect-templates-alist (fn arg level)
   (let* ((fn    (or fn #'org-capture+-tree-predicate))
-         (arg   (or arg '(t xx yy)))
          (alist (mapcar #'cadr
                         (org-capture+-collect-template-alist fn arg level))))
     (let ((templates-alist (collect-alist alist)))
@@ -101,7 +100,6 @@
 
 (defun org-capture+-collect-templates (fn arg level)
   (let* ((fn    (or fn   #'org-capture+-tree-predicate))
-         (arg   (or arg '(t xx yy)))
          (alist (mapcar #'cadr
                         (org-capture+-collect-template-alist fn arg level))))
     (let ((templates (apply #'append (mapcar #'cdr (collect-alist alist)))))
@@ -118,7 +116,7 @@
 
 (defun helm-template-gen-selector (predicate arg level)
   (let* ((level        (or level     0))
-         (arg          (or arg       '(t xx yy)))
+         ;; (arg          (or arg       '(t xx yy)))
          (predicate    (or predicate #'org-capture+-tree-predicate))
          (level-inc-fn #'(lambda ()
                            (interactive)
