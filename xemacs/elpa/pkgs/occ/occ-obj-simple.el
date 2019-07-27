@@ -30,6 +30,10 @@
 (require 'lotus-misc-utils)
 (eval-when-compile
   (require 'lotus-misc-utils))
+(require 'org-capture+-macros)
+(eval-when-compile
+  (require 'org-capture+-macros))
+(require 'org-capture+)
 
 
 (require 'occ-obj-common)

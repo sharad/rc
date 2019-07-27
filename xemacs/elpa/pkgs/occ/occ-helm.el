@@ -28,6 +28,7 @@
 
 
 (require 'org-capture+-helm)
+(require 'org-capture+-helm-dynamic)
 
 
 (require 'occ-debug-method)
@@ -260,6 +261,42 @@
     (occ-debug :debug "Selected ctxual-tsk %s" (occ-format ctx-tsk 'capitalize))
     ctx-tsk))
 
+
+;;;###autoload
+(org-capture+-add-heading-template '(occ tsk todo) "TODO"    "* TODO %? %^g\n %i\n [%a]\n")
+;;;###autoload
+(org-capture+-add-heading-template '(occ tsk todo) "TODO"    "* MILESTONE %? %^g\n %i\n [%a]\n")
+;;;###autoload
+(org-capture+-add-heading-template '(occ tsk meeting) "MEETING" "* MEETING %? %^g\n %i\n [%a]\n")
+
+;; (org-capture+-collect-templates-alist nil '(t occ tsk todo meeting) 0)
+
+;; (org-capture+-collect-template-alist  nil '(t occ tsk todo meeting) 0)
+
+;; (org-capture+-collect-templates nil '(t occ tsk todo meeting ) 0)
+;; (org-capture+-collect-templates nil '(t occ tsk todo meeting) 0)
+
+;; working
+;; (org-capture+-collect-template-alist #'org-capture+-tree-predicate '(t occ tsk todo meeting) 0)
+
+;; (org-capture+-collect-templates nil '(t occ tsk todo meeting) 0)
+
+
+;; (org-capture+-collect-templates-alist nil nil 0)
+;; (org-capture+-collect-templates nil '(t xx yy) 0)
+
+;; org-capture+-helm-templates-tree
+
+(setq testxx
+      (org-capture+-collect-template-alist #'org-capture+-tree-predicate '(t xx zz yy occ tsk todo meeting) 0))
+
+
+
+
+
+
+
+
 
 (defun occ-helm-select-XYZ (obj
                             selector

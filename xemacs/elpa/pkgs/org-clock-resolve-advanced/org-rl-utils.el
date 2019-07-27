@@ -51,12 +51,13 @@
 (defun org-default-rl-capture+-helm-templates-alist (clock-marker)
   org-rl-capture+-helm-templates-alist)
 
-(org-rl-intf-register 'default (list
-                                 :org-rl-clock-p                       #'org-default-rl-clock-p
-                                 :org-rl-clock-clock-in                #'org-default-rl-clock-clock-in
-                                 :org-rl-clock-out                     #'org-default-rl-clock-out
-                                 :org-rl-select-other-clock            #'org-default-rl-select-other-clock
-                                 :org-rl-capture+-helm-templates-alist #'org-default-rl-capture+-helm-templates-alist))
+(org-rl-intf-register 'default
+                      (list
+                       :org-rl-clock-p                       #'org-default-rl-clock-p
+                       :org-rl-clock-clock-in                #'org-default-rl-clock-clock-in
+                       :org-rl-clock-out                     #'org-default-rl-clock-out
+                       :org-rl-select-other-clock            #'org-default-rl-select-other-clock
+                       :org-rl-capture+-helm-templates-alist #'org-default-rl-capture+-helm-templates-alist))
 
 
 (defvar org-rl-org-clock-persist nil "Control org-clock-persist at time of org-resolve clock-in")

@@ -84,6 +84,19 @@
             (nconc list (list item))))))))
 
 
+(defun tree-flatten (predicate L)
+  ;; https://stackoverflow.com/a/19967639
+  "Converts a list to single level."
+  (let ((predicate (or predicate #'atom)))
+   (if (null L)
+       nil
+     (if (funcall predicate (first L))
+         (cons (first L)
+               (tree-flatten predicate (rest L)))
+       (append (tree-flatten predicate (first L))
+               (tree-flatten predicate (rest L)))))))
+
+
 (when nil
  (setq org-capture+-helm-templates-tree '(t))
  (tree-add '(x z) 'y org-capture+-helm-templates-tree)

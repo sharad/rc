@@ -71,14 +71,13 @@
                                    #'org-capture+-template-p
                                    (org-capture+-tree-gen-predicate predicate arg)
                                    level)))
-    (-flatten-n 1 templates-tree)))
+    (tree-flatten #'org-capture+-template-p templates-tree)))
 
 (defun collect-alist (alist)
   (let ((ulist nil))
     (dolist (pair (copy-tree alist))
       (if (assoc (car pair) ulist)
           (nconc (assoc (car pair) ulist) (cdr pair))
-        ;; (pushnew pair ulist)
         (setf ulist (append ulist (list pair)))))
     ulist))
 
@@ -101,7 +100,7 @@
       templates-alist)))
 
 (defun org-capture+-collect-templates (fn arg level)
-  (let* ((fn    (or fn #'org-capture+-tree-predicate))
+  (let* ((fn    (or fn   #'org-capture+-tree-predicate))
          (arg   (or arg '(t xx yy)))
          (alist (mapcar #'cadr
                         (org-capture+-collect-template-alist fn arg level))))
