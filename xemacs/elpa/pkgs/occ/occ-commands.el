@@ -31,6 +31,7 @@
 (require 'occ-main)
 (require 'occ-cl-utils)
 (require 'occ-obj-utils)
+(require 'occ-resolve-clock)
 
 
 ;; example of clos in cl-struct-js2-export-binding-node is a variable defined in ‘js2-mode.el’.
@@ -229,6 +230,18 @@
 
 (defun occ-make-anonymous ())
 
+
+;;;###autoload
+(defun occ-register-resolve-clock ()
+  (interactive)
+  (occ-rl-register-resolve-clock))
+
+;;;###autoload
+(defun occ-unregister-resolve-clock ()
+  (interactive)
+  (occ-rl-unregister-resolve-clock))
+
+
 ;;;###autoload
 (defun occ-reset-spec ()
   (interactive)

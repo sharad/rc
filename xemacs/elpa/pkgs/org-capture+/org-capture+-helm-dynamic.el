@@ -37,13 +37,15 @@
 ;; * Dynamic Match based templates
 ;; https://kitchingroup.cheme.cmu.edu/blog/2016/01/24/Modern-use-of-helm-sortable-candidates/
 
+;;;###autoload
 (defvar org-capture+-helm-templates-plist nil)
+;;;###autoload
 (defvar org-capture+-helm-templates-tree  '(t))
 
 
-(setq org-capture+-helm-templates-plist '(:todo))
+;; (setq org-capture+-helm-templates-plist '(:todo))
 
-(setq org-capture+-helm-templates-tree   (list t))
+;; (setq org-capture+-helm-templates-tree   (list t))
 
 ;; (defun org-capture+-add-template (keys template)
 ;;   (tree-add keys
@@ -57,9 +59,6 @@
 
 (defun org-capture+-template-p (template)
   (eql :template (car template)))
-
-(defun org-capture+-tree-predicate (key-tree arg)
-  (memq (car key-tree) arg))
 
 (defun org-capture+-tree-gen-predicate (predicate arg)
   #'(lambda (key)
@@ -84,8 +83,11 @@
     ulist))
 
 
+;;;###autoload
 (org-capture+-add-heading-template '(xx) "TODO"    "* TODO %? %^g\n %i\n [%a]\n")
+;;;###autoload
 (org-capture+-add-heading-template '(zz) "TODO"    "* MILESTONE %? %^g\n %i\n [%a]\n")
+;;;###autoload
 (org-capture+-add-heading-template '(yy) "MEETING" "* MEETING %? %^g\n %i\n [%a]\n")
 
 
@@ -105,6 +107,10 @@
                         (org-capture+-collect-template-alist fn arg level))))
     (let ((templates (apply #'append (mapcar #'cdr (collect-alist alist)))))
       templates)))
+
+
+(defun org-capture+-tree-predicate (key-tree arg)
+  (memq (car key-tree) arg))
 
 
 ;; (org-capture+-collect-templates-alist nil nil 0)

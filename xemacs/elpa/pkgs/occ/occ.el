@@ -31,6 +31,7 @@
 
 (require 'occ-main)
 (require 'occ-commands)
+(require 'occ-resolve-clock)
 (require 'occ-test)
 
 

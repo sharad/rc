@@ -226,7 +226,7 @@
              "Create tsk"
              'sacha/helm-org-create-tsk)))
 
-(defun occ-helm-build-obj-source (obj &optional actions)
+(cl-defmethod occ-helm-build-obj-source ((obj occ-obj-ctx) &optional actions)
   (occ-helm-build-candidates-source
    (occ-list obj)
    actions))
