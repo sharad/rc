@@ -80,6 +80,11 @@
           (nconc (assoc (car pair) ulist) (cdr pair))
         (setf ulist (append ulist (list pair)))))
     ulist))
+
+(defun delete-dups-alist (alist)
+  (dolist (pair alist)
+    (setcdr pair (delete-dups (cdr pair))))
+  alist)
 
 
 ;;;###autoload
@@ -96,13 +101,13 @@
          (alist (mapcar #'cadr
                         (org-capture+-collect-template-alist fn arg level))))
     (let ((templates-alist (collect-alist alist)))
-      templates-alist)))
+      (delete-dups-alist templates-alist))))
 
 (defun org-capture+-collect-templates (fn arg level)
   (let* ((fn    (or fn   #'org-capture+-tree-predicate))
-         (alist (mapcar #'cadr
-                        (org-capture+-collect-template-alist fn arg level))))
-    (let ((templates (apply #'append (mapcar #'cdr (collect-alist alist)))))
+         (alist (org-capture+-collect-templates-alist fn arg level)))
+    (let ((templates (apply #'append
+                            (mapcar #'cdr alist))))
       templates)))
 
 

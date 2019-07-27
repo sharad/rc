@@ -287,11 +287,12 @@
 
 ;; org-capture+-helm-templates-tree
 
-(setq testxx
-      ;; (org-capture+-collect-templates nil '(t occ tsk todo meeting) 0)
-      (org-capture+-collect-templates nil '(t occ tsk todo meeting ) 0))
+;; (setq testxx
+;;       ;; (org-capture+-collect-templates nil '(t occ tsk todo meeting) 0)
+;;       (org-capture+-collect-templates nil '(t occ tsk todo meeting ) 0))
 
-
+;; (setq org-capture+-helm-templates-tree   (list t))
+;; (org-capture+-add-heading-template '(xx) "TODO"    "* TODO %? %^g\n %i\n [%a]\n")
 
 
 
