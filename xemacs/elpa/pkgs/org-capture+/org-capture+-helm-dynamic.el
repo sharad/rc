@@ -119,7 +119,7 @@
 ;; (org-capture+-collect-templates nil nil 0)
 
 
-(defun helm-template-gen-selector (predicate arg level)
+(defun helm-template-gen-selector-without-class (predicate arg level)
   (let* ((level        (or level     0))
          ;; (arg          (or arg       '(t xx yy)))
          (predicate    (or predicate #'org-capture+-tree-predicate))
@@ -156,7 +156,7 @@
         (helm :sources source))))
 
 
-(defun helm-template-gen-selector (predicate arg level)
+(defun helm-template-gen-selector-with-class (predicate arg level)
   (let* ((alist           (org-capture+-collect-templates-alist predicate arg level))
          (level           (or level     0))
          (calculate-alist #'(lambda ()
