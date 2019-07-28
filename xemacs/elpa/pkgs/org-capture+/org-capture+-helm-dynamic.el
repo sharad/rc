@@ -211,9 +211,11 @@
 ;;                                       '(t occ tsk todo meeting)
 ;;                                       0)
 
-(funcall (helm-template-gen-selector #'org-capture+-tree-predicate
-                                     '(t xx yy)
-                                     0))
+(when nil
+  (funcall
+   (helm-template-gen-selector #'org-capture+-tree-predicate
+                               '(t xx yy)
+                               0)))
 
 
 

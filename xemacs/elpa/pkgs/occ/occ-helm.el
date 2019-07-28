@@ -220,11 +220,11 @@
 ;;            "Create tsk"
 ;;            'sacha/helm-org-create-tsk))
 
-(defun occ-helm-dummy-source ()
-  (helm-build-dummy-source "Create tsk"
+(defun occ-helm-dummy-source (prompt action)
+  (helm-build-dummy-source prompt
     :action (helm-make-actions
-             "Create tsk"
-             'sacha/helm-org-create-tsk)))
+             prompt
+             action)))
 
 (cl-defmethod occ-helm-build-obj-source ((obj occ-obj-ctx) &optional actions)
   (occ-helm-build-candidates
@@ -249,8 +249,8 @@
          :filtered-candidate-transformer nil
          :action-transformer action-transformer
          :history 'org-refile-history)))
-   (occ-helm-dummy-source)
-   (occ-helm-dummy-source)))
+   (occ-helm-dummy-source "Create fast tsk" 'sacha/helm-org-create-tsk)
+   (occ-helm-dummy-source "Create template tsk" 'sacha/helm-org-create-tsk)))
 
 
 (cl-defgeneric occ-helm-select (obj
