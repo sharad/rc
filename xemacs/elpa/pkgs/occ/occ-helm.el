@@ -35,12 +35,28 @@
 (require 'occ-obj-method)
 
 
+;;;###autoload
+(org-capture+-add-heading-template '(occ tsk todo) "TODO"
+                                   "* TODO %? %^g\n %i\n [%a]\n")
+;;;###autoload
+(org-capture+-add-heading-template '(occ tsk todo) "TODO"
+                                   "* MILESTONE %? %^g\n %i\n [%a]\n")
+;;;###autoload
+(org-capture+-add-heading-template '(occ tsk meeting) "MEETING"
+                                   "* MEETING %? %^g\n %i\n [%a]\n")
+
+;; (setq org-capture+-helm-templates-tree   (list t))
+;; (org-capture+-add-heading-template '(xx) "TODO"    "* TODO %? %^g\n %i\n [%a]\n")
+
+
+
 (defvar occ-capture+-helm-templates-alist org-capture+-helm-templates-alist)
 
 (defun occ-capture+-helm-select-template ()
-  (org-capture+-helm-select-template
-   nil
-   occ-capture+-helm-templates-alist))
+  (let ((selector (helm-template-gen-selector #'org-capture+-tree-predicate
+                                              '(t occ tsk todo)
+                                              0)))
+    (funcall selector)))
 
 
 (defvar occ-helm-actions-plist nil)
@@ -264,21 +280,6 @@
                              :timeout            timeout)))
     (occ-debug :debug "Selected ctxual-tsk %s" (occ-format ctx-tsk 'capitalize))
     ctx-tsk))
-
-
-;;;###autoload
-(org-capture+-add-heading-template '(occ tsk todo) "TODO"
-                                   "* TODO %? %^g\n %i\n [%a]\n")
-;;;###autoload
-(org-capture+-add-heading-template '(occ tsk todo) "TODO"
-                                   "* MILESTONE %? %^g\n %i\n [%a]\n")
-;;;###autoload
-(org-capture+-add-heading-template '(occ tsk meeting) "MEETING"
-                                   "* MEETING %? %^g\n %i\n [%a]\n")
-
-;; (setq org-capture+-helm-templates-tree   (list t))
-;; (org-capture+-add-heading-template '(xx) "TODO"    "* TODO %? %^g\n %i\n [%a]\n")
-
 
 
 

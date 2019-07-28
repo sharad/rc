@@ -386,7 +386,7 @@
                                        3
                                        nil)
             (occ-add-to-spec file)))))))
-
+(defvar occ-add-org-file-timer nil)
 (defun occ-add-org-file-timer ()
   (progn
     (when occ-add-org-file-timer
