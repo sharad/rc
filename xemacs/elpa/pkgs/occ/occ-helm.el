@@ -211,7 +211,8 @@
              'sacha/helm-org-create-tsk)))
 
 (cl-defmethod occ-helm-build-obj-source ((obj occ-obj-ctx) &optional actions)
-  (occ-helm-build-candidates-source
+  (occ-helm-build-candidates
+   -source
    (occ-list obj)
    actions))
 
@@ -221,7 +222,6 @@
                                             action
                                             action-transformer)
   (list
-   (occ-helm-dummy-source)
    (let ((unfiltered-count (or unfiltered-count 0)))
      (when candidates
        (helm-build-sync-source (format "Select matching %s(%d/%d)"
@@ -232,7 +232,9 @@
          ;; :action actions
          :filtered-candidate-transformer nil
          :action-transformer action-transformer
-         :history 'org-refile-history)))))
+         :history 'org-refile-history)))
+   (occ-helm-dummy-source)
+   (occ-helm-dummy-source)))
 
 
 (cl-defgeneric occ-helm-select (obj
@@ -265,11 +267,14 @@
 
 
 ;;;###autoload
-(org-capture+-add-heading-template '(occ tsk todo) "TODO"    "* TODO %? %^g\n %i\n [%a]\n")
+(org-capture+-add-heading-template '(occ tsk todo) "TODO"
+                                   "* TODO %? %^g\n %i\n [%a]\n")
 ;;;###autoload
-(org-capture+-add-heading-template '(occ tsk todo) "TODO"    "* MILESTONE %? %^g\n %i\n [%a]\n")
+(org-capture+-add-heading-template '(occ tsk todo) "TODO"
+                                   "* MILESTONE %? %^g\n %i\n [%a]\n")
 ;;;###autoload
-(org-capture+-add-heading-template '(occ tsk meeting) "MEETING" "* MEETING %? %^g\n %i\n [%a]\n")
+(org-capture+-add-heading-template '(occ tsk meeting) "MEETING"
+                                   "* MEETING %? %^g\n %i\n [%a]\n")
 
 ;; (setq org-capture+-helm-templates-tree   (list t))
 ;; (org-capture+-add-heading-template '(xx) "TODO"    "* TODO %? %^g\n %i\n [%a]\n")
@@ -277,6 +282,7 @@
 
 
 
+
 
 
 

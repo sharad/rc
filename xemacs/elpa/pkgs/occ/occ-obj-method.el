@@ -373,4 +373,26 @@
   (setq *occ-last-buff-sel-time* (current-time))
   (occ-try-clock-schedule-next-timeout 'buffer-switch))
 
+
+(defun occ-add-org-file (buffer)
+  (when (eql buffer (current-buffer))
+    (let ((file (buffer-file-name buffer)))
+      (unless (cl-member file (occ-files) :key #'file-truename)
+        (when (and file
+                   (file-exists-p file)
+                   (eq major-mode 'org-mode))
+          (when (y-or-n-p-with-timeout (format "Do you want to add %s to occ: "
+                                               file)
+                                       3
+                                       nil)
+            (occ-add-to-spec file)))))))
+
+(defun occ-add-org-file-timer ()
+  (progn
+    (when occ-add-org-file-timer
+      (cancel-timer occ-add-org-file-timer)
+      (setq occ-add-org-file-timer nil))
+   (setq occ-add-org-file-timer
+        (run-with-idle-plus-timer 10 nil #'occ-add-org-file (current-buffer)))))
+
 ;;; occ-obj-method.el ends here

@@ -68,7 +68,8 @@
     ;; (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer t)
     ;; (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer t)
     (add-hook 'switch-buffer-functions #'occ-switch-buffer-run-curr-ctx-timer-function)
-    (add-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode))
+    (add-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode)
+    (add-hook 'org-mode-hook           #'occ-add-org-file-timer))
   (dolist (prop (occ-properties-to-inherit nil))
     (let ((propstr
            (upcase (if (keywordp prop)
@@ -100,7 +101,8 @@
     ;; (remove-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer)
     ;; (remove-hook 'after-save-hook             'occ-after-save-hook-fun t)
     (remove-hook 'switch-buffer-functions #'occ-switch-buffer-run-curr-ctx-timer-function)
-    (remove-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode))
+    (remove-hook 'org-mode-hook           #'occ-add-after-save-hook-fun-in-org-mode)
+    (remove-hook 'org-mode-hook           #'occ-add-org-file-timer))
   (dolist (prop (occ-properties-to-inherit nil))
     (let ((propstr
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
