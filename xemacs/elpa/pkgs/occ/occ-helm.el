@@ -215,6 +215,8 @@
 ;;
 ;; https://sachachua.com/blog/2015/03/getting-helm-org-refile-clock-create-tasks/
 
+;; function 'sacha/helm-org-create-tsk
+
 ;; (helm-build-dummy-source "Create tsk"
 ;;   :action (helm-make-actions
 ;;            "Create tsk"
@@ -249,8 +251,8 @@
          :filtered-candidate-transformer nil
          :action-transformer action-transformer
          :history 'org-refile-history)))
-   (occ-helm-dummy-source "Create fast tsk" 'sacha/helm-org-create-tsk)
-   (occ-helm-dummy-source "Create template tsk" 'sacha/helm-org-create-tsk)))
+   (occ-helm-dummy-source "Create fast tsk"     #'occ-fast-procreate-child-clock-in)
+   (occ-helm-dummy-source "Create template tsk" #'occ-procreate-child-clock-in)))
 
 
 (cl-defgeneric occ-helm-select (obj
