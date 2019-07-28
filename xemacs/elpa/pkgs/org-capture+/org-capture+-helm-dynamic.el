@@ -204,18 +204,31 @@
 ;;                                      '(t occ tsk todo meeting)
 ;;                                      0))
 
-;; (setq testzxx (helm-template-gen-selector #'org-capture+-tree-predicate
-;;                                           '(t occ tsk todo meeting)
-;;                                           0))
-;; (org-capture+-collect-templates-alist #'org-capture+-tree-predicate
-;;                                       '(t occ tsk todo meeting)
-;;                                       0)
+(setq testzxx (helm-template-gen-selector #'org-capture+-tree-predicate
+                                          '(t occ tsk todo meeting)
+                                          0))
+(org-capture+-collect-templates-alist #'org-capture+-tree-predicate
+                                      '(t occ tsk todo meeting)
+                                      0)
 
 (when nil
+
+  org-capture+-helm-templates-tree
+
   (funcall
-   (helm-template-gen-selector #'org-capture+-tree-predicate
-                               '(t xx yy)
-                               0)))
+   (helm-template-gen-selector-with-class #'org-capture+-tree-predicate
+                                          '(t xx yy)
+                                          0))
+  (funcall
+   (helm-template-gen-selector-with-class #'org-capture+-tree-predicate
+                                          '(t occ tsk todo meeting)
+                                          0))
+
+  (org-capture+-collect-templates-alist #'org-capture+-tree-predicate
+                                        '(t xx yy)
+                                        1))
+
+
 
 
 
