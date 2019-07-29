@@ -53,9 +53,9 @@
 (defvar occ-capture+-helm-templates-alist org-capture+-helm-templates-alist)
 
 (defun occ-capture+-helm-select-template ()
-  (let ((selector (helm-template-gen-selector-with-class #'org-capture+-tree-predicate
-                                                         '(t occ tsk todo)
-                                                         0)))
+  (let ((selector (helm-template-gen-selector #'org-capture+-tree-predicate
+                                              '(t occ tsk todo)
+                                              0)))
     (funcall selector)))
 
 

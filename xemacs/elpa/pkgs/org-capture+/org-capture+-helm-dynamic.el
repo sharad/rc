@@ -90,7 +90,7 @@
 ;;;###autoload
 (org-capture+-add-heading-template '(xx) "TODO"    "* TODO %? %^g\n %i\n [%a]\n")
 ;;;###autoload
-(org-capture+-add-heading-template '(zz) "TODO"    "* MILESTONE %? %^g\n %i\n [%a]\n")
+(org-capture+-add-heading-template '(zz) "TODO"    "* WRITING %? %^g\n %i\n [%a]\n")
 ;;;###autoload
 (org-capture+-add-heading-template '(yy) "MEETING" "* MEETING %? %^g\n %i\n [%a]\n")
 
@@ -119,49 +119,21 @@
 ;; (org-capture+-collect-templates nil nil 0)
 
 
-(defun helm-template-gen-selector-without-class (predicate arg level)
-  (let* ((level        (or level     0))
-         ;; (arg          (or arg       '(t xx yy)))
-         (predicate    (or predicate #'org-capture+-tree-predicate))
-         (level-inc-fn #'(lambda ()
-                           (interactive)
-                           (setf level (1+ level))
-                           (helm-refresh)))
-         (level-dec-fn #'(lambda ()
-                           (interactive)
-                           (setf level (1- level))
-                           (helm-refresh)))
-         (h-map
-          (let ((map (make-sparse-keymap)))
-            (set-keymap-parent map helm-map)
-            (define-key map (kbd "M-<up>")     level-inc-fn)
-            (define-key map (kbd "M-<down>")   level-dec-fn)
-            map))
-         (h-action-transformer    #'(lambda (actions candidate)
-                                      '(("Even" . identity))))
-         (h-candidates            #'(lambda ()
-                                      (org-capture+-collect-templates predicate arg level)))
-         (h-candidate-transformer #'(lambda (candidates source)
-                                      (org-capture+-collect-templates predicate arg level)))
-         (source (helm-build-sync-source "Templates"
-                   :keymap                         h-map
-                   ;; :requires-pattern nil
-                   ;; :match (list #'(lambda (c) t))
-                   :candidates                     h-candidates
-                   :multiline                      t
-                   :filtered-candidate-transformer h-candidate-transformer
-                   ;; :filter-one-by-one #'h-candidate-transformer
-                   :action-transformer             h-action-transformer)))
-    #'(lambda ()
-        (helm :sources source))))
-
-
-(defun helm-template-gen-selector-with-class (predicate arg level)
-  (let* ((alist           (org-capture+-collect-templates-alist predicate arg level))
+(defun helm-template-gen-selector (predicate arg level &optional noclass)
+  (let* ((list            (if noclass
+                              (org-capture+-collect-templates predicate arg level)
+                              (org-capture+-collect-templates-alist predicate arg level)))
          (level           (or level     0))
-         (calculate-alist #'(lambda ()
-                              (setq alist (org-capture+-collect-templates-alist predicate arg level))))
-         (arg          (or arg       '(t)))
+         (classes         (mapcar #'car
+                                  (org-capture+-collect-templates-alist #'(lambda (fn arg) t)
+                                                                        '(t)
+                                                                        0)))
+         (arg             (or arg       '(t)))
+         (calculate-list  (if noclass
+                              #'(lambda ()
+                                  (setq list (org-capture+-collect-templates predicate arg level)))
+                              #'(lambda ()
+                                  (setq list (org-capture+-collect-templates-alist predicate arg level)))))
          (predicate       (or predicate #'org-capture+-tree-predicate))
          (level-inc-fn    #'(lambda ()
                               (interactive)
@@ -179,23 +151,38 @@
             map))
          (h-action-transformer    #'(lambda (actions candidate)
                                       '(("Even" . identity))))
-         (h-candidate-transformer #'(lambda (candidates source)
-                                      (funcall calculate-alist)
-                                      (let ((name (cdr (assoc 'name source))))
-                                        (cdr (assoc name alist)))))
-         (sources (mapcar #'(lambda (pair)
-                               (helm-build-sync-source           (car pair)
-                                 :keymap                         h-map
-                                ;; :requires-pattern nil
-                                ;; :match (list #'(lambda (c) t))
-                                :candidates                     (cdr pair)
-                                :multiline                      t
-                                :filtered-candidate-transformer h-candidate-transformer
-                                ;; :filter-one-by-one #'h-candidate-transformer
-                                :action-transformer             h-action-transformer))
-                          alist)))
+         (h-candidate-transformer (if noclass
+                                      #'(lambda (candidates source)
+                                          (funcall calculate-list)
+                                          list)
+                                    #'(lambda (candidates source)
+                                        (funcall calculate-list)
+                                        (let ((name (cdr (assoc 'name source))))
+                                          (cdr (assoc name list))))))
+         (sources (if noclass
+                      (helm-build-sync-source           "templates"
+                        :keymap                         h-map
+                        ;; :requires-pattern nil
+                        ;; :match (list #'(lambda (c) t))
+                        :candidates                     list
+                        :multiline                      t
+                        :filtered-candidate-transformer h-candidate-transformer
+                        ;; :filter-one-by-one #'h-candidate-transformer
+                        :action-transformer             h-action-transformer)
+                      (mapcar #'(lambda (class)
+                                  (helm-build-sync-source           class
+                                    :keymap                         h-map
+                                    ;; :requires-pattern nil
+                                    ;; :match (list #'(lambda (c) t))
+                                    :candidates                     (cdr (assoc class list))
+                                    :multiline                      t
+                                    :filtered-candidate-transformer h-candidate-transformer
+                                    ;; :filter-one-by-one #'h-candidate-transformer
+                                    :action-transformer             h-action-transformer))
+                              classes))))
     #'(lambda ()
         (helm :sources sources))))
+
 
 ;; (setq testzxx (helm-build-sync-source "Templates"))
 ;; (assoc 'name testzxx)
@@ -204,25 +191,25 @@
 ;;                                      '(t occ tsk todo meeting)
 ;;                                      0))
 
-(setq testzxx (helm-template-gen-selector #'org-capture+-tree-predicate
-                                          '(t occ tsk todo meeting)
-                                          0))
-(org-capture+-collect-templates-alist #'org-capture+-tree-predicate
-                                      '(t occ tsk todo meeting)
-                                      0)
+
 
 (when nil
 
   org-capture+-helm-templates-tree
 
+
+  (org-capture+-collect-templates-alist #'(lambda (fn arg) t)
+                                        '(t)
+                                        0)
+
   (funcall
-   (helm-template-gen-selector-with-class #'org-capture+-tree-predicate
-                                          '(t xx yy)
-                                          0))
+   (helm-template-gen-selector #'org-capture+-tree-predicate
+                               '(t xx yy)
+                               0))
   (funcall
-   (helm-template-gen-selector-with-class #'org-capture+-tree-predicate
-                                          '(t occ tsk todo meeting)
-                                          0))
+   (helm-template-gen-selector #'org-capture+-tree-predicate
+                               '(t occ tsk todo meeting)
+                               0))
 
   (org-capture+-collect-templates-alist #'org-capture+-tree-predicate
                                         '(t xx yy)
