@@ -43,15 +43,7 @@
 (defvar org-capture+-helm-templates-tree  '(t))
 
 
-;; (setq org-capture+-helm-templates-plist '(:todo))
-
-;; (setq org-capture+-helm-templates-tree   (list t))
-
-;; (defun org-capture+-add-template (keys template)
-;;   (tree-add keys
-;;             (list :template template)
-;;             org-capture+-helm-templates-tree))
-
+;;;###autoload
 (defun org-capture+-add-heading-template (keys heading &rest templates)
   (tree-add keys
             (list :template (cons heading templates))
@@ -109,32 +101,36 @@
     (let ((templates (apply #'append
                             (mapcar #'cdr alist))))
       templates)))
+
+(defun org-capture+-collect-template-classes ()
+  (mapcar #'car
+          (org-capture+-collect-templates-alist #'(lambda (key-tree arg) t)
+                                                '(t)
+                                                0)))
 
 
 (defun org-capture+-tree-predicate (key-tree arg)
   (memq (car key-tree) arg))
 
 
-;; (org-capture+-collect-templates-alist nil nil 0)
-;; (org-capture+-collect-templates nil nil 0)
-
-
 (defun helm-template-gen-selector (predicate arg level &optional noclass)
   (let* ((list            (if noclass
                               (org-capture+-collect-templates predicate arg level)
-                              (org-capture+-collect-templates-alist predicate arg level)))
-         (level           (or level     0))
-         (classes         (mapcar #'car
-                                  (org-capture+-collect-templates-alist #'(lambda (fn arg) t)
-                                                                        '(t)
-                                                                        0)))
+                            (org-capture+-collect-templates-alist predicate arg level)))
+         (default-level   (or level     0))
          (arg             (or arg       '(t)))
+         (default-arg     arg)
+         (classes         (org-capture+-collect-template-classes))
          (calculate-list  (if noclass
                               #'(lambda ()
                                   (setq list (org-capture+-collect-templates predicate arg level)))
                               #'(lambda ()
                                   (setq list (org-capture+-collect-templates-alist predicate arg level)))))
          (predicate       (or predicate #'org-capture+-tree-predicate))
+         (level-reset-fn  #'(lambda ()
+                              (interactive)
+                              (setf level default-level)
+                              (helm-refresh)))
          (level-inc-fn    #'(lambda ()
                               (interactive)
                               (setf level (1+ level))
@@ -162,7 +158,7 @@
          (sources (if noclass
                       (helm-build-sync-source           "templates"
                         :keymap                         h-map
-                        ;; :requires-pattern nil
+                        ;; :requires-pattern t
                         ;; :match (list #'(lambda (c) t))
                         :candidates                     list
                         :multiline                      t
@@ -172,7 +168,7 @@
                       (mapcar #'(lambda (class)
                                   (helm-build-sync-source           class
                                     :keymap                         h-map
-                                    ;; :requires-pattern nil
+                                    ;; :requires-pattern t
                                     ;; :match (list #'(lambda (c) t))
                                     :candidates                     (cdr (assoc class list))
                                     :multiline                      t
@@ -217,14 +213,5 @@
 
 
 
-
-
-;; (funcall (helm-template-gen-selector #'org-capture+-tree-predicate '(t xx yy) nil))
-(when nil
-  (helm :sources (list (helm-build-sync-source "Templates0" :candidates '(c d))
-                       (helm-build-sync-source "Templates1" :candidates nil)
-                       (helm-build-sync-source "Templates2" :candidates '(a b))))
-
-  (helm :sources (list (helm-build-sync-source "Templates1" :candidates nil))))
 
 ;;; org-capture+-helm-dynamic.el ends here

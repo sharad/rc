@@ -673,29 +673,6 @@
                                                 :param-only param-only))
                  (occ-properties-to-edit obj))))
 
-
-
-;; (setq tsk-test (occ-make-tsk-at-point))
-;; (occ-gen-edits-if-required tsk-test nil nil)
-
-
-;; (cl-defmethod occ-gen-edits ((obj occ-obj-tsk)
-;;                              ops
-;;                              &key param-only)
-;;   (mapcar #'(lambda (op)
-;;               (apply #'occ-gen-prompt-edit
-;;                      obj
-;;                      (append op (list :param-only param-only))))
-;;           ops))
-
-;; (cl-defmethod occ-gen-params ((obj occ-obj-tsk)
-;;                               &rest ops)
-;;   (occ-gen-edits obj ops :param-only t))
-
-
-;; (cl-defmethod occ-increase-timeout ((obj occ-obj-ctx-tsk))
-;;   (occ-gen-prompt-method obj 'timeout add 100))
-
 
 (cl-defgeneric occ-checkout (obj)
   "Checkout property in case of force clock-in.")
@@ -703,5 +680,16 @@
 (cl-defmethod occ-checkout ((obj occ-obj-tsk))
   "Checkout property in case of force clock-in."
   (error "Implement it for %s: Checkout property in case of force clock-in." prop))
+
+
+;; TODO: also accommodate increase decrease etc.
+(cl-defmethod occ-gen-checkout ((obj occ-obj-tsk)
+                                (prop      symbol)
+                                &key param-only)
+  (if param-only
+      (list prop)
+    #'(lambda (obj)
+        (occ-checkout obj
+                      prop))))
 
 ;;; occ-prop.el ends here

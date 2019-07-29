@@ -79,7 +79,7 @@ It might be shown only if wait timeout happens.
 
 ** Todos
 
-*** NEXT caching ctxual-tsk or ctsk                                  :DESIGN:
+*** STARTED caching ctxual-tsk or ctsk                               :DESIGN:
  Here add support for per filter members
 **** statistics addition                                             :DESIGN:
 ***** CLOSED Functions
@@ -102,7 +102,7 @@ It might be shown only if wait timeout happens.
       - Note taken on [2019-07-14 Sun 20:35] \\
         clocking in to here from last clock <Unnamed task 1006>
       :END:
-*** NEXT Fast clocking/child clocking with property addition like fast property addition :DESIGN:USABILITY:
+*** STARTED Fast clocking/child clocking with property addition like fast property addition :DESIGN:USABILITY:
 **** CLOSED Fast property edit function for TSK
      CLOSED: [2019-07-25 Thu 21:18]
      :LOGBOOK:
@@ -144,17 +144,11 @@ It might be shown only if wait timeout happens.
 
 *** TODO In editprop propagate property to childs also
 
-*** Create manual unnamed/anonymous (different from automatic) child task mainly for FAST DISPATCH :USABILITY:
-*** Create Single line task mainly for FAST DISPATCH              :USABILITY:
+*** STARTED Create manual unnamed/anonymous (different from automatic) child task mainly for FAST DISPATCH :USABILITY:
+*** STARTED Create Single line task mainly for FAST DISPATCH      :USABILITY:
 *** non tsk org entries                                              :DESIGN:
 *** STARTED Property other methods like Increase/Decrease for integer, parent/child dir for dir property etc.
-
-
-
-
-
-
-
+*** STARTED Offer N times to add org file in occ if occ if current buffer is from org file.
 
 *** NEXT Rich menu with many class todo info note etc for capture
 *** move filtering in helm selection.                             :USABILITY:
