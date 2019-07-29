@@ -73,8 +73,14 @@
 (defun h-candidate-transformer (candidates source)
   (if h-sort-fn
       (progn (message "Sorting with %s" h-sort-fn)
+             ;; (-sort h-sort-fn candidates)
+             ;; (sort candidates  h-sort-fn)
              (-sort h-sort-fn candidates))
+    ;; (copy-tree candidates)
     candidates))
+
+(defun h-candidate-transformer (candidates source)
+  (copy-tree candidates))
 
 (defun h-action-transformer (actions candidate)
   "Candidate is the result selected."
@@ -86,6 +92,7 @@
       (helm-build-sync-source "number-selector"
         :keymap h-map
         :candidates #'h-candidates
+        :multiline t
         :filtered-candidate-transformer #'h-candidate-transformer
         :action-transformer #'h-action-transformer))
 

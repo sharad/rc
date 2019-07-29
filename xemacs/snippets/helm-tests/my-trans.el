@@ -44,7 +44,7 @@
       (helm-build-sync-source "number-selector"
         ;; :keymap h-map
         ;; :requires-pattern nil
-        :match (list #'(lambda (c) t))
+        ;; :match (list #'(lambda (c) t))
         :candidates #'h-candidates
         :filtered-candidate-transformer #'h-candidate-transformer
         :action-transformer #'h-action-transformer))
@@ -88,7 +88,7 @@
       (helm-build-sync-source "number-selector"
         ;; :keymap h-map
         ;; :requires-pattern nil
-        :match (list #'(lambda (c) t))
+        ;; :match (list #'(lambda (c) t))
         :candidates #'h-candidates
         :filtered-candidate-transformer #'h-candidate-transformer
         ;; :filter-one-by-one #'h-candidate-transformer
