@@ -86,6 +86,7 @@
   (occ-helm-action-add :goto                     "Goto"                     #'occ-goto)
   (occ-helm-action-add :set-to                   "Set To"                   #'occ-set-to)
   (occ-helm-action-add :proprty-window-edit      "Proprtes Window Edit"     #'occ-props-window-edit) ;TODO: implement it.
+  (occ-helm-action-add :proprty-edit-combined    "Proprtes Edit Combined"   #'occ-props-edit-combined) ;TODO: implement it.
   (occ-helm-action-add :rank                     "Get Rank"                 #'occ-print-rank)
   (occ-helm-action-add :tsk                      "Get Task"                 #'occ-print-tsk))
 

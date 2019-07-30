@@ -256,19 +256,24 @@
     ;; do both fast and interactive editing.
     ;; (occ-props-edit obj)
 
-    (let ((retval
-           (helm-timed 7
-             (helm
-              (helm-build-sync-source "edit"
-                :candidates (append
-                             '(("Continue" . t)
-                               ("Checkout" . checkout))
-                             (occ-gen-edits-if-required obj nil nil :param-only t)))))))
+    (let* ((sources (list
+                     (helm-build-sync-source "fast edit"
+                       :candidates (occ-gen-edits-if-required obj nil nil :param-only t)
+                       :action #'funcall)
+                     (helm-build-sync-source "edit"
+                       :candidates (list
+                                    (cons "Edit" #'(lambda () (occ-props-edit obj))))
+                       :action (list
+                                (cons "Edit" #'funcall)))
+                     (helm-build-sync-source "other"
+                       :candidates '(("Continue" . t)
+                                     ("Edit")
+                                     ("Checkout" . checkout)))))
+           (retval
+            (helm-timed 7
+              (helm :sources sources))))
       (if (eq retval t)
-          t
-        (prog1
-            nil
-          (apply #'occ-editprop obj retval))))))
+          t))))
 
 
 (cl-defmethod occ-props-edit-in-cloned-buffer ((obj occ-obj-ctx-tsk))
