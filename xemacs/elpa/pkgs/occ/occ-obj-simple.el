@@ -186,16 +186,77 @@
              title
              title))))
 
-(cl-defmethod occ-procreate-child ((obj occ-obj-ctx-tsk))
+;; (cl-defmethod occ-procreate-child ((obj occ-obj-ctx-tsk))
+;;   (if (not (occ-unnamed-p obj))
+;;       (occ-capture obj helm-current-prefix-arg)
+;;     (let ((title (occ-title obj 'captilize)))
+;;       (error "%s is unnamed %s so can not create child "
+;;              (occ-format obj 'captilize)
+;;              title
+;;              title))))
+
+
+(defun sacha/org-capture-prefill-template (template &rest values)
+  "Pre-fill TEMPLATE with VALUES."
+  (setq template (or template (org-capture-get :template)))
+  (with-temp-buffer
+    (insert template)
+    (goto-char (point-min))
+    (while (re-search-forward
+            (concat "%\\("
+                    "\\[\\(.+\\)\\]\\|"
+                    "<\\([^>\n]+\\)>\\|"
+                    "\\([tTuUaliAcxkKInfF]\\)\\|"
+                    "\\(:[-a-zA-Z]+\\)\\|"
+                    "\\^\\({\\([^}]*\\)}\\)"
+                    "?\\([gGtTuUCLp]\\)?\\|"
+                    "%\\\\\\([1-9][0-9]*\\)"
+                    "\\)") nil t)
+      (if (car values)
+          (replace-match (car values) nil t))
+      (setq values (cdr values)))
+    (buffer-string)))
+
+(defun sacha/helm-org-create-task (candidate)
+  (let ((entry (org-capture-select-template "T")))
+    (org-capture-set-plist entry)
+    (org-capture-get-template)
+    (org-capture-set-target-location)
+    (condition-case error
+        (progn
+          (org-capture-put
+           :template
+           (org-capture-fill-template
+            (sacha/org-capture-prefill-template (org-capture-get :template)
+                                                candidate)))
+          (org-capture-place-template
+           (equal (car (org-capture-get :target)) 'function)))
+      ((error quit)
+       (if (get-buffer "*Capture*") (kill-buffer "*Capture*"))
+       (error "Capture abort: %s" error)))) t)
+
+
+(cl-defmethod occ-fast-procreate-child ((obj occ-obj-ctx-tsk))
   (let ((tsk        (occ-obj-tsk obj))
         (ctx        (occ-obj-ctx obj)))
-   (if (not (occ-unnamed-p tsk))
-       (occ-capture obj helm-current-prefix-arg)
-     (let ((title (occ-title obj 'captilize)))
-       (error "%s is unnamed %s so can not create child "
-              (occ-format obj 'captilize)
-              title
-              title)))))
+    (if (not (occ-unnamed-p tsk))
+        (occ-capture obj helm-current-prefix-arg)
+      (let ((title (occ-title obj 'captilize)))
+        (error "%s is unnamed %s so can not create child "
+               (occ-format obj 'captilize)
+               title
+               title)))))
+
+(cl-defmethod occ-fast-procreate-anonymous-child ((obj occ-obj-ctx-tsk))
+  (let ((tsk        (occ-obj-tsk obj))
+        (ctx        (occ-obj-ctx obj)))
+    (if (not (occ-unnamed-p tsk))
+        (occ-capture obj helm-current-prefix-arg)
+      (let ((title (occ-title obj 'captilize)))
+        (error "%s is unnamed %s so can not create child "
+               (occ-format obj 'captilize)
+               title
+               title)))))
 
 
 (cl-defgeneric occ-procreate-child-clock-in (obj)

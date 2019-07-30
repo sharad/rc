@@ -262,7 +262,6 @@
                      :action (cons "Edit" #'funcall))
                    (helm-build-sync-source "other"
                      :candidates '(("Continue" . t)
-                                   ("Edit")
                                    ("Checkout" . checkout)))))
          (retval
           (helm-timed 7

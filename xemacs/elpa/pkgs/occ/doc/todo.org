@@ -133,6 +133,12 @@ It might be shown only if wait timeout happens.
       clocking in to here from last clock <Org Context Clock>
     :END:
 
+*** TODO: Verify all tsk objects
+
+[[file:~/.xemacs/elpa/pkgs/occ/occ-test.el::(defun%20occ-verify%20((obj%20occ-collection))][    Code]]
+
+    - By reading a property value (also displaying it.)
+    - By writing a property value.
 
 
 
@@ -143,10 +149,19 @@ It might be shown only if wait timeout happens.
 
 
 *** TODO In editprop propagate property to childs also
+    [[file:~/.xemacs/elpa/pkgs/occ/occ-obj-common.el::prop][Code]]
+    Added unverified changes
 
 *** STARTED Create manual unnamed/anonymous (different from automatic) child task mainly for FAST DISPATCH :USABILITY:
+    [[file:~/.xemacs/elpa/pkgs/occ/occ-obj-simple.el::(defun%20sacha/org-capture-prefill-template%20(template%20&rest%20values)][Code]]
+
 *** STARTED Create Single line task mainly for FAST DISPATCH      :USABILITY:
+    [[file:~/.xemacs/elpa/pkgs/occ/occ-obj-simple.el::(defun%20sacha/org-capture-prefill-template%20(template%20&rest%20values)][Code]]
+
 *** non tsk org entries                                              :DESIGN:
+
+    Reduce ranking to very much low.
+
 *** STARTED Property other methods like Increase/Decrease for integer, parent/child dir for dir property etc.
 *** STARTED Offer N times to add org file in occ if occ if current buffer is from org file.
 
@@ -168,7 +183,7 @@ It might be shown only if wait timeout happens.
 
 *** TRY to use a org file itself for configurations e.g. kind of TODOs, mini max value in rank case etc.
 *** See what org-pua annotation can help here.
-*** Task categorys
+*** Task Schedule/deadline categorys
 **** Some task are todo now.
 **** Some can need to be done in week, similarly fortnight, month
 **** Some are in future, here schedule/deadline should not be asked

@@ -62,37 +62,12 @@
    ;; force checkout for clock.
    (not (occ-associable-p (occ-ctxual-current-tsk obj)))))
 
-(cl-defgeneric occ-edit-properties (obj &rest ops))
-
-(cl-defmethod occ-edit-properties ((obj occ-ctxual-tsk)
-                                   &rest
-                                   ops)
-  (let ((tsk (occ-obj-tsk obj))
-        (ctx (occ-obj-ctx obj)))
-
-    ;; do both fast and interactive editing.
-    ;; (occ-props-edit obj)
-
-    (let ((retval
-           (helm-timed 7
-             (helm
-              (helm-build-sync-source "edit"
-                :candidates (append
-                             '(("Continue" . t)
-                               ("Checkout" . checkout))
-                             (occ-gen-edits-if-required obj nil nil :param-only t)))))))
-      (if (eq retval t)
-          t
-        (prog1
-            nil
-          (apply #'occ-editprop obj retval))))))
-
 (cl-defmethod occ-edit-until-associable ((obj occ-ctxual-tsk))
   (let ((retval nil))
     (occ-try-until 3 (or (not (eq t retval))
                          (occ-associable-p obj))
       (setq retval
-            (occ-edit-properties obj '(timebeing add 10))))
+            (occ-props-edit-combined obj '(timebeing add 10))))
     retval))
 
 (cl-defmethod occ-edit-clock-if-unassociated ((obj occ-ctx))

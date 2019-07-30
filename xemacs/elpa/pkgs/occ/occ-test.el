@@ -56,6 +56,26 @@
 
 
 
+;; TODO: Verify all tsk objects
+
+(cl-defmethod occ-verify ((obj occ-obj-tsk))
+  (occ-message "occ-verify: Verifying %s" (occ-format obj #'capitalize))
+  (let ((plist (cl-obj-plist-value obj)))
+    (dolist (prop plist)
+      (occ-message "occ-verify: verifying %s" prop)
+      (let ((org-prop-value (occ-org-entry-get (occ-obj-marker obj) (symbol-name prop)))
+            (occ-prop-value (occ-property-get (occ-obj-tsk obj) prop)))
+        (when prop-value
+          (unless (string= prop-value (occ-prop-elem-to-org prop occ-prop-value))
+            (occ-message "prop %s not correct")))))))
+
+(cl-defmethod occ-verify ((obj occ-collection))
+  (dolist (tsk (occ-list nil))
+    (occ-verify tsk)))
+
+(defun occ-verify-objects ()
+  (interactive)
+  (occ-verify (occ-collection-object)))
 ;; testing verification
 ;; occ-files-with-null-regex
 ;; occ-files-not-in-org-mode

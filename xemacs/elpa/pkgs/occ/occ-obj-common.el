@@ -76,10 +76,10 @@
 
 (cl-defmethod occ-set-property ((obj occ-obj)
                                 prop
-                                val)
+                                value)
   ;; mainly used by occ-tsk only
   (if (memq prop (cl-class-slots (cl-inst-classname obj)))
-      (setf (cl-struct-slot-value (cl-inst-classname obj) prop obj) val)
+      (setf (cl-struct-slot-value (cl-inst-classname obj) prop obj) value)
     (let ((plist-prop
            (if (occ-plist-get (cl-obj-plist-value obj) prop)
                prop
@@ -91,7 +91,16 @@
        ;; (tsk) also must have to be in line of it as it also got created with
        ;; same function (org-element-at-point).
        (cl-struct-slot-value (cl-inst-classname obj) 'plist obj)
-       plist-prop val))))
+       plist-prop value))))
+
+(cl-defmethod occ-set-property ((obj occ-tree-tsk)
+                                prop
+                                value)
+  ;; TODO: do it recursively.
+  ;; mainly used by occ-tsk only
+  (cl-call-next-method)
+  (dolist (subtsk (occ-tree-tsk-subtree (occ-obj-tsk obj)))
+    (occ-set-property subtsk prop value)))
 
 
 (cl-defmethod occ-get-properties ((obj occ-obj)
