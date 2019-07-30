@@ -249,31 +249,26 @@
             retval))))))
 
 
+;; do both fast and interactive editing.
+;; (occ-props-edit obj)
 (cl-defmethod occ-props-edit-combined ((obj occ-obj-ctx-tsk))
-  (let ((tsk (occ-obj-tsk obj))
-        (ctx (occ-obj-ctx obj)))
-
-    ;; do both fast and interactive editing.
-    ;; (occ-props-edit obj)
-
-    (let* ((sources (list
-                     (helm-build-sync-source "fast edit"
-                       :candidates (occ-gen-edits-if-required obj nil nil :param-only t)
-                       :action #'funcall)
-                     (helm-build-sync-source "edit"
-                       :candidates (list
-                                    (cons "Edit" #'(lambda () (occ-props-edit obj))))
-                       :action (list
-                                (cons "Edit" #'funcall)))
-                     (helm-build-sync-source "other"
-                       :candidates '(("Continue" . t)
-                                     ("Edit")
-                                     ("Checkout" . checkout)))))
-           (retval
-            (helm-timed 7
-              (helm :sources sources))))
-      (if (eq retval t)
-          t))))
+  (let* ((sources (list
+                   (helm-build-sync-source "fast edit"
+                     :candidates (occ-gen-edits-if-required obj nil nil :param-only t)
+                     :action (cons "Edit" #'funcall))
+                   (helm-build-sync-source "edit"
+                     :candidates (list
+                                  (cons "Edit" #'(lambda () (occ-props-edit obj))))
+                     :action (cons "Edit" #'funcall))
+                   (helm-build-sync-source "other"
+                     :candidates '(("Continue" . t)
+                                   ("Edit")
+                                   ("Checkout" . checkout)))))
+         (retval
+          (helm-timed 7
+            (helm :sources sources))))
+    (if (eq retval t)
+        t)))
 
 
 (cl-defmethod occ-props-edit-in-cloned-buffer ((obj occ-obj-ctx-tsk))
