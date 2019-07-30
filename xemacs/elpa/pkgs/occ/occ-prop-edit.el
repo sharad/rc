@@ -249,6 +249,28 @@
             retval))))))
 
 
+(cl-defmethod occ-props-edit-combined ((obj occ-obj-ctx-tsk))
+  (let ((tsk (occ-obj-tsk obj))
+        (ctx (occ-obj-ctx obj)))
+
+    ;; do both fast and interactive editing.
+    ;; (occ-props-edit obj)
+
+    (let ((retval
+           (helm-timed 7
+             (helm
+              (helm-build-sync-source "edit"
+                :candidates (append
+                             '(("Continue" . t)
+                               ("Checkout" . checkout))
+                             (occ-gen-edits-if-required obj nil nil :param-only t)))))))
+      (if (eq retval t)
+          t
+        (prog1
+            nil
+          (apply #'occ-editprop obj retval))))))
+
+
 (cl-defmethod occ-props-edit-in-cloned-buffer ((obj occ-obj-ctx-tsk))
   (occ-debug :debug "occ-props-edit-in-cloned-buffer: begin")
   (let ((mrk (occ-obj-marker obj)))
