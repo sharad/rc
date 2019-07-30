@@ -260,12 +260,12 @@
                             (let* ((name        (cdr (assoc 'name source)))
                                    (ncandidates (cdr (assoc name list))))
                               ncandidates))))
-         (h-candidate-transformer (if noclass
-                                      #'(lambda (candidates source)
-                                          candidates)
-                                    #'(lambda (candidates source)
-                                        (message "candidates length %d" (length candidates))
-                                        candidates)))
+         ;; (h-candidate-transformer (if noclass
+         ;;                              #'(lambda (candidates source)
+         ;;                                  candidates)
+         ;;                            #'(lambda (candidates source)
+         ;;                                (message "candidates length %d" (length candidates))
+         ;;                                candidates)))
          (sources (if noclass
                       (helm-build-sync-source           "templates"
                         :keymap                         h-map
@@ -283,7 +283,7 @@
                                     ;; :match (list #'(lambda (c) t))
                                     :candidates                     #'(lambda () (cdr (assoc class list)))
                                     :multiline                      t
-                                    :filtered-candidate-transformer h-candidate-transformer
+                                    ;; :filtered-candidate-transformer h-candidate-transformer
                                     ;; :filter-one-by-one #'h-candidate-transformer
                                     :action-transformer             h-action-transformer))
                               classes))))

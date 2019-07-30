@@ -69,6 +69,10 @@
                                    ops)
   (let ((tsk (occ-obj-tsk obj))
         (ctx (occ-obj-ctx obj)))
+
+    ;; do both fast and interactive editing.
+    ;; (occ-props-edit obj)
+
     (let ((retval
            (helm-timed 7
              (helm
