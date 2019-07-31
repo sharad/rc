@@ -33,9 +33,17 @@
 (require 'occ-list-filter)
 (require 'occ-helm)
 
+(cl-defgeneric occ-list-select-internal (obj
+                                         &key
+                                         filters
+                                         builder
+                                         action
+                                         action-transformer
+                                         auto-select-if-only
+                                         timeout)
+  "occ-list-select-internal")
 
 (cl-defmethod occ-list-select-internal ((obj        occ-ctx)
-                                        (candidates list)
                                         &key
                                         filters
                                         builder
@@ -50,8 +58,8 @@
             (timeout            (or timeout occ-idle-timeout)))
         (if (and
              auto-select-if-only
-             (= 1 (length candidates)))
-            (let* ((candidate (car candidates))
+             (= 1 (occ-length)))
+            (let* ((candidate (car (occ-list obj :builder)))
                    (action    (car (funcall action-transformer action candidate)))
                    (action    (if (consp action) (cdr action) action)))
               (funcall action candidate))
@@ -59,15 +67,24 @@
              ;; :keymap occ-helm-map
              :sources
              (occ-helm-build-candidates-source obj
-                                               candidates
-                                               :filter              filters
-                                               :builder             builder
+                                               :filters            filters
+                                               :builder            builder
                                                :action             action
                                                :action-transformer action-transformer))))
     (occ-debug :debug "Running occ-sacha-helm-select1")))
 
+(cl-defgeneric occ-list-select ((obj        occ-ctx)
+                                &key
+                                filters
+                                builder
+                                return-transform
+                                action
+                                action-transformer
+                                auto-select-if-only
+                                timeout)
+  "occ-list-select")
+
 (cl-defmethod occ-list-select ((obj        occ-ctx)
-                               (candidates list)
                                &key
                                filters
                                builder
@@ -83,8 +100,7 @@
       (let ((action             (if return-transform (occ-return-tranform action) action)) ;as return value is going to be used.
             (action-transformer (if return-transform (occ-return-tranformer-fun-transform action-transformer) action-transformer)))
         (let ((selected (occ-list-select-internal obj
-                                                  candidates
-                                                  :filter              filters
+                                                  :filters             filters
                                                   :builder             builder
                                                   :action              action
                                                   :action-transformer  action-transformer
@@ -121,15 +137,10 @@
   (let ((action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
-    (let* ((candidates-unfiltered (occ-list obj :builder builder))
-           (unfiltered-count      (length candidates-unfiltered))
-           (candidates-filtered   (occ-filter obj
-                                              filters
-                                              candidates-unfiltered)))
-      (if candidates-filtered
+    (let* ((unfiltered-count      (occ-length)))
+      (if (> unfiltered-count 0)
           (let ((retval (occ-list-select obj
-                                         candidates-filtered
-                                         :filter              filters
+                                         :filters             filters
                                          :builder             builder
                                          :return-transform    return-transform
                                          :action              action

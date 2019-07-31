@@ -485,5 +485,8 @@ pointing to it."
   "return TSKs container"
   (occ-list (occ-make-ctx-at-point)
             :builder builder))
+
+(cl-defmethod occ-length ()
+  (length (occ-collect-list (occ-collection-object))))
 
 ;;; occ-obj-accessor.el ends here
