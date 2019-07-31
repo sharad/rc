@@ -59,15 +59,19 @@
 ;; TODO: Verify all tsk objects
 
 (cl-defmethod occ-verify ((obj occ-obj-tsk))
-  (occ-message "occ-verify: Verifying %s" (occ-format obj #'capitalize))
-  (let ((plist (cl-obj-plist-value obj)))
-    (dolist (prop plist)
-      (occ-message "occ-verify: verifying %s" prop)
+  (occ-message "occ-verify: Verifying %s" (occ-format obj 'capitalize))
+  (let ((plist-keys (mapcar #'key2sym
+                            (occ-plist-get-keys (cl-obj-plist-value (occ-obj-tsk obj))))))
+    (occ-message "plist (%s)" plist-keys)
+    (dolist (prop plist-keys)
+      ;; (occ-message "occ-verify: verifying %s" prop)
       (let ((org-prop-value (occ-org-entry-get (occ-obj-marker obj) (symbol-name prop)))
-            (occ-prop-value (occ-property-get (occ-obj-tsk obj) prop)))
-        (when prop-value
-          (unless (string= prop-value (occ-prop-elem-to-org prop occ-prop-value))
-            (occ-message "prop %s not correct")))))))
+            (occ-prop-value (occ-get-property (occ-obj-tsk obj) prop)))
+        (when (and org-prop-value
+                   occ-prop-value)
+          (if (string= org-prop-value (occ-prop-elem-to-org prop occ-prop-value))
+              (occ-message "prop %s is correct" prop)
+            (occ-message "prop %s not correct" prop)))))))
 
 (cl-defmethod occ-verify ((obj occ-collection))
   (dolist (tsk (occ-list nil))

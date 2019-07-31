@@ -250,6 +250,15 @@ pointing to it."
   (cons (occ-format obj nil t) obj))
 
 
+(cl-defmethod occ-call-with-obj ((obj occ-obj-tsk))
+  (let ((fun (let ((obj obj)
+                   (exp-with-obj (read)))
+               #'(lambda ()
+                   (funcall
+                    `(lambda () ,exp-with-obj))))))
+    (funcall fun)))
+
+
 ;; (cl-defmethod occ-marker-tsk-with ((sym null))
 ;;   nil)
 

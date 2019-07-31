@@ -255,11 +255,11 @@
   (let* ((sources (list
                    (helm-build-sync-source "fast edit"
                      :candidates (occ-gen-edits-if-required obj nil nil :param-only t)
-                     :action (cons "Edit" #'funcall))
+                     :action (list (cons "Edit" #'funcall)))
                    (helm-build-sync-source "edit"
                      :candidates (list
                                   (cons "Edit" #'(lambda () (occ-props-edit obj))))
-                     :action (cons "Edit" #'funcall))
+                     :action (list (cons "Edit" #'funcall)))
                    (helm-build-sync-source "other"
                      :candidates '(("Continue" . t)
                                    ("Checkout" . checkout)))))

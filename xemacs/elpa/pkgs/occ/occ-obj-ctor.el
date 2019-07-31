@@ -125,7 +125,9 @@
                                     (symbol-name prop)))
                          (val (org-entry-get nil propstr inherit)))
                     (unless (occ-get-property tsk prop)
-                      (occ-set-property tsk prop val))))))
+                      ;; What is the solution
+                      (occ-set-property tsk prop val :not-recursive t)))))
+              (progn "set :plist here"))
             (occ-reread-props tsk)      ;reset list properties
             tsk))))
 

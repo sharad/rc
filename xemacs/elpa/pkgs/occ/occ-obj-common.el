@@ -76,7 +76,8 @@
 
 (cl-defmethod occ-set-property ((obj occ-obj)
                                 prop
-                                value)
+                                value
+                                &key not-recursive)
   ;; mainly used by occ-tsk only
   (if (memq prop (cl-class-slots (cl-inst-classname obj)))
       (setf (cl-struct-slot-value (cl-inst-classname obj) prop obj) value)
@@ -95,12 +96,16 @@
 
 (cl-defmethod occ-set-property ((obj occ-tree-tsk)
                                 prop
-                                value)
+                                value &key not-recursive)
   ;; TODO: do it recursively.
   ;; mainly used by occ-tsk only
   (cl-call-next-method)
-  (dolist (subtsk (occ-tree-tsk-subtree (occ-obj-tsk obj)))
-    (occ-set-property subtsk prop value)))
+  (when not-recursive
+    (dolist (subtsk (occ-tree-tsk-subtree (occ-obj-tsk obj)))
+      (occ-set-property subtsk
+                        prop
+                        value
+                        :not-recursive not-recursive))))
 
 
 (cl-defmethod occ-get-properties ((obj occ-obj)

@@ -87,6 +87,7 @@
   (occ-helm-action-add :set-to                   "Set To"                   #'occ-set-to)
   (occ-helm-action-add :proprty-window-edit      "Proprtes Window Edit"     #'occ-props-window-edit) ;TODO: implement it.
   (occ-helm-action-add :proprty-edit-combined    "Proprtes Edit Combined"   #'occ-props-edit-combined) ;TODO: implement it.
+  (occ-helm-action-add :call-with-obj            "Call with object"         #'occ-call-with-obj)
   (occ-helm-action-add :rank                     "Get Rank"                 #'occ-print-rank)
   (occ-helm-action-add :tsk                      "Get Task"                 #'occ-print-tsk))
 
@@ -95,6 +96,8 @@
   (occ-helm-actions-get :procreate-child
                         :procreate-child-clock-in
                         :proprty-window-edit
+                        :proprty-edit-combined
+                        :call-with-obj
                         :try-clock-in
                         :goto
                         :rank
@@ -105,6 +108,8 @@
                         :procreate-child
                         :procreate-child-clock-in
                         :proprty-window-edit
+                        :proprty-edit-combined
+                        :call-with-obj
                         :try-clock-in
                         :goto
                         :rank
@@ -117,6 +122,8 @@
                         :procreate-child
                         :procreate-child-clock-in
                         :proprty-window-edit
+                        :proprty-edit-combined
+                        :call-with-obj
                         :try-clock-in
                         :goto
                         :rank
