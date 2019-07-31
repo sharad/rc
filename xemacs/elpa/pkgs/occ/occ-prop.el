@@ -311,6 +311,16 @@
       (string= (car values) (occ-org-entry-get pom prop-string)))))
 
 
+(cl-defmethod occ-org-operation ((obj occ-obj-tsk)
+                                 (operation symbol)
+                                 (prop symbol)
+                                 values)
+  (occ-org-operation (occ-obj-marker obj)
+                     operation
+                     prop
+                     values))
+
+
 (cl-defgeneric occ-org-update-property (pom
                                         prop
                                         operation
