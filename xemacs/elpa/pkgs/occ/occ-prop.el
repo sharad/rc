@@ -622,8 +622,15 @@
                                    value
                                    &key param-only)
   (cons
-   (occ-gen-prompt obj prop operation value)
-   (occ-gen-edit obj prop operation value :param-only param-only)))
+   (occ-gen-prompt obj
+                   prop
+                   operation
+                   value)
+   (occ-gen-edit obj
+                 prop
+                 operation
+                 value
+                 :param-only param-only)))
 
 
 (cl-defmethod occ-gen-edit-if-required ((obj occ-obj-tsk)
@@ -632,9 +639,9 @@
                                         value
                                         &key param-only)
   (when (occ-require-p obj
-                        operation
-                        prop
-                        value)
+                       operation
+                       prop
+                       value)
     (occ-gen-prompt-edit obj
                          prop
                          operation
@@ -702,4 +709,31 @@
         (occ-checkout obj
                       prop))))
 
-;;; occ-prop.el ends here
+
+;; (cl-defmethod occ-props-edit-combined ((obj occ-obj-ctx-tsk))
+;;   (let* ((sources (list
+;;                    (helm-build-sync-source "fast edit"
+;;                      :candidates (occ-gen-edits-if-required obj nil nil :param-only t)
+;;                      :action (list (cons "Edit" #'funcall)))
+;;                    (helm-build-sync-source "edit"
+;;                      :candidates (list
+;;                                   (cons "Edit" #'(lambda () (occ-props-edit obj))))
+;;                      :action (list (cons "Edit" #'funcall)))
+;;                    (helm-build-sync-source "other"
+;;                      :candidates '(("Continue" . t)
+;;                                    ("Checkout" . checkout)))))
+;;          (retval
+;;           (helm-timed 7
+;;             (helm :sources sources))))
+;;     (if (eq retval t)
+;;         t)))
+
+(cl-defmethod occ-gen-helm-fast-edits ((obj occ-obj-ctx-tsk))
+  (occ-gen-edits-if-required obj nil nil :param-only t))
+(cl-defmethod occ-gen-helm-edits ((obj occ-obj-ctx-tsk))
+  (list
+   (cons "Edit" #'(lambda () (occ-props-edit obj)))))
+(cl-defmethod occ-gen-helm-other ((obj occ-obj-ctx-tsk))
+  '(("Continue" . t)
+    ("Checkout" . checkout)))
+;;; occ-prop.el ends here
