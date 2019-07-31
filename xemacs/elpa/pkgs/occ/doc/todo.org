@@ -133,7 +133,7 @@ It might be shown only if wait timeout happens.
       clocking in to here from last clock <Org Context Clock>
     :END:
 
-*** TODO: Verify all tsk objects
+*** STARTED TODO: Verify all tsk objects
 
 [[file:~/.xemacs/elpa/pkgs/occ/occ-test.el::(defun%20occ-verify%20((obj%20occ-collection))][    Code]]
 
@@ -148,7 +148,11 @@ It might be shown only if wait timeout happens.
 
 
 
-*** TODO In editprop propagate property to childs also
+*** CLOSED In editprop propagate property to childs also
+    CLOSED: [2019-07-31 Wed 15:02]
+    :LOGBOOK:
+    - State "CLOSED"     from "TODO"       [2019-07-31 Wed 15:02]
+    :END:
     [[file:~/.xemacs/elpa/pkgs/occ/occ-obj-common.el::prop][Code]]
     Added unverified changes
 

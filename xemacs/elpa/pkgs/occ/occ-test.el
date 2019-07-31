@@ -60,9 +60,10 @@
 
 (cl-defmethod occ-verify ((obj occ-obj-tsk))
   (occ-message "occ-verify: Verifying %s" (occ-format obj 'capitalize))
-  (let ((plist-keys (mapcar #'key2sym
-                            (occ-plist-get-keys (cl-obj-plist-value (occ-obj-tsk obj))))))
-    (occ-message "plist (%s)" plist-keys)
+  (let ((plist-keys (mapcar #'downcase-sym
+                            (mapcar #'key2sym
+                                    (occ-plist-get-keys (cl-obj-plist-value (occ-obj-tsk obj)))))))
+    ;; (occ-message "plist (%s)" plist-keys)
     (dolist (prop plist-keys)
       ;; (occ-message "occ-verify: verifying %s" prop)
       (let* ((org-prop-value (occ-org-operation (occ-obj-tsk obj) 'get prop nil))
@@ -70,9 +71,9 @@
              (occ-prop-value (occ-get-property (occ-obj-tsk obj) prop)))
         (when (and org-prop-value
                    occ-prop-value)
-          (if (string= org-prop-value (occ-prop-elem-to-org prop occ-prop-value))
+          (if (equal org-prop-value (occ-prop-elem-to-org prop occ-prop-value))
               (occ-message "prop %s is correct" prop)
-            (occ-message "prop %s not correct" prop)))))))
+            (occ-message "prop %s NOT correct" prop)))))))
 
 (cl-defmethod occ-verify ((obj occ-collection))
   (dolist (tsk (occ-list nil))

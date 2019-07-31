@@ -257,6 +257,29 @@
    (occ-helm-dummy-source "Create template tsk" #'occ-procreate-child-clock-in)))
 
 
+(cl-defmethod occ-helm-build-candidates-source ((obj occ-ctx)
+                                                &key
+                                                unfiltered-count
+                                                filters
+                                                builder
+                                                action
+                                                action-transformer)
+  (list
+   (let ((unfiltered-count (or unfiltered-count 0)))
+     (when candidates
+       (helm-build-sync-source (format "Select matching %s(%d/%d)"
+                                       (symbol-name (cl-inst-classname (car candidates)))
+                                       (length candidates)
+                                       unfiltered-count)
+         :candidates (mapcar #'occ-candidate candidates)
+         ;; :action actions
+         :filtered-candidate-transformer nil
+         :action-transformer action-transformer
+         :history 'org-refile-history)))
+   (occ-helm-dummy-source "Create fast tsk"     #'occ-fast-procreate-child-clock-in)
+   (occ-helm-dummy-source "Create template tsk" #'occ-procreate-child-clock-in)))
+
+
 (cl-defgeneric occ-helm-select (obj
                                 &key
                                 filters

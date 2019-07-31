@@ -78,7 +78,7 @@
       (let ((action             (if return-transform (occ-return-tranform action) action)) ;as return value is going to be used.
             (action-transformer (if return-transform (occ-return-tranformer-fun-transform action-transformer) action-transformer)))
         (let ((selected (occ-list-select-internal candidates
-                                                  :unfiltered-count   unfiltered-count
+                                                  :unfiltered-count    unfiltered-count
                                                   :action              action
                                                   :action-transformer  action-transformer
                                                   :auto-select-if-only auto-select-if-only
