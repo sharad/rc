@@ -237,17 +237,6 @@
    actions))
 
 
-(cl-defgeneric occ-helm-build-candidates-source (obj
-                                                 &key
-                                                 unfiltered-count
-                                                 filters
-                                                 builder
-                                                 action
-                                                 action-transformer
-                                                 auto-select-if-only
-                                                 timeout)
-  "occ-helm-build-candidates-source")
-
 (cl-defmethod occ-helm-build-candidates-source ((obj        occ-ctx)
                                                 (candidates list)
                                                 &key
@@ -258,16 +247,16 @@
                                                 action-transformer
                                                 auto-select-if-only
                                                 timeout)
-  (list
-   (let ((filtered-count (length candidates))
-         (called-never   t))
+  (let ((filtered-count (length candidates)
+         (called-never   t)))
      (let ((gen-candidates   #'(lambda ()
                                  (mapcar #'occ-candidate
                                          (if called-never
                                              (progn
                                                (setq called-never nil)
                                                candidates)
-                                           (let* (((candidates-unfiltered (occ-list obj :builder builder))
+                                           (let* (((candidates-unfiltered (occ-list obj
+                                                                                    :builder builder))
                                                    (candidates-filtered   (occ-filter obj
                                                                                       filters
                                                                                       candidates-unfiltered))))
@@ -281,13 +270,34 @@
                      unfiltered-count
                      filtered-count)
            ;; :header-name
-           :candidates                     #'(lambda () (funcall gen-candidates))
+           :candidates                     #'(lambda ()
+                                               (funcall gen-candidates))
            :action                         action
            :filtered-candidate-transformer nil
            :action-transformer             action-transformer
-           :history                        'org-refile-history))))
+           :history                        'org-refile-history)))))
+
+(cl-defmethod occ-helm-build-candidates-sources ((obj        occ-ctx)
+                                                 (candidates list)
+                                                 &key
+                                                 unfiltered-count
+                                                 filters
+                                                 builder
+                                                 action
+                                                 action-transformer
+                                                 auto-select-if-only
+                                                 timeout)
+  (list
+   (occ-helm-build-candidates-source obj
+                                     candidates
+                                     :unfiltered-count   unfiltered-count
+                                     :filters            filters
+                                     :builder            builder
+                                     :action             action
+                                     :action-transformer action-transformer)
    (occ-helm-dummy-source "Create fast tsk"     #'occ-fast-procreate-child-clock-in)
    (occ-helm-dummy-source "Create template tsk" #'occ-procreate-child-clock-in)))
+
 
 
 (cl-defgeneric occ-helm-select (obj

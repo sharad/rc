@@ -64,13 +64,13 @@
               (helm
                ;; :keymap occ-helm-map
                :sources
-               (occ-helm-build-candidates-source obj
-                                                 candidates-filtered
-                                                 :unfiltered-count   unfiltered-count
-                                                 :filters            filters
-                                                 :builder            builder
-                                                 :action             action
-                                                 :action-transformer action-transformer))))))
+               (occ-helm-build-candidates-sources obj
+                                                  candidates-filtered
+                                                  :unfiltered-count   unfiltered-count
+                                                  :filters            filters
+                                                  :builder            builder
+                                                  :action             action
+                                                  :action-transformer action-transformer))))))
     (occ-debug :debug "Running occ-sacha-helm-select1")))
 
 (cl-defmethod occ-list-select ((obj occ-ctx)
