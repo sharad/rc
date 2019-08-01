@@ -239,6 +239,7 @@
 
 (cl-defgeneric occ-helm-build-candidates-source (obj
                                                  &key
+                                                 unfiltered-count
                                                  filters
                                                  builder
                                                  action
@@ -248,7 +249,9 @@
   "occ-helm-build-candidates-source")
 
 (cl-defmethod occ-helm-build-candidates-source ((obj        occ-ctx)
+                                                (candidates list)
                                                 &key
+                                                unfiltered-count
                                                 filters
                                                 builder
                                                 action
@@ -256,24 +259,33 @@
                                                 auto-select-if-only
                                                 timeout)
   (list
-   (let ((unfiltered-count (occ-length))
-         (gen-candidates   #'(lambda ()
-                               (let ((candidates (occ-list obj :builder builder)))
+   (let ((filtered-count (length candidates))
+         (called-never   t))
+     (let ((gen-candidates   #'(lambda ()
                                  (mapcar #'occ-candidate
-                                         (occ-filter obj
-                                                     filters
-                                                     candidates))))))
-     (when (> unfiltered-count 0)
-       (helm-build-sync-source
-           ;; (format "Select matching %s(%d/%d)"
-           ;;         (symbol-name (cl-inst-classname (car candidates)))
-           ;;         unfiltered-count)
-           "Select matching"
+                                         (if called-never
+                                             (progn
+                                               (setq called-never nil)
+                                               candidates)
+                                           (let* (((candidates-unfiltered (occ-list obj :builder builder))
+                                                   (candidates-filtered   (occ-filter obj
+                                                                                      filters
+                                                                                      candidates-unfiltered))))
+                                             (setq filtered-count
+                                                   (length candidates-filtered))
+                                             candidates-filtered))))))
+       (when (> unfiltered-count 0)
+         (helm-build-sync-source
+             (format "Select matching %s(%d/%d)"
+                     (symbol-name (cl-inst-classname (car candidates)))
+                     unfiltered-count
+                     filtered-count)
+           ;; :header-name
            :candidates                     #'(lambda () (funcall gen-candidates))
            :action                         action
            :filtered-candidate-transformer nil
            :action-transformer             action-transformer
-           :history                        'org-refile-history)))
+           :history                        'org-refile-history))))
    (occ-helm-dummy-source "Create fast tsk"     #'occ-fast-procreate-child-clock-in)
    (occ-helm-dummy-source "Create template tsk" #'occ-procreate-child-clock-in)))
 

@@ -33,17 +33,8 @@
 (require 'occ-list-filter)
 (require 'occ-helm)
 
-(cl-defgeneric occ-list-select-internal (obj
-                                         &key
-                                         filters
-                                         builder
-                                         action
-                                         action-transformer
-                                         auto-select-if-only
-                                         timeout)
-  "occ-list-select-internal")
 
-(cl-defmethod occ-list-select-internal ((obj        occ-ctx)
+(cl-defmethod occ-list-select-internal ((obj occ-ctx)
                                         &key
                                         filters
                                         builder
@@ -54,37 +45,35 @@
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
   (occ-debug :debug "Running occ-sacha-helm-select")
   (prog1
-      (let ((action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
-            (timeout            (or timeout occ-idle-timeout)))
-        (if (and
-             auto-select-if-only
-             (= 1 (occ-length)))
-            (let* ((candidate (car (occ-list obj :builder)))
-                   (action    (car (funcall action-transformer action candidate)))
-                   (action    (if (consp action) (cdr action) action)))
-              (funcall action candidate))
-            (helm
-             ;; :keymap occ-helm-map
-             :sources
-             (occ-helm-build-candidates-source obj
-                                               :filters            filters
-                                               :builder            builder
-                                               :action             action
-                                               :action-transformer action-transformer))))
+      (let ((action-transformer  (or action-transformer #'occ-helm-action-transformer-fun))
+            (timeout             (or timeout occ-idle-timeout)))
+
+        (let* ((candidates-unfiltered (occ-list obj :builder builder))
+               (unfiltered-count      (length candidates-unfiltered))
+               (candidates-filtered   (occ-filter obj
+                                                  filters
+                                                  candidates-unfiltered)))
+          (when candidates-filtered
+            (if (and
+                 auto-select-if-only
+                 (= 1 (length candidates-filtered)))
+                (let* ((candidate (car candidates-filtered))
+                       (action    (car (funcall action-transformer action candidate)))
+                       (action    (if (consp action) (cdr action) action)))
+                  (funcall action candidate))
+              (helm
+               ;; :keymap occ-helm-map
+               :sources
+               (occ-helm-build-candidates-source obj
+                                                 candidates-filtered
+                                                 :unfiltered-count   unfiltered-count
+                                                 :filters            filters
+                                                 :builder            builder
+                                                 :action             action
+                                                 :action-transformer action-transformer))))))
     (occ-debug :debug "Running occ-sacha-helm-select1")))
 
-(cl-defgeneric occ-list-select ((obj        occ-ctx)
-                                &key
-                                filters
-                                builder
-                                return-transform
-                                action
-                                action-transformer
-                                auto-select-if-only
-                                timeout)
-  "occ-list-select")
-
-(cl-defmethod occ-list-select ((obj        occ-ctx)
+(cl-defmethod occ-list-select ((obj occ-ctx)
                                &key
                                filters
                                builder
