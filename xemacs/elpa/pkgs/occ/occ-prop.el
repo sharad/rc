@@ -28,6 +28,7 @@
 
 
 (require 'dash)
+;; (require 'subr)
 (require 'org-misc-utils-lotus)
 
 
