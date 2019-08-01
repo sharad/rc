@@ -42,7 +42,7 @@
 ;; believe it need not be here
 ;; (eval-after-load "ido"
 ;;   '(lotus-disable-startup-interrupting-feature))
-(require 'buffer-move nil t)n
+(require 'buffer-move nil t)
 
 
 ;; Finally, to flip sequentially through buffers (like Alt-Tab in a

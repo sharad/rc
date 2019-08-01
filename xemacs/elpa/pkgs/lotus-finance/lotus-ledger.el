@@ -27,7 +27,7 @@
 (provide 'lotus-ledger)
 
 
-(require 'ledger)
+;; (require 'ledger)
 
 
 ;; https://c-tan.com/post/ledger-org-babel-example/

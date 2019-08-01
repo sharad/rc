@@ -404,6 +404,7 @@
     (push "~/.xemacs/pkgrepos/mypkgs/pa-planner" load-path)
     (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path))
 
+  ;; Old order
   (progn
     (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
     ;; remove this
@@ -426,6 +427,9 @@
 
   ;; (require 'lotus-utils)
 
+
+  ;; New order
+  ;; (add-to-list 'load-path "~/.xemacs/pkgrepos/spacemacs/misc/world/uncatagegoriged")
 
   (progn
     (unless(assoc "gnu" package-archives)
@@ -481,7 +485,7 @@
 
 
   (when (require 'cl nil) ; a rare necessary use of REQUIRE
-                                        ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
+    ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
     (defvar *emacs-load-start* (current-time)))
 
   (defconst *work-dir*

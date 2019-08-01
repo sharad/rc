@@ -26,6 +26,11 @@
 
 
 (require 'ert)
+
+
+(require 'org-context-clock-api-common)
+(require 'org-context-clock)
+
 
 (ert-deftest test-task-run-associated-clock ()
   (should
@@ -44,23 +49,36 @@
  (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
 
 (org-context-clock-task-associated-to-context-p
- (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
+ (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"))
+ (org-context-clock-build-context))
 
 (org-context-clock-markers-associated-to-context (org-context-clock-build-context))
 
-(org-context-clock-task-associated-to-context-p (org-context-clock-build-context))
+;; (org-context-clock-task-associated-to-context-p (org-context-clock-build-context))
 
 ;; sharad
-(setq test-info-task
-      (let ((xcontext
-             (list
-              :file (buffer-file-name)
-              :buffer (current-buffer))))
-        (org-with-clock-position (list org-clock-marker)
-          (org-previous-visible-heading 1)
-          (let ((info (org-context-clock-collect-task)))
-            (if (funcall org-context-clock-api-task-associated-to-context-p info xcontext)
-                info)))))
+(when (and org-clock-marker
+           (marker-buffer org-clock-marker))
+  (setq test-info-task
+        (let ((xcontext
+               (list
+                :file (buffer-file-name)
+                :buffer (current-buffer))))
+          (org-with-clock-position (list org-clock-marker)
+            (org-previous-visible-heading 1)
+            (let ((info (org-context-clock-collect-task)))
+              (if (funcall org-context-clock-api-task-associated-to-context-p info xcontext)
+                  info)))))
+
+
+  (funcall org-context-clock-api-task-associated-to-context-p
+           test-info-task
+           (org-context-clock-build-context))
+
+  ;; org-clock-marker
+  (org-tasks-associated-key-fn-value
+   :current-clock test-info-task
+   (org-context-clock-build-context)))
 
 (funcall org-context-clock-api-task-associated-to-context-p
          (org-context-clock-task-current-task)
@@ -71,20 +89,11 @@
 
 ;; (test-info-task)
 
-(funcall org-context-clock-api-task-associated-to-context-p
-         test-info-task
-         (org-context-clock-build-context))
+;; (org-context-clock-task-associated-to-context-p
+;;  (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
 
-;; org-clock-marker
-(org-tasks-associated-key-fn-value
- :current-clock test-info-task
- (org-context-clock-build-context) )
-
-(org-context-clock-task-associated-to-context-p
- (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
-
-(org-context-clock-task-associated-to-context-p
- (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/features/patch-mgm/todo.org")))
+;; (org-context-clock-task-associated-to-context-p
+;;  (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/features/patch-mgm/todo.org")))
 
 ;; (org-task-associated-context-org-context-p
 ;;  "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"
@@ -105,23 +114,23 @@
  (funcall org-context-clock-api-tasks-associated-to-context
           (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"))))
 
-(length
- (org-context-clock-tasks-associated-to-context-by-keys
-  (org-context-clock-build-context)))
+;; (length
+;;  (org-context-clock-tasks-associated-to-context-by-keys
+;;   (org-context-clock-build-context)))
 
 
-(length
- (org-context-clock-tasks-associated-to-context-by-keys
-  (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile"))))
+;; (length
+;;  (org-context-clock-tasks-associated-to-context-by-keys
+;;   (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile"))))
 
-(org-context-clock-task-associated-to-context-p
- (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile")))
+;; (org-context-clock-task-associated-to-context-p
+;;  (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile")))
 
 ;; (org-context-clock-task-associated-to-context-by-keys "/home/s/paradise/releases/global/patch-upgrade/Makefile")
 
-(if (org-context-clock-task-associated-to-context-p
-     (org-context-clock-build-context))
-    (message "current clock is with current context or file"))
+;; (if (org-context-clock-task-associated-to-context-p
+;;      (org-context-clock-build-context))
+;;     (message "current clock is with current context or file"))
 
 (provide 'test-org-context-clock)
 ;;; org-context-clock.el ends here
