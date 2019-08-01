@@ -66,6 +66,36 @@
 (put 'occ-aggrigate-list-rank 'lisp-indent-function 3)
 
 
+(defmacro occ-generate-plist-functions (prefix item)
+  (let* ((plist  (intern (concat (symbol-name prefix) "-" (symbol-name item) "-plist")))
+         (clear  (intern (concat (symbol-name prefix) "-" (symbol-name item) "-clear")))
+         (set    (intern (concat (symbol-name prefix) "-" (symbol-name item) "-set")))
+         (get    (intern (concat (symbol-name prefix) "-" (symbol-name item) "-get")))
+         (allget (intern (concat (symbol-name prefix) "-" (symbol-name item) "s-get"))))
+    `(progn
+
+       (defvar ,plist nil)
+
+       (defun ,clear ()
+         (setq ,plist nil))
+
+       (defun ,set (key name ,item)
+         (setq ,plist
+               (plist-put
+                ,plist
+                key (cons name ,item))))
+
+       (defun ,get (key)
+         (plist-get ,plist key))
+
+       (defun ,allget (&rest keys)
+         (let ((items nil))
+           (dolist (key keys)
+             (let ((name-item (,get key)))
+               (when name-item
+                 (setf items (nconc items (list name-item))))))
+           items)))))
+
 (defun occ-get-location ())
 
 (when nil

@@ -748,13 +748,28 @@
 ;;     (if (eq retval t)
 ;;         t)))
 
-(cl-defmethod occ-gen-helm-fast-edits ((obj occ-obj-ctx-tsk))
-  (occ-gen-edits-if-required obj nil nil :param-only t))
-(cl-defmethod occ-gen-helm-edits ((obj occ-obj-ctx-tsk))
+(cl-defmethod occ-gen-helm-fast-edits ((obj occ-obj-ctx-tsk)
+                                       &key param-only)
+  (occ-gen-edits-if-required obj nil nil
+                             :param-only param-only))
+(cl-defmethod occ-gen-helm-edits ((obj occ-obj-ctx-tsk) &param-only param-only)
   (list
    (cons "Edit" #'(lambda () (occ-props-edit obj)))))
-(cl-defmethod occ-gen-helm-other ((obj occ-obj-ctx-tsk))
+(cl-defmethod occ-gen-helm-misc ((obj occ-obj-ctx-tsk))
   '(("Continue" . t)
     ("Checkout" . checkout)))
+(cl-defmethod occ-gen-helm-checkouts ((obj occ-obj-ctx-tsk))
+  (occ-gen-checkouts obj))
+
+
+(occ-generate-plist-functions occ-action generator)
+(occ-action-generator-clear)
+(occ-action-generator-set :fast-edits "Fast Edits" #'occ-gen-helm-fast-edits)
+(occ-action-generator-set :fast-edits "Edit"       #'occ-gen-helm-edits)
+(occ-action-generator-set :fast-edits "Misc"       #'occ-gen-helm-misc)
+(occ-action-generator-set :fast-edits "checkouts"  #'occ-gen-helm-checkouts)
+
+;; TODO: Implement Plist with title here
+
 
 ;;; occ-prop.el ends here
