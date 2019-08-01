@@ -128,43 +128,41 @@
                         :goto
                         :rank
                         :tsk))
+
 
 (cl-defmethod occ-helm-actions ((obj null))
   (occ-helm-general-actions))
 
 (cl-defmethod occ-helm-actions ((obj occ-obj))
   (occ-helm-general-actions))
+
 
 ;; (cl-defmethod occ-helm-actions ((obj occ-ctx))
 ;;   (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
 
 
 (cl-defmethod occ-helm-action-transformer ((obj null) actions)
-  (occ-helm-actions obj))
-
-(cl-defmethod occ-helm-action-transformer ((obj occ-obj-tsk) actions)
-  (occ-helm-actions obj))
-
-(cl-defmethod occ-helm-action-transformer ((obj occ-obj-ctx-tsk) actions)
-  ;; (message "occ-helm-action-transformer: %s"
-  ;;          (occ-gen-edits-for-add-remove obj))
-  ;; (occ-helm-actions obj)
   (append
    (occ-helm-actions obj)
-   ;; (occ-gen-edits-for-add-remove obj)
    (occ-gen-edits-if-required obj nil nil)))
 
+(cl-defmethod occ-helm-action-transformer ((obj occ-obj-tsk) actions)
+  (append
+   (occ-helm-actions obj)
+   (occ-gen-edits-if-required obj nil nil)))
+
+;; (cl-defmethod occ-helm-action-transformer ((obj occ-obj-ctx-tsk) actions)
+;;   ;; (message "occ-helm-action-transformer: %s"
+;;   ;;          (occ-gen-edits-for-add-remove obj))
+;;   ;; (occ-helm-actions obj)
+;;   (append
+;;    (occ-helm-actions obj)
+;;    ;; (occ-gen-edits-for-add-remove obj)
+;;    (occ-gen-edits-if-required obj nil nil)))
+
 
 (cl-defun occ-helm-action-transformer-fun (action candidate)
   (occ-helm-action-transformer candidate action))
-
-;; (cl-defmethod occ-helm-action-transformer ((obj occ-ctx) actions)
-;;   (list
-;;    (cons "Clock-in" #'occ-clock-in)
-;;    (cons "Child"    #'occ-procreate-child)))
-
-;; (cl-defmethod occ-helm-action-transformer ((obj occ-ctxual-tsk) actions)
-;;   (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
 
 
 (cl-defmethod occ-props-edit-helm-actions ((obj null))
@@ -247,19 +245,19 @@
                                                 action-transformer
                                                 auto-select-if-only
                                                 timeout)
-  (let ((filtered-count (length candidates)
-         (called-never   t)))
+  (let ((filtered-count (length candidates))
+        (called-never   t))
      (let ((gen-candidates   #'(lambda ()
                                  (mapcar #'occ-candidate
                                          (if called-never
                                              (progn
                                                (setq called-never nil)
                                                candidates)
-                                           (let* (((candidates-unfiltered (occ-list obj
-                                                                                    :builder builder))
-                                                   (candidates-filtered   (occ-filter obj
-                                                                                      filters
-                                                                                      candidates-unfiltered))))
+                                           (let* ((candidates-unfiltered (occ-list obj
+                                                                                   :builder builder))
+                                                  (candidates-filtered   (occ-filter obj
+                                                                                     filters
+                                                                                     candidates-unfiltered)))
                                              (setq filtered-count
                                                    (length candidates-filtered))
                                              candidates-filtered))))))

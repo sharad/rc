@@ -107,7 +107,7 @@
 (cl-defmethod occ-properties-to-edit ((obj occ-obj-ctx-tsk))
   (cl-method-sigs-matched-arg
    '(occ-readprop-elem-from-user (`(occ-obj-ctx-tsk (eql ,val)) val))
-   '(occ-get-property  (`(occ-ctx (eql ,val)) val))
+   '(occ-get-property            (`(occ-ctx (eql ,val)) val))
    (occ-obj-ctx obj)))
 
 
@@ -125,19 +125,6 @@
   (occ-properties-to-inherit 'occ-obj-ctx-tsk))
 
 
-;; (cl-defmethod occ-properties-to-calcuate-rank ((class symbol))
-;;   (let ((exclass (list '\` `(,class (eql ,'(\, val))))))
-;;     (funcall
-;;      `(lambda ()
-;;         (cl-method-param-case '(occ-rankprop (,exclass val)))))))
-
-;; (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-tsk))
-;;   (apply #'append
-;;          (mapcar #'(lambda (class)
-;;                      (occ-properties-to-calcuate-rank class))
-;;                  (cl-inst-class-names obj))))
-
-
 (cl-defmethod occ-properties-to-calcuate-rank ((class symbol))
   (cl-method-param-values 'occ-rankprop
                           (list '\` `(,class (eql ,'(\, val))))
@@ -145,6 +132,16 @@
 
 (cl-defmethod occ-properties-to-calculate-rank ((obj occ-obj-tsk))
   (cl-collect-on-classes #'occ-properties-to-calcuate-rank
+                         obj))
+
+
+(cl-defmethod occ-properties-to-checkout ((class symbol))
+  (cl-method-param-values 'occ-checkoutprop
+                          (list '\` `(,class (eql ,'(\, val))))
+                          'val))
+
+(cl-defmethod occ-properties-to-checkout ((obj occ-obj-tsk))
+  (cl-collect-on-classes #'occ-properties-to-checkout
                          obj))
 
 
@@ -696,18 +693,41 @@
 
 (cl-defmethod occ-checkout ((obj occ-obj-tsk))
   "Checkout property in case of force clock-in."
-  (error "Implement it for %s: Checkout property in case of force clock-in." prop))
+  (dolist prop (occ-properties-to-checkout)
+          (occ-message "occ-checkout: checkout prop %s" prop)
+          (occ-checkout-prop obj prop)))
 
 
-;; TODO: also accommodate increase decrease etc.
+(cl-defmethod occ-gen-checkout-prompt ((obj occ-obj-tsk)
+                                       (prop      symbol)
+                                       &key param-only)
+  (let ((list-p (occ-list-p prop)))
+    (format "Checkout property %s"
+            prop)))
+
 (cl-defmethod occ-gen-checkout ((obj occ-obj-tsk)
                                 (prop      symbol)
                                 &key param-only)
   (if param-only
       (list prop)
     #'(lambda (obj)
-        (occ-checkout obj
-                      prop))))
+        (occ-checkoutprop obj prop))))
+
+
+(cl-defmethod occ-gen-checkout-if-required ((obj occ-obj-tsk)
+                                            (prop      symbol)
+                                            &key param-only)
+  (if (occ-required-p obj               ;TODO: ctx is require, and resolve function collision.
+                      prop)
+      (occ-gen-checkout obj
+                        prop
+                        :param-only param-only)))
+
+
+(cl-defmethod occ-gen-checkouts ((obj occ-obj-tsk))
+  (remove nil
+          (mapcar #'occ-gen-checkout-if-required
+                  (occ-properties-to-checkout))))
 
 
 ;; (cl-defmethod occ-props-edit-combined ((obj occ-obj-ctx-tsk))
@@ -736,4 +756,5 @@
 (cl-defmethod occ-gen-helm-other ((obj occ-obj-ctx-tsk))
   '(("Continue" . t)
     ("Checkout" . checkout)))
-;;; occ-prop.el ends here
+
+;;; occ-prop.el ends here
