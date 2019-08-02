@@ -57,28 +57,6 @@
     (funcall selector)))
 
 
-;; (occ-action-generator-clear)
-;; (occ-action-generator-set :fast-edits "Fast Edits" #'occ-gen-helm-fast-edits)
-
-;; (defvar occ-helm-actions-plist nil)
-
-;; (defun occ-helm-action-add (key name action)
-;;   (setq occ-helm-actions-plist
-;;         (plist-put
-;;          occ-helm-actions-plist
-;;          key (cons name action))))
-
-;; (defun occ-helm-action-get (key)
-;;   (plist-get occ-helm-actions-plist key))
-
-;; (defun occ-helm-actions-get (&rest keys)
-;;   (let ((actions nil))
-;;     (dolist (key keys)
-;;       (let ((name-action (occ-helm-action-get key)))
-;;         (when name-action
-;;           (setf actions (nconc actions (list name-action))))))
-;;     actions))
-
 (occ-generate-plist-functions occ-helm action)
 (progn
   (occ-helm-action-clear)
