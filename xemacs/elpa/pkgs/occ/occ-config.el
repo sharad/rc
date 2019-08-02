@@ -32,8 +32,17 @@
 
 (defcustom occ-clockout-unassociable-to-unnamed 'ask
   "occ-clockout-unassociable-to-unnamed") ;; TODO: or could ask to continue for TIME(m/h) with current task.
+
 
+;; mozilla config
+;; name type default-value custom-value possible types
 
+;; emacs defcustom
+;; https://emacs.stackexchange.com/questions/15064/how-to-properly-use-defcustom
+;; https://stackoverflow.com/questions/15309548/how-to-set-defcustom-variable
+;; https://www.gnu.org/software/emacs/manual/html_node/eintr/defcustom.html
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Customization-Types.html
+;; https://www.gnu.org/software/emacs/manual/html_node/eintr/defcustom.html
 
 (defun occ-confirm (config
                     msg
@@ -45,6 +54,15 @@
    ((eq config t) t)
    (t nil)))
 
+;; org-agenda-category-icon-alist
+;; https://orgmode.org/manual/Categories.html
+;; org-todo-keywords
+;; ((sequence "TODO(t)" "STARTED" "NEXT(n)" "|" "DONE(d@/!)" "|" "CLOSED(c@/!)")
+;;  (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(C@/!)" "PHONE" "MEETING"))
+
+(cl-defstruct occ-entry-types
+  :sequence
+  :catogery)
 
 
 ;;; occ-config.el ends here

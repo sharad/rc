@@ -77,6 +77,11 @@
   (occ-helm-action-add :tsk                      "Get Task"                 #'occ-print-tsk))
 
 
+;; TODO: Manages sets here.
+
+
+
+
 (defun occ-helm-general-actions ()
   (occ-helm-actions-get :procreate-child
                         :procreate-child-clock-in
@@ -138,10 +143,15 @@
 
 
 (cl-defmethod occ-props-edit-helm-actions ((obj null))
-  (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
+  (occ-helm-actions-get :procreate-child
+                        :procreate-child-clock-in
+                        :proprty-window-edit))
 
 (cl-defmethod occ-props-edit-helm-actions ((obj occ-obj))
-  (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
+  (occ-helm-actions-get :procreate-child
+                        :procreate-child-clock-in
+                        :proprty-window-edit))
+
 
 (cl-defmethod occ-props-edit-helm-action-transformer ((obj null) actions)
   (occ-props-edit-helm-actions obj))
@@ -149,8 +159,8 @@
 (cl-defmethod occ-props-edit-helm-action-transformer ((obj occ-obj-tsk) actions)
   (occ-props-edit-helm-actions obj))
 
-(cl-defmethod occ-props-edit-helm-action-transformer ((obj occ-obj-ctx-tsk) actions)
-  (occ-props-edit-helm-actions obj))
+;; (cl-defmethod occ-props-edit-helm-action-transformer ((obj occ-obj-ctx-tsk) actions)
+;;   (occ-props-edit-helm-actions obj))
 
 (cl-defun occ-props-edit-helm-action-transformer-fun (action candidate)
   (occ-props-edit-helm-action-transformer candidate action))
