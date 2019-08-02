@@ -116,7 +116,9 @@
           (rank       (if (consp funkw-rank) (cadr funkw-rank) rank)))
      ;; (occ-message "occ-apply-recursively: trying funkw-rank= %s funkw= %s" funkw-rank funkw)
      (if funkw
-         (let ((fun  (or (occ-filter-get funkw) funkw #'identity)))
+         (let ((fun  (or (cdr (occ-filter-get funkw))
+                         funkw
+                         #'identity)))
            (occ-apply-recursively obj
                                   (cdr methods)
                                   (funcall fun obj sequence :rank rank)
