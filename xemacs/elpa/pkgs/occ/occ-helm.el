@@ -145,10 +145,6 @@
   (occ-helm-general-actions))
 
 
-;; (cl-defmethod occ-helm-actions ((obj occ-ctx))
-;;   (occ-helm-actions-get :procreate-child :procreate-child-clock-in :proprty-window-edit))
-
-
 (cl-defmethod occ-helm-action-transformer ((obj null) actions)
   (append
    (occ-helm-actions obj)
@@ -158,15 +154,6 @@
   (append
    (occ-helm-actions obj)
    (occ-gen-edits-if-required obj nil nil)))
-
-;; (cl-defmethod occ-helm-action-transformer ((obj occ-obj-ctx-tsk) actions)
-;;   ;; (message "occ-helm-action-transformer: %s"
-;;   ;;          (occ-gen-edits-for-add-remove obj))
-;;   ;; (occ-helm-actions obj)
-;;   (append
-;;    (occ-helm-actions obj)
-;;    ;; (occ-gen-edits-for-add-remove obj)
-;;    (occ-gen-edits-if-required obj nil nil)))
 
 
 (cl-defun occ-helm-action-transformer-fun (action candidate)
@@ -190,84 +177,5 @@
 
 (cl-defun occ-props-edit-helm-action-transformer-fun (action candidate)
   (occ-props-edit-helm-action-transformer candidate action))
-
-
-(cl-defgeneric occ-helm-select (obj
-                                &key
-                                filters
-                                builder
-                                return-transform
-                                action
-                                action-transformer
-                                timeout)
-  "occ-helm-select")
-
-(cl-defmethod occ-helm-select ((obj occ-ctx)
-                               &key
-                               filters
-                               builder
-                               return-transform
-                               action
-                               action-transformer
-                               timeout)
-  (let ((ctx-tsk (occ-select obj
-                             :filters            filters
-                             :builder            builder
-                             :return-transform   return-transform
-                             :action             action
-                             :action-transformer action-transformer
-                             :timeout            timeout)))
-    (occ-debug :debug "Selected ctxual-tsk %s" (occ-format ctx-tsk 'capitalize))
-    ctx-tsk))
-
-
-
-
-
-
-
-(defun occ-helm-select-XYZ (obj
-                            selector
-                            action)
-  ;; here
-  ;; (occ-debug :debug "sacha marker %s" (car ctxasks))
-  (let (helm-sources)
-    (push
-     (occ-helm-build-obj-source obj (list (cons "Clock in and track" selector)))
-     helm-sources)
-
-    (when (and
-           (org-clocking-p)
-           (marker-buffer org-clock-marker))
-      (push
-       (helm-build-sync-source "Current Clocking Tsk"
-         :candidates (list (occ-candidate
-                            (occ-build-obj-with (occ-current-tsk) obj)))
-         :action (list
-                  (cons "Clock in and track" selector)))
-       helm-sources))
-    (funcall action (helm helm-sources))))
-
-
-
-
-;; (cl-defgeneric occ-sacha-helm-action (ctxask clockin-fn)
-;;   "occ-sacha-helm-action")
-
-;; (cl-defmethod occ-sacha-helm-action ((ctxask occ-ctxual-tsk) clockin-fn)
-;;   ;; (message "sacha marker %s" (car dyntskpls))
-;;   ;; (setq sacha/helm-org-refile-locations tbl)
-;;   (progn
-;;     (helm
-;;      (list
-;;       (helm-build-sync-source "Select matching tsks"
-;;         :candidates (mapcar 'occ-candidate ctxask)
-;;         :action (list ;; (cons "Select" 'identity)
-;;                  (cons "Clock in and track" #'(lambda (c) (funcall clockin-fn c))))
-;;         :history 'org-refile-history)))))
-;; ;; (helm-build-dummy-source "Create tsk"
-;; ;;   :action (helm-make-actions
-;; ;;            "Create tsk"
-;; ;;            'sacha/helm-org-create-tsk))
 
 ;;; occ-helm.el ends here
