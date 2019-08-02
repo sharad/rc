@@ -57,7 +57,6 @@
     (funcall selector)))
 
 
-
 ;; (occ-action-generator-clear)
 ;; (occ-action-generator-set :fast-edits "Fast Edits" #'occ-gen-helm-fast-edits)
 
