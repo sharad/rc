@@ -29,6 +29,9 @@
 
 (require 'occ-obj-common)
 (require 'occ-tree)
+(eval-when-compile
+  (require 'occ-macros))
+(require 'occ-macros)
 (require 'occ-obj-accessor)
 (require 'occ-obj-utils)
 (require 'occ-util-common)
@@ -60,18 +63,20 @@
   (plist-get (occ-obj-ctx-filter-plist obj) filter))
 
 
-;; (occ-generate-plist-functions occ filter)
+(occ-generate-plist-functions occ filter)
 
-(defvar occ-filters-plist nil)
+;; (occ-helm-actions-get )
 
-(defun occ-filter-add (key fun)
-  (setq occ-filters-plist
-        (plist-put
-         occ-filters-plist
-         key fun)))
+;; (defvar occ-filters-plist nil)
 
-(defun occ-filter-get (key)
-  (plist-get occ-filters-plist key))
+;; (defun occ-filter-add (key fun)
+;;   (setq occ-filters-plist
+;;         (plist-put
+;;          occ-filters-plist
+;;          key fun)))
+
+;; (defun occ-filter-get (key)
+;;   (plist-get occ-filters-plist key))
 
 (defun occ-filters-get (&rest keys)
   (let ((funs nil))
@@ -147,7 +152,7 @@
          sequence))
     (error "(occ-collection-object) returned nil")))
 
-(occ-filter-add :mutual-deviation #'occ-filter-mutual-deviation)
+(occ-filter-add :mutual-deviation "Mutual Deviation" #'occ-filter-mutual-deviation)
 
 (cl-defmethod occ-filter-positive ((obj occ-ctx)
                                    sequence
@@ -155,7 +160,7 @@
   (remove-if-not #'(lambda (obj) (> (funcall rank obj) 0))
                  sequence))
 
-(occ-filter-add :positive #'occ-filter-positive)
+(occ-filter-add :positive "Positive" #'occ-filter-positive)
 
 
 (cl-defmethod occ-filter-nonnegative ((obj occ-ctx)
@@ -164,7 +169,7 @@
   (remove-if-not #'(lambda (obj) (>= (funcall rank obj) 0))
                  sequence))
 
-(occ-filter-add :nonnegative #'occ-filter-nonnegative)
+(occ-filter-add :nonnegative "Non negative" #'occ-filter-nonnegative)
 
 (defvar occ-filter-min 0)
 (cl-defmethod occ-filter-min ((obj occ-ctx)
@@ -173,7 +178,7 @@
   (remove-if-not #'(lambda (obj) (>= (funcall rank obj) occ-filter-min))
                  sequence))
 
-(occ-filter-add :min #'occ-filter-min)
+(occ-filter-add :min "Minimum" #'occ-filter-min)
 
 (defvar occ-filter-max 0)
 (cl-defmethod occ-filter-max ((obj occ-ctx)
@@ -182,7 +187,7 @@
   (remove-if-not #'(lambda (obj) (>= (funcall rank obj) occ-filter-max))
                  sequence))
 
-(occ-filter-add :max #'occ-filter-max)
+(occ-filter-add :max "Maximum" #'occ-filter-max)
 
 
 (defun occ-list-filters ()

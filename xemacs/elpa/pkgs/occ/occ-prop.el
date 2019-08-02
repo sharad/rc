@@ -35,6 +35,9 @@
 (require 'occ-cl-utils)
 (require 'occ-obj-common)
 (require 'occ-tree)
+(eval-when-compile
+  (require 'occ-macros))
+(require 'occ-macros)
 (require 'occ-obj-accessor)
 (require 'occ-util-common)
 (require 'occ-obj-method)

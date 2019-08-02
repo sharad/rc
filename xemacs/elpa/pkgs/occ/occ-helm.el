@@ -31,6 +31,9 @@
 (require 'org-capture+-helm-dynamic)
 
 
+(eval-when-compile
+  (require 'occ-macros))
+(require 'occ-macros)
 (require 'occ-debug-method)
 (require 'occ-obj-method)
 
