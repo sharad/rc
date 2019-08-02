@@ -60,6 +60,8 @@
   (plist-get (occ-obj-ctx-filter-plist obj) filter))
 
 
+;; (occ-generate-plist-functions occ filter)
+
 (defvar occ-filters-plist nil)
 
 (defun occ-filter-add (key fun)

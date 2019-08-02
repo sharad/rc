@@ -53,28 +53,32 @@
     (funcall selector)))
 
 
-(defvar occ-helm-actions-plist nil)
 
-(defun occ-helm-action-add (key name action)
-  (setq occ-helm-actions-plist
-        (plist-put
-         occ-helm-actions-plist
-         key (cons name action))))
+;; (occ-action-generator-clear)
+;; (occ-action-generator-set :fast-edits "Fast Edits" #'occ-gen-helm-fast-edits)
 
-(defun occ-helm-action-get (key)
-  (plist-get occ-helm-actions-plist key))
+;; (defvar occ-helm-actions-plist nil)
 
-(defun occ-helm-actions-get (&rest keys)
-  (let ((actions nil))
-    (dolist (key keys)
-      (let ((name-action (occ-helm-action-get key)))
-        (when name-action
-          (setf actions (nconc actions (list name-action))))))
-    actions))
+;; (defun occ-helm-action-add (key name action)
+;;   (setq occ-helm-actions-plist
+;;         (plist-put
+;;          occ-helm-actions-plist
+;;          key (cons name action))))
 
+;; (defun occ-helm-action-get (key)
+;;   (plist-get occ-helm-actions-plist key))
+
+;; (defun occ-helm-actions-get (&rest keys)
+;;   (let ((actions nil))
+;;     (dolist (key keys)
+;;       (let ((name-action (occ-helm-action-get key)))
+;;         (when name-action
+;;           (setf actions (nconc actions (list name-action))))))
+;;     actions))
+
+(occ-generate-plist-functions occ-helm action)
 (progn
-
-  (setq occ-helm-actions-plist nil)
+  (occ-helm-action-clear)
 
   (occ-helm-action-add :ignore                   "Ignore"                   #'ignore)
   (occ-helm-action-add :identity                 "Select"                   #'identity)

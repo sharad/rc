@@ -694,9 +694,9 @@
 
 (cl-defmethod occ-checkout ((obj occ-obj-tsk))
   "Checkout property in case of force clock-in."
-  (dolist prop (occ-properties-to-checkout)
-          (occ-message "occ-checkout: checkout prop %s" prop)
-          (occ-checkout-prop obj prop)))
+  (dolist (prop (occ-properties-to-checkout))
+    (occ-message "occ-checkout: checkout prop %s" prop)
+    (occ-checkout-prop obj prop)))
 
 
 (cl-defmethod occ-gen-checkout-prompt ((obj occ-obj-tsk)

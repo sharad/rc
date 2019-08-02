@@ -69,6 +69,7 @@
 (defmacro occ-generate-plist-functions (prefix item)
   (let* ((plist  (intern (concat (symbol-name prefix) "-" (symbol-name item) "-plist")))
          (clear  (intern (concat (symbol-name prefix) "-" (symbol-name item) "-clear")))
+         (add    (intern (concat (symbol-name prefix) "-" (symbol-name item) "-add")))
          (set    (intern (concat (symbol-name prefix) "-" (symbol-name item) "-set")))
          (get    (intern (concat (symbol-name prefix) "-" (symbol-name item) "-get")))
          (allget (intern (concat (symbol-name prefix) "-" (symbol-name item) "s-get"))))
@@ -78,6 +79,12 @@
 
        (defun ,clear ()
          (setq ,plist nil))
+
+       (defun ,add (key name ,item)
+         (setq ,plist
+               (plist-put
+                ,plist
+                key (cons name ,item))))
 
        (defun ,set (key name ,item)
          (setq ,plist
