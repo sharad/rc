@@ -1,9 +1,9 @@
-;;; tree-lib.el --- tree library                     -*- lexical-binding: t; -*-
+;;; lotus-tree-lib.el --- Lotus Tree Library         -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2019  s
 
-;; Author: Sharad
-;; Keywords: lisp
+;; Author: s <spratap@merunetworks.com>
+;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(provide 'tree-lib)
+(provide 'lotus-tree-lib)
 
 
 ;; old
@@ -167,4 +167,4 @@
  (tree-add '(x n b) 'i org-capture+-helm-templates-tree)
  (tree-add '(x #'(lambda () t) x) 'c org-capture+-helm-templates-tree))
 
-;;; tree-lib.el ends here
+;;; lotus-tree-lib.el ends here
