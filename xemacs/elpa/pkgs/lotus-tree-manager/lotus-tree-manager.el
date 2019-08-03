@@ -28,55 +28,111 @@
 
 
 ;;;###autoload
-(defvar org-capture+-helm-templates-tree  '(t))
-
+(defvar tree-helm-items-tree '(t))
 
 ;;;###autoload
-(defun org-capture+-add-heading-template (keys heading &rest templates)
+(defun stree-add-class-item (keys class &rest items)
   (tree-add keys
-            (list :template (cons heading templates))
-            org-capture+-helm-templates-tree))
+            (list :item (cons class items))
+            tree-helm-items-tree))
 
-(defun org-capture+-template-p (template)
-  (eql :template (car template)))
+(defun stree-item-p (item)
+  (eql :item (car item)))
 
-(defun org-capture+-tree-gen-predicate (predicate arg)
+(defun stree-tree-gen-predicate (predicate arg)
   #'(lambda (key)
       (funcall predicate key arg)))
 
-(defun org-capture+-collect-template-alist (predicate arg level)
+(defun stree-collect-item-alist (predicate arg level)
   (let* ((level (or level 0))
-         (templates-tree
-          (collect-elem-cond-depth org-capture+-helm-templates-tree
-                                   #'org-capture+-template-p
-                                   (org-capture+-tree-gen-predicate predicate arg)
+         (items-tree
+          (collect-elem-cond-depth tree-helm-items-tree
+                                   #'tree-item-p
+                                   (tree-tree-gen-predicate predicate arg)
                                    level)))
-    (tree-flatten #'org-capture+-template-p
-                  templates-tree)))
+    (tree-flatten #'tree-item-p
+                  items-tree)))
 
-;; TODO: keyword replacement
-(defun org-capture+-collect-templates-alist (fn arg level)
-  (let* ((fn    (or fn #'org-capture+-tree-predicate))
+(defun stree-collect-items-alist (fn arg level)
+  (let* ((fn    (or fn #'tree-tree-predicate))
          (alist (mapcar #'cadr
-                        (org-capture+-collect-template-alist fn arg level))))
-    (let ((templates-alist (collect-alist alist)))
-      ;; (delete-dups-alist templates-alist)
-      templates-alist)))
+                        (tree-collect-item-alist fn arg level))))
+    (let ((items-alist
+           (collect-alist alist)))
+      items-alist)))
 
-(defun org-capture+-collect-templates (fn arg level)
-  (let* ((fn    (or fn   #'org-capture+-tree-predicate))
-         (alist (org-capture+-collect-templates-alist fn arg level)))
-    (let ((templates (apply #'append
-                            (mapcar #'cdr alist))))
-      templates)))
+(defun stree-collect-items (fn arg level)
+  (let* ((fn    (or fn #'tree-tree-predicate))
+         (alist (tree-collect-items-alist fn arg level)))
+    (let ((items (apply #'append
+                        (mapcar #'cdr alist))))
+      items)))
 
-(defun org-capture+-collect-template-classes ()
+(defun stree-collect-item-classes ()
   (mapcar #'car
-          (org-capture+-collect-templates-alist #'(lambda (key-tree arg) t)
-                                                '(t)
-                                                0)))
+          (tree-collect-items-alist #'(lambda (key-tree arg) t)
+                                    '(t)
+                                    0)))
 
-(defun org-capture+-tree-predicate (key-tree arg)
-  (memq (car key-tree) arg))
+(defun stree-tree-predicate (key-tree arg)
+  (memq (car key-tree)
+        arg))
+
+
+(defun tree-item-p (item)
+  (eql :item (car item)))
+
+(defun tree-tree-gen-predicate (predicate arg)
+  #'(lambda (key)
+      (funcall predicate key arg)))
+
+(defun tree-add-class-item (tree keys class &rest item)
+  (tree-add keys
+            (list :item (cons class item))
+            tree))
+
+(defun tree-collect-item-alist (tree predicate arg level)
+  (let* ((level (or level 0))
+         (items-tree
+          (collect-elem-cond-depth tree
+                                   #'tree-item-p
+                                   (tree-tree-gen-predicate predicate arg)
+                                   level)))
+    (tree-flatten #'tree-item-p
+                  items-tree)))
+
+(defun tree-collect-items-alist (tree fn arg level)
+  (let* ((fn    (or fn #'tree-tree-predicate))
+         (alist (mapcar #'cadr
+                        (tree-collect-item-alist tree fn arg level))))
+    (let ((items-alist
+           (collect-alist alist)))
+      items-alist)))
+
+(defun tree-collect-items (tree fn arg level)
+  (let* ((fn    (or fn #'tree-tree-predicate))
+         (alist (tree-collect-items-alist tree fn arg level)))
+    (let ((items (apply #'append
+                        (mapcar #'cdr alist))))
+      items)))
+
+(defun tree-collect-item-classes (tree)
+  (mapcar #'car
+          (tree-collect-items-alist tree
+                                    #'(lambda (key-tree arg) t)
+                                    '(t)
+                                    0)))
+
+(defun tree-tree-predicate (key-tree arg)
+  (memq (car key-tree)
+        arg))
+
+
+(defvar test-tree '(t))
+(setq test-tree '(t))
+(tree-add-class-item test-tree '(a b c) "todo" "test")
+(tree-collect-items-alist test-tree nil '(t a b c) 0)
+(tree-collect-items test-tree nil '(t a b c) 0)
+(tree-collect-item-classes test-tree)
 
 ;;; lotus-tree-manager.el ends here
