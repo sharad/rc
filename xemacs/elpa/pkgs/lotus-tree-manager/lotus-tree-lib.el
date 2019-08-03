@@ -27,6 +27,46 @@
 (provide 'tree-lib)
 
 
+;; old
+(defun collect-alist (alist)
+  (let ((ulist nil))
+    (dolist (pair (copy-tree alist))
+      (if (assoc (car pair) ulist)
+          (nconc (assoc (car pair) ulist) (cdr pair))
+        (setf ulist (append ulist (list pair)))))
+    ulist))
+
+;; new
+(defun collect-alist (alist)
+  (let ((ulist nil))
+    (dolist (pair alist)
+      (if (assoc (car pair) ulist)
+          (let ((xulist (assoc (car pair) ulist))
+                (tlist nil)
+                (ilist (cdr pair)))
+            (dolist (i ilist)
+              (unless (member i (cdr xulist))
+                (push i tlist)))
+            (nreverse tlist)
+            (nconc (assoc (car pair) ulist) tlist))
+        (let ((ef (car pair)))
+          (when ef (push (list ef) ulist))
+          (let ((xulist (assoc (car pair) ulist))
+                (tlist nil)
+                (ilist (cdr pair)))
+            (dolist (i ilist)
+              (unless (member i (cdr xulist))
+                (push i tlist)))
+            (nreverse tlist)
+            (nconc (assoc (car pair) ulist) tlist)))))
+    (nreverse ulist)))
+
+(defun delete-dups-alist (alist)
+  (dolist (pair alist)
+    (setcdr pair (delete-dups (cdr pair))))
+  alist)
+
+
 (defun max-depth (tree &optional nodep)
   (let ((nodep (or nodep #'atom)))
     (if (funcall nodep tree)

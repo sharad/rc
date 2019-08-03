@@ -140,16 +140,6 @@
    (occ-helm-dummy-source "Create template tsk" #'occ-procreate-child-clock-in)))
 
 
-(cl-defgeneric occ-helm-select (obj
-                                &key
-                                filters
-                                builder
-                                return-transform
-                                action
-                                action-transformer
-                                timeout)
-  "occ-helm-select")
-
 (cl-defmethod occ-helm-select ((obj occ-ctx)
                                &key
                                filters
@@ -168,11 +158,6 @@
     (occ-debug :debug "Selected ctxual-tsk %s" (occ-format ctx-tsk 'capitalize))
     ctx-tsk))
 
-
-
-
-
-
 
 (defun occ-helm-select-XYZ (obj
                             selector
@@ -195,8 +180,6 @@
                   (cons "Clock in and track" selector)))
        helm-sources))
     (funcall action (helm helm-sources))))
-
-
 
 
 ;; (cl-defgeneric occ-sacha-helm-action (ctxask clockin-fn)

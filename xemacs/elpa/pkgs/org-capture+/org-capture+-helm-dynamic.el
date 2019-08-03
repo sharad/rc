@@ -31,7 +31,7 @@
 (require 'helm)
 
 
-(require 'tree-lib)
+(require ''lotus-tree-manager)
 
 
 ;; * Dynamic Match based templates
@@ -63,55 +63,8 @@
                                    #'org-capture+-template-p
                                    (org-capture+-tree-gen-predicate predicate arg)
                                    level)))
-    (tree-flatten #'org-capture+-template-p templates-tree)))
-
-;; old
-(defun collect-alist (alist)
-  (let ((ulist nil))
-    (dolist (pair (copy-tree alist))
-      (if (assoc (car pair) ulist)
-          (nconc (assoc (car pair) ulist) (cdr pair))
-        (setf ulist (append ulist (list pair)))))
-    ulist))
-
-;; new
-(defun collect-alist (alist)
-  (let ((ulist nil))
-    (dolist (pair alist)
-      (if (assoc (car pair) ulist)
-          (let ((xulist (assoc (car pair) ulist))
-                (tlist nil)
-                (ilist (cdr pair)))
-            (dolist (i ilist)
-              (unless (member i (cdr xulist))
-                (push i tlist)))
-            (nreverse tlist)
-            (nconc (assoc (car pair) ulist) tlist))
-        (let ((ef (car pair)))
-          (when ef (push (list ef) ulist))
-          (let ((xulist (assoc (car pair) ulist))
-                (tlist nil)
-                (ilist (cdr pair)))
-            (dolist (i ilist)
-              (unless (member i (cdr xulist))
-                (push i tlist)))
-            (nreverse tlist)
-            (nconc (assoc (car pair) ulist) tlist)))))
-    (nreverse ulist)))
-
-(defun delete-dups-alist (alist)
-  (dolist (pair alist)
-    (setcdr pair (delete-dups (cdr pair))))
-  alist)
-
-
-;;;###autoload
-(org-capture+-add-heading-template '(xx) "TODO"    "* TODO %? %^g\n %i\n [%a]\n")
-;;;###autoload
-(org-capture+-add-heading-template '(zz) "TODO"    "* WRITING %? %^g\n %i\n [%a]\n")
-;;;###autoload
-(org-capture+-add-heading-template '(yy) "MEETING" "* MEETING %? %^g\n %i\n [%a]\n")
-
+    (tree-flatten #'org-capture+-template-p
+                  templates-tree)))
 
 ;; TODO: keyword replacement
 (defun org-capture+-collect-templates-alist (fn arg level)
@@ -134,10 +87,17 @@
           (org-capture+-collect-templates-alist #'(lambda (key-tree arg) t)
                                                 '(t)
                                                 0)))
-
 
 (defun org-capture+-tree-predicate (key-tree arg)
   (memq (car key-tree) arg))
+
+
+;;;###autoload
+(org-capture+-add-heading-template '(xx) "TODO"    "* TODO %? %^g\n %i\n [%a]\n")
+;;;###autoload
+(org-capture+-add-heading-template '(zz) "TODO"    "* WRITING %? %^g\n %i\n [%a]\n")
+;;;###autoload
+(org-capture+-add-heading-template '(yy) "MEETING" "* MEETING %? %^g\n %i\n [%a]\n")
 
 
 (defun helm-template-gen-selector (predicate arg level &optional noclass)

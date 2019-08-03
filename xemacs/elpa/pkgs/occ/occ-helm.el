@@ -77,8 +77,29 @@
   (occ-helm-action-add :tsk                      "Get Task"                 #'occ-print-tsk))
 
 
-;; TODO: Manages sets here.
+(cl-defmethod occ-helm-actions ((obj null))
+  (occ-helm-general-actions))
 
+(cl-defmethod occ-helm-actions ((obj occ-obj))
+  (occ-helm-general-actions))
+
+(cl-defmethod occ-helm-action-generators ((obj null))
+  (occ-helm-general-actions))
+
+(cl-defmethod occ-helm-action-generators ((obj occ-obj))
+  (occ-helm-general-actions))
+
+
+
+;; TODO: Manages sets here.
+(defvar occ-helm-actions-set ())
+
+(occ-generate-plist-functions occ-helm-actions set)
+
+(occ-helm-actions-set-add :editing "Editing" '(:procreate-child
+                                               :procreate-child-clock-in
+                                               :proprty-window-edit))
+(occ-helm-actions-set-add :editing "Launch" '())
 
 
 
