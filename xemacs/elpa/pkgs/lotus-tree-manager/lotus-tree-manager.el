@@ -101,17 +101,17 @@
     (tree-flatten #'tree-item-p
                   items-tree)))
 
-(defun tree-collect-items-alist (tree fn arg level)
-  (let* ((fn    (or fn #'tree-tree-predicate))
-         (alist (mapcar #'cadr
-                        (tree-collect-item-alist tree fn arg level))))
+(defun tree-collect-items-alist (tree predicate arg level)
+  (let* ((predicate (or predicate #'tree-tree-predicate))
+         (alist     (mapcar #'cadr
+                            (tree-collect-item-alist tree predicate arg level))))
     (let ((items-alist
            (collect-alist alist)))
       items-alist)))
 
-(defun tree-collect-items (tree fn arg level)
-  (let* ((fn    (or fn #'tree-tree-predicate))
-         (alist (tree-collect-items-alist tree fn arg level)))
+(defun tree-collect-items (tree predicate arg level)
+  (let* ((predicate (or predicate #'tree-tree-predicate))
+         (alist     (tree-collect-items-alist tree predicate arg level)))
     (let ((items (apply #'append
                         (mapcar #'cdr alist))))
       items)))
