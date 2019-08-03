@@ -87,6 +87,8 @@
       (funcall predicate key arg)))
 
 (defun tree-add-class-item (tree keys class &rest item)
+  (unless (eq t (car tree))
+    (push t tree))
   (tree-add keys
             (list :item (cons class item))
             tree))
