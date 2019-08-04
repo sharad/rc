@@ -77,6 +77,84 @@
   (occ-helm-action-add :tsk                      "Get Task"                 #'occ-print-tsk))
 
 
+(defvar occ-helm-actions-tree '(t))
+
+(setq occ-helm-actions-tree '(t))
+
+(defun occ-add-helm-actions-tree (keys class type &rest actions)
+  (apply #'tree-add-class-item
+         occ-helm-actions-tree
+         keys
+         class
+         (mapcar #'(lambda (action) (cons type action))
+                 actions)))
+
+(occ-add-helm-actions-tree '(actions)
+                           "Simple"
+                           'normal
+                           :procreate-child
+                           :procreate-child-clock-in
+                           :proprty-window-edit
+                           :proprty-edit-combined
+                           :call-with-obj
+                           :try-clock-in
+                           :goto
+                           :rank
+                           :tsk)
+
+(occ-add-helm-actions-tree '(actions edit)
+                           "Editing"
+                           'normal
+                           :proprty-window-edit)
+
+;; (collect-alist
+;;  (tree-collect-items occ-helm-actions-tree
+;;                      nil
+;;                      '(t actions edit)
+;;                      0))
+
+;; (tree-collect-item-alist occ-helm-actions-tree
+;;                          #'tree-tree-predicate
+;;                          '(t actions edit)
+;;                          0)
+
+;; (tree-collect-items-alist occ-helm-actions-tree
+;;                          nil
+;;                          '(t actions edit)
+;;                          0)
+
+
+;; (collect-alist
+;;  (mapcar #'cadr
+;;   (tree-collect-item-alist occ-helm-actions-tree
+;;                           #'tree-tree-predicate
+;;                           '(t actions edit)
+;;                           0)))
+
+;; (setq occ-helm-actions-alist
+;;       (tree-collect-items occ-helm-actions-tree
+;;                           nil
+;;                           '(t actions edit)
+;;                           0))
+
+(defun occ-get-helm-actions-tree (keys)
+  (apply #'append
+         (mapcar #'(lambda (pair-action)
+                     (cond
+                      ((eql (car pair-action) 'normal)
+                       (apply #'occ-helm-actions-get (cdr pair-action)))))
+                 (collect-alist (tree-collect-items occ-helm-actions-tree nil keys 0)))))
+
+;; (apply #'occ-helm-actions-get
+;;        (cdar
+;;         (collect-alist
+;;          (tree-collect-items occ-helm-actions-tree
+;;                              nil
+;;                              '(t actions edit)
+;;                              0))))
+
+
+
 (cl-defmethod occ-helm-actions ((obj null))
   (occ-helm-general-actions))
 
@@ -104,58 +182,30 @@
 
 
 (defun occ-helm-general-actions ()
-  (occ-helm-actions-get :procreate-child
-                        :procreate-child-clock-in
-                        :proprty-window-edit
-                        :proprty-edit-combined
-                        :call-with-obj
-                        :try-clock-in
-                        :goto
-                        :rank
-                        :tsk))
+  (occ-get-helm-actions-tree '(t actions edit)))
 
 (defun occ-helm-intractive-command-actions ()
-  (occ-helm-actions-get :try-clock-in
-                        :procreate-child
-                        :procreate-child-clock-in
-                        :proprty-window-edit
-                        :proprty-edit-combined
-                        :call-with-obj
-                        :try-clock-in
-                        :goto
-                        :rank
-                        :tsk))
+  (occ-get-helm-actions-tree '(t actions edit)))
 
 (defun occ-helm-intractive-launch-actions ()
-  (occ-helm-actions-get :ignore
-                        :identity
-                        :try-clock-in
-                        :procreate-child
-                        :procreate-child-clock-in
-                        :proprty-window-edit
-                        :proprty-edit-combined
-                        :call-with-obj
-                        :try-clock-in
-                        :goto
-                        :rank
-                        :tsk))
+  (occ-get-helm-actions-tree '(t actions edit)))
 
 
 (cl-defmethod occ-helm-actions ((obj null))
-  (occ-helm-general-actions))
+  (occ-get-helm-actions-tree '(t actions edit)))
 
 (cl-defmethod occ-helm-actions ((obj occ-obj))
-  (occ-helm-general-actions))
+  (occ-get-helm-actions-tree '(t actions edit)))
 
 
 (cl-defmethod occ-helm-action-transformer ((obj null) actions)
   (append
-   (occ-helm-actions obj)
+   (occ-get-helm-actions-tree '(t actions edit))
    (occ-gen-edits-if-required obj nil nil)))
 
 (cl-defmethod occ-helm-action-transformer ((obj occ-obj-tsk) actions)
   (append
-   (occ-helm-actions obj)
+   (occ-get-helm-actions-tree '(t actions edit))
    (occ-gen-edits-if-required obj nil nil)))
 
 
@@ -164,21 +214,17 @@
 
 
 (cl-defmethod occ-props-edit-helm-actions ((obj null))
-  (occ-helm-actions-get :procreate-child
-                        :procreate-child-clock-in
-                        :proprty-window-edit))
+  (occ-get-helm-actions-tree '(t edit)))
 
 (cl-defmethod occ-props-edit-helm-actions ((obj occ-obj))
-  (occ-helm-actions-get :procreate-child
-                        :procreate-child-clock-in
-                        :proprty-window-edit))
+  (occ-get-helm-actions-tree '(t edit)))
 
 
 (cl-defmethod occ-props-edit-helm-action-transformer ((obj null) actions)
-  (occ-props-edit-helm-actions obj))
+  (occ-get-helm-actions-tree '(t edit)))
 
 (cl-defmethod occ-props-edit-helm-action-transformer ((obj occ-obj-tsk) actions)
-  (occ-props-edit-helm-actions obj))
+  (occ-get-helm-actions-tree '(t edit)))
 
 ;; (cl-defmethod occ-props-edit-helm-action-transformer ((obj occ-obj-ctx-tsk) actions)
 ;;   (occ-props-edit-helm-actions obj))

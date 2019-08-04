@@ -28,7 +28,7 @@
 
 
 ;; old
-(defun collect-alist (alist)
+(defun collect-carlist (alist)
   (let ((ulist nil))
     (dolist (pair (copy-tree alist))
       (if (assoc (car pair) ulist)
@@ -37,29 +37,33 @@
     ulist))
 
 ;; new
+(defun collect-carlist (alist)
+  (let ((ulist nil))
+    (dolist (pair alist)
+      (unless (assoc (car pair) ulist)
+        (when (car pair)
+          (push (list (car pair)) ulist)))
+      (let ((ef (car pair)))
+        (let ((xulist (assoc (car pair) ulist))
+              (tlist  nil)
+              (ilist  (cdr pair)))
+          (dolist (i ilist)
+            (unless (member i (cdr xulist))
+              (push i tlist)))
+          (setq tlist (nreverse tlist))
+          (nconc (assoc (car pair) ulist) tlist))))
+    (setq ulist (nreverse ulist))))
+
+
 (defun collect-alist (alist)
   (let ((ulist nil))
     (dolist (pair alist)
-      (if (assoc (car pair) ulist)
-          (let ((xulist (assoc (car pair) ulist))
-                (tlist nil)
-                (ilist (cdr pair)))
-            (dolist (i ilist)
-              (unless (member i (cdr xulist))
-                (push i tlist)))
-            (nreverse tlist)
-            (nconc (assoc (car pair) ulist) tlist))
-        (let ((ef (car pair)))
-          (when ef (push (list ef) ulist))
-          (let ((xulist (assoc (car pair) ulist))
-                (tlist nil)
-                (ilist (cdr pair)))
-            (dolist (i ilist)
-              (unless (member i (cdr xulist))
-                (push i tlist)))
-            (nreverse tlist)
-            (nconc (assoc (car pair) ulist) tlist)))))
-    (nreverse ulist)))
+      (unless (assoc (car pair) ulist)
+        (when (car pair)
+          (push (list (car pair)) ulist)))
+      (nconc (assoc (car pair) ulist) (list (cdr pair))))
+    (setq ulist (nreverse ulist))))
+
 
 (defun delete-dups-alist (alist)
   (dolist (pair alist)

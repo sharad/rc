@@ -58,7 +58,7 @@
          (alist (mapcar #'cadr
                         (tree-collect-item-alist fn arg level))))
     (let ((items-alist
-           (collect-alist alist)))
+           (collect-carlist alist)))
       items-alist)))
 
 (defun stree-collect-items (fn arg level)
@@ -108,7 +108,7 @@
          (alist     (mapcar #'cadr
                             (tree-collect-item-alist tree predicate arg level))))
     (let ((items-alist
-           (collect-alist alist)))
+           (collect-carlist alist)))
       items-alist)))
 
 (defun tree-collect-items (tree predicate arg level)
