@@ -27,6 +27,9 @@
 (provide 'lotus-tree-manager)
 
 
+(require 'lotus-tree-lib)
+
+
 ;;;###autoload
 (defvar tree-helm-items-tree '(t))
 
@@ -130,11 +133,12 @@
         arg))
 
 
-(defvar test-tree '(t))
-(setq test-tree '(t))
-(tree-add-class-item test-tree '(a b c) "todo" "test")
-(tree-collect-items-alist test-tree nil '(t a b c) 0)
-(tree-collect-items test-tree nil '(t a b c) 0)
-(tree-collect-item-classes test-tree)
+(when nil
+ (defvar test-tree '(t))
+ (setq test-tree '(t))
+ (tree-add-class-item test-tree '(a b c) "todo" "test")
+ (tree-collect-items-alist test-tree nil '(t a b c) 0)
+ (tree-collect-items test-tree nil '(t a b c) 0)
+ (tree-collect-item-classes test-tree))
 
 ;;; lotus-tree-manager.el ends here

@@ -27,6 +27,7 @@
 (provide 'occ-helm)
 
 
+(require 'lotus-tree-manager)
 (require 'org-capture+-helm)
 (require 'org-capture+-helm-dynamic)
 
@@ -89,7 +90,7 @@
          (mapcar #'(lambda (action) (cons type action))
                  actions)))
 
-(occ-add-helm-actions-tree '(actions)
+(occ-add-helm-actions-tree '(actions general)
                            "Simple"
                            'normal
                            :procreate-child
@@ -107,36 +108,6 @@
                            'normal
                            :proprty-window-edit)
 
-;; (collect-alist
-;;  (tree-collect-items occ-helm-actions-tree
-;;                      nil
-;;                      '(t actions edit)
-;;                      0))
-
-;; (tree-collect-item-alist occ-helm-actions-tree
-;;                          #'tree-tree-predicate
-;;                          '(t actions edit)
-;;                          0)
-
-;; (tree-collect-items-alist occ-helm-actions-tree
-;;                          nil
-;;                          '(t actions edit)
-;;                          0)
-
-
-;; (collect-alist
-;;  (mapcar #'cadr
-;;   (tree-collect-item-alist occ-helm-actions-tree
-;;                           #'tree-tree-predicate
-;;                           '(t actions edit)
-;;                           0)))
-
-;; (setq occ-helm-actions-alist
-;;       (tree-collect-items occ-helm-actions-tree
-;;                           nil
-;;                           '(t actions edit)
-;;                           0))
-
 (defun occ-get-helm-actions-tree (keys)
   (apply #'append
          (mapcar #'(lambda (pair-action)
@@ -144,30 +115,7 @@
                       ((eql (car pair-action) 'normal)
                        (apply #'occ-helm-actions-get (cdr pair-action)))))
                  (collect-alist (tree-collect-items occ-helm-actions-tree nil keys 0)))))
-
-;; (apply #'occ-helm-actions-get
-;;        (cdar
-;;         (collect-alist
-;;          (tree-collect-items occ-helm-actions-tree
-;;                              nil
-;;                              '(t actions edit)
-;;                              0))))
-
 
-
-(cl-defmethod occ-helm-actions ((obj null))
-  (occ-helm-general-actions))
-
-(cl-defmethod occ-helm-actions ((obj occ-obj))
-  (occ-helm-general-actions))
-
-(cl-defmethod occ-helm-action-generators ((obj null))
-  (occ-helm-general-actions))
-
-(cl-defmethod occ-helm-action-generators ((obj occ-obj))
-  (occ-helm-general-actions))
-
-
 
 ;; TODO: Manages sets here.
 (defvar occ-helm-actions-set ())
@@ -211,6 +159,19 @@
 
 (cl-defun occ-helm-action-transformer-fun (action candidate)
   (occ-helm-action-transformer candidate action))
+
+
+(cl-defmethod occ-helm-actions ((obj null))
+  (occ-helm-general-actions))
+
+(cl-defmethod occ-helm-actions ((obj occ-obj))
+  (occ-helm-general-actions))
+
+(cl-defmethod occ-helm-action-generators ((obj null))
+  (occ-helm-general-actions))
+
+(cl-defmethod occ-helm-action-generators ((obj occ-obj))
+  (occ-helm-general-actions))
 
 
 (cl-defmethod occ-props-edit-helm-actions ((obj null))
