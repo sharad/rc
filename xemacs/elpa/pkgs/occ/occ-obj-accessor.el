@@ -259,11 +259,11 @@ pointing to it."
     (funcall fun)))
 
 (cl-defmethod occ-call-with-obj ((obj occ-obj-tsk))
-  (let ((fun (let ((obj          (read))
+  (let ((fun (let ((obj-name     (read)) ;prefill with obj
                    (exp-with-obj (read)))
                #'(lambda ()
                    (funcall
-                    `(lambda (,obj) ,exp-with-obj) obj)))))
+                    `(lambda (,obj-name) ,exp-with-obj) obj)))))
     (funcall fun)))
 
 (let ((occ-debug-object nil))
