@@ -95,8 +95,6 @@
                            'normal
                            :procreate-child
                            :procreate-child-clock-in
-                           :proprty-window-edit
-                           :proprty-edit-combined
                            :call-with-obj
                            :set-debug-obj
                            :try-clock-in
@@ -107,7 +105,30 @@
 (occ-add-helm-actions-tree '(actions edit)
                            "Editing"
                            'normal
-                           :proprty-window-edit)
+                           :proprty-window-edit
+                           :proprty-edit-combined)
+
+
+(occ-helm-action-add :fast-edits-gen     "Fast Edits" #'occ-gen-helm-fast-edits)
+(occ-helm-action-add :edits-gen          "Edit"       #'occ-gen-helm-edits)
+(occ-helm-action-add :misc-gen           "Misc"       #'occ-gen-helm-misc)
+(occ-helm-action-add :fast-checkouts-gen "Checkouts"  #'occ-gen-helm-checkouts)
+
+(occ-add-helm-actions-tree '(actions general)
+                           "Simple"
+                           'generator
+                           :misc-gen)
+
+(occ-add-helm-actions-tree '(actions edit)
+                           "Editing"
+                           'generator
+                           :fast-edits-gen
+                           :edits-gen)
+
+(occ-add-helm-actions-tree '(actions checkout)
+                           "Editing"
+                           'generator
+                           :fast-checkouts-gen)
 
 
 (cl-defgeneric occ-get-helm-actions-tree (obj keys)
@@ -122,7 +143,7 @@
                       ((eql (car pair-action) 'generator) nil)))
                  (collect-alist (tree-collect-items occ-helm-actions-tree nil keys 0)))))
 
-(cl-defmethod occ-get-helm-actions-tree ((obj occ-obj) keys)
+(cl-defmethod occ-get-helm-actions-tree ((obj occ-obj-ctx-tsk) keys)
   (apply #'append
          (mapcar #'(lambda (pair-action)
                      (cond
@@ -147,10 +168,13 @@
 
 
 (cl-defmethod occ-helm-actions ((obj null))
-  (occ-get-helm-actions-tree nil '(t actions general)))
+  (occ-get-helm-actions-tree nil '(t actions general edit)))
 
-(cl-defmethod occ-helm-actions ((obj occ-obj))
-  (occ-get-helm-actions-tree nil '(t actions general)))
+(cl-defmethod occ-helm-actions ((obj occ-obj-ctx-tsk))
+  (occ-get-helm-actions-tree nil '(t actions general edit)))
+
+(cl-defmethod occ-helm-actions ((obj occ-obj-ctx))
+  (occ-get-helm-actions-tree nil '(t actions general edit)))
 
 
 (cl-defmethod occ-helm-action-transformer ((obj null) actions)

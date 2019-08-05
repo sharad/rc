@@ -258,6 +258,14 @@ pointing to it."
                     `(lambda (obj) ,exp-with-obj) obj)))))
     (funcall fun)))
 
+(cl-defmethod occ-call-with-obj ((obj occ-obj-tsk))
+  (let ((fun (let ((obj          (read))
+                   (exp-with-obj (read)))
+               #'(lambda ()
+                   (funcall
+                    `(lambda (,obj) ,exp-with-obj) obj)))))
+    (funcall fun)))
+
 (let ((occ-debug-object nil))
   (cl-defmethod occ-set-debug-obj ((obj occ-obj-tsk))
     (setq occ-debug-object obj))
@@ -322,7 +330,6 @@ pointing to it."
      (occ-tree-collection-tree collection)
      (mapcar #'occ-tree-tsk-build
              (occ-tree-collection-roots collection))))
-
   (occ-tree-collection-tree collection))
 
 (cl-defmethod occ-collect-tsks ((collection occ-list-collection)
@@ -333,7 +340,6 @@ pointing to it."
      (append
       (mapcar #'occ-list-tsk-build
               (occ-list-collection-roots collection)))))
-
   (occ-list-collection-list collection))
 
 

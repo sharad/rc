@@ -43,35 +43,40 @@
                                         auto-select-if-only
                                         timeout)
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
-  (occ-debug :debug "Running occ-sacha-helm-select")
-  (prog1
-      (let ((action-transformer  (or action-transformer #'occ-helm-action-transformer-fun))
-            (timeout             (or timeout occ-idle-timeout)))
+  (lotus-with-no-active-minibuffer-if
+      (progn
+        (occ-debug :debug "occ-list-select-internal: [minibuffer-body] lotus-with-no-active-minibuffer-if")
+        (occ-debug :debug "occ-list-select-internal: minibuffer already active quitting")
+        (occ-debug :debug nil))
+    (occ-debug :debug "Running occ-sacha-helm-select")
+    (prog1
+        (let ((action-transformer  (or action-transformer #'occ-helm-action-transformer-fun))
+              (timeout             (or timeout occ-idle-timeout)))
 
-        (let* ((candidates-unfiltered (occ-list obj :builder builder))
-               (unfiltered-count      (length candidates-unfiltered))
-               (candidates-filtered   (occ-filter obj
-                                                  filters
-                                                  candidates-unfiltered)))
-          (when candidates-filtered
-            (if (and
-                 auto-select-if-only
-                 (= 1 (length candidates-filtered)))
-                (let* ((candidate (car candidates-filtered))
-                       (action    (car (funcall action-transformer action candidate)))
-                       (action    (if (consp action) (cdr action) action)))
-                  (funcall action candidate))
-              (helm
-               ;; :keymap occ-helm-map
-               :sources
-               (occ-helm-build-candidates-sources obj
-                                                  candidates-filtered
-                                                  :unfiltered-count   unfiltered-count
-                                                  :filters            filters
-                                                  :builder            builder
-                                                  :action             action
-                                                  :action-transformer action-transformer))))))
-    (occ-debug :debug "Running occ-sacha-helm-select1")))
+          (let* ((candidates-unfiltered (occ-list obj :builder builder))
+                 (unfiltered-count      (length candidates-unfiltered))
+                 (candidates-filtered   (occ-filter obj
+                                                    filters
+                                                    candidates-unfiltered)))
+            (when candidates-filtered
+              (if (and
+                   auto-select-if-only
+                   (= 1 (length candidates-filtered)))
+                  (let* ((candidate (car candidates-filtered))
+                         (action    (car (funcall action-transformer action candidate)))
+                         (action    (if (consp action) (cdr action) action)))
+                    (funcall action candidate))
+                (helm
+                 ;; :keymap occ-helm-map
+                 :sources
+                 (occ-helm-build-candidates-sources obj
+                                                    candidates-filtered
+                                                    :unfiltered-count   unfiltered-count
+                                                    :filters            filters
+                                                    :builder            builder
+                                                    :action             action
+                                                    :action-transformer action-transformer))))))
+      (occ-debug :debug "Running occ-sacha-helm-select1"))))
 
 (cl-defmethod occ-list-select ((obj occ-ctx)
                                &key
@@ -84,23 +89,23 @@
                                timeout)
   (let ((action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
-    (helm-timed timeout
-      (occ-debug :debug "running sacha/helm-select-clock")
-      (let ((action             (if return-transform (occ-return-tranform action) action)) ;as return value is going to be used.
-            (action-transformer (if return-transform (occ-return-tranformer-fun-transform action-transformer) action-transformer)))
-        (let ((selected (occ-list-select-internal obj
-                                                  :filters             filters
-                                                  :builder             builder
-                                                  :action              action
-                                                  :action-transformer  action-transformer
-                                                  :auto-select-if-only auto-select-if-only
-                                                  :timeout             timeout)))
-         (occ-debug :debug "occ-list-select: selected = %s" selected)
-         (if return-transform
-             (or ;as return value is going to be used.
-              selected
-              (occ-make-return occ-return-quit-label selected))
-           selected))))))
+      (helm-timed timeout
+        (occ-debug :debug "running sacha/helm-select-clock")
+        (let ((action             (if return-transform (occ-return-tranform action) action)) ;as return value is going to be used.
+              (action-transformer (if return-transform (occ-return-tranformer-fun-transform action-transformer) action-transformer)))
+          (let ((selected (occ-list-select-internal obj
+                                                    :filters             filters
+                                                    :builder             builder
+                                                    :action              action
+                                                    :action-transformer  action-transformer
+                                                    :auto-select-if-only auto-select-if-only
+                                                    :timeout             timeout)))
+           (occ-debug :debug "occ-list-select: selected = %s" selected)
+           (if return-transform
+               (or ;as return value is going to be used.
+                selected
+                (occ-make-return occ-return-quit-label selected))
+             selected))))))
 
 
 ;; TODO: Not to run when frame is not open [visible.]

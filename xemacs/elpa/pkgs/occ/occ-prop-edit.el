@@ -424,17 +424,17 @@
         (action             (or action (occ-helm-actions obj)))
         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
-    (occ-debug :debug "begin occ-delayed-select-obj-prop-edit")
+    (occ-debug :debug "begin occ-safe-props-window-edit")
     (occ-debug-return "occ-safe-props-window-edit((obj occ-ctx)) no-active"
       (lotus-with-no-active-minibuffer-if
           (progn
-            (occ-debug :debug "occ-delayed-select-obj-prop-edit: [minibuffer-body] lotus-with-no-active-minibuffer-if")
-            (occ-debug :debug "add-ctx-to-org-heading: minibuffer already active quitting")
+            (occ-debug :debug "occ-safe-props-window-edit: [minibuffer-body] lotus-with-no-active-minibuffer-if")
+            (occ-debug :debug "occ-safe-props-window-edit: minibuffer already active quitting")
             (occ-debug :debug nil))
         ;;; TODO: extend lotus-with-other-frame-event-debug it to include elscreen change also.
         (occ-debug-return "occ-safe-props-window-edit((obj occ-ctx)) frame-event-debug"
-          (lotus-with-other-frame-event-debug "occ-delayed-select-obj-prop-edit" :cancel
-            (occ-debug :debug "occ-delayed-select-obj-prop-edit: lotus-with-other-frame-event-debug")
+          (lotus-with-other-frame-event-debug "occ-safe-props-window-edit" :cancel
+            (occ-debug :debug "occ-safe-props-window-edit: lotus-with-other-frame-event-debug")
             (prog1
                 (let ((buff (occ-ctx-buffer obj)))
                   (if (eq (current-buffer) buff)
@@ -447,7 +447,7 @@
                                                :action-transformer action-transformer
                                                :timeout            timeout))
                    (occ-debug :debug "context is not for current buffer.")))
-              (occ-debug :debug "finished occ-delayed-select-obj-prop-edit"))))))))
+              (occ-debug :debug "finished occ-safe-props-window-edit"))))))))
 
 (cl-defmethod occ-safe-props-window-edit ((obj marker)
                                           &key

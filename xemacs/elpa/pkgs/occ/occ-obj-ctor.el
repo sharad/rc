@@ -87,12 +87,13 @@
 
 
 (defun occ-get-tsk-category (heading plist)
-  (or
-   (when (string-match "<\\([a-zA-Z][a-zA-Z0-9]+\\)>" heading)
-     (match-string 1 heading))
-   (plist-get plist :CATEGORY)
-   "TODO"))
-
+  (if (stringp heading)
+      (or
+       (when (string-match "<\\([a-zA-Z][a-zA-Z0-9]+\\)>" heading)
+         (match-string 1 heading))
+       (plist-get plist :CATEGORY)
+       "TODO")
+    "TODO"))
 
 (defun occ-make-tsk-at-point (&optional builder)
     (let ((builder (or builder

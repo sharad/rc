@@ -787,27 +787,6 @@
   (occ-gen-checkouts obj))
 
 
-(occ-helm-action-add :fast-edits-gen     "Fast Edits" #'occ-gen-helm-fast-edits)
-(occ-helm-action-add :edits-gen          "Edit"       #'occ-gen-helm-edits)
-(occ-helm-action-add :misc-gen           "Misc"       #'occ-gen-helm-misc)
-(occ-helm-action-add :fast-checkouts-gen "Checkouts"  #'occ-gen-helm-checkouts)
-
-(occ-add-helm-actions-tree '(actions general)
-                           "Simple"
-                           'generator
-                           :misc-gen)
-
-(occ-add-helm-actions-tree '(actions edit)
-                           "Editing"
-                           'generator
-                           :fast-edits-gen
-                           :edits-gen)
-
-(occ-add-helm-actions-tree '(actions checkout)
-                           "Editing"
-                           'generator
-                           :fast-checkouts-gen)
-
 ;; TODO: Implement Plist with title here
 
 
