@@ -162,17 +162,18 @@ It might be shown only if wait timeout happens.
 *** STARTED Create Single line task mainly for FAST DISPATCH      :USABILITY:
     [[file:~/.xemacs/elpa/pkgs/occ/occ-obj-simple.el::(defun%20sacha/org-capture-prefill-template%20(template%20&rest%20values)][Code]]
 
-*** non tsk org entries                                              :DESIGN:
+*** STARTED non tsk org entries                                      :DESIGN:
 
     Reduce ranking to very much low.
 
+*** NEXT Rich menu with many class todo info note etc for capture
 *** STARTED Property other methods like Increase/Decrease for integer, parent/child dir for dir property etc.
 *** STARTED Offer N times to add org file in occ if occ if current buffer is from org file.
 
-*** NEXT Rich menu with many class todo info note etc for capture
-*** move filtering in helm selection.                             :USABILITY:
+*** STARTED move filtering in helm selection.                     :USABILITY:
 *** STARTED setup occ buffer with necessary hooks and cleanup etc   :TRIVIAL:
 *** SCHEDULE and DEADLINE should only be enforced on non-repeatitive task. :USABILITY:
+https://orgmode.org/manual/Repeated-tasks.html
 *** Addition of useful property methods                          :COMPLETION:
 **** SubTree
 **** timebeing

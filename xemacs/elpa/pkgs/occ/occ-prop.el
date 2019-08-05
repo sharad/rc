@@ -751,27 +751,62 @@
 ;;             (helm :sources sources))))
 ;;     (if (eq retval t)
 ;;         t)))
+
+
+(cl-defmethod occ-gen-helm-fast-edits ((obj null)
+                                       &key param-only)
+  nil)
 
 (cl-defmethod occ-gen-helm-fast-edits ((obj occ-obj-ctx-tsk)
                                        &key param-only)
   (occ-gen-edits-if-required obj nil nil
                              :param-only param-only))
+
+
+(cl-defmethod occ-gen-helm-edits ((obj null) &param-only param-only)
+  nil)
+
 (cl-defmethod occ-gen-helm-edits ((obj occ-obj-ctx-tsk) &param-only param-only)
   (list
    (cons "Edit" #'(lambda () (occ-props-edit obj)))))
+
+
+(cl-defmethod occ-gen-helm-misc ((obj null))
+  '(("Continue" . t)
+    ("Checkout" . checkout)))
+
 (cl-defmethod occ-gen-helm-misc ((obj occ-obj-ctx-tsk))
   '(("Continue" . t)
     ("Checkout" . checkout)))
+
+
+(cl-defmethod occ-gen-helm-checkouts ((obj null))
+  nil)
+
 (cl-defmethod occ-gen-helm-checkouts ((obj occ-obj-ctx-tsk))
   (occ-gen-checkouts obj))
 
 
-(occ-generate-plist-functions occ-action generator)
-(occ-action-generator-clear)
-(occ-action-generator-set :fast-edits "Fast Edits" #'occ-gen-helm-fast-edits)
-(occ-action-generator-set :fast-edits "Edit"       #'occ-gen-helm-edits)
-(occ-action-generator-set :fast-edits "Misc"       #'occ-gen-helm-misc)
-(occ-action-generator-set :fast-edits "checkouts"  #'occ-gen-helm-checkouts)
+(occ-helm-action-add :fast-edits-gen     "Fast Edits" #'occ-gen-helm-fast-edits)
+(occ-helm-action-add :edits-gen          "Edit"       #'occ-gen-helm-edits)
+(occ-helm-action-add :misc-gen           "Misc"       #'occ-gen-helm-misc)
+(occ-helm-action-add :fast-checkouts-gen "Checkouts"  #'occ-gen-helm-checkouts)
+
+(occ-add-helm-actions-tree '(actions general)
+                           "Simple"
+                           'generator
+                           :misc-gen)
+
+(occ-add-helm-actions-tree '(actions edit)
+                           "Editing"
+                           'generator
+                           :fast-edits-gen
+                           :edits-gen)
+
+(occ-add-helm-actions-tree '(actions checkout)
+                           "Editing"
+                           'generator
+                           :fast-checkouts-gen)
 
 ;; TODO: Implement Plist with title here
 

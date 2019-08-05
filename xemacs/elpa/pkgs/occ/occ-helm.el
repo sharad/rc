@@ -107,44 +107,58 @@
                            "Editing"
                            'normal
                            :proprty-window-edit)
+
 
-(defun occ-get-helm-actions-tree (keys)
+(cl-defgeneric occ-get-helm-actions-tree (obj keys)
+  "occ-get-helm-actions-tree")
+
+(cl-defmethod occ-get-helm-actions-tree ((obj null) keys)
   (apply #'append
          (mapcar #'(lambda (pair-action)
                      (cond
                       ((eql (car pair-action) 'normal)
                        (apply #'occ-helm-actions-get (cdr pair-action)))
-                      ((eql (car pair-action) 'generated)
-                       (apply #'occ-helm-actions-get (cdr pair-action)))))
+                      ((eql (car pair-action) 'generator))))
+                 (collect-alist (tree-collect-items occ-helm-actions-tree nil keys 0)))))
+
+(cl-defmethod occ-get-helm-actions-tree ((obj occ-obj) keys)
+  (apply #'append
+         (mapcar #'(lambda (pair-action)
+                     (cond
+                      ((eql (car pair-action) 'normal)
+                       (apply #'occ-helm-actions-get (cdr pair-action)))
+                      ((eql (car pair-action) 'generator)
+                       (apply #'append
+                              (mapcar #'(lambda (generator)
+                                          (generator obj))
+                                      (apply #'occ-helm-actions-get (cdr pair-action)))))))
                  (collect-alist (tree-collect-items occ-helm-actions-tree nil keys 0)))))
 
 
 (defun occ-helm-general-actions ()
-  (occ-get-helm-actions-tree '(t actions general)))
+  (occ-get-helm-actions-tree nil '(t actions general)))
 
 (defun occ-helm-intractive-command-actions ()
-  (occ-get-helm-actions-tree '(t actions general)))
+  (occ-get-helm-actions-tree nil '(t actions general)))
 
 (defun occ-helm-intractive-launch-actions ()
-  (occ-get-helm-actions-tree '(t actions general)))
+  (occ-get-helm-actions-tree nil '(t actions general)))
 
 
 (cl-defmethod occ-helm-actions ((obj null))
-  (occ-get-helm-actions-tree '(t actions general)))
+  (occ-get-helm-actions-tree nil '(t actions general)))
 
 (cl-defmethod occ-helm-actions ((obj occ-obj))
-  (occ-get-helm-actions-tree '(t actions general)))
+  (occ-get-helm-actions-tree nil '(t actions general)))
 
 
 (cl-defmethod occ-helm-action-transformer ((obj null) actions)
   (append
-   (occ-get-helm-actions-tree '(t actions general))
-   (occ-gen-edits-if-required obj nil nil)))
+   (occ-get-helm-actions-tree obj '(t actions general))))
 
 (cl-defmethod occ-helm-action-transformer ((obj occ-obj-tsk) actions)
   (append
-   (occ-get-helm-actions-tree '(t actions general))
-   (occ-gen-edits-if-required obj nil nil)))
+   (occ-get-helm-actions-tree obj '(t actions general))))
 
 
 (cl-defun occ-helm-action-transformer-fun (action candidate)
@@ -152,30 +166,30 @@
 
 
 (cl-defmethod occ-helm-actions ((obj null))
-  (occ-helm-general-actions))
+  (occ-get-helm-actions-tree obj '(t actions general)))
 
 (cl-defmethod occ-helm-actions ((obj occ-obj))
-  (occ-helm-general-actions))
+  (occ-get-helm-actions-tree obj '(t actions general)))
 
 (cl-defmethod occ-helm-action-generators ((obj null))
-  (occ-helm-general-actions))
+  (occ-get-helm-actions-tree obj '(t actions general)))
 
 (cl-defmethod occ-helm-action-generators ((obj occ-obj))
-  (occ-helm-general-actions))
+  (occ-get-helm-actions-tree obj '(t actions general)))
 
 
 (cl-defmethod occ-props-edit-helm-actions ((obj null))
-  (occ-get-helm-actions-tree '(t actions edit)))
+  (occ-get-helm-actions-tree obj '(t actions edit)))
 
 (cl-defmethod occ-props-edit-helm-actions ((obj occ-obj))
-  (occ-get-helm-actions-tree '(t actions edit)))
+  (occ-get-helm-actions-tree obj '(t actions edit)))
 
 
 (cl-defmethod occ-props-edit-helm-action-transformer ((obj null) actions)
-  (occ-get-helm-actions-tree '(t edit)))
+  (occ-get-helm-actions-tree obj '(t actions edit)))
 
 (cl-defmethod occ-props-edit-helm-action-transformer ((obj occ-obj-tsk) actions)
-  (occ-get-helm-actions-tree '(t edit)))
+  (occ-get-helm-actions-tree obj '(t actions edit)))
 
 ;; (cl-defmethod occ-props-edit-helm-action-transformer ((obj occ-obj-ctx-tsk) actions)
 ;;   (occ-props-edit-helm-actions obj))

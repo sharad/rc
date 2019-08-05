@@ -42,6 +42,17 @@
   "run when occ-global-tsk-collection-change-hook get changed.")
 
 
+;; org-todo-line-regexp
+
+;; (defun org-get-todo-state ()
+;;   "Return the TODO keyword of the current subtree."
+;;   (save-excursion
+;;     (org-back-to-heading t)
+;;     (and (let ((case-fold-search nil)) (looking-at org-todo-line-regexp))
+;;          (match-end 2)
+;;          (match-string 2))))
+
+
 (defun occ-tsk-builder ()
   (unless occ-global-tsk-collection (occ-collection-object))
   (if occ-global-tsk-collection
