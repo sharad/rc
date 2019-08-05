@@ -104,9 +104,9 @@
   (let ((filters            (occ-list-filters))
         (builder            #'occ-build-ctsk-with)
         (return-transform   t)
-        (action             (occ-get-helm-actions-tree nil '(t actions general)))
+        (action             (occ-get-helm-actions-tree nil '(t actions general edit)))
         (action-transformer #'(lambda (action candidate)
-                                (occ-get-helm-actions-tree nil '(t actions general))))
+                                (occ-get-helm-actions-tree candidate '(t actions general edit))))
         (timeout            occ-idle-timeout))
     (let ((retval-ctx-tsk (occ-helm-select ctx
                                            :filters            filters

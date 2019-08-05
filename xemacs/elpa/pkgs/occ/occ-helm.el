@@ -73,6 +73,7 @@
   (occ-helm-action-add :proprty-window-edit      "Proprtes Window Edit"     #'occ-props-window-edit) ;TODO: implement it.
   (occ-helm-action-add :proprty-edit-combined    "Proprtes Edit Combined"   #'occ-props-edit-combined) ;TODO: implement it.
   (occ-helm-action-add :call-with-obj            "Call with object"         #'occ-call-with-obj)
+  (occ-helm-action-add :set-debug-obj            "Set debug obj"            #'occ-set-debug-obj)
   (occ-helm-action-add :rank                     "Get Rank"                 #'occ-print-rank)
   (occ-helm-action-add :tsk                      "Get Task"                 #'occ-print-tsk))
 
@@ -97,6 +98,7 @@
                            :proprty-window-edit
                            :proprty-edit-combined
                            :call-with-obj
+                           :set-debug-obj
                            :try-clock-in
                            :goto
                            :rank
@@ -117,7 +119,7 @@
                      (cond
                       ((eql (car pair-action) 'normal)
                        (apply #'occ-helm-actions-get (cdr pair-action)))
-                      ((eql (car pair-action) 'generator))))
+                      ((eql (car pair-action) 'generator) nil)))
                  (collect-alist (tree-collect-items occ-helm-actions-tree nil keys 0)))))
 
 (cl-defmethod occ-get-helm-actions-tree ((obj occ-obj) keys)
@@ -129,7 +131,7 @@
                       ((eql (car pair-action) 'generator)
                        (apply #'append
                               (mapcar #'(lambda (generator)
-                                          (generator obj))
+                                          (funcall (cdr generator) obj :param-only nil))
                                       (apply #'occ-helm-actions-get (cdr pair-action)))))))
                  (collect-alist (tree-collect-items occ-helm-actions-tree nil keys 0)))))
 

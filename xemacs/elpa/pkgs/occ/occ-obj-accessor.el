@@ -255,26 +255,15 @@ pointing to it."
                    (exp-with-obj (read)))
                #'(lambda ()
                    (funcall
-                    `(lambda () ,exp-with-obj))))))
+                    `(lambda (obj) ,exp-with-obj) obj)))))
     (funcall fun)))
+
+(let ((occ-debug-object nil))
+  (cl-defmethod occ-set-debug-obj ((obj occ-obj-tsk))
+    (setq occ-debug-object obj))
+  (cl-defmethod occ-get-debug-obj ()
+    occ-debug-object))
 
-
-;; (cl-defmethod occ-marker-tsk-with ((sym null))
-;;   nil)
-
-;; (cl-defmethod occ-marker-tsk-with ((mrk marker))
-;;   "return created occ-tsk from marker"
-;;   (when (and
-;;          mrk
-;;          (markerp mrk)
-;;          (> (marker-position-nonil mrk) 0))
-;;     (org-with-cloned-marker mrk "<tree>"
-;;       (let ((view-read-only nil)
-;;             (buffer-read-only t))
-;;         (read-only-mode)
-;;         (org-previous-visible-heading 1)
-;;         (let ((tsk (occ-make-tsk mrk (occ-tsk-builder))))
-;;           tsk)))))
 
 (defun occ-current-ctxual-tsk (&optional occ-other-allowed)
   (let* ((ctxual-tsk (car *occ-clocked-ctxual-tsk-ctx-history*)))

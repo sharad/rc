@@ -429,5 +429,9 @@
 
 
 
+;; (funcall #'occ-gen-helm-fast-edits (occ-get-debug-obj) :param-only nil)
+;; (funcall #'occ-gen-helm-edits (occ-get-debug-obj) :param-only nil)
+;; (funcall #'occ-gen-helm-misc (occ-get-debug-obj) :param-only nil)
+;; (funcall #'occ-gen-helm-checkouts (occ-get-debug-obj) :param-only nil)
 
 ;;; occ-test.el ends here

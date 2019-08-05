@@ -697,7 +697,7 @@
 
 (cl-defmethod occ-checkout ((obj occ-obj-tsk))
   "Checkout property in case of force clock-in."
-  (dolist (prop (occ-properties-to-checkout))
+  (dolist (prop (occ-properties-to-checkout obj))
     (occ-message "occ-checkout: checkout prop %s" prop)
     (occ-checkout-prop obj prop)))
 
@@ -731,7 +731,7 @@
 (cl-defmethod occ-gen-checkouts ((obj occ-obj-tsk))
   (remove nil
           (mapcar #'occ-gen-checkout-if-required
-                  (occ-properties-to-checkout))))
+                  (occ-properties-to-checkout obj))))
 
 
 ;; (cl-defmethod occ-props-edit-combined ((obj occ-obj-ctx-tsk))
@@ -771,19 +771,19 @@
    (cons "Edit" #'(lambda () (occ-props-edit obj)))))
 
 
-(cl-defmethod occ-gen-helm-misc ((obj null))
+(cl-defmethod occ-gen-helm-misc ((obj null) &param-only param-only)
   '(("Continue" . t)
     ("Checkout" . checkout)))
 
-(cl-defmethod occ-gen-helm-misc ((obj occ-obj-ctx-tsk))
+(cl-defmethod occ-gen-helm-misc ((obj occ-obj-ctx-tsk) &param-only param-only)
   '(("Continue" . t)
     ("Checkout" . checkout)))
 
 
-(cl-defmethod occ-gen-helm-checkouts ((obj null))
+(cl-defmethod occ-gen-helm-checkouts ((obj null) &param-only param-only)
   nil)
 
-(cl-defmethod occ-gen-helm-checkouts ((obj occ-obj-ctx-tsk))
+(cl-defmethod occ-gen-helm-checkouts ((obj occ-obj-ctx-tsk) &param-only param-only)
   (occ-gen-checkouts obj))
 
 
