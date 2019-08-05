@@ -622,22 +622,22 @@
                        (unless (select-frame-set-input-focus-no-raise-p)
                          (lotus-utils-debug 'event-input :debug "%s: %s: set-advice-fn: %s <%s> add quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
                          (lotus-utils-debug 'event-input :debug "%s: %s: set-advice-fn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
-                                (time-stamp-string) 'lotus-with-other-frame-event-debug
-                                ,name ,action
-                                last-input-event
-                                last-event-frame
-                                frame
-                                (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                            (time-stamp-string) 'lotus-with-other-frame-event-debug
+                                            ,name ,action
+                                            last-input-event
+                                            last-event-frame
+                                            frame
+                                            (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
                          (select-frame-set-input-disable-raise))
                      (when (select-frame-set-input-focus-no-raise-p)
                        (lotus-utils-debug 'event-input :debug "%s: %s: readfn: %s <%s> remove quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
                        (lotus-utils-debug 'event-input :debug "%s: %s: set-advice-fn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
-                              (time-stamp-string) 'lotus-with-other-frame-event-debug
-                              ,name ,action
-                              last-input-event
-                              last-event-frame
-                              frame
-                              (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                          (time-stamp-string) 'lotus-with-other-frame-event-debug
+                                          ,name ,action
+                                          last-input-event
+                                          last-event-frame
+                                          frame
+                                          (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
                        (select-frame-set-input-enable-raise)))))
               (readfn
                #'(lambda ()
@@ -647,44 +647,29 @@
                      (progn
                        (lotus-utils-debug 'event-input :debug "%s: %s: readfn: %s <%s> inside readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
                        (lotus-utils-debug 'event-input :debug "%s: %s: readfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
-                              (time-stamp-string) 'lotus-with-other-frame-event-debug
-                              ,name ,action
-                              last-input-event
-                              last-event-frame
-                              frame
-                              (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                          (time-stamp-string) 'lotus-with-other-frame-event-debug
+                                          ,name ,action
+                                          last-input-event
+                                          last-event-frame
+                                          frame
+                                          (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
                        (funcall set-advice-fn)
                        (prog1
                            (progn
                              ,@body)
                          (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                         (funcall set-advice-fn)))
-                     ;; (condition-case nil
-                     ;;     (progn
-                     ;;       (lotus-utils-debug 'event-input :debug "%s: %s: readfn: %s <%s> inside readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
-                     ;;       (lotus-utils-debug 'event-input :debug "%s: %s: readfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
-                     ;;              (time-stamp-string) 'lotus-with-other-frame-event-debug
-                     ;;              ,name ,action
-                     ;;              last-input-event
-                     ;;              last-event-frame
-                     ;;              frame
-                     ;;              (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
-                     ;;       (funcall set-advice-fn)
-                     ;;       ,@body
-                     ;;       (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                     ;;       (funcall set-advice-fn))
-                     ;;   (quit nil))
-                     )))
+                         (funcall set-advice-fn))))))
               (hookfn
                #'(lambda ()
                    (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
-                          (time-stamp-string) 'lotus-with-other-frame-event-debug
-                          ,name ,action
-                          last-input-event
-                          last-event-frame
-                          frame
-                          (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                      (time-stamp-string) 'lotus-with-other-frame-event-debug
+                                      ,name ,action
+                                      last-input-event
+                                      last-event-frame
+                                      frame
+                                      (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
                    (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
+                   ;; TODO: Here add support for elscreen change also, make it generalized function
                    (if (eql last-event-frame frame)
                        (progn
                          (setq frame nil)
@@ -696,12 +681,12 @@
                        (progn
                          (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: %s <%s> running readfn from hookfn outside timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
                          (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
-                                (time-stamp-string) 'lotus-with-other-frame-event-debug
-                                ,name ,action
-                                last-input-event
-                                last-event-frame
-                                frame
-                                (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                            (time-stamp-string) 'lotus-with-other-frame-event-debug
+                                            ,name ,action
+                                            last-input-event
+                                            last-event-frame
+                                            frame
+                                            (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
                          (setq frame nil)
                          (run-with-timer 0 nil
                                          #'(lambda ()
@@ -710,13 +695,13 @@
                                                ;; (setq debug-on-quit nil)
                                                (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: %s <%s> timer remove quiet 1 minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
                                                (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
-                                                      (time-stamp-string) 'lotus-with-other-frame-event-debug
-                                                      ,name ,action
-                                                      last-input-event
-                                                      last-event-frame
-                                                      frame
-                                                      (selected-frame)
-                                                      (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                                                  (time-stamp-string) 'lotus-with-other-frame-event-debug
+                                                                  ,name ,action
+                                                                  last-input-event
+                                                                  last-event-frame
+                                                                  frame
+                                                                  (selected-frame)
+                                                                  (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
                                                ;; (funcall set-advice-fn)
                                                (prog1
                                                    ,@(cond
@@ -727,13 +712,13 @@
                                                          (with-selected-frame last-event-frame
                                                            (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: %s <%s> running readfn from hookfn inside timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
                                                            (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
-                                                                  (time-stamp-string) 'lotus-with-other-frame-event-debug
-                                                                  ,name ,action
-                                                                  last-input-event
-                                                                  last-event-frame
-                                                                  frame
-                                                                  (selected-frame)
-                                                                  (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                                                              (time-stamp-string) 'lotus-with-other-frame-event-debug
+                                                                              ,name ,action
+                                                                              last-input-event
+                                                                              last-event-frame
+                                                                              frame
+                                                                              (selected-frame)
+                                                                              (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
                                                            (funcall readfn))))
                                                       ((consp action)
                                                        `(
@@ -744,32 +729,32 @@
                                                         (null action))
                                                        nil))
                                                  (lotus-utils-debug 'event-input :debug
-                                                        "%s: %s: hookfn: %s <%s> finished running %s frame=%s minibuffer<%s>"
-                                                        (time-stamp-string)
-                                                        'lotus-with-other-frame-event-debug
-                                                        ,name
-                                                        ,action
-                                                        ,action
-                                                        (selected-frame)
-                                                        (active-minibuffer-window))
+                                                                    "%s: %s: hookfn: %s <%s> finished running %s frame=%s minibuffer<%s>"
+                                                                    (time-stamp-string)
+                                                                    'lotus-with-other-frame-event-debug
+                                                                    ,name
+                                                                    ,action
+                                                                    ,action
+                                                                    (selected-frame)
+                                                                    (active-minibuffer-window))
                                                  (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
-                                                        (time-stamp-string) 'lotus-with-other-frame-event-debug
-                                                        ,name ,action
-                                                        last-input-event
-                                                        last-event-frame
-                                                        frame
-                                                        (selected-frame)
-                                                        (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))))))
+                                                                    (time-stamp-string) 'lotus-with-other-frame-event-debug
+                                                                    ,name ,action
+                                                                    last-input-event
+                                                                    last-event-frame
+                                                                    frame
+                                                                    (selected-frame)
+                                                                    (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))))))
                          (progn
                            (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: %s <%s> add quiet 2 frame=%s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (selected-frame) (active-minibuffer-window))
                            (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
-                                  (time-stamp-string) 'lotus-with-other-frame-event-debug
-                                  ,name ,action
-                                  last-input-event
-                                  last-event-frame
-                                  frame
-                                  (selected-frame)
-                                  (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                              (time-stamp-string) 'lotus-with-other-frame-event-debug
+                                              ,name ,action
+                                              last-input-event
+                                              last-event-frame
+                                              frame
+                                              (selected-frame)
+                                              (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
                            (select-frame-set-input-disable-raise)
                            (when (active-minibuffer-window)
                              (abort-recursive-edit)))))))))

@@ -147,6 +147,8 @@ It might be shown only if wait timeout happens.
 
 
 
+*** Here add support for elscreen change also, make it generalized function
+[[file:~/.xemacs/elpa/pkgs/lotus-utils/lotus-misc-utils.el::;;%20TODO:%20Here%20add%20support%20for%20elscreen%20change%20also,%20make%20it%20generalized%20function][Here add support for elscreen change also, make it generalized function]]
 
 *** CLOSED In editprop propagate property to childs also
     CLOSED: [2019-07-31 Wed 15:02]
@@ -193,6 +195,7 @@ https://orgmode.org/manual/Repeated-tasks.html
 **** Some can need to be done in week, similarly fortnight, month
 **** Some are in future, here schedule/deadline should not be asked
 **** Some are in future but uncertain (they are to track.), here also schedule/deadline should not be asked
+
 
 
 
