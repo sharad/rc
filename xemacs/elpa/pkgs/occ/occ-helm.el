@@ -61,7 +61,6 @@
 (occ-generate-plist-functions occ-helm action)
 (progn
   (occ-helm-action-clear)
-
   (occ-helm-action-add :ignore                   "Ignore"                   #'ignore)
   (occ-helm-action-add :identity                 "Select"                   #'identity)
   (occ-helm-action-add :clock-in                 "Clock-in"                 #'occ-clock-in)

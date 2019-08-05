@@ -86,6 +86,14 @@
               (buffer-substring start (point)))))))))
 
 
+(defun occ-get-tsk-category (heading plist)
+  (or
+   (when (string-match "<\\([a-zA-Z][a-zA-Z0-9]+\\)>" heading)
+     (match-string 1 heading))
+   (plist-get plist :CATEGORY)
+   "TODO"))
+
+
 (defun occ-make-tsk-at-point (&optional builder)
     (let ((builder (or builder
                        (occ-tsk-builder))))
@@ -125,6 +133,7 @@
                              :file         file
                              :point        point
                              :clock-sum    clock-sum
+                             :cat          (occ-get-tsk-category heading tsk-plist)
                              :plist        tsk-plist))
               (let ((inherit t)
                     (inherited-props

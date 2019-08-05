@@ -100,6 +100,7 @@
   point
   clock-sum
   file-level
+  cat
   plist
   format-string
   ;; rank
