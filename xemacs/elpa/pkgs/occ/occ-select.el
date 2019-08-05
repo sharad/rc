@@ -48,7 +48,7 @@
         (occ-debug :debug "occ-list-select-internal: [minibuffer-body] lotus-with-no-active-minibuffer-if")
         (occ-debug :debug "occ-list-select-internal: minibuffer already active quitting")
         (occ-debug :debug nil))
-    (occ-debug :debug "Running occ-sacha-helm-select")
+    (occ-debug :debug "Running occ-list-select-internal")
     (prog1
         (let ((action-transformer  (or action-transformer #'occ-helm-action-transformer-fun))
               (timeout             (or timeout occ-idle-timeout)))
@@ -76,7 +76,7 @@
                                                     :builder            builder
                                                     :action             action
                                                     :action-transformer action-transformer))))))
-      (occ-debug :debug "Running occ-sacha-helm-select1"))))
+      (occ-debug :debug "Running occ-list-select-internal"))))
 
 (cl-defmethod occ-list-select ((obj occ-ctx)
                                &key
@@ -90,7 +90,7 @@
   (let ((action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
         (timeout            (or timeout occ-idle-timeout)))
       (helm-timed timeout
-        (occ-debug :debug "running sacha/helm-select-clock")
+        (occ-debug :debug "running occ-list-select")
         (let ((action             (if return-transform (occ-return-tranform action) action)) ;as return value is going to be used.
               (action-transformer (if return-transform (occ-return-tranformer-fun-transform action-transformer) action-transformer)))
           (let ((selected (occ-list-select-internal obj

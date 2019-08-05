@@ -29,6 +29,7 @@
 (require 'lotus-misc-utils)
 (eval-when-compile
   (require 'lotus-misc-utils))
+(require 'timer-utils-lotus)
 
 
 (require 'occ-cl-utils)
@@ -340,7 +341,7 @@
   (setq *occ-buff-sel-timer*
         ;; distrubing while editing.
         ;; run-with-timer
-        (run-with-idle-timer
+        (run-with-idle-plus-timer
          (occ-try-clock-in-next-timeout)
          nil
          'occ-clock-in-curr-ctx-if-not-timer-function event)))

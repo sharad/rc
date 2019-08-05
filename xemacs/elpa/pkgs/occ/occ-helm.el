@@ -179,11 +179,11 @@
 
 (cl-defmethod occ-helm-action-transformer ((obj null) actions)
   (append
-   (occ-get-helm-actions-tree obj '(t actions general))))
+   (occ-get-helm-actions-tree obj '(t actions general edit))))
 
 (cl-defmethod occ-helm-action-transformer ((obj occ-obj-tsk) actions)
   (append
-   (occ-get-helm-actions-tree obj '(t actions general))))
+   (occ-get-helm-actions-tree obj '(t actions general edit))))
 
 
 (cl-defun occ-helm-action-transformer-fun (action candidate)
