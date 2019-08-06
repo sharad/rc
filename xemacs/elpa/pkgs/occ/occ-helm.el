@@ -216,9 +216,6 @@
 (cl-defmethod occ-props-edit-helm-action-transformer ((obj occ-obj-tsk) actions)
   (occ-get-helm-actions-tree obj '(t actions edit)))
 
-;; (cl-defmethod occ-props-edit-helm-action-transformer ((obj occ-obj-ctx-tsk) actions)
-;;   (occ-props-edit-helm-actions obj))
-
 (cl-defun occ-props-edit-helm-action-transformer-fun (action candidate)
   (occ-props-edit-helm-action-transformer candidate action))
 
