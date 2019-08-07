@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2019  Sharad
 
-;; Author: Sharad <sh4r4d _at_ GMail>
+;; Author: Sharad <>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -92,6 +92,36 @@
   (occ-helm-action-add :tsk                      "Get Task"                 #'occ-print-tsk))
 
 
+(cl-defgeneric occ-get-helm-actions-plist (obj
+                                           name-action-key)
+  "occ-get-helm-actions-plist")
+
+(cl-defmethod occ-get-helm-actions-plist ((obj null)
+                                          name-action-key)
+  "occ-get-helm-actions-plist"
+  (cond
+   ((eql (car name-action-key) 'normal)
+    (apply #'occ-helm-actions-get (cdr name-action-key)))
+   ((eql (car name-action-key) 'generator) nil)))
+
+(cl-defmethod occ-get-helm-actions-plist ((obj occ-obj)
+                                          name-action-key)
+  "occ-get-helm-actions-plist"
+  (occ-get-helm-actions-plist nil name-action-key))
+
+(cl-defmethod occ-get-helm-actions-plist ((obj occ-obj-tsk)
+                                          name-action-key)
+  "occ-get-helm-actions-plist"
+  (cond
+   ((eql (car name-action-key) 'normal)
+    (apply #'occ-helm-actions-get (cdr name-action-key)))
+   ((eql (car name-action-key) 'generator)
+    (apply #'append
+           (mapcar #'(lambda (generator)
+                       (funcall (cdr generator) obj :param-only nil))
+                   (apply #'occ-helm-actions-get (cdr name-action-key)))))))
+
+
 (defvar occ-helm-actions-tree '(t))
 
 (setq occ-helm-actions-tree '(t))
@@ -151,35 +181,15 @@
 (cl-defmethod occ-get-helm-actions-tree ((obj null) keys)
   ;; (occ-message "occ-get-helm-actions-tree: called with obj = %s, keys = %s" obj keys)
   (apply #'append
-         (mapcar #'(lambda (pair-action)
-                     (cond
-                      ((eql (car pair-action) 'normal)
-                       (apply #'occ-helm-actions-get (cdr pair-action)))
-                      ((eql (car pair-action) 'generator) nil)))
+         (mapcar #'(lambda (name-action-key)
+                     (occ-get-helm-actions-plist obj name-action-key))
                  (collect-alist (tree-collect-items occ-helm-actions-tree nil keys 0)))))
 
 (cl-defmethod occ-get-helm-actions-tree ((obj occ-obj) keys)
   ;; (occ-message "occ-get-helm-actions-tree: called with obj = %s, keys = %s" obj keys)
   (apply #'append
-         (mapcar #'(lambda (pair-action)
-                     (cond
-                      ((eql (car pair-action) 'normal)
-                       (apply #'occ-helm-actions-get (cdr pair-action)))
-                      ((eql (car pair-action) 'generator) nil)))
-                 (collect-alist (tree-collect-items occ-helm-actions-tree nil keys 0)))))
-
-(cl-defmethod occ-get-helm-actions-tree ((obj occ-obj-tsk) keys)
-  ;; (occ-message "occ-get-helm-actions-tree: called with obj = %s, keys = %s" obj keys)
-  (apply #'append
-         (mapcar #'(lambda (pair-action)
-                     (cond
-                      ((eql (car pair-action) 'normal)
-                       (apply #'occ-helm-actions-get (cdr pair-action)))
-                      ((eql (car pair-action) 'generator)
-                       (apply #'append
-                              (mapcar #'(lambda (generator)
-                                          (funcall (cdr generator) obj :param-only nil))
-                                      (apply #'occ-helm-actions-get (cdr pair-action)))))))
+         (mapcar #'(lambda (name-action-key)
+                     (occ-get-helm-actions-plist obj name-action-key))
                  (collect-alist (tree-collect-items occ-helm-actions-tree nil keys 0)))))
 
 

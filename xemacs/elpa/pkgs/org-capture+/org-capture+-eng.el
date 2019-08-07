@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2019  s
 
-;; Author: s <sh4r4d@gmail.com>
+;; Author: s <>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -31,7 +31,8 @@
 
 
 (defun org-capture+-select-type ()
-  '(entry item chckitem table-line plain log-note))
+  (let ((types '(entry item chckitem table-line plain log-note)))
+    (intern (completing-read "Type: " types))))
 
 (defun org-capture+-select-target ()
   '(
@@ -43,5 +44,31 @@
     (file+function "path/to/file" function-finding-location)
     (clock)
     (function function-finding-location)))
+
+(defun org-capture+-select-target-name ()
+  (let ((types
+         '(file id file+headline file+olp file+olp+datetree clock function)))
+    (intern (completing-read "Target Name: " types))))
+
+(defun org-capture+-select-target (target-name)
+  (let ((target-name target-name))
+   (case target-name
+     (file (list 'file (org-capture+-select-target-file)))
+     (id   (list 'id   (org-capture+-select-target-id)))
+     (file (let* ((file (org-capture+-select-target-file))
+                  (heading (org-capture+-select-target-heading file)))
+             (list 'id  file heading)))
+     (file+olp (list 'file+olp "path/to/file" "Level 1 heading" "Level 2"))
+     (file+olp+datetree (list 'file+olp+datetree "path/to/file" "Level 1 heading"))
+     (file+function (list 'file+function "path/to/file" 'function-finding-location))
+     (clock 'clock)
+     (function (list 'function 'function-finding-location)))))
+
+
+(defun org-capture+-select-target-file ())
+
+(defun org-capture+-select-target-id ())
+
+(defun org-capture+-select-target-heading (file))
 
 ;;; org-capture+-eng.el ends here
