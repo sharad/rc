@@ -109,7 +109,8 @@
     (file+olp+datetree "path/to/file" "Level 1 heading" ...)
     (file+function "path/to/file" function-finding-location)
     (clock)
-    (function function-finding-location)))
+    (function function-finding-location)
+    (marker marker)))
 
 (defun org-capture+-select-target-name ()
   (let ((types
