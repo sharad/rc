@@ -129,7 +129,8 @@
      (file+olp+datetree (list 'file+olp+datetree "path/to/file" "Level 1 heading"))
      (file+function (list 'file+function "path/to/file" 'function-finding-location))
      (clock 'clock)
-     (function (list 'function 'function-finding-location)))))
+     (function (list 'function 'function-finding-location))
+     (marker marker))))
 
 
 (defun org-capture+-select-target-file ())
