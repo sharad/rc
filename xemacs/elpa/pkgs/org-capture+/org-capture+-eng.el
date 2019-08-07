@@ -30,6 +30,72 @@
 (require 'org-capture+-helm-dynamic)
 
 
+;; TODO: some kind of recommendation system, not rigid, but not fully free also.
+;; THINK
+;; you have tree api with node functions
+
+;; org-capture-templates
+
+;; (org-capture)
+
+;; Value:
+'(("w" "Default template" entry
+       (file+headline "/home/s/paradise/capture/capture.org" "Notes")
+       "* %^{Title}\n\n  Source: %u, %c\n\n  %i" :empty-lines 1)
+  ("c" "Current Clock")
+  ("ch" "Current Clock Heading" entry
+        (clock))
+  ("ci" "Current Clock Item" item
+        (clock))
+  ("cp" "Current Clock Plain" plain
+        (clock))
+  ("k" "Current Task" entry
+       (file+headline
+        (lambda nil
+          (org-template-set-file-writable
+           (expand-file-name "notes.org"
+                             (find-task-dir)))))
+       "* TODO %? %^g\n %i\n [%a]\n" :empty-lines 1)
+  ("m" "Emacs" entry "/home/s/paradise/capture/emacs.org" "* TODO %? %^g\n %i\n [%a]\n" :empty-lines 1)
+  ("t" "Todo" entry
+       (file+headline "/home/s/paradise/capture/todo.org" "G T D")
+       "* TODO %? %^g\n %i\n [%a]\n" :empty-lines 1)
+  ("j" "Journal" entry
+       (file+headline "/home/s/paradise/capture/journal.org" "j o u r n a l")
+       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+  ("n" "Plan" entry
+       (file+headline "/home/s/paradise/capture/plan.org" "p l a n")
+       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+  ("l" "Learn" entry
+       (file+headline "/home/s/paradise/capture/learn.org" "Learn")
+       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+  ("i" "Idea" entry
+       (file+headline "/home/s/paradise/capture/idea.org" "Ideas")
+       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+  ("b" "Book" entry
+       (file+headline "/home/s/paradise/capture/journal.org" "Books")
+       "\n* %^{Book Title} %t :READING: \n%[~/Documents/CreatedContent/contents/virtual/org/default/remember/templates/book]\n [%a]\n" :empty-lines 1)
+  ("p" "Private" entry
+       (file+headline "/home/s/paradise/capture/privnotes.org")
+       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+  ("r" "Remember" entry
+       (file+headline "/home/s/paradise/capture/remember.org" "Remember")
+       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+  ("s" "SomeDay" entry
+       (file+headline "/home/s/paradise/capture/someday.org" "Some Day")
+       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+  ("w" "Waiting-For" entry
+       (file+headline "/home/s/paradise/capture/waiting4.org" "Waiting")
+       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+  ("ac" "Contact" entry
+        (file+headline "/home/s/paradise/capture/contacts.org" "Contacts")
+        "\n* %^{Name} :CONTACT:\n%[~/Documents/CreatedContent/contents/virtual/org/default/remember/templates/contact]\n %i\n [%a]\n" :empty-lines 1)
+  ("e" "Receipt" entry
+       (file+headline "/home/s/paradise/capture/finances.org" "Receipts")
+       "** %^{BriefDesc} %U %^g\n%?\n [%a]\n" :empty-lines 1)
+  ("x" "Refile" entry #'org-goto-refile "* TODO %? %^g\n %i\n [%a]\n" :empty-lines 1))
+
+
 (defun org-capture+-select-type ()
   (let ((types '(entry item chckitem table-line plain log-note)))
     (intern (completing-read "Type: " types))))
