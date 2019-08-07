@@ -202,8 +202,8 @@
   (if (occ-clockable-p obj)
     (let ((filters            (or filters (occ-match-filters)))
           (builder            (or builder #'occ-build-ctxual-tsk-with))
-          (action             (or action (occ-helm-actions obj)))
-          (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+          (action             (or action (occ-get-helm-actions-tree obj '(t actions general))))
+          (action-transformer (or action-transformer (occ-get-helm-actions-tree-genertator obj '(t actions general edit))))
           (timeout            (or timeout occ-idle-timeout)))
       (occ-debug :debug "occ-clock-in((obj occ-ctx)): begin")
       (let ((returned-ctxual-tsk

@@ -1462,6 +1462,12 @@ function setup_deps_control_class_all_positions_dirs()
     fi
 }
 
+function setup_deps_control_data_usrdata_dirs()
+{
+    storage_path="${1-local}"
+
+    running setup_deps_control_class_all_positions_dirs "$storage_path" ${dataclassname}/usrdatas usrdata
+}
 function setup_deps_control_data_sysdata_dirs()
 {
     storage_path="${1-local}"
@@ -1484,6 +1490,7 @@ function setup_deps_control_data_dirs()
 {
     local storage_path="${1-local}"
 
+    running setup_deps_control_data_usrdata_dirs   "$storage_path"
     running setup_deps_control_data_sysdata_dirs   "$storage_path"
     running setup_deps_control_data_scratches_dirs "$storage_path"
     running setup_deps_control_data_main_dirs      "$storage_path"
@@ -1504,6 +1511,13 @@ function setup_deps_control_home_dirs()
 }
 
 
+function setup_deps_control_data_usrdata_dir()
+{
+    local storage_path="${1-local}"
+    local position=${1-2}
+
+    running setup_deps_control_class_dir "$storage_path" ${dataclassname}/usrdatas usrdata "$position"
+}
 function setup_deps_control_data_sysdata_dir()
 {
     local storage_path="${1-local}"
@@ -1530,6 +1544,7 @@ function setup_deps_control_data_dir()
     local storage_path="${1-local}"
     local position=${1-2}
 
+    running setup_deps_control_data_usrdata_dir   "$storage_path" "$position"
     running setup_deps_control_data_sysdata_dir   "$storage_path" "$position"
     running setup_deps_control_data_scratches_dir "$storage_path" "$position"
     running setup_deps_control_data_main_dir      "$storage_path" "$position"
@@ -1648,6 +1663,8 @@ function setup_deps_mode_dir()
     fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d ]
 
 }
+
+## Continue from here.
 
 # deps/control
 function setup_deps_control_volumes_dirs()

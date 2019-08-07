@@ -39,4 +39,22 @@
   (let ((tsk (occ-obj-tsk obj)))
     (occ-message "occ-print-tsk: %s" tsk)))
 
+
+
+
+;; (cancel-debug-on-entry 'read-from-minibuffer)
+;; (read-minibuffer)
+;; (read-from-minibuffer "Test: ")
+
+
+
+(when nil
+      ;; todo debug struck issue.
+      ;; run some
+      (run-with-timer 7 nil
+                      #'(lambda ()
+                          (without-active-minibuffer
+                           (read-from-minibuffer "Test: ")))))
+
+
 ;;; occ-debug-method.el ends here

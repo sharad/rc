@@ -50,7 +50,7 @@
         (occ-debug :debug nil))
     (occ-debug :debug "Running occ-list-select-internal")
     (prog1
-        (let ((action-transformer  (or action-transformer #'occ-helm-action-transformer-fun))
+        (let ((action-transformer  (or action-transformer (occ-get-helm-actions-tree-genertator obj '(t actions general edit))))
               (timeout             (or timeout occ-idle-timeout)))
 
           (let* ((candidates-unfiltered (occ-list obj :builder builder))
@@ -87,7 +87,7 @@
                                action-transformer
                                auto-select-if-only
                                timeout)
-  (let ((action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+  (let ((action-transformer (or action-transformer (occ-get-helm-actions-tree-genertator obj '(t actions general edit))))
         (timeout            (or timeout occ-idle-timeout)))
       (helm-timed timeout
         (occ-debug :debug "running occ-list-select")
@@ -128,8 +128,8 @@
   "return interactively selected TSK or NIL"
   (unless builder (error "Builder can not be nil"))
   (occ-debug :debug "occ-select((obj occ-ctx)): begin")
-  (let ((action             (or action (occ-helm-actions obj)))
-        (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+  (let ((action             (or action (occ-get-helm-actions-tree obj '(t actions general))))
+        (action-transformer (or action-transformer (occ-get-helm-actions-tree-genertator obj '(t actions general edit))))
         (timeout            (or timeout occ-idle-timeout)))
     (let* ((unfiltered-count      (occ-length)))
       (if (> unfiltered-count 0)

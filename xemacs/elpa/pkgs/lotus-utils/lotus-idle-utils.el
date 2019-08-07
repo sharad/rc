@@ -146,7 +146,7 @@ this macro intended to be used with or in idle timer functions."
                                       (window-valid-p w))
                              (delete-window w)
                              (lwarn 'lotus-idle-timed-window :debug "lotus-with-idle-timed-transient-window: triggered timer for new-win %s" w)
-                             (with-no-active-minibuffer
+                             (without-active-minibuffer
                                (select-frame-set-input-enable-raise)))))
           (timer      (run-with-idle-plus-timer timeout nil cleanup-fun window)))
      (unwind-protect
@@ -178,7 +178,7 @@ this macro intended to be used with or in idle timer functions."
                                        (window-valid-p window))
                                (delete-window window)
                                (lwarn 'lotus-idle-timed-window :debug "lotus-with-idle-timed-transient-buffer-window: triggered timer for new-win %s" window)
-                               (with-no-active-minibuffer
+                               (without-active-minibuffer
                                  (select-frame-set-input-enable-raise))))))
           (timer       (run-with-idle-plus-timer timeout nil cleanup-fun ,buffer)))
      (unwind-protect

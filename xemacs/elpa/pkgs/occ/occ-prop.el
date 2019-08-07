@@ -734,25 +734,6 @@
                   (occ-properties-to-checkout obj))))
 
 
-;; (cl-defmethod occ-props-edit-combined ((obj occ-obj-ctx-tsk))
-;;   (let* ((sources (list
-;;                    (helm-build-sync-source "fast edit"
-;;                      :candidates (occ-gen-edits-if-required obj nil nil :param-only t)
-;;                      :action (list (cons "Edit" #'funcall)))
-;;                    (helm-build-sync-source "edit"
-;;                      :candidates (list
-;;                                   (cons "Edit" #'(lambda () (occ-props-edit obj))))
-;;                      :action (list (cons "Edit" #'funcall)))
-;;                    (helm-build-sync-source "other"
-;;                      :candidates '(("Continue" . t)
-;;                                    ("Checkout" . checkout)))))
-;;          (retval
-;;           (helm-timed 7
-;;             (helm :sources sources))))
-;;     (if (eq retval t)
-;;         t)))
-
-
 (cl-defmethod occ-gen-helm-fast-edits ((obj null)
                                        &key param-only)
   nil)

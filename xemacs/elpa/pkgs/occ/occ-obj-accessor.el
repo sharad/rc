@@ -447,7 +447,7 @@ pointing to it."
                (mapcar #'(lambda (tsk) (funcall builder tsk obj))
                        tsks)))))
       (unless (eq t ctsks)
-        ;; BUG: TODO: convey it tpo occ-select occ-clock-in
+        ;; BUG: TODO: convey it top occ-select occ-clock-in
         (occ-message "Busy user input %s" last-input-event)
         ctsks))))
 

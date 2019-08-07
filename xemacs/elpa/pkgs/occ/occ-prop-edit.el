@@ -264,7 +264,7 @@
                      :candidates '(("Continue" . t)
                                    ("Checkout" . checkout)))))
          (retval
-          (helm-timed 7
+          (helm-timed occ-idle-timeout
             (helm :sources sources))))
     (if (eq retval t)
         t)))
@@ -340,10 +340,10 @@
                                      timeout)
   (let* ((filters            (or filters nil))
          (builder            (or builder #'occ-build-ctsk-with))
-         (action             (or action (occ-helm-actions obj)))
-         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+         (action             (or action (occ-get-helm-actions-tree obj '(t actions general))))
+         (action-transformer (or action-transformer (occ-get-helm-actions-tree-genertator obj '(t actions general edit))))
          (timeout            (or timeout occ-idle-timeout)))
-    (occ-debug :debug "occ-select-obj-prop-edit((obj occ-ctx)): [body] lotus-with-no-active-minibuffer-if")
+    (occ-debug :debug "occ-select-obj-prop-edit((obj occ-ctx)): begin")
     (let ((buff (occ-ctx-buffer obj)))
       (if (and
            (buffer-live-p buff)
@@ -395,8 +395,8 @@
   (occ-debug :debug "occ-select-obj-prop-edit((obj null)):")
   (let ((filters            (or filters nil))
         (builder            (or builder #'occ-build-ctsk-with))
-        (action             (or action (occ-helm-actions obj)))
-        (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+        (action             (or action (occ-get-helm-actions-tree obj '(t actions general))))
+        (action-transformer (or action-transformer (occ-get-helm-actions-tree-genertator obj '(t actions general edit))))
         (timeout            (or timeout occ-idle-timeout)))
       (occ-props-window-edit (occ-make-ctx-at-point)
                              :filters            filters
@@ -421,8 +421,8 @@
   (occ-debug :debug "occ-safe-props-window-edit((obj occ-ctx)): begin")
   (let ((filters            (or filters nil))
         (builder            (or builder #'occ-build-ctsk-with))
-        (action             (or action (occ-helm-actions obj)))
-        (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+        (action             (or action (occ-get-helm-actions-tree obj '(t actions general))))
+        (action-transformer (or action-transformer (occ-get-helm-actions-tree-genertator obj '(t actions general edit))))
         (timeout            (or timeout occ-idle-timeout)))
     (occ-debug :debug "begin occ-safe-props-window-edit")
     (occ-debug-return "occ-safe-props-window-edit((obj occ-ctx)) no-active"
@@ -487,8 +487,8 @@
   (occ-debug :debug "occ-safe-ignore-quit-props-window-edit((obj occ-ctx)): begin")
   (let ((filters            (or filters nil))
         (builder            (or builder #'occ-build-ctsk-with))
-        (action             (or action (occ-helm-actions obj)))
-        (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+        (action             (or action (occ-get-helm-actions-tree obj '(t actions general))))
+        (action-transformer (or action-transformer (occ-get-helm-actions-tree-genertator obj '(t actions general edit))))
         (timeout            (or timeout occ-idle-timeout)))
     (occ-debug :debug "called occ-delayed-select-obj-prop-edit-when-idle")
     (occ-debug :debug "%s: begin: occ-delayed-select-obj-prop-edit-when-idle" (time-stamp-string))

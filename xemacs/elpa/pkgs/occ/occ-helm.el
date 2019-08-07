@@ -40,20 +40,34 @@
 (require 'occ-helm-method)
 
 
+;; TODO
 ;;;###autoload
-(org-capture+-add-heading-template '(occ tsk todo) "TODO"
+(org-capture+-add-heading-template '(occ tsk clockable todo) "TODO"
                                    "* TODO %? %^g\n %i\n [%a]\n")
 ;;;###autoload
-(org-capture+-add-heading-template '(occ tsk todo) "TODO"
+(org-capture+-add-heading-template '(occ tsk clockable todo) "TODO"
                                    "* MILESTONE %? %^g\n %i\n [%a]\n")
 ;;;###autoload
-(org-capture+-add-heading-template '(occ tsk meeting) "MEETING"
+(org-capture+-add-heading-template '(occ tsk clockable meeting) "MEETING"
                                    "* MEETING %? %^g\n %i\n [%a]\n")
+
+;; NOTE
+;;;###autoload
+(org-capture+-add-heading-template '(occ tsk unclockable note) "NOTE"
+                                   "* <NOTE> %? %^g\n %i\n [%a]\n")
+;; INFO
+;;;###autoload
+(org-capture+-add-heading-template '(occ tsk unclockable info) "INFO"
+                                   "* <INFO> %? %^g\n %i\n [%a]\n")
+;; EVENT
+;;;###autoload
+(org-capture+-add-heading-template '(occ tsk unclockable event) "EVENT"
+                                   "* <EVENT> %? %^g\n %i\n [%a]\n")
 
 
 (defun occ-capture+-helm-select-template ()
   (let ((selector (helm-template-gen-selector #'org-capture+-tree-predicate
-                                              '(t occ tsk todo)
+                                              '(t occ tsk clockable todo)
                                               0)))
     (funcall selector)))
 
@@ -135,6 +149,7 @@
   "occ-get-helm-actions-tree")
 
 (cl-defmethod occ-get-helm-actions-tree ((obj null) keys)
+  ;; (occ-message "occ-get-helm-actions-tree: called with obj = %s, keys = %s" obj keys)
   (apply #'append
          (mapcar #'(lambda (pair-action)
                      (cond
@@ -143,7 +158,18 @@
                       ((eql (car pair-action) 'generator) nil)))
                  (collect-alist (tree-collect-items occ-helm-actions-tree nil keys 0)))))
 
-(cl-defmethod occ-get-helm-actions-tree ((obj occ-obj-ctx-tsk) keys)
+(cl-defmethod occ-get-helm-actions-tree ((obj occ-obj) keys)
+  ;; (occ-message "occ-get-helm-actions-tree: called with obj = %s, keys = %s" obj keys)
+  (apply #'append
+         (mapcar #'(lambda (pair-action)
+                     (cond
+                      ((eql (car pair-action) 'normal)
+                       (apply #'occ-helm-actions-get (cdr pair-action)))
+                      ((eql (car pair-action) 'generator) nil)))
+                 (collect-alist (tree-collect-items occ-helm-actions-tree nil keys 0)))))
+
+(cl-defmethod occ-get-helm-actions-tree ((obj occ-obj-tsk) keys)
+  ;; (occ-message "occ-get-helm-actions-tree: called with obj = %s, keys = %s" obj keys)
   (apply #'append
          (mapcar #'(lambda (pair-action)
                      (cond
@@ -157,66 +183,12 @@
                  (collect-alist (tree-collect-items occ-helm-actions-tree nil keys 0)))))
 
 
-(defun occ-helm-general-actions ()
-  (occ-get-helm-actions-tree nil '(t actions general)))
+(cl-defmethod occ-get-helm-actions-tree-genertator ((obj null) keys)
+  #'(lambda (action candidate)
+      (occ-get-helm-actions-tree candidate keys)))
 
-(defun occ-helm-intractive-command-actions ()
-  (occ-get-helm-actions-tree nil '(t actions general)))
-
-(defun occ-helm-intractive-launch-actions ()
-  (occ-get-helm-actions-tree nil '(t actions general)))
-
-
-(cl-defmethod occ-helm-actions ((obj null))
-  (occ-get-helm-actions-tree nil '(t actions general edit)))
-
-(cl-defmethod occ-helm-actions ((obj occ-obj-ctx-tsk))
-  (occ-get-helm-actions-tree nil '(t actions general edit)))
-
-(cl-defmethod occ-helm-actions ((obj occ-obj-ctx))
-  (occ-get-helm-actions-tree nil '(t actions general edit)))
-
-
-(cl-defmethod occ-helm-action-transformer ((obj null) actions)
-  (append
-   (occ-get-helm-actions-tree obj '(t actions general edit))))
-
-(cl-defmethod occ-helm-action-transformer ((obj occ-obj-tsk) actions)
-  (append
-   (occ-get-helm-actions-tree obj '(t actions general edit))))
-
-
-(cl-defun occ-helm-action-transformer-fun (action candidate)
-  (occ-helm-action-transformer candidate action))
-
-
-(cl-defmethod occ-helm-actions ((obj null))
-  (occ-get-helm-actions-tree obj '(t actions general)))
-
-(cl-defmethod occ-helm-actions ((obj occ-obj))
-  (occ-get-helm-actions-tree obj '(t actions general)))
-
-(cl-defmethod occ-helm-action-generators ((obj null))
-  (occ-get-helm-actions-tree obj '(t actions general)))
-
-(cl-defmethod occ-helm-action-generators ((obj occ-obj))
-  (occ-get-helm-actions-tree obj '(t actions general)))
-
-
-(cl-defmethod occ-props-edit-helm-actions ((obj null))
-  (occ-get-helm-actions-tree obj '(t actions edit)))
-
-(cl-defmethod occ-props-edit-helm-actions ((obj occ-obj))
-  (occ-get-helm-actions-tree obj '(t actions edit)))
-
-
-(cl-defmethod occ-props-edit-helm-action-transformer ((obj null) actions)
-  (occ-get-helm-actions-tree obj '(t actions edit)))
-
-(cl-defmethod occ-props-edit-helm-action-transformer ((obj occ-obj-tsk) actions)
-  (occ-get-helm-actions-tree obj '(t actions edit)))
-
-(cl-defun occ-props-edit-helm-action-transformer-fun (action candidate)
-  (occ-props-edit-helm-action-transformer candidate action))
+(cl-defmethod occ-get-helm-actions-tree-genertator ((obj occ-obj) keys)
+  #'(lambda (action candidate)
+      (occ-get-helm-actions-tree candidate keys)))
 
 ;;; occ-helm.el ends here

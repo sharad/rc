@@ -104,9 +104,8 @@
   (let ((filters            (occ-list-filters))
         (builder            #'occ-build-ctsk-with)
         (return-transform   t)
-        (action             (occ-get-helm-actions-tree nil '(t actions general edit)))
-        (action-transformer #'(lambda (action candidate)
-                                (occ-get-helm-actions-tree candidate '(t actions general edit))))
+        (action             (occ-get-helm-actions-tree ctx '(t actions general edit)))
+        (action-transformer (occ-get-helm-actions-tree-genertator ctx '(t actions general edit)))
         (timeout            occ-idle-timeout))
     (let ((retval-ctx-tsk (occ-helm-select ctx
                                            :filters            filters
@@ -122,7 +121,7 @@
        (if (and
             (occ-return-in-labels-p retval-ctx-tsk occ-return-select-label)
             (occ-return-get-value retval-ctx-tsk))
-           (let* ((action      (occ-helm-intractive-launch-actions))
+           (let* ((action      (occ-get-helm-actions-tree ctx '(t actions general edit)))
                   (ctx-tsk     (occ-return-get-value retval-ctx-tsk))
                   (launcher    (cdr (assoc (completing-read "Action: " action) action))))
              (funcall launcher ctx-tsk))
@@ -151,8 +150,8 @@
   (interactive)
   (let ((ctx (occ-make-ctx-at-point)))
     (occ-props-window-edit ctx
-                           :action             (occ-props-edit-helm-actions ctx)
-                           :action-transformer #'occ-props-edit-helm-action-transformer-fun)))
+                           :action             (occ-get-helm-actions-tree ctx '(t actions edit))
+                           :action-transformer (occ-get-helm-actions-tree-genertator ctx '(t actions edit)))))
 
 
 ;;;###autoload

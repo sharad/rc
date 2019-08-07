@@ -51,7 +51,7 @@
 (put 'eval-with-focus 'lisp-indent-function 0)
 
 
-(defmacro with-no-active-minibuffer (&rest body)
+(defmacro without-active-minibuffer (&rest body)
   ;; https://oremacs.com/2015/07/16/callback-quit/
   ;; https://emacs.stackexchange.com/questions/20974/exit-minibuffer-and-execute-a-command-afterwards
   `(progn
@@ -62,17 +62,17 @@
                     ,@body))
      (when (active-minibuffer-window)
        (abort-recursive-edit))))
-(put 'with-no-active-minibuffer 'lisp-indent-function 0)
+(put 'without-active-minibuffer 'lisp-indent-function 0)
 
-(defmacro with-no-active-minibuffer-ensured (&rest body)
+(defmacro without-active-minibuffer-ensured (&rest body)
   ;; https://oremacs.com/2015/07/16/callback-quit/
   ;; https://emacs.stackexchange.com/questions/20974/exit-minibuffer-and-execute-a-command-afterwards
-  `(with-no-active-minibuffer
+  `(without-active-minibuffer
      (unless (active-minibuffer-window)
        ,@body)))
-(put 'with-no-active-minibuffer-ensured 'lisp-indent-function 0)
+(put 'without-active-minibuffer-ensured 'lisp-indent-function 0)
 
-(defmacro with-no-active-minibuffer-debug (minibuffer-body &rest body)
+(defmacro without-active-minibuffer-debug (minibuffer-body &rest body)
   ;; https://oremacs.com/2015/07/16/callback-quit/
   ;; https://emacs.stackexchange.com/questions/20974/exit-minibuffer-and-execute-a-command-afterwards
   `(progn
@@ -85,20 +85,20 @@
                     ,@body))
      (when (active-minibuffer-window)
        (abort-recursive-edit))))
-(put 'with-no-active-minibuffer-debug 'lisp-indent-function 1)
+(put 'without-active-minibuffer-debug 'lisp-indent-function 1)
 
-(defmacro with-no-active-minibuffer-ensured-debug (minibuffer-body &rest body)
+(defmacro without-active-minibuffer-ensured-debug (minibuffer-body &rest body)
   ;; https://oremacs.com/2015/07/16/callback-quit/
   ;; https://emacs.stackexchange.com/questions/20974/exit-minibuffer-and-execute-a-command-afterwards
-  `(with-no-active-minibuffer-debug
+  `(without-active-minibuffer-debug
        ,minibuffer-body
      (unless (active-minibuffer-window)
        ,@body)))
-(put 'with-no-active-minibuffer-ensured-debug 'lisp-indent-function 1)
+(put 'without-active-minibuffer-ensured-debug 'lisp-indent-function 1)
 
 (when nil
   (defun test-minibuffer-quiting ()
-    (with-no-active-minibuffer
+    (without-active-minibuffer
       (message "Hello")))
 
   (run-with-timer 3 nil 'test-minibuffer-quiting)
@@ -400,12 +400,12 @@
 (put 'lotus-with-no-active-minibuffer-if 'lisp-indent-function 1)
 
 (defmacro lotus-with-override-minibuffer (&rest body)
-  `(with-no-active-minibuffer-ensured
+  `(without-active-minibuffer-ensured
      ,@body))
 (put 'lotus-with-override-minibuffer 'lisp-indent-function 0)
 
 (defmacro lotus-with-override-minibuffer-if (minibuffer-body &rest body)
-  `(with-no-active-minibuffer-ensured-debug
+  `(without-active-minibuffer-ensured-debug
        (progn
          (lotus-utils-debug 'active-minibuffer-if :debug "%s: %s: aborting active minibuffer." (time-stamp-string) 'lotus-with-override-minibuffer-if)
          ,minibuffer-body)

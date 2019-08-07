@@ -31,6 +31,16 @@
 (require 'occ-obj)
 
 
+(defvar occ-prop-rank-hierarchy '(t))
+
+(cl-defmethod occ-set-rank-hierarchy ((prop symbol)
+                                      &key
+                                      pos)
+
+  (cond))
+
+;; (cl-defmethod)
+
 (cl-defgeneric occ-rankprop (obj
                              prop)
   "occ-rankprop")
@@ -63,19 +73,19 @@
   nil)
 
 
-(cl-defmethod occ-increase-p ((prop symbol))
-  "Method tell property represent list or not."
-  ;; 'list
-  ;; (error "Implement method occ-list-p for prop %s" prop)
-  (occ-debug :debug "occ-list-p: no method for prop %s using default." prop)
-  nil)
+;; (cl-defmethod occ-increase-p ((prop symbol))
+;;   "Method tell property represent list or not."
+;;   ;; 'list
+;;   ;; (error "Implement method occ-list-p for prop %s" prop)
+;;   (occ-debug :debug "occ-list-p: no method for prop %s using default." prop)
+;;   nil)
 
-(cl-defmethod occ-list-p ((prop symbol))
-  "Method tell property represent list or not."
-  ;; 'list
-  ;; (error "Implement method occ-list-p for prop %s" prop)
-  (occ-debug :debug "occ-list-p: no method for prop %s using default." prop)
-  nil)
+;; (cl-defmethod occ-list-p ((prop symbol))
+;;   "Method tell property represent list or not."
+;;   ;; 'list
+;;   ;; (error "Implement method occ-list-p for prop %s" prop)
+;;   (occ-debug :debug "occ-list-p: no method for prop %s using default." prop)
+;;   nil)
 
 
 

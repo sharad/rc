@@ -96,8 +96,8 @@
   (let ((filters            (or filters (occ-match-filters)))
         (builder            (or builder #'occ-build-ctxual-tsk-with))
         (return-transform   t) ;as return value is going to be used.)
-        (action             (or action  (occ-helm-actions obj)))
-        (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+        (action             (or action  (occ-get-helm-actions-tree obj '(t actions general))))
+        (action-transformer (or action-transformer (occ-get-helm-actions-tree-genertator obj '(t actions general edit))))
         (timeout            (or timeout occ-idle-timeout)))
     (occ-debug :debug "occ-clock-in-if-not((obj occ-ctx)): begin")
     (if (occ-edit-clock-if-unassociated obj) ;; (occ-clock-unassociated-p obj) ;; (occ-edit-clock-if-unassociated obj)
@@ -179,8 +179,8 @@
                                    timeout)
   (let* ((filters            (or filters (occ-match-filters)))
          (builder            (or builder #'occ-build-ctxual-tsk-with))
-         (action             (or action  (occ-helm-actions obj)))
-         (action-transformer (or action-transformer #'occ-helm-action-transformer-fun))
+         (action             (or action  (occ-get-helm-actions-tree obj '(t actions general))))
+         (action-transformer (or action-transformer (occ-get-helm-actions-tree-genertator obj '(t actions general edit))))
          (timeout            (or timeout occ-idle-timeout)))
     (occ-debug :debug "occ-clock-in-if-chg((obj occ-ctx)): begin")
     (if (occ-consider-for-clockin-in-p)
@@ -253,8 +253,8 @@
   (let ((ctx (occ-make-ctx-at-point)))
     (let ((filters             (occ-match-filters))
           (builder             #'occ-build-ctxual-tsk-with)
-          (action              (occ-helm-actions ctx))
-          (action-transformer  #'occ-helm-action-transformer-fun)
+          (action              (occ-get-helm-actions-tree ctx '(t actions general)))
+          (action-transformer  (occ-get-helm-actions-tree-genertator ctx '(t actions general edit)))
           (auto-select-if-only nil) ; occ-clock-in-ctx-auto-select-if-only)
           (timeout             occ-idle-timeout))
       (occ-clock-in-if-not ctx
@@ -278,8 +278,8 @@
       (let ((ctx (occ-make-ctx-at-point)))
         (let ((filters             (occ-match-filters))
               (builder             #'occ-build-ctxual-tsk-with)
-              (action              (occ-helm-actions ctx))
-              (action-transformer  #'occ-helm-action-transformer-fun)
+              (action              (occ-get-helm-actions-tree ctx '(t actions general edit)))
+              (action-transformer  (occ-get-helm-actions-tree-genertator ctx '(t actions general edit)))
               (auto-select-if-only occ-clock-in-ctx-auto-select-if-only)
               (timeout             occ-idle-timeout))
           (occ-clock-in-if-chg ctx
@@ -310,11 +310,12 @@
   (occ-debug :debug "occ-clock-in-curr-ctx-if-not-timer-function: begin")
   ;;BUG: could be the cause of high MEM usage
   (unwind-protect
-      (progn
-        (occ-cancel-timer)
-        (if (eq 'buffer-switch event)
-            (occ-run-curr-ctx-chg-timer)
-          (occ-run-curr-ctx-timer)))
+      (lotus-with-no-active-minibuffer-if
+       (occ-debug :debug "occ-clock-in-curr-ctx-if-not-timer-function: minibuffer active")
+       (occ-cancel-timer)
+       (if (eq 'buffer-switch event)
+           (occ-run-curr-ctx-chg-timer)
+         (occ-run-curr-ctx-timer)))
     ;; to bypass QUIT
     (occ-try-clock-schedule-next-timeout nil)))
 

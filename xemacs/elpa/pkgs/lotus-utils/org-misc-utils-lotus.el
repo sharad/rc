@@ -654,7 +654,7 @@ With prefix arg C-u, copy region instad of killing it."
                                                       (windowp w)
                                                       (window-valid-p w))
                                              (delete-window w)
-                                             (with-no-active-minibuffer
+                                             (without-active-minibuffer
                                                (select-frame-set-input-enable-raise)))))
                                      buf-name)))
     (unwind-protect
