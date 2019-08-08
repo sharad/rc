@@ -139,4 +139,25 @@
 
 (defun org-capture+-select-target-heading (file))
 
+(defun org-capture+get-template ()
+  (funcall
+   (helm-template-gen-selector #'org-capture+-tree-predicate
+                               '(t xx yy)
+                               0)))
+
+
+(defun org-capture+-type-source ()
+  (let ((types '(entry item chckitem table-line plain log-note)))
+    (helm-build-sync-source "Type"
+      :candidates (mapcar #'(lambda (type)
+                             (cons (symbol-name type) (list :type type)))
+                          types)
+      :action #'org-capture+-capture)))
+
+(defun org-capture+-capture (&optional plist)
+  (interactive)
+  (let ((type-source (org-capture+-type-source)))
+    (helm
+     :sources (list type-source))))
+
 ;;; org-capture+-eng.el ends here
