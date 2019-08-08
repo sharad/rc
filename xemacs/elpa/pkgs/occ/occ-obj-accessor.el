@@ -126,59 +126,59 @@
 
 
 ;; occ-tsk - accessors
-(cl-defmethod occ-rank ((tsk occ-tsk))
-  (occ-debug :debug "occ-tsk-get-rank(occ-tsk=%s)" tsk)
-  (let ((rank (occ-tsk-rank tsk)))
+(cl-defmethod occ-rank ((obj occ-tsk))
+  (occ-debug :debug "occ-rank(occ-tsk=%s)" (occ-format obj 'capitalize))
+  (let ((rank (occ-tsk-rank obj)))
     (unless rank
-      (setf (occ-tsk-rank tsk) (occ-calculate-rank tsk)))
-    (occ-tsk-rank tsk)))
+      (setf (occ-tsk-rank obj) (occ-calculate-rank obj)))
+    (occ-tsk-rank obj)))
 
-(cl-defmethod (setf occ-rank) (value (tsk occ-tsk))
-  (occ-debug :debug "occ-tsk-get-rank(occ-tsk=%s)" tsk)
-  (setf (occ-tsk-rank tsk) value))
+(cl-defmethod (setf occ-rank) (value (obj occ-tsk))
+  (occ-debug :debug "setf occ-rank(occ-tsk=%s)" (occ-format obj 'capitalize))
+  (setf (occ-tsk-rank obj) value))
 
 
 ;; occ-ctsk - accessors
 (cl-defmethod occ-rank ((obj occ-ctsk))
-  (occ-debug :debug "occ-rank(occ-ctsk=%s)" obj)
+  (occ-debug :debug "occ-rank(occ-ctsk=%s)" (occ-format (occ-obj-tsk obj) 'capitalize))
   (let ((tsk (occ-ctsk-tsk obj)))
     (occ-rank tsk)))
 
 (cl-defmethod (setf occ-rank) (value (obj occ-ctsk))
-  (occ-debug :debug "occ-rank(occ-ctsk=%s)" obj)
+  (occ-debug :debug "occ-rank(occ-ctsk=%s)" (occ-format (occ-obj-tsk obj) 'capitalize))
   (let ((tsk (occ-ctsk-tsk obj)))
     (setf (occ-rank tsk) rank)))
 
 
 ;; occ-ctxual-tsk - accessors
 (cl-defmethod occ-rank ((obj occ-ctxual-tsk))
-  (occ-debug :debug "occ-rank(occ-ctxual-tsk=%s)" obj)
+  (occ-debug :debug "occ-rank(occ-ctxual-tsk=%s)" (occ-format (occ-obj-tsk obj) 'capitalize))
   (let ((rank (occ-ctxual-tsk-rank obj)))
     (unless rank
       (setf (occ-ctxual-tsk-rank obj) (occ-calculate-rank obj)))
     (occ-ctxual-tsk-rank obj)))
 
 (cl-defmethod (setf occ-rank) (value (obj occ-ctxual-tsk))
-  (occ-debug :debug "occ-rank(occ-ctxual-tsk=%s)" obj)
+  (occ-debug :debug "occ-rank(occ-ctxual-tsk=%s)" (occ-format (occ-obj-tsk obj) 'capitalize))
   (setf (occ-ctxual-tsk-rank obj) value))
 
 
 (cl-defmethod occ-member-tsk-rank ((obj occ-ctxual-tsk))
-  (occ-debug :debug "occ-rank(occ-ctxual-tsk=%s)" obj)
+  (occ-debug :debug "occ-member-tsk-rank(occ-ctxual-tsk=%s)" (occ-format (occ-obj-tsk obj) 'capitalize))
   (let ((tsk (occ-ctxual-tsk-tsk obj)))
     (occ-rank tsk)))
 
 
 ;; occ-tsk - accessors
 (cl-defmethod occ-format-string ((obj occ-tsk))
-  (occ-debug :debug "occ-tsk-get-format-string(occ-tsk=%s)" obj)
+  ;; (occ-debug :debug "occ-tsk-format-string(occ-tsk=%s)" obj)
   (let ((format-string (occ-tsk-format-string obj)))
     (unless format-string
       (setf (occ-tsk-format-string obj) (occ-build-format-string obj)))
     (occ-tsk-format-string obj)))
 
 (cl-defmethod (setf occ-format-string) (value (obj occ-tsk))
-  (occ-debug :debug "occ-tsk-get-format-string(occ-tsk=%s)" obj)
+  ;; (occ-debug :debug "occ-tsk-format-string(occ-tsk=%s)" obj)
   (setf (occ-tsk-format-string obj) value))
 
 

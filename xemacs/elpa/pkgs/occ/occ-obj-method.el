@@ -138,10 +138,12 @@
                   ;; not able to find associated, or intentionally not selecting a clock
                   (if (occ-clock-marker-unnamed-clock-p)
                       (occ-debug :debug "occ-clock-in-if-not: already clock-in into unnamed task ")
-                      (progn
-                        (occ-debug :debug "trying to create unnamed tsk.")
-                        (occ-message "trying to create unnamed tsk.")
-                        (occ-maybe-create-clockedin-unnamed-ctxual-tsk obj))))
+                    (if (occ-config-clock-in)
+                        (progn
+                          (occ-debug :debug "trying to create unnamed tsk.")
+                          (occ-message "trying to create unnamed tsk.")
+                          (occ-maybe-create-clockedin-unnamed-ctxual-tsk obj))
+                      (occ-message "occ-clock-in(obj occ-ctx): clock-in not allowed."))))
               (occ-debug :debug "occ-clock-in-if-not: Can not operate on %s"
                                 (occ-format (occ-return-get-value retval)))))
           (occ-debug :debug "occ-clock-in-if-not: Now really clock done."))
@@ -375,5 +377,5 @@
       (setq occ-add-org-file-timer nil))
    (setq occ-add-org-file-timer
         (run-with-idle-plus-timer 10 nil #'occ-add-org-file (current-buffer)))))
-
+
 ;;; occ-obj-method.el ends here

@@ -30,6 +30,7 @@
 (require 'occ-obj-utils)
 (require 'occ-select)
 (require 'occ-prop-edit)
+(require 'occ-config)
 
 
 (defvar *occ-clocked-ctxual-tsk-ctx-history* nil)
@@ -70,7 +71,9 @@
                             action-transformer
                             timeout)
   (occ-debug :debug "occ-clock-in(occ-tsk=%s)" obj)
-  (occ-clock-in (occ-obj-marker obj)))
+  (if (occ-config-clock-in)
+      (occ-clock-in (occ-obj-marker obj))
+    (occ-message "occ-clock-in(obj occ-tsk): clock-in not allowed.")))
 
 (cl-defmethod occ-clock-in ((obj occ-ctsk)
                             &key
