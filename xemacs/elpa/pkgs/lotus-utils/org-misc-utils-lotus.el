@@ -618,7 +618,7 @@ With prefix arg C-u, copy region instad of killing it."
                                                    (w (if buff (get-buffer-window buff))))
                                               (message "helm-timed: triggered timer for new-win %s" w)
                                               (when (and w (windowp w) (window-valid-p w))
-                                                (delete-window w)
+                                                (safe-delete-window w)
                                                 (when (active-minibuffer-window)
                                                   (abort-recursive-edit)
                                                   (message nil))
@@ -653,7 +653,7 @@ With prefix arg C-u, copy region instad of killing it."
                                            (when (and w
                                                       (windowp w)
                                                       (window-valid-p w))
-                                             (delete-window w)
+                                             (safe-delete-window w)
                                              (without-active-minibuffer
                                                (select-frame-set-input-enable-raise)))))
                                      buf-name)))

@@ -144,7 +144,7 @@ this macro intended to be used with or in idle timer functions."
                            (when (and w
                                       (windowp w)
                                       (window-valid-p w))
-                             (delete-window w)
+                             (safe-delete-window w)
                              (lwarn 'lotus-idle-timed-window :debug "lotus-with-idle-timed-transient-window: triggered timer for new-win %s" w)
                              (without-active-minibuffer
                                (select-frame-set-input-enable-raise)))))
@@ -176,7 +176,7 @@ this macro intended to be used with or in idle timer functions."
                              (when (and window
                                        (windowp window)
                                        (window-valid-p window))
-                               (delete-window window)
+                               (safe-delete-window window)
                                (lwarn 'lotus-idle-timed-window :debug "lotus-with-idle-timed-transient-buffer-window: triggered timer for new-win %s" window)
                                (without-active-minibuffer
                                  (select-frame-set-input-enable-raise))))))
@@ -213,7 +213,7 @@ this macro intended to be used with or in idle timer functions."
                                    ;; (when (active-minibuffer-window) ;not required here. it is just creating timed new-win
                                    ;;   (abort-recursive-edit))
                                    (when (and w (windowp w) (window-valid-p w))
-                                     (delete-window w))
+                                     (safe-delete-window w))
                                    (when ,temp-win-config
                                      (set-window-configuration ,temp-win-config)
                                      (setq ,temp-win-config nil)))))

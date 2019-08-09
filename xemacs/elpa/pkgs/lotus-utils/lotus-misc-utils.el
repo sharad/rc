@@ -166,6 +166,12 @@
        ,@body)))
 (put 'lotus-with-new-win 'lisp-indent-function 1)
 
+(defun safe-delete-window (window)
+  (unless (or
+           (not (window-parent window))
+           (eq window (window--major-non-side-window nil)))
+    (delete-window window)))
+
 (defmacro lotus-with-timed-new-win (timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
   (let ((temp-win-config (make-symbol "test-lotus-with-timed-new-win-config")))
     `(let* ((,temp-win-config (current-window-configuration))
@@ -174,8 +180,11 @@
                                    (when localfn (funcall localfn))
                                    ;; (when (active-minibuffer-window) ;not required here. it is just creating timed new-win
                                    ;;   (abort-recursive-edit))
-                                   (when (and w (windowp w) (window-valid-p w))
-                                     (delete-window w))
+                                   (when (and w
+                                              (windowp w)
+                                              (window-valid-p w))
+                                     ;; check if this is a sole window do not delete it.
+                                     (safe-delete-window w))
                                    (when ,temp-win-config
                                      (set-window-configuration ,temp-win-config)
                                      (setq ,temp-win-config nil)))))
