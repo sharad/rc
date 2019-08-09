@@ -167,19 +167,21 @@
 (put 'lotus-with-new-win 'lisp-indent-function 1)
 
 (defun safe-delete-window (window)
-  (unless (or
-           (not (window-parent window))
-           (eq window (window--major-non-side-window nil)))
-    (delete-window window))
-  (progn                                ; debug
-    (if (not (window-parent window))
-        (lotus-utils-message "window = %s has no parent, (window-parent window) %s"
-                             window
-                             (window-parent window)))
-    (if (eq window
-            (window--major-non-side-window nil))
-        (lotus-utils-message "window = %s is a major non side window."
-                             window))))
+  (let ((win-parent-p          (window-parent window))
+        (major-non-side-window (window--major-non-side-window nil)))
+    (unless (or
+             (not win-parent-p)
+             (eq window major-non-side-window))
+      (delete-window window))
+    (progn                                ; debug
+      (if (not win-parent-p)
+          (lotus-utils-message "window = %s has no parent, (window-parent window) %s"
+                               window
+                               (window-parent window)))
+      (if (eq window
+              major-non-side-window)
+          (lotus-utils-message "window = %s is a major non side window."
+                               window)))))
 
 (defmacro lotus-with-timed-new-win (timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
   (let ((temp-win-config (make-symbol "test-lotus-with-timed-new-win-config")))

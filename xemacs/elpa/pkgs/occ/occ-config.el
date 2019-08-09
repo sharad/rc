@@ -215,5 +215,14 @@
 ;; Mark saved where search started
 ;; Mark set
 
+;; Busy user input s-right
+;; occ-clock-in(obj occ-ctx): clock-in not allowed.
+;; Busy user input (dbus-event :session 2 394 org.freedesktop.DBus nil nil nil dbus-call-method-handler :1.3)
+;; occ-clock-in: Edit properties of a tsk to make associable to current context.
+;; Busy user input (dbus-event :session 2 394 org.freedesktop.DBus nil nil nil dbus-call-method-handler :1.3)
+;; helm-timed: triggered timer for new-win #<window 422 on *helm*>
+;; Error running timer: (wrong-type-argument window-valid-p #<window 422>)
+;; Aborting an helm session running in background
+;; occ-clock-in(obj occ-ctx): clock-in not allowed.
 
 ;;; occ-config.el ends here
