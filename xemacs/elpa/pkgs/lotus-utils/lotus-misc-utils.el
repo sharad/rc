@@ -167,17 +167,17 @@
 (put 'lotus-with-new-win 'lisp-indent-function 1)
 
 (defun safe-delete-window (window)
-  (let ((win-parent-p          (window-parent window))
+  (let ((win-parent            (window-parent window))
         (major-non-side-window (window--major-non-side-window nil)))
     (unless (or
-             (not win-parent-p)
+             (not win-parent)
              (eq window major-non-side-window))
       (delete-window window))
     (progn                                ; debug
-      (if (not win-parent-p)
+      (if (not win-parent)
           (lotus-utils-message "window = %s has no parent, (window-parent window) %s"
                                window
-                               (window-parent window)))
+                               win-parent))
       (if (eq window
               major-non-side-window)
           (lotus-utils-message "window = %s is a major non side window."
