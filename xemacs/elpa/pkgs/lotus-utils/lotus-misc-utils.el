@@ -170,7 +170,16 @@
   (unless (or
            (not (window-parent window))
            (eq window (window--major-non-side-window nil)))
-    (delete-window window)))
+    (delete-window window))
+  (progn                                ; debug
+    (if (not (window-parent window))
+        (lotus-utils-message "window = %s has no parent, (window-parent window) %s"
+                             window
+                             (window-parent window)))
+    (if (eq window
+            (window--major-non-side-window nil))
+        (lotus-utils-message "window = %s is a major non side window."
+                             window))))
 
 (defmacro lotus-with-timed-new-win (timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
   (let ((temp-win-config (make-symbol "test-lotus-with-timed-new-win-config")))

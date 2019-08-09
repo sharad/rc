@@ -128,7 +128,6 @@
 ;; Symbol's value as variable is nil ido-cur-list
 ;; Window nil is a minibuffer window
 
-
 ;; occ-insinuate: begin
 ;; Restoring clock data
 ;; Loading /home/s/hell/.emacs.d/.cache/autoconfig/org/clock/org-clock-save.el (source)...done
