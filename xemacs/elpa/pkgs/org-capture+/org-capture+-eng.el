@@ -102,12 +102,12 @@
 
 (defun org-capture+-select-target ()
   '(
-    (file "path/to/file")
-    (id "id of existing Org entry")
-    (file+headline "path/to/file" "node headline")
-    (file+olp "path/to/file" "Level 1 heading" "Level 2" ...)
+    (file              "path/to/file")
+    (id                "id of existing Org entry")
+    (file+headline     "path/to/file" "node headline")
+    (file+olp          "path/to/file" "Level 1 heading" "Level 2" ...)
     (file+olp+datetree "path/to/file" "Level 1 heading" ...)
-    (file+function "path/to/file" function-finding-location)
+    (file+function     "path/to/file" function-finding-location)
     (clock)
     (function function-finding-location)
     (marker marker)))
@@ -139,6 +139,7 @@
 
 (defun org-capture+-select-target-heading (file))
 
+
 (defun org-capture+get-template ()
   (funcall
    (helm-template-gen-selector #'org-capture+-tree-predicate
@@ -147,39 +148,85 @@
 
 
 (defun org-capture+-type-source (plist)
-  (let ((types '(entry item chckitem table-line plain log-note)))
+  (let ((types '(entry
+                 item
+                 chckitem
+                 table-line
+                 plain
+                 log-note)))
     (helm-build-sync-source "Type"
       :candidates (mapcar #'(lambda (type)
                               (cons (symbol-name type) type))
                           types)
-      :action #'(lambda (type)
-                  (setq plist (plist-put plist :type type))
-                  (org-capture+-capture plist)))))
+      :action     #'(lambda (type)
+                      (setq plist (plist-put plist :type type))
+                      (org-capture+-capture plist)))))
 
 (defun org-capture+-target-source (plist)
-  (let ((targets '(file id file+headline file+olp file+olp+datetree file+function clock function marker)))
+  (let ((targets '(file
+                   id
+                   file+headline
+                   file+olp
+                   file+olp+datetree
+                   file+function
+                   clock
+                   function
+                   marker)))
     (helm-build-sync-source "Target"
       :candidates (mapcar #'(lambda (target)
                               (cons (symbol-name target) target))
                           targets)
-      :action #'(lambda (target)
-                  (setq plist (plist-put plist :target target))
-                  (org-capture+-capture plist)))))
+      :action     #'(lambda (target)
+                      (setq plist (plist-put plist :target target))
+                      (org-capture+-capture plist)))))
+
+(defun org-capture+-file-source (plist)
+  (let ((files org-agenda-files))
+    (helm-build-sync-source "File"
+      :candidates files
+      :action     #'(lambda (file)
+                      (setq plist (plist-put plist :file file))
+                      (org-capture+-capture plist)))))
+
+(defun org-capture+-description-source (plist)
+  (let ((descriptions org-agenda-files))
+    (helm-build-dummy-source "Description"
+      ;; :candidates descriptions
+      :action     #'(lambda (description)
+                      (setq plist (plist-put plist :description description))
+                      (org-capture+-capture plist)))))
+
+(defun org-capture+-template-source (plist)
+  (let ((templates))
+    (helm-build-sync-source "Template"
+      :candidates templates
+      :action     #'(lambda (template)
+                      (setq plist (plist-put plist :template template))
+                      (org-capture+-capture plist)))))
 
 (defun org-capture+-capture (&optional plist)
   (interactive)
   (let (sources)
-    (let ((type-source   (org-capture+-type-source plist))
-          (target-source (org-capture+-target-source plist)))
+    (let ((type-source        (org-capture+-type-source   plist))
+          (target-source      (org-capture+-target-source plist))
+          (file-source        (org-capture+-file-source   plist))
+          (template-source    (org-capture+-template-source   plist))
+          (description-source (org-capture+-description-source   plist)))
 
       (unless (plist-get plist :type)
         (push type-source sources))
-
       (unless (plist-get plist :target)
         (push target-source sources))
+      (unless (plist-get plist :file)
+        (push file-source sources))
+      (unless (plist-get plist :description)
+        (push description-source sources))
+      (unless (plist-get plist :template)
+        (push template-source sources))
 
       (when sources
-        (helm
-         :sources sources)))))
+        (progn
+          (helm
+           :sources sources))))))
 
 ;;; org-capture+-eng.el ends here
