@@ -147,35 +147,34 @@
                                0)))
 
 
+(defvar org-capture+-types '(("Org Entry" . entry)
+                             ("List Item" . item)
+                             ("Checklist Item" . chckitem)
+                             ("Table Line" . table-line)
+                             ("Plain Text" . plain)
+                             ("Log note" . log-note)))
+(defvar org-capture+-targets '(("File" . file)
+                               ("Org entry Id" . id)
+                               ("File Headline" . file+headline)
+                               ("File Outline path" . file+olp)
+                               ("File Outline path Date-tree" . file+olp+datetree)
+                               ("File function" . file+function)
+                               ("Current Org Clock" . clock)
+                               ("Function" . function)
+                               ("Marker" . marker)))
+
 (defun org-capture+-type-source (plist)
-  (let ((types '(entry
-                 item
-                 chckitem
-                 table-line
-                 plain
-                 log-note)))
+  (let ((types org-capture+-types))
     (helm-build-sync-source "Type"
-      :candidates (mapcar #'(lambda (type)
-                              (cons (symbol-name type) type))
-                          types)
+      :candidates types
       :action     #'(lambda (type)
                       (setq plist (plist-put plist :type type))
                       (org-capture+-capture plist)))))
 
 (defun org-capture+-target-source (plist)
-  (let ((targets '(file
-                   id
-                   file+headline
-                   file+olp
-                   file+olp+datetree
-                   file+function
-                   clock
-                   function
-                   marker)))
+  (let ((targets org-capture+-targets))
     (helm-build-sync-source "Target"
-      :candidates (mapcar #'(lambda (target)
-                              (cons (symbol-name target) target))
-                          targets)
+      :candidates targets
       :action     #'(lambda (target)
                       (setq plist (plist-put plist :target target))
                       (org-capture+-capture plist)))))
@@ -197,12 +196,9 @@
                       (org-capture+-capture plist)))))
 
 (defun org-capture+-template-source (plist)
-  (let ((templates))
-    (helm-build-sync-source "Template"
-      :candidates templates
-      :action     #'(lambda (template)
-                      (setq plist (plist-put plist :template template))
-                      (org-capture+-capture plist)))))
+  (helm-template-gen-selector #'org-capture+-tree-predicate
+                              '(t xx yy)
+                              0))
 
 (defun org-capture+-capture (&optional plist)
   (interactive)
