@@ -146,18 +146,40 @@
                                0)))
 
 
-(defun org-capture+-type-source ()
+(defun org-capture+-type-source (plist)
   (let ((types '(entry item chckitem table-line plain log-note)))
     (helm-build-sync-source "Type"
       :candidates (mapcar #'(lambda (type)
-                             (cons (symbol-name type) (list :type type)))
+                              (cons (symbol-name type) type))
                           types)
-      :action #'org-capture+-capture)))
+      :action #'(lambda (type)
+                  (setq plist (plist-put plist :type type))
+                  (org-capture+-capture plist)))))
+
+(defun org-capture+-target-source (plist)
+  (let ((targets '(file id file+headline file+olp file+olp+datetree file+function clock function marker)))
+    (helm-build-sync-source "Target"
+      :candidates (mapcar #'(lambda (target)
+                              (cons (symbol-name target) target))
+                          targets)
+      :action #'(lambda (target)
+                  (setq plist (plist-put plist :target target))
+                  (org-capture+-capture plist)))))
 
 (defun org-capture+-capture (&optional plist)
   (interactive)
-  (let ((type-source (org-capture+-type-source)))
-    (helm
-     :sources (list type-source))))
+  (let (sources)
+    (let ((type-source   (org-capture+-type-source plist))
+          (target-source (org-capture+-target-source plist)))
+
+      (unless (plist-get plist :type)
+        (push type-source sources))
+
+      (unless (plist-get plist :target)
+        (push target-source sources))
+
+      (when sources
+        (helm
+         :sources sources)))))
 
 ;;; org-capture+-eng.el ends here
