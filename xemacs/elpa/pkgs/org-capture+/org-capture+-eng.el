@@ -133,13 +133,6 @@
      (marker marker))))
 
 
-(defun org-capture+-select-target-file ())
-
-(defun org-capture+-select-target-id ())
-
-(defun org-capture+-select-target-heading (file))
-
-
 (defun org-capture+get-template ()
   (funcall
    (helm-template-gen-selector #'org-capture+-tree-predicate
@@ -203,10 +196,10 @@
 (defun org-capture+-capture (&optional plist)
   (interactive)
   (let (sources)
-    (let ((type-source        (org-capture+-type-source   plist))
-          (target-source      (org-capture+-target-source plist))
-          (file-source        (org-capture+-file-source   plist))
-          (template-source    (org-capture+-template-source   plist))
+    (let ((type-source        (org-capture+-type-source          plist))
+          (target-source      (org-capture+-target-source        plist))
+          (file-source        (org-capture+-file-source          plist))
+          (template-source    (org-capture+-template-source      plist))
           (description-source (org-capture+-description-source   plist)))
 
       (unless (plist-get plist :type)
