@@ -189,9 +189,9 @@
                       (org-capture+-capture plist)))))
 
 (defun org-capture+-template-source (plist)
-  (helm-template-gen-selector #'org-capture+-tree-predicate
-                              '(t xx yy)
-                              0))
+  (helm-template-gen-source #'org-capture+-tree-predicate
+                            '(t xx yy)
+                            0))
 
 (defun org-capture+-capture (&optional plist)
   (interactive)
@@ -211,7 +211,7 @@
       (unless (plist-get plist :description)
         (push description-source sources))
       (unless (plist-get plist :template)
-        (push template-source sources))
+        (setq sources (nconc sources template-source)))
 
       (when sources
         (progn

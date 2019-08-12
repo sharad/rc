@@ -251,6 +251,88 @@
         (helm :sources sources))))
 
 
+(defun helm-template-gen-source (predicate arg level &optional noclass)
+  (let* ((list            (if noclass
+                              (org-capture+-collect-templates predicate arg level)
+                            (org-capture+-collect-templates-alist predicate arg level)))
+         (default-level   (or level     0))
+         (arg             (or arg       '(t)))
+         (default-arg     arg)
+         (classes         (org-capture+-collect-template-classes))
+         (calculate-list  (if noclass
+                              #'(lambda ()
+                                  (setq list (org-capture+-collect-templates predicate arg level)))
+                              #'(lambda ()
+                                  (let ((xlist (org-capture+-collect-templates-alist predicate arg level)))
+                                    (if list
+                                        (when (car xlist)
+                                          (setcar list (car xlist))
+                                          (setcdr list (cdr xlist)))
+                                      (setq list xlist))))))
+
+         (predicate       (or predicate #'org-capture+-tree-predicate))
+         (level-reset-fn  #'(lambda ()
+                              (interactive)
+                              (setf level default-level)
+                              (funcall calculate-list)
+                              (helm-refresh)))
+         (level-inc-fn    #'(lambda ()
+                              (interactive)
+                              (setf level (1+ level))
+                              (funcall calculate-list)
+                              (helm-refresh)))
+         (level-dec-fn    #'(lambda ()
+                              (interactive)
+                              (setf level (1- level))
+                              (funcall calculate-list)
+                              (helm-refresh)))
+         (h-map
+          (let ((map (make-sparse-keymap)))
+            (set-keymap-parent map helm-map)
+            (define-key map (kbd "M-<up>")     level-inc-fn)
+            (define-key map (kbd "M-<down>")   level-dec-fn)
+            map))
+         (h-action-transformer    #'(lambda (actions candidate)
+                                      '(("Even" . identity))))
+         (h-candidate (if noclass
+                          #'(lambda ()
+                              (funcall calculate-list)
+                              list)
+                        #'(lambda ()
+                            (funcall calculate-list)
+                            (let* ((name        (cdr (assoc 'name source)))
+                                   (ncandidates (cdr (assoc name list))))
+                              ncandidates))))
+         ;; (h-candidate-transformer (if noclass
+         ;;                              #'(lambda (candidates source)
+         ;;                                  candidates)
+         ;;                            #'(lambda (candidates source)
+         ;;                                (message "candidates length %d" (length candidates))
+         ;;                                candidates)))
+         (sources (if noclass
+                      (helm-build-sync-source           "templates"
+                        :keymap                         h-map
+                        ;; :requires-pattern t
+                        ;; :match (list #'(lambda (c) t))
+                        :candidates                     h-candidate ;; list
+                        :multiline                      t
+                        :filtered-candidate-transformer h-candidate-transformer
+                        ;; :filter-one-by-one #'h-candidate-transformer
+                        :action-transformer             h-action-transformer)
+                      (mapcar #'(lambda (class)
+                                  (helm-build-sync-source           class
+                                    :keymap                         h-map
+                                    ;; :requires-pattern t
+                                    ;; :match (list #'(lambda (c) t))
+                                    :candidates                     #'(lambda () (cdr (assoc class list)))
+                                    :multiline                      t
+                                    ;; :filtered-candidate-transformer h-candidate-transformer
+                                    ;; :filter-one-by-one #'h-candidate-transformer
+                                    :action-transformer             h-action-transformer))
+                              classes))))
+    sources))
+
+
 ;; (setq testzxx (helm-build-sync-source "Templates"))
 ;; (assoc 'name testzxx)
 
