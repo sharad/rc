@@ -28,6 +28,7 @@
 
 
 (require 'notify)
+(require 'backtrace-debug)
 
 ;; https://www.emacswiki.org/emacs/EmacsMemoryDebugging
 ;; https://www.reddit.com/r/emacs/comments/aol1oz/what_are_some_good_strategies_to_reduce_emacs/

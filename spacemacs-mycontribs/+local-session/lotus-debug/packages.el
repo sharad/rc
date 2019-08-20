@@ -78,6 +78,7 @@ Each entry is either:
     :defer t
     :init
     (progn
+      (debug-info-signal-backtrace-insinuate)
       (let ((pid (emacs-pid)))
         (process-monitor-memory-usage pid)))
     :config
