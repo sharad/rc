@@ -33,8 +33,7 @@
 
 (defun backtrace-to-buffer (&optional buffer)
   ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Internals-of-Debugger.html
-  (let ((buffer (or buffer
-                    (get-buffer-create "Test"))))
+  (let ((buffer (or buffer (get-buffer-create "Test"))))
     (with-output-to-temp-buffer buffer ; "backtrace-output"
       (let ((var 1))
         (save-excursion
@@ -91,20 +90,18 @@
 (defadvice error (before dumptrace activate)
   (backtrace-to-buffer "*errbuf*")
   t)
-
 (ad-disable-advice 'error 'before 'dumptrace)
 (ad-update 'error)
 
 
-;; (with-error-trace-buffer "*Messages*"
-;;   (message "sdafds"))
 
 
-;; http://www.gnu.org/s/emacs/manual/html_node/elisp/Misc-Events.html
-(define-key special-event-map [sigusr1] 'sigusr1-handler)
-(define-key special-event-map [sigusr2] 'sigusr2-handler)
-
-(define-key special-event-map [sigint] 'sigusr-handler)
+(defun debug-info-backtrace-insinuate ()
+  (progn
+    ;; http://www.gnu.org/s/emacs/manual/html_node/elisp/Misc-Events.html
+    (define-key special-event-map [sigusr1] 'sigusr1-handler)
+    (define-key special-event-map [sigusr2] 'sigusr2-handler)
+    (define-key special-event-map [sigint] 'sigusr-handler)))
 
 
 ;; To test the signal handler, you can make Emacs send a signal to
