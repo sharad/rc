@@ -338,6 +338,15 @@ Also returns nil if pid is nil."
   ;; (setq desktop-restore-eager 2)
   (setq desktop-restore-eager 0) ;; for avoiding error from read only buffer when applying pabber-expand-mode
 
+
+;;   (and (desktop-owner)
+;;        (memq desktop-load-locked-desktop '(nil ask))
+;;        (or (null desktop-load-locked-desktop)
+;;            (daemonp)
+;;            (not (y-or-n-p (format "Warning: desktop file appears to be in use by PID %s.\n\
+;; Using it may cause conflicts.  Use it anyway? " owner)))))
+
+
   (defun desktop-vc-read (&optional desktop-save-filename)
     (interactive "fdesktop file: ")
     (funcall sessions-unified-utils-notify "desktop-vc-read" "desktop-restore-eager value is %s" desktop-restore-eager)
@@ -346,6 +355,13 @@ Also returns nil if pid is nil."
       (prog1
           (setq *desktop-vc-read-inprogress* t)
         (run-each-hooks 'lotus-disable-desktop-restore-interrupting-feature-hook)
+
+        ;; (unless (desktop-owner)
+        ;;   (condition-case nil
+        ;;       (desktop-claim-lock)
+        ;;     (file-error (message "Couldn't record use of desktop file")
+        ;;                 (sit-for 1))))
+
         (if
 
 
@@ -360,7 +376,7 @@ Also returns nil if pid is nil."
             (desktop-read (dirname-of-file desktop-save-filename))
 
             (setq *desktop-vc-read-inprogress* nil)
-          (message "desktop read failed."))
+          (message "desktop-vc-read: desktop read failed."))
         (funcall sessions-unified-utils-notify "desktop-vc-read" "finished."))))
 
   ;; remove desktop after it's been read
@@ -803,7 +819,7 @@ It returns t if a desktop file was loaded, nil otherwise."
         (desktop-clear)
         (let ((default-directory desktop-dirname))
           (run-hooks 'desktop-no-desktop-file-hook))
-        (message "No desktop file.")
+        (message "desktop-read-alternate: No desktop file.")
         nil)))
 
 
