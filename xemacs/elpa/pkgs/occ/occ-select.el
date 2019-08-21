@@ -34,6 +34,14 @@
 (require 'occ-helm)
 
 
+
+;; TODO:
+;; (helm-resume-select-buffer)
+;; helm-buffers
+;; helm-buffer
+
+(defvar occ-helm-select-buffer "*helm occ select")
+
 (cl-defmethod occ-list-select-internal ((obj occ-ctx)
                                         &key
                                         filters
@@ -75,7 +83,9 @@
                                                     :filters            filters
                                                     :builder            builder
                                                     :action             action
-                                                    :action-transformer action-transformer))))))
+                                                    :action-transformer action-transformer)
+                 :buffer occ-helm-select-buffer
+                 :resume 'noresume)))))
       (occ-debug :debug "Running occ-list-select-internal"))))
 
 (cl-defmethod occ-list-select ((obj occ-ctx)
