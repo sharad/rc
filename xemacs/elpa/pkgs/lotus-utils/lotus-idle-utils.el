@@ -135,25 +135,33 @@
 (put 'with-post-command-local 'lisp-indent-function 0)
 
 
-(defmacro lotus-with-idle-timed-transient-window (timeout window &rest body)
+(defmacro lotus-with-idle-timed-transient-window (first-idle-only
+                                                  timeout
+                                                  window
+                                                  &rest body)
   "Will destroy WINDOW after continued idle TIMEOUT
 this macro intended to be used with or in idle timer functions."
   ;; TODO: org-fit-window-to-buffer
   ;; TODO: as clean up reset newwin configuration
   `(let* ((cleanup-fun #'(lambda (w)
-                           (when (and w
-                                      (windowp w)
-                                      (window-valid-p w))
-                             (safe-delete-window w)
-                             (lwarn 'lotus-idle-timed-window :debug "lotus-with-idle-timed-transient-window: triggered timer for new-win %s" w)
-                             (without-active-minibuffer
-                               (select-frame-set-input-enable-raise)))))
+                           (let ((w (if (functionp w)
+                                        (funcall w)
+                                      w)))
+                            (when (and w
+                                       (windowp w)
+                                       (window-valid-p w))
+                              (safe-delete-window w)
+                              (lwarn 'lotus-idle-timed-window :debug "lotus-with-first-idle-timed-transient-window: triggered timer for new-win %s" w)
+                              (without-active-minibuffer
+                                (select-frame-set-input-enable-raise))))))
           (timer      (run-with-idle-plus-timer timeout nil cleanup-fun window)))
      (unwind-protect
          (progn
-           (with-post-command
-             (cancel-timer timer)
-             (setq timer nil))
+           ;; TODO: If this can be completely omitted when first-idle-only is nil
+           (when first-idle-only
+             (with-post-command
+               (cancel-timer timer)
+               (setq timer nil)))
            (progn
              (select-frame-set-input-disable-raise)
              (progn
@@ -163,55 +171,40 @@ this macro intended to be used with or in idle timer functions."
          (when timer
            (cancel-timer timer)
            (setq timer nil))))))
-(put 'lotus-idle-timed-window 'lisp-indent-function 2)
+(put 'lotus-with-idle-timed-transient-window 'lisp-indent-function 3)
 
-(defmacro lotus-with-idle-timed-transient-buffer-window (timeout buffer &rest body)
+(defmacro lotus-with-first-idle-timed-transient-window (timeout
+                                                        window
+                                                        &rest body)
   "Will destroy WINDOW after continued idle TIMEOUT
 this macro intended to be used with or in idle timer functions."
-  ;; TODO: org-fit-window-to-buffer
-  ;; TODO: as clean up reset newwin configuration
-  `(let* ((cleanup-fun #'(lambda (buffer)
-                           (let* ((buff   (get-buffer buffer))
-                                  (window (if buff (get-buffer-window buff))))
-                             (when (and window
-                                       (windowp window)
-                                       (window-valid-p window))
-                               (safe-delete-window window)
-                               (lwarn 'lotus-idle-timed-window :debug "lotus-with-idle-timed-transient-buffer-window: triggered timer for new-win %s" window)
-                               (without-active-minibuffer
-                                 (select-frame-set-input-enable-raise))))))
-          (timer       (run-with-idle-plus-timer timeout nil cleanup-fun ,buffer)))
-     (unwind-protect
-         (progn
-           (with-post-command
-             (lwarn 'lotus-idle-timed-window :debug "cancelling timer for buffer %s for last-input-event %s" ,buffer last-input-event)
-             (cancel-timer timer)
-             (setq timer nil))
-           (progn
-             (select-frame-set-input-disable-raise)
-             (progn
-               ,@body)))
-       (progn
-         (select-frame-set-input-enable-raise)
-         (when timer
-           (cancel-timer timer)
-           (setq timer nil))))))
-(put 'lotus-idle-timed-transient-buffer-window 'lisp-indent-function 2)
+  `(lotus-with-idle-timed-transient-window t timeout window
+     ,@body))
+(put 'lotus-with-first-idle-timed-transient-window 'lisp-indent-function 2)
 
+(defmacro lotus-with-first-idle-timed-transient-buffer-window (timeout
+                                                               buffer
+                                                               &rest body)
+  "Will destroy window with BUFFER after continued idle TIMEOUT
+this macro intended to be used with or in idle timer functions."
+  `(lotus-with-first-idle-timed-transient-window timeout #'(lambda () (get-buffer buffer))
+     ,@body))
+(put 'lotus-first-idle-timed-transient-buffer-window 'lisp-indent-function 2)
+
 
-(defmacro lotus-with-idle-timed-transient-win (timeout
-                                               timer
-                                               cleanupfn-newwin
-                                               cleanupfn-local
-                                               newwin
-                                               &rest body)
+;; TODO: Improve it
+(defmacro lotus-with-idle-timed-transient-newwindow (timeout
+                                                     timer
+                                                     cleanupfn-newwin
+                                                     cleanupfn-local
+                                                     newwin
+                                                     &rest body)
+  "Create NEWWIN and run BODY with idle TIMEOUT"
   (let ((temp-win-config (make-symbol "test-lotus-with-timed-new-win-config")))
     `(let* ((,temp-win-config (current-window-configuration))
             (,cleanupfn-newwin #'(lambda (w localfn)
                                    ;; (message "cleaning up newwin and triggered timer for newwin %s" w)
                                    (when localfn (funcall localfn))
-                                   ;; (when (active-minibuffer-window) ;not required here. it is just creating timed new-win
-                                   ;;   (abort-recursive-edit))
                                    (when (and w (windowp w) (window-valid-p w))
                                      (safe-delete-window w))
                                    (when ,temp-win-config
@@ -228,7 +221,6 @@ this macro intended to be used with or in idle timer functions."
                  ,@body)
              ((quit)
               (funcall ,cleanupfn-newwin ,newwin ,cleanupfn-local))))))))
-(put 'lotus-with-idle-timed-transient-win 'lisp-indent-function 5)
-
+(put 'lotus-with-idle-timed-transient-newwindow 'lisp-indent-function 5)
 
 ;;; lotus-idle-utils.el ends here

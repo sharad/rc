@@ -112,7 +112,8 @@
 (defun org-clock-unclocked-files-mins-today (files)
   (let* ((totalmins 0)
          file)
-    (org-agenda-prepare-buffers files)
+    (with-timeout (3 nil)
+      (org-agenda-prepare-buffers files))
     (while (setq file (pop files))
       (with-current-buffer (find-buffer-visiting file)
         (save-excursion

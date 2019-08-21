@@ -124,9 +124,8 @@
   ;; https://github.com/emacs-helm/helm/issues/208#issuecomment-14447049
   (get-buffer-create "*helm*")
   (setq helm-alive-p nil)
-  (when (active-minibuffer-window)
-    (abort-recursive-edit))
-  (abort-recursive-edit))
+  (safe-exit-recursive-edit-if-active)
+  (safe-exit-recursive-edit))
 
 (global-set-key-warn-if-bind (kbd "C-H-k") 'reset-helm-input)
 

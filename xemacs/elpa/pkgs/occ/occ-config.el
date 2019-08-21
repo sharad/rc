@@ -67,14 +67,17 @@
 
 (defvar occ-config-clock-in t)
 
+;;;###autoload
 (defun occ-config-enable-clock-in ()
   (interactive)
   (setq occ-config-clock-in t))
 
+;;;###autoload
 (defun occ-config-disable-clock-in ()
   (interactive)
   (setq occ-config-clock-in nil))
 
+;;;###autoload
 (defun occ-config-clock-in ()
   occ-config-clock-in)
 

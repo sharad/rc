@@ -504,55 +504,55 @@ Each entry is either:
 (defun lotus-orgclocktask/init-occ ()
   (progn
     (use-package occ
-        ;; :commands (occ-insinuate occ-uninsinuate)
-        :defer t
-        :config
+      ;; :commands (occ-insinuate occ-uninsinuate)
+      :defer t
+      :config
+      (progn
         (progn
-          (progn
-            (use-package task-manager
-                :defer t
-                :config
-                (progn
-                  (progn
-                    (let* ((party-base-dir (task-party-base-dir))
-                           (start-file (expand-file-name "start.org" party-base-dir)))
-                      (if (and
-                           (file-directory-p party-base-dir)
-                           (file-exists-p start-file))
-                          (progn
-                            (if (functionp 'occ-set-global-tsk-collection-spec)
-                                (occ-set-global-tsk-collection-spec (list :tree start-file))
-                              (warn "function occ-setup-task-tree-task-root-org-file not available.")))
-                        (message "org party dir %s or file %s not exists."
-                                 party-base-dir
-                                 start-file))))
+          (use-package task-manager
+            :defer t
+            :config
+            (progn
+              (progn
+                (let* ((party-base-dir (task-party-base-dir))
+                       (start-file (expand-file-name "start.org" party-base-dir)))
+                  (if (and
+                       (file-directory-p party-base-dir)
+                       (file-exists-p start-file))
+                      (progn
+                        (if (functionp 'occ-set-global-tsk-collection-spec)
+                            (occ-set-global-tsk-collection-spec (list :tree start-file))
+                          (warn "function occ-setup-task-tree-task-root-org-file not available.")))
+                    (message "org party dir %s or file %s not exists."
+                             party-base-dir
+                             start-file))))
 
-                  (progn
-                    (add-to-task-current-party-change-hook
-                     #'(lambda ()
-                         (unless task-current-party
-                           (task-current-party "meru"))
-                         (when (task-current-party)
-                           (let* ((party-base-dir (task-party-base-dir))
-                                  (start-file (expand-file-name "start.org" party-base-dir)))
-                             (if (and
-                                  (file-directory-p party-base-dir)
-                                  (file-exists-p start-file))
-                                 (progn
-                                   (if (functionp 'occ-set-global-tsk-collection-spec)
-                                       (occ-set-global-tsk-collection-spec (list :tree start-file))
-                                       (warn "function occ-setup-task-tree-task-root-org-file not available.")))
-                                 (message "org party dir %s or file %s not exists."
-                                          party-base-dir
-                                          start-file))))))))))
+              (progn
+                (add-to-task-current-party-change-hook
+                 #'(lambda ()
+                     (unless task-current-party
+                       (task-current-party "meru"))
+                     (when (task-current-party)
+                       (let* ((party-base-dir (task-party-base-dir))
+                              (start-file (expand-file-name "start.org" party-base-dir)))
+                         (if (and
+                              (file-directory-p party-base-dir)
+                              (file-exists-p start-file))
+                             (progn
+                               (if (functionp 'occ-set-global-tsk-collection-spec)
+                                   (occ-set-global-tsk-collection-spec (list :tree start-file))
+                                 (warn "function occ-setup-task-tree-task-root-org-file not available.")))
+                           (message "org party dir %s or file %s not exists."
+                                    party-base-dir
+                                    start-file))))))))))
 
-          (progn
-            ;; (setq occ-task-tree-task-root-org-file
-            ;;       (expand-file-name "start.org" (task-party-base-dir)))
-            )
+        (progn
+          ;; (setq occ-task-tree-task-root-org-file
+          ;;       (expand-file-name "start.org" (task-party-base-dir)))
+          )
 
-          (progn
-            (spaceline-toggle-org-clock-on))))
+        (progn
+          (spaceline-toggle-org-clock-on))))
 
     (progn
       (progn
@@ -570,38 +570,40 @@ Each entry is either:
                               #'(lambda ()
                                   (if (functionp 'occ-insinuate)
                                       (occ-insinuate)
-                                      (warn "function occ-insinuate not available.")))))
+                                    (warn "function occ-insinuate not available."))
+                                  (when (fboundp 'occ-config-disable-clock-in)
+                                    (occ-config-disable-clock-in)))))
 
         (defun lotus-config-start-occ-insinuate-after-delay-time ()
           (lotus-config-start-occ-insinuate-after-delay 70)))
 
       (defun lotus-config-start-occ-insinuate-with-session-unified ()
         (use-package sessions-unified
-            :defer t
-            :config
+          :defer t
+          :config
+          (progn
             (progn
-              (progn
-                (add-to-enable-desktop-restore-interrupting-feature-hook
-                 'lotus-load-task-manager-delay-time)
+              (add-to-enable-desktop-restore-interrupting-feature-hook
+               'lotus-load-task-manager-delay-time)
 
-                (add-to-enable-desktop-restore-interrupting-feature-hook
-                 'lotus-config-start-occ-insinuate-after-delay-time)
+              (add-to-enable-desktop-restore-interrupting-feature-hook
+               'lotus-config-start-occ-insinuate-after-delay-time)
 
-                (add-to-enable-desktop-restore-interrupting-feature-hook
-                 'spaceline-toggle-org-clock-on))))))
+              (add-to-enable-desktop-restore-interrupting-feature-hook
+               'spaceline-toggle-org-clock-on))))))
 
     (use-package startup-hooks
-        :defer t
-        :config
+      :defer t
+      :config
+      (progn
         (progn
-          (progn
-            (add-to-enable-login-session-interrupting-feature-hook
-             'lotus-config-start-occ-insinuate-with-session-unified
-             nil)
+          (add-to-enable-login-session-interrupting-feature-hook
+           'lotus-config-start-occ-insinuate-with-session-unified
+           nil)
 
-            (add-to-enable-startup-interrupting-feature-hook
-             'lotus-config-start-occ-insinuate-with-session-unified
-             nil))))))
+          (add-to-enable-startup-interrupting-feature-hook
+           'lotus-config-start-occ-insinuate-with-session-unified
+           nil))))))
 
 (defun lotus-orgclocktask/init-activity ()
   (use-package activity

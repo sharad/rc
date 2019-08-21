@@ -51,6 +51,21 @@
 (put 'eval-with-focus 'lisp-indent-function 0)
 
 
+(defun safe-exit-recursive-edit ()
+  (abort-recursive-edit)
+  (exit-recursive-edit)
+  (when (active-minibuffer-window)
+    (abort-recursive-edit)))
+
+(defun safe-exit-recursive-edit-if-active ()
+  (progn
+    (put 'quit 'error-message "")
+    (run-at-time nil nil
+                 (lambda ()
+                   (put 'quit 'error-message "Quit")))
+    (when (active-minibuffer-window)
+      (safe-exit-recursive-edit))))
+
 (defmacro without-active-minibuffer (&rest body)
   ;; https://oremacs.com/2015/07/16/callback-quit/
   ;; https://emacs.stackexchange.com/questions/20974/exit-minibuffer-and-execute-a-command-afterwards
@@ -60,8 +75,7 @@
                   (lambda ()
                     (put 'quit 'error-message "Quit")
                     ,@body))
-     (when (active-minibuffer-window)
-       (abort-recursive-edit))))
+     (safe-exit-recursive-edit-if-active)))
 (put 'without-active-minibuffer 'lisp-indent-function 0)
 
 (defmacro without-active-minibuffer-ensured (&rest body)
@@ -84,7 +98,7 @@
                     (put 'quit 'error-message "Quit")
                     ,@body))
      (when (active-minibuffer-window)
-       (abort-recursive-edit))))
+       (safe-exit-recursive-edit))))
 (put 'without-active-minibuffer-debug 'lisp-indent-function 1)
 
 (defmacro without-active-minibuffer-ensured-debug (minibuffer-body &rest body)
@@ -158,6 +172,7 @@
       (message "size %d" size))))
 
 (defmacro lotus-with-new-win (newwin &rest body)
+  "Create NEWWIN and run BODY"
   `(let* ((,newwin (lotus-make-new-win)))
      ;; maybe leave two lines for our window because of the
      ;; normal `raised' mode line
@@ -187,10 +202,7 @@
   (let ((temp-win-config (make-symbol "test-lotus-with-timed-new-win-config")))
     `(let* ((,temp-win-config (current-window-configuration))
             (,cleanupfn-newwin #'(lambda (w localfn)
-                                   ;; (message "cleaning up newwin and triggered timer for newwin %s" w)
                                    (when localfn (funcall localfn))
-                                   ;; (when (active-minibuffer-window) ;not required here. it is just creating timed new-win
-                                   ;;   (abort-recursive-edit))
                                    (when (and w
                                               (windowp w)
                                               (window-valid-p w))
@@ -500,10 +512,10 @@
                          (run-with-timer 0 nil #'(lambda () (funcall readfn)))
                          (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> adding quiet-sel-frame minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                          (select-frame-set-input-disable-raise)
-                         (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> going to run abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                         (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> going to run safe-exit-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                          (when (active-minibuffer-window)
-                           (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> running abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
-                           (abort-recursive-edit)))))))
+                           (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> running safe-exit-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                           (safe-exit-recursive-edit)))))))
 
               (hookfn
                #'(lambda ()
@@ -553,10 +565,10 @@
                          (progn
                            (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> adding quiet-sel-frame minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                            (select-frame-set-input-disable-raise)
-                           (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> going to run abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                           (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> going to run safe-exit-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
                            (when (active-minibuffer-window)
-                             (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> running abort-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
-                             (abort-recursive-edit)))))))))
+                             (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> running safe-exit-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                             (safe-exit-recursive-edit)))))))))
        (lotus-utils-debug 'event-input :debug "%s: %s: <%s> calling readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
        (funcall readfn))))
 
@@ -627,8 +639,7 @@
                                                    nil)))))
                          (progn
                            (select-frame-set-input-disable-raise)
-                           (when (active-minibuffer-window)
-                             (abort-recursive-edit)))))))))
+                           (safe-exit-recursive-edit-if-active))))))))
        (funcall readfn))))
 (put 'lotus-with-other-frame-event 'lisp-indent-function 1)
 
@@ -776,8 +787,7 @@
                                               (selected-frame)
                                               (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
                            (select-frame-set-input-disable-raise)
-                           (when (active-minibuffer-window)
-                             (abort-recursive-edit)))))))))
+                           (safe-exit-recursive-edit-if-active))))))))
        (funcall readfn))))
 (put 'lotus-with-other-frame-event-debug 'lisp-indent-function 2)
 

@@ -619,9 +619,7 @@ With prefix arg C-u, copy region instad of killing it."
                                               (message "helm-timed: triggered timer for new-win %s" w)
                                               (when (and w (windowp w) (window-valid-p w))
                                                 (safe-delete-window w)
-                                                (when (active-minibuffer-window)
-                                                  (abort-recursive-edit)
-                                                  (message nil))
+                                                (safe-exit-recursive-edit-if-active)
                                                 (select-frame-set-input-enable-raise)
                                                 (when ,temp-win-config
                                                   (set-window-configuration ,temp-win-config)
@@ -673,7 +671,7 @@ With prefix arg C-u, copy region instad of killing it."
          (str-command     (helm-symbol-name current-command))
          (prompt          (or prompt str-command))
          (buf-name        (format "*helm-mode-%s*" str-command)))
-    (lotus-with-idle-timed-transient-buffer-window timeout buf-name
+    (lotus-with-first-idle-timed-transient-buffer-window timeout buf-name
       (safe-org-refile-get-location prompt))))
 
 (defun safe-timed-org-refile-get-marker (timeout &optional prompt)
@@ -686,7 +684,7 @@ With prefix arg C-u, copy region instad of killing it."
          (prompt          (or prompt str-command))
          (buf-name        (format "*helm-mode-%s*" str-command))
          (marker          (safe-org-refile-get-marker prompt)))
-    (lotus-with-idle-timed-transient-buffer-window timeout buf-name marker)))
+    (lotus-with-first-idle-timed-transient-buffer-window timeout buf-name marker)))
 
 (defmacro org-with-refile (file pos refile-targets prompt &rest body)
   "Refile the active region.
