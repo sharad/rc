@@ -27,7 +27,10 @@
 (provide 'desktop-unified)
 
 
-(defun read-file-name-timeout-if-default-input (seconds prompt &optional dir default-filename mustmatch initial predicate)
+(defun read-file-name-timeout-if-default-input (seconds
+                                                prompt
+                                                &optional
+                                                dir default-filename mustmatch initial predicate)
     (if default-initial-input
         (with-timeout (seconds
                        (progn
