@@ -26,6 +26,7 @@
 
 - https://www.emacswiki.org/emacs/RecursiveEdit
 - https://www.gnu.org/software/emacs/manual/html_node/elisp/Recursive-Editing.html#Recursive-Editing
+- http://ergoemacs.org/emacs/elisp_break_loop.html
 - M-x reset-helm-input or C-H-k
 - (message "(recursion-depth) = %d" (recursion-depth))
 

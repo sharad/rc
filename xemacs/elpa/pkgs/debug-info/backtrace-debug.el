@@ -44,6 +44,7 @@
                              (list 'testing (backtrace))))))))))
 
 
+;;;###autoload
 (defun emacs-collect-states-and-log ()
   (interactive)
   (let ((backtrace-buffer (get-buffer-create "*CurrentBacktrace*"))
@@ -70,6 +71,7 @@
       (load-file emacs-hang-load-file)))
 
 
+;;;###autoload
 (defun sigusr1-handler ()
   (interactive)
   (let ((li last-input-event))
@@ -79,6 +81,7 @@
     (keyboard-quit)
     (message "Caught signal %S" li)))
 
+;;;###autoload
 (defun sigusr2-handler ()
   (interactive)
   (message "(recursion-depth) = %d" (recursion-depth))
@@ -159,6 +162,7 @@
   (define-key special-event-map [sigusr2] 'ignore))
 
 
+;;;###autoload
 (defun lotus-debug-hang ()
   (interactive)
   (message "helm-alive-p %s"    helm-alive-p)

@@ -124,6 +124,7 @@
   ;; https://github.com/emacs-helm/helm/issues/208#issuecomment-14447049
   ;; https://www.emacswiki.org/emacs/RecursiveEdit
   ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Recursive-Editing.html#Recursive-Editing
+  ;; http://ergoemacs.org/emacs/elisp_break_loop.html
   (message "recursion-depth %d" (recursion-depth))
   (message "helm-alive-p %s"    helm-alive-p)
   (get-buffer-create "*helm*")
