@@ -122,11 +122,17 @@
 (defun reset-helm-input ()
   (interactive)
   ;; https://github.com/emacs-helm/helm/issues/208#issuecomment-14447049
+  ;; https://www.emacswiki.org/emacs/RecursiveEdit
+  ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Recursive-Editing.html#Recursive-Editing
+  (message "recursion-depth %d" (recursion-depth))
   (get-buffer-create "*helm*")
   (setq helm-alive-p nil)
   (safe-exit-recursive-edit-if-active)
   (safe-exit-recursive-edit))
 
 (global-set-key-warn-if-bind (kbd "C-H-k") 'reset-helm-input)
+(global-set-key-warn-if-bind (kbd "C-H-q") 'reset-helm-input)
+(global-set-key-warn-if-bind (kbd "C-H-g") 'reset-helm-input)
+(global-set-key-warn-if-bind (kbd "C-H-h") 'reset-helm-input)
 
 ;;; lotus-utils.el ends here

@@ -312,12 +312,14 @@
   (occ-debug :debug "occ-clock-in-curr-ctx-if-not-timer-function: begin")
   ;;BUG: could be the cause of high MEM usage
   (unwind-protect
-      (lotus-with-no-active-minibuffer-if
-       (occ-debug :debug "occ-clock-in-curr-ctx-if-not-timer-function: minibuffer active")
-       (occ-cancel-timer)
-       (if (eq 'buffer-switch event)
-           (occ-run-curr-ctx-chg-timer)
-         (occ-run-curr-ctx-timer)))
+      (if (= (recursion-depth) 0)
+          (lotus-with-no-active-minibuffer-if
+              (occ-debug :debug "occ-clock-in-curr-ctx-if-not-timer-function: minibuffer active")
+            (occ-cancel-timer)
+            (if (eq 'buffer-switch event)
+                (occ-run-curr-ctx-chg-timer)
+              (occ-run-curr-ctx-timer)))
+        (occ-message "occ-clock-in-curr-ctx-if-not-timer-function: (recursion-depth) [%d] > 0" (recursion-depth)))
     ;; to bypass QUIT
     (occ-try-clock-schedule-next-timeout nil)))
 

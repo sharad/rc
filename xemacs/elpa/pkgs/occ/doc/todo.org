@@ -24,6 +24,11 @@
 ** Bugs
 *** Helm goes into state where no key are defined so here is not way to come out excelt sending signal SIGUSR2
 
+- https://www.emacswiki.org/emacs/RecursiveEdit
+- https://www.gnu.org/software/emacs/manual/html_node/elisp/Recursive-Editing.html#Recursive-Editing
+- M-x reset-helm-input or C-H-k
+- (message "(recursion-depth) = %d" (recursion-depth))
+
 [[file:~/.xemacs/elpa/pkgs/occ/occ-debug-method.el][file:~/.xemacs/elpa/pkgs/occ/occ-debug-method.el]]
 
 
