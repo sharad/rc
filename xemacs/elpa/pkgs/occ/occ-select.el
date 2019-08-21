@@ -58,8 +58,10 @@
         (occ-debug :debug nil))
     (occ-debug :debug "Running occ-list-select-internal")
     (prog1
-        (let ((action-transformer  (or action-transformer (occ-get-helm-actions-tree-genertator obj '(t actions general edit))))
-              (timeout             (or timeout occ-idle-timeout)))
+        (let ((action-transformer  (or action-transformer
+                                       (occ-get-helm-actions-tree-genertator obj '(t actions general edit))))
+              (timeout             (or timeout
+                                       occ-idle-timeout)))
 
           (let* ((candidates-unfiltered (occ-list obj :builder builder))
                  (unfiltered-count      (length candidates-unfiltered))

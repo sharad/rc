@@ -50,11 +50,15 @@
      ,@body))
 (put 'eval-with-focus 'lisp-indent-function 0)
 
+(defun lotus-active-recursive-edit ()
+  (or
+   (active-minibuffer-window)
+   (> (recursion-depth) 0)))
 
 (defun safe-exit-recursive-edit ()
   (abort-recursive-edit)
   (exit-recursive-edit)
-  (when (active-minibuffer-window)
+  (when (lotus-active-recursive-edit)
     (abort-recursive-edit)))
 
 (defun safe-exit-recursive-edit-if-active ()
@@ -63,8 +67,9 @@
     (run-at-time nil nil
                  (lambda ()
                    (put 'quit 'error-message "Quit")))
-    (when (active-minibuffer-window)
+    (when (lotus-active-recursive-edit)
       (safe-exit-recursive-edit))))
+
 
 (defmacro without-active-minibuffer (&rest body)
   ;; https://oremacs.com/2015/07/16/callback-quit/
@@ -82,7 +87,7 @@
   ;; https://oremacs.com/2015/07/16/callback-quit/
   ;; https://emacs.stackexchange.com/questions/20974/exit-minibuffer-and-execute-a-command-afterwards
   `(without-active-minibuffer
-     (unless (active-minibuffer-window)
+     (unless (lotus-active-recursive-edit)
        ,@body)))
 (put 'without-active-minibuffer-ensured 'lisp-indent-function 0)
 
@@ -90,14 +95,14 @@
   ;; https://oremacs.com/2015/07/16/callback-quit/
   ;; https://emacs.stackexchange.com/questions/20974/exit-minibuffer-and-execute-a-command-afterwards
   `(progn
-     (when (active-minibuffer-window)
+     (when (lotus-active-recursive-edit)
        ,minibuffer-body)
      (put 'quit 'error-message "")
      (run-at-time nil nil
                   (lambda ()
                     (put 'quit 'error-message "Quit")
                     ,@body))
-     (when (active-minibuffer-window)
+     (when (lotus-active-recursive-edit)
        (safe-exit-recursive-edit))))
 (put 'without-active-minibuffer-debug 'lisp-indent-function 1)
 
@@ -106,9 +111,10 @@
   ;; https://emacs.stackexchange.com/questions/20974/exit-minibuffer-and-execute-a-command-afterwards
   `(without-active-minibuffer-debug
        ,minibuffer-body
-     (unless (active-minibuffer-window)
+     (unless (lotus-active-recursive-edit)
        ,@body)))
 (put 'without-active-minibuffer-ensured-debug 'lisp-indent-function 1)
+
 
 (when nil
   (defun test-minibuffer-quiting ()
@@ -415,14 +421,14 @@
 
 (defmacro lotus-with-no-active-minibuffer (&rest body)
   ;;could schedule in little further.
-  `(unless (active-minibuffer-window)
+  `(unless (lotus-active-recursive-edit)
      (progn
        ,@body)))
 (put 'lotus-with-no-active-minibuffer 'lisp-indent-function 0)
 
 (defmacro lotus-with-no-active-minibuffer-if (minibuffer-body &rest body)
   ;;could schedule in little further.
-  `(if (active-minibuffer-window)
+  `(if (lotus-active-recursive-edit)
        (progn
          ,minibuffer-body
          (lotus-utils-debug 'active-minibuffer-if :debug "%s: %s: cancelled as active minibuffer found." (time-stamp-string) 'lotus-with-no-active-minibuffer-if))
@@ -430,6 +436,7 @@
        (lotus-utils-debug 'active-minibuffer-if :debug "%s: %s: no active minibuffer found." (time-stamp-string) 'lotus-with-no-active-minibuffer-if)
        ,@body)))
 (put 'lotus-with-no-active-minibuffer-if 'lisp-indent-function 1)
+
 
 (defmacro lotus-with-override-minibuffer (&rest body)
   `(without-active-minibuffer-ensured
@@ -443,6 +450,25 @@
          ,minibuffer-body)
      ,@body))
 (put 'lotus-with-override-minibuffer-if 'lisp-indent-function 1)
+
+
+(defmacro lotus-with-no-recursive-edit (&rest body)
+  ;;could schedule in little further.
+  `(when (= (recursion-depth) 0)
+     (progn
+       ,@body)))
+(put 'lotus-with-no-recursive-edit 'lisp-indent-function 0)
+
+(defmacro lotus-with-no-recursive-edit-if (recursive-edit-body &rest body)
+  ;;could schedule in little further.
+  `(if (= (recursion-depth) 0)
+       (progn
+         (lotus-utils-debug 'recursive-edit-if :debug "%s: %s: no recursive-edit found." (time-stamp-string) 'lotus-with-no-recursive-edit-if)
+         ,@body)
+     (progn
+       ,recursive-edit-body
+       (lotus-utils-debug 'recursive-edit-if :debug "%s: %s: cancelled as recursive-edit found." (time-stamp-string) 'lotus-with-no-recursive-edit-if))))
+(put 'lotus-with-no-recursive-edit-if 'lisp-indent-function 1)
 
 
 
@@ -478,9 +504,9 @@
                      (condition-case nil
                          (progn
                            (funcall set-advice-fn)
-                           (lotus-utils-debug 'event-input :debug "%s: %s: readfn: <%s> 3 running orginal code minibuffer<%s> " (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                           (lotus-utils-debug 'event-input :debug "%s: %s: readfn: <%s> 3 running orginal code minibuffer<%s> " (time-stamp-string) 'lotus-with-other-frame-event ,action (lotus-active-recursive-edit))
                            ,@body
-                           (lotus-utils-debug 'event-input :debug "%s: %s: readfn: <%s> 4 pre-command-hook %s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook (active-minibuffer-window))
+                           (lotus-utils-debug 'event-input :debug "%s: %s: readfn: <%s> 4 pre-command-hook %s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook (lotus-active-recursive-edit))
                            (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                            (funcall set-advice-fn))
                        (quit
@@ -489,11 +515,11 @@
               (hookfn1
                #'(lambda ()
                    (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> last-input-event: %s last-event-frame: %s frame: %s"
-                          (time-stamp-string)
-                          'lotus-with-other-frame-event ,action
-                          last-input-event
-                          last-event-frame
-                          frame)
+                                      (time-stamp-string)
+                                      'lotus-with-other-frame-event ,action
+                                      last-input-event
+                                      last-event-frame
+                                      frame)
                    (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> removing hook 1" (time-stamp-string) 'lotus-with-other-frame-event ,action )
                    (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> 1 pre-command-hook %s" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook)
                    (remove-hook 'pre-command-hook (lambda () (funcall hookfn1)))
@@ -508,28 +534,28 @@
                      (progn
                        (setq frame nil)
                        (with-selected-frame last-event-frame
-                         (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> with-selected-frame running timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                         (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> with-selected-frame running timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (lotus-active-recursive-edit))
                          (run-with-timer 0 nil #'(lambda () (funcall readfn)))
-                         (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> adding quiet-sel-frame minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                         (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> adding quiet-sel-frame minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (lotus-active-recursive-edit))
                          (select-frame-set-input-disable-raise)
-                         (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> going to run safe-exit-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
-                         (when (active-minibuffer-window)
-                           (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> running safe-exit-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                         (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> going to run safe-exit-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (lotus-active-recursive-edit))
+                         (when (lotus-active-recursive-edit)
+                           (lotus-utils-debug 'event-input :debug "%s: %s: hookfn1: <%s> running safe-exit-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (lotus-active-recursive-edit))
                            (safe-exit-recursive-edit)))))))
 
               (hookfn
                #'(lambda ()
                    (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> last-input-event: %s last-event-frame: %s frame: %s minibuffer<%s>"
-                          (time-stamp-string)
-                          'lotus-with-other-frame-event ,action
-                          last-input-event
-                          last-event-frame
-                          frame
-                          (active-minibuffer-window))
-                   (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> removing hook 1 minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
-                   (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> 1 pre-command-hook %s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook (active-minibuffer-window))
+                                      (time-stamp-string)
+                                      'lotus-with-other-frame-event ,action
+                                      last-input-event
+                                      last-event-frame
+                                      frame
+                                      (lotus-active-recursive-edit))
+                   (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> removing hook 1 minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (lotus-active-recursive-edit))
+                   (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> 1 pre-command-hook %s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook (lotus-active-recursive-edit))
                    (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                   (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> 2 pre-command-hook %s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook (active-minibuffer-window))
+                   (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> 2 pre-command-hook %s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action pre-command-hook (lotus-active-recursive-edit))
                    (if (eql last-event-frame frame)
                        (progn
                          (setq frame nil)
@@ -545,7 +571,7 @@
                                              (progn
                                                ;; (setq frame (selected-frame))
                                                ;; (setq debug-on-quit nil)
-                                               (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> with-selected-frame running timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                                               (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> with-selected-frame running timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (lotus-active-recursive-edit))
                                                ;; (funcall set-advice-fn)
                                                ,@(cond
                                                   ((or
@@ -563,13 +589,13 @@
                                                     (null action))
                                                    nil)))))
                          (progn
-                           (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> adding quiet-sel-frame minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                           (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> adding quiet-sel-frame minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (lotus-active-recursive-edit))
                            (select-frame-set-input-disable-raise)
-                           (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> going to run safe-exit-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
-                           (when (active-minibuffer-window)
-                             (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> running safe-exit-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                           (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> going to run safe-exit-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (lotus-active-recursive-edit))
+                           (when (lotus-active-recursive-edit)
+                             (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: <%s> running safe-exit-recursive-edit minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (lotus-active-recursive-edit))
                              (safe-exit-recursive-edit)))))))))
-       (lotus-utils-debug 'event-input :debug "%s: %s: <%s> calling readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+       (lotus-utils-debug 'event-input :debug "%s: %s: <%s> calling readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (lotus-active-recursive-edit))
        (funcall readfn))))
 
 (defmacro lotus-with-other-frame-event (action &rest body)
@@ -580,10 +606,10 @@
                #'(lambda ()
                    (if sel-frame-adviced-p
                        (unless (select-frame-set-input-focus-no-raise-p)
-                         (lotus-utils-debug 'event-input :debug "%s: %s: readfn: <%s> add quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                         (lotus-utils-debug 'event-input :debug "%s: %s: readfn: <%s> add quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (lotus-active-recursive-edit))
                          (select-frame-set-input-disable-raise))
                      (when (select-frame-set-input-focus-no-raise-p)
-                       (lotus-utils-debug 'event-input :debug "%s: %s: readfn: <%s> remove quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (active-minibuffer-window))
+                       (lotus-utils-debug 'event-input :debug "%s: %s: readfn: <%s> remove quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event ,action (lotus-active-recursive-edit))
                        (select-frame-set-input-enable-raise)))))
               (readfn
                #'(lambda ()
@@ -651,24 +677,24 @@
                #'(lambda ()
                    (if sel-frame-adviced-p
                        (unless (select-frame-set-input-focus-no-raise-p)
-                         (lotus-utils-debug 'event-input :debug "%s: %s: set-advice-fn: %s <%s> add quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
+                         (lotus-utils-debug 'event-input :debug "%s: %s: set-advice-fn: %s <%s> add quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (lotus-active-recursive-edit))
                          (lotus-utils-debug 'event-input :debug "%s: %s: set-advice-fn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                                             (time-stamp-string) 'lotus-with-other-frame-event-debug
                                             ,name ,action
                                             last-input-event
                                             last-event-frame
                                             frame
-                                            (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                            (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (lotus-active-recursive-edit))
                          (select-frame-set-input-disable-raise))
                      (when (select-frame-set-input-focus-no-raise-p)
-                       (lotus-utils-debug 'event-input :debug "%s: %s: readfn: %s <%s> remove quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
+                       (lotus-utils-debug 'event-input :debug "%s: %s: readfn: %s <%s> remove quiet 5 as already was present minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (lotus-active-recursive-edit))
                        (lotus-utils-debug 'event-input :debug "%s: %s: set-advice-fn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                                           (time-stamp-string) 'lotus-with-other-frame-event-debug
                                           ,name ,action
                                           last-input-event
                                           last-event-frame
                                           frame
-                                          (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                          (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (lotus-active-recursive-edit))
                        (select-frame-set-input-enable-raise)))))
               (readfn
                #'(lambda ()
@@ -676,14 +702,14 @@
                      (setq frame (selected-frame))
                      (add-hook 'pre-command-hook (lambda () (funcall hookfn)))
                      (progn
-                       (lotus-utils-debug 'event-input :debug "%s: %s: readfn: %s <%s> inside readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
+                       (lotus-utils-debug 'event-input :debug "%s: %s: readfn: %s <%s> inside readfn minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (lotus-active-recursive-edit))
                        (lotus-utils-debug 'event-input :debug "%s: %s: readfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                                           (time-stamp-string) 'lotus-with-other-frame-event-debug
                                           ,name ,action
                                           last-input-event
                                           last-event-frame
                                           frame
-                                          (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                          (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (lotus-active-recursive-edit))
                        (funcall set-advice-fn)
                        (prog1
                            (progn
@@ -698,7 +724,7 @@
                                       last-input-event
                                       last-event-frame
                                       frame
-                                      (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                      (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (lotus-active-recursive-edit))
                    (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                    ;; TODO: Here add support for elscreen change also, make it generalized function
                    (if (eql last-event-frame frame)
@@ -710,21 +736,21 @@
                          t)
                      (with-selected-frame last-event-frame
                        (progn
-                         (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: %s <%s> running readfn from hookfn outside timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
+                         (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: %s <%s> running readfn from hookfn outside timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (lotus-active-recursive-edit))
                          (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                                             (time-stamp-string) 'lotus-with-other-frame-event-debug
                                             ,name ,action
                                             last-input-event
                                             last-event-frame
                                             frame
-                                            (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                            (selected-frame) (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (lotus-active-recursive-edit))
                          (setq frame nil)
                          (run-with-timer 0 nil
                                          #'(lambda ()
                                              (progn
                                                ;; (setq frame (selected-frame))
                                                ;; (setq debug-on-quit nil)
-                                               (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: %s <%s> timer remove quiet 1 minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
+                                               (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: %s <%s> timer remove quiet 1 minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (lotus-active-recursive-edit))
                                                (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                                                                   (time-stamp-string) 'lotus-with-other-frame-event-debug
                                                                   ,name ,action
@@ -732,7 +758,7 @@
                                                                   last-event-frame
                                                                   frame
                                                                   (selected-frame)
-                                                                  (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                                                  (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (lotus-active-recursive-edit))
                                                ;; (funcall set-advice-fn)
                                                (prog1
                                                    ,@(cond
@@ -741,7 +767,7 @@
                                                         (eq t action))
                                                        `(
                                                          (with-selected-frame last-event-frame
-                                                           (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: %s <%s> running readfn from hookfn inside timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (active-minibuffer-window))
+                                                           (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: %s <%s> running readfn from hookfn inside timer minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (lotus-active-recursive-edit))
                                                            (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                                                                               (time-stamp-string) 'lotus-with-other-frame-event-debug
                                                                               ,name ,action
@@ -749,7 +775,7 @@
                                                                               last-event-frame
                                                                               frame
                                                                               (selected-frame)
-                                                                              (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                                                              (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (lotus-active-recursive-edit))
                                                            (funcall readfn))))
                                                       ((consp action)
                                                        `(
@@ -767,7 +793,7 @@
                                                                     ,action
                                                                     ,action
                                                                     (selected-frame)
-                                                                    (active-minibuffer-window))
+                                                                    (lotus-active-recursive-edit))
                                                  (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                                                                     (time-stamp-string) 'lotus-with-other-frame-event-debug
                                                                     ,name ,action
@@ -775,9 +801,9 @@
                                                                     last-event-frame
                                                                     frame
                                                                     (selected-frame)
-                                                                    (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))))))
+                                                                    (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (lotus-active-recursive-edit))))))
                          (progn
-                           (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: %s <%s> add quiet 2 frame=%s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (selected-frame) (active-minibuffer-window))
+                           (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: %s <%s> add quiet 2 frame=%s minibuffer<%s>" (time-stamp-string) 'lotus-with-other-frame-event-debug ,name ,action (selected-frame) (lotus-active-recursive-edit))
                            (lotus-utils-debug 'event-input :debug "%s: %s: hookfn: name=%s <%s> last-input-event: %s last-event-frame: %s frame: %s selected-frame=%s eq=%s eql=%s equal=%s minibuffer<%s>"
                                               (time-stamp-string) 'lotus-with-other-frame-event-debug
                                               ,name ,action
@@ -785,7 +811,7 @@
                                               last-event-frame
                                               frame
                                               (selected-frame)
-                                              (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (active-minibuffer-window))
+                                              (eq last-event-frame frame) (eql last-event-frame frame) (equal last-event-frame frame) (lotus-active-recursive-edit))
                            (select-frame-set-input-disable-raise)
                            (safe-exit-recursive-edit-if-active))))))))
        (funcall readfn))))
