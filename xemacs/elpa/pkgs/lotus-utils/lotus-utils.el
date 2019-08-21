@@ -125,6 +125,7 @@
   ;; https://www.emacswiki.org/emacs/RecursiveEdit
   ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Recursive-Editing.html#Recursive-Editing
   (message "recursion-depth %d" (recursion-depth))
+  (message "helm-alive-p %s"    helm-alive-p)
   (get-buffer-create "*helm*")
   (setq helm-alive-p nil)
   (safe-exit-recursive-edit-if-active)

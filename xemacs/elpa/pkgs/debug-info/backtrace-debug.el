@@ -159,6 +159,16 @@
   (define-key special-event-map [sigusr2] 'ignore))
 
 
+(defun lotus-debug-hang ()
+  (interactive)
+  (message "helm-alive-p %s"    helm-alive-p)
+  (message "(recursion-depth) = %d" (recursion-depth))
+  (setq helm-alive-p nil)
+  (with-debugger-output-to-file (foobar))
+  (safe-exit-recursive-edit-if-active)
+  (safe-exit-recursive-edit))
+
+
 ;; To test the signal handler, you can make Emacs send a signal to
 ;; itself:
 (when nil                               ;to test
