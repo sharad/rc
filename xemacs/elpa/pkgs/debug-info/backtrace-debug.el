@@ -173,6 +173,22 @@
   (safe-exit-recursive-edit))
 
 
+
+(defun lotus-keyboard-quit()
+  ;; https://www.emacswiki.org/emacs/IgnacioKeyboardQuit
+  "Escape the minibuffer or cancel region consistently using 'Control-g'.
+Normally if the minibuffer is active but we lost focus (say, we clicked away or set the cursor into another buffer)
+we can quit by pressing 'ESC' three times. This function handles it more conveniently, as it checks for the condition
+of not beign in the minibuffer but having it active. Otherwise simply doing the ESC or (keyboard-escape-quit) would
+brake whatever split of windows we might have in the frame."
+  (interactive)
+  (if (not(window-minibuffer-p (selected-window)))
+      (if (or mark-active (active-minibuffer-window))
+          (keyboard-escape-quit))
+    (keyboard-quit)))
+
+(define-key global-map (kbd "C-g") 'lotus-keyboard-quit)
+
 ;; To test the signal handler, you can make Emacs send a signal to
 ;; itself:
 (when nil                               ;to test
