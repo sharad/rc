@@ -572,7 +572,9 @@ Each entry is either:
                                       (occ-insinuate)
                                     (warn "function occ-insinuate not available."))
                                   (when (fboundp 'occ-config-disable-clock-in)
-                                    (occ-config-disable-clock-in)))))
+                                    (occ-config-disable-clock-in))
+                                  (when (fboundp 'occ-enable-debug)
+                                    (occ-enable-debug)))))
 
         (defun lotus-config-start-occ-insinuate-after-delay-time ()
           (lotus-config-start-occ-insinuate-after-delay 70)))
