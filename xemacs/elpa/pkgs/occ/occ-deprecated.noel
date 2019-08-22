@@ -242,7 +242,7 @@
 
 
       (defun occ-sacha-helm-select-timed (ctxasks)
-        (helm-timed occ-idle-timeout
+        (helm-timed occ-idle-timeout nil
           (occ-debug :debug "running sacha/helm-select-clock")
           (occ-sacha-helm-select ctxasks))))
 

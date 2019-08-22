@@ -264,7 +264,7 @@
                      :candidates '(("Continue" . t)
                                    ("Checkout" . checkout)))))
          (retval
-          (helm-timed occ-idle-timeout
+          (helm-timed occ-idle-timeout nil
             (helm :sources sources))))
     (if (eq retval t)
         t)))

@@ -598,18 +598,15 @@ With prefix arg C-u, copy region instad of killing it."
           (set-marker marker pos (find-file-noselect file))
           marker)))))
 
-
-
 ;; TODO (replace-buffer-in-windows)
-
-(defmacro helm-timed (timeout &rest body)
+(defmacro helm-timed (timeout win-buff &rest body)
   (let ((temp-win-config (make-symbol "test-helm-timed")))
     `(let* ((,temp-win-config (current-window-configuration))
             (current-command (or
                               (helm-this-command)
                               this-command))
             (str-command     (helm-symbol-name current-command))
-            (buf-name        (format "*helm-mode-%s*" str-command))
+            (buf-name        (or ,win-buff (format "*helm-mode-%s*" str-command)))
             (timer (run-with-idle-plus-timer ,timeout nil
                                         #'(lambda (buffname)
                                             (let* ((buff (or
@@ -632,7 +629,7 @@ With prefix arg C-u, copy region instad of killing it."
                 ,@body))
          (select-frame-set-input-enable-raise)
          (cancel-timer timer)))))
-(put 'helm-timed 'lisp-indent-function 1)
+(put 'helm-timed 'lisp-indent-function 2)
 
 (defun safe-timed-org-refile-get-location (timeout &optional prompt)
   ;; TODO: org-fit-window-to-buffer

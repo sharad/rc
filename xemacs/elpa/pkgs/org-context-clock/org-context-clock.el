@@ -618,7 +618,7 @@ pointing to it."
       )))
 
   (defun sacha/helm-select-dyntaskpl-timed (dyntaskpls)
-    (helm-timed 7
+    (helm-timed 7 nil
       (message "running sacha/helm-select-clock")
       (sacha/helm-select-dyntaskpl dyntaskpls)))
 

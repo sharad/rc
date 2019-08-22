@@ -40,7 +40,9 @@
 ;; helm-buffers
 ;; helm-buffer
 
-(defvar occ-helm-select-buffer "*helm occ select")
+(defvar occ-helm-select-buffer-name "*helm occ select")
+(defun occ-helm-select-buffer ()
+  occ-helm-select-buffer-name)
 
 (cl-defmethod occ-list-select-internal ((obj occ-ctx)
                                         &key
@@ -86,7 +88,7 @@
                                                     :builder            builder
                                                     :action             action
                                                     :action-transformer action-transformer)
-                 :buffer occ-helm-select-buffer
+                 :buffer (occ-helm-select-buffer)
                  :resume 'noresume)))))
       (occ-debug :debug "Running occ-list-select-internal"))))
 
@@ -101,23 +103,23 @@
                                timeout)
   (let ((action-transformer (or action-transformer (occ-get-helm-actions-tree-genertator obj '(t actions general edit))))
         (timeout            (or timeout occ-idle-timeout)))
-      (helm-timed timeout
-        (occ-debug :debug "running occ-list-select")
-        (let ((action             (if return-transform (occ-return-tranform action) action)) ;as return value is going to be used.
-              (action-transformer (if return-transform (occ-return-tranformer-fun-transform action-transformer) action-transformer)))
-          (let ((selected (occ-list-select-internal obj
-                                                    :filters             filters
-                                                    :builder             builder
-                                                    :action              action
-                                                    :action-transformer  action-transformer
-                                                    :auto-select-if-only auto-select-if-only
-                                                    :timeout             timeout)))
-           (occ-debug :debug "occ-list-select: selected = %s" selected)
-           (if return-transform
-               (or ;as return value is going to be used.
-                selected
-                (occ-make-return occ-return-quit-label selected))
-             selected))))))
+    (helm-timed timeout (occ-helm-select-buffer)
+      (occ-debug :debug "running occ-list-select")
+      (let ((action             (if return-transform (occ-return-tranform action) action)) ;as return value is going to be used.
+            (action-transformer (if return-transform (occ-return-tranformer-fun-transform action-transformer) action-transformer)))
+        (let ((selected (occ-list-select-internal obj
+                                                  :filters             filters
+                                                  :builder             builder
+                                                  :action              action
+                                                  :action-transformer  action-transformer
+                                                  :auto-select-if-only auto-select-if-only
+                                                  :timeout             timeout)))
+          (occ-debug :debug "occ-list-select: selected = %s" selected)
+          (if return-transform
+              (or ;as return value is going to be used.
+               selected
+               (occ-make-return occ-return-quit-label selected))
+            selected))))))
 
 
 ;; TODO: Not to run when frame is not open [visible.]
