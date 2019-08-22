@@ -34,7 +34,7 @@
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
-(defconst lotus-minibuffer<-packages
+(defconst lotus-minibuffer-packages
   '(
     mb-depth
     )

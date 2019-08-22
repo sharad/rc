@@ -82,16 +82,16 @@
 
 (progn ;; "Enable recursive minibuffer"
   (defun status-recursive-minibuffers ()
-      (if enable-recursive-minibuffers
+    (if enable-recursive-minibuffers
         (message "recursive minibuffers enabled")
-        (message "recursive minibuffers disabled")))
+      (message "recursive minibuffers disabled")))
   (defun enable-recursive-minibuffer ()
     (interactive)
     (setq enable-recursive-minibuffers t)
     (status-recursive-minibuffers))
   (defun disable-recursive-minibuffer ()
     (interactive)
-    (setq enable-recursive-minibuffers t)
+    (setq enable-recursive-minibuffers nil)
     (status-recursive-minibuffers))
   (defun toggle-recursive-minibuffer ()
     (interactive)
