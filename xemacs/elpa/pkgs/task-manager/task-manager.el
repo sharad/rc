@@ -178,12 +178,13 @@
 (defun task-scratch-dir (&optional scratch-dir)
   (interactive
    (list (read-directory-name "Select task-scratch-dir: ")))
-  (when scratch-dir
-    (unless (file-directory-p scratch-dir)
-      (make-directory scratch-dir t))
-    (when (file-directory-p scratch-dir)
-      (setq
-       task-scratch-dir scratch-dir)))
+  (let ((scratch-dir (file-truename "~/Scratches/main")))
+    (when scratch-dir
+      (unless (file-directory-p scratch-dir)
+        (make-directory scratch-dir t))
+      (when (file-directory-p scratch-dir)
+        (setq
+         task-scratch-dir scratch-dir))))
   task-scratch-dir)
 
 ;;;###autoload

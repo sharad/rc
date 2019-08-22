@@ -20,7 +20,7 @@
 
 ;;; Commentary:
 
-;; 
+;;
 
 ;;; Code:
 
@@ -30,10 +30,12 @@
 (defvar fast-helm-test-timer nil)
 
 (defun fast-helm-test ()
-  (helm-timed 1 nil
-    (let ((source (helm-build-sync-source "fast edit" :candidates '(a b c))))
+  (helm-timed 2 nil
+    (let* ((prompt (format "fast edit - (recursion-depth): %d" (recursion-depth)))
+           (source (helm-build-sync-source prompt :candidates '(a b c))))
       (helm
-       :sources (list source)))))
+       :sources (list source))
+      (message "(recursion-depth): %d" (recursion-depth)))))
 
 (defun fast-helm-test-stop-timer ()
   (interactive)
@@ -45,7 +47,5 @@
   (interactive)
   (fast-helm-test-stop-timer)
   (setq fast-helm-test-timer (run-with-timer 2 2 'fast-helm-test)))
-
-
 
 ;;; debug-hang.el ends here
