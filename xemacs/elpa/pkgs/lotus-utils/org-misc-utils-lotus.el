@@ -614,6 +614,9 @@ With prefix arg C-u, copy region instad of killing it."
                                                           (get-buffer "*helm*")))
                                                    (w (if buff (get-buffer-window buff))))
                                               (message "helm-timed: triggered timer for new-win %s" w)
+                                              ;; TODO: open emacs why SIGABRT triggered on pressin C-g three time when struck.
+                                              ;;       with below line.
+                                              (discard-input)
                                               (when (and w (windowp w) (window-valid-p w))
                                                 (safe-delete-window w)
                                                 (safe-exit-recursive-edit-if-active)

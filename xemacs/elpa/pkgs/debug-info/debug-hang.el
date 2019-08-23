@@ -27,10 +27,48 @@
 (provide 'debug-hang)
 
 
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Event-Input-Misc.html#Event-Input-Misc
+
 (defvar fast-helm-test-timer nil)
 
+(defmacro fast-helm-timed (timeout win-buff &rest body)
+  (let ((temp-win-config (make-symbol "test-helm-timed")))
+    `(let* ((,temp-win-config (current-window-configuration))
+            (current-command (or
+                              (helm-this-command)
+                              this-command))
+            (str-command     (helm-symbol-name current-command))
+            (buf-name        (or ,win-buff (format "*helm-mode-%s*" str-command)))
+            (timer (run-with-idle-plus-timer ,timeout nil
+                                        #'(lambda (buffname)
+                                            (let* ((buff (or
+                                                          (get-buffer buffname)
+                                                          (get-buffer "*helm*")))
+                                                   (w (if buff (get-buffer-window buff))))
+                                              (message "helm-timed: triggered timer for new-win %s" w)
+                                              ;; TODO: open emacs why SIGABRT triggered on pressin C-g three time when struck.
+                                              ;;       with below line.
+                                              (discard-input)
+                                              (when (and (windowp w)
+                                                         (window-valid-p w))
+                                                (safe-delete-window w)
+                                                (safe-exit-recursive-edit-if-active)
+                                                (select-frame-set-input-enable-raise)
+                                                (when ,temp-win-config
+                                                  (set-window-configuration ,temp-win-config)
+                                                  (setq ,temp-win-config nil)))))
+                                        buf-name)))
+       (unwind-protect
+            (progn
+              (select-frame-set-input-disable-raise)
+              (progn
+                ,@body))
+         (select-frame-set-input-enable-raise)
+         (cancel-timer timer)))))
+(put 'fast-helm-timed 'lisp-indent-function 2)
+
 (defun fast-helm-test ()
-  (helm-timed 2 nil
+  (fast-helm-timed 2 nil
     (let* ((prompt (format "fast edit - (recursion-depth): %d" (recursion-depth)))
            (source (helm-build-sync-source prompt :candidates '(a b c))))
       (helm
