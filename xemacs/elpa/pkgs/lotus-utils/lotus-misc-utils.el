@@ -220,13 +220,14 @@
                    (not win-parent)
                    atomic-frame-root-window-p
                    window-main-window-p)
-            (delete-window window))
+            (if (window-deletable-p window)
+                (delete-window window)
+              (lotus-utils-message "window = %s is not deletable" window)))
           (progn                                ; debug
             (if (not win-parent)
                 (lotus-utils-message "window = %s has no parent, (window-parent window) %s"
                                      window
-                                     win-parent))
-            ))))))
+                                     win-parent))))))))
 
 
 
