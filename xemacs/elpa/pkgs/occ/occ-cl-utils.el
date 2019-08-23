@@ -88,18 +88,34 @@
 ;; (cl--struct-class-slots
 ;;  (cl--struct-get-class 'occ-ctx))
 
+;; (cl--struct-class-slots
+;;  (cl--struct-get-class 'cl-structure-class))
+
+
 
 (defun cl-class (inst)
+
+  ;; BUG: TODO: Improve it.
+
   (let* ((class-sym (aref inst 0))
          (class-sym (if (boundp class-sym)
                         class-sym
                       (intern (concat "cl-struct-" (symbol-name class-sym))))))
-    (symbol-value class-sym)))
+    (if (boundp class-sym)
+        (symbol-value class-sym)
+        (cl--struct-get-class (aref inst 0)))))
 
 (defun cl-classname (class)
   (cl-struct-slot-value 'cl-structure-class
                         'name
                         class))
+
+;; (cl-struct-slot-value 'cl-structure-class
+;;                       'parents
+;;                       (cl--struct-get-class 'occ-ctx))
+
+;; (cl-class-parents (cl-class test-xyz))
+;; (cl-class-parent-names (cl--struct-get-class 'occ-tsk))
 
 
 (defun cl-class-parents (class)
