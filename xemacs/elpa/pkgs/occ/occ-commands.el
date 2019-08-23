@@ -42,9 +42,9 @@
    (list (occ-make-ctx-at-point)))
   (let ((filters            (occ-match-filters))
         (builder            #'occ-build-ctxual-tsk-with)
-        (action             (occ-helm-intractive-command-actions))
+        (action             (occ-get-helm-actions-tree ctx '(t actions general edit)))
         (action-transformer #'(lambda (action candidate)
-                                (occ-helm-intractive-command-actions)))
+                                (occ-get-helm-actions-tree ctx '(t actions general edit))))
         (timeout            occ-idle-timeout))
    (occ-helm-select ctx
                     :filters            filters
@@ -58,9 +58,9 @@
    (list (occ-make-ctx-at-point)))
   (let ((filters            (occ-list-filters))
         (builder            #'occ-build-ctsk-with)
-        (action             (occ-helm-intractive-command-actions))
+        (action             (occ-get-helm-actions-tree ctx '(t actions general edit)))
         (action-transformer #'(lambda (action candidate)
-                                (occ-helm-intractive-command-actions)))
+                                (occ-get-helm-actions-tree ctx '(t actions general edit))))
         (timeout            occ-idle-timeout))
    (occ-helm-select ctx
                     :filters            filters
@@ -74,10 +74,10 @@
    (list (occ-make-ctx-at-point)))
   (let ((filters            (occ-list-filters))
         (builder            #'occ-build-ctsk-with)
-        (action             (occ-helm-intractive-command-actions))
+        (action             (occ-get-helm-actions-tree ctx '(t actions general edit)))
         (return-transform   t)
         (action-transformer #'(lambda (action candidate)
-                                (occ-helm-intractive-command-actions)))
+                                (occ-get-helm-actions-tree ctx '(t actions general edit))))
         (timeout            occ-idle-timeout))
     (let ((retval-ctx-tsk (occ-helm-select ctx
                                            :filters            filters

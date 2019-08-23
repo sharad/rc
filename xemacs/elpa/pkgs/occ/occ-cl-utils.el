@@ -84,12 +84,17 @@
 
 
 (defun cl-class (inst)
-  (symbol-value (aref inst 0)))
+  (let* ((class-sym (aref inst 0))
+         (class-sym (if (boundp class-sym)
+                        class-sym
+                      (intern (concat "cl-struct-" (symbol-name class-sym))))))
+    (symbol-value class-sym)))
 
 (defun cl-classname (class)
   (cl-struct-slot-value 'cl-structure-class
                         'name
                         class))
+
 
 (defun cl-class-parents (class)
   (cl-struct-slot-value 'cl-structure-class

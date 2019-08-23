@@ -606,5 +606,4 @@ Each entry is either:
    (progn
      (progn
        (setq helm-exit-idle-delay 0.3)))))
-
 ;;; packages.el ends here

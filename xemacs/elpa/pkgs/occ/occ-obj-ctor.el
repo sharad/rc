@@ -216,7 +216,7 @@
                           (if (file-exists-p buff)
                               (get-file-buffer buff)))))
                  (window-buffer)))
-         (buf (org-base-buffer buf))
+         (buff (org-base-buffer buff))
          (file (buffer-file-name buff))
          (plist (list
                  :name (buffer-name buff)

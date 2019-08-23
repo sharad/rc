@@ -150,6 +150,9 @@ this macro intended to be used with or in idle timer functions."
                             (when (and w
                                        (windowp w)
                                        (window-valid-p w))
+                              ;; TODO: open emacs why SIGABRT triggered on pressin C-g three time when struck.
+                              ;;       with below line.
+                              (discard-input)
                               (safe-delete-window w)
                               (lwarn 'lotus-idle-timed-window :debug "lotus-with-first-idle-timed-transient-window: triggered timer for new-win %s" w)
                               (without-active-minibuffer
@@ -204,10 +207,19 @@ this macro intended to be used with or in idle timer functions."
     `(let* ((,temp-win-config (current-window-configuration))
             (,cleanupfn-newwin #'(lambda (w localfn)
                                    ;; (message "cleaning up newwin and triggered timer for newwin %s" w)
+                                   ;; TODO: open emacs why SIGABRT triggered on pressin C-g three time when struck.
+                                   ;;       with below line.
+                                   (discard-input)
                                    (when localfn (funcall localfn))
                                    (when (and w (windowp w) (window-valid-p w))
+                                     ;; TODO: open emacs why SIGABRT triggered on pressin C-g three time when struck.
+                                     ;;       with below line.
+                                     (discard-input)
                                      (safe-delete-window w))
                                    (when ,temp-win-config
+                                     ;; TODO: open emacs why SIGABRT triggered on pressin C-g three time when struck.
+                                     ;;       with below line.
+                                     (discard-input)
                                      (set-window-configuration ,temp-win-config)
                                      (setq ,temp-win-config nil)))))
        (lotus-with-new-win ,newwin

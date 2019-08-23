@@ -26,6 +26,10 @@
 
 ;; Integration to bbdb and dired
 (deh-require-maybe bbdb
+
+  (unless (fboundp 'bbdb-insinuate-gnus)
+    (defun bbdb-insinuate-gnus ()
+      (bbdb-initialize 'gnus)))
   (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 

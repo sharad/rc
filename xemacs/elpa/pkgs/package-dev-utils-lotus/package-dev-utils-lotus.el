@@ -302,7 +302,9 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
          (pkg-name
           (replace-regexp-in-string
            "-[0-9\.]\*\.tar\\(\.gz\\)?\$" ""
-           (file-name-nondirectory pkg-tar))))
+           (file-name-nondirectory pkg-tar)))
+         (dst-pkg-tar (expand-file-name (file-name-nondirectory pkg-tar)
+                                        package-archive-upload-base)))
     (message "uploading package %s" pkg-name)
     (when (string= (file-name-extension pkg-tar) "tar")
       (package-upload-file pkg-tar)
@@ -316,9 +318,9 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
                 (delete-file op)))
             (message "copy %s %s"
                      pkg-tar
-                     package-archive-upload-base)
+                     dst-pkg-tar)
             (copy-file pkg-tar
-                       package-archive-upload-base
+                       dst-pkg-tar
                        t))
         (error "package-archive-upload-base not exists."))
       (let ((package-archives (list

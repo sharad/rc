@@ -44,7 +44,23 @@
                              (list 'testing (backtrace))))))))))
 
 
-;;;###autoload
+;; ;;;###autoload
+;; (defun emacs-collect-states-and-log ()
+;;   (interactive)
+;;   (let ((backtrace-buffer (get-buffer-create "*CurrentBacktrace*"))
+;;         (backtrace-file   (auto-config-file "backtrace/backtrace.log"))
+;;         (message-file     (auto-config-file "message/message.log")))
+;;     (message "(recursion-depth) = %d" (recursion-depth))
+;;     (message "emacs-collect-states-and-log: taking backtrace in %s" backtrace-file)
+;;     (message "emacs-collect-states-and-log: taking messages in %s"  message-file)
+;;     (progn
+;;       (with-current-buffer "*Messages*"
+;;         (write-region nil t message-file t))
+;;       (backtrace-to-buffer backtrace-buffer)
+;;       (with-current-buffer backtrace-buffer
+;;         (write-region nil t backtrace-file t))))
+;;   (setq debug-on-next-call t))
+
 (defun emacs-collect-states-and-log ()
   (interactive)
   (let ((backtrace-buffer (get-buffer-create "*CurrentBacktrace*"))
@@ -59,7 +75,7 @@
       (backtrace-to-buffer backtrace-buffer)
       (with-current-buffer backtrace-buffer
         (write-region nil t backtrace-file t))))
-  (setq debug-on-next-call t))
+  t)
 
 (defun emacs-clean-hangup ()
   (emacs-collect-states-and-log)
@@ -86,6 +102,7 @@
   (interactive)
   (message "(recursion-depth) = %d" (recursion-depth))
   (emacs-collect-states-and-log)
+  (setq debug-on-next-call t)
   (message "Caught signal %S" last-input-event))
 
 
