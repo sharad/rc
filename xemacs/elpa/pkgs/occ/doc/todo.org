@@ -86,7 +86,7 @@
 *** Even when matched ctxual-tsk's present, ctsk's were present for property edit
 It might be shown only if wait timeout happens.
 
-*** TODO: (current-window-configuration)
+*** TODO: (current-window-configuration) ASAP
    set-window-configuration
    Set window-configuration but take context of elscreeen and frame.
 
