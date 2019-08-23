@@ -187,22 +187,48 @@
        ,@body)))
 (put 'lotus-with-new-win 'lisp-indent-function 1)
 
-(defun safe-delete-window (window)
-  (let ((win-parent            (window-parent window))
-        (major-non-side-window (window--major-non-side-window nil)))
-    (unless (or
-             (not win-parent)
-             (eq window major-non-side-window))
-      (delete-window window))
-    (progn                                ; debug
-      (if (not win-parent)
-          (lotus-utils-message "window = %s has no parent, (window-parent window) %s"
-                               window
-                               win-parent))
-      (if (eq window
-              major-non-side-window)
-          (lotus-utils-message "window = %s is a major non side window."
-                               window)))))
+(if (fboundp 'window--major-non-side-window)
+    (defun safe-delete-window (window)
+      (let ((win-parent            (window-parent window))
+            (major-non-side-window (window--major-non-side-window nil)))
+        (unless (or
+                 (not win-parent)
+                 (eq window major-non-side-window))
+          (delete-window window))
+        (progn                                ; debug
+          (if (not win-parent)
+              (lotus-utils-message "window = %s has no parent, (window-parent window) %s"
+                                   window
+                                   win-parent))
+          (if (eq window
+                  major-non-side-window)
+              (lotus-utils-message "window = %s is a major non side window."
+                                   window)))))
+
+  (progn
+    (defun safe-delete-window (window)
+      (let (atom-root
+            (frame (window-frame window)))
+        (let ((win-parent                      (window-parent window))
+              (atomic-frame-root-window-p (and (window-parameter window 'window-atom)
+                                               (setq atom-root (window-atom-root window))
+                                               (not (eq atom-root window))
+                                               (eq atom-root (frame-root-window frame))))
+              ;; (major-non-side-window (window--major-non-side-window nil))
+              (window-main-window-p  (eq window (window-main-window frame))))
+          (unless (or
+                   (not win-parent)
+                   atomic-frame-root-window-p
+                   window-main-window-p)
+            (delete-window window))
+          (progn                                ; debug
+            (if (not win-parent)
+                (lotus-utils-message "window = %s has no parent, (window-parent window) %s"
+                                     window
+                                     win-parent))
+            ))))))
+
+
 
 (defmacro lotus-with-timed-new-win (timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
   (let ((temp-win-config (make-symbol "test-lotus-with-timed-new-win-config")))
