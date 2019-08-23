@@ -396,7 +396,12 @@
 ;;   call-interactively(org-ctrl-c-ctrl-c nil nil)
 ;;   command-execute(org-ctrl-c-ctrl-c)
 
-(defun occ-clock-out ()
-  (error "Implement it."))
+(defun occ-clock-out (&optional switch-to-state
+                                fail-quietly
+                                at-time)
+  (interactive)
+  (org-clock-out switch-to-state
+                 fail-quietly
+                 at-time))
 
 ;;; occ-clock.el ends here

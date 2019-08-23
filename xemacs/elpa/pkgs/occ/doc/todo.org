@@ -86,6 +86,13 @@
 *** Even when matched ctxual-tsk's present, ctsk's were present for property edit
 It might be shown only if wait timeout happens.
 
+*** TODO: (current-window-configuration)
+   set-window-configuration
+   Set window-configuration but take context of elscreeen and frame.
+
+[[file:~/.xemacs/elpa/pkgs/lotus-utils/lotus-idle-utils.el][file:~/.xemacs/elpa/pkgs/lotus-utils/lotus-idle-utils.el]]
+
+
 ** Todos
 
 *** STARTED caching ctxual-tsk or ctsk                               :DESIGN:

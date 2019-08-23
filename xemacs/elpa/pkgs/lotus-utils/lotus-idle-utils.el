@@ -195,6 +195,10 @@ this macro intended to be used with or in idle timer functions."
 (put 'lotus-first-idle-timed-transient-buffer-window 'lisp-indent-function 2)
 
 
+;; TODO: (current-window-configuration)
+;;       set-window-configuration
+;; Set window-configuration but take context of elscreeen and frame.
+
 ;; TODO: Improve it
 (defmacro lotus-with-idle-timed-transient-newwindow (timeout
                                                      timer

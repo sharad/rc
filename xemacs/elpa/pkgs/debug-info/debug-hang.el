@@ -85,5 +85,16 @@
   (interactive)
   (fast-helm-test-stop-timer)
   (setq fast-helm-test-timer (run-with-timer 2 2 'fast-helm-test)))
+
+
+(when nil
+
+  (fast-helm-test-stop-timer)
+
+
+  (fast-helm-test-start-timer)
+
+
+  ())
 
 ;;; debug-hang.el ends here

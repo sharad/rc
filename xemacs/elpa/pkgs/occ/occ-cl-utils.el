@@ -83,6 +83,12 @@
       (append (occ-flatten (first L)) (occ-flatten (rest L))))))
 
 
+;; (setq test-xyz (make-occ-ctx))
+
+;; (cl--struct-class-slots
+;;  (cl--struct-get-class 'occ-ctx))
+
+
 (defun cl-class (inst)
   (let* ((class-sym (aref inst 0))
          (class-sym (if (boundp class-sym)
