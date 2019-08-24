@@ -27,6 +27,9 @@
 (provide 'occ-config)
 
 
+(require 'occ-macros)
+
+
 (defcustom occ-unnamed t
   "occ-unnamed")
 
@@ -82,8 +85,8 @@
   occ-config-clock-in)
 
 
+;; option for keeping quiet
 (occ-gen-binary-option-commands occ-config- quiet -p nil)
-
 
 
 ;; Wrote /home/s/hell/.xemacs/elpa/pkgs/lotus-utils/lotus-misc-utils.{el,elc}

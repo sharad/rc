@@ -154,10 +154,11 @@
          ,@body)
 
        (progn
+         (occ-message "Generated functions\n- %s\n- %s\n- %s\n- %s\n" ',enable ',disable ',toggle ',value)
          (unless (fboundp ',enable-fun)
-           (message "Define %s function" ',enable-fun))
+           (occ-message "Define %s function" ',enable-fun))
          (unless (fboundp ',disable-fun)
-           (message "Define %s function" ',disable-fun))))))
+           (occ-message "Define %s function" ',disable-fun))))))
 
 
 (defmacro occ-gen-numeric-commands (prefix
@@ -201,10 +202,11 @@
          ,@body)
 
        (progn
+         (occ-message "Generated functions\n- %s\n- %s\n- %s\n- %s\n" ',enable ',disable ',toggle ',value)
          (unless (fboundp ',enable-fun)
-           (message "Define %s function" ',enable-fun))
+           (occ-message "Define %s function" ',enable-fun))
          (unless (fboundp ',disable-fun)
-           (message "Define %s function" ',disable-fun))))))
+           (occ-message "Define %s function" ',disable-fun))))))
 
 
 (defun occ-get-location ())

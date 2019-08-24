@@ -222,17 +222,21 @@
 ;; TODO: direct prop edit/add/replace/remove etc from helm menu
 
 
+(defvar occ-keep-quiet-timer nil)
+
 (defun occ-keep-quiet ()
   (interactive)
   (occ-keep-quiet-for (* 7 60)))
 
-(defvar occ-keep-quiet-timer nil)
-
 (defun occ-keep-quiet-for (mins)
   (interactive "Nmins: ")
+  (when occ-keep-quiet-timer
+    (cancel-timer occ-keep-quiet-timer)
+    (setq occ-keep-quiet-timer nil))
   (setq occ-keep-quiet-timer
         (run-with-timer (* mins 60) nil #'occ-config-disable-quiet))
-  (occ-config-enable-quiet))
+  (occ-config-enable-quiet)
+  (occ-message "OCC Keeping quiet for %d mins" mins))
 
 
 (defun occ-make-anonymous ())

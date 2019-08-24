@@ -21,6 +21,8 @@
     clocking in to here from last clock <Unnamed task 996>
   :END:
 
+- https://economictimes.indiatimes.com/small-biz/hr-leadership/leadership/getting-more-done-why-task-management-is-the-key-to-managing-time/articleshow/70814450.cms
+
 ** Bugs
 *** Helm goes into state where no key are defined so here is not way to come out excelt sending signal SIGUSR2
 
