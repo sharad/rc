@@ -104,6 +104,109 @@
            items)))))
 
 
+;; configs
+(defun occ-mkstr (&rest args)
+  (with-output-to-string
+    (dolist (a args) (princ a))))
+
+(defun occ-symb (&rest args)
+  (intern (apply #'occ-mkstr args)))
+
+
+(defmacro occ-gen-binary-option-commands (prefix
+                                          name
+                                          suffix
+                                          default
+                                          &rest body)
+  (let* ((option      (occ-symb prefix name      suffix))
+         (enable-fun  (occ-symb prefix 'enable-  name '-function))
+         (disable-fun (occ-symb prefix 'disable- name '-function))
+         (enable      (occ-symb prefix 'enable-  name))
+         (disable     (occ-symb prefix 'disable- name))
+         (toggle      (occ-symb prefix 'toggle-  name))
+         (value       (occ-symb prefix 'value-   name)))
+    `(let* ((,option ,default)
+            (impl
+              #'(lambda ()
+                  (if ,option
+                      (if (fboundp ',enable-fun)  (funcall #',enable-fun))
+                      (if (fboundp ',disable-fun) (funcall #',disable-fun))))))
+       (defun ,enable ()
+         (interactive)
+         (setf ,option t)
+         (funcall impl))
+
+       (defun ,disable ()
+         (interactive)
+         (setf ,option nil)
+         (funcall impl))
+
+       (defun ,toggle ()
+         (interactive)
+         (setf ,option (not ,option))
+         (funcall impl))
+
+       (defun ,value ()
+         (interactive)
+         ,option)
+
+       (progn
+         ,@body)
+
+       (progn
+         (unless (fboundp ',enable-fun)
+           (message "Define %s function" ',enable-fun))
+         (unless (fboundp ',disable-fun)
+           (message "Define %s function" ',disable-fun))))))
+
+
+(defmacro occ-gen-numeric-commands (prefix
+                                    name
+                                    suffix
+                                    default
+                                    &rest body)
+  (let* ((option      (occ-symb prefix name      suffix))
+         (enable-fun  (occ-symb prefix 'enable-  name '-function))
+         (disable-fun (occ-symb prefix 'disable- name '-function))
+         (enable      (occ-symb prefix 'enable-  name))
+         (disable     (occ-symb prefix 'disable- name))
+         (toggle      (occ-symb prefix 'toggle-  name))
+         (value       (occ-symb prefix 'value-   name)))
+    `(let* ((,option ,default)
+            (impl
+              #'(lambda ()
+                  (if ,option
+                      (if (fboundp ',enable-fun)  (funcall #',enable-fun))
+                      (if (fboundp ',disable-fun) (funcall #',disable-fun))))))
+       (defun ,enable ()
+         (interactive)
+         (setf ,option t)
+         (funcall impl))
+
+       (defun ,disable ()
+         (interactive)
+         (setf ,option nil)
+         (funcall impl))
+
+       (defun ,toggle ()
+         (interactive)
+         (setf ,option (not ,option))
+         (funcall impl))
+
+       (defun ,value ()
+         (interactive)
+         ,option)
+
+       (progn
+         ,@body)
+
+       (progn
+         (unless (fboundp ',enable-fun)
+           (message "Define %s function" ',enable-fun))
+         (unless (fboundp ',disable-fun)
+           (message "Define %s function" ',disable-fun))))))
+
+
 (defun occ-get-location ())
 
 (when nil

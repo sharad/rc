@@ -72,6 +72,7 @@ DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macch
 DEB_EXTRA_SEC_PKG1="systemd-ui realmd sssd sssd-tools samba-common krb5-user packagekit samba-common-bin samba-libs adcli ntp winbind krb5-kdc krb5-config" # policykit-1 policykit-1-gnome , #  chrony (conflict with ntp)
 DEB_EXTRA_SEC_PKG2="pass pasaffe pass-extension-tail pass-git-helper passwdqc password-gorilla passwordmaker-cli passwordsafe"
 DEB_DEV_PKG1="python-pip python3-pip silversearcher-ag silversearcher-ag-el global cscope codequery seascope xcscope-el s-el ack-grep doxygen doxymacs libjson-glib-dev npm cmake uncrustify pasystray spacefm-gtk3 thunar thunar-volman pcmanfm xfce4-powermanager xfce4-notifyd ycmd fasd agda opam plsense yad"
+DEB_DEV_PYTHON="elpa-pyvenv python3-venv"
 DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject adcli partclone gpodder parallel libpam-fprintd fprint-demo"
 # https://www.cyberciti.biz/faq/removing-password-from-pdf-on-linux/
 DEB_PKG_DEV="valgrind libxml2-dev gjs seed-webkit2 gv xpdf-utils ghostscript pdftk qpdf editorconfig elpa-editorconfig vim-editorconfig pythin-editorconfig python3-editorconfig"
@@ -683,6 +684,7 @@ function setup_apt_packages()
         DEB_EXTRA_SEC_PKG1
         DEB_EXTRA_SEC_PKG2
         DEB_DEV_PKG1
+        DEB_DEV_PYTHON
         DEB_EXTRA_PKG3_UTILS
         # https://www.cyberciti.biz/faq/removing-pass
         DEB_PKG_DEV

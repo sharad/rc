@@ -31,9 +31,6 @@
 (require 'helm)
 
 
-(require 'tree-lib)
-
-
 (defvar org-capture+-helm-templates-alist nil)
 
 (defun org-capture+-helm-template-add (scope heading template)

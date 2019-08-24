@@ -31,7 +31,7 @@
 (require 'helm)
 
 
-(require ''lotus-tree-manager)
+(require 'lotus-tree-manager)
 
 
 ;; * Dynamic Match based templates

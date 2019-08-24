@@ -82,6 +82,10 @@
   occ-config-clock-in)
 
 
+(occ-gen-binary-option-commands occ-config- quiet -p nil)
+
+
+
 ;; Wrote /home/s/hell/.xemacs/elpa/pkgs/lotus-utils/lotus-misc-utils.{el,elc}
 ;; delete-window: Attempt to delete last non-side window
 ;; Quit [12 times]

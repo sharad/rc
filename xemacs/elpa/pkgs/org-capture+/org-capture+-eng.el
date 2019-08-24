@@ -122,7 +122,7 @@
    (case target-name
      (file (list 'file (org-capture+-select-target-file)))
      (id   (list 'id   (org-capture+-select-target-id)))
-     (file (let* ((file (org-capture+-select-target-file))
+     (file+heading (let* ((file (org-capture+-select-target-file))
                   (heading (org-capture+-select-target-heading file)))
              (list 'id  file heading)))
      (file+olp (list 'file+olp "path/to/file" "Level 1 heading" "Level 2"))
