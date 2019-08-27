@@ -176,6 +176,10 @@ It might be shown only if wait timeout happens.
     [[file:~/.xemacs/elpa/pkgs/occ/occ-obj-common.el::prop][Code]]
     Added unverified changes
 
+*** Automatic Task under a Particular (either asked or selected) e.g.
+If operator is doing merging than deduce it with predefined procedure and create a task named denoting the task in process.
+also mark it automatic etc.
+
 *** STARTED Create manual unnamed/anonymous (different from automatic) child task mainly for FAST DISPATCH :USABILITY:
     [[file:~/.xemacs/elpa/pkgs/occ/occ-obj-simple.el::(defun%20sacha/org-capture-prefill-template%20(template%20&rest%20values)][Code]]
 

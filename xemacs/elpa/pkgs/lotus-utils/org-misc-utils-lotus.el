@@ -1000,4 +1000,84 @@ With prefix arg C-u, copy region instad of killing it."
           (run-hooks 'org-agenda-after-show-hook))))))
 
 
+
+
+
+(when nil
+
+  (defun elscreen-active-p (frame)
+    (elscreen-get-frame-confs frame))
+
+
+  ;; data to write with-current-elscreen
+  (defun elscreen-clone (&optional screen)
+    "Create a new screen with the window-configuration of SCREEN.
+  If SCREEN is ommitted, current-screen is used."
+    (interactive)
+    (let ((screen (or screen (elscreen-get-current-screen)))
+          clone elscreen-window-configuration)
+      (cond
+       ((not (elscreen-screen-live-p screen))
+        (elscreen-message "There is no such screen, cannot clone"))
+       ((setq clone (elscreen-create-internal))
+        (save-window-excursion
+          (elscreen-goto-internal screen)
+          (setq elscreen-window-configuration
+                (elscreen-current-window-configuration)))
+        (elscreen-set-window-configuration clone elscreen-window-configuration)
+        (elscreen-goto clone)))))
+
+
+
+  (elscreen-get-current-screen)
+
+  (elscreen-screen-live-p screen)
+
+  (elscreen-get-number-of-screens)
+
+  (elscreen-goto-internal screen)
+
+  (defun elscreen-find-screens (condition)
+    (let ((screen-list (sort (elscreen-get-screen-list) '<))
+          result)
+      (save-currednt-buffer
+       (elscreen-set-window-configuration
+        (elscreen-get-current-screen)
+        (elscreen-current-window-configuration))
+       (elscreen-notify-screen-modification-suppress
+        (elscreen-save-screen-excursion
+         (mapc
+          (lambda (screen)
+            (when (funcall condition screen)
+              (setq result (cons screen result))))
+          screen-list))
+        result))))
+
+
+
+  (defun elscreen-make-frame-confs (frame &optional keep-window-configuration)
+    (when (null (elscreen-get-frame-confs frame))
+      (let ((selected-frame (selected-frame))
+            elscreen-window-configuration)
+        (save-current-buffer
+          (select-frame frame)
+          (setq elscreen-window-configuration
+                (if keep-window-configuration
+                    (elscreen-current-window-configuration)
+                  (elscreen-default-window-configuration)))
+          (elscreen--set-alist 'elscreen-frame-confs frame
+                     (list
+                      (cons 'screen-property
+                            (list
+                             (cons 0 (list
+                                      (cons 'window-configuration
+                                            elscreen-window-configuration)))))
+                      (cons 'screen-history (list 0))
+                      (cons 'modified-inquirer nil)
+                      (cons 'screen-to-name-alist-cache nil)))
+          (elscreen-apply-window-configuration elscreen-window-configuration)
+          (elscreen-notify-screen-modification 'force-immediately)
+          (select-frame selected-frame))))))
+
+
 ;;; org-misc-utils-lotus.el ends here
