@@ -601,35 +601,35 @@ With prefix arg C-u, copy region instad of killing it."
 ;; TODO (replace-buffer-in-windows)
 (defmacro helm-timed (timeout win-buff &rest body)
   (let ((temp-win-config (make-symbol "test-helm-timed")))
-    `(let* ((,temp-win-config (current-window-configuration))
+    `(let* ((,temp-win-config (lotus-current-window-configuration))
             (current-command (or
                               (helm-this-command)
                               this-command))
             (str-command     (helm-symbol-name current-command))
             (buf-name        (or ,win-buff (format "*helm-mode-%s*" str-command)))
             (timer (run-with-idle-plus-timer ,timeout nil
-                                        #'(lambda (buffname)
-                                            (let* ((buff (or
-                                                          (get-buffer buffname)
-                                                          (get-buffer "*helm*")))
-                                                   (w (if buff (get-buffer-window buff))))
-                                              (message "helm-timed: triggered timer for new-win %s" w)
-                                              ;; TODO: open emacs why SIGABRT triggered on pressin C-g three time when struck.
-                                              ;;       with below line.
-                                              (discard-input)
-                                              (when (and w (windowp w) (window-valid-p w))
-                                                (safe-delete-window w)
-                                                (safe-exit-recursive-edit-if-active)
-                                                (select-frame-set-input-enable-raise)
-                                                (when ,temp-win-config
-                                                  (set-window-configuration ,temp-win-config)
-                                                  (setq ,temp-win-config nil)))))
-                                        buf-name)))
+                                             #'(lambda (buffname)
+                                                 (let* ((buff (or
+                                                               (get-buffer buffname)
+                                                               (get-buffer "*helm*")))
+                                                        (w (if buff (get-buffer-window buff))))
+                                                   (message "helm-timed: triggered timer for new-win %s" w)
+                                                   ;; TODO: open emacs why SIGABRT triggered on pressin C-g three time when struck.
+                                                   ;;       with below line.
+                                                   (discard-input)
+                                                   (when (and w (windowp w) (window-valid-p w))
+                                                     (safe-delete-window w)
+                                                     (safe-exit-recursive-edit-if-active)
+                                                     (select-frame-set-input-enable-raise)
+                                                     (when ,temp-win-config
+                                                       (lotus-set-window-configuration ,temp-win-config)
+                                                       (setq ,temp-win-config nil)))))
+                                             buf-name)))
        (unwind-protect
-            (progn
-              (select-frame-set-input-disable-raise)
-              (progn
-                ,@body))
+           (progn
+             (select-frame-set-input-disable-raise)
+             (progn
+               ,@body))
          (select-frame-set-input-enable-raise)
          (cancel-timer timer)))))
 (put 'helm-timed 'lisp-indent-function 2)
@@ -930,7 +930,7 @@ With prefix arg C-u, copy region instad of killing it."
 ;;             (setcdr buffer-undo-list (cddr buffer-undo-list)))))))
 ;;   ;; Don't add undo information when called from `org-agenda-todo'
 ;;   (let ((buffer-undo-list (eq this-command 'org-agenda-todo)))
-;;     (set-window-configuration org-log-note-window-configuration)
+;;     (lotus-set-window-configuration org-log-note-window-configuration)
 ;;     (with-current-buffer (marker-buffer org-log-note-return-to)
 ;;       (goto-char org-log-note-return-to))
 ;;     (move-marker org-log-note-return-to nil)
@@ -1003,7 +1003,20 @@ With prefix arg C-u, copy region instad of killing it."
 
 
 
+;; (setq lotus-current-window-conf (lotus-current-window-configuration))
+;; (lotus-set-window-configuration lotus-current-window-conf)
+
 (when nil
+
+
+  (elscreen-set-window-configuration
+   (elscreen-get-current-screen)
+   (elscreen-current-window-configuration))
+
+
+  (elscreen-get-frame-confs (selected-frame))
+
+  elscreen-frame-confs
 
   (defun elscreen-active-p (frame)
     (elscreen-get-frame-confs frame))
@@ -1066,15 +1079,15 @@ With prefix arg C-u, copy region instad of killing it."
                     (elscreen-current-window-configuration)
                   (elscreen-default-window-configuration)))
           (elscreen--set-alist 'elscreen-frame-confs frame
-                     (list
-                      (cons 'screen-property
-                            (list
-                             (cons 0 (list
-                                      (cons 'window-configuration
-                                            elscreen-window-configuration)))))
-                      (cons 'screen-history (list 0))
-                      (cons 'modified-inquirer nil)
-                      (cons 'screen-to-name-alist-cache nil)))
+                               (list
+                                (cons 'screen-property
+                                      (list
+                                       (cons 0 (list
+                                                (cons 'window-configuration
+                                                      elscreen-window-configuration)))))
+                                (cons 'screen-history (list 0))
+                                (cons 'modified-inquirer nil)
+                                (cons 'screen-to-name-alist-cache nil)))
           (elscreen-apply-window-configuration elscreen-window-configuration)
           (elscreen-notify-screen-modification 'force-immediately)
           (select-frame selected-frame))))))

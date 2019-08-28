@@ -196,7 +196,7 @@ this macro intended to be used with or in idle timer functions."
 
 
 ;; TODO: (current-window-configuration)
-;;       set-window-configuration
+;;       lotus-set-window-configuration
 ;; Set window-configuration but take context of elscreeen and frame.
 
 ;; TODO: Improve it
@@ -208,7 +208,7 @@ this macro intended to be used with or in idle timer functions."
                                                      &rest body)
   "Create NEWWIN and run BODY with idle TIMEOUT"
   (let ((temp-win-config (make-symbol "test-lotus-with-timed-new-win-config")))
-    `(let* ((,temp-win-config (current-window-configuration))
+    `(let* ((,temp-win-config (lotus-current-window-configuration))
             (,cleanupfn-newwin #'(lambda (w localfn)
                                    ;; (message "cleaning up newwin and triggered timer for newwin %s" w)
                                    ;; TODO: open emacs why SIGABRT triggered on pressin C-g three time when struck.
@@ -224,7 +224,7 @@ this macro intended to be used with or in idle timer functions."
                                      ;; TODO: open emacs why SIGABRT triggered on pressin C-g three time when struck.
                                      ;;       with below line.
                                      (discard-input)
-                                     (set-window-configuration ,temp-win-config)
+                                     (lotus-set-window-configuration ,temp-win-config)
                                      (setq ,temp-win-config nil)))))
        (lotus-with-new-win ,newwin
          (let* ((,timer (run-with-idle-plus-timer ,timeout

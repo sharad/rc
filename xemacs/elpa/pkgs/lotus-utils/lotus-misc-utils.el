@@ -35,6 +35,52 @@
 ;; timer
 
 
+
+(defmacro lotus-elscreen-with-screen (screen &rest body)
+  `(save-current-buffer
+     (elscreen-notify-screen-modification-suppress
+      (elscreen-save-screen-excursion
+       (when (elscreen-goto screen)
+         ,@body)))))
+
+(defun lotus-current-window-configuration (&optional frame)
+  (let* ((frame (or frame     (selected-frame)))
+         (elscreen-entry      (when (featurep 'elscreen)
+                                (when (and frame
+                                           elscreen-frame-confs
+                                           (elscreen-get-frame-confs frame))
+                                  (elscreen-get-current-screen))))
+         (elscreen-win-config (when elscreen-entry
+                                (elscreen-current-window-configuration)))
+         (win-config          (unless elscreen-win-config
+                                (current-window-configuration frame))))
+    (list :frame               frame
+          :elscreen-entry      elscreen-entry
+          :elscreen-win-config elscreen-win-config
+          :win-config          win-config)))
+
+(defun lotus-set-window-configuration (config)
+  (let ((frame (plist-get config :frame))
+        (elscreen-entry (plist-get config :elscreen-entry))
+        (elscreen-win-config (plist-get config :elscreen-win-config))
+        (win-config (plist-get config :win-config)))
+    (if frame
+        (if (frame-live-p frame)
+            (with-selected-frame frame
+              (if (and frame
+                       elscreen-frame-confs
+                       (elscreen-get-frame-confs frame)
+                       elscreen-entry
+                       elscreen-win-config
+                       (featurep 'elscreen))
+                  (lotus-elscreen-with-screen elscreen-entry
+                    (elscreen-set-window-configuration elscreen-entry elscreen-win-config))
+                  (if win-config
+                      (set-window-configuration win-config))))
+          (error "Gievn frame %s is not live now" frame))
+      (error "Frame is nil"))))
+
+
 (defmacro eval-if-focus (focus-body unfocus-body)
   "Eval FOCUS-BODY if focus, else eval UNFOCUS-BODY"
   `(if (has-focus)
@@ -233,7 +279,7 @@
 
 (defmacro lotus-with-timed-new-win (timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
   (let ((temp-win-config (make-symbol "test-lotus-with-timed-new-win-config")))
-    `(let* ((,temp-win-config (current-window-configuration))
+    `(let* ((,temp-win-config (lotus-current-window-configuration))
             (,cleanupfn-newwin #'(lambda (w localfn)
                                    (when localfn (funcall localfn))
                                    (when (and w
@@ -242,7 +288,7 @@
                                      ;; check if this is a sole window do not delete it.
                                      (safe-delete-window w))
                                    (when ,temp-win-config
-                                     (set-window-configuration ,temp-win-config)
+                                     (lotus-set-window-configuration ,temp-win-config)
                                      (setq ,temp-win-config nil)))))
        (lotus-with-new-win ,newwin
          (let* ((,timer
