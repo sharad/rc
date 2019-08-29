@@ -234,7 +234,11 @@
     (cancel-timer occ-keep-quiet-timer)
     (setq occ-keep-quiet-timer nil))
   (setq occ-keep-quiet-timer
-        (run-with-timer (* mins 60) nil #'occ-config-disable-quiet))
+        (run-with-timer (* mins 60) nil
+                        #'(lambda ()
+                            (setq occ-keep-quiet-timer nil)
+                            (occ-config-disable-quiet)
+                            (occ-message "OCC noise ahead %s." (occ-config-value-quiet)))))
   (occ-config-enable-quiet)
   (occ-message "OCC Keeping quiet for %d mins" mins))
 

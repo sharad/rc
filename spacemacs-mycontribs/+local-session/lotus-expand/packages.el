@@ -44,7 +44,7 @@
     hippie-exp
     (yas-suggest :location local)
     expand-region
-    )
+    company)
   "The list of Lisp packages required by the lotus-expand layer.
 
 Each entry is either:
@@ -251,5 +251,14 @@ Each entry is either:
       (progn
         (progn
           (global-set-key (kbd "C-=") 'er/expand-region)))))
+
+(defun lotus-expand/post-init-company ()
+  (use-package company
+    :defer t
+    :config
+    (progn
+      (progn
+        (defvar syntax-ppss-cache nil)
+        (defvar syntax-ppss-last nil)))))
 
 ;;; packages.el ends here

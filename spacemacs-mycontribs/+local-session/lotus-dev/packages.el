@@ -76,7 +76,8 @@
     desktop
     uncrustify-mode
     srefactor
-    (srefactor-lisp :location local))
+    (srefactor-lisp :location local)
+    python)
   "The list of Lisp packages required by the lotus-dev layer.
 
 Each entry is either:
@@ -1047,12 +1048,15 @@ Add directory to search path for source files using the GDB command, dir."))
 
 (defun lotus-dev/init-srefactor-lisp ()
   (use-package srefactor-lisp
-      :defer t
-      :config
-      (progn
-        ;; OPTIONAL: ADD IT ONLY IF YOU USE C/C++.
-        (semantic-mode 1) ;; -> this is optional for Lisp
-        )))
+    :defer t
+    :config
+    (progn
+      ;; (setq srefactor--getter-prefix "get_"
+      ;;       srefactor--setter-prefix "set_"
+      ;;       srefactor--getter-setter-capitalize-p t)
+      ;; OPTIONAL: ADD IT ONLY IF YOU USE C/C++.
+      (semantic-mode 1) ;; -> this is optional for Lisp
+      )))
 
 (defun lotus-dev/init-PACKAGE ()
   (use-package PACKAGE
@@ -1069,12 +1073,13 @@ Add directory to search path for source files using the GDB command, dir."))
           (semantic-mode 1) ;; -> this is optional for Lisp
           ))))
 
-(defun lotus-dev/init-PACKAGE ()
-  (use-package PACKAGE
-      :defer t
-      :config
-      (progn
-        )))
+(defun lotus-dev/init-python ()
+  (use-package python
+    :defer t
+    :config
+    (progn
+      (unless (fboundp 'python-shell-virtualenv-root)
+        (defvar python-shell-virtualenv-root nil)))))
 
 
 

@@ -148,9 +148,8 @@
                '(:subject :to))))))
 
   (def@ @@ :make-event-gnus ()
-    (when (and
-           gnus-message-buffer
-           (get-buffer gnus-message-buffer))
+    (when (and gnus-message-buffer
+               (get-buffer gnus-message-buffer))
       (with-current-buffer (get-buffer gnus-message-buffer)
         (let ((subject
                (message-fetch-field "Subject" t)))
