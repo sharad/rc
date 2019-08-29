@@ -84,30 +84,33 @@
     ;; TODO
     ;; add necessary code for interactive note.
     (@:message "Test %s %s %s %s" type target template capture-plist)
-    (org-capture+
-     (or type @:type)
-     (or target @:target)
-     (or template @:template)
-     (append capture-plist @:capture-plist))))
+    (apply #'org-capture+
+           (or type @:type)
+           (or target @:target)
+           (or template @:template)
+           (if capture-plist
+               (if (evenp (length capture-plist))
+                   (append capture-plist @:capture-plist)
+                 (error "Wrong capture capture-plist: %s" capture-plist))
+             @:capture-plist))))
 
 (setf @org-capture-dest
       (@! @dest-class :gen-org-capture-dest "org-capture-dest"))
 
 (setf @org-capture-immediate-dest
-  (@drive-object @org-capture-dest "Non-Interactive capture"
-
-                 (push
-                  (list
-                   :immediate-finish t)
-                  @:capture-plist)))
+      (@drive-object @org-capture-dest "Non-Interactive capture"
+                     (setf @:capture-plist (append
+                                            (list
+                                             :immediate-finish t)
+                                            @:capture-plist))))
 
 (setf @org-capture-edit-dest
   (@drive-object @org-capture-dest "Interactive capture"
                  "Interactive capture"
-                 (push
-                  (list
-                   :immediate-finish nil)
-                  @:capture-plist)))
+                 (setf @:capture-plist (append
+                                        (list
+                                         :immediate-finish t)
+                                        @:capture-plist))))
 
 
 (defobjgen@ @org-capture-edit-dest :gen-capture-edit-dest-with-type (value)
