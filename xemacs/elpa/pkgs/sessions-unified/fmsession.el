@@ -222,150 +222,137 @@ return a new alist whose car is the new pair and cdr is ALIST."
        ;; TODO BUG minibuffer should not get windows, which is happening now
        (if session-list                    ;may causing error
            (with-selected-frame (or nframe (selected-frame))
-             (when (and
-                    elscreen-frame-confs
-                    (elscreen-get-frame-confs nframe))
-               (let* ((desktop-buffers
-                       (cdr (assoc 'desktop-buffers session-list)))
-                      (screens
-                       (or
-                        (cdr (assoc 'screens session-list))
-                        `((,(length session-list) "*scratch*"))))
-                      (session-current-screen-buffers
-                       (cadr (assoc
-                              (cdr (assoc 'current-screen session-list))
-                              screens)))
-                      (session-current-buffer-file
-                       (cdr (assoc 'current-buffer-file session-list))))
-                 ;; (when t
-                 (testing
-                  (message "Bstart: session-current-screen-buffers %s" session-current-screen-buffers)
-                  (message "Astart: screen-to-name-alist %s" session-list)
-                  (message "Cstart: desktop-buffers %s" desktop-buffers))
+             (if (and elscreen-frame-confs
+                      (elscreen-get-frame-confs nframe))
+                 (let* ((desktop-buffers
+                         (cdr (assoc 'desktop-buffers session-list)))
+                        (screens
+                         (or
+                          (cdr (assoc 'screens session-list))
+                          `((,(length session-list) "*scratch*"))))
+                        (session-current-screen-buffers
+                         (cadr (assoc
+                                (cdr (assoc 'current-screen session-list))
+                                screens)))
+                        (session-current-buffer-file
+                         (cdr (assoc 'current-buffer-file session-list))))
+                   ;; (when t
+                   (testing
+                    (message "Bstart: session-current-screen-buffers %s" session-current-screen-buffers)
+                    (message "Astart: screen-to-name-alist %s" session-list)
+                    (message "Cstart: desktop-buffers %s" desktop-buffers))
 
-                 ;; ready file for buffer in session-list, using desktop-restore methods
-                 (if desktop-buffers
-                     ;; recreate desktop buffer if not present.
-                     (let ((bufs (mapcar
-                                  '(lambda (bl) (nth 2 bl))
-                                  desktop-buffers)))
-                       (funcall sessions-unified-utils-notify "elscreen-session-session-list-set"
-                                "Please wait I am busy to restore %d\nbuffers %s"
-                                (length desktop-buffers) bufs)
-                       (let ((desktop-buffer-ok-count 0)
-                             (desktop-buffer-fail-count 0)
-                             desktop-first-buffer)
-                         (dolist (desktop-buffer-args desktop-buffers)
-                           (let ((bufname (nth 2 desktop-buffer-args))
-                                 (file-path (nth 1 desktop-buffer-args)))
-                             (message "restoring %s" bufname)
-                             (if (find-buffer-visiting file-path)
-                                 (message "buffer %s already here" bufname)
-                               (if (stringp bufname)
-                                   (if (get-buffer bufname)
-                                       (message "buffer %s already here" bufname)
-                                     (let ()
-                                       (message "Hello 1")
-                                       (message "elscreen-session-session-list-set: Desktop lazily opening %s" bufname)
-                                       (unless (ignore-errors
-                                                 (save-window-excursion
-                                                   (apply 'desktop-create-buffer desktop-buffer-args)))
-                                         (message "elscreen-session-session-list-set: Desktop lazily opening Failed."))
-                                       (message "Hello 2")
-                                       (message "restored %s" bufname)))
-                                 (message "bufname: %s is not string" bufname))))))
-                       (funcall sessions-unified-utils-notify "elscreen-session-session-list-set"
-                                "Restored %d\nbuffers %s"
-                                (length desktop-buffers) bufs))
-                   (message "No desktop-buffers"))
+                   ;; ready file for buffer in session-list, using desktop-restore methods
+                   (if desktop-buffers
+                       ;; recreate desktop buffer if not present.
+                       (let ((bufs (mapcar
+                                    '(lambda (bl) (nth 2 bl))
+                                    desktop-buffers)))
+                         (funcall sessions-unified-utils-notify "elscreen-session-session-list-set"
+                                  "Please wait I am busy to restore %d\nbuffers %s"
+                                  (length desktop-buffers) bufs)
+                         (let ((desktop-buffer-ok-count 0)
+                               (desktop-buffer-fail-count 0)
+                               desktop-first-buffer)
+                           (dolist (desktop-buffer-args desktop-buffers)
+                             (let ((bufname (nth 2 desktop-buffer-args))
+                                   (file-path (nth 1 desktop-buffer-args)))
+                               (message "restoring %s" bufname)
+                               (if (find-buffer-visiting file-path)
+                                   (message "buffer %s already here" bufname)
+                                 (if (stringp bufname)
+                                     (if (get-buffer bufname)
+                                         (message "buffer %s already here" bufname)
+                                       (let ()
+                                         (message "Hello 1")
+                                         (message "elscreen-session-session-list-set: Desktop lazily opening %s" bufname)
+                                         (unless (ignore-errors
+                                                   (save-window-excursion
+                                                     (apply 'desktop-create-buffer desktop-buffer-args)))
+                                           (message "elscreen-session-session-list-set: Desktop lazily opening Failed."))
+                                         (message "Hello 2")
+                                         (message "restored %s" bufname)))
+                                   (message "bufname: %s is not string" bufname))))))
+                         (funcall sessions-unified-utils-notify "elscreen-session-session-list-set"
+                                  "Restored %d\nbuffers %s"
+                                  (length desktop-buffers) bufs))
+                     (message "No desktop-buffers"))
 
-                 ;; setup elscreens with buffers
-                 (while screens
-                   (message "while screen: %s" screens)
-                   ;; (setq screen (caar screens))
-                   ;; (setq buff-files (cdar screens))
-                   (let* ((screen         (caar screens))
-                          (buff-files     (cdar screens))
-                          (not-first-buff nil))
+                   ;; setup elscreens with buffers
+                   (while screens
+                     (message "while screen: %s" screens)
+                     ;; (setq screen (caar screens))
+                     ;; (setq buff-files (cdar screens))
+                     (let* ((screen         (caar screens))
+                            (buff-files     (cdar screens))
+                            (not-first-buff nil))
 
-                     (while buff-files
-                       (if (and
-                            elscreen-frame-confs
+                       (while buff-files
+                         (if (and elscreen-frame-confs
+                                  (elscreen-get-frame-confs nframe))
+                           (progn
+
+                             (unless (eq screen 0)
+                               (elscreen-create))
+
+                             (let* ((buff-file  (car buff-files))
+                                    (file-path  (if (consp buff-file)
+                                                   (cdr buff-file)))
+                                    (buff (ignore-errors
+                                            (get-buffer
+                                             (or (if file-path
+                                                     (find-buffer-visiting file-path))
+                                                 (if (consp buff-file)
+                                                     (car buff-file)
+                                                   buff-file)))))
+                                    (minibuff-name " *Minibuf"))
+                              (message "  while buff: %s file-path: %s" buff file-path)
+                              (when (and buff
+                                         (bufferp buff)
+                                         (not
+                                          (string-equal (substring (buffer-name buff) 0 (min (length (buffer-name buff)) (length minibuff-name)))
+                                                        minibuff-name))) ;check once for if buff is here or not.
+                                ;; newly added here to avoid " *Minibuffer*"
+                                (if not-first-buff
+                                    (switch-to-buffer-other-window buff)
+                                  (switch-to-buffer buff)
+                                  (setq not-first-buff t)))
+                              (message "test4")))
+                           (error "3 Screen is not active for frame %s" nframe))
+
+                         (setq buff-files (cdr buff-files))
+
+                         (message "progn buff-files: %s" buff-files)
+                         (testing (message "else"))))
+
+                     (setq screens (cdr screens))
+                     (message "while screen: %s" screens)
+                     (message "test5")) ;; (while screens
+
+                   ;; (when elscreen-session-restore-create-scratch-buffer
+                   ;;   (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
+
+                   (if (and elscreen-frame-confs
                             (elscreen-get-frame-confs nframe))
-                         (progn
-
-                           (unless (eq screen 0)
-                             (elscreen-create))
-
-                           (let* ((buff-file  (car buff-files)))
-                                 (file-path  (if (consp buff-file)
-                                                 (cdr buff-file)))
-                                 (buff (ignore-errors
-                                         (get-buffer
-                                          (or (if file-path
-                                                  (find-buffer-visiting file-path))
-                                              (if (consp buff-file)
-                                                  (car buff-file)
-                                                buff-file)))))
-                                 (minibuff-name " *Minibuf")
-                            (message "  while buff: %s file-path: %s" buff file-path)
-                            (when (and
-                                   buff
-                                   (bufferp buff)
-                                   (not
-                                    (string-equal
-                                     (substring
-                                      (buffer-name buff)
-                                      0
-                                      (min
-                                       (length (buffer-name buff))
-                                       (length minibuff-name)))
-                                     minibuff-name))) ;check once for if buff is here or not.
-                              ;; newly added here to avoid " *Minibuffer*"
-                              (if not-first-buff
-                                  (switch-to-buffer-other-window buff)
-                                (switch-to-buffer buff)
-                                (setq not-first-buff t)))
-                            (message "test4")))
-                         (error "Screen is not active for frame %s" nframe))
-
-                       (setq buff-files (cdr buff-files))
-
-                       (message "progn buff-files: %s" buff-files)
-                       (testing (message "else"))))
-
-                   (setq screens (cdr screens))
-                   (message "while screen: %s" screens)
-                   (message "test5")) ;; (while screens
-
-                 ;; (when elscreen-session-restore-create-scratch-buffer
-                 ;;   (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
-
-                 (when (and
-                        elscreen-frame-confs
-                        (elscreen-get-frame-confs nframe))
-                   (progn)
-                   (when nil (elscreen-create))                 ;trap
-
-                   ;; set current screen, window, and buffer.
-                   (let* ((file-path  (if (consp session-current-buffer-file)
-                                          (cdr session-current-buffer-file)))
-                          (buff
-                           (ignore-errors
-                             (get-buffer
-                              (or (if file-path
-                                      (find-buffer-visiting file-path))
-                                  (if (consp session-current-buffer-file)
-                                      (car session-current-buffer-file)
-                                    session-current-buffer-file))))))
-                     (when (and
-                            buff
-                            (bufferp buff))
-                       (elscreen-find-and-goto-by-buffer buff nil nil)
-                       (setq *elscreen-session-restore-data* session-current-buffer-file))))
-                 (error "Screen is not active for frame %s" nframe))
-
-               (error "Screen is not active for frame %s" nframe))
+                       (progn
+                         (when nil (elscreen-create))                 ;trap
+                         ;; set current screen, window, and buffer.
+                         (let* ((file-path  (if (consp session-current-buffer-file)
+                                                (cdr session-current-buffer-file)))
+                                (buff
+                                 (ignore-errors
+                                   (get-buffer
+                                    (or (if file-path
+                                            (find-buffer-visiting file-path))
+                                        (if (consp session-current-buffer-file)
+                                            (car session-current-buffer-file)
+                                          session-current-buffer-file))))))
+                           (when (and buff
+                                      (bufferp buff))
+                             (elscreen-find-and-goto-by-buffer buff nil nil)
+                             (setq *elscreen-session-restore-data* session-current-buffer-file))))
+                     (error "2 Screen is not active for frame %s" nframe)))
+               (error "1 Screen is not active for frame %s" nframe))
              ;; (if (get-buffer buff)
              ;;     (progn
              ;;       (setq *elscreen-session-restore-data* (list (cons 'cb session-current-screen-buffers)))
@@ -528,7 +515,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
             used (member (setq selection
                                (fmsession-read-location-internal initial-input))
                          locations)))
-         sel))
+         selection))
 
      (defun fmsession-store (session-name &optional nframe)
        "Store the elscreen tab configuration."
@@ -541,9 +528,8 @@ return a new alist whose car is the new pair and cdr is ALIST."
        (interactive
         (list (fmsession-read-location)))
        (message "fmsession-restore: start")
-       (if (and
-            (fboundp 'elscreen-get-conf-list)
-            (elscreen-get-conf-list 'screen-history))
+       (if (and (fboundp 'elscreen-get-conf-list)
+                (elscreen-get-conf-list 'screen-history))
            (elscreen-session-restore session-name nframe)
          (funcall sessions-unified-utils-notify
                   "fmsession-restore"
@@ -632,8 +618,13 @@ return a new alist whose car is the new pair and cdr is ALIST."
     ;; not-ask
     (interactive
      (list (selected-frame)))
-    (if nframe (funcall session-unified-utils-select-frame-fn nframe) (error "nframe is nil"))
+
+    (if nframe
+        (funcall session-unified-utils-select-frame-fn nframe)
+      (error "nframe is nil"))
+
     (message "in frame-session-set-this-location")
+
     (let* ((xwin-enabled (custom-display-graphic-p))
            (wm-hints
             (if xwin-enabled
