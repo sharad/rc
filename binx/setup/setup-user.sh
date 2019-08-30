@@ -68,7 +68,7 @@ DEB_EXTRA_PKG_VIRTUAL=""
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera texlive-latex-extra texlive-fonts-recommended"
 DEB_EXTRA_PKG_LISP="cl-swank slime"
 DEB_EXTRA_PKG2="homesick yadm numlockx macchanger xautolock suckless-tools xtrlock xbacklight xautomation ffmpeg"
-DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macchanger lm-sensors tidy xmlstarlet network-manager-openvpn-gnome duc xmldiff"
+DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macchanger lm-sensors tidy xmlstarlet libxml-compile-perl network-manager-openvpn-gnome duc xmldiff"
 DEB_EXTRA_SEC_PKG1="systemd-ui realmd sssd sssd-tools samba-common krb5-user packagekit samba-common-bin samba-libs adcli ntp winbind krb5-kdc krb5-config" # policykit-1 policykit-1-gnome , #  chrony (conflict with ntp)
 DEB_EXTRA_SEC_PKG2="pass pasaffe pass-extension-tail pass-git-helper passwdqc password-gorilla passwordmaker-cli passwordsafe"
 DEB_DEV_PKG1="python-pip python3-pip silversearcher-ag silversearcher-ag-el global cscope codequery seascope xcscope-el s-el ack-grep doxygen doxymacs libjson-glib-dev npm cmake uncrustify pasystray spacefm-gtk3 thunar thunar-volman pcmanfm xfce4-powermanager xfce4-notifyd ycmd fasd agda opam plsense yad"
@@ -122,6 +122,24 @@ DEB_PKG_LANGUAGE="dict dict-freedict-eng-hin bicon libfribidi0 libfribidi-dev"
 
 PY_PIP_PKG="termdown "
 NODE_PKG="tern "
+
+
+
+
+################################
+## BREW PACKAGE
+##
+## python-yq
+## blackbox
+## git-crypt
+## git-secret
+
+################################
+## SNAP PACKAGE
+##
+## yq
+
+
 
 function main()
 {
