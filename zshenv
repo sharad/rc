@@ -31,20 +31,15 @@ typeset -UT INFOPATH infopath
 
 path=(
     ~/bin
-    ~/local/bin
+    ~/.local/bin
     /usr/local/bin
     /usr/local/sbin
-    /usr/local/perforce/bin
     /bin
     /usr/bin
-    /taj/sbin
     /sbin
     /usr/sbin
-    /usr/X11R6/bin
-    /usr/openwin/bin
-    /sas/bin
-    /sas/share/sysadm/scripts/
-    /usr/krb5/bin
+    ~/.emacs.d/term-cmd
+    /home/linuxbrew/.linuxbrew/bin
     $path
     )
 
