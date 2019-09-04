@@ -65,7 +65,7 @@ DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp virt
 DEB_EXTRA_PKG1=" libpam-tmpdir xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip python3-secretstorage copyq parcellite clipit diodon dunst zathura apvlv udiskie xsel xfce4-clipman rofi shellex"
 DEB_EXTRA_PKG_COMMUNICATION="pidgin finch pidgin-skype pidgin-skypeweb empathy empathy-skype pidgin-gnome-keyring purple-skypeweb telegram-purple pidgin-plugin-pack bitlbee-libpurple bitlbee-plugin-otr tor" #  bitlbee
 DEB_EXTRA_PKG_VIRTUAL=""
-DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera texlive-latex-extra texlive-fonts-recommended"
+DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera texlive-latex-extra texlive-fonts-recommended xfonts-75dpi"
 DEB_EXTRA_PKG_LISP="cl-swank slime"
 DEB_EXTRA_PKG2="homesick yadm numlockx macchanger xautolock suckless-tools xtrlock xbacklight xautomation ffmpeg"
 DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macchanger lm-sensors tidy xmlstarlet libxml-compile-perl network-manager-openvpn-gnome duc xmldiff"
@@ -85,9 +85,10 @@ DEB_SYS_MAIL="dovecot-core dovecot-imapd mail-stack-delivery ntpdate postfix aug
 DEB_DEV_GTD="tomboy zim anki mnemosyne mnemosyne-blog sqlitebrowser"
 DEB_PKG_LEARNING="gpodder"
 DEB_PKG_TOOL_TERM="jq"
-DEB_PKG_TOOL_GUI="lightdm osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin gpointing-device-settings touchfreeze bash-completion libinput-tools keynav feh geeqie wmaker xserver-xephyr" # xserver-xorg-input-synaptics
+DEB_PKG_TOOL_GUI="lightdm osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin python-osd gpointing-device-settings touchfreeze bash-completion libinput-tools keynav feh geeqie wmaker xserver-xephyr" # xserver-xorg-input-synaptics
 DEB_PKG2_TOOL_GUI="unclutter xscreensaver xscreensaver-gl xss-lock rss-glx  xssproxy xscreensaver-data-extra xscreensaver-gl-extra" # event
 DEB_PKG3_TOOL_GUI="synenergy quicksynenergy xserver-xorg-input-synaptics" # xserver-xorg-core-hwe-18.04 xserver-xorg-input-synaptics-hwe-18.04 # event
+DEB_PKG1_TOOL_GUI_XORG="python-osd python-gtk2 afnix python-gconf"
 DEB_PKG_XWM="compton xcompmgr autocutsel sakura wmctrl sawfish"
 DEB_PKG_XML="libxml2-utils xsltproc docbook5-xml docbook-xsl-ns"
 DEB_PKG_UTILS="gcalcli newsbeuter liblz4-tool tracker gtimelog d-feet linuxbrew-wrapper zsync"
@@ -718,6 +719,7 @@ function setup_apt_packages()
         DEB_PKG_TOOL_GUI
         DEB_PKG2_TOOL_GUI
         DEB_PKG3_TOOL_GUI
+        DEB_PKG1_TOOL_GUI_XORG
         DEB_PKG_XWM
         DEB_PKG_XML
         DEB_PKG_UTILS

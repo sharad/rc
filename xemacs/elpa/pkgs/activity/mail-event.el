@@ -189,6 +189,21 @@
  "mail-event"
  #'activity-mail-event-activate #'activity-mail-event-deactivate)
 
+
+;; checking: Restricted Stock Unit (RSU) | Assumed Meru Award(s)
+;; Helloooo
+;; Helloo (:subject Restricted Stock Unit (RSU) | Assumed Meru Award(s) :from Robert Turner <rturner@fortinet.com> :to "stockadmin@fortinet.com" <stockadmin@fortinet.com>)
+;; Test entry (clock) * Reading mail subject: Restricted Stock Unit (RSU) | Assumed Meru Award(s)
+;; from: Robert Turner <rturner@fortinet.com>
+;; to: "stockadmin@fortinet.com" <stockadmin@fortinet.com> (nil)
+;; Wrong capture capture-plist: (nil)
+;; occ-switch-buffer-run-curr-ctx-timer-function: begin
+;; occ-try-clock-schedule-next-timeout: begin
+;; occ-try-clock-in-next-timeout: begin
+;; task-projbuffs-base-dir: changing supplied base-dir nil and task-projbuffs-base-dir to /home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/
+;; Mark set [3 times]
+
+
 ;; (nbutlast gnus-article-prepare-hook 1)
 
 ;;; mail-event.el ends here

@@ -238,5 +238,8 @@ alias filemgr='nautilus --no-default-window --no-desktop'
 alias gfilemgr='nautilus --no-default-window --no-desktop'
 alias xfilemgr='nautilus --no-default-window --no-desktop'
 
+# tabula panda python PDF
+alias tabula='java -Dfile.encoding=UTF8 -Dorg.slf4j.simpleLogger.defaultLogLevel=off -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar /home/s/hell/.local/lib/python3.6/site-packages/tabula/tabula-1.0.3-jar-with-dependencies.jar'
+
 # music
 alias xmms="promoe"
