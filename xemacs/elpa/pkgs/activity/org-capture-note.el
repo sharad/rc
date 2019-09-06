@@ -116,7 +116,10 @@
 (defobjgen@ @org-capture-edit-dest :gen-capture-edit-dest-with-type (value)
   (setf (@ @@ :type) value)
   (def@ @@ :receive (target template &rest capture-plist)
-    (@^:receive @:type target template capture-plist)
+    ;; (apply (@  :receive))
+    (@:message "Calling Sup receive")
+    (apply @^:receive @@ @:type target template capture-plist)
+    (@:message "Called Sup receive")
     (@:message "%s %s" target template)))
 
 
