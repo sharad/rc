@@ -155,9 +155,28 @@
                                ("Current Org Clock" . clock)
                                ("Function" . function)
                                ("Marker" . marker)))
+
+
+(defun org-capture+-filter-types (plist)
+  org-capture+-types)
+
+(defun org-capture+-filter-target (plist)
+  (let ((file (plist-get plist :file)))
+    (if file
+        (remove-if-not #'(lambda (trg)
+                           (memq (cdr trg) '(file file+headline file+olp file+olp+datetree file+function)))
+                       org-capture+-targets)
+      org-capture+-targets)))
+
+(defun org-capture+-filter-files (plist)
+  (let ((target (plist-get plist :target)))
+    (when (memq target
+                '(nil file file+headline file+olp file+olp+datetree file+function))
+      org-agenda-files)))
+
 
 (defun org-capture+-type-source (plist)
-  (let ((types org-capture+-types))
+  (let ((types (org-capture+-filter-types plist)))
     (helm-build-sync-source "Type"
       :candidates types
       :action     #'(lambda (type)
@@ -165,7 +184,7 @@
                       (org-capture+-capture plist)))))
 
 (defun org-capture+-target-source (plist)
-  (let ((targets org-capture+-targets))
+  (let ((targets (org-capture+-filter-target plist)))
     (helm-build-sync-source "Target"
       :candidates targets
       :action     #'(lambda (target)
@@ -173,7 +192,7 @@
                       (org-capture+-capture plist)))))
 
 (defun org-capture+-file-source (plist)
-  (let ((files org-agenda-files))
+  (let ((files (org-capture+-filter-files plist)))
     (helm-build-sync-source "File"
       :candidates files
       :action     #'(lambda (file)
@@ -189,6 +208,7 @@
                       (org-capture+-capture plist)))))
 
 (defun org-capture+-template-source (plist)
+  ;; BUG TODO: Add action
   (helm-template-gen-source #'org-capture+-tree-predicate
                             '(t xx yy)
                             0))
@@ -213,9 +233,12 @@
       (unless (plist-get plist :template)
         (setq sources (nconc sources template-source)))
 
-      (when sources
-        (progn
-          (helm
-           :sources sources))))))
+      (message "before helm plist %s" plist)
+
+      (if sources
+          (progn
+            (helm
+             :sources sources))
+        (message "plist %s" plist)))))
 
 ;;; org-capture+-eng.el ends here
