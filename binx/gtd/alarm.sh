@@ -36,20 +36,22 @@ lockpgm=${XLOCKER:-slock} # xtrlock
 max=
 
 function main() {
-        process_arg $@
+    process_arg $@
 
-        $run
+    $run
 
-        screen_lock
-        true
+    screen_lock
+    true
 }
 
 function mpc() {
-    if whence mpc >& /dev/null ; then
+    if whence mpc >& /dev/null
+    then
         playlist="$( mpc lsplaylists | sed -n $(( $RANDOM % $(mpc lsplaylists | wc -l ) + 1 ))p )"
     fi
 
-    if whence mpc >&/dev/null && [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep ${lockpgm} ; then
+    if whence mpc >&/dev/null && [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep ${lockpgm}
+    then
 
 
 
@@ -58,7 +60,8 @@ function mpc() {
         # cancel all jobs in queue d
         jobs=($(atq -q $queue_name | cut -d'	' -f1 ))
 
-        if (($#jobs)) ; then
+        if (($#jobs))
+        then
             atrm $jobs
         fi
         command="at -q $queue_name now + ${${:-$(( $sleep_hours * 60 ))}//./} minutes"
@@ -92,8 +95,8 @@ ZZZ
       mpc volume $volume_high
 EOF
 
-    ### after 6 m 25 sec low down volume
-            at -q $queue_name now + ${${:-$(( $sleep_hours * 60 + $snooze ))}//./} minutes <<'XYEOF'
+        ### after 6 m 25 sec low down volume
+        at -q $queue_name now + ${${:-$(( $sleep_hours * 60 + $snooze ))}//./} minutes <<'XYEOF'
       xset dpms force on
       # xset dpms 60 80 0
       mpc play
@@ -119,14 +122,16 @@ XYEOF
 }
 
 function radio() {
-    if whence mplayer >&/dev/null && [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep ${lockpgm} ; then
+    if whence mplayer >&/dev/null && [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep ${lockpgm}
+    then
 
         # pgrep mpd && mpc status |grep playing >& /dev/null && mpc stop
 
         # cancel all jobs in queue d
         jobs=($(atq -q $queue_name | cut -d'	' -f1 ))
 
-        if (($#jobs)) ; then
+        if (($#jobs))
+        then
             atrm $jobs
         fi
         command="at -q $queue_name now + ${${:-$(( $sleep_hours * 60 ))}//./} minutes"
@@ -146,8 +151,8 @@ ZZZ
       echo "volume ${volume_high}" > /tmp/mplayer.fifo ;
 EOF
 
-    ### after 6 m 25 sec low down volume
-            at -q $queue_name now + ${${:-$(( $sleep_hours * 60 + $snooze ))}//./} minutes <<'XYEOF'
+        ### after 6 m 25 sec low down volume
+        at -q $queue_name now + ${${:-$(( $sleep_hours * 60 + $snooze ))}//./} minutes <<'XYEOF'
       xset dpms force on
       # xset dpms 60 80 0
       mradio -c 6
@@ -163,8 +168,12 @@ XYEOF
 function state_locked () {
     pgrep pidgin >&/dev/null && purple-remote 'setstatus?status=$lockstatus&message=Away' &!
     whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -as &!
-    if [ ! -e $wmlockfile_disable ] ; then
-        whence stumpish >&/dev/null && timeout 2 stumpish fclear
+    if [ ! -e $wmlockfile_disable ]
+    then
+        if whence stumpish >&/dev/null
+        then
+            timeout 2 stumpish fclear
+        fi
     fi
     wscreenlockon
 }
@@ -172,8 +181,12 @@ function state_locked () {
 function state_unlocked () {
     whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -AS &!
     pgrep pidgin >&/dev/null && purple-remote 'setstatus?status=$unlockstatus&message=' &!
-    if [ ! -e $wmlockfile_disable ] ; then
-        whence stumpish >&/dev/null && timeout 2 stumpish pull-hidden-other &!
+    if [ ! -e $wmlockfile_disable ]
+    then
+        if whence stumpish >&/dev/null
+        then
+            timeout 2 stumpish pull-hidden-other &!
+        fi
     fi
     wscreenlockoff
     if whence -p ~/bin/xintrusion >/dev/null 2>&1
@@ -184,13 +197,15 @@ function state_unlocked () {
 
 function screen_lock() {
     lockstatus=away
-    if [ "$HOST" = "lispm.genera.net" ] ; then
+    if [ "$HOST" = "lispm.genera.net" ]
+    then
         unlockstatus=away
     else
         unlockstatus=online
     fi
 
-    if [ "x$lock" != "x" ] ; then
+    if [ "x$lock" != "x" ]
+    then
         state_locked
         ${lockpgm}
         state_unlocked
@@ -222,13 +237,16 @@ function process_arg() {
     # now
     hour=$(date +%H)
 
-    if ! [ "${run}" = "mpc" -o "${run}" = "radio" ] ; then
+    if ! [ "${run}" = "mpc" -o "${run}" = "radio" ]
+    then
         print "please specify -r mpc|radio"
     fi
 
-    if [ "$run" = "mpc" ] ; then
+    if [ "$run" = "mpc" ]
+    then
         playlist=myfav
-    elif [ "$run" = "radio" ] ; then
+    elif [ "$run" = "radio" ]
+    then
         playlist=6
     fi
 
@@ -236,18 +254,22 @@ function process_arg() {
 
 ### action pref hooks ###
 function wscreenlockon () {
-    if [ -r ~/.rsetup/wscreenlockon/env ] ; then
+    if [ -r ~/.rsetup/wscreenlockon/env ]
+    then
         source ~/.rsetup/wscreenlockon/env
     fi
-    if [ -x ~/.rsetup/wscreenlockon/run ] ; then
+    if [ -x ~/.rsetup/wscreenlockon/run ]
+    then
         ~/.rsetup/wscreenlockon/run
     fi
 }
 function wscreenlockoff () {
-    if [ -r ~/.rsetup/wscreenlockoff/env ] ; then
+    if [ -r ~/.rsetup/wscreenlockoff/env ]
+    then
         source ~/.rsetup/wscreenlockoff/env
     fi
-    if [ -x ~/.rsetup/wscreenlockoff/run ] ; then
+    if [ -x ~/.rsetup/wscreenlockoff/run ]
+    then
         ~/.rsetup/wscreenlockoff/run
     fi
 }

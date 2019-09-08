@@ -197,6 +197,7 @@
     (helm-build-sync-source "File"
       :candidates files
       :action     #'(lambda (file)
+                      ;; ()
                       (setq plist (plist-put plist :file file))
                       (org-capture+-capture plist)))))
 
@@ -220,28 +221,40 @@
 (defun org-capture+-capture (&optional plist)
   (interactive)
   (let (sources)
-    (let ((type-source        (org-capture+-type-source        plist))
-          (target-source      (org-capture+-target-source      plist))
-          (file-source        (org-capture+-file-source        plist))
-          (template-source    (org-capture+-template-source    plist))
-          (description-source (org-capture+-description-source plist)))
-      (unless (plist-get plist :type)
-        (push type-source sources))
-      (unless (plist-get plist :target)
-        (push target-source sources))
-      (unless (plist-get plist :file)
-        (push file-source sources))
-      (unless (plist-get plist :description)
-        (push description-source sources))
-      (unless (plist-get plist :template)
-        ;; (push template-source sources)
-        (setq sources (nconc sources template-source)))
+    (progn
 
-      (message "before helm plist %s" plist)
+      (unless (plist-get plist :type)
+        (push (org-capture+-type-source        plist)
+              sources))
+      (unless (plist-get plist :target)
+        (push (org-capture+-target-source      plist)
+              sources))
+      (unless (plist-get plist :file)
+        (push (org-capture+-file-source        plist)
+              sources))
+      (unless (plist-get plist :description)
+        (push (org-capture+-description-source plist)
+              sources))
+      (unless (plist-get plist :template)
+        (setq sources
+              (nconc sources (org-capture+-template-source plist))))
 
       (if sources
           (helm
            :sources sources)
         (message "plist %s" plist)))))
+
+(defun org-capture+-run-template-list (plist)
+  ())
+;; (org-capture+ TYPE TARGET TEMPLATE &rest PLIST)
+
+(defun org-capture+-build-arg (plist)
+  (let ((type (plist-get plist :type))
+        (target (list (plist-get plist :target))))
+    (cond
+     ((memq (car target) '(file file+headline file+olp file+olp+datetree file+function)
+            (setq target (nconc target (plist-get plist :file)))
+            (case (car target)
+              (file+headline )))))))
 
 ;;; org-capture+-eng.el ends here
