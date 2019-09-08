@@ -220,8 +220,13 @@ return a new alist whose car is the new pair and cdr is ALIST."
 
      (defun elscreen-session-session-list-set (session-list &optional nframe)
        ;; TODO BUG minibuffer should not get windows, which is happening now
+       (let ((nframe (or nframe (selected-frame))))
+         (unless (elscreen-get-frame-confs nframe)
+           (elscreen-make-frame-confs nframe)))
+
        (if session-list                    ;may causing error
            (with-selected-frame (or nframe (selected-frame))
+
              (if (and elscreen-frame-confs
                       (elscreen-get-frame-confs nframe))
                  (let* ((desktop-buffers

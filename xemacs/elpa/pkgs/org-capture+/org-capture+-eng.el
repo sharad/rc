@@ -40,62 +40,62 @@
 
 ;; Value:
 '(("w" "Default template" entry
-       (file+headline "/home/s/paradise/capture/capture.org" "Notes")
-       "* %^{Title}\n\n  Source: %u, %c\n\n  %i" :empty-lines 1)
+   (file+headline "/home/s/paradise/capture/capture.org" "Notes")
+   "* %^{Title}\n\n  Source: %u, %c\n\n  %i" :empty-lines 1)
   ("c" "Current Clock")
   ("ch" "Current Clock Heading" entry
-        (clock))
+   (clock))
   ("ci" "Current Clock Item" item
-        (clock))
+   (clock))
   ("cp" "Current Clock Plain" plain
-        (clock))
+   (clock))
   ("k" "Current Task" entry
-       (file+headline
-        (lambda nil
-          (org-template-set-file-writable
-           (expand-file-name "notes.org"
-                             (find-task-dir)))))
-       "* TODO %? %^g\n %i\n [%a]\n" :empty-lines 1)
+   (file+headline
+    (lambda nil
+      (org-template-set-file-writable
+       (expand-file-name "notes.org"
+                         (find-task-dir)))))
+   "* TODO %? %^g\n %i\n [%a]\n" :empty-lines 1)
   ("m" "Emacs" entry "/home/s/paradise/capture/emacs.org" "* TODO %? %^g\n %i\n [%a]\n" :empty-lines 1)
   ("t" "Todo" entry
-       (file+headline "/home/s/paradise/capture/todo.org" "G T D")
-       "* TODO %? %^g\n %i\n [%a]\n" :empty-lines 1)
+   (file+headline "/home/s/paradise/capture/todo.org" "G T D")
+   "* TODO %? %^g\n %i\n [%a]\n" :empty-lines 1)
   ("j" "Journal" entry
-       (file+headline "/home/s/paradise/capture/journal.org" "j o u r n a l")
-       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+   (file+headline "/home/s/paradise/capture/journal.org" "j o u r n a l")
+   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
   ("n" "Plan" entry
-       (file+headline "/home/s/paradise/capture/plan.org" "p l a n")
-       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+   (file+headline "/home/s/paradise/capture/plan.org" "p l a n")
+   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
   ("l" "Learn" entry
-       (file+headline "/home/s/paradise/capture/learn.org" "Learn")
-       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+   (file+headline "/home/s/paradise/capture/learn.org" "Learn")
+   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
   ("i" "Idea" entry
-       (file+headline "/home/s/paradise/capture/idea.org" "Ideas")
-       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+   (file+headline "/home/s/paradise/capture/idea.org" "Ideas")
+   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
   ("b" "Book" entry
-       (file+headline "/home/s/paradise/capture/journal.org" "Books")
-       "\n* %^{Book Title} %t :READING: \n%[~/Documents/CreatedContent/contents/virtual/org/default/remember/templates/book]\n [%a]\n" :empty-lines 1)
+   (file+headline "/home/s/paradise/capture/journal.org" "Books")
+   "\n* %^{Book Title} %t :READING: \n%[~/Documents/CreatedContent/contents/virtual/org/default/remember/templates/book]\n [%a]\n" :empty-lines 1)
   ("p" "Private" entry
-       (file+headline "/home/s/paradise/capture/privnotes.org")
-       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+   (file+headline "/home/s/paradise/capture/privnotes.org")
+   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
   ("r" "Remember" entry
-       (file+headline "/home/s/paradise/capture/remember.org" "Remember")
-       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+   (file+headline "/home/s/paradise/capture/remember.org" "Remember")
+   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
   ("s" "SomeDay" entry
-       (file+headline "/home/s/paradise/capture/someday.org" "Some Day")
-       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+   (file+headline "/home/s/paradise/capture/someday.org" "Some Day")
+   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
   ("w" "Waiting-For" entry
-       (file+headline "/home/s/paradise/capture/waiting4.org" "Waiting")
-       "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
+   (file+headline "/home/s/paradise/capture/waiting4.org" "Waiting")
+   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
   ("ac" "Contact" entry
-        (file+headline "/home/s/paradise/capture/contacts.org" "Contacts")
-        "\n* %^{Name} :CONTACT:\n%[~/Documents/CreatedContent/contents/virtual/org/default/remember/templates/contact]\n %i\n [%a]\n" :empty-lines 1)
+   (file+headline "/home/s/paradise/capture/contacts.org" "Contacts")
+   "\n* %^{Name} :CONTACT:\n%[~/Documents/CreatedContent/contents/virtual/org/default/remember/templates/contact]\n %i\n [%a]\n" :empty-lines 1)
   ("e" "Receipt" entry
-       (file+headline "/home/s/paradise/capture/finances.org" "Receipts")
-       "** %^{BriefDesc} %U %^g\n%?\n [%a]\n" :empty-lines 1)
+   (file+headline "/home/s/paradise/capture/finances.org" "Receipts")
+   "** %^{BriefDesc} %U %^g\n%?\n [%a]\n" :empty-lines 1)
   ("x" "Refile" entry #'org-goto-refile "* TODO %? %^g\n %i\n [%a]\n" :empty-lines 1))
-
 
+
 (defun org-capture+-select-type ()
   (let ((types '(entry item chckitem table-line plain log-note)))
     (intern (completing-read "Type: " types))))
@@ -133,19 +133,20 @@
      (marker marker))))
 
 
-(defun org-capture+get-template ()
+(defun org-capture+get-template (action)
   (funcall
    (helm-template-gen-selector #'org-capture+-tree-predicate
                                '(t xx yy)
-                               0)))
+                               0
+                               action)))
 
 
-(defvar org-capture+-types '(("Org Entry" . entry)
-                             ("List Item" . item)
-                             ("Checklist Item" . chckitem)
-                             ("Table Line" . table-line)
-                             ("Plain Text" . plain)
-                             ("Log note" . log-note)))
+(defvar org-capture+-types   '(("Org Entry" . entry)
+                               ("List Item" . item)
+                               ("Checklist Item" . chckitem)
+                               ("Table Line" . table-line)
+                               ("Plain Text" . plain)
+                               ("Log note" . log-note)))
 (defvar org-capture+-targets '(("File" . file)
                                ("Org entry Id" . id)
                                ("File Headline" . file+headline)
@@ -211,17 +212,19 @@
   ;; BUG TODO: Add action
   (helm-template-gen-source #'org-capture+-tree-predicate
                             '(t xx yy)
-                            0))
+                            0
+                            #'(lambda (template)
+                                (setq plist (plist-put plist :template template))
+                                (org-capture+-capture plist))))
 
 (defun org-capture+-capture (&optional plist)
   (interactive)
   (let (sources)
-    (let ((type-source        (org-capture+-type-source          plist))
-          (target-source      (org-capture+-target-source        plist))
-          (file-source        (org-capture+-file-source          plist))
-          (template-source    (org-capture+-template-source      plist))
-          (description-source (org-capture+-description-source   plist)))
-
+    (let ((type-source        (org-capture+-type-source        plist))
+          (target-source      (org-capture+-target-source      plist))
+          (file-source        (org-capture+-file-source        plist))
+          (template-source    (org-capture+-template-source    plist))
+          (description-source (org-capture+-description-source plist)))
       (unless (plist-get plist :type)
         (push type-source sources))
       (unless (plist-get plist :target)
@@ -231,14 +234,14 @@
       (unless (plist-get plist :description)
         (push description-source sources))
       (unless (plist-get plist :template)
+        ;; (push template-source sources)
         (setq sources (nconc sources template-source)))
 
       (message "before helm plist %s" plist)
 
       (if sources
-          (progn
-            (helm
-             :sources sources))
+          (helm
+           :sources sources)
         (message "plist %s" plist)))))
 
 ;;; org-capture+-eng.el ends here
