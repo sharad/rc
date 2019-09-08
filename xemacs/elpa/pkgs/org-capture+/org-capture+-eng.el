@@ -197,8 +197,10 @@
     (helm-build-sync-source "File"
       :candidates files
       :action     #'(lambda (file)
-                      ;; ()
-                      (setq plist (plist-put plist :file file))
+                      (unless (plist-get plist :target)
+                        (setq plist
+                              (plist-set plist :target '(:file nil))))
+                      (setq plist (plist-put (plist-get plist :target) :file file))
                       (org-capture+-capture plist)))))
 
 (defun org-capture+-description-source (plist)
@@ -227,11 +229,11 @@
         (push (org-capture+-type-source        plist)
               sources))
       (unless (plist-get plist :target)
-        (push (org-capture+-target-source      plist)
-              sources))
-      (unless (plist-get plist :file)
-        (push (org-capture+-file-source        plist)
-              sources))
+        (setq sources
+              (nconc sources (org-capture+-target-source plist))))
+      ;; (unless (plist-get plist :file)
+      ;;   (push (org-capture+-file-source        plist)
+      ;;         sources))
       (unless (plist-get plist :description)
         (push (org-capture+-description-source plist)
               sources))
