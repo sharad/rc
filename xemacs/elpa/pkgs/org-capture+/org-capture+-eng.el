@@ -149,6 +149,32 @@
       :action     #'(lambda (target)
                       (setq plist (plist-put plist :target target))
                       (org-capture+-capture plist)))))
+
+(defun org-capture+-capture (&optional plist)
+  (interactive)
+  (let (sources)
+    (progn
+
+      (unless (plist-get plist :type)
+        (push (org-capture+-type-source        plist)
+              sources))
+      ;; (unless (plist-get plist :target)
+      ;;   (setq sources
+      ;;         (nconc sources (org-capture+-target-source plist))))
+      ;; (unless (plist-get plist :file)
+      ;;   (push (org-capture+-file-source        plist)
+      ;;         sources))
+      (unless (plist-get plist :description)
+        (push (org-capture+-description-source plist)
+              sources))
+      (unless (plist-get plist :template)
+        (setq sources
+              (nconc sources (org-capture+-template-source plist))))
+
+      (if sources
+          (helm
+           :sources sources)
+        (message "plist %s" plist)))))
 
 
 (defun org-capture+-type-source (plist)
