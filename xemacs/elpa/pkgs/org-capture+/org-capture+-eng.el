@@ -137,7 +137,7 @@
       :candidates files
       :action     #'(lambda (file)
                       (let ((trg-plist (plist-get plist :target)))
-                        (setq trg-plist (plist-put trg-plist :target name))
+                        (setq trg-plist (plist-put trg-plist :target file))
                         (setq plist     (plist-put trg-plist :target trg-plist))
                         (org-capture+-capture plist))))))
 
