@@ -149,6 +149,7 @@
       :action     #'(lambda (target)
                       (let ((trg-plist (plist-get plist :target)))
                         (setq trg-plist (plist-put trg-plist :target target))
+                        (setq plist (plist-put trg-plist :target target))
                         (org-capture+-capture plist))))))
 
 (defun org-capture+-target-source (&optional plist)
