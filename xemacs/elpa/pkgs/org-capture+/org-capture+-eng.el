@@ -151,7 +151,6 @@
                       (org-capture+-capture plist)))))
 
 (defun org-capture+-capture (&optional plist)
-  (interactive)
   (let (sources)
     (progn
 
