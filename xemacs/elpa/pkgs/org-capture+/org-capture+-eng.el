@@ -119,7 +119,7 @@
 
 
 (defun org-capture+-filter-target (plist)
-  (let* ((trg-plist (plist-get plist :target))
+  (let* ((trg-plist (plist-get plist     :target))
          (file      (plist-get trg-plist :file)))
     (if file
         (remove-if-not #'(lambda (trg)
@@ -128,8 +128,8 @@
       org-capture+-targets)))
 
 (defun org-capture+-filter-files (plist)
-  (let ((trg-plist (plist-get plist :target))
-        (name      (plist-get trg-plist :target)))
+  (let* ((trg-plist (plist-get plist     :target))
+         (name      (plist-get trg-plist :name)))
     (when (memq name
                 '(nil file file+headline file+olp file+olp+datetree file+function))
       org-agenda-files)))
@@ -140,8 +140,9 @@
       :candidates files
       :action     #'(lambda (file)
                       (let ((trg-plist (plist-get plist :target)))
-                        (setq trg-plist (plist-put trg-plist :target file))
-                        (setq plist     (plist-put trg-plist :target trg-plist))
+                        (setq trg-plist (plist-put trg-plist :file file))
+                        (setq plist     (plist-put plist :target trg-plist))
+                        ;; (message "trg-plist %s, Plist %s" trg-plist plist)
                         (org-capture+-capture plist))))))
 
 (defun org-capture+-target-name-source (plist)
@@ -150,8 +151,8 @@
       :candidates targets
       :action     #'(lambda (name)
                       (let ((trg-plist (plist-get plist :target)))
-                        (setq trg-plist (plist-put trg-plist :target name))
-                        (setq plist     (plist-put trg-plist :target trg-plist))
+                        (setq trg-plist (plist-put trg-plist :name name))
+                        (setq plist     (plist-put plist :target trg-plist))
                         (org-capture+-capture plist))))))
 
 (defun org-capture+-target-source (&optional plist)
@@ -200,9 +201,8 @@
       (unless (plist-get plist :type)
         (push (org-capture+-type-source        plist)
               sources))
-      (unless (plist-get plist :target)
-        (setq sources
-              (nconc sources (org-capture+-target-source plist))))
+      (setq sources
+            (nconc sources (org-capture+-target-source plist)))
       (unless (plist-get plist :description)
         (push (org-capture+-description-source plist)
               sources))
