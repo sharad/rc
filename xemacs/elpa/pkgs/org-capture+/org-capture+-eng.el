@@ -119,7 +119,8 @@
 
 
 (defun org-capture+-filter-target (plist)
-  (let* ((file (plist-get plist :file)))
+  (let* ((trg-plist (plist-get plist :target))
+         (file (plist-get plist :file)))
     (if file
         (remove-if-not #'(lambda (trg)
                            (memq (cdr trg) '(file file+headline file+olp file+olp+datetree file+function)))
