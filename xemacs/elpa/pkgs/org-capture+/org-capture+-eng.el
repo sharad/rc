@@ -131,7 +131,7 @@
       org-agenda-files)))
 
 
-(defun org-capture+-file-source (plist)
+(defun org-capture+-target-file-source (plist)
   (let ((files (org-capture+-filter-files plist)))
     (helm-build-sync-source "File"
       :candidates files
@@ -142,7 +142,7 @@
                       (setq plist (plist-put (plist-get plist :target) :file file))
                       (org-capture+-capture plist)))))
 
-(defun org-capture+-target-source (plist)
+(defun org-capture+-target-name-source (plist)
   (let ((targets (org-capture+-filter-target plist)))
     (helm-build-sync-source "Target"
       :candidates targets
