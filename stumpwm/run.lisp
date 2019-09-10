@@ -40,6 +40,10 @@
 (bing-wallpaper)
 
 
+(lotus-frame-preference-setup)
+(lotus-new-window-preferred-frame-setup)
+
+
 (sleep 2)
 
 (start-wm-components)
