@@ -150,17 +150,17 @@
                       (setq plist (plist-put plist :target target))
                       (org-capture+-capture plist)))))
 
-(defun org-capture+-capture (&optional plist)
-  (let (sources)
-    (progn
+(defun org-capture+-target-source (&optional plist)
+       (let (sources)
+         (progn
 
-      (unless (plist-get plist :name)
-        (push (org-capture+-target-name-source        plist)
-              sources))
-      (unless (plist-get plist :file)
-        (push (org-capture+-target-file-source plist)
-              sources))
-      sources)))
+           (unless (plist-get plist :name)
+             (push (org-capture+-target-name-source        plist)
+                   sources))
+           (unless (plist-get plist :file)
+             (push (org-capture+-target-file-source plist)
+                   sources))
+           sources)))
 
 
 (defun org-capture+-type-source (plist)
