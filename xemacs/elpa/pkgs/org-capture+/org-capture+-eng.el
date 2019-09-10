@@ -129,8 +129,8 @@
 
 (defun org-capture+-filter-files (plist)
   (let ((trg-plist (plist-get plist :target))
-        (name    (plist-get trg-plist :target)))
-    (when (memq target
+        (name      (plist-get trg-plist :target)))
+    (when (memq name
                 '(nil file file+headline file+olp file+olp+datetree file+function))
       org-agenda-files)))
 
