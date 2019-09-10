@@ -155,7 +155,7 @@
         sources)
     (progn
       (unless (plist-get plist :name)
-        (push (org-capture+-target-name-source        plist)
+        (push (org-capture+-target-name-source plist)
               sources))
       (unless (plist-get plist :file)
         (push (org-capture+-target-file-source plist)
