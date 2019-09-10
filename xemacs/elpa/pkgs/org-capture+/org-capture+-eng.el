@@ -96,51 +96,6 @@
   ("x" "Refile" entry #'org-goto-refile "* TODO %? %^g\n %i\n [%a]\n" :empty-lines 1))
 
 
-(defun org-capture+-select-type ()
-  (let ((types '(entry item chckitem table-line plain log-note)))
-    (intern (completing-read "Type: " types))))
-
-(defun org-capture+-select-target ()
-  '(
-    (file              "path/to/file")
-    (id                "id of existing Org entry")
-    (file+headline     "path/to/file" "node headline")
-    (file+olp          "path/to/file" "Level 1 heading" "Level 2" ...)
-    (file+olp+datetree "path/to/file" "Level 1 heading" ...)
-    (file+function     "path/to/file" function-finding-location)
-    (clock)
-    (function function-finding-location)
-    (marker marker)))
-
-(defun org-capture+-select-target-name ()
-  (let ((types
-         '(file id file+headline file+olp file+olp+datetree clock function)))
-    (intern (completing-read "Target Name: " types))))
-
-(defun org-capture+-select-target (target-name)
-  (let ((target-name target-name))
-   (case target-name
-     (file (list 'file (org-capture+-select-target-file)))
-     (id   (list 'id   (org-capture+-select-target-id)))
-     (file+heading (let* ((file (org-capture+-select-target-file))
-                  (heading (org-capture+-select-target-heading file)))
-             (list 'id  file heading)))
-     (file+olp (list 'file+olp "path/to/file" "Level 1 heading" "Level 2"))
-     (file+olp+datetree (list 'file+olp+datetree "path/to/file" "Level 1 heading"))
-     (file+function (list 'file+function "path/to/file" 'function-finding-location))
-     (clock 'clock)
-     (function (list 'function 'function-finding-location))
-     (marker marker))))
-
-
-(defun org-capture+get-template (action)
-  (funcall
-   (helm-template-gen-selector #'org-capture+-tree-predicate
-                               '(t xx yy)
-                               0
-                               action)))
-
-
 (defvar org-capture+-types   '(("Org Entry" . entry)
                                ("List Item" . item)
                                ("Checklist Item" . chckitem)
@@ -176,12 +131,15 @@
       org-agenda-files)))
 
 
-(defun org-capture+-type-source (plist)
-  (let ((types (org-capture+-filter-types plist)))
-    (helm-build-sync-source "Type"
-      :candidates types
-      :action     #'(lambda (type)
-                      (setq plist (plist-put plist :type type))
+(defun org-capture+-file-source (plist)
+  (let ((files (org-capture+-filter-files plist)))
+    (helm-build-sync-source "File"
+      :candidates files
+      :action     #'(lambda (file)
+                      (unless (plist-get plist :target)
+                        (setq plist
+                              (plist-set plist :target '(:file file))))
+                      (setq plist (plist-put (plist-get plist :target) :file file))
                       (org-capture+-capture plist)))))
 
 (defun org-capture+-target-source (plist)
@@ -191,16 +149,14 @@
       :action     #'(lambda (target)
                       (setq plist (plist-put plist :target target))
                       (org-capture+-capture plist)))))
+
 
-(defun org-capture+-file-source (plist)
-  (let ((files (org-capture+-filter-files plist)))
-    (helm-build-sync-source "File"
-      :candidates files
-      :action     #'(lambda (file)
-                      (unless (plist-get plist :target)
-                        (setq plist
-                              (plist-set plist :target '(:file nil))))
-                      (setq plist (plist-put (plist-get plist :target) :file file))
+(defun org-capture+-type-source (plist)
+  (let ((types (org-capture+-filter-types plist)))
+    (helm-build-sync-source "Type"
+      :candidates types
+      :action     #'(lambda (type)
+                      (setq plist (plist-put plist :type type))
                       (org-capture+-capture plist)))))
 
 (defun org-capture+-description-source (plist)
@@ -228,9 +184,9 @@
       (unless (plist-get plist :type)
         (push (org-capture+-type-source        plist)
               sources))
-      (unless (plist-get plist :target)
-        (setq sources
-              (nconc sources (org-capture+-target-source plist))))
+      ;; (unless (plist-get plist :target)
+      ;;   (setq sources
+      ;;         (nconc sources (org-capture+-target-source plist))))
       ;; (unless (plist-get plist :file)
       ;;   (push (org-capture+-file-source        plist)
       ;;         sources))

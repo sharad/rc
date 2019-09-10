@@ -136,18 +136,34 @@
 (defun screen-initilize-decoration ()
   (when *desktop-background-image-path*
     (let ((start-screen (car *screen-list*)))
-      (loop for i in *screen-list*
-            for j in *mode-line-fmts*
-            do (progn (switch-to-screen i)
-                      ;; Turn on the modeline
-                      (if (not (head-mode-line (current-head)))
-                          (toggle-mode-line (current-screen) (current-head) j))
-                      (setup-random-wallpaper-image)))
+      (message "setting screen ~a" start-screen)
+      (loop for screen in *screen-list*
+            for fmt in *mode-line-fmts*
+            do (progn
+                 (switch-to-screen screen)
+                 ;; Turn on the modeline
+                 (message "setting screen ~a" screen)
+                 (dolist (head (screen-heads screen))
+                   (message "setting screen ~a head ~a" screen head)
+                   ;; (sleep 1)
+                   (unless (head-mode-line head)
+                     (enable-mode-line screen head t fmt)))
+                 (setup-random-wallpaper-image)))
       (switch-to-screen start-screen))))
 
 (screen-initilize-decoration)
 ;; setup bing wall paper
 (bing-wallpaper)
+
+(defun new-head-function (head screen)
+  (when (and head screen)
+    (when (> (head-number head) 0)
+      (unless (head-mode-line head)
+        (enable-mode-line screen head t)
+        (when (fboundp 'set-profile)
+          (set-profile :myprofile))))))
+
+(add-hook *new-head-hook* #'new-head-function)
 
 ;; "display -resize `xwininfo -root | awk '{ if ($1 == \"Width:\" ) { w=$2 } else if ($1 == \"Height:\" ) { h=$2 } } END { print w \"x\" h }'` -window root "
 
@@ -229,15 +245,28 @@
 
 
 ;;{{
-(defun head-force-refresh (screen new-heads)
-  (scale-screen screen new-heads)
-  (mapc 'group-sync-all-heads (screen-groups screen))
-  (update-mode-lines screen))
 
-(defcommand refresh-heads (&optional (screen (current-screen))) ()
-  "Refresh screens in case a monitor was connected, but a
-  ConfigureNotify event was snarfed by another program."
-  (head-force-refresh screen (make-screen-heads screen (screen-root screen))))
+;; (defun head-force-refresh (screen new-heads)
+;;   (scale-screen screen new-heads)
+;;   (mapc 'group-sync-all-heads (screen-groups screen))
+;;   (update-mode-lines screen))
+
+;; (defcommand refresh-heads (&optional (screen (current-screen))) ()
+;;   "Refresh screens in case a monitor was connected, but a
+;;   ConfigureNotify event was snarfed by another program."
+;;   (head-force-refresh screen (make-screen-heads screen (screen-root screen))))
+
+
+;; (defun head-force-refresh (screen new-heads)
+;;   (scale-screen screen new-heads)
+;;   (mapc 'group-sync-all-heads (screen-groups screen))
+;;   (loop for new-head in new-heads
+;;         do (run-hook-with-args *new-head-hook* new-head screen)))
+
+;; (defcommand refresh-heads (&optional (screen (current-screen))) ()
+;;   "Refresh screens in case a monitor was connected, but a
+;;   ConfigureNotify event was snarfed by another program."
+;;   (head-force-refresh screen (make-screen-heads screen (screen-root screen))))
 ;;}}
 
 ;; ;;{{ Example
@@ -255,19 +284,19 @@
 
 (define-stumpwm-type :smart-direction (input prompt)
   (let ((valid-dirs
-         (loop  ; gather all the directions in which there's a neighbouring frame
-            with values = '(("up" :up)
-                            ("down" :down)
-                            ("left" :left)
-                            ("right" :right))
-            with frame-set =
-              (group-frames (window-group (current-window)))
-            for dir in values
-            for neighbour = (neighbour
-                             (second dir)
-                             (window-frame (current-window)) frame-set)
-            if (and neighbour (frame-window neighbour))
-            collect dir))
+          (loop  ; gather all the directions in which there's a neighbouring frame
+                 with values = '(("up" :up)
+                                 ("down" :down)
+                                 ("left" :left)
+                                 ("right" :right))
+                 with frame-set =
+                                (group-frames (window-group (current-window)))
+                 for dir in values
+                 for neighbour = (neighbour
+                                  (second dir)
+                                  (window-frame (current-window)) frame-set)
+                 if (and neighbour (frame-window neighbour))
+                   collect dir))
         (arg (argument-pop input)))  ; store a possible argument
     (cond ((null valid-dirs)  ; no directions, bail out
            (throw 'error "No valid directions"))
@@ -507,7 +536,7 @@
         (add-hook *new-window-hook* #'focus-matched-window)))
 
     (enable-focus-window-match-rules))
-  
+
   (define-focus-window-match-rule
       "pinentry-gtk"
     :class "Gcr-prompter"

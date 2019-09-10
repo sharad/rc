@@ -33,6 +33,12 @@
 
 ;; (let ((sg (find-group (current-screen) ".scratchpad"))) **
 ;;   (if sg (switch-to-group sg))) **
+
+
+(screen-initilize-decoration)
+;; setup bing wall paper
+(bing-wallpaper)
+
 
 (sleep 2)
 
