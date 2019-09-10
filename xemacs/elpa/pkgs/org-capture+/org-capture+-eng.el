@@ -151,7 +151,8 @@
                       (org-capture+-capture plist)))))
 
 (defun org-capture+-target-source (&optional plist)
-  (let (sources)
+  (let ((plist (plist-get plist :target))
+        sources)
     (progn
       (unless (plist-get plist :name)
         (push (org-capture+-target-name-source        plist)
