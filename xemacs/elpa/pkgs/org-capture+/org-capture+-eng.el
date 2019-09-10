@@ -159,13 +159,9 @@
         (push (org-capture+-target-name-source        plist)
               sources))
       (unless (plist-get plist :file)
-        (push (org-capture+-description-source plist)
+        (push (org-capture+-target-file-source plist)
               sources))
-
-      (if sources
-          (helm
-           :sources sources)
-        (message "plist %s" plist)))))
+      sources)))
 
 
 (defun org-capture+-type-source (plist)
