@@ -146,10 +146,10 @@
   (let ((targets (org-capture+-filter-target plist)))
     (helm-build-sync-source "Target"
       :candidates targets
-      :action     #'(lambda (target)
+      :action     #'(lambda (name)
                       (let ((trg-plist (plist-get plist :target)))
-                        (setq trg-plist (plist-put trg-plist :target target))
-                        (setq plist (plist-put trg-plist :target target))
+                        (setq trg-plist (plist-put trg-plist :target name))
+                        (setq plist (plist-put trg-plist :target ))
                         (org-capture+-capture plist))))))
 
 (defun org-capture+-target-source (&optional plist)
