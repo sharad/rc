@@ -26,19 +26,19 @@
         ;; (0 t t :class "Empathy" :instance "empathy" :title nil ;"Contact List"
         ;;    :role nil)
         ;; (0 nil t ::title "xterm") ;; test
-        ((+ 0 frame-num) nil t
+        (0 nil t
          :class "Pidgin"
          :instance "Pidgin"
          :title "Buddy List"
          :role "buddy_list")
 
-        ((+ 1 frame-num) t nil
+        (1 t nil
          :class "Pidgin"
          :instance "Pidgin"
          :title  nil ;"FN LN"
          :role "conversation")
 
-        ((+ 1 frame-num) nil t
+        (1 nil t
          :class "Skype"
          :instance "skype"
          :title    nil ;"skypeid - Skype? Beta"
