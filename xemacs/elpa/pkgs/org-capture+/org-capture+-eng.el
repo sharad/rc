@@ -152,12 +152,13 @@
                         (org-capture+-capture plist))))))
 
 (defun org-capture+-target-source (&optional plist)
-  (let (sources)
+  (let (sources
+        (trg-plist (plist-get plist :target)))
     (progn
-      (unless (plist-get plist :name)
+      (unless (plist-get trg-plist :name)
         (push (org-capture+-target-name-source plist)
               sources))
-      (unless (plist-get plist :file)
+      (unless (plist-get trg-plist :file)
         (push (org-capture+-target-file-source plist)
               sources))
       sources)))
