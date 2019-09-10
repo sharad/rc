@@ -156,14 +156,8 @@
     (progn
 
       (unless (plist-get plist :file)
-        (push (org-capture+-type-source        plist)
+        (push (org-capture+-target-name-source        plist)
               sources))
-      ;; (unless (plist-get plist :target)
-      ;;   (setq sources
-      ;;         (nconc sources (org-capture+-target-source plist))))
-      ;; (unless (plist-get plist :file)
-      ;;   (push (org-capture+-file-source        plist)
-      ;;         sources))
       (unless (plist-get plist :description)
         (push (org-capture+-description-source plist)
               sources))
