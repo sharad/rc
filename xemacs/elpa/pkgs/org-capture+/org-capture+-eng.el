@@ -136,11 +136,10 @@
     (helm-build-sync-source "File"
       :candidates files
       :action     #'(lambda (file)
-                      (unless (plist-get plist :target)
-                        (setq plist
-                              (plist-set plist :target '(:file file))))
-                      (setq plist (plist-put (plist-get plist :target) :file file))
-                      (org-capture+-capture plist)))))
+                      (let ((trg-plist (plist-get plist :target)))
+                        (setq trg-plist (plist-put trg-plist :target name))
+                        (setq plist     (plist-put trg-plist :target trg-plist))
+                        (org-capture+-capture plist))))))
 
 (defun org-capture+-target-name-source (plist)
   (let ((targets (org-capture+-filter-target plist)))
