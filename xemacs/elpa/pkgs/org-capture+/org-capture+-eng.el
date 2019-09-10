@@ -29,6 +29,20 @@
 
 (require 'org-capture+-helm-dynamic)
 
+;; cons of name value
+(defun org-capture+-get-file-headings (file &rest headings)
+  ())
+
+(defun org-capture+-get-org-files ()
+  org-agenda-files)
+
+(defun org-capture+-get-markers ()
+  ())
+
+(defun org-capture+-get-org-entry-id ()
+  ())
+
+
 
 ;; TODO: some kind of recommendation system, not rigid, but not fully free also.
 ;; THINK
@@ -118,7 +132,7 @@
 
 
 
-(defun org-capture+-filter-target (plist)
+(defun org-capture+-target-name-filter (plist)
   (let* ((trg-plist (plist-get plist     :target))
          (file      (plist-get trg-plist :file)))
     (if file
@@ -127,32 +141,31 @@
                        org-capture+-targets)
       org-capture+-targets)))
 
-(defun org-capture+-filter-files (plist)
+(defun org-capture+-target-files-filter (plist)
   (let* ((trg-plist (plist-get plist     :target))
          (name      (plist-get trg-plist :name)))
     (when (memq name
                 '(nil file file+headline file+olp file+olp+datetree file+function))
-      org-agenda-files)))
+      (org-capture+-get-org-files))))
 
 (defun org-capture+-target-file-source (plist)
-  (let ((files (org-capture+-filter-files plist)))
+  (let ((files (org-capture+-target-files-filter plist)))
     (helm-build-sync-source "File"
       :candidates files
       :action     #'(lambda (file)
                       (let ((trg-plist (plist-get plist :target)))
-                        (setq trg-plist (plist-put trg-plist :file file))
-                        (setq plist     (plist-put plist :target trg-plist))
-                        ;; (message "trg-plist %s, Plist %s" trg-plist plist)
+                        (setq trg-plist (plist-put trg-plist :file   file))
+                        (setq plist     (plist-put plist     :target trg-plist))
                         (org-capture+-capture plist))))))
 
 (defun org-capture+-target-name-source (plist)
-  (let ((targets (org-capture+-filter-target plist)))
+  (let ((targets (org-capture+-target-name-filter plist)))
     (helm-build-sync-source "Target"
       :candidates targets
       :action     #'(lambda (name)
                       (let ((trg-plist (plist-get plist :target)))
-                        (setq trg-plist (plist-put trg-plist :name name))
-                        (setq plist     (plist-put plist :target trg-plist))
+                        (setq trg-plist (plist-put trg-plist :name   name))
+                        (setq plist     (plist-put plist     :target trg-plist))
                         (org-capture+-capture plist))))))
 
 (defun org-capture+-target-source (&optional plist)
