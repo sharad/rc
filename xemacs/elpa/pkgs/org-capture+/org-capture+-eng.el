@@ -116,8 +116,10 @@
 (defun org-capture+-filter-types (plist)
   org-capture+-types)
 
+
+
 (defun org-capture+-filter-target (plist)
-  (let ((file (plist-get plist :file)))
+  (let* ((file (plist-get plist :file)))
     (if file
         (remove-if-not #'(lambda (trg)
                            (memq (cdr trg) '(file file+headline file+olp file+olp+datetree file+function)))
@@ -129,7 +131,6 @@
     (when (memq target
                 '(nil file file+headline file+olp file+olp+datetree file+function))
       org-agenda-files)))
-
 
 (defun org-capture+-target-file-source (plist)
   (let ((files (org-capture+-filter-files plist)))
