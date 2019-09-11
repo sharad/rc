@@ -45,10 +45,11 @@
         (org-map-entries #'(lambda ()
                              (let* ((level   (org-element-property :level (org-element-at-point)))
                                     (prefix  (concat (make-string level ?\*) " "))
-                                    (heading-tags (org-get-heading))
-                                    (heading (substring-no-properties (org-get-heading 'no-tags))))
+                                    (heading-tags   (org-get-heading))
+                                    (heading-notags (substring-no-properties (org-get-heading 'no-tags))))
                                (cons (org-fontify-like-in-org-mode (concat prefix heading-tags))
-                                     heading)))
+                                     ;; TODO: In value all parent heading also has to come.
+                                     heading-notags)))
                          match
                          (if m 'tree 'file))))))
 
