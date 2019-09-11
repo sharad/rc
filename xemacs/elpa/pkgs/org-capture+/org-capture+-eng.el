@@ -29,19 +29,37 @@
 
 (require 'org-capture+-helm-dynamic)
 
+
+(defun org-select-targets (&rest targets)
+  (remove-if-not #'(lambda (trg)
+                     (memq (cdr trg) targets))
+                 org-capture+-targets))
+
 ;; cons of name value
-(defun org-capture+-get-file-headings (file &rest headings)
-  ())
+(defun org-capture+-get-file-headings (file match &rest headings)
+  (when (file-exists-p file)
+    (with-current-buffer (find-file-noselect file)
+      (let (m (org-find-olp (cons file headings)))
+        (org-map-entries #'(lambda ()
+                             (let* ((level   (org-element-property :level
+                                                                   (org-element-at-point)))
+                                    (prefix  (concat (make-string level ?\*) " ")))
+                               (org-fontify-like-in-org-mode (concat prefix (org-get-heading)))))
+                         match
+                         (if m 'tree 'file))))))
 
 (defun org-capture+-get-org-files ()
-  org-agenda-files)
+  org-agenda-files )
 
 (defun org-capture+-get-markers ()
-  ())
+  )
 
 (defun org-capture+-get-org-entry-id ()
   ())
+
 
+(length
+ (org-capture+-get-file-headings (car org-agenda-files) t))
 
 
 ;; TODO: some kind of recommendation system, not rigid, but not fully free also.
@@ -134,11 +152,13 @@
 
 (defun org-capture+-target-name-filter (plist)
   (let* ((trg-plist (plist-get plist     :target))
-         (file      (plist-get trg-plist :file)))
+         (file      (plist-get trg-plist :file))
+         (headings      (plist-get trg-plist :headings)))
     (if file
-        (remove-if-not #'(lambda (trg)
-                           (memq (cdr trg) '(file file+headline file+olp file+olp+datetree file+function)))
-                       org-capture+-targets)
+        (apply #'org-select-targets
+               (if headings
+                   '(file+headline file+olp file+olp+datetree)
+                 '(file file+headline file+olp file+olp+datetree file+function)))
       org-capture+-targets)))
 
 (defun org-capture+-target-files-filter (plist)
@@ -147,6 +167,15 @@
     (when (memq name
                 '(nil file file+headline file+olp file+olp+datetree file+function))
       (org-capture+-get-org-files))))
+
+;; NEW
+(defun org-capture+-target-file+headline-filter (plist)
+  (let* ((trg-plist (plist-get plist     :target))
+         (file      (plist-get trg-plist :file))
+         (headings  (plist-get trg-plist :headings)))
+    (when (and file
+               (car (last headings)))
+      (apply #'org-capture+-get-file-headings file t headings))))
 
 (defun org-capture+-target-file-source (plist)
   (let ((files (org-capture+-target-files-filter plist)))
@@ -210,7 +239,6 @@
   (interactive)
   (let (sources)
     (progn
-
       (unless (plist-get plist :type)
         (push (org-capture+-type-source        plist)
               sources))

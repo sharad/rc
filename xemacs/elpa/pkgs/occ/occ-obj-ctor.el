@@ -72,8 +72,8 @@
     (save-excursion
       (save-restriction
         (let ((start (progn
-                       (goto-char (org-element-property
-                                   :contents-begin (org-element-at-point)))
+                       (goto-char (org-element-property :contents-begin
+                                                        (org-element-at-point)))
                        (while (org-at-drawer-p)
                          (goto-char (org-element-property :end
                                                           (org-element-at-point))))
@@ -108,10 +108,9 @@
                                     heading-with-string-prop
                                   (substring-no-properties heading-with-string-prop))))
                 (heading-prop heading-with-string-prop)
-                (marker       (move-marker
-                               (make-marker)
-                               (point)
-                               (org-base-buffer (current-buffer))))
+                (marker       (move-marker (make-marker)
+                                           (point)
+                                           (org-base-buffer (current-buffer))))
                 (file         (buffer-file-name))
                 (point        (point))
                 (clock-sum    (if (org-before-first-heading-p)
