@@ -36,15 +36,19 @@
                  org-capture+-targets))
 
 ;; cons of name value
-(defun org-capture+-get-file-headings (file match &rest headings)
+(defun org-capture+-get-file-headlines (file match &rest headlines)
   (when (file-exists-p file)
     (with-current-buffer (find-file-noselect file)
-      (let (m (org-find-olp (cons file headings)))
+      (let ((m (org-find-olp (cons file headlines))))
+        (when (markerp m)
+          (goto-char m))
         (org-map-entries #'(lambda ()
-                             (let* ((level   (org-element-property :level
-                                                                   (org-element-at-point)))
-                                    (prefix  (concat (make-string level ?\*) " ")))
-                               (org-fontify-like-in-org-mode (concat prefix (org-get-heading)))))
+                             (let* ((level   (org-element-property :level (org-element-at-point)))
+                                    (prefix  (concat (make-string level ?\*) " "))
+                                    (heading-tags (org-get-heading))
+                                    (heading (substring-no-properties (org-get-heading 'no-tags))))
+                               (cons (org-fontify-like-in-org-mode (concat prefix heading-tags))
+                                     heading)))
                          match
                          (if m 'tree 'file))))))
 
@@ -59,7 +63,7 @@
 
 
 (length
- (org-capture+-get-file-headings (car org-agenda-files) t))
+ (org-capture+-get-file-headlines (car org-agenda-files) t))
 
 
 ;; TODO: some kind of recommendation system, not rigid, but not fully free also.
@@ -75,7 +79,7 @@
    (file+headline "/home/s/paradise/capture/capture.org" "Notes")
    "* %^{Title}\n\n  Source: %u, %c\n\n  %i" :empty-lines 1)
   ("c" "Current Clock")
-  ("ch" "Current Clock Heading" entry
+  ("ch" "Current Clock Headline" entry
    (clock))
   ("ci" "Current Clock Item" item
    (clock))
@@ -147,17 +151,18 @@
 
 (defun org-capture+-filter-types (plist)
   org-capture+-types)
-
 
 
 (defun org-capture+-target-name-filter (plist)
   (let* ((trg-plist (plist-get plist     :target))
          (file      (plist-get trg-plist :file))
-         (headings      (plist-get trg-plist :headings)))
+         (headlines      (plist-get trg-plist :headlines)))
     (if file
         (apply #'org-select-targets
-               (if headings
-                   '(file+headline file+olp file+olp+datetree)
+               (if headlines
+                   (if (> (length headlines) 1)
+                       '(file+olp file+olp+datetree)
+                     '(file+headline file+olp file+olp+datetree))
                  '(file file+headline file+olp file+olp+datetree file+function)))
       org-capture+-targets)))
 
@@ -169,23 +174,43 @@
       (org-capture+-get-org-files))))
 
 ;; NEW
-(defun org-capture+-target-file+headline-filter (plist)
+(defun org-capture+-target-file+headlines-filter (plist)
   (let* ((trg-plist (plist-get plist     :target))
          (file      (plist-get trg-plist :file))
-         (headings  (plist-get trg-plist :headings)))
+         (headlines (plist-get trg-plist :headlines)))
     (when (and file
-               (car (last headings)))
-      (apply #'org-capture+-get-file-headings file t headings))))
+               (or (null headlines)
+                   (car (last headlines))))
+      (apply #'org-capture+-get-file-headlines file t headlines))))
+
 
 (defun org-capture+-target-file-source (plist)
   (let ((files (org-capture+-target-files-filter plist)))
-    (helm-build-sync-source "File"
+    (helm-build-sync-source "Files"
       :candidates files
       :action     #'(lambda (file)
                       (let ((trg-plist (plist-get plist :target)))
                         (setq trg-plist (plist-put trg-plist :file   file))
                         (setq plist     (plist-put plist     :target trg-plist))
                         (org-capture+-capture plist))))))
+
+(defun org-capture+-target-file+headlines-source (plist)
+  (let ((headlines       (org-capture+-target-file+headlines-filter plist))
+        (headline-action #'(lambda (headline)
+                             (let* ((trg-plist (plist-get plist     :target))
+                                    (headlines (plist-get trg-plist :headlines)))
+                               (setq headlines (nconc headlines (list headline)))
+                               (setq trg-plist (plist-put trg-plist :headlines headlines))
+                               (setq plist     (plist-put plist     :target   trg-plist))
+                               (org-capture+-capture plist)))))
+    (helm-build-sync-source "Headline"
+      :candidates (when headlines
+                    (append headlines (list (cons "Done" :done))))
+      :action-transformer #'(lambda (action candidate)
+                              (if (eq :done candidate)
+                                  (list (cons "Done" #'(lambda (candidate)
+                                                         (funcall headline-action nil))))
+                                (list (cons "Select" headline-action)))))))
 
 (defun org-capture+-target-name-source (plist)
   (let ((targets (org-capture+-target-name-filter plist)))
@@ -206,6 +231,10 @@
               sources))
       (unless (plist-get trg-plist :file)
         (push (org-capture+-target-file-source plist)
+              sources))
+      (unless (and (plist-get trg-plist :headlines)
+                   (null (car (last (plist-get trg-plist :headlines)))))
+        (push (org-capture+-target-file+headlines-source plist)
               sources))
       sources)))
 
@@ -250,6 +279,8 @@
       (unless (plist-get plist :template)
         (setq sources
               (nconc sources (org-capture+-template-source plist))))
+
+      (message "plist %s" plist)
 
       (if sources
           (helm
