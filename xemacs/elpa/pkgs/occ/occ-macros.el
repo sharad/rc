@@ -238,7 +238,7 @@
   (org-refile-get-location)
 
 
-  (org-capture+
+  (org-capture-run
    'entry
    '(marker org-clock-marker)
    "* Hello %^{PROMPT}"

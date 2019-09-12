@@ -121,7 +121,7 @@
 ;;                     (let ((template (occ-capture+-helm-select-template)))
 ;;                       (when template
 ;;                         (let ((mrk (get-marker)))
-;;                           (with-org-capture+ 'entry `(marker ,mrk) template '(:empty-lines 1)
+;;                           (with-org-capture-run 'entry `(marker ,mrk) template '(:empty-lines 1)
 ;;                             (let ((capture-clock (make-org-rl-clock (point))))
 ;;                               t))))))))
 ;;     (helm-build-sync-source name

@@ -84,7 +84,7 @@
     ;; TODO
     ;; add necessary code for interactive note.
     (@:message "Test %s %s %s %s" type target template capture-plist)
-    (apply #'org-capture+
+    (apply #'org-capture-run
            (or type @:type)
            (or target @:target)
            (or template @:template)
@@ -151,14 +151,14 @@
 
   ;;TODO: Will be required later.
 
-  (org-capture+
+  (org-capture-run
    'entry
    '(marker org-clock-marker)
    "* Hello %^{PROMPT}"
    ;; :immediate-finish t
    :empty-lines 1)
 
-  (org-capture+
+  (org-capture-run
    'entry
    '(marker org-clock-marker)
    "* Hello %^{PROMPT}"

@@ -35,6 +35,37 @@
                      (memq (cdr trg) targets))
                  org-capture+-targets))
 
+
+(defun org-capture+-build-target-arg (plist)
+  (let ((name      (plist-get plist :name))
+        (file      (plist-get plist :file))
+        (headlines (plist-get plist :headlines))
+        (function  (plist-get plist :function))
+        (marker    (plist-get plist :marker)))
+    (case name
+      (file              (list name file))
+      (id                (list name id))
+      (file+headline     (list name file (car (last headlines))))
+      (file+olp          (append (list name file) headlines))
+      (file+olp+datetree (append (list name file) headlines))
+      (file+function     (list name file function))
+      (clock)            (list name)
+      (function          (list name function))
+      (marher            (list name marker)))))
+
+(defun org-capture+-build-arg (plist)
+  (let ((type     (plist-get plist :type))
+        (target   (plist-get plist :target))
+        (template (plist-get plist :template)))
+    (list type
+          (org-capture+-build-target-arg target)
+          template)))
+
+(defun org-capture+-run-plist (plist)
+  (apply #'org-capture-run
+         (org-capture+-build-arg plist)))
+
+
 ;; cons of name value
 (defun org-capture+-get-file-headlines (file match &rest headlines)
   (when (file-exists-p file)
@@ -57,7 +88,7 @@
   org-agenda-files)
 
 (defun org-capture+-get-markers ())
-  
+
 
 (defun org-capture+-get-org-entry-id ()
   ())
@@ -100,7 +131,7 @@
 (defun org-capture+-target-name-filter (plist)
   (let* ((trg-plist (plist-get plist     :target))
          (file      (plist-get trg-plist :file))
-         (headlines      (plist-get trg-plist :headlines)))
+         (headlines (plist-get trg-plist :headlines)))
     (if file
         (apply #'org-select-targets
                (if headlines
@@ -138,7 +169,7 @@
                         (org-capture+-capture plist))))))
 
 (defun org-capture+-target-file+headlines-source (plist)
-  (let ((headlines       (org-capture+-target-file+headlines-filter plist))
+  (let ((headlines       (org-capture+-target-fileg+headlines-filter plist))
         (headline-action #'(lambda (headlines)
                              (let* ((trg-plist (plist-get plist     :target)))
                                (setq trg-plist (plist-put trg-plist :headlines headlines))
@@ -199,7 +230,7 @@
                                 (setq plist (plist-put plist :template template))
                                 (org-capture+-capture plist))))
 
-(defun org-capture+-capture (&optional plist)
+(defun org-capture+ (&optional plist)
   (interactive)
   (let (sources)
     (progn
@@ -220,19 +251,7 @@
       (if sources
           (helm
            :sources sources)
+        (org-capture+-run-plist plist)
         (message "plist %s" plist)))))
-
-(defun org-capture+-run-template-list (plist)
-  ())
-;; (org-capture+ TYPE TARGET TEMPLATE &rest PLIST)
-
-(defun org-capture+-build-arg (plist)
-  (let ((type (plist-get plist :type))
-        (target (list (plist-get plist :target))))
-    (cond
-     ((memq (car target) '(file file+headline file+olp file+olp+datetree file+function)
-            (setq target (nconc target (plist-get plist :file)))
-            (case (car target)
-              (file+headline )))))))
 
 ;;; org-capture+-eng.el ends here

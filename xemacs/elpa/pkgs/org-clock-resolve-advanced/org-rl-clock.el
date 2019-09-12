@@ -248,7 +248,7 @@
                                    (list prev next))))))
     (org-rl-debug nil "begin %s: org-rl-select-other-clock: %s" 'org-rl-clock-opt-include-in-new mrk)
     (org-rl-debug nil "begin %s: template: %s" 'org-rl-clock-opt-include-in-new template)
-    (after-org-capture+ mrk 'entry `(marker ,mrk) template '(:empty-lines 1)
+    (after-org-capture-run mrk 'entry `(marker ,mrk) template '(:empty-lines 1)
       (progn
         (org-rl-debug nil "org-rl-clock-opt-include-in-new: org-capture-last-stored-marker = %s" org-capture-last-stored-marker)
         (org-rl-debug nil "org-rl-clock-opt-include-in-new: (org-capture-get :position-for-last-stored 'local) = %s" (org-capture-get :position-for-last-stored 'local))
@@ -258,7 +258,7 @@
   ;; (org-rl-clocks-action nil nil prev next)
   (org-rl-debug nil "finish %s" 'org-rl-clock-opt-include-in-new)
   ;; TODO: add off to restart now (org-rl-clock-restart-now)
-  ;; next processing will be handled in after-org-capture+ cps
+  ;; next processing will be handled in after-org-capture-run cps
   nil)
 
 

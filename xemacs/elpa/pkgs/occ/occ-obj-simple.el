@@ -134,7 +134,7 @@
 
 (cl-defmethod occ-capture ((obj marker)
                            &optional clock-in-p)
-  (org-capture+
+  (org-capture-run
    'entry
    `(marker ,obj)
    'occ-capture+-helm-select-template
@@ -152,7 +152,7 @@
          (ctx      (occ-obj-ctx    obj))
          (template (occ-capture+-helm-select-template)))
     (when template
-      (with-org-capture+ marker 'entry `(marker ,mrk) template '(:empty-lines 1)
+      (with-org-capture-run marker 'entry `(marker ,mrk) template '(:empty-lines 1)
         (let* ((tmp-tsk  (occ-make-tsk marker))
                (tmp-ctsk (occ-build-ctsk-with tmp-tsk ctx)))
           (occ-props-edit tmp-ctsk)

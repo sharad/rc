@@ -447,7 +447,7 @@ Store them in the capture property list."
    (t template)))
 
 ;;;###autoload
-(defun org-capture-plus (type target template &rest plist)
+(defun org-capture-run (type target template &rest plist)
   "Capture something.
 \\<org-capture-plus-mode-map>
 This will let you select a template from `org-capture-templates', and
@@ -583,7 +583,7 @@ of the day at point (if any) or the current HH:MM time."
       (if (org-capture-get :immediate-finish)
           (org-capture-plus-finalize)))))
 
-(defalias 'org-capture+ 'org-capture-plus)
+;; (defalias 'org-capture-run 'org-capture-plus)
 ;; new capture:1 ends here
 
 ;; Application
@@ -610,13 +610,13 @@ of the day at point (if any) or the current HH:MM time."
 
 (when nil
 
-  (org-capture+
+  (org-capture-run
    'log-note
    '(clock)
    "* TODO %? %^g\n %i\n [%a]\n"
    :empty-lines 1)
 
-  (org-capture+
+  (org-capture-run
    'log-note
    '(clock)
    "Test\n"
@@ -625,28 +625,28 @@ of the day at point (if any) or the current HH:MM time."
 
   ;; https://orgmode.org/manual/Template-elements.html#Template-elements
   ;; template expansion properties
-  (org-capture+
+  (org-capture-run
    'log-note
    '(marker org-clock-marker)
    "Hello"
    :unnarrowed nil
    :empty-lines 1)
 
-  (org-capture+
+  (org-capture-run
    'log-note
    '(marker testmrkr)
    "Test Hello 1"
    ;; :immediate-finish t
    :empty-lines 1)
 
-  (org-capture+
+  (org-capture-run
    'entry
    '(marker testmrkr)
    "* Hello"
    ;; :immediate-finish t
    :empty-lines 1)
 
-  (org-capture+
+  (org-capture-run
    'entry
    '(clock)
    "* Hello"
@@ -654,7 +654,7 @@ of the day at point (if any) or the current HH:MM time."
    :empty-lines 1)
 
 
-  (org-capture+
+  (org-capture-run
    'entry
    '(function org-goto-refile)
    "* TODO %? %^g\n %i\n [%a]\n"
@@ -664,7 +664,7 @@ of the day at point (if any) or the current HH:MM time."
 
 
 
-  (org-capture+
+  (org-capture-run
    'log-note
    '(marker testmrkr)
    "Test Hello 1"
