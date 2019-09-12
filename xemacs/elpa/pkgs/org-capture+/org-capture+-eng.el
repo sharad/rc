@@ -169,7 +169,7 @@
                         (org-capture+-capture plist))))))
 
 (defun org-capture+-target-file+headlines-source (plist)
-  (let ((headlines       (org-capture+-target-fileg+headlines-filter plist))
+  (let ((headlines       (org-capture+-target-file+headlines-filter plist))
         (headline-action #'(lambda (headlines)
                              (let* ((trg-plist (plist-get plist     :target)))
                                (setq trg-plist (plist-put trg-plist :headlines headlines))
