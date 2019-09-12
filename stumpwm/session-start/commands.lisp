@@ -177,7 +177,7 @@
           (define-key m (kbd "o")  "grab-desktop-post")
           m))
 
-  (define-key *root-map* (kbd "\\") '*desktop-grab-map*))
+  (define-key stumpwm:*root-map* (kbd "\\") '*desktop-grab-map*))
 
                                  ;;"ffmpeg -f x11grab -s " width "x" hight " -r 24 -i " (getenv "DISPLAY") ".0 -sameq " filename)))
 
@@ -639,8 +639,28 @@
                      w.minibuffer.message(\"focus regained\");
                    }'"))
 
-(define-key *root-map* (kbd "X") "refocus-conkeror")
+(define-key stumpwm:*root-map* (kbd "X") "refocus-conkeror")
 
+
+(stumpwm:defcommand bye () ())
+#+pa
+  (in.net.sharad.pa-backend-emacs-planner::emacs-eval-nooutput "(close-all-frames)")
+  (sleep 1)
+  (run-shell-command
+   (concat
+    (getenv "HOME")
+    "/.rsetup/wmlogout/run"))
+  (quit)
+
+(stumpwm:defcommand bye-with-cleanup () ()
+            (bye))
+
+(stumpwm:defcommand bye-with-confirmation () ()
+  (let ((*message-window-gravity* :center))
+    (fclear)
+    (if (y-or-n-p "^5^BLogout from stumpwm:^b ^2")
+        (bye-with-cleanup)
+        (pull-hidden-other))))
 
 (stumpwm:defcommand sys-halt () ()
   (run-shell-command "systemctl poweroff"))
@@ -673,7 +693,7 @@
 
 (stumpwm:defcommand ctr-alt-del () ()
   (labels ((pick (options)
-             (let ((selection (stumpwm::select-from-menu (current-screen) options "Exit Menu")))
+             (let ((selection (stumpwm::select-from-menu (current-screen) options "Exit Menu:")))
                (cond
                  ((null selection)
                   (throw 'stumpwm::error "Abort."))
@@ -697,7 +717,6 @@
         "/.rsetup/wmlogin/run"))
     (message "done start-wm-components")))
 
-
 (stumpwm:defcommand start-wm-test-components () ()
   (message "started start-wm-test-components")
   (prog1
@@ -706,26 +725,7 @@
         (getenv "HOME")
         "/tmp/test.sh"))
     (message "done start-wm-test-components")))
-
-(stumpwm:defcommand bye () ()
-#+pa
-  (in.net.sharad.pa-backend-emacs-planner::emacs-eval-nooutput "(close-all-frames)")
-  (sleep 1)
-  (run-shell-command
-   (concat
-    (getenv "HOME")
-    "/.rsetup/wmlogout/run"))
-  (quit))
-
-(stumpwm:defcommand bye-with-cleanup () ()
-            (bye))
-
-(stumpwm:defcommand bye-with-confirmation () ()
-            (let ((*message-window-gravity* :center))
-              (fclear)
-              (if (y-or-n-p "^5^BLogout from stumpwm:^b ^2")
-                  (bye-with-cleanup)
-                  (pull-hidden-other))))
+
 
 (stumpwm:defcommand display-top-map () ()
   (display-bindings-for-keymaps nil *top-map*))
@@ -734,8 +734,7 @@
   "Kill the client associated with window."
   (dformat 3 "Kill client~%")
   (xlib:kill-client *display* (xlib:window-id window)))
-
-
+
 
 (progn
   ;; http://theatticlight.net/posts/Stumpwm-shutdown-nag/
