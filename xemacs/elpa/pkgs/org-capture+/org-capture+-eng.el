@@ -48,15 +48,13 @@
                                     (prefix  (concat (make-string level ?\*) " "))
                                     (heading-tags   (org-get-heading))
                                     (heading-notags (substring-no-properties (org-get-heading 'no-tags))))
-
                                (cons (org-fontify-like-in-org-mode (concat prefix heading-tags))
-                                     ;; TODO: In value all parent headling also has to come.
                                      (org-get-outline-path t))))
                          match
                          (if m 'tree 'file))))))
 
 (defun org-capture+-get-org-files ()
-  org-agenda-files )
+  org-agenda-files)
 
 (defun org-capture+-get-markers ())
   
