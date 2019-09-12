@@ -660,6 +660,32 @@
 (stumpwm:defcommand sys-reboot () ()
   ;; (run-shell-command "reb00t")
   (run-shell-command "systemctl reboot"))
+
+(defparameter *ctr-alt-del-menu*
+  '(("Logout"                 "bye-with-confirmation")
+    ("Logout Now"             "bye")
+    ("Halt"                   "sys-halt")
+    ("Poweroff"               "sys-poweroff")
+    ("Suspend"                "sys-suspend")
+    ("Suspend then hibernate" "sys-suspend-then-hibernate")
+    ("Hibernate"              "sys-hibernate")
+    ("Reboot"                 "sys-reboot")))
+
+(stumpwm:defcommand ctr-alt-del () ()
+  (labels ((pick (options)
+             (let ((selection (stumpwm::select-from-menu (current-screen) options "Exit Menu")))
+               (cond
+                 ((null selection)
+                  (throw 'stumpwm::error "Abort."))
+                 ((stringp (second selection))
+                  (second selection))
+                 (t
+                  (pick (cdr selection)))))))
+    (let ((*message-window-gravity* :center))
+      (fclear)
+      (let ((choice (pick *ctr-alt-del-menu*)))
+        (colon choice)
+        (pull-hidden-other)))))
 
 
 (stumpwm:defcommand start-wm-components () ()
