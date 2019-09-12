@@ -43,28 +43,30 @@
         (when (markerp m)
           (goto-char m))
         (org-map-entries #'(lambda ()
+                             ;; https://emacs.stackexchange.com/questions/41870/org-mode-retrieve-current-heading-and-parents-programmatically
                              (let* ((level   (org-element-property :level (org-element-at-point)))
                                     (prefix  (concat (make-string level ?\*) " "))
                                     (heading-tags   (org-get-heading))
                                     (heading-notags (substring-no-properties (org-get-heading 'no-tags))))
+
                                (cons (org-fontify-like-in-org-mode (concat prefix heading-tags))
-                                     ;; TODO: In value all parent heading also has to come.
-                                     heading-notags)))
+                                     ;; TODO: In value all parent headling also has to come.
+                                     (org-get-outline-path t))))
                          match
                          (if m 'tree 'file))))))
 
 (defun org-capture+-get-org-files ()
   org-agenda-files )
 
-(defun org-capture+-get-markers ()
-  )
+(defun org-capture+-get-markers ())
+  
 
 (defun org-capture+-get-org-entry-id ()
   ())
 
-
-(length
- (org-capture+-get-file-headlines (car org-agenda-files) t))
+;; (setq org-Testt-olps (org-get-outline-path t))
+(setq org-Testt-olps
+      (org-capture+-get-file-headlines (car org-agenda-files) t))
 
 
 ;; TODO: some kind of recommendation system, not rigid, but not fully free also.
@@ -74,63 +76,6 @@
 ;; org-capture-templates
 
 ;; (org-capture)
-
-;; Value:
-'(("w" "Default template" entry
-   (file+headline "/home/s/paradise/capture/capture.org" "Notes")
-   "* %^{Title}\n\n  Source: %u, %c\n\n  %i" :empty-lines 1)
-  ("c" "Current Clock")
-  ("ch" "Current Clock Headline" entry
-   (clock))
-  ("ci" "Current Clock Item" item
-   (clock))
-  ("cp" "Current Clock Plain" plain
-   (clock))
-  ("k" "Current Task" entry
-   (file+headline
-    (lambda nil
-      (org-template-set-file-writable
-       (expand-file-name "notes.org"
-                         (find-task-dir)))))
-   "* TODO %? %^g\n %i\n [%a]\n" :empty-lines 1)
-  ("m" "Emacs" entry "/home/s/paradise/capture/emacs.org" "* TODO %? %^g\n %i\n [%a]\n" :empty-lines 1)
-  ("t" "Todo" entry
-   (file+headline "/home/s/paradise/capture/todo.org" "G T D")
-   "* TODO %? %^g\n %i\n [%a]\n" :empty-lines 1)
-  ("j" "Journal" entry
-   (file+headline "/home/s/paradise/capture/journal.org" "j o u r n a l")
-   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
-  ("n" "Plan" entry
-   (file+headline "/home/s/paradise/capture/plan.org" "p l a n")
-   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
-  ("l" "Learn" entry
-   (file+headline "/home/s/paradise/capture/learn.org" "Learn")
-   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
-  ("i" "Idea" entry
-   (file+headline "/home/s/paradise/capture/idea.org" "Ideas")
-   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
-  ("b" "Book" entry
-   (file+headline "/home/s/paradise/capture/journal.org" "Books")
-   "\n* %^{Book Title} %t :READING: \n%[~/Documents/CreatedContent/contents/virtual/org/default/remember/templates/book]\n [%a]\n" :empty-lines 1)
-  ("p" "Private" entry
-   (file+headline "/home/s/paradise/capture/privnotes.org")
-   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
-  ("r" "Remember" entry
-   (file+headline "/home/s/paradise/capture/remember.org" "Remember")
-   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
-  ("s" "SomeDay" entry
-   (file+headline "/home/s/paradise/capture/someday.org" "Some Day")
-   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
-  ("w" "Waiting-For" entry
-   (file+headline "/home/s/paradise/capture/waiting4.org" "Waiting")
-   "\n* %^{topic} %T \n%i%?\n [%a]\n" :empty-lines 1)
-  ("ac" "Contact" entry
-   (file+headline "/home/s/paradise/capture/contacts.org" "Contacts")
-   "\n* %^{Name} :CONTACT:\n%[~/Documents/CreatedContent/contents/virtual/org/default/remember/templates/contact]\n %i\n [%a]\n" :empty-lines 1)
-  ("e" "Receipt" entry
-   (file+headline "/home/s/paradise/capture/finances.org" "Receipts")
-   "** %^{BriefDesc} %U %^g\n%?\n [%a]\n" :empty-lines 1)
-  ("x" "Refile" entry #'org-goto-refile "* TODO %? %^g\n %i\n [%a]\n" :empty-lines 1))
 
 
 (defvar org-capture+-types   '(("Org Entry" . entry)
@@ -180,8 +125,7 @@
          (file      (plist-get trg-plist :file))
          (headlines (plist-get trg-plist :headlines)))
     (when (and file
-               (or (null headlines)
-                   (car (last headlines))))
+               (null headlines))
       (apply #'org-capture+-get-file-headlines file t headlines))))
 
 
@@ -197,21 +141,14 @@
 
 (defun org-capture+-target-file+headlines-source (plist)
   (let ((headlines       (org-capture+-target-file+headlines-filter plist))
-        (headline-action #'(lambda (headline)
-                             (let* ((trg-plist (plist-get plist     :target))
-                                    (headlines (plist-get trg-plist :headlines)))
-                               (setq headlines (nconc headlines (list headline)))
+        (headline-action #'(lambda (headlines)
+                             (let* ((trg-plist (plist-get plist     :target)))
                                (setq trg-plist (plist-put trg-plist :headlines headlines))
-                               (setq plist     (plist-put plist     :target   trg-plist))
+                               (setq plist     (plist-put plist     :target    trg-plist))
                                (org-capture+-capture plist)))))
     (helm-build-sync-source "Headline"
-      :candidates (when headlines
-                    (append headlines (list (cons "Done" :done))))
-      :action-transformer #'(lambda (action candidate)
-                              (if (eq :done candidate)
-                                  (list (cons "Done" #'(lambda (candidate)
-                                                         (funcall headline-action nil))))
-                                (list (cons "Select" headline-action)))))))
+      :candidates headlines
+      :action (list (cons "Select" headline-action)))))
 
 (defun org-capture+-target-name-source (plist)
   (let ((targets (org-capture+-target-name-filter plist)))
@@ -233,8 +170,7 @@
       (unless (plist-get trg-plist :file)
         (push (org-capture+-target-file-source plist)
               sources))
-      (unless (and (plist-get trg-plist :headlines)
-                   (null (car (last (plist-get trg-plist :headlines)))))
+      (unless (plist-get trg-plist :headlines)
         (push (org-capture+-target-file+headlines-source plist)
               sources))
       sources)))
