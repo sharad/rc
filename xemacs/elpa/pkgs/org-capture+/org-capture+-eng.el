@@ -30,6 +30,23 @@
 (require 'org-capture+-helm-dynamic)
 
 
+(defvar org-capture+-types   '(("Org Entry" . entry)
+                               ("List Item" . item)
+                               ("Checklist Item" . chckitem)
+                               ("Table Line" . table-line)
+                               ("Plain Text" . plain)
+                               ("Log note" . log-note)))
+(defvar org-capture+-targets '(("File" . file)
+                               ("Org entry Id" . id)
+                               ("File Headline" . file+headline)
+                               ("File Outline path" . file+olp)
+                               ("File Outline path Date-tree" . file+olp+datetree)
+                               ("File function" . file+function)
+                               ("Current Org Clock" . clock)
+                               ("Function" . function)
+                               ("Marker" . marker)))
+
+
 (defun org-select-targets (&rest targets)
   (remove-if-not #'(lambda (trg)
                      (memq (cdr trg) targets))
@@ -48,7 +65,7 @@
       (file+headline     (list name file (car (last headlines))))
       (file+olp          (append (list name file) headlines))
       (file+olp+datetree (append (list name file) headlines))
-      (file+function     (list name file function))
+      (file+function     (list name function))
       (clock)            (list name)
       (function          (list name function))
       (marher            (list name marker)))))
@@ -89,39 +106,14 @@
 
 (defun org-capture+-get-markers ())
 
-
 (defun org-capture+-get-org-entry-id ()
   ())
-
-;; (setq org-Testt-olps (org-get-outline-path t))
-(setq org-Testt-olps
-      (org-capture+-get-file-headlines (car org-agenda-files) t))
-
 
-;; TODO: some kind of recommendation system, not rigid, but not fully free also.
-;; THINK
-;; you have tree api with node functions
+(defun org-capture+-get-file-functions ()
+  ())
 
-;; org-capture-templates
-
-;; (org-capture)
-
-
-(defvar org-capture+-types   '(("Org Entry" . entry)
-                               ("List Item" . item)
-                               ("Checklist Item" . chckitem)
-                               ("Table Line" . table-line)
-                               ("Plain Text" . plain)
-                               ("Log note" . log-note)))
-(defvar org-capture+-targets '(("File" . file)
-                               ("Org entry Id" . id)
-                               ("File Headline" . file+headline)
-                               ("File Outline path" . file+olp)
-                               ("File Outline path Date-tree" . file+olp+datetree)
-                               ("File function" . file+function)
-                               ("Current Org Clock" . clock)
-                               ("Function" . function)
-                               ("Marker" . marker)))
+(defun org-capture+-get-functions ()
+  ())
 
 
 (defun org-capture+-filter-types (plist)
@@ -138,14 +130,14 @@
                    (if (> (length headlines) 1)
                        '(file+olp file+olp+datetree)
                      '(file+headline file+olp file+olp+datetree))
-                 '(file file+headline file+olp file+olp+datetree file+function)))
+                 '(file file+headline file+olp file+olp+datetree)))
       org-capture+-targets)))
 
 (defun org-capture+-target-files-filter (plist)
   (let* ((trg-plist (plist-get plist     :target))
          (name      (plist-get trg-plist :name)))
     (when (memq name
-                '(nil file file+headline file+olp file+olp+datetree file+function))
+                '(nil file file+headline file+olp file+olp+datetree))
       (org-capture+-get-org-files))))
 
 ;; NEW
@@ -166,7 +158,7 @@
                       (let ((trg-plist (plist-get plist :target)))
                         (setq trg-plist (plist-put trg-plist :file   file))
                         (setq plist     (plist-put plist     :target trg-plist))
-                        (org-capture+-capture plist))))))
+                        (org-capture+-guided plist))))))
 
 (defun org-capture+-target-file+headlines-source (plist)
   (let ((headlines       (org-capture+-target-file+headlines-filter plist))
@@ -174,7 +166,7 @@
                              (let* ((trg-plist (plist-get plist     :target)))
                                (setq trg-plist (plist-put trg-plist :headlines headlines))
                                (setq plist     (plist-put plist     :target    trg-plist))
-                               (org-capture+-capture plist)))))
+                               (org-capture+-guided plist)))))
     (helm-build-sync-source "Headline"
       :candidates headlines
       :action (list (cons "Select" headline-action)))))
@@ -187,7 +179,7 @@
                       (let ((trg-plist (plist-get plist :target)))
                         (setq trg-plist (plist-put trg-plist :name   name))
                         (setq plist     (plist-put plist     :target trg-plist))
-                        (org-capture+-capture plist))))))
+                        (org-capture+-guided plist))))))
 
 (defun org-capture+-target-source (&optional plist)
   (let (sources
@@ -211,7 +203,7 @@
       :candidates types
       :action     #'(lambda (type)
                       (setq plist (plist-put plist :type type))
-                      (org-capture+-capture plist)))))
+                      (org-capture+-guided plist)))))
 
 (defun org-capture+-description-source (plist)
   (let ((descriptions org-agenda-files))
@@ -219,7 +211,7 @@
       ;; :candidates descriptions
       :action     #'(lambda (description)
                       (setq plist (plist-put plist :description description))
-                      (org-capture+-capture plist)))))
+                      (org-capture+-guided plist)))))
 
 (defun org-capture+-template-source (plist)
   ;; BUG TODO: Add action
@@ -228,9 +220,10 @@
                             0
                             #'(lambda (template)
                                 (setq plist (plist-put plist :template template))
-                                (org-capture+-capture plist))))
+                                (org-capture+-guided plist))))
 
-(defun org-capture+ (&optional plist)
+;;;###autoload
+(defun org-capture+-guided (&optional plist)
   (interactive)
   (let (sources)
     (progn
@@ -246,12 +239,12 @@
         (setq sources
               (nconc sources (org-capture+-template-source plist))))
 
-      (message "plist %s" plist)
-
       (if sources
           (helm
            :sources sources)
         (org-capture+-run-plist plist)
         (message "plist %s" plist)))))
+
+(defalias 'org-capture+ #'org-capture+-guided)
 
 ;;; org-capture+-eng.el ends here
