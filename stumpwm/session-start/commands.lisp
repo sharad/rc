@@ -39,18 +39,18 @@
   (xlib:display-finish-output *display*))
 
 (stumpwm:defcommand hsbalance-frames () ()
-            "sdfdsf"
-            (only)
-            (dotimes (c (1- (length (group-windows (current-group))))
-                      (balance-frames))
-              (hsplit)))
+  "hsbalance-frames"
+  (let ((gwin-count (1- (length (group-windows (current-group))))))
+    (only)
+    (dotimes (c gwin-count (balance-frames))
+      (hsplit))))
 
 (stumpwm:defcommand vsbalance-frames () ()
-            "sdfdsf"
-            (only)
-            (dotimes (c (1- (length (group-windows (current-group))))
-                      (balance-frames))
-              (vsplit)))
+  "vsbalance-frames"
+  (let ((gwin-count (1- (length (group-windows (current-group))))))
+    (only)
+    (dotimes (c gwin-count (balance-frames))
+      (vsplit))))
 
 ;; menu test
 (stumpwm:defcommand test-menu () ()
@@ -200,28 +200,17 @@
             (message "~a" (all-windows)))
 
 (stumpwm:defcommand display-current-frames () ()
-  (notify (tile-group-frame-tree (screen-current-group (current-screen)))))
+  (let ((group (screen-current-group (current-screen))))
+    (notify (tile-group-frame-tree group))))
 
 (stumpwm:defcommand display-current-frame-tree () ()
-  (notify (tile-group-frame-tree (screen-current-group (current-screen)))))
+  (let ((group (screen-current-group (current-screen))))
+    (notify (tile-group-frame-tree group))))
 
 (stumpwm:defcommand display-frame-preferences () ()
   (notify *window-placement-rules*))
 
 ;; Misc commands --------------------------------------------------------------
-
-;; (defun change-dir (path)
-;;   (setf *default-pathname-defaults* path)
-;;   #+(and clisp linux) (linux:|chdir| (truename path))
-;;   #+(and sbcl sb-posix) (sb-posix:|chdir| (truename path)))
-;;   ;; #+(and clisp linux) (linux:|chdir| (namestring (truename path)))
-;;   ;; #+(and sbcl sb-posix) (sb-posix:|chdir| (namestring (truename path))))
-
-;; (stumpwm:defcommand cd (path) ((:rest "Dir: "))
-;;             (change-dir path))
-  ;; #+(and clisp linux) (linux:|chdir| (namestring (truename path)))
-  ;; #+(and sbcl sb-posix) (sb-posix:|chdir| (namestring (truename path))))
-
 (stumpwm:defcommand cd (path) ((:rest "Dir: "))
   (change-dir path))
 
@@ -229,30 +218,24 @@
   (get-current-directory))
 
 (defun emacs-server-running-p ()
-  (or (probe-file (concat *home-dir*
-                          ".emacs_server"))
+  (or (probe-file (concat *home-dir* ".emacs_server"))
       (probe-file (concat "/tmp/" (getenv "UID") "/server"))))
 
-
-;; (stumpwm:defcommand emacsclient () ()
-;;   (run-or-raise
-;;    (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "DISPLAY") "/emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general")))
-;;    '(:class "Emacs")))
-
 (defun wait-for-program (pgm)
-    (dotimes (v 10 nil)
-      (let ((c (read-from-string (run-shell-command (concat "pgrep " pgm " | wc -l") t))))
-        (if (< c 1)
-            (return t)
-            (progn
-              (message "~a ~a ~a" c pgm v)
-              (sleep 2))))))
+  (dotimes (v 10 nil)
+    (let ((c (read-from-string (run-shell-command (concat "pgrep " pgm " | wc -l") t))))
+      (if (< c 1)
+          (return t)
+          (progn
+            (message "~a ~a ~a" c pgm v)
+            (sleep 2))))))
 
 (defun wait-for-nwprogram (pgm)
   (or (member pgm (get-all-clis)
-                  :test #'equal
-                  :key #'(lambda (s)
-                           (subseq (string-left-trim " " s) 0 (min (length pgm) (length s)))))
+              :test #'equal
+              :key #'(lambda (s)
+                       (subseq (string-left-trim " " s) 0
+                               (min (length pgm) (length s)))))
       (wait-for-program pgm)))
 
 #-pa
@@ -279,8 +262,6 @@
     (run-wcli-command
      (build-emacslcient-cmd "-nc"
                             "-e" "'(setq spec-id \"main\")" )))
-  ;; '(:class "Emacs")
-
 
   (stumpwm:defcommand emacsclient () ()
     (let ((serve-window-manager-request-with-id (prin1-to-string
@@ -289,13 +270,9 @@
                                                          ")"))))
       (run-wcli-command
        (build-emacslcient-cmd "-nc" "-e" serve-window-manager-request-with-id))))
-  ;; '(:class "Emacs")
-
 
   (stumpwm:defcommand xeditor () ()
     (emacsclient))
-  ;; '(:class "Emacs")
-
 
   (stumpwm:defcommand mail-reader () ()
     (run-wcli-command (build-emacslcient-cmd "-n" "-e" "'(make-mail-chat-frame)'")))
@@ -312,8 +289,6 @@
 (stumpwm:defcommand gnusclient () ()
   (if (wait-for-program "emacsclient")
       (emacs-gnus)))
-
-;; run-wcli-command
 
 (stumpwm:defcommand gnusclient () ()
   (if (wait-for-program "emacsclient")
@@ -666,7 +641,7 @@
   '(("Lock"                   "lock-stumpwm")
     ("Logout"                 "bye-with-confirmation")
     ("Logout Now"             "bye")
-    ("Halt"                   "sys-halt")
+    ;; ("Halt"                   "sys-halt")
     ("Poweroff"               "sys-poweroff")
     ("Suspend"                "sys-suspend")
     ("Suspend then hibernate" "sys-suspend-then-hibernate")
@@ -709,18 +684,14 @@
   (message "started start-wm-components")
   (prog1
       (run-shell-command
-       (concat
-        (getenv "HOME")
-        "/.rsetup/wmlogin/run"))
+       (concat (getenv "HOME") "/.rsetup/wmlogin/run"))
     (message "done start-wm-components")))
 
 (stumpwm:defcommand start-wm-test-components () ()
   (message "started start-wm-test-components")
   (prog1
       (run-shell-command
-       (concat
-        (getenv "HOME")
-        "/tmp/test.sh"))
+       (concat (getenv "HOME") "/tmp/test.sh"))
     (message "done start-wm-test-components")))
 
 

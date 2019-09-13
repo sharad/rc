@@ -230,24 +230,15 @@
                                 (org-capture+-guided plist))))
 
 
-(defun org-capture+-target-reset-candidates (plist)
-  (let* ((keys (plist-get-keys plist))
-         (keys (remove-if-not #'(lambda (k) (plist-get plist k))
-                              keys)))
-    (mapcar #'(lambda (key)
-                (cons (format "%s: %s" key (plist-get plist key)) key))
-            keys)))
-
-(defun org-capture+-reset-candidates (plist)
+(defun org-capture+-reset-candidates (plist &rest tree-keys)
   (let* ((target (plist-get plist :target))
-         (keys (plist-get-keys plist))
-         (keys (remove-if-not #'(lambda (k) (plist-get plist k))
-                              keys)))
-    (append (when target
-              (org-capture+-target-reset-candidates target))
-            (mapcar #'(lambda (key)
-                        (cons (format "%s: %s" key (plist-get plist key)) key))
-                    keys))))
+         (keys   (plist-get-keys plist))
+         (keys   (remove-if-not #'(lambda (k) (plist-get plist k))
+                                keys)))
+    (mapcar #'(lambda (key)
+                (cons (format "%s: %s" key (plist-get plist key))
+                      (append tree-keys (list key))))
+            keys)))
 
 (defun org-capture+reset-source (plist)
   (let ((candidates (org-capture+-reset-candidates plist)))
