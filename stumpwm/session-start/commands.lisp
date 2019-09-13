@@ -737,20 +737,18 @@
   ;; http://theatticlight.net/posts/Stumpwm-shutdown-nag/
   (ql:quickload 'cl-cron)
   (require 'cl-cron)
-  (use-package 'cl-cron)
-  )
+  (use-package 'cl-cron))
 
 ;; (no-error
 ;;     (require 'cl-xyzfail)
 ;;  )
 (when nil
-(progn
- ;; http://www.cliki.net/CPS
- ;; http://dunsmor.com/lisp/onlisp/onlisp_24.html
- ;;
- (require 'cl-cont)
- (use-package 'cl-cont))
-)
+  (progn
+    ;; http://www.cliki.net/CPS
+    ;; http://dunsmor.com/lisp/onlisp/onlisp_24.html
+    ;;
+    (require 'cl-cont)
+    (use-package 'cl-cont)))
 
 
 (debug-sleep)
@@ -762,26 +760,32 @@
             )
 
 (stumpwm:defcommand env (&optional (var t)) ((:string "env var: "))
-  (if (eq var t)
-      (message "all env")
-      (let* ((var (format nil "~a" var))
-             (value (getenv var))
-             (changed-value
-               (read-one-line (current-screen)
-                              (format nil "env[~a]: " var)
-                              :initial-input value)))
-        (if (and
-             value
-             (stringp value)
-             (apply
-              #'string-equal
-              (mapcar
-               #'(lambda (str) (string-trim '(#\Space #\Tab #\Newline) str))
-               (list value changed-value))))
-            (message "env[~a] unchanged" var)
-            (if (setf (getenv var) changed-value)
-                (message "env[~a]: ~a" var changed-value))))))
+  (let ((var (if (string-equal "" var) t var)))
+    (if (eq var t)
+        (let ((env-vars (sb-ext:posix-environ)))
+          (message "Environment[ ~a ]:~%~:{~a: ~a~%~}"
+                   (length env-vars)
+                   (let ((i 0))
+                     (mapcar #'(lambda (e)
+                                 (incf i)
+                                 (list i e))
+                             env-vars))))
+        (let* ((var (format nil "~a" var))
+               (value (getenv var))
+               (changed-value
+                 (read-one-line (current-screen)
+                                (format nil "env[~a]: " var)
+                                :initial-input value)))
+          (if (and value
+                   (stringp value)
+                   (apply #'string-equal
+                          (mapcar #'(lambda (str) (string-trim '(#\Space #\Tab #\Newline) str))
+                                  (list value changed-value))))
+              (message "env[~a] unchanged" var)
+              (if (setf (getenv var) changed-value)
+                  (message "env[~a]: ~a" var changed-value)))))))
 
 (stumpwm:defcommand find-cousor () ()
   (run-shell-command "~/bin/find-cursor --color black")
   (run-shell-command "~/bin/find-cursor --color white"))
+
