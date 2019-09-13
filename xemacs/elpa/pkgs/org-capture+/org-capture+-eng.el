@@ -30,6 +30,8 @@
 (require 'org-capture+-helm-dynamic)
 
 
+;; checkout org-capture-templates variable
+
 (defvar org-capture+-types   '(("Org Entry" . entry)
                                ("List Item" . item)
                                ("Checklist Item" . chckitem)
@@ -38,10 +40,11 @@
                                ("Log note" . log-note)))
 (defvar org-capture+-targets '(("File" . file)
                                ("Org entry Id" . id)
+                               ("File and Headline Regular Expression". file+regexp)
                                ("File Headline" . file+headline)
                                ("File Outline path" . file+olp)
                                ("File Outline path Date-tree" . file+olp+datetree)
-                               ("File function" . file+function)
+                               ("File and Function to find Headline" . file+function)
                                ("Current Org Clock" . clock)
                                ("Function" . function)
                                ("Marker" . marker)))
@@ -88,15 +91,19 @@
   (when (file-exists-p file)
     (with-current-buffer (find-file-noselect file)
       (let ((m (org-find-olp (cons file headlines))))
-        (when (markerp m)
-          (goto-char m))
+        (if (markerp m)
+            (goto-char m)
+          (when headlines
+            (error "Can not find headlines %s in file %s"
+                   headlines
+                   file)))
         (org-map-entries #'(lambda ()
                              ;; https://emacs.stackexchange.com/questions/41870/org-mode-retrieve-current-heading-and-parents-programmatically
                              (let* ((level   (org-element-property :level (org-element-at-point)))
                                     (prefix  (concat (make-string level ?\*) " "))
-                                    (heading-tags   (org-get-heading))
-                                    (heading-notags (substring-no-properties (org-get-heading 'no-tags))))
-                               (cons (org-fontify-like-in-org-mode (concat prefix heading-tags))
+                                    (headline-tags   (org-get-heading))
+                                    (headline-notags (substring-no-properties (org-get-heading 'no-tags))))
+                               (cons (org-fontify-like-in-org-mode (concat prefix headline-tags))
                                      (org-get-outline-path t))))
                          match
                          (if m 'tree 'file))))))
@@ -221,6 +228,35 @@
                             #'(lambda (template)
                                 (setq plist (plist-put plist :template template))
                                 (org-capture+-guided plist))))
+
+
+(defun org-capture+-target-reset-candidates (plist)
+  (let* ((keys (plist-get-keys plist))
+         (keys (remove-if-not #'(lambda (k) (plist-get plist k))
+                              keys)))
+    (mapcar #'(lambda (key)
+                (cons (format "%s: %s" key (plist-get plist key)) key))
+            keys)))
+
+(defun org-capture+-reset-candidates (plist)
+  (let* ((target (plist-get plist :target))
+         (keys (plist-get-keys plist))
+         (keys (remove-if-not #'(lambda (k) (plist-get plist k))
+                              keys)))
+    (append (when target
+              (org-capture+-target-reset-candidates target))
+            (mapcar #'(lambda (key)
+                        (cons (format "%s: %s" key (plist-get plist key)) key))
+                    keys))))
+
+(defun org-capture+reset-source (plist)
+  (let ((candidates (org-capture+-reset-candidates plist)))
+    (helm-build-sync-source "Reset"
+      :candidates candidates
+      :action     #'(lambda (key)
+                      (setq plist (plist-put plist :key nil))
+                      (org-capture+-guided plist)))))
+
 
 ;; TODO: Add resets which will help to edit existing
 ;;       take new as editing an anonymous
@@ -228,7 +264,10 @@
 ;;;###autoload
 (defun org-capture+-guided (&optional plist)
   (interactive)
-  (let (sources)
+  (let (sources
+        reset-source)
+    (setq reset-source
+          (list (org-capture+reset-source plist)))
     (progn
       (unless (plist-get plist :type)
         (push (org-capture+-type-source        plist)
@@ -243,9 +282,15 @@
               (nconc sources (org-capture+-template-source plist))))
 
       (if sources
-          (helm :sources sources)
+          (helm :sources (append sources reset-source))
         (org-capture+-run-plist plist)
         (message "plist %s" plist)))))
+
+(defun self-insert-test ()
+  (interactive)
+  (message "Hello")
+  (self-insert-command 1))
+
 
 ;;;###autoload
 (defalias 'org-capture+ #'org-capture+-guided)
