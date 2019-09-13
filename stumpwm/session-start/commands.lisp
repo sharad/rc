@@ -257,69 +257,67 @@
 
 #-pa
 (progn
-  (stumpwm:defcommand editor () ()
-              ;;(if (wait-for-nwprogram "emacsclient")
-              (run-wcli-command
-               (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general")) " -e '(setq spec-id \"main\")")
-               ;; '(:class "Emacs")
-               ))
 
-  (stumpwm:defcommand xeditor () ()
-              (run-wcli-command
-               (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general"))
-                       " -e "
-                       (prin1-to-string
-                        (concat "(serve-window-manager-request "
-                                (prin1-to-string (format nil "~a" (substitute #\_ #\Space (stumpwm::group-name (stumpwm::current-group)))))
-                                ")")))
-               ;; '(:class "Emacs")
-               ))
+  ;; https://stackoverflow.com/questions/8830888/whats-the-canonical-way-to-join-strings-in-a-list
+  (defun string-join (separator strings)
+    " "
+    (let ((separator (replace-all "~" "~~" separator)))
+      (format nil
+              (concatenate 'string "~{~a~^" separator "~}")
+              strings)))
+
+  (defun build-emacslcient-cmd (args)
+    (let ((home         (getenv "HOME"))
+          (display      (getenv "DISPLAY"))
+          (emacs-server (or (getenv "EMACS_SERVER_NAME") "general"))())
+      (let* ((emacs-server-file (concat home "/.emacs.d/server/" emacs-server))
+             (emacsclient-cmd   (string-join "emacsclient -d " display  "-f" emacs-server-file)))
+        (string-join emacsclient-cmd args))))
+
+  (stumpwm:defcommand editor () ()
+    ;;(if (wait-for-nwprogram "emacsclient")
+    (run-wcli-command
+     (build-emacslcient-cmd "-nc"
+                            "-e" "'(setq spec-id \"main\")" )))
+  ;; '(:class "Emacs")
+
 
   (stumpwm:defcommand emacsclient () ()
-              (run-wcli-command
-               (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general"))
-                       " -e "
-                       (prin1-to-string
-                        (concat "(serve-window-manager-request "
-                                (prin1-to-string (format nil "~a" (substitute #\_ #\Space (stumpwm::group-name (stumpwm::current-group)))))
-                                ")")))
-               ;; '(:class "Emacs")
-               ))
+    (let ((serve-window-manager-request-with-id (prin1-to-string
+                                                 (concat "(serve-window-manager-request "
+                                                         (prin1-to-string (format nil "~a" (substitute #\_ #\Space (stumpwm::group-name (stumpwm::current-group)))))
+                                                         ")"))))
+      (run-wcli-command
+       (build-emacslcient-cmd "-nc" "-e" serve-window-manager-request-with-id))))
+  ;; '(:class "Emacs")
+
+
+  (stumpwm:defcommand xeditor () ()
+    (emacsclient))
+  ;; '(:class "Emacs")
+
 
   (stumpwm:defcommand mail-reader () ()
-              (run-wcli-command
-               (concat "emacsclient -n -f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general") " -e (make-mail-chat-frame)"))))
+    (run-wcli-command (build-emacslcient-cmd "-n" "-e" "'(make-mail-chat-frame)'")))
 
   (stumpwm:defcommand new-mail () ()
-              (if (wait-for-program "emacsclient")
-                  (run-wcli-command
-                   (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general") " -e '(gnus-group-mail)'"))))))
+    (if (wait-for-program "emacsclient")
+        (run-wcli-command (build-emacslcient-cmd "-n" "-e" "'(gnus-group-mail)'")))))
 
-(stumpwm:defcommand gnus () ()
+(stumpwm:defcommand emacs-gnus () ()
   (if (wait-for-nwprogram "emacsclient")
       (run-wcli-command
-       (concat "emacsclient -d " (getenv "DISPLAY")  "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general") " -e '(gnus)'"))
-       '(:class "EmacsGNU"))))
-
-
-;; (stumpwm:defcommand mail-reader () ()
-;;   (if (wait-for-program "emacsclient")
-;;   (run-wcli-command
-;;    (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general") " -e '(gnus)'")))))
-
+       (run-wcli-command (build-emacslcient-cmd  "-e" "'(gnus)'")))))
 
 (stumpwm:defcommand gnusclient () ()
   (if (wait-for-program "emacsclient")
-  (run-or-pull
-   (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general")) " -e '(gnus)'")
-   '(:class "EmacsGNUS"))))
+      (emacs-gnus)))
 
 ;; run-wcli-command
 
 (stumpwm:defcommand gnusclient () ()
   (if (wait-for-program "emacsclient")
-  (run-wcli-command
-   (concat "emacsclient -d " (getenv "DISPLAY") " -f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general")) " -e '(gnus)'"))))
+      (emacs-gnus)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; from window.lisp
@@ -344,19 +342,10 @@
   (run-wcli-command
    (concat "gnome-session-save --gui --logout-dialog")))
 
-;; no use.
-;; (stumpwm:defcommand emacsclient-cli () ()
-;;   (run-wcli-command
-;;    (concat "emacsclient -d " (getenv "DISPLAY") " -c ")))
-
-
-;; (stumpwm:defcommand manuscrit () ()
-;;    (run-shell-command "gv /home/m0rg/these/manuscrit/these.ps"))
-
 (stumpwm:defcommand mutt () ()
-   (run-or-raise
-    "xterm -title mutt -e mutt -y"
-    '(:title "mutt")))
+  (run-or-raise
+   "xterm -title mutt -e mutt -y"
+   '(:title "mutt")))
 
 (stumpwm:defcommand ebib () ()
   (run-or-raise
@@ -524,22 +513,9 @@
                                  (format nil " -T ~a"
                                          (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
 
-;; (testing
-;;   (cl-ppcre:split " " (concatenate 'string "urxvtc"
-;;                                    ;; (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
-;;                                    ;;   (if (probe-file paradise)
-;;                                    ;;       (concatenate 'string " -cd " paradise " ")
-;;                                    ;;       ""))
-;;                                    (format nil "~a-T ~a"
-;;                                            (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
-;;                                              (if (probe-file paradise)
-;;                                                  (concatenate 'string " -cd " paradise " ")
-;;                                                  " "))
-;;                                            (substitute #\_ #\Space (group-name (current-group)))))))
-
 (stumpwm:defcommand mrxvt (&optional title) ((:rest "title: "))
-            (run-wcli-command (concatenate 'string "mrxvt"
-                                          (if title (format nil " -title ~a" title)))))
+  (run-wcli-command (concatenate 'string "mrxvt"
+                                 (if title (format nil " -title ~a" title)))))
 
 (stumpwm:defcommand xscreen () ()
   (run-wcli-command "xterm -e screen"))
@@ -644,6 +620,9 @@
 (debug-sleep)
 
 
+(stumpwm:defcommand lock-stumpwm () ()
+  (eval-command "exec xautolock -locknow" t))
+
 (stumpwm:defcommand bye () ()
   #+pa
   (in.net.sharad.pa-backend-emacs-planner::emacs-eval-nooutput "(close-all-frames)")
@@ -658,9 +637,11 @@
 (stumpwm:defcommand bye-with-confirmation () ()
   (let ((*message-window-gravity* :center))
     (fclear)
-    (if (y-or-n-p "^5^BLogout from stumpwm:^b ^2")
-        (bye-with-cleanup)
-        (pull-hidden-other))))
+    (unwind-protect
+         (if (y-or-n-p "^5^BLogout from stumpwm:^b ^2")
+             (bye-with-cleanup))
+      (progn
+        (pull-hidden-other)))))
 
 (stumpwm:defcommand sys-halt () ()
   (run-shell-command "systemctl poweroff"))
@@ -682,7 +663,8 @@
   (run-shell-command "systemctl reboot"))
 
 (defparameter *ctr-alt-del-menu*
-  '(("Logout"                 "bye-with-confirmation")
+  '(("Lock"                   "lock-stumpwm")
+    ("Logout"                 "bye-with-confirmation")
     ("Logout Now"             "bye")
     ("Halt"                   "sys-halt")
     ("Poweroff"               "sys-poweroff")
@@ -693,7 +675,9 @@
 
 (stumpwm:defcommand ctr-alt-del () ()
   (labels ((pick (options)
-             (let ((selection (stumpwm::select-from-menu (current-screen) options "Exit Menu:")))
+             (let ((selection (stumpwm::select-from-menu (stumpwm::current-screen)
+                                                         options
+                                                         "Exit Menu:")))
                (cond
                  ((null selection)
                   (throw 'stumpwm::error "Abort."))
@@ -703,11 +687,20 @@
                   (pick (cdr selection)))))))
     (let ((*message-window-gravity* :center))
       (fclear)
-      (let* ((choice (pick *ctr-alt-del-menu*))
-             (cmd    choice))
-        (when (plusp (length cmd))
-          (eval-command cmd t))
-        (pull-hidden-other)))))
+      (unwind-protect
+           (let* ((menu   (mapcar #'(lambda (item)
+                                      (let* ((item (if (consp item) item (cons item item)))
+                                             (heading (car  item))
+                                             (value   (cadr item)))
+                                        (list (concat "^5^B" heading "^b ^2")
+                                              value)))
+                                  *ctr-alt-del-menu*))
+                  (choice (pick menu))
+                  (cmd    choice))
+             (when (plusp (length cmd))
+               (eval-command cmd t)))
+        (progn
+          (pull-hidden-other))))))
 
 (debug-sleep)
 
