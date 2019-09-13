@@ -640,17 +640,17 @@
                    }'"))
 
 (define-key stumpwm:*root-map* (kbd "X") "refocus-conkeror")
+
+(debug-sleep)
 
 
-(stumpwm:defcommand bye () ())
-#+pa
+(stumpwm:defcommand bye () ()
+  #+pa
   (in.net.sharad.pa-backend-emacs-planner::emacs-eval-nooutput "(close-all-frames)")
   (sleep 1)
-  (run-shell-command
-   (concat
-    (getenv "HOME")
-    "/.rsetup/wmlogout/run"))
-  (quit)
+  (run-shell-command (concat (getenv "HOME")
+                             "/.rsetup/wmlogout/run"))
+  (quit))
 
 (stumpwm:defcommand bye-with-cleanup () ()
             (bye))
@@ -703,9 +703,13 @@
                   (pick (cdr selection)))))))
     (let ((*message-window-gravity* :center))
       (fclear)
-      (let ((choice (pick *ctr-alt-del-menu*)))
-        (colon choice)
+      (let* ((choice (pick *ctr-alt-del-menu*))
+             (cmd    choice))
+        (when (plusp (length cmd))
+          (eval-command cmd t))
         (pull-hidden-other)))))
+
+(debug-sleep)
 
 
 (stumpwm:defcommand start-wm-components () ()
@@ -755,8 +759,11 @@
  (use-package 'cl-cont))
 )
 
+
+(debug-sleep)
+
 (stumpwm:defcommand gnext-nonempty () ()
-            )
+  )
 
 (stumpwm:defcommand gprev-nonempty () ()
             )

@@ -27,7 +27,11 @@
     (setf *data-dir* (parse-namestring setup-dir))
     (load setup-file)))
 ;; Load all sub files
+(message "loading ~a" *session-dir*)
+(debug-sleep)
 (sharad/load-dir-files *session-dir*)
+(message "loaded ~a" *session-dir*)
+(debug-sleep)
 (sharad/load-dir-files (concat *session-dir* "contrib"))
 ;;}}}
 

@@ -4,6 +4,10 @@
 
 ;;{{{
 (defvar *interactive-debug* 0 "Interactive debug.")
+(defparameter *debug-wait* 0)
+(defun debug-sleep ()
+  (when (> *debug-wait* 0)
+    (sleep *debug-wait*)))
 
 (defun show-dbg (msg &key (prompt "test:"))
   (if (> *interactive-debug* 0)
@@ -27,34 +31,16 @@
 
 ;;{{{ Load all subfiles
 (defun sharad/load-dir-files (dir)
-    (dolist (file (directory (concat dir "*.lisp")))
-        (load file)
-        (message "Loaded ~a" file)))
+  (dolist (file (directory (concat dir "*.lisp")))
+    (debug-sleep)
+    (message "loading ~a" file)
+    (load file)
+    (message "Loaded ~a" file)))
 ;;}}}
 
 
 (if (find-package :pa-fnstumpwm)
     (push :pa *FEATURES*))
-
-;; (if (find-package :pa-fnstumpwm)
-;;    ;; (make-package :pa-fnstumpwm)
-;;     (progn
-;;       (import 'pa-fnstumpwm::run-cli-command)
-;;       (import 'pa-fnstumpwm::run-wcli-command))
-;;     (progn
-;;       (defcommand run-cli-command (cmd) ((:shell "program: "))
-;;         (run-shell-command cmd))
-;;       (defcommand run-wcli-command (cmd) ((:shell "program: "))
-;;         (run-shell-command cmd))))
-
-;; ;; (defun usepa ()
-;; ;;   (string-equal (getenv "STUMPWMPA") "yes"))
-
-;; ;; (if (or t (usepa))
-;; ;;     (import 'pa-fnstumpwm::run-wcli-command)
-;; ;;     (import 'pa-fnstumpwm::run-cli-command))
-
-
 
 #-pa
 (defcommand run-cli-command (cmd) ((:shell "program: "))

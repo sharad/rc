@@ -3,7 +3,6 @@
 #
 # last modified:
 
-source ~/.sasken.zshenv
 
 # WM=${1:-stumpwm}
 WM=/usr/local/bin/x-session-stumpwm
