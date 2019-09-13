@@ -222,6 +222,9 @@
                                 (setq plist (plist-put plist :template template))
                                 (org-capture+-guided plist))))
 
+;; TODO: Add resets which will help to edit existing
+;;       take new as editing an anonymous
+
 ;;;###autoload
 (defun org-capture+-guided (&optional plist)
   (interactive)
@@ -240,11 +243,11 @@
               (nconc sources (org-capture+-template-source plist))))
 
       (if sources
-          (helm
-           :sources sources)
+          (helm :sources sources)
         (org-capture+-run-plist plist)
         (message "plist %s" plist)))))
 
+;;;###autoload
 (defalias 'org-capture+ #'org-capture+-guided)
 
 ;;; org-capture+-eng.el ends here
