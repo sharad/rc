@@ -51,10 +51,21 @@
 
 
 (defun ptree-get (tree &rest keys)
-  ())
+  (let ((key (car keys)))
+    (if (and key
+             (consp tree))
+        (apply #'ptree-get (plist-get tree key) (cdr keys))
+      (unless (cdr keys) tree))))
 
-(defun ptree-set (tree &rest keys)
-  ())
+(defun ptree-put (tree value &rest keys)
+  (let ((key (car keys)))
+    (if (and key
+             (consp tree))
+        (setq tree
+              (plist-put tree key (apply #'ptree-put (plist-get tree key) value (cdr keys)))))
+    tree))
+
+(ptree-put '(:a (:b (:c nil))) 'x :x :b :c :d)
 
 (defun org-select-targets (&rest targets)
   (remove-if-not #'(lambda (trg)
