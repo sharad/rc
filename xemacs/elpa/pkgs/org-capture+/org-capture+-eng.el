@@ -69,7 +69,7 @@
                            value))))))
 
 
-(defun org-capture-helm-action (plist keys value)
+(defun org-capture-helm-action (plist value &rest keys)
   (apply #'ptree-put plist value keys))
 
 
