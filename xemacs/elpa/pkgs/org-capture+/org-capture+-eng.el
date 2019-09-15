@@ -153,9 +153,8 @@
 
 
 (defun org-capture+-target-name-filter (plist)
-  (let* ((trg-plist (plist-get plist     :target))
-         (file      (plist-get trg-plist :file))
-         (headlines (plist-get trg-plist :headlines)))
+  (let* ((file      (ptree-get plist :target :file))
+         (headlines (ptree-get plist :target :headlines)))
     (if file
         (apply #'org-select-targets
                (if headlines
@@ -166,17 +165,15 @@
       org-capture+-target-names)))
 
 (defun org-capture+-target-files-filter (plist)
-  (let* ((trg-plist (plist-get plist     :target))
-         (name      (plist-get trg-plist :name)))
+  (let ((name      (ptree-get plist :target :name)))
     (when (memq name
                 '(nil file file+headline file+olp file+olp+datetree))
       (org-capture+-get-org-files))))
 
 ;; NEW
 (defun org-capture+-target-file+headlines-filter (plist)
-  (let* ((trg-plist (plist-get plist     :target))
-         (file      (plist-get trg-plist :file))
-         (headlines (plist-get trg-plist :headlines)))
+  (let* ((file      (ptree-get plist :target :file))
+         (headlines (ptree-get plist :target :headlines)))
     (when (and file
                (null headlines))
       (apply #'org-capture+-get-file-headlines file t headlines))))
