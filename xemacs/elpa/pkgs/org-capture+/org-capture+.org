@@ -631,7 +631,7 @@
 
   (defun org-create-new-task ()
     (interactive)
-    (org-capture-plus
+    (org-capture-run
      'entry
      '(function org-goto-refile)
      "* TODO %? %^g\n %i\n [%a]\n"
