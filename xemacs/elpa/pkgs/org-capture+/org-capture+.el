@@ -601,7 +601,7 @@ of the day at point (if any) or the current HH:MM time."
 
 (defun org-create-new-task ()
   (interactive)
-  (org-capture-plus
+  (org-capture-run
    'entry
    '(function org-goto-refile)
    "* TODO %? %^g\n %i\n [%a]\n"

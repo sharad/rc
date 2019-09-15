@@ -38,22 +38,28 @@
                                ("Table Line" . table-line)
                                ("Plain Text" . plain)
                                ("Log note" . log-note)))
-(defvar org-capture+-targets '(("File" . file)
-                               ("Org entry Id" . id)
-                               ("File and Headline Regular Expression". file+regexp)
-                               ("File Headline" . file+headline)
-                               ("File Outline path" . file+olp)
-                               ("File Outline path Date-tree" . file+olp+datetree)
-                               ("File and Function to find Headline" . file+function)
-                               ("Current Org Clock" . clock)
-                               ("Function" . function)
-                               ("Marker" . marker)))
+(defvar org-capture+-target-names '(("File" . file)
+                                    ("Org entry Id" . id)
+                                    ("File and Headline Regular Expression". file+regexp)
+                                    ("File Headline" . file+headline)
+                                    ("File Outline path" . file+olp)
+                                    ("File Outline path Date-tree" . file+olp+datetree)
+                                    ("File and Function to find Headline" . file+function)
+                                    ("Current Org Clock" . clock)
+                                    ("Function" . function)
+                                    ("Marker" . marker)))
 
 
+(defun ptree-get (tree &rest keys)
+  ())
+
+(defun ptree-set (tree &rest keys)
+  ())
+
 (defun org-select-targets (&rest targets)
   (remove-if-not #'(lambda (trg)
                      (memq (cdr trg) targets))
-                 org-capture+-targets))
+                 org-capture+-target-names))
 
 
 (defun org-capture+-build-target-arg (plist)
@@ -138,7 +144,7 @@
                        '(file+olp file+olp+datetree)
                      '(file+headline file+olp file+olp+datetree))
                  '(file file+headline file+olp file+olp+datetree)))
-      org-capture+-targets)))
+      org-capture+-target-names)))
 
 (defun org-capture+-target-files-filter (plist)
   (let* ((trg-plist (plist-get plist     :target))
