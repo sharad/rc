@@ -283,13 +283,13 @@
         (org-capture+-run-plist plist)
         (message "plist %s" plist)))))
 
+;;;###autoload
+(defalias 'org-capture+ #'org-capture+-guided)
+
+
 (defun self-insert-test ()
   (interactive)
   (message "Hello")
   (self-insert-command 1))
-
-
-;;;###autoload
-(defalias 'org-capture+ #'org-capture+-guided)
 
 ;;; org-capture+-eng.el ends here
