@@ -67,6 +67,10 @@
                          (if (cdr keys)
                              (apply #'ptree-put (plist-get tree key) value (cdr keys))
                            value))))))
+
+
+(defun org-capture-helm-action (plist keys value)
+  (apply #'ptree-put plist value keys))
 
 
 ;; (ptree-put '(:a (:b (:c (:d e)))) 'x :a :b :c :d)
@@ -183,18 +187,12 @@
     (helm-build-sync-source "Files"
       :candidates files
       :action     #'(lambda (file)
-                      (let ((trg-plist (plist-get plist :target)))
-                        (setq trg-plist (plist-put trg-plist :file   file))
-                        (setq plist     (plist-put plist     :target trg-plist))
-                        (org-capture+-guided plist))))))
+                      (org-capture+-guided (org-capture-helm-action plist file :target :file))))))
 
 (defun org-capture+-target-file+headlines-source (plist)
   (let ((headlines       (org-capture+-target-file+headlines-filter plist))
         (headline-action #'(lambda (headlines)
-                             (let* ((trg-plist (plist-get plist     :target)))
-                               (setq trg-plist (plist-put trg-plist :headlines headlines))
-                               (setq plist     (plist-put plist     :target    trg-plist))
-                               (org-capture+-guided plist)))))
+                             (org-capture+-guided (org-capture-helm-action plist headlines :target :headlines)))))
     (helm-build-sync-source "Headline"
       :candidates headlines
       :action (list (cons "Select" headline-action)))))
@@ -204,10 +202,7 @@
     (helm-build-sync-source "Target"
       :candidates targets
       :action     #'(lambda (name)
-                      (let ((trg-plist (plist-get plist :target)))
-                        (setq trg-plist (plist-put trg-plist :name   name))
-                        (setq plist     (plist-put plist     :target trg-plist))
-                        (org-capture+-guided plist))))))
+                      (org-capture+-guided (org-capture-helm-action plist name :target :name))))))
 
 (defun org-capture+-target-source (&optional plist)
   (let (sources
@@ -230,16 +225,14 @@
     (helm-build-sync-source "Type"
       :candidates types
       :action     #'(lambda (type)
-                      (setq plist (plist-put plist :type type))
-                      (org-capture+-guided plist)))))
+                      (org-capture+-guided (org-capture-helm-action plist type :type))))))
 
 (defun org-capture+-description-source (plist)
   (let ((descriptions org-agenda-files))
     (helm-build-dummy-source "Description"
       ;; :candidates descriptions
       :action     #'(lambda (description)
-                      (setq plist (plist-put plist :description description))
-                      (org-capture+-guided plist)))))
+                      (org-capture+-guided (org-capture-helm-action plist description :description))))))
 
 (defun org-capture+-template-source (plist)
   ;; BUG TODO: Add action
@@ -247,8 +240,7 @@
                             '(t xx yy)
                             0
                             #'(lambda (template)
-                                (setq plist (plist-put plist :template template))
-                                (org-capture+-guided plist))))
+                                (org-capture+-guided (org-capture-helm-action plist template :template)))))
 
 
 (defun org-capture+-reset-candidates (plist &rest tree-keys)
