@@ -69,24 +69,24 @@
                            value))))))
 
 
-(defun org-capture-helm-action (plist value &rest keys)
-  (apply #'ptree-put plist value keys))
-
+(defun org-capture-helm-action (ptree value &rest keys)
+  (apply #'ptree-put ptree value keys))
 
 ;; (ptree-put '(:a (:b (:c (:d e)))) 'x :a :b :c :d)
 
+
 (defun org-select-targets (&rest targets)
   (remove-if-not #'(lambda (trg)
                      (memq (cdr trg) targets))
                  org-capture+-target-names))
 
 
-(defun org-capture+-build-target-arg (plist)
-  (let ((name      (ptree-get plist :name))
-        (file      (ptree-get plist :file))
-        (headlines (ptree-get plist :headlines))
-        (function  (ptree-get plist :function))
-        (marker    (ptree-get plist :marker)))
+(defun org-capture+-build-target-arg (ptree)
+  (let ((name      (ptree-get ptree :target :name))
+        (file      (ptree-get ptree :target :file))
+        (headlines (ptree-get ptree :target :headlines))
+        (function  (ptree-get ptree :target :function))
+        (marker    (ptree-get ptree :target :marker)))
     (case name
       (file              (list name file))
       (id                (list name id))
@@ -98,17 +98,16 @@
       (function          (list name function))
       (marher            (list name marker)))))
 
-(defun org-capture+-build-arg (plist)
-  (let ((type     (ptree-get plist :type))
-        (target   (ptree-get plist :target))
-        (template (ptree-get plist :template)))
+(defun org-capture+-build-arg (ptree)
+  (let ((type     (ptree-get ptree :type))
+        (template (ptree-get ptree :template)))
     (list type
-          (org-capture+-build-target-arg target)
+          (org-capture+-build-target-arg ptree)
           template)))
 
-(defun org-capture+-run-plist (plist)
+(defun org-capture+-run-ptree (ptree)
   (apply #'org-capture-run
-         (org-capture+-build-arg plist)))
+         (org-capture+-build-arg ptree)))
 
 
 ;; cons of name value
@@ -148,12 +147,12 @@
   ())
 
 
-(defun org-capture+-filter-types (plist)
+(defun org-capture+-filter-types (ptree)
   org-capture+-types)
 
-(defun org-capture+-target-name-filter (plist)
-  (let* ((file      (ptree-get plist :target :file))
-         (headlines (ptree-get plist :target :headlines)))
+(defun org-capture+-target-name-filter (ptree)
+  (let* ((file      (ptree-get ptree :target :file))
+         (headlines (ptree-get ptree :target :headlines)))
     (if file
         (apply #'org-select-targets
                (if headlines
@@ -163,122 +162,117 @@
                  '(file file+headline file+olp file+olp+datetree)))
       org-capture+-target-names)))
 
-(defun org-capture+-target-files-filter (plist)
-  (let ((name      (ptree-get plist :target :name)))
+(defun org-capture+-target-files-filter (ptree)
+  (let ((name (ptree-get ptree :target :name)))
     (when (memq name
                 '(nil file file+headline file+olp file+olp+datetree))
       (org-capture+-get-org-files))))
 
-;; NEW
-(defun org-capture+-target-file+headlines-filter (plist)
-  (let* ((file      (ptree-get plist :target :file))
-         (headlines (ptree-get plist :target :headlines)))
+(defun org-capture+-target-file+headlines-filter (ptree)
+  (let* ((file      (ptree-get ptree :target :file))
+         (headlines (ptree-get ptree :target :headlines)))
     (when (and file
                (null headlines))
       (apply #'org-capture+-get-file-headlines file t headlines))))
 
 
-(defun org-capture+-target-file-source (plist)
-  (let ((files (org-capture+-target-files-filter plist)))
+(defun org-capture+-type-source (ptree)
+  (let ((types (org-capture+-filter-types ptree)))
+    (helm-build-sync-source "Type"
+      :candidates types
+      :action     #'(lambda (type)
+                      (org-capture+-guided (org-capture-helm-action ptree type :type))))))
+
+(defun org-capture+-target-name-source (ptree)
+  (let ((targets (org-capture+-target-name-filter ptree)))
+    (helm-build-sync-source "Target"
+      :candidates targets
+      :action     #'(lambda (name)
+                      (org-capture+-guided (org-capture-helm-action ptree name :target :name))))))
+
+(defun org-capture+-target-file-source (ptree)
+  (let ((files (org-capture+-target-files-filter ptree)))
     (helm-build-sync-source "Files"
       :candidates files
       :action     #'(lambda (file)
-                      (org-capture+-guided (org-capture-helm-action plist file :target :file))))))
+                      (org-capture+-guided (org-capture-helm-action ptree file :target :file))))))
 
-(defun org-capture+-target-file+headlines-source (plist)
-  (let ((headlines       (org-capture+-target-file+headlines-filter plist))
+(defun org-capture+-target-file+headlines-source (ptree)
+  (let ((headlines       (org-capture+-target-file+headlines-filter ptree))
         (headline-action #'(lambda (headlines)
-                             (org-capture+-guided (org-capture-helm-action plist headlines :target :headlines)))))
+                             (org-capture+-guided (org-capture-helm-action ptree headlines :target :headlines)))))
     (helm-build-sync-source "Headline"
       :candidates headlines
       :action (list (cons "Select" headline-action)))))
 
-(defun org-capture+-target-name-source (plist)
-  (let ((targets (org-capture+-target-name-filter plist)))
-    (helm-build-sync-source "Target"
-      :candidates targets
-      :action     #'(lambda (name)
-                      (org-capture+-guided (org-capture-helm-action plist name :target :name))))))
-
-(defun org-capture+-type-source (plist)
-  (let ((types (org-capture+-filter-types plist)))
-    (helm-build-sync-source "Type"
-      :candidates types
-      :action     #'(lambda (type)
-                      (org-capture+-guided (org-capture-helm-action plist type :type))))))
-
-(defun org-capture+-description-source (plist)
-  (let ((descriptions org-agenda-files))
-    (helm-build-dummy-source "Description"
-      ;; :candidates descriptions
-      :action     #'(lambda (description)
-                      (org-capture+-guided (org-capture-helm-action plist description :description))))))
-
-(defun org-capture+-template-source (plist)
-  ;; BUG TODO: Add action
+(defun org-capture+-template-source (ptree)
   (helm-template-gen-source #'org-capture+-tree-predicate
                             '(t xx yy)
                             0
                             #'(lambda (template)
-                                (org-capture+-guided (org-capture-helm-action plist template :template)))))
+                                (org-capture+-guided (org-capture-helm-action ptree template :template)))))
+
+(defun org-capture+-description-source (ptree)
+  (let (description)
+    (helm-build-dummy-source "Description"
+      :action     #'(lambda (description)
+                      (org-capture+-guided (org-capture-helm-action ptree description :description))))))
 
 
-(defun org-capture+-reset-candidates (plist &rest tree-keys)
-  (let* ((target (ptree-get plist :target))
-         (keys   (plist-get-keys plist))
-         (keys   (remove-if-not #'(lambda (k) (ptree-get plist k))
-                                keys)))
+(defun org-capture+-reset-candidates (ptree &rest tree-keys)
+  (let* ((target (ptree-get ptree :target))
+         (keys   (plist-get-keys  ptree))
+         (keys   (remove-if-not   #'(lambda (k) (ptree-get ptree k))
+                                  keys)))
     (mapcar #'(lambda (key)
-                (cons (format "%s: %s" key (ptree-get plist key))
+                (cons (format "%s: %s" key (ptree-get ptree key))
                       (append tree-keys (list key))))
             keys)))
 
-(defun org-capture+reset-source (plist)
-  (let ((candidates (org-capture+-reset-candidates plist)))
+(defun org-capture+reset-source (ptree)
+  (let ((candidates (org-capture+-reset-candidates ptree)))
     (helm-build-sync-source "Reset"
       :candidates candidates
-      :action     #'(lambda (key)
-                      (setq plist (plist-put plist :key nil))
-                      (org-capture+-guided plist)))))
+      :multiline t
+      :action     #'(lambda (keys)
+                      (org-capture+-guided (apply #'ptree-put ptree nil keys))))))
 
 
 ;; TODO: Add resets which will help to edit existing
 ;;       take new as editing an anonymous
 
 ;;;###autoload
-(defun org-capture+-guided (&optional plist)
+(defun org-capture+-guided (&optional ptree)
   (interactive)
   (let (sources
-        reset-source)
+        (reset-source (list (org-capture+reset-source ptree))))
 
-    (setq reset-source
-          (list (org-capture+reset-source plist)))
     (progn
-      (unless (ptree-get plist :type)
-        (push (org-capture+-type-source        plist)
-              sources))
       (progn
-        (unless (ptree-get plist :target :name)
-          (push (org-capture+-target-name-source plist)
+        (unless (ptree-get ptree :target :name)
+          (push (org-capture+-target-name-source ptree)
                 sources))
-        (unless (ptree-get plist :target :file)
-          (push (org-capture+-target-file-source plist)
+        (unless (ptree-get ptree :target :file)
+          (push (org-capture+-target-file-source ptree)
                 sources))
-        (unless (ptree-get plist :target :headlines)
-          (push (org-capture+-target-file+headlines-source plist)
+        (unless (ptree-get ptree :target :headlines)
+          (push (org-capture+-target-file+headlines-source ptree)
                 sources)))
 
-      (unless (ptree-get plist :description)
-        (push (org-capture+-description-source plist)
+      (unless (ptree-get ptree :type)
+        (push (org-capture+-type-source        ptree)
               sources))
-      (unless (ptree-get plist :template)
+      (unless (ptree-get ptree :description)
+        (push (org-capture+-description-source ptree)
+              sources))
+      (unless (ptree-get ptree :template)
         (setq sources
-              (nconc sources (org-capture+-template-source plist))))
+              (nconc sources (org-capture+-template-source ptree))))
 
       (if sources
           (helm :sources (append sources reset-source))
-        (org-capture+-run-plist plist)
-        (message "plist %s" plist)))))
+        (org-capture+-run-ptree ptree)
+        (message "ptree %s" ptree)))))
 
 ;;;###autoload
 (defalias 'org-capture+ #'org-capture+-guided)
