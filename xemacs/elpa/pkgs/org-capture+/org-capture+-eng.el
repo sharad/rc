@@ -82,11 +82,11 @@
 
 
 (defun org-capture+-build-target-arg (plist)
-  (let ((name      (plist-get plist :name))
-        (file      (plist-get plist :file))
-        (headlines (plist-get plist :headlines))
-        (function  (plist-get plist :function))
-        (marker    (plist-get plist :marker)))
+  (let ((name      (ptree-get plist :name))
+        (file      (ptree-get plist :file))
+        (headlines (ptree-get plist :headlines))
+        (function  (ptree-get plist :function))
+        (marker    (ptree-get plist :marker)))
     (case name
       (file              (list name file))
       (id                (list name id))
@@ -99,9 +99,9 @@
       (marher            (list name marker)))))
 
 (defun org-capture+-build-arg (plist)
-  (let ((type     (plist-get plist :type))
-        (target   (plist-get plist :target))
-        (template (plist-get plist :template)))
+  (let ((type     (ptree-get plist :type))
+        (target   (ptree-get plist :target))
+        (template (ptree-get plist :template)))
     (list type
           (org-capture+-build-target-arg target)
           template)))
@@ -150,7 +150,6 @@
 
 (defun org-capture+-filter-types (plist)
   org-capture+-types)
-
 
 (defun org-capture+-target-name-filter (plist)
   (let* ((file      (ptree-get plist :target :file))
@@ -201,22 +200,6 @@
       :action     #'(lambda (name)
                       (org-capture+-guided (org-capture-helm-action plist name :target :name))))))
 
-(defun org-capture+-target-source (&optional plist)
-  (let (sources
-        (trg-plist (plist-get plist :target)))
-    (progn
-      (unless (plist-get trg-plist :name)
-        (push (org-capture+-target-name-source plist)
-              sources))
-      (unless (plist-get trg-plist :file)
-        (push (org-capture+-target-file-source plist)
-              sources))
-      (unless (plist-get trg-plist :headlines)
-        (push (org-capture+-target-file+headlines-source plist)
-              sources))
-      sources)))
-
-
 (defun org-capture+-type-source (plist)
   (let ((types (org-capture+-filter-types plist)))
     (helm-build-sync-source "Type"
@@ -241,12 +224,12 @@
 
 
 (defun org-capture+-reset-candidates (plist &rest tree-keys)
-  (let* ((target (plist-get plist :target))
+  (let* ((target (ptree-get plist :target))
          (keys   (plist-get-keys plist))
-         (keys   (remove-if-not #'(lambda (k) (plist-get plist k))
+         (keys   (remove-if-not #'(lambda (k) (ptree-get plist k))
                                 keys)))
     (mapcar #'(lambda (key)
-                (cons (format "%s: %s" key (plist-get plist key))
+                (cons (format "%s: %s" key (ptree-get plist key))
                       (append tree-keys (list key))))
             keys)))
 
@@ -267,18 +250,28 @@
   (interactive)
   (let (sources
         reset-source)
+
     (setq reset-source
           (list (org-capture+reset-source plist)))
     (progn
-      (unless (plist-get plist :type)
+      (unless (ptree-get plist :type)
         (push (org-capture+-type-source        plist)
               sources))
-      (setq sources
-            (nconc sources (org-capture+-target-source plist)))
-      (unless (plist-get plist :description)
+      (progn
+        (unless (ptree-get plist :target :name)
+          (push (org-capture+-target-name-source plist)
+                sources))
+        (unless (ptree-get plist :target :file)
+          (push (org-capture+-target-file-source plist)
+                sources))
+        (unless (ptree-get plist :target :headlines)
+          (push (org-capture+-target-file+headlines-source plist)
+                sources)))
+
+      (unless (ptree-get plist :description)
         (push (org-capture+-description-source plist)
               sources))
-      (unless (plist-get plist :template)
+      (unless (ptree-get plist :template)
         (setq sources
               (nconc sources (org-capture+-template-source plist))))
 
