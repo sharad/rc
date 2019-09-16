@@ -30,8 +30,9 @@
 (require 'org-capture+-helm-dynamic)
 
 
-;; checkout org-capture-templates variable
+(defvar org-capture+-learned-templates nil)
 
+;; checkout org-capture-templates variable
 (defvar org-capture+-types   '(("Org Entry" . entry)
                                ("List Item" . item)
                                ("Checklist Item" . chckitem)
@@ -67,12 +68,17 @@
                          (if (cdr keys)
                              (apply #'ptree-put (plist-get tree key) value (cdr keys))
                            value))))))
+
+(defun ptree-get-keys (tree)
+  (plist-get-keys tree))
+
+;; (-slice plist 0 nil 2)
+
+;; (ptree-put '(:a (:b (:c (:d e)))) 'x :a :b :c :d)
 
 
 (defun org-capture-helm-action (ptree value &rest keys)
   (apply #'ptree-put ptree value keys))
-
-;; (ptree-put '(:a (:b (:c (:d e)))) 'x :a :b :c :d)
 
 
 (defun org-select-targets (&rest targets)
