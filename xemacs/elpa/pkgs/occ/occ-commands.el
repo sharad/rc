@@ -226,7 +226,7 @@
 
 (defun occ-keep-quiet ()
   (interactive)
-  (occ-keep-quiet-for (* 7 60)))
+  (occ-keep-quiet-for 7))
 
 (defun occ-keep-quiet-for (mins)
   (interactive "Nmins: ")

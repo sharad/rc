@@ -490,3 +490,68 @@ before packages are loaded."
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(evil-want-Y-yank-to-eol nil)
+ '(muse-blosxom-base-directory
+   "/home/s/hell/Documents/CreatedContent/gen/virtual/muse/default/web/site/blog")
+ '(muse-colors-autogen-headings (quote outline))
+ '(muse-colors-inline-image-method (quote muse-colors-use-publishing-directory))
+ '(muse-completing-read-function (quote ido-completing-read))
+ '(muse-html-charset-default "utf-8")
+ '(muse-html-encoding-default (quote utf-8))
+ '(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+ '(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+ '(muse-html-meta-content-encoding (quote utf-8))
+ '(muse-html-style-sheet
+   "<lisp>
+       (concat
+        (muse-insert-css-link \"all\" \"common.css\")
+        (muse-insert-css-link \"screen\" \"screen.css\")
+        (muse-insert-css-link \"print\" \"print.css\"))
+       </lisp>")
+ '(muse-latex-header "<lisp>(muse-insert-meta-file \"header.tex\")</lisp>")
+ '(muse-latex-pdf-browser "evince %s &")
+ '(muse-mode-hook (quote (flyspell-mode footnote-mode)))
+ '(muse-project-alist nil)
+ '(muse-publish-comments-p t)
+ '(muse-publish-date-format "%b. %e, %Y")
+ '(muse-publish-desc-transforms
+   (quote
+    (muse-wiki-publish-pretty-title muse-wiki-publish-pretty-interwiki muse-publish-strip-URL)))
+ '(muse-wiki-publish-small-title-words
+   (quote
+    ("the" "and" "at" "on" "of" "for" "in" "an" "a" "page")))
+ '(muse-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+ '(muse-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+ '(muse-xhtml-style-sheet
+   "<lisp>
+       (concat
+        (muse-insert-css-link \"all\" \"common.css\")
+        (muse-insert-css-link \"screen\" \"screen.css\")
+        (muse-insert-css-link \"print\" \"print.css\"))
+       </lisp>")
+ '(package-selected-packages
+   (quote
+    (zig-mode zenburn-theme zen-and-art-theme zeal-at-point yatemplate yasnippet-snippets yas-suggest yapfify yaoddmuse yang-mode xterm-color xref-js2 xquery-mode xkcd x86-lookup ws-butler writeroom-mode worf wolfram-mode winum white-sand-theme which-key wgrep web-mode web-beautify wcheck-mode wakatime-mode w3m vterm volatile-highlights vimrc-mode vi-tilde-fringe vala-snippets vala-mode vagrant-tramp vagrant uuidgen utop use-package unicode-fonts unfill underwater-theme uncrustify-mode ujelly-theme typo twittering-mode twilight-theme twilight-bright-theme twilight-anti-bright-theme tuareg ttl-mode treemacs-projectile treemacs-magit treemacs-evil transmission toxi-theme toml-mode toc-org timesheet tide thrift thinks theme-changer test-session term-run term-projectile term-alert task-manager tao-theme tangotango-theme tango-plus-theme tango-2-theme tagging tagedit systemd symon symbol-overlay sws-mode swift-mode sunshine sunny-day-theme sublime-themes subatomic256-theme subatomic-theme string-inflection stickyfunc-enhance startup-hooks stan-mode srefactor sql-indent spray spotify sparql-mode spaceline-all-the-icons spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smex smeargle slime-company slim-mode slack shell-pop seti-theme sessions-unified seeing-is-believing scss-mode scad-mode sass-mode salt-mode sailfish-scratchbox rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocopfmt rubocop rspec-mode robe rjsx-mode reverse-theme restclient-helm restart-emacs remember-unified remember-idle recentf-ext rebox2 rebecca-theme reason-mode realgud reader-mode rcirc-notify rcirc-color rbenv rase ranger rainbow-mode rainbow-identifiers rainbow-delimiters railscasts-theme racket-mode racer qml-mode pytest pyenv-mode py-isort px purple-haze-theme puppet-mode pug-mode psci psc-ide protobuf-mode proof-general projectile-rails project-root professional-theme prodigy prettier-js powershell popup-kill-ring poporg pony-mode pointback play-crystal plantuml-mode planet-theme pkgbuild-mode pippel pipenv pip-requirements phpunit phpcbf php-extras php-auto-yasnippets phoenix-dark-pink-theme phoenix-dark-mono-theme persp-mode perl6-mode paths-mapper pastebin password-generator parinfer paradox pandoc-mode pandoc package-dev-utils-lotus pabbrev pa-planner ox-rfc ox-pandoc overseer outline-magic osx-location orgnav orgit organic-green-theme org-wild-notifier org-snooze org-scahachua org-repo-todo org-ref org-randomnote org-projectile org-present org-pomodoro org-password-manager org-parser org-noter org-mru-clock org-mobile-sync org-mime org-jira org-email org-download org-doing org-dashboard org-context-clock org-context org-clock-unnamed-task org-clock-table-misc-lotus org-clock-split org-clock-resolve-advanced org-clock-in-if-not org-clock-experimental org-clock-daysummary org-clock-check org-cliplink org-bullets org-brain org-alert org-agenda-refiletarget-files-filters opencl-mode open-junk-file omtose-phellack-theme omnisharp oldlace-theme oddmuse ocp-indent occidental-theme occ obsidian-theme ob-sml ob-restclient ob-ipython ob-hy ob-http ob-elixir ob-crystal ob-coffeescript ob-cfengine3 ob-async nov nodejs-repl noctilux-theme nlinum-relative nix-mode nim-mode nginx-mode next-package neotree navi-mode nasm-mode naquadah-theme nameless mwim mvn mustang-theme muse multibackup multi-term mu4e-maildirs-extension mu4e-alert moz move-text monokai-theme monochrome-theme molokai-theme moe-theme minitest minimap minimal-theme mindshare-contrib-mgr memory-usage meghanada maven-test-mode matlab-mode material-theme markdown-toc majapahit-theme magithub magit-svn magit-gitflow magit-gh-pulls madhat2r-theme lusty-explorer lush-theme lsp-ui lsp-treemacs lsp-scala lsp-rust lsp-python-ms lsp-python lsp-julia lsp-javascript-typescript lsp-java lsp-haskell lsp-go lotus-wrapper lotus-schedule lotus-notify lotus-note lotus-helm lotus-finance lotus-crypt-utils lotus-annotate lorem-ipsum logcat livid-mode live-py-mode linum-relative link-hint light-soap-theme less-css-mode ledger-mode kotlin-mode kivy-mode kaolin-themes julia-repl jsonnet-mode json-navigator js2-refactor js-doc jinja2-mode jbeans-theme jazz-theme jade-mode ivy-yasnippet ivy-xref ivy-rtags ivy-purpose ivy-pass ivy-hydra iswitchb-fc ir-black-theme intero insert-shebang inkpot-theme inf-crystal indent-guide importmagic import-js impatient-mode ietf-docs idris-mode idomenu idle-org-agenda idle-highlight-mode idle-highlight-in-visible-buffers-mode ibuffer-projectile hybrid-mode hy-mode hungry-delete hoon-mode hlint-refactor hl-todo hl-line+ hindent highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-xref helm-themes helm-swoop helm-spotify-plus helm-rtags helm-pydoc helm-purpose helm-projectile helm-pass helm-org-rifle helm-org helm-notmuch helm-nixos-options helm-mu helm-mode-manager helm-make helm-lsp helm-hoogle helm-gtags helm-gitignore helm-git-grep helm-flx helm-descbinds helm-dash helm-ctest helm-css-scss helm-cscope helm-company helm-c-yasnippet helm-ag hc-zenburn-theme haskell-snippets gxref gruvbox-theme gruber-darker-theme groovy-mode groovy-imports graphviz-dot-mode graphql grandshell-theme gradle-mode gotham-theme google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gmail-message-mode glsl-mode gitignore-templates github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags geiser geeknote gandalf-theme fuzzy function-args fsharp-mode frame-utils forth-mode forge font-lock+ folding fm flyspell-correct-ivy flyspell-correct-helm flymd flymake-cursor flycheck-ycmd flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-perl6 flycheck-pact flycheck-package flycheck-ocaml flycheck-nim flycheck-mix flycheck-ledger flycheck-kotlin flycheck-haskell flycheck-elm flycheck-crystal flycheck-credo flycheck-bashate flx-ido floobits flatui-theme flatland-theme fish-mode find-file-in-project fill-column-indicator ffw ff-relativedir feature-mode faust-mode fasd farmhouse-theme fancy-battery fakir eziam-theme eyebrowse expand-region exotica-theme exec-path-from-shell ewal-spacemacs-themes evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu evernote-mode ess-smart-equals ess-R-data-view espresso-theme eshell-z eshell-prompt-extras esh-help ertx ert-runner ert-modeline ert-junit erlang erc-yt erc-view-log erc-social-graph erc-image erc-hl-nicks eproject ensime engine-mode emoji-cheat-sheet-plus emmet-mode ember-yasnippets ember-mode emacs-panel emacs-db-mode elm-test-runner elm-mode elisp-slime-nav elfeed-web elfeed-org elfeed-goodies eldoc-extension eldoc-eval ein eev editorconfig edit-server ediprolog echoserver ecb ebuild-mode dune dumb-jump drupal-mode dracula-theme dpaste dotnet dotenv-mode doom-themes doom-modeline dockerfile-mode docker django-theme disaster diminish diff-hl dhall-mode devdocs deft define-word debug-info dart-mode darktooth-theme darkokai-theme darkmine-theme darkburn-theme dap-mode dante dakrone-theme dactyl-mode d-mode cython-mode cyberpunk-theme cuda-mode csv-mode cquery cpp-auto-include counsel-spotify counsel-projectile counsel-org-clock counsel-notmuch counsel-gtags counsel-etags counsel-dash counsel-css corral copywithoutsel copy-as-format confluence company-ycmd company-web company-terraform company-tern company-statistics company-shell company-rtags company-restclient company-reftex company-plsense company-php company-nixos-options company-lua company-lsp company-go company-ghci company-ghc company-emoji company-emacs-eclim company-dcd company-coq company-cabal company-c-headers company-auctex company-ansible company-anaconda common-lisp-snippets command-log-mode column-enforce-mode color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized color-theme-modern color-identifiers-mode coffee-mode cmm-mode cmake-mode cmake-ide clues-theme clojure-snippets clojure-cheatsheet clj-refactor clean-aindent-mode clang-format cider-eval-sexp-fu chruby chocolate-theme cherry-blossom-theme centered-cursor-mode ccls cargo calfw-org calfw-cal calfw c-eldoc busybee-theme bundler buffer-utils bubbleberry-theme browse-at-remote bookmark+ bm blacken bitlbee birds-of-paradise-plus-theme badwolf-theme autoinsert+ auto-highlight-symbol auto-dictionary auto-complete-rst auto-compile attrap arjen-grey-theme arduino-mode apropospriate-theme aok anti-zenburn-theme ansible-doc ansible annotate annot annot+ ample-zen-theme ample-theme ameba alect-themes alda-mode alchemist ahk-mode aggressive-indent afternoon-theme adoc-mode activity achievements ace-popup-menu ace-jump-helm-line academic-phrases ac-ispell abyss-theme)))
+ '(planner-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+ '(planner-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+ '(psc-ide-add-import-on-completion t t)
+ '(psc-ide-rebuild-on-save nil t)
+ '(session-use-package t nil (session)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:background nil))))
+ '(muse-bad-link ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold)))))
+)
