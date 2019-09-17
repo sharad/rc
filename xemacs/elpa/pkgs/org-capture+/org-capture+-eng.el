@@ -70,11 +70,58 @@
                            value))))))
 
 (defun ptree-get-keys (tree)
-  (plist-get-keys tree))
+  (mapcar #'(lambda (key)
+              (let ((subtree (plist-get tree key)))
+                (message "key: %s subtree: %s" key subtree)
+                (if (and (consp subtree)
+                         (keywordp (car subtree)))
+                    (cons key (ptree-get-keys subtree))
+                  (list key))))
+          (plist-get-keys tree)))
 
-;; (-slice plist 0 nil 2)
+(defun ptree-get-keys-list (tree)
+  (mapcar #'(lambda (list) (-flatten-n 3 list))
+          (ptree-get-keys tree)))
 
 ;; (ptree-put '(:a (:b (:c (:d e)))) 'x :a :b :c :d)
+
+(ptree-get-keys '(:type entry :target (:file /home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/personal/report.org :name Test)))
+
+
+(defun map-list  (fn coll)
+  (if (null coll) nil
+    (cons (funcall fn coll)
+          (map-list fn (rest coll)))))
+
+(defun map-list-x (list)
+  (reverse (map-list #'reverse (reverse list))))
+
+
+
+(defun ptree-get-keys-flatten (tree)
+  (if (cdr tree)
+      (mapcar #'(lambda (k) (cons (car tree) k))
+              (cdr tree))
+    tree))
+
+(ptree-get-keys-flatten '(:type))
+(ptree-get-keys-flatten '(:target (:file) (:name (:x (:y)))))
+
+(ptree-get-keys-flatten '(:target (:file) (:x (:z))))
+
+(ptree-get-keys-flatten '(:x (:z)))
+
+(mapcar #'cdr)
+
+
+(mapcar #'ptree-get-keys-flatten '((:type) (:target (:file) (:name (:x (:y))))))
+
+(ptree-get-keys-flatten '(:type))
+(ptree-get-keys-flatten '(:target (:file) (:name (:x (:y)))))
+
+(ptree-get-keys-flatten '((:type)))
+
+(ptree-get-keys '(:file /home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/personal/report.org))
 
 
 (defun org-capture-helm-action (ptree value &rest keys)
@@ -225,15 +272,14 @@
                       (org-capture+-guided (org-capture-helm-action ptree description :description))))))
 
 
-(defun org-capture+-reset-candidates (ptree &rest tree-keys)
-  (let* ((target (ptree-get ptree :target))
-         (keys   (plist-get-keys  ptree))
-         (keys   (remove-if-not   #'(lambda (k) (ptree-get ptree k))
-                                  keys)))
-    (mapcar #'(lambda (key)
-                (cons (format "%s: %s" key (ptree-get ptree key))
-                      (append tree-keys (list key))))
-            keys)))
+(defun org-capture+-reset-candidates (ptree)
+  (let ((keys-list (ptree-get-keys-list ptree)))
+    (message "keys-list: %s" keys-list)
+    (message "ptree: %s" ptree)
+    (mapcar #'(lambda (keys)
+                (cons (format "%s: %s" keys (apply #'ptree-get ptree keys))
+                      keys))
+            keys-list)))
 
 (defun org-capture+reset-source (ptree)
   (let ((candidates (org-capture+-reset-candidates ptree)))
