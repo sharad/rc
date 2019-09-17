@@ -34,6 +34,10 @@
 ;; store this in desktop and session
 ;; (setq paths-mapper-map nil)
 
+(require 'desktop)
+(require 'session)
+
+
 (add-to-list 'desktop-locals-to-save 'paths-mapper-map)
 (add-to-list 'session-locals-include 'paths-mapper-map)
 
