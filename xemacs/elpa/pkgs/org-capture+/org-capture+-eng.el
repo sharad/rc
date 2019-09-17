@@ -99,17 +99,79 @@
 
 
 (defun ptree-get-keys-flatten (tree)
-  (if (cdr tree)
-      (mapcar #'(lambda (k) (cons (car tree) k))
+  (let ((rest (cdr tree)))
+    (message "(car rest): %s" (car rest))
+    (if rest
+        (mapcar #'(lambda (list)
+                    (mapcar #'(lambda (k)
+                                (list (car tree) k))
+                            list))
+                rest)
+      tree)))
+
+(defun ptree-get-keys-flatten (tree)
+  (if (consp tree)
+      (mapcar #'(lambda (list))
               (cdr tree))
     tree))
+
+;; https://github.com/thinkphp/lisp-training/blob/master/tree-traversal.lsp
+(defun depth-first (root)
+  (cond
+   ((not (consp root)) root)
+   ((null (cdr root))  root)
+   ((consp (cdr root))
+    (mapcan #'(lambda (l)
+                (list
+                 (cons (car root)
+                       (depth-first l))))
+            (cdr root)))
+   (t root)))
+
+(depth-first '(:type))
+(depth-first '(:target (:x) (:z :k)))
+(depth-first '(:target (:x (:z))))
+(depth-first '(:target (:file) (:x (:z) (:k))))
+(depth-first '(:target (:x :z) (:x :k)))
+(depth-first '(:target (:x . :z)))
+
+(progn
+  (setf R '(U V Y W))
+  (setf U '(S))
+  (setf Y '(X Z))
+  (setf V nil)
+  (setf W nil)
+  (setf S nil)
+  (setf X nil)
+  (setf Z nil)
+
+  ;Depth-first Traversal
+  (defun depth-first (root)
+    (cond ((equal (eval root) nil) (list root))
+          (t (cons root (mapcan #'depth-first (eval root))))))
+
+
+
+  (depth-first 'R))
+
+;; check
+(defun depth-first (parents ele)
+  (if (cadr ele)
+      (depth-first (append (list (car ele)) parents)
+                   (cadr ele))
+    (append ele parents)))
+
+(depth-first nil '(a (b (c))))
+
 
 (ptree-get-keys-flatten '(:type))
 (ptree-get-keys-flatten '(:target (:file) (:name (:x (:y)))))
 
 (ptree-get-keys-flatten '(:target (:file) (:x (:z))))
 
-(ptree-get-keys-flatten '(:x (:z)))
+(((:target :file)) ((:target :x) ((:target :z))))
+
+(ptree-get-keys-flatten '(:x (:z :k)))
 
 (mapcar #'cdr)
 
