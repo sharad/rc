@@ -193,20 +193,17 @@
   ())
 
 
-(defmacro define-org-capture+-filter (ptree keys &rest body)
-  `(let ((fn #'(lambda (,ptree) ,@body)))
-     (apply #'ptree-put org-capture+-meta-data fn (append ,keys (list :filter)))))
-(put 'define-org-capture+-filter 'lisp-indent-function 2)
+(defmacro define-org-capture+-filter (tree-keys &rest body)
+  (destructuring-bind (ptree . keys) tree-keys
+   `(let ((fn #'(lambda (,ptree) ,@body)))
+      (apply #'ptree-put org-capture+-meta-data fn (append ',keys (list :filter))))))
+(put 'define-org-capture+-filter 'lisp-indent-function 1)
 
 
-(defun org-capture+-filter-types (ptree)
-  org-capture+-types)
-(ptree-put org-capture+-meta-data #'org-capture+-filter-types :type :filter)
-
-(define-org-capture+-filter ptree '(:type)
+(define-org-capture+-filter (ptree :type)
   org-capture+-types)
 
-(defun org-capture+-target-name-filter (ptree)
+(define-org-capture+-filter (ptree :target :name)
   (let* ((file      (ptree-get ptree :target :file))
          (headlines (ptree-get ptree :target :headlines)))
     (if file
@@ -218,25 +215,13 @@
                  '(file file+headline file+olp file+olp+datetree)))
       org-capture+-target-names)))
 
-(define-org-capture+-filter ptree '(:target :name)
-  (let* ((file      (ptree-get ptree :target :file))
-         (headlines (ptree-get ptree :target :headlines)))
-    (if file
-        (apply #'org-select-targets
-               (if headlines
-                   (if (> (length headlines) 1)
-                       '(file+olp file+olp+datetree)
-                     '(file+headline file+olp file+olp+datetree))
-                 '(file file+headline file+olp file+olp+datetree)))
-      org-capture+-target-names)))
-
-(defun org-capture+-target-files-filter (ptree)
+(define-org-capture+-filter (ptree :target :file)
   (let ((name (ptree-get ptree :target :name)))
     (when (memq name
                 '(nil file file+headline file+olp file+olp+datetree))
       (org-capture+-get-org-files))))
 
-(defun org-capture+-target-file+headlines-filter (ptree)
+(define-org-capture+-filter (ptree :target :headlines)
   (let* ((file      (ptree-get ptree :target :file))
          (headlines (ptree-get ptree :target :headlines)))
     (when (and file
