@@ -49,7 +49,17 @@
                                     ("Current Org Clock" . clock)
                                     ("Function" . function)
                                     ("Marker" . marker)))
+(defvar org-capture+-meta-data '(:type (:prompt "Types" :source :sync)
+                                 :target (:file     (:prompt "Files" :source :sync)
+                                          :name     (:prompt "Targets"  :source :sync)
+                                          :headings (:prompt "Headings" :source :sync))
+                                 :description (:prompt "Description" :source :dummy)
+                                 :template (:prompt "Templates" :source :gen)))
 
+
+(defun plist-keys (plist)
+  "Return keys in a PLIST."
+  (-slice plist 0 nil 2))
 
 (defun ptree-get (tree &rest keys)
   (let ((key (car keys)))
@@ -77,7 +87,7 @@
                          (keywordp (car subtree)))
                     (cons key (ptree-keys subtree))
                   (list key))))
-          (plist-get-keys tree)))
+          (plist-keys tree)))
 
 (defun ptree-key-lists-keys (ptree-keys)
   (letrec ((dfs #'(lambda (tree)
@@ -132,7 +142,7 @@
       (file+function     (list name function))
       (clock)            (list name)
       (function          (list name function))
-      (marher            (list name marker)))))
+      (marker            (list name marker)))))
 
 (defun org-capture+-build-arg (ptree)
   (let ((type     (ptree-get ptree :type))
@@ -183,10 +193,32 @@
   ())
 
 
+(defmacro define-org-capture+-filter (ptree keys &rest body)
+  `(let ((fn #'(lambda (,ptree) ,@body)))
+     (apply #'ptree-put org-capture+-meta-data fn (append ,keys (list :filter)))))
+(put 'define-org-capture+-filter 'lisp-indent-function 2)
+
+
 (defun org-capture+-filter-types (ptree)
+  org-capture+-types)
+(ptree-put org-capture+-meta-data #'org-capture+-filter-types :type :filter)
+
+(define-org-capture+-filter ptree '(:type)
   org-capture+-types)
 
 (defun org-capture+-target-name-filter (ptree)
+  (let* ((file      (ptree-get ptree :target :file))
+         (headlines (ptree-get ptree :target :headlines)))
+    (if file
+        (apply #'org-select-targets
+               (if headlines
+                   (if (> (length headlines) 1)
+                       '(file+olp file+olp+datetree)
+                     '(file+headline file+olp file+olp+datetree))
+                 '(file file+headline file+olp file+olp+datetree)))
+      org-capture+-target-names)))
+
+(define-org-capture+-filter ptree '(:target :name)
   (let* ((file      (ptree-get ptree :target :file))
          (headlines (ptree-get ptree :target :headlines)))
     (if file
