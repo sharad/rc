@@ -69,121 +69,42 @@
                              (apply #'ptree-put (plist-get tree key) value (cdr keys))
                            value))))))
 
-(defun ptree-get-keys (tree)
+(defun ptree-keys (tree)
   (mapcar #'(lambda (key)
               (let ((subtree (plist-get tree key)))
                 (message "key: %s subtree: %s" key subtree)
                 (if (and (consp subtree)
                          (keywordp (car subtree)))
-                    (cons key (ptree-get-keys subtree))
+                    (cons key (ptree-keys subtree))
                   (list key))))
           (plist-get-keys tree)))
 
-(defun ptree-get-keys-list (tree)
-  (mapcar #'(lambda (list) (-flatten-n 3 list))
-          (ptree-get-keys tree)))
+(defun ptree-key-lists-keys (ptree-keys)
+  (letrec ((dfs #'(lambda (tree)
+                    (if (cdr tree)
+                        (mapcar #'(lambda (l)
+                                    (cons (car tree) (car (depth-first-search l))))
+                                (cdr tree))
+                      (list tree)))))
+    (mapcan dfs ptree-keys)))
 
-;; (ptree-put '(:a (:b (:c (:d e)))) 'x :a :b :c :d)
-
-(ptree-get-keys '(:type entry :target (:file /home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/personal/report.org :name Test)))
-
-
-(defun map-list  (fn coll)
-  (if (null coll) nil
-    (cons (funcall fn coll)
-          (map-list fn (rest coll)))))
-
-(defun map-list-x (list)
-  (reverse (map-list #'reverse (reverse list))))
+(defun ptree-key-lists (ptree-keys)
+  (ptree-key-lists-keys (ptree-keys ptree-keys)))
 
 
+(when nil
+    (ptree-key-lists-keys
+     '((:type)
+       (:target (:file) (:name))
+       (:target (:file (:x)) (:name (:y)))
+       (:description)))
 
-(defun ptree-get-keys-flatten (tree)
-  (let ((rest (cdr tree)))
-    (message "(car rest): %s" (car rest))
-    (if rest
-        (mapcar #'(lambda (list)
-                    (mapcar #'(lambda (k)
-                                (list (car tree) k))
-                            list))
-                rest)
-      tree)))
+    (ptree-put '(:a (:b (:c (:d e)))) 'x :a :b :c :d)
 
-(defun ptree-get-keys-flatten (tree)
-  (if (consp tree)
-      (mapcar #'(lambda (list))
-              (cdr tree))
-    tree))
+    (ptree-keys '(:type entry :target (:file /home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/personal/report.org :name Test :headings ("x" "y"))))
 
-;; https://github.com/thinkphp/lisp-training/blob/master/tree-traversal.lsp
-(defun depth-first (root)
-  (cond
-   ((not (consp root)) root)
-   ((null (cdr root))  root)
-   ((consp (cdr root))
-    (mapcan #'(lambda (l)
-                (list
-                 (cons (car root)
-                       (depth-first l))))
-            (cdr root)))
-   (t root)))
+    (ptree-key-lists '(:type entry :target (:file /home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/personal/report.org :name Test))))
 
-(depth-first '(:type))
-(depth-first '(:target (:x) (:z :k)))
-(depth-first '(:target (:x (:z))))
-(depth-first '(:target (:file) (:x (:z) (:k))))
-(depth-first '(:target (:x :z) (:x :k)))
-(depth-first '(:target (:x . :z)))
-
-(progn
-  (setf R '(U V Y W))
-  (setf U '(S))
-  (setf Y '(X Z))
-  (setf V nil)
-  (setf W nil)
-  (setf S nil)
-  (setf X nil)
-  (setf Z nil)
-
-  ;Depth-first Traversal
-  (defun depth-first (root)
-    (cond ((equal (eval root) nil) (list root))
-          (t (cons root (mapcan #'depth-first (eval root))))))
-
-
-
-  (depth-first 'R))
-
-;; check
-(defun depth-first (parents ele)
-  (if (cadr ele)
-      (depth-first (append (list (car ele)) parents)
-                   (cadr ele))
-    (append ele parents)))
-
-(depth-first nil '(a (b (c))))
-
-
-(ptree-get-keys-flatten '(:type))
-(ptree-get-keys-flatten '(:target (:file) (:name (:x (:y)))))
-
-(ptree-get-keys-flatten '(:target (:file) (:x (:z))))
-
-(((:target :file)) ((:target :x) ((:target :z))))
-
-(ptree-get-keys-flatten '(:x (:z :k)))
-
-(mapcar #'cdr)
-
-
-(mapcar #'ptree-get-keys-flatten '((:type) (:target (:file) (:name (:x (:y))))))
-
-(ptree-get-keys-flatten '(:type))
-(ptree-get-keys-flatten '(:target (:file) (:name (:x (:y)))))
-
-(ptree-get-keys-flatten '((:type)))
-
-(ptree-get-keys '(:file /home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/personal/report.org))
 
 
 (defun org-capture-helm-action (ptree value &rest keys)
@@ -335,13 +256,13 @@
 
 
 (defun org-capture+-reset-candidates (ptree)
-  (let ((keys-list (ptree-get-keys-list ptree)))
-    (message "keys-list: %s" keys-list)
+  (let ((key-lists (ptree-key-lists ptree)))
+    (message "key-lists: %s" key-lists)
     (message "ptree: %s" ptree)
-    (mapcar #'(lambda (keys)
-                (cons (format "%s: %s" keys (apply #'ptree-get ptree keys))
-                      keys))
-            keys-list)))
+    (mapcar #'(lambda (key-list)
+                (cons (format "%s: %s" key-list (apply #'ptree-get ptree key-list))
+                      key-list))
+            key-lists)))
 
 (defun org-capture+reset-source (ptree)
   (let ((candidates (org-capture+-reset-candidates ptree)))
