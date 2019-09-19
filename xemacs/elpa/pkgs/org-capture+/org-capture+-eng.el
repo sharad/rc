@@ -49,12 +49,7 @@
                                     ("Current Org Clock" . clock)
                                     ("Function" . function)
                                     ("Marker" . marker)))
-(defvar org-capture+-meta-data '(:type (:prompt "Types" :source org-capture+-helm-sync)
-                                 :target (:file     (:prompt "Files"    :source org-capture+-helm-sync)
-                                          :name     (:prompt "Targets"  :source org-capture+-helm-sync)
-                                          :headings (:prompt "Headings" :source org-capture+-helm-sync))
-                                 :description (:prompt "Description" :source org-capture+-helm-dummy)
-                                 :template (:prompt "Templates" :source org-capture+-helm-gen)))
+(defvar org-capture+-meta-data nil)
 
 (defvar org-capture+-plist '(:type nil
                              :target (:file     nil
@@ -107,34 +102,21 @@
 
 (defun ptree-key-lists (ptree-keys)
   (ptree-key-lists-keys (ptree-keys ptree-keys)))
-
-
-(when nil
-    (ptree-key-lists-keys
-     '((:type)
-       (:target (:file) (:name))
-       (:target (:file (:x)) (:name (:y)))
-       (:description)))
-
-    (ptree-put '(:a (:b (:c (:d e)))) 'x :a :b :c :d)
-
-    (ptree-keys '(:type entry :target (:file /home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/personal/report.org :name Test :headings ("x" "y"))))
-
-    (ptree-key-lists '(:type entry :target (:file /home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/personal/report.org :name Test))))
 
 
 (defun org-capture+-meta--get (&rest keys)
   (apply #'ptree-get org-capture+-meta-data keys))
 
 (defun org-capture+-meta--put (value &rest keys)
-  (apply #'ptree-put org-capture+-meta-data value keys))
-
+  (setq org-capture+-meta-data
+        (apply #'ptree-put org-capture+-meta-data value keys)))
 
 (defun org-capture+-meta-get (keys key)
   (apply #'ptree-get org-capture+-meta-data (append keys (list key))))
 
 (defun org-capture+-meta-put (value keys key)
-  (apply #'ptree-put org-capture+-meta-data value (append keys (list key))))
+  (setq org-capture+-meta-data
+        (apply #'ptree-put org-capture+-meta-data value (append keys (list key)))))
 
 
 (defun org-capture+-helm-common-action (ptree &rest keys)
@@ -252,6 +234,28 @@
 (put 'define-org-capture+-filter 'lisp-indent-function 1)
 
 
+(org-capture+-meta--put "Types" :type :prompt)
+(org-capture+-meta--put "Files" :target :file :prompt)
+(org-capture+-meta--put "Targets" :target :name :prompt)
+(org-capture+-meta--put "Headings" :target :headings :prompt)
+(org-capture+-meta--put "Description" :description :prompt)
+(org-capture+-meta--put "Templates" :template :prompt)
+
+(org-capture+-meta--put #'org-capture+-helm-sync :type :source)
+(org-capture+-meta--put #'org-capture+-helm-sync :target :file :source)
+(org-capture+-meta--put #'org-capture+-helm-sync :target :name :source)
+(org-capture+-meta--put #'org-capture+-helm-sync :target :headings :source)
+(org-capture+-meta--put #'org-capture+-helm-dummy :description :source)
+(org-capture+-meta--put #'org-capture+-helm-gen :template :source)
+
+(org-capture+-meta--put 'single :type :alignment)
+(org-capture+-meta--put 'multi :target :file :alignment)
+(org-capture+-meta--put 'single :target :name :alignment)
+(org-capture+-meta--put 'single :target :headings :alignment)
+(org-capture+-meta--put 'single :description :alignment)
+(org-capture+-meta--put 'multi :template :alignment)
+
+
 (define-org-capture+-filter (ptree :type)
   org-capture+-types)
 
@@ -283,12 +287,14 @@
 
 (defun org-capture+-reset-candidates (ptree)
   (let ((key-lists (ptree-key-lists ptree)))
-    (message "key-lists: %s" key-lists)
-    (message "ptree: %s" ptree)
-    (mapcar #'(lambda (key-list)
-                (cons (format "%s: %s" key-list (apply #'ptree-get ptree key-list))
-                      key-list))
-            key-lists)))
+    (mapcar #'(lambda (keys)
+                (cons (format "%s%s%s"
+                              (org-capture+-meta-get keys :prompt)
+                              (if (eq (org-capture+-meta-get keys :alignment) 'multi) "\n" ": ")
+                              (apply #'ptree-get ptree keys))
+                      keys))
+            (remove-if-not #'(lambda (keys) (apply #'ptree-get ptree keys))
+                           key-lists))))
 
 (defun org-capture+reset-source (ptree)
   (let ((candidates (org-capture+-reset-candidates ptree)))
@@ -311,9 +317,9 @@
 
     (dolist (keys (ptree-key-lists org-capture+-plist))
       (unless (apply #'ptree-get ptree keys)
-       (setq sources
-             (nconc sources
-                    (apply (org-capture+-meta-get keys :source) ptree keys)))))
+        (setq sources
+              (nconc sources
+                     (apply (org-capture+-meta-get keys :source) ptree keys)))))
 
     (if sources
         (helm :sources (append sources reset-source))
