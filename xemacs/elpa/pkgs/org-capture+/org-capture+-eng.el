@@ -298,22 +298,33 @@
 
 (defun org-capture+reset-source (ptree)
   (let ((candidates (org-capture+-reset-candidates ptree)))
-    (helm-build-sync-source "Reset"
-      :candidates candidates
-      :multiline t
-      :action     #'(lambda (keys)
-                      (org-capture+-guided (apply #'ptree-put ptree nil keys))))))
+    (list
+     (helm-build-sync-source "Reset"
+       :candidates candidates
+       :multiline t
+       :action     #'(lambda (keys)
+                       (org-capture+-guided (apply #'ptree-put ptree nil keys)))))))
 
 
+(defun org-capture+-learned-templates-source ()
+  (let ((candidates (mapcar #'(lambda (ptree)
+                                (let ((display (format "%s" (ptree-get ptree :description))))
+                                  (cons display ptree)))
+                            org-capture+-learned-templates)))
+    (list
+     (helm-build-sync-source "Defined Templates"
+       :candidates candidates
+       :action     #'org-capture+-run-ptree))))
+
 ;; TODO: Add resets which will help to edit existing
 ;;       take new as editing an anonymous
 
 ;;;###autoload
 (defun org-capture+-guided (&optional ptree)
   (interactive)
-  (let (sources
-        (reset-source (list (org-capture+reset-source ptree))))
-
+  (let ((learned-sources (org-capture+-learned-templates-source))
+        (reset-source    (org-capture+reset-source ptree))
+        sources)
 
     (dolist (keys (ptree-key-lists org-capture+-plist))
       (unless (apply #'ptree-get ptree keys)
@@ -322,7 +333,7 @@
                      (apply (org-capture+-meta-get keys :source) ptree keys)))))
 
     (if sources
-        (helm :sources (append sources reset-source))
+        (helm :sources (append learned-sources sources reset-source))
       (org-capture+-run-ptree ptree)
       (message "ptree %s" ptree))))
 
@@ -335,23 +346,4 @@
   (message "Hello")
   (self-insert-command 1))
 
-
-(when nil
-  (helm :sources (funcall (org-capture+-meta-get '(:type) :source) nil :type))
-
-  (helm (org-capture+-helm-sync nil :type))
-
-  (let (sources)
-    (setq sources (nconc sources (funcall (org-capture+-meta-get '(:type) :source) nil :type)))
-    (setq sources (nconc sources (funcall (org-capture+-meta-get '(:target :file) :source) nil :target :file)))
-    (setq sources (nconc sources (funcall (org-capture+-meta-get '(:target :name) :source) nil :target :name)))
-    (setq sources (nconc sources (funcall (org-capture+-meta-get '(:target :headings) :source) nil :description)))
-    (setq sources (nconc sources (funcall (org-capture+-meta-get '(:description) :source) nil :target :file)))
-    (setq sources (nconc sources (funcall (org-capture+-meta-get '(:template) :source) nil :target :template)))
-    (helm :sources sources))
-
-
-  (org-capture+-meta-get '(:type) :prompt)
-
-  (org-capture+-meta-get '(:type) :filter))
-;;; org-capture+-eng.el ends here
+;;; org-capture+-eng.el ends here
