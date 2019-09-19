@@ -60,8 +60,8 @@
                              :target (:file     nil
                                       :name     nil
                                       :headings nil)
-                             :description nil
-                             :template nil))
+                             :template nil
+                             :description nil))
 
 
 (defun plist-keys (plist)
@@ -145,7 +145,7 @@
 (defun org-capture+-helm-sync (ptree &rest keys)
   (let* ((prompt     (org-capture+-meta-get keys :prompt))
          (filter     (org-capture+-meta-get keys :filter))
-         (candidates (when filter (apply #'filter ptree))))
+         (candidates (when filter (funcall filter ptree))))
     (list
      (helm-build-sync-source prompt
        :candidates candidates
@@ -154,7 +154,7 @@
 (defun org-capture+-helm-dummy (ptree &rest keys)
   (let* ((prompt     (org-capture+-meta-get keys :prompt))
          (filter     (org-capture+-meta-get keys :filter))
-         (candidates (when filter (apply #'filter ptree))))
+         (candidates (when filter (funcall filter ptree))))
     (list
      (helm-build-dummy-source prompt
        :action     (apply #'org-capture+-helm-common-action ptree keys)))))
@@ -162,7 +162,7 @@
 (defun org-capture+-helm-gen (ptree &rest keys)
   (let* ((prompt     (org-capture+-meta-get keys :prompt))
          (filter     (org-capture+-meta-get keys :filter))
-         (candidates (when filter (apply #'filter ptree))))
+         (candidates (when filter (funcall filter ptree))))
     (helm-template-gen-source #'org-capture+-tree-predicate
                               '(t xx yy)
                               0
@@ -281,49 +281,6 @@
       (apply #'org-capture+-get-file-headlines file t headlines))))
 
 
-(defun org-capture+-type-source (ptree)
-  (let ((types (org-capture+-filter-types ptree)))
-    (helm-build-sync-source "Type"
-      :candidates types
-      :action     #'(lambda (type)
-                      (org-capture+-guided (org-capture-helm-action ptree type :type))))))
-
-(defun org-capture+-target-name-source (ptree)
-  (let ((targets (org-capture+-target-name-filter ptree)))
-    (helm-build-sync-source "Target"
-      :candidates targets
-      :action     #'(lambda (name)
-                      (org-capture+-guided (org-capture-helm-action ptree name :target :name))))))
-
-(defun org-capture+-target-file-source (ptree)
-  (let ((files (org-capture+-target-files-filter ptree)))
-    (helm-build-sync-source "Files"
-      :candidates files
-      :action     #'(lambda (file)
-                      (org-capture+-guided (org-capture-helm-action ptree file :target :file))))))
-
-(defun org-capture+-target-file+headlines-source (ptree)
-  (let ((headlines       (org-capture+-target-file+headlines-filter ptree))
-        (headline-action #'(lambda (headlines)
-                             (org-capture+-guided (org-capture-helm-action ptree headlines :target :headlines)))))
-    (helm-build-sync-source "Headline"
-      :candidates headlines
-      :action (list (cons "Select" headline-action)))))
-
-(defun org-capture+-template-source (ptree)
-  (helm-template-gen-source #'org-capture+-tree-predicate
-                            '(t xx yy)
-                            0
-                            #'(lambda (template)
-                                (org-capture+-guided (org-capture-helm-action ptree template :template)))))
-
-(defun org-capture+-description-source (ptree)
-  (let (description)
-    (helm-build-dummy-source "Description"
-      :action     #'(lambda (description)
-                      (org-capture+-guided (org-capture-helm-action ptree description :description))))))
-
-
 (defun org-capture+-reset-candidates (ptree)
   (let ((key-lists (ptree-key-lists ptree)))
     (message "key-lists: %s" key-lists)
@@ -353,45 +310,15 @@
 
 
     (dolist (keys (ptree-key-lists org-capture+-plist))
-      (setq sources
-            (nconc sources
-                   (funcall (org-capture+-meta-get keys :source) ptree))))
+      (unless (apply #'ptree-get ptree keys)
+       (setq sources
+             (nconc sources
+                    (apply (org-capture+-meta-get keys :source) ptree keys)))))
 
     (if sources
         (helm :sources (append sources reset-source))
       (org-capture+-run-ptree ptree)
       (message "ptree %s" ptree))))
-
-    ;; (progn
-    ;;   (progn
-    ;;     (unless (ptree-get ptree :target :name)
-    ;;       (push (org-capture+-target-name-source ptree)
-    ;;             sources))
-    ;;     (unless (ptree-get ptree :target :file)
-    ;;       (push (org-capture+-target-file-source ptree)
-    ;;             sources))
-    ;;     (unless (ptree-get ptree :target :headlines)
-    ;;       (push (org-capture+-target-file+headlines-source ptree)
-    ;;             sources)))
-
-    ;;   (unless (ptree-get ptree :type)
-    ;;     (push (org-capture+-type-source        ptree)
-    ;;           sources))
-    ;;   (unless (ptree-get ptree :description)
-    ;;     (push (org-capture+-description-source ptree)
-    ;;           sources))
-    ;;   (unless (ptree-get ptree :template)
-    ;;     (setq sources
-    ;;           (nconc sources (org-capture+-template-source ptree))))
-
-    ;;   (if sources
-    ;;       (helm :sources (append sources reset-source))
-    ;;     (org-capture+-run-ptree ptree)
-    ;;     (message "ptree %s" ptree)))
-
-(funcall (org-capture+-meta-get '(:type) :source) nil)
-
-(org-capture+-meta-get '(:type) :prompt)
 
 ;;;###autoload
 (defalias 'org-capture+ #'org-capture+-guided)
@@ -402,4 +329,23 @@
   (message "Hello")
   (self-insert-command 1))
 
-;;; org-capture+-eng.el ends here
+
+(when nil
+  (helm :sources (funcall (org-capture+-meta-get '(:type) :source) nil :type))
+
+  (helm (org-capture+-helm-sync nil :type))
+
+  (let (sources)
+    (setq sources (nconc sources (funcall (org-capture+-meta-get '(:type) :source) nil :type)))
+    (setq sources (nconc sources (funcall (org-capture+-meta-get '(:target :file) :source) nil :target :file)))
+    (setq sources (nconc sources (funcall (org-capture+-meta-get '(:target :name) :source) nil :target :name)))
+    (setq sources (nconc sources (funcall (org-capture+-meta-get '(:target :headings) :source) nil :description)))
+    (setq sources (nconc sources (funcall (org-capture+-meta-get '(:description) :source) nil :target :file)))
+    (setq sources (nconc sources (funcall (org-capture+-meta-get '(:template) :source) nil :target :template)))
+    (helm :sources sources))
+
+
+  (org-capture+-meta-get '(:type) :prompt)
+
+  (org-capture+-meta-get '(:type) :filter))
+;;; org-capture+-eng.el ends here
