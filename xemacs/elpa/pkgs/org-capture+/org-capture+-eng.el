@@ -54,7 +54,7 @@
 (defvar org-capture+-plist '(:type nil
                              :target (:file     nil
                                       :name     nil
-                                      :headings nil)
+                                      :headlines nil)
                              :template nil
                              :description nil))
 
@@ -234,55 +234,67 @@
 (put 'define-org-capture+-filter 'lisp-indent-function 1)
 
 
-(org-capture+-meta--put "Types" :type :prompt)
-(org-capture+-meta--put "Files" :target :file :prompt)
-(org-capture+-meta--put "Targets" :target :name :prompt)
-(org-capture+-meta--put "Headings" :target :headings :prompt)
-(org-capture+-meta--put "Description" :description :prompt)
-(org-capture+-meta--put "Templates" :template :prompt)
+(defun org-capture+-initialize ()
 
-(org-capture+-meta--put #'org-capture+-helm-sync :type :source)
-(org-capture+-meta--put #'org-capture+-helm-sync :target :file :source)
-(org-capture+-meta--put #'org-capture+-helm-sync :target :name :source)
-(org-capture+-meta--put #'org-capture+-helm-sync :target :headings :source)
-(org-capture+-meta--put #'org-capture+-helm-dummy :description :source)
-(org-capture+-meta--put #'org-capture+-helm-gen :template :source)
+  (setq org-capture+-meta-data nil)
 
-(org-capture+-meta--put 'single :type :alignment)
-(org-capture+-meta--put 'multi :target :file :alignment)
-(org-capture+-meta--put 'single :target :name :alignment)
-(org-capture+-meta--put 'single :target :headings :alignment)
-(org-capture+-meta--put 'single :description :alignment)
-(org-capture+-meta--put 'multi :template :alignment)
-
+  (setq org-capture+-plist '(:type nil
+                             :target (:file     nil
+                                      :name     nil
+                                      :headlines nil)
+                             :template nil
+                             :description nil))
 
-(define-org-capture+-filter (ptree :type)
-  org-capture+-types)
+  (org-capture+-meta--put "Types" :type :prompt)
+  (org-capture+-meta--put "Files" :target :file :prompt)
+  (org-capture+-meta--put "Targets" :target :name :prompt)
+  (org-capture+-meta--put "Headings" :target :headlines :prompt)
+  (org-capture+-meta--put "Description" :description :prompt)
+  (org-capture+-meta--put "Templates" :template :prompt)
 
-(define-org-capture+-filter (ptree :target :name)
-  (let* ((file      (ptree-get ptree :target :file))
-         (headlines (ptree-get ptree :target :headlines)))
-    (if file
-        (apply #'org-select-targets
-               (if headlines
-                   (if (> (length headlines) 1)
-                       '(file+olp file+olp+datetree)
-                     '(file+headline file+olp file+olp+datetree))
-                 '(file file+headline file+olp file+olp+datetree)))
-      org-capture+-target-names)))
+  (org-capture+-meta--put #'org-capture+-helm-sync :type :source)
+  (org-capture+-meta--put #'org-capture+-helm-sync :target :file :source)
+  (org-capture+-meta--put #'org-capture+-helm-sync :target :name :source)
+  (org-capture+-meta--put #'org-capture+-helm-sync :target :headlines :source)
+  (org-capture+-meta--put #'org-capture+-helm-dummy :description :source)
+  (org-capture+-meta--put #'org-capture+-helm-gen :template :source)
 
-(define-org-capture+-filter (ptree :target :file)
-  (let ((name (ptree-get ptree :target :name)))
-    (when (memq name
-                '(nil file file+headline file+olp file+olp+datetree))
-      (org-capture+-get-org-files))))
+  (org-capture+-meta--put 'single :type :alignment)
+  (org-capture+-meta--put 'multi :target :file :alignment)
+  (org-capture+-meta--put 'single :target :name :alignment)
+  (org-capture+-meta--put 'single :target :headlines :alignment)
+  (org-capture+-meta--put 'single :description :alignment)
+  (org-capture+-meta--put 'multi :template :alignment)
 
-(define-org-capture+-filter (ptree :target :headlines)
-  (let* ((file      (ptree-get ptree :target :file))
-         (headlines (ptree-get ptree :target :headlines)))
-    (when (and file
-               (null headlines))
-      (apply #'org-capture+-get-file-headlines file t headlines))))
+  (define-org-capture+-filter (ptree :type)
+    org-capture+-types)
+
+  (define-org-capture+-filter (ptree :target :name)
+    (let* ((file      (ptree-get ptree :target :file))
+           (headlines (ptree-get ptree :target :headlines)))
+      (if file
+          (apply #'org-select-targets
+                 (if headlines
+                     (if (> (length headlines) 1)
+                         '(file+olp file+olp+datetree)
+                       '(file+headline file+olp file+olp+datetree))
+                   '(file file+headline file+olp file+olp+datetree)))
+        org-capture+-target-names)))
+
+  (define-org-capture+-filter (ptree :target :file)
+    (let ((name (ptree-get ptree :target :name)))
+      (when (memq name
+                  '(nil file file+headline file+olp file+olp+datetree))
+        (org-capture+-get-org-files))))
+
+  (define-org-capture+-filter (ptree :target :headlines)
+    (let* ((file      (ptree-get ptree :target :file))
+           (headlines (ptree-get ptree :target :headlines)))
+      (when (and file
+                 (null headlines))
+        (apply #'org-capture+-get-file-headlines file t headlines)))))
+
+(org-capture+-initialize)
 
 
 (defun org-capture+-reset-candidates (ptree)
@@ -326,11 +338,13 @@
         (reset-source    (org-capture+reset-source ptree))
         sources)
 
-    (dolist (keys (ptree-key-lists org-capture+-plist))
-      (unless (apply #'ptree-get ptree keys)
-        (setq sources
-              (nconc sources
-                     (apply (org-capture+-meta-get keys :source) ptree keys)))))
+    (if org-capture+-plist
+        (dolist (keys (ptree-key-lists org-capture+-plist))
+          (unless (apply #'ptree-get ptree keys)
+            (setq sources
+                  (nconc sources
+                         (apply (org-capture+-meta-get keys :source) ptree keys)))))
+      (error "org-capture+-plist is %s" org-capture+-plist))
 
     (if sources
         (helm :sources (append learned-sources sources reset-source))

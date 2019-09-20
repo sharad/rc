@@ -96,6 +96,7 @@ DEB_PKG_UTILS="gcalcli newsbeuter liblz4-tool tracker gtimelog d-feet linuxbrew-
 DEB_PKG_MEDIA="libavcodec-extra pulseeffects pavucontrol pulseaudio-module-gconf pulseaudio-equalizer vokoscreen pulseaudio-utils pulsemixer kodi sox mpg123 mpg321 vlc"
 DEB_PKG_WINDOW="smbclient python3-smbc python-smbc awesome awesome-extra"
 DEB_PKG1_NET="network-manager-fortisslvpn network-manager-fortisslvpn-gnome openfortivpn python-pyftpdlib python3-pyftpdlib whois woof"
+DEB_PKG2_NET="tshark wireshark"
 DEB_PKG_DOC="wv epub-utils"
 DEB_PKG_DOC_PUB="hugo jekyll"
 DEB_PKG_JAVA1="libreoffice-java-common"
@@ -727,6 +728,7 @@ function setup_apt_packages()
         DEB_PKG_MEDIA
         DEB_PKG_WINDOW
         DEB_PKG1_NET
+        DEB_PKG2_NET
         DEB_PKG_DOC
         DEB_PKG_DOC_PUB
         DEB_PKG_JAVA1
