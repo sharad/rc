@@ -234,17 +234,16 @@
 (put 'define-org-capture+-filter 'lisp-indent-function 1)
 
 
+;;;###autoload
 (defun org-capture+-initialize ()
-
+  (interactive)
   (setq org-capture+-meta-data nil)
-
   (setq org-capture+-plist '(:type nil
                              :target (:file     nil
                                       :name     nil
                                       :headlines nil)
                              :template nil
                              :description nil))
-
   (org-capture+-meta--put "Types" :type :prompt)
   (org-capture+-meta--put "Files" :target :file :prompt)
   (org-capture+-meta--put "Targets" :target :name :prompt)
@@ -318,15 +317,28 @@
                        (org-capture+-guided (apply #'ptree-put ptree nil keys)))))))
 
 
+(setq org-capture+-learned-templates '(()))
+
+(defun org-captue+-drive-prompt (ptree)
+  (if ptree
+      (let* ((description (ptree-get ptree :description))
+             (type        (car (rassoc (ptree-get ptree :type) org-capture+-types)))
+             (target      (car (rassoc (ptree-get ptree :target :name) org-capture+-target-names)))
+             (headlines   (ptree-get ptree :target :headlines))
+             (file        (ptree-get ptree :target :file))
+             (filename    (if file (file-name-nondirectory file))))
+        (format "%s(%s) %s %s %s" type target description filename headlines))
+    "New"))
+
 (defun org-capture+-learned-templates-source ()
   (let ((candidates (mapcar #'(lambda (ptree)
-                                (let ((display (format "%s" (ptree-get ptree :description))))
-                                  (cons display ptree)))
+                                (cons (org-captue+-drive-prompt ptree) ptree))
                             org-capture+-learned-templates)))
     (list
      (helm-build-sync-source "Defined Templates"
        :candidates candidates
-       :action     #'org-capture+-run-ptree))))
+       :action     (list (cons "Run" #'org-capture+-run-ptree)
+                         (cons "Edit" #'org-capture+-guided))))))
 
 ;; TODO: Add resets which will help to edit existing
 ;;       take new as editing an anonymous
@@ -347,7 +359,10 @@
       (error "org-capture+-plist is %s" org-capture+-plist))
 
     (if sources
-        (helm :sources (append learned-sources sources reset-source))
+        (helm :sources (append learned-sources
+                               sources
+                               reset-source))
+      (push ptree org-capture+-learned-templates)
       (org-capture+-run-ptree ptree)
       (message "ptree %s" ptree))))
 
