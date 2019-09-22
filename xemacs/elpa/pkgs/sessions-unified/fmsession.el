@@ -576,7 +576,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
           (elscreen-notify-screen-modification 'force-immediately))
 
     (testing (message "running server-create-window-system-frame afer advise else")))
-  ;;(debug)
+
   t)
 
 (defadvice server-create-window-system-frame
