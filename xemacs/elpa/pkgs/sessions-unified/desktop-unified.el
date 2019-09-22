@@ -576,9 +576,9 @@ so returns nil if pid is nil."
 ;; (member 'save-all-sessions-auto-save-immediately
 ;;         (symbol-value 'kill-emacs-hook))
 
-(when nil
-  (defvar lotus-enable-desktop-restore-interrupting-feature-hook nil
-    "feature that were disabled for proper restoring of desktop will get re-enabled here."))
+(defvar lotus-enable-desktop-restore-interrupting-feature-hook nil
+  "feature that were disabled for proper restoring of desktop will get re-enabled here.")
+
 
 
 (defun desktop-idle-create-buffers ()
@@ -712,7 +712,7 @@ en all buffer were creaed idly."
           (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "desktop-get-desktop-save-filename failed")))
     (progn
       (lotus-enable-session-saving-immediately)
-      ;; (run-each-hooks 'lotus-enable-desktop-restore-interrupting-feature-hook)
+      (run-each-hooks 'lotus-enable-desktop-restore-interrupting-feature-hook)
       (message
        "*session-unified-desktop-enabled* %s" *session-unified-desktop-enabled*)
       t)))

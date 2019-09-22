@@ -363,13 +363,6 @@ return a new alist whose car is the new pair and cdr is ALIST."
                         (setq *elscreen-session-restore-data* session-current-buffer-file))))
                 (error "2 Screen is not active for frame %s" nframe)))
           (error "1 Screen is not active for frame %s" nframe))
-        ;; (if (get-buffer buff)
-        ;;     (progn
-        ;;       (setq *elscreen-session-restore-data* (list (cons 'cb session-current-screen-buffers)))
-        ;;       (testing
-        ;;        (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*)))
-        ;;     (testing
-        ;;      (message "in when session-current-screen-buffers %s" session-current-screen-buffers)))
 
         ;; (let* ((desktop-buffers
         (testing
@@ -479,14 +472,13 @@ return a new alist whose car is the new pair and cdr is ALIST."
 (defun fmsession-read-location-internal (&optional initial-input)
   (condition-case terr
       (ido-completing-read "Session: "
-                           (remove-if-not
-                            #'(lambda (dir)
-                                (not
-                                 (member
-                                  dir
-                                  (remove-if #'null
-                                             (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list))))))
-                            (mapcar 'car *frames-elscreen-session*))
+                           (remove-if-not #'(lambda (dir)
+                                              (not
+                                               (member
+                                                dir
+                                                (remove-if #'null
+                                                           (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list))))))
+                                          (mapcar 'car *frames-elscreen-session*))
                            nil
                            nil
                            initial-input)
@@ -496,16 +488,13 @@ return a new alist whose car is the new pair and cdr is ALIST."
   (condition-case terr
       (completing-read-timeout 7
                                "Session: "
-                               (remove-if-not
-                                #'(lambda (dir)
-                                    (not
-                                     (member
-                                      dir
-                                      (remove-if #'null
-                                                 (mapcar
-                                                  #'(lambda (f) (frame-parameter f 'frame-spec-id))
-                                                  (frame-list))))))
-                                (mapcar 'car *frames-elscreen-session*))
+                               (remove-if-not #'(lambda (dir)
+                                                  (not (member dir
+                                                               (remove-if #'null
+                                                                          (mapcar
+                                                                           #'(lambda (f) (frame-parameter f 'frame-spec-id))
+                                                                           (frame-list))))))
+                                              (mapcar 'car *frames-elscreen-session*))
                                nil
                                nil
                                initial-input)
@@ -566,17 +555,11 @@ return a new alist whose car is the new pair and cdr is ALIST."
                        (if (consp buffer-file)
                            (car buffer-file)
                          buffer-file))))
-        (testing
-         (message "running server-create-window-system-frame afer advise if")
-         (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*)))
         (when buff
           (elscreen-kill)
           (elscreen-find-and-goto-by-buffer buff nil nil)
           (setq *elscreen-session-restore-data* nil)
-          (elscreen-notify-screen-modification 'force-immediately))
-
-    (testing (message "running server-create-window-system-frame afer advise else")))
-
+          (elscreen-notify-screen-modification 'force-immediately))))
   t)
 
 (defadvice server-create-window-system-frame
@@ -594,26 +577,6 @@ return a new alist whose car is the new pair and cdr is ALIST."
     (prog1
         ad-do-it
       (server-create-frame-around-adrun))))
-
-(when nil
-  (ad-disable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
-  (ad-disable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
-  (ad-enable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
-  (ad-enable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
-  (ad-remove-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
-  (ad-remove-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
-  (ad-update 'server-create-window-system-frame)
-  (ad-activate 'server-create-window-system-frame))
-
-;; (ad-disable-advice 'server-create-tty-frame 'before 'set-restore-frame-session)
-;; (ad-disable-advice 'server-create-tty-frame 'after 'remove-scratch-buffer)
-;; (ad-enable-advice 'server-create-tty-frame 'before 'set-restore-frame-session)
-;; (ad-enable-advice 'server-create-tty-frame 'after 'remove-scratch-buffer)
-;; (ad-remove-advice 'server-create-tty-frame 'before 'set-restore-frame-session)
-;; (ad-remove-advice 'server-create-tty-frame 'after 'remove-scratch-buffer)
-;; (ad-update 'server-create-tty-frame)
-;; (ad-activate 'server-create-tty-frame)
-
 ;;}}
 
 
@@ -680,7 +643,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
   "function to display screen with frame-session-restore, e.g. display-about-screen, spacemacs-buffer/goto-buffer")
 
 (defun frame-session-restore (nframe &optional try-guessing)
-  (when nil
+  (when t
     (message "in frame-session-restore")
     (if (and
          *frame-session-restore*

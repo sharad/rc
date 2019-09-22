@@ -114,7 +114,7 @@
 ;;;###autoload
 (defun add-to-enable-desktop-restore-interrupting-feature-hook (fn &optional append local)
   (interactive)
-  (when nil
+  (when t
    (add-to-hook
     'lotus-enable-desktop-restore-interrupting-feature-hook
     fn
@@ -123,7 +123,7 @@
 ;;;###autoload
 (defun remove-from-enable-desktop-restore-interrupting-feature-hook (fn &optional local)
   (interactive)
-  (when nil
+  (when t
    (remove-hook
     'lotus-enable-desktop-restore-interrupting-feature-hook
     fn
@@ -132,7 +132,7 @@
 ;;;###autoload
 (defun add-to-disable-desktop-restore-interrupting-feature-hook (fn &optional append local)
   (interactive)
-  (when nil
+  (when t
    (add-to-hook
     'lotus-disable-desktop-restore-interrupting-feature-hook
     fn
@@ -141,7 +141,7 @@
 ;;;###autoload
 (defun remove-from-disable-desktop-restore-interrupting-feature-hook (fn &optional local)
   (interactive)
-  (when nil
+  (when t
    (remove-hook
     'lotus-disable-desktop-restore-interrupting-feature-hook
     fn
