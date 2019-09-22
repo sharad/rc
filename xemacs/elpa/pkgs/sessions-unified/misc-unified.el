@@ -29,6 +29,7 @@
 
 
 (require 'sessions-unified)
+(require 'session-unified)
 
 
 (require 'savehist-20+)

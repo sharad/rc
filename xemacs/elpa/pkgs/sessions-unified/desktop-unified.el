@@ -28,6 +28,7 @@
 
 
 (require 'sessions-unified)
+(require 'session-unified)
 
 
 (require 'fmsession)

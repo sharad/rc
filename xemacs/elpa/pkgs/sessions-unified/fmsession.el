@@ -33,6 +33,7 @@
 
 
 (require 'sessions-unified)
+(require 'session-unified)
 
 
 (defvar session-unified-utils-select-frame-fn #'select-frame-set-input-focus "session-unified-utils-select-frame-fn")
