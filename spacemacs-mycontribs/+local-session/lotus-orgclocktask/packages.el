@@ -195,11 +195,12 @@ Each entry is either:
             (use-package sessions-unified
               :defer t
               :config
-              (add-to-enable-desktop-restore-interrupting-feature-hook
-               #'(lambda ()
-                   (if (fboundp 'org-clock-persistence-insinuate)
-                       (org-clock-persistence-insinuate)
-                     (message "Error: Org Clock function org-clock-persistence-insinuate not available.")))))))))))
+              (when t
+                (add-to-enable-desktop-restore-interrupting-feature-hook
+                 #'(lambda ()
+                     (if (fboundp 'org-clock-persistence-insinuate)
+                         (org-clock-persistence-insinuate)
+                       (message "Error: Org Clock function org-clock-persistence-insinuate not available."))))))))))))
 
 
 (defun lotus-orgclocktask/init-org-clock-unnamed-task ()
@@ -219,61 +220,63 @@ Each entry is either:
 
 (defun lotus-orgclocktask/init-org-clock-hooks ()
   (use-package org-clock-hooks
-      :defer t
-      :config
+    :defer t
+    :config
+    (progn
       (progn
-        (progn
-          )
-        (progn
-          )
-        (progn
-          (lotus-org-clock-in/out-insinuate-hooks))))
+        )
+      (progn
+        )
+      (progn
+        (lotus-org-clock-in/out-insinuate-hooks))))
 
   (progn
     (use-package sessions-unified
-        :defer t
-        :config
-        (progn
+      :defer t
+      :config
+      (progn
+        (when t
           (add-to-enable-desktop-restore-interrupting-feature-hook
            #'(lambda ()
-               (lotus-org-clock-in/out-insinuate-hooks))))))
+               (lotus-org-clock-in/out-insinuate-hooks)))))))
 
   (progn
     (use-package startup-hooks
-        :defer t
-        :config
-        (progn
-          (progn
-            (add-to-enable-startup-interrupting-feature-hook
-             #'(lambda ()
-                 (lotus-org-clock-in/out-insinuate-hooks)) t))))))
-
-(defun lotus-orgclocktask/init-org-clock-check ()
-  (use-package org-clock-check
       :defer t
       :config
       (progn
         (progn
-          )
-        (progn
-          )))
+          (add-to-enable-startup-interrupting-feature-hook
+           #'(lambda ()
+               (lotus-org-clock-in/out-insinuate-hooks)) t))))))
+
+(defun lotus-orgclocktask/init-org-clock-check ()
+  (use-package org-clock-check
+    :defer t
+    :config
+    (progn
+      (progn
+        )
+      (progn
+        )))
 
   (progn
     (use-package sessions-unified
-        :defer t
-        :config
-        (progn
+      :defer t
+      :config
+      (progn
+        (when t
           (add-to-enable-desktop-restore-interrupting-feature-hook
            #'(lambda ()
                (when (fboundp 'org-clock-start-check-timer-insiuate)
                  (org-clock-start-check-timer-insiuate))
                (when (fboundp 'org-clock-lotus-log-note-on-change-insinuate)
-                 (org-clock-lotus-log-note-on-change-insinuate)))))))
+                 (org-clock-lotus-log-note-on-change-insinuate))))))))
   (progn
     (use-package startup-hooks
-        :defer t
-        :config
-        )))
+      :defer t
+      :config
+      )))
 
 (defun lotus-orgclocktask/init-org-clock-in-if-not ()
   (use-package org-clock-in-if-not
@@ -331,32 +334,33 @@ Each entry is either:
   (progn
     (progn
       (use-package org-clock-utils-lotus
-          :defer t
-          :config
+        :defer t
+        :config
+        (progn
           (progn
-            (progn
-              (use-package task-manager
-                  :defer t
-                  :config
-                  (progn
-                    )))
-            (progn
-              ))))
+            (use-package task-manager
+              :defer t
+              :config
+              (progn
+                )))
+          (progn
+            ))))
 
     (progn
       (progn
         (use-package org
-            :defer t
-            :config
-            (progn
-              (use-package sessions-unified
-                  :defer t
-                  :config
-                  (add-to-enable-desktop-restore-interrupting-feature-hook
-                   #'(lambda ()
-                       (if (fboundp 'org-clock-persistence-insinuate)
-                           (org-clock-persistence-insinuate)
-                           (message "Error: Org Clock function org-clock-persistence-insinuate not available.")))))))))))
+          :defer t
+          :config
+          (progn
+            (use-package sessions-unified
+              :defer t
+              :config
+              (when t
+                (add-to-enable-desktop-restore-interrupting-feature-hook
+                 #'(lambda ()
+                     (if (fboundp 'org-clock-persistence-insinuate)
+                         (org-clock-persistence-insinuate)
+                       (message "Error: Org Clock function org-clock-persistence-insinuate not available."))))))))))))
 
 (defun lotus-orgclocktask/init-org-clock-wrapper ()
   (progn
@@ -459,7 +463,7 @@ Each entry is either:
                ;; (message "test3")
                (org-clock-work-day-mode-line-add t)) t)
 
-          (when nil
+          (when t
             (add-to-enable-startup-interrupting-feature-hook
              #'(lambda ()
                  ;; (message "test4")
@@ -584,15 +588,16 @@ Each entry is either:
           :defer t
           :config
           (progn
-            (progn
-              (add-to-enable-desktop-restore-interrupting-feature-hook
-               'lotus-load-task-manager-delay-time)
+            (when t
+              (progn
+                (add-to-enable-desktop-restore-interrupting-feature-hook
+                 'lotus-load-task-manager-delay-time)
 
-              (add-to-enable-desktop-restore-interrupting-feature-hook
-               'lotus-config-start-occ-insinuate-after-delay-time)
+                (add-to-enable-desktop-restore-interrupting-feature-hook
+                 'lotus-config-start-occ-insinuate-after-delay-time)
 
-              (add-to-enable-desktop-restore-interrupting-feature-hook
-               'spaceline-toggle-org-clock-on))))))
+                (add-to-enable-desktop-restore-interrupting-feature-hook
+                 'spaceline-toggle-org-clock-on)))))))
 
     (use-package startup-hooks
       :defer t

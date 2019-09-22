@@ -42,8 +42,8 @@
     startup-hooks
     sessions-unified
     elscreen
-    lotus-wrapper
-    )
+    lotus-wrapper)
+
   "The list of Lisp packages required by the basic-startup layer.
 
 Each entry is either:
@@ -97,74 +97,44 @@ Each entry is either:
 
 (defun lotus-basic-startup/init-startup-hooks ()
   (use-package startup-hooks
-      ;; :ensure t
-      ;; :demand t
-      :defer t
-      :commands (startup-hooks-insuniate)
-      :config
-      (progn
-        (setq
-         lotus-disable-startup-begin-debug-on-error        nil
-         lotus-disable-startup-finish-debug-on-error       nil
-         lotus-enable-startup-begin-debug-on-error         nil
-         lotus-enable-startup-finish-debug-on-error        nil
+    ;; :ensure t
+    ;; :demand t
+    :init
+    (add-hook 'after-init-hook #'startup-hooks-insinuate)
+    :defer t
+    :commands (startup-hooks-insuniate)
+    :config
+    (progn
+      (setq
+       lotus-disable-startup-begin-debug-on-error        nil
+       lotus-disable-startup-finish-debug-on-error       nil
+       lotus-enable-startup-begin-debug-on-error         nil
+       lotus-enable-startup-finish-debug-on-error        nil
 
-         lotus-disable-login-session-begin-debug-on-error  nil
-         lotus-disable-login-session-finish-debug-on-error nil
-         lotus-enable-login-session-begin-debug-on-error   nil
-         lotus-enable-login-session-finish-debug-on-error  nil
+       lotus-disable-login-session-begin-debug-on-error  nil
+       lotus-disable-login-session-finish-debug-on-error nil
+       lotus-enable-login-session-begin-debug-on-error   nil
+       lotus-enable-login-session-finish-debug-on-error  nil
 
-         lotus-disable-startup-begin-debug-on-quit         nil
-         lotus-disable-startup-finish-debug-on-quit        nil
-         lotus-enable-startup-begin-debug-on-quit          nil
-         lotus-enable-startup-finish-debug-on-quit         nil
+       lotus-disable-startup-begin-debug-on-quit         nil
+       lotus-disable-startup-finish-debug-on-quit        nil
+       lotus-enable-startup-begin-debug-on-quit          nil
+       lotus-enable-startup-finish-debug-on-quit         nil
 
-         lotus-disable-login-session-begin-debug-on-quit   nil
-         lotus-disable-login-session-finish-debug-on-quit  nil
-         lotus-enable-login-session-begin-debug-on-quit    nil
-         lotus-enable-login-session-finish-debug-on-quit   nil)))
-  (add-hook 'after-init-hook #'startup-hooks-insinuate))
+       lotus-disable-login-session-begin-debug-on-quit   nil
+       lotus-disable-login-session-finish-debug-on-quit  nil
+       lotus-enable-login-session-begin-debug-on-quit    nil
+       lotus-enable-login-session-finish-debug-on-quit   nil))))
+
+
 
 (defun lotus-basic-startup/init-sessions-unified ()
   (use-package startup-hooks)
   (use-package sessions-unified
     ;; :ensure t
-    :demand t
-    :commands 'lotus-desktop-session-restore
-    :config
+    :defer t
+    :init
     (progn
-
-      (progn
-        (setq
-         *session-unified-desktop-enabled* t
-         *frame-session-restore-screen-display-function*
-         #'(lambda ()
-             (with-temp-buffer
-               (spacemacs-buffer/goto-buffer)))))
-
-      (progn
-        (add-to-disable-desktop-restore-interrupting-feature-hook
-         '(lambda ()
-            (setq
-             tags-add-tables nil)
-            (setq vc-handled-backends (remove 'P4 vc-handled-backends))
-            (when (fboundp 'spacemacs/check-large-file)
-              (remove-hook
-               'find-file-hook
-               'spacemacs/check-large-file))))
-        (add-to-enable-desktop-restore-interrupting-feature-hook
-         '(lambda ()
-            (setq
-             tags-add-tables (default-value 'tags-add-tables))
-            (add-to-list 'vc-handled-backends 'P4)
-            (when (fboundp 'spacemacs/check-large-file)
-              (add-hook
-               'find-file-hook
-               'spacemacs/check-large-file)))))
-
-      (progn
-        (with-eval-after-load "utils-custom"
-          (setq sessions-unified-utils-notify 'message-notify)))
       (progn
         (with-eval-after-load "startup-hooks"
           (add-to-enable-startup-interrupting-feature-hook
@@ -179,48 +149,104 @@ Each entry is either:
               (run-at-time-or-now 70
                                   '(lambda ()
                                      (call-interactively
-                                      'lotus-check-session-saving)))))))
+                                      'lotus-check-session-saving))))))))
+    :commands 'lotus-desktop-session-restore
+    :config
+    (progn
 
-      (progn
-        (add-hook 'session-unified-save-all-sessions-before-hook' clean-buffer-list)))
-
-    (use-package init-setup
-      ;; :ensure t
-      :config
-      (progn
+      (when t
         (progn
-          (use-package startup-hooks
-            :defer t
-            :config
-            (progn
+          (setq
+           *session-unified-desktop-enabled* t
+           *frame-session-restore-screen-display-function*
+           #'(lambda ()
+               (with-temp-buffer
+                 (spacemacs-buffer/goto-buffer))))))
+
+      (when t
+        (progn
+          (add-to-disable-desktop-restore-interrupting-feature-hook
+           '(lambda ()
+              (setq
+               tags-add-tables nil)
+              (setq vc-handled-backends (remove 'P4 vc-handled-backends))
+              (when (fboundp 'spacemacs/check-large-file)
+                (remove-hook
+                 'find-file-hook
+                 'spacemacs/check-large-file))))
+          (add-to-enable-desktop-restore-interrupting-feature-hook
+           '(lambda ()
+              (setq
+               tags-add-tables (default-value 'tags-add-tables))
+              (add-to-list 'vc-handled-backends 'P4)
+              (when (fboundp 'spacemacs/check-large-file)
+                (add-hook
+                 'find-file-hook
+                 'spacemacs/check-large-file))))))
+
+      (when t
+        (progn
+          (with-eval-after-load "utils-custom"
+            (setq sessions-unified-utils-notify 'message-notify))))
+      (when t
+        (progn
+          (with-eval-after-load "startup-hooks"
+            (add-to-enable-startup-interrupting-feature-hook
+             'frame-session-restore-hook-func
+             t)
+            (add-to-enable-startup-interrupting-feature-hook
+             '(lambda ()
+                (run-at-time-or-now 7 'lotus-desktop-session-restore)))
+
+            (add-to-enable-startup-interrupting-feature-hook
+             '(lambda ()
+                (run-at-time-or-now 70
+                                    '(lambda ()
+                                       (call-interactively
+                                        'lotus-check-session-saving))))))))
+
+      (when nil
+        (progn
+          (add-hook 'session-unified-save-all-sessions-before-hook' clean-buffer-list))))
+
+    (when t
+      (use-package init-setup
+        ;; :ensure t
+        :config
+        (progn
+          (progn
+            (use-package startup-hooks
+              :defer t
+              :config
               (progn
-                (add-to-enable-login-session-interrupting-feature-hook
-                 #'set-dbus-session)
-                (add-to-enable-startup-interrupting-feature-hook
-                 #'set-dbus-session)
-                (with-eval-after-load "utils-custom"
-                  (add-hook 'emacs-startup-hook
-                            '(lambda ()
-                               (message-notify "Emacs" "Loaded Completely :)")
-                               (message "\n\n\n\n"))))))))))))
+                (progn
+                  (add-to-enable-login-session-interrupting-feature-hook
+                   #'set-dbus-session)
+                  (add-to-enable-startup-interrupting-feature-hook
+                   #'set-dbus-session)
+                  (with-eval-after-load "utils-custom"
+                    (add-hook 'emacs-startup-hook
+                              '(lambda ()
+                                 (message-notify "Emacs" "Loaded Completely :)")
+                                 (message "\n\n\n\n")))))))))))))
 
 (defun lotus-basic-startup/init-elscreen ()
   (use-package elscreen
-      :defer t
-      :config
-      (progn
-        (defun elscreen-move-right ()
-          (interactive)
-          (elscreen-next)
-          (elscreen-swap)
-          (elscreen-notify-screen-modification))
+    :defer t
+    :config
+    (progn
+      (defun elscreen-move-right ()
+        (interactive)
+        (elscreen-next)
+        (elscreen-swap)
+        (elscreen-notify-screen-modification))
 
-        (defun elscreen-move-left ()
-          (interactive)
-          (elscreen-previous)
-          (elscreen-swap)
-          ;; (elscreen-next)
-          (elscreen-notify-screen-modification)))))
+      (defun elscreen-move-left ()
+        (interactive)
+        (elscreen-previous)
+        (elscreen-swap)
+        ;; (elscreen-next)
+        (elscreen-notify-screen-modification)))))
 
 (defun lotus-basic-startup/init-lotus-wrapper ()
   (progn

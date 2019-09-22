@@ -455,8 +455,25 @@ startup in daemon mode."
   (interactive)
   (add-hook 'after-make-frame-functions 'lotus-enable-startup-interrupting-feature-in-frame-once)
   (add-hook 'after-make-frame-functions 'lotus-enable-login-session-interrupting-feature-in-frame-once t))
-
 
+(defun startup-hooks-uninsinuate ()
+  (interactive)
+  (remove-hook 'after-make-frame-functions 'lotus-enable-startup-interrupting-feature-in-frame-once)
+  (remove-hook 'after-make-frame-functions 'lotus-enable-login-session-interrupting-feature-in-frame-once))
+
+;; (setq after-make-frame-functions '(persp-init-new-frame elscreen-make-frame-confs muse-make-faces eyebrowse-init evil-init-esc x-dnd-init-frame))
+;; (setq after-make-frame-functions nil)
+
+
+(when nil
+  after-make-frame-functions
+
+ '(w3m-add-w3m-initial-frames persp-init-new-frame elscreen-make-frame-confs muse-make-faces eyebrowse-init evil-init-esc x-dnd-init-frame (closure (t) (frame) (run-with-idle-timer 3 nil #'set-default-face-height-by-resolution) (set-default-face-height-by-resolution)) (lambda (f) (run-at-time "1 sec" nil 'emacs-uptime)) (lambda (nframe) (run-at-time-or-now 100 '(lambda nil (if (any-frame-opened-p) (org-clock-in-if-not))))) call-org-clock-in-if-not-at-time-delay-frame-fn)
+
+ (setq after-make-frame-functions
+       '( persp-init-new-frame elscreen-make-frame-confs muse-make-faces eyebrowse-init evil-init-esc x-dnd-init-frame call-org-clock-in-if-not-at-time-delay-frame-fn))
+
+ (setq after-make-frame-functions nil))
 
 (defalias 'make-local-hook 'ignore)
 

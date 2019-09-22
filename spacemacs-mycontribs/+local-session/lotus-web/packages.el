@@ -119,6 +119,17 @@ Each entry is either:
        w3m-use-cookies t
        w3m-key-binding 'info
        w3m-home-page "http://www.google.com"
+       w3m-use-cookies t)))
+
+  (use-package w3m-util
+    :defer t
+    :commands (w3m-add-w3m-initial-frames)
+    :config
+    (progn
+      (setq
+       w3m-use-cookies t
+       w3m-key-binding 'info
+       w3m-home-page "http://www.google.com"
        w3m-use-cookies t))))
 
 (defun lotus-web/init-w3m-load ()

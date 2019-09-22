@@ -44,8 +44,8 @@
     (tramp-fish :location local)
     (tramp-ftp :location local)
     ;; tramp-gvfs
-    (tramp-gw :location local)
-    (tramp-imap :location local)
+    ;; (tramp-gw :location local)
+    ;; (tramp-imap :location local)
     (tramp-smb :location local)
     (tramp-uu :location local)
     (trampver :location local)
@@ -119,7 +119,7 @@ Each entry is either:
                          ;; tramp-fish
                          tramp-ftp
                          ;; tramp-gvfs
-                         tramp-gw
+                         ;; tramp-gw
                          ;; tramp-imap
                          tramp-smb
                          tramp-uu
@@ -746,19 +746,19 @@ Each entry is either:
       (progn
         )))
 
-(defun lotus-remote/init-tramp-gw ()
-  (use-package tramp-gw
-      :defer t
-      :config
-      (progn
-        )))
+;; (defun lotus-remote/init-tramp-gw ()
+;;   (use-package tramp-gw
+;;       :defer t
+;;       :config
+;;       (progn
+;;         )))
 
-(defun lotus-remote/init-tramp-imap ()
-  (use-package tramp-imap
-      :defer t
-      :config
-      (progn
-        )))
+;; (defun lotus-remote/init-tramp-imap ()
+;;   (use-package tramp-imap
+;;       :defer t
+;;       :config
+;;       (progn
+;;         )))
 
 (defun lotus-remote/init-tramp-smb ()
   (use-package tramp-smb
