@@ -86,6 +86,7 @@
 
 ;; (defvar startup-select-frame-fn #'select-frame "startup-select-frame-fn")
 (defvar startup-select-frame-fn #'select-frame-set-input-focus "startup-select-frame-fn")
+;;(setq startup-select-frame-fn #'select-frame)
 
 ;;;###autoload
 (defun any-frame-opened-p ()

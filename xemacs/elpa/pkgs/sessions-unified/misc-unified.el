@@ -27,7 +27,12 @@
 (provide 'misc-unified)
 
 
+
+(require 'sessions-unified)
+
+
 (require 'savehist-20+)
+
 
 (when (featurep 'savehist-20+)
   ;; savehist: save some history

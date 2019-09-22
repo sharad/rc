@@ -92,8 +92,8 @@ Each entry is either:
   (use-package utils-custom
       ;; :ensure t
       :config
-      (progn
-        )))
+      (progn)))
+
 
 (defun lotus-basic-startup/init-startup-hooks ()
   (use-package startup-hooks
@@ -135,11 +135,12 @@ Each entry is either:
     :defer t
     :init
     (progn
-      (progn
+      (when t
         (with-eval-after-load "startup-hooks"
           (add-to-enable-startup-interrupting-feature-hook
-           'frame-session-restore-hook-func
+           #'frame-session-restore-hook-func
            t)
+
           (add-to-enable-startup-interrupting-feature-hook
            '(lambda ()
               (run-at-time-or-now 7 'lotus-desktop-session-restore)))
@@ -156,12 +157,13 @@ Each entry is either:
 
       (when t
         (progn
-          (setq
-           *session-unified-desktop-enabled* t
-           *frame-session-restore-screen-display-function*
-           #'(lambda ()
-               (with-temp-buffer
-                 (spacemacs-buffer/goto-buffer))))))
+
+          (setq *session-unified-desktop-enabled* t)
+
+          (setq *frame-session-restore-screen-display-function*
+                #'(lambda ()
+                    (with-temp-buffer
+                      (spacemacs-buffer/goto-buffer))))))
 
       (when t
         (progn

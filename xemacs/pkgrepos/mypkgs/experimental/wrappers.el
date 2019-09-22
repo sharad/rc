@@ -25,7 +25,8 @@
 ;;; Code:
 
 ;; emacs24 server-execute
-(if (>= emacs-major-version 24)
+(when nil
+ (if (>= emacs-major-version 24)
     (defun server-execute (proc files nowait commands dontkill frame tty-name)
       ;; This is run from timers and process-filters, i.e. "asynchronously".
       ;; But w.r.t the user, this is not really asynchronous since the timer
@@ -77,7 +78,7 @@
           ((quit error)
            (when (eq (car err) 'quit)
              (message "Quit emacsclient request"))
-           (server-return-error proc err))))))
+           (server-return-error proc err)))))))
 
 
 (if (< emacs-major-version 24)

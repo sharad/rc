@@ -31,7 +31,12 @@
 (require 'emacs-panel)
 
 
+
+(require 'sessions-unified)
+
+
 (defvar session-unified-utils-select-frame-fn #'select-frame-set-input-focus "session-unified-utils-select-frame-fn")
+;; (setq session-unified-utils-select-frame-fn #'select-frame)
 
 
 (defun completing-read-timeout-if-default-input (seconds
@@ -193,407 +198,412 @@ return a new alist whose car is the new pair and cdr is ALIST."
                  (mapcar 'desktop-make-create-buffer-list desktop-buffers)))))))
 
 
-(progn ;; with-eval-after-load "elscreen"
+;; with-eval-after-load "elscreen"
 
-     ;; (defvar elscreen-session-restore-create-scratch-buffer nil "elscreen-session-restore-create-scratch-buffer")
+;; (defvar elscreen-session-restore-create-scratch-buffer nil "elscreen-session-restore-create-scratch-buffer")
 
-     ;; (setq desktop-base-file-name "session.desktop")
+;; (setq desktop-base-file-name "session.desktop")
 
-     ;;{{ http://stackoverflow.com/a/13711234
-     ;; from: http://stackoverflow.com/questions/847962/what-alternate-session-managers-are-available-for-emacs
-     ;; (desktop-save (fmsession-read-location))
-     ;; (desktop-read (fmsession-read-location))
+;;{{ http://stackoverflow.com/a/13711234
+;; from: http://stackoverflow.com/questions/847962/what-alternate-session-managers-are-available-for-emacs
+;; (desktop-save (fmsession-read-location))
+;; (desktop-read (fmsession-read-location))
 
-     ;; (desktop-make-create-buffer-list (current-buffer))
+;; (desktop-make-create-buffer-list (current-buffer))
 
-     (require 'utils-config)
+(require 'utils-config)
 
-     (defvar *elscreen-session-restore-data* nil "elscreen session restore data like current screen buffer among multiple screens.")
+(defvar *elscreen-session-restore-data* nil "elscreen session restore data like current screen buffer among multiple screens.")
 
-     (defun elscreen-session-session-list-get (&optional nframe)
-       (with-selected-frame (or nframe (selected-frame))
-         (let (session-list)
-           (push (cons 'screens (lotus-elscreen-get-screen-to-name-alist)) session-list)
-           (push (cons 'current-buffer-file (cons (buffer-name (current-buffer)) (buffer-file-name))) session-list)
-           (push (cons 'current-screen (elscreen-get-current-screen)) session-list)
-           (push (cons 'desktop-buffers (lotus-elscreen-get-desktop-buffer-args-list)) session-list))))
+(defun elscreen-session-session-list-get (&optional nframe)
+  (with-selected-frame (or nframe (selected-frame))
+    (let (session-list)
+      (push (cons 'screens (lotus-elscreen-get-screen-to-name-alist)) session-list)
+      (push (cons 'current-buffer-file (cons (buffer-name (current-buffer)) (buffer-file-name))) session-list)
+      (push (cons 'current-screen (elscreen-get-current-screen)) session-list)
+      (push (cons 'desktop-buffers (lotus-elscreen-get-desktop-buffer-args-list)) session-list))))
 
-     (defun elscreen-session-session-list-set (session-list &optional nframe)
-       ;; TODO BUG minibuffer should not get windows, which is happening now
-       (let ((nframe (or nframe (selected-frame))))
-         (unless (elscreen-get-frame-confs nframe)
-           (elscreen-make-frame-confs nframe)))
+(defun elscreen-session-session-list-set (session-list &optional nframe)
+  ;; TODO BUG minibuffer should not get windows, which is happening now
+  (let ((nframe (or nframe (selected-frame))))
+    (unless (elscreen-get-frame-confs nframe)
+      (elscreen-make-frame-confs nframe)))
 
-       (if session-list                    ;may causing error
-           (with-selected-frame (or nframe (selected-frame))
+  (if session-list                    ;may causing error
+      (with-selected-frame (or nframe (selected-frame))
 
-             (if (and elscreen-frame-confs
-                      (elscreen-get-frame-confs nframe))
-                 (let* ((desktop-buffers
-                         (cdr (assoc 'desktop-buffers session-list)))
-                        (screens
-                         (or
-                          (cdr (assoc 'screens session-list))
-                          `((,(length session-list) "*scratch*"))))
-                        (session-current-screen-buffers
-                         (cadr (assoc
-                                (cdr (assoc 'current-screen session-list))
-                                screens)))
-                        (session-current-buffer-file
-                         (cdr (assoc 'current-buffer-file session-list))))
-                   ;; (when t
-                   (testing
-                    (message "Bstart: session-current-screen-buffers %s" session-current-screen-buffers)
-                    (message "Astart: screen-to-name-alist %s" session-list)
-                    (message "Cstart: desktop-buffers %s" desktop-buffers))
+        (if (and elscreen-frame-confs
+                 (elscreen-get-frame-confs nframe))
+            (let* ((desktop-buffers
+                    (cdr (assoc 'desktop-buffers session-list)))
+                   (screens
+                    (or
+                     (cdr (assoc 'screens session-list))
+                     `((,(length session-list) "*scratch*"))))
+                   (session-current-screen-buffers
+                    (cadr (assoc
+                           (cdr (assoc 'current-screen session-list))
+                           screens)))
+                   (session-current-buffer-file
+                    (cdr (assoc 'current-buffer-file session-list))))
+              ;; (when t
+              (testing
+               (message "Bstart: session-current-screen-buffers %s" session-current-screen-buffers)
+               (message "Astart: screen-to-name-alist %s" session-list)
+               (message "Cstart: desktop-buffers %s" desktop-buffers))
 
-                   ;; ready file for buffer in session-list, using desktop-restore methods
-                   (if desktop-buffers
-                       ;; recreate desktop buffer if not present.
-                       (let ((bufs (mapcar
-                                    '(lambda (bl) (nth 2 bl))
-                                    desktop-buffers)))
-                         (funcall sessions-unified-utils-notify "elscreen-session-session-list-set"
-                                  "Please wait I am busy to restore %d\nbuffers %s"
-                                  (length desktop-buffers) bufs)
-                         (let ((desktop-buffer-ok-count 0)
-                               (desktop-buffer-fail-count 0)
-                               desktop-first-buffer)
-                           (dolist (desktop-buffer-args desktop-buffers)
-                             (let ((bufname (nth 2 desktop-buffer-args))
-                                   (file-path (nth 1 desktop-buffer-args)))
-                               (message "restoring %s" bufname)
-                               (if (find-buffer-visiting file-path)
-                                   (message "buffer %s already here" bufname)
-                                 (if (stringp bufname)
-                                     (if (get-buffer bufname)
-                                         (message "buffer %s already here" bufname)
-                                       (let ()
-                                         (message "Hello 1")
-                                         (message "elscreen-session-session-list-set: Desktop lazily opening %s" bufname)
-                                         (unless (ignore-errors
-                                                   (save-window-excursion
-                                                     (apply 'desktop-create-buffer desktop-buffer-args)))
-                                           (message "elscreen-session-session-list-set: Desktop lazily opening Failed."))
-                                         (message "Hello 2")
-                                         (message "restored %s" bufname)))
-                                   (message "bufname: %s is not string" bufname))))))
-                         (funcall sessions-unified-utils-notify "elscreen-session-session-list-set"
-                                  "Restored %d\nbuffers %s"
-                                  (length desktop-buffers) bufs))
-                     (message "No desktop-buffers"))
+              ;; ready file for buffer in session-list, using desktop-restore methods
+              (if desktop-buffers
+                  ;; recreate desktop buffer if not present.
+                  (let ((bufs (mapcar
+                               '(lambda (bl) (nth 2 bl))
+                               desktop-buffers)))
+                    (funcall sessions-unified-utils-notify "elscreen-session-session-list-set"
+                             "Please wait I am busy to restore %d\nbuffers %s"
+                             (length desktop-buffers) bufs)
+                    (let ((desktop-buffer-ok-count 0)
+                          (desktop-buffer-fail-count 0)
+                          desktop-first-buffer)
+                      (dolist (desktop-buffer-args desktop-buffers)
+                        (let ((bufname (nth 2 desktop-buffer-args))
+                              (file-path (nth 1 desktop-buffer-args)))
+                          (message "restoring %s" bufname)
+                          (if (find-buffer-visiting file-path)
+                              (message "buffer %s already here" bufname)
+                            (if (stringp bufname)
+                                (if (get-buffer bufname)
+                                    (message "buffer %s already here" bufname)
+                                  (let ()
+                                    (message "Hello 1")
+                                    (message "elscreen-session-session-list-set: Desktop lazily opening %s" bufname)
+                                    (unless (ignore-errors
+                                              (save-window-excursion
+                                                (apply 'desktop-create-buffer desktop-buffer-args)))
+                                      (message "elscreen-session-session-list-set: Desktop lazily opening Failed."))
+                                    (message "Hello 2")
+                                    (message "restored %s" bufname)))
+                              (message "bufname: %s is not string" bufname))))))
+                    (funcall sessions-unified-utils-notify "elscreen-session-session-list-set"
+                             "Restored %d\nbuffers %s"
+                             (length desktop-buffers) bufs))
+                (message "No desktop-buffers"))
 
-                   ;; setup elscreens with buffers
-                   (while screens
-                     (message "while screen: %s" screens)
-                     ;; (setq screen (caar screens))
-                     ;; (setq buff-files (cdar screens))
-                     (let* ((screen         (caar screens))
-                            (buff-files     (cdar screens))
-                            (not-first-buff nil))
+              ;; setup elscreens with buffers
+              (while screens
+                (message "while screen: %s" screens)
+                ;; (setq screen (caar screens))
+                ;; (setq buff-files (cdar screens))
+                (let* ((screen         (caar screens))
+                       (buff-files     (cdar screens))
+                       (not-first-buff nil))
 
-                       (while buff-files
-                         (if (and elscreen-frame-confs
-                                  (elscreen-get-frame-confs nframe))
-                           (progn
+                  (while buff-files
+                    (if (and elscreen-frame-confs
+                             (elscreen-get-frame-confs nframe))
+                      (progn
 
-                             (unless (eq screen 0)
-                               (elscreen-create))
+                        (unless (eq screen 0)
+                          (elscreen-create))
 
-                             (let* ((buff-file  (car buff-files))
-                                    (file-path  (if (consp buff-file)
-                                                   (cdr buff-file)))
-                                    (buff (ignore-errors
-                                            (get-buffer
-                                             (or (if file-path
-                                                     (find-buffer-visiting file-path))
-                                                 (if (consp buff-file)
-                                                     (car buff-file)
-                                                   buff-file)))))
-                                    (minibuff-name " *Minibuf"))
-                              (message "  while buff: %s file-path: %s" buff file-path)
-                              (when (and buff
-                                         (bufferp buff)
-                                         (not
-                                          (string-equal (substring (buffer-name buff) 0 (min (length (buffer-name buff)) (length minibuff-name)))
-                                                        minibuff-name))) ;check once for if buff is here or not.
-                                ;; newly added here to avoid " *Minibuffer*"
-                                (if not-first-buff
-                                    (switch-to-buffer-other-window buff)
-                                  (switch-to-buffer buff)
-                                  (setq not-first-buff t)))
-                              (message "test4")))
-                           (error "3 Screen is not active for frame %s" nframe))
+                        (let* ((buff-file  (car buff-files))
+                               (file-path  (if (consp buff-file)
+                                              (cdr buff-file)))
+                               (buff (ignore-errors
+                                       (get-buffer
+                                        (or (if file-path
+                                                (find-buffer-visiting file-path))
+                                            (if (consp buff-file)
+                                                (car buff-file)
+                                              buff-file)))))
+                               (minibuff-name " *Minibuf"))
+                         (message "  while buff: %s file-path: %s" buff file-path)
+                         (when (and buff
+                                    (bufferp buff)
+                                    (not
+                                     (string-equal (substring (buffer-name buff) 0 (min (length (buffer-name buff)) (length minibuff-name)))
+                                                   minibuff-name))) ;check once for if buff is here or not.
+                           ;; newly added here to avoid " *Minibuffer*"
+                           (if not-first-buff
+                               (switch-to-buffer-other-window buff)
+                             (switch-to-buffer buff)
+                             (setq not-first-buff t)))
+                         (message "test4")))
+                      (error "3 Screen is not active for frame %s" nframe))
 
-                         (setq buff-files (cdr buff-files))
+                    (setq buff-files (cdr buff-files))
 
-                         (message "progn buff-files: %s" buff-files)
-                         (testing (message "else"))))
+                    (message "progn buff-files: %s" buff-files)
+                    (testing (message "else"))))
 
-                     (setq screens (cdr screens))
-                     (message "while screen: %s" screens)
-                     (message "test5")) ;; (while screens
+                (setq screens (cdr screens))
+                (message "while screen: %s" screens)
+                (message "test5")) ;; (while screens
 
-                   ;; (when elscreen-session-restore-create-scratch-buffer
-                   ;;   (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
+              ;; (when elscreen-session-restore-create-scratch-buffer
+              ;;   (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
 
-                   (if (and elscreen-frame-confs
-                            (elscreen-get-frame-confs nframe))
-                       (progn
-                         (when nil (elscreen-create))                 ;trap
-                         ;; set current screen, window, and buffer.
-                         (let* ((file-path  (if (consp session-current-buffer-file)
-                                                (cdr session-current-buffer-file)))
-                                (buff
-                                 (ignore-errors
-                                   (get-buffer
-                                    (or (if file-path
-                                            (find-buffer-visiting file-path))
-                                        (if (consp session-current-buffer-file)
-                                            (car session-current-buffer-file)
-                                          session-current-buffer-file))))))
-                           (when (and buff
-                                      (bufferp buff))
-                             (elscreen-find-and-goto-by-buffer buff nil nil)
-                             (setq *elscreen-session-restore-data* session-current-buffer-file))))
-                     (error "2 Screen is not active for frame %s" nframe)))
-               (error "1 Screen is not active for frame %s" nframe))
-             ;; (if (get-buffer buff)
-             ;;     (progn
-             ;;       (setq *elscreen-session-restore-data* (list (cons 'cb session-current-screen-buffers)))
-             ;;       (testing
-             ;;        (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*)))
-             ;;     (testing
-             ;;      (message "in when session-current-screen-buffers %s" session-current-screen-buffers)))
+              (if (and elscreen-frame-confs
+                       (elscreen-get-frame-confs nframe))
+                  (progn
+                    (when nil (elscreen-create))                 ;trap
+                    ;; set current screen, window, and buffer.
+                    (let* ((file-path  (if (consp session-current-buffer-file)
+                                           (cdr session-current-buffer-file)))
+                           (buff
+                            (ignore-errors
+                              (get-buffer
+                               (or (if file-path
+                                       (find-buffer-visiting file-path))
+                                   (if (consp session-current-buffer-file)
+                                       (car session-current-buffer-file)
+                                     session-current-buffer-file))))))
+                      (when (and buff
+                                 (bufferp buff))
+                        (elscreen-find-and-goto-by-buffer buff nil nil)
+                        (setq *elscreen-session-restore-data* session-current-buffer-file))))
+                (error "2 Screen is not active for frame %s" nframe)))
+          (error "1 Screen is not active for frame %s" nframe))
+        ;; (if (get-buffer buff)
+        ;;     (progn
+        ;;       (setq *elscreen-session-restore-data* (list (cons 'cb session-current-screen-buffers)))
+        ;;       (testing
+        ;;        (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*)))
+        ;;     (testing
+        ;;      (message "in when session-current-screen-buffers %s" session-current-screen-buffers)))
 
-             ;; (let* ((desktop-buffers
-             (testing
-              (message "elscreen-notify-screen-modification"))
-             (elscreen-notify-screen-modification 'force-immediately)
-             (message "elscreen-session-session-list-set: DONE."))
+        ;; (let* ((desktop-buffers
+        (testing
+         (message "elscreen-notify-screen-modification"))
+        (elscreen-notify-screen-modification 'force-immediately)
+        (message "elscreen-session-session-list-set: DONE."))
 
-         (message "elscreen-session-session-list-set: Error: Session do not exists.")))
+    (message "elscreen-session-session-list-set: Error: Session do not exists.")))
 
-     (defvar *frames-elscreen-session* nil "Stores all elscreen sessions here.")
-     (defvar *frames-elscreen-session-old* nil "Stores all discarded elscreen sessions here.")
+(defvar *frames-elscreen-session* nil "Stores all elscreen sessions here.")
+(defvar *frames-elscreen-session-old* nil "Stores all discarded elscreen sessions here.")
 
-     (eval-after-load "desktop"
-       '(progn
-          (add-to-list
-           'desktop-globals-to-save
-           '*frames-elscreen-session*)
-          (add-to-list
-           'desktop-globals-to-save
-           '*frames-elscreen-session-old*)))
+(eval-after-load "desktop"
+  '(progn
+     (add-to-list
+      'desktop-globals-to-save
+      '*frames-elscreen-session*)
+     (add-to-list
+      'desktop-globals-to-save
+      '*frames-elscreen-session-old*)))
 
-     (eval-after-load "session"
-       '(progn
-          (add-to-list
-           'session-globals-include
-           '(*frames-elscreen-session* 100))
-          (add-to-list
-           'session-globals-include
-           '(*frames-elscreen-session-old* 100))))
+(eval-after-load "session"
+  '(progn
+     (add-to-list
+      'session-globals-include
+      '(*frames-elscreen-session* 100))
+     (add-to-list
+      'session-globals-include
+      '(*frames-elscreen-session-old* 100))))
 
-     (defun fmsession-migration ()
-       (interactive)
-       (dolist (session (directory-files "~/.emacs.d/session/frames/" nil "[a-zA-Z]+"))
-         (pushnew
-          (cons session
-                (lotus-read-sexp
-                 (concat "~/.emacs.d/session/frames/" session "/elscreen")))
-          *frames-elscreen-session*)))
-
-
-     (defun fmsession-delete-session (session)
-       (interactive
-        (list
-         (fmsession-read-location)))
-       ;; save somewhere as backup
-       (if (and
-            session
-            (y-or-n-p (format "Can I delete screen \"%s\" session: " session)))
-           (progn
-             (push
-              (find session *frames-elscreen-session* :key 'car :test 'string-equal)
-              *frames-elscreen-session-old*)
-             (setq *frames-elscreen-session*
-                   (remove* session *frames-elscreen-session*
-                            :key 'car
-                            :test 'string-equal)))
-         (message "Not deleting screen \"%s\" session: " session)))
+(defun fmsession-migration ()
+  (interactive)
+  (dolist (session (directory-files "~/.emacs.d/session/frames/" nil "[a-zA-Z]+"))
+    (pushnew
+     (cons session
+           (lotus-read-sexp
+            (concat "~/.emacs.d/session/frames/" session "/elscreen")))
+     *frames-elscreen-session*)))
 
 
-     (defun fmsession-modify-element (fun)
-       (mapcar fun
-               (copy-tree *frames-elscreen-session*)))
+(defun fmsession-delete-session (session)
+  (interactive
+   (list
+    (fmsession-read-location)))
+  ;; save somewhere as backup
+  (if (and
+       session
+       (y-or-n-p (format "Can I delete screen \"%s\" session: " session)))
+      (progn
+        (push
+         (find session *frames-elscreen-session* :key 'car :test 'string-equal)
+         *frames-elscreen-session-old*)
+        (setq *frames-elscreen-session*
+              (remove* session *frames-elscreen-session*
+                       :key 'car
+                       :test 'string-equal)))
+    (message "Not deleting screen \"%s\" session: " session)))
 
-     (defun fmsession-modify-name (fun)
-       (mapcar (lambda (x)
-                 (setcar x (funcall fun (car x)))
-                 x)
-               (copy-tree *frames-elscreen-session*)))
 
-     (defun fmsession-store-to-file (file)
-       (interactive "Ffile: ")
-       (with-temp-file file
-         (insert
-          (prin1-to-string *frames-elscreen-session*))))
+(defun fmsession-modify-element (fun)
+  (mapcar fun
+          (copy-tree *frames-elscreen-session*)))
 
-     (defun fmsession-restore-from-file (file)
-       (interactive "ffile: ")
-       (setq *frames-elscreen-session*
-             (append
-              *frames-elscreen-session*
-              (lotus-read-sexp file))))
+(defun fmsession-modify-name (fun)
+  (mapcar (lambda (x)
+            (setcar x (funcall fun (car x)))
+            x)
+          (copy-tree *frames-elscreen-session*)))
 
-     (defun elscreen-session-store (elscreen-session &optional nframe)
-       (interactive
-        (list
-         (fmsession-read-location)))
-       (let ((session-list (elscreen-session-session-list-get (or nframe (selected-frame)))))
-         (if (assoc elscreen-session *frames-elscreen-session*)
-             (setcdr (assoc elscreen-session *frames-elscreen-session*) session-list)
-           (push (cons elscreen-session session-list) *frames-elscreen-session*))))
+(defun fmsession-store-to-file (file)
+  (interactive "Ffile: ")
+  (with-temp-file file
+    (insert
+     (prin1-to-string *frames-elscreen-session*))))
 
-     (defun elscreen-session-restore (elscreen-session &optional nframe)
-       (interactive
-        (list
-         (fmsession-read-location)))
-       (message "elscreen-session-restore: start")
-       (if elscreen-session
-           (let ((elscreen-session-list
-                  (cdr (assoc elscreen-session *frames-elscreen-session*))))
-             (testing
-              (message "Nstart: session-session %s" elscreen-session))
-             (if elscreen-session-list
-                 (elscreen-session-session-list-set elscreen-session-list (or nframe (selected-frame)))
-               (message "elscreen-session-restore: Error: elscreen-session-list %s" elscreen-session-list)))
-         (message "elscreen-session-restore: Error: elscreen-session is %s" elscreen-session)))
+(defun fmsession-restore-from-file (file)
+  (interactive "ffile: ")
+  (setq *frames-elscreen-session*
+        (append
+         *frames-elscreen-session*
+         (lotus-read-sexp file))))
 
-     (defun fmsession-read-location-internal (&optional initial-input)
-       (condition-case terr
-           (ido-completing-read "Session: "
-                                (remove-if-not
-                                 #'(lambda (dir)
-                                     (not
-                                      (member
-                                       dir
-                                       (remove-if #'null
-                                                  (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list))))))
-                                 (mapcar 'car *frames-elscreen-session*))
-                                nil
-                                nil
-                                initial-input)
-         ('quit nil)))
+(defun elscreen-session-store (elscreen-session &optional nframe)
+  (interactive
+   (list
+    (fmsession-read-location)))
+  (let ((session-list (elscreen-session-session-list-get (or nframe (selected-frame)))))
+    (if (assoc elscreen-session *frames-elscreen-session*)
+        (setcdr (assoc elscreen-session *frames-elscreen-session*) session-list)
+      (push (cons elscreen-session session-list) *frames-elscreen-session*))))
 
-     (defun fmsession-read-location-internal (&optional initial-input)
-       (condition-case terr
-           (completing-read-timeout 7
-                                    "Session: "
-                                    (remove-if-not
-                                     #'(lambda (dir)
-                                         (not
-                                          (member
-                                           dir
-                                           (remove-if #'null
-                                                      (mapcar
-                                                       #'(lambda (f) (frame-parameter f 'frame-spec-id))
-                                                       (frame-list))))))
-                                     (mapcar 'car *frames-elscreen-session*))
-                                    nil
-                                    nil
-                                    initial-input)
-         ('quit nil)))
+(defun elscreen-session-restore (elscreen-session &optional nframe)
+  (interactive
+   (list
+    (fmsession-read-location)))
+  (message "elscreen-session-restore: start")
+  (if elscreen-session
+      (let ((elscreen-session-list
+             (cdr (assoc elscreen-session *frames-elscreen-session*))))
+        (testing
+         (message "Nstart: session-session %s" elscreen-session))
+        (if elscreen-session-list
+            (elscreen-session-session-list-set elscreen-session-list (or nframe (selected-frame)))
+          (message "elscreen-session-restore: Error: elscreen-session-list %s" elscreen-session-list)))
+    (message "elscreen-session-restore: Error: elscreen-session is %s" elscreen-session)))
 
-     (defun fmsession-read-location (&optional initial-input)
-       ;; keeps on reading name.
-       (let ((locations
-              (remove-if #'null
-                         (mapcar
-                          #'(lambda (f) (frame-parameter f 'frame-spec-id))
-                          (frame-list))))
-             (used t)
-             seletion)
-         (while used
-           (setq
-            used (member (setq selection
-                               (fmsession-read-location-internal initial-input))
-                         locations)))
-         selection))
+(defun fmsession-read-location-internal (&optional initial-input)
+  (condition-case terr
+      (ido-completing-read "Session: "
+                           (remove-if-not
+                            #'(lambda (dir)
+                                (not
+                                 (member
+                                  dir
+                                  (remove-if #'null
+                                             (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list))))))
+                            (mapcar 'car *frames-elscreen-session*))
+                           nil
+                           nil
+                           initial-input)
+    ('quit nil)))
 
-     (defun fmsession-store (session-name &optional nframe)
-       "Store the elscreen tab configuration."
-       (interactive
-        (list (fmsession-read-location)))
-       (elscreen-session-store session-name nframe))
+(defun fmsession-read-location-internal (&optional initial-input)
+  (condition-case terr
+      (completing-read-timeout 7
+                               "Session: "
+                               (remove-if-not
+                                #'(lambda (dir)
+                                    (not
+                                     (member
+                                      dir
+                                      (remove-if #'null
+                                                 (mapcar
+                                                  #'(lambda (f) (frame-parameter f 'frame-spec-id))
+                                                  (frame-list))))))
+                                (mapcar 'car *frames-elscreen-session*))
+                               nil
+                               nil
+                               initial-input)
+    ('quit nil)))
 
-     (defun fmsession-restore (session-name &optional nframe)
-       "Restore the elscreen tab configuration."
-       (interactive
-        (list (fmsession-read-location)))
-       (message "fmsession-restore: start")
-       (if (and (fboundp 'elscreen-get-conf-list)
-                (elscreen-get-conf-list 'screen-history))
-           (elscreen-session-restore session-name nframe)
-         (funcall sessions-unified-utils-notify
-                  "fmsession-restore"
-                  "Error: not restoring screen session as screen-history config not found.")))
+(defun fmsession-read-location (&optional initial-input)
+  ;; keeps on reading name.
+  (let ((locations
+         (remove-if #'null
+                    (mapcar
+                     #'(lambda (f) (frame-parameter f 'frame-spec-id))
+                     (frame-list))))
+        (used t)
+        seletion)
+    (while used
+      (setq
+       used (member (setq selection
+                          (fmsession-read-location-internal initial-input))
+                    locations)))
+    selection))
 
-     ;; (elscreen-restore)
-     ;;}}
+(defun fmsession-store (session-name &optional nframe)
+  "Store the elscreen tab configuration."
+  (interactive
+   (list (fmsession-read-location)))
+  (elscreen-session-store session-name nframe))
 
-     ;;{{
+(defun fmsession-restore (session-name &optional nframe)
+  "Restore the elscreen tab configuration."
+  (interactive
+   (list (fmsession-read-location)))
+  (message "fmsession-restore: start")
+  (if (and (fboundp 'elscreen-get-conf-list)
+           (elscreen-get-conf-list 'screen-history))
+      (elscreen-session-restore session-name nframe)
+    (funcall sessions-unified-utils-notify
+             "fmsession-restore"
+             "Error: not restoring screen session as screen-history config not found.")))
 
-     (defvar *frame-session-restore* nil "*frame-session-restore* if it is true than only frame session will get restored.")
-     ;; (defun server-create-frame-before-adrun ()
-     ;;   "remove-scratch-buffer"
-     ;;   (setq *frame-session-restore* t))
+;; (elscreen-restore)
+;;}}
 
-     (defun server-create-frame-around-adrun ()
-       "remove-scratch-buffer"
-       (if *elscreen-session-restore-data*
-           (let* ((buffer-file (get-buffer (cdr (assoc 'cb *elscreen-session-restore-data*))))
-                  (file-path  (if (consp buffer-file)
-                                  (cdr buffer-file)))
-                  (buff (or (if file-path
-                                (find-buffer-visiting file-path))
-                            (if (consp buffer-file)
-                                (car buffer-file)
-                              buffer-file))))
-             (testing
-              (message "running server-create-window-system-frame afer advise if")
-              (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*))
-             (when buff
-               (elscreen-kill)
-               (elscreen-find-and-goto-by-buffer buff nil nil)
-               (setq *elscreen-session-restore-data* nil)
-               (elscreen-notify-screen-modification 'force-immediately)))
-         (testing (message "running server-create-window-system-frame afer advise else"))))
+;;{{
 
-     (defadvice server-create-window-system-frame
-         (around remove-scratch-buffer activate)
-       "remove-scratch-buffer"
-       (let ((*frame-session-restore* t))
-         ad-do-it
-         (server-create-frame-around-adrun)))
+(defvar *frame-session-restore* nil "*frame-session-restore* if it is true than only frame session will get restored.")
+;; (defun server-create-frame-before-adrun ()
+;;   "remove-scratch-buffer"
+;;   (setq *frame-session-restore* t))
 
-     (defadvice server-create-tty-frame
-         (around remove-scratch-buffer activate)
-       "remove-scratch-buffer"
-       (let ((*frame-session-restore* t))
-         ad-do-it
-         (server-create-frame-around-adrun)))
+(defun server-create-frame-around-adrun ()
+  "remove-scratch-buffer"
+  (if *elscreen-session-restore-data*
+      (let* ((buffer-file (get-buffer (cdr (assoc 'cb *elscreen-session-restore-data*))))
+             (file-path  (if (consp buffer-file)
+                             (cdr buffer-file)))
+             (buff (or (if file-path
+                           (find-buffer-visiting file-path))
+                       (if (consp buffer-file)
+                           (car buffer-file)
+                         buffer-file))))
+        (testing
+         (message "running server-create-window-system-frame afer advise if")
+         (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*)))
+        (when buff
+          (elscreen-kill)
+          (elscreen-find-and-goto-by-buffer buff nil nil)
+          (setq *elscreen-session-restore-data* nil)
+          (elscreen-notify-screen-modification 'force-immediately))
 
-     (when nil))
-;; (ad-disable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
-;; (ad-disable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
-;; (ad-enable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
-;; (ad-enable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
-;; (ad-remove-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
-;; (ad-remove-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
-;; (ad-update 'server-create-window-system-frame)
-;; (ad-activate 'server-create-window-system-frame)
+    (testing (message "running server-create-window-system-frame afer advise else")))
+  ;;(debug)
+  t)
+
+(defadvice server-create-window-system-frame
+    (around remove-scratch-buffer activate)
+  "remove-scratch-buffer"
+  (let ((*frame-session-restore* t))
+    (prog1
+        ad-do-it
+      (server-create-frame-around-adrun))))
+
+(defadvice server-create-tty-frame
+    (around remove-scratch-buffer activate)
+  "remove-scratch-buffer"
+  (let ((*frame-session-restore* t))
+    (prog1
+        ad-do-it
+      (server-create-frame-around-adrun))))
+
+(when nil
+  (ad-disable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
+  (ad-disable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
+  (ad-enable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
+  (ad-enable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
+  (ad-remove-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
+  (ad-remove-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
+  (ad-update 'server-create-window-system-frame)
+  (ad-activate 'server-create-window-system-frame))
 
 ;; (ad-disable-advice 'server-create-tty-frame 'before 'set-restore-frame-session)
 ;; (ad-disable-advice 'server-create-tty-frame 'after 'remove-scratch-buffer)
@@ -608,15 +618,15 @@ return a new alist whose car is the new pair and cdr is ALIST."
 
 
 ;;{{
-(progn
+;; (progn
 
 
   ;; "per frame session"
   ;; (require 'emacs-panel)
 
-  (defvar *desktop-vc-read-inprogress* nil "desktop-vc-read-inpgrogress")
+(defvar *desktop-vc-read-inprogress* nil "desktop-vc-read-inpgrogress")
 
-  (defun frame-session-set-this-location (nframe &optional try-guessing)
+(defun frame-session-set-this-location (nframe &optional try-guessing)
     ;; ask, guess-ask, guess-notask
     ;; nil ask
     ;; guess
@@ -666,10 +676,11 @@ return a new alist whose car is the new pair and cdr is ALIST."
         (set-frame-parameter nframe 'frame-spec-id location))
       location))
 
-  (defvar *frame-session-restore-screen-display-function* #'display-about-screen
-    "function to display screen with frame-session-restore, e.g. display-about-screen, spacemacs-buffer/goto-buffer")
+(defvar *frame-session-restore-screen-display-function* #'display-about-screen
+  "function to display screen with frame-session-restore, e.g. display-about-screen, spacemacs-buffer/goto-buffer")
 
-  (defun frame-session-restore (nframe &optional try-guessing)
+(defun frame-session-restore (nframe &optional try-guessing)
+  (when nil
     (message "in frame-session-restore")
     (if (and
          *frame-session-restore*
@@ -708,71 +719,72 @@ return a new alist whose car is the new pair and cdr is ALIST."
             (funcall sessions-unified-utils-notify
                      "frame-session-restore"
                      "as another frame session restore in progress *frame-session-restore* %s"
-                     *frame-session-restore*)))))
+                     *frame-session-restore*))))))
 
-  (defun frame-session-restore-force (nframe)
-    (frame-session-restore nframe t))
+(defun frame-session-restore-force (nframe)
+  (frame-session-restore nframe t))
 
-  (defun frame-session-apply (nframe)
-    "Apply existing frame session to NFRAME."
-    (interactive
-     (list (selected-frame)))
-    (progn
-      (funcall session-unified-utils-select-frame-fn nframe)
-      (fmsession-restore (fmsession-read-location) nframe)))
+(defun frame-session-apply (nframe)
+  "Apply existing frame session to NFRAME."
+  (interactive
+   (list (selected-frame)))
+  (progn
+    (funcall session-unified-utils-select-frame-fn nframe)
+    (fmsession-restore (fmsession-read-location) nframe)))
 
-  (defun frame-session-save (nframe)
-    (message "in frame-session-save:")
-    (let ((location (frame-parameter nframe 'frame-spec-id)))
-      (when location
-        (message "saved the session for %s" location)
-        (fmsession-store location nframe))))
+(defun frame-session-save (nframe)
+  (message "in frame-session-save:")
+  (let ((location (frame-parameter nframe 'frame-spec-id)))
+    (when location
+      (message "saved the session for %s" location)
+      (fmsession-store location nframe))))
 
-  (defun save-all-frames-session ()
-    (dolist (f (frame-list))
-      (frame-session-save f)))
+(defun save-all-frames-session ()
+  (dolist (f (frame-list))
+    (frame-session-save f)))
 
-  ;; ;; (add-hook '*lotus-after-init-hook*
-  ;; (add-hook 'lotus-enable-startup-interrupting-feature-hook ;new
-  ;;           '(lambda ()
-  ;;             ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
-  ;;             (add-hook
-  ;;              'after-make-frame-functions
-  ;;              '(lambda (nframe)
-  ;;                (run-at-time-or-now-arg 3
-  ;;                 (lambda (frm)
-  ;;                   (let ((*frame-session-restore* t))
-  ;;                       (frame-session-restore frm t)))
-  ;;                 nframe))
-  ;;               t)
-  ;;             (add-hook 'delete-frame-functions 'frame-session-save)
-  ;;             ;; (add-hook 'kill-emacs-hook 'save-all-frames-session)) ; done in save-all-sessions-auto-save
-  ;;             ;; t
-  ;;             )
-  ;;           t)
+;; ;; (add-hook '*lotus-after-init-hook*
+;; (add-hook 'lotus-enable-startup-interrupting-feature-hook ;new
+;;           '(lambda ()
+;;             ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
+;;             (add-hook
+;;              'after-make-frame-functions
+;;              '(lambda (nframe)
+;;                (run-at-time-or-now-arg 3
+;;                 (lambda (frm)
+;;                   (let ((*frame-session-restore* t))
+;;                       (frame-session-restore frm t)))
+;;                 nframe))
+;;               t)
+;;             (add-hook 'delete-frame-functions 'frame-session-save)
+;;             ;; (add-hook 'kill-emacs-hook 'save-all-frames-session)) ; done in save-all-sessions-auto-save
+;;             ;; t
+;;             )
+;;           t)
 
-  (defun frame-session-restore-hook-func ()
-    "Add to hook"
-    ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
-    (add-hook 'after-make-frame-functions
-              #'frame-session-restore-force
-              t)
-    (add-hook 'delete-frame-functions
-              #'frame-session-save))
+(defun frame-session-restore-hook-func ()
+  "Add to hook"
+  ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
+  (when t
+   (add-hook 'after-make-frame-functions
+             #'frame-session-restore-force
+             t)
+   (add-hook 'delete-frame-functions
+             #'frame-session-save)))
 
-  (defun frame-session-restore-unhook-func ()
-    "Add to hook"
-    ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
-    (remove-hook 'after-make-frame-functions
-                 #'frame-session-restore-force)
-    (remove-hook 'delete-frame-functions
-                 #'frame-session-save))
+(defun frame-session-restore-unhook-func ()
+  "Add to hook"
+  ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
+  (remove-hook 'after-make-frame-functions
+               #'frame-session-restore-force)
+  (remove-hook 'delete-frame-functions
+               #'frame-session-save))
 
-  (testing
-   (frame-parameter (selected-frame) 'frame-spec-id)
-   after-make-frame-functions
-   delete-frame-functions
-   *lotus-after-init-hook*))
+(testing
+ (frame-parameter (selected-frame) 'frame-spec-id)
+ after-make-frame-functions
+ delete-frame-functions
+ *lotus-after-init-hook*)
 
   ;;}}
 
