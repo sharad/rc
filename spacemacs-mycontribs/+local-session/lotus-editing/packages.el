@@ -217,14 +217,16 @@ Each entry is either:
   (use-package corral
     :defer t
     :config
-    (progn
-      )))
+    (progn)))
+
 
 (defun lotus-editing/init-autorevert ()
   (use-package autorevert
-      :defer t
-      :config
-      (progn
+    :defer t
+    :config
+    (progn
+      ;; TODO: write a new correct-auto-revert-notify-add-watch for emacs-snapshot
+      (when nil                         ;not workign with emacs-snapshot
         (defun correct-auto-revert-notify-add-watch ()
           "Enable file notification for current buffer's associated file."
           ;; We can assume that `buffer-file-name' and
@@ -237,24 +239,24 @@ Each entry is either:
               ;; Fallback to file checks.
               (set (make-local-variable 'auto-revert-use-notify) nil)
 
-              (when (not auto-revert-notify-watch-descriptor)
-                (setq auto-revert-notify-watch-descriptor
-                      (ignore-errors
-                        (file-notify-add-watch
-                         (expand-file-name buffer-file-name default-directory)
-                         '(change attribute-change) 'auto-revert-notify-handler)))
-                (if auto-revert-notify-watch-descriptor
-                    (progn
-                      (puthash
-                       auto-revert-notify-watch-descriptor
-                       (cons (current-buffer)
-                             (gethash auto-revert-notify-watch-descriptor
-                                      auto-revert-notify-watch-descriptor-hash-list))
-                       auto-revert-notify-watch-descriptor-hash-list)
-                      (add-hook (make-local-variable 'kill-buffer-hook)
-                                'auto-revert-notify-rm-watch))
-                    ;; Fallback to file checks.
-                    (set (make-local-variable 'auto-revert-use-notify) nil)))))
+            (when (not auto-revert-notify-watch-descriptor)
+              (setq auto-revert-notify-watch-descriptor
+                    (ignore-errors
+                      (file-notify-add-watch
+                       (expand-file-name buffer-file-name default-directory)
+                       '(change attribute-change) 'auto-revert-notify-handler)))
+              (if auto-revert-notify-watch-descriptor
+                  (progn
+                    (puthash
+                     auto-revert-notify-watch-descriptor
+                     (cons (current-buffer)
+                           (gethash auto-revert-notify-watch-descriptor
+                                    auto-revert-notify-watch-descriptor-hash-list))
+                     auto-revert-notify-watch-descriptor-hash-list)
+                    (add-hook (make-local-variable 'kill-buffer-hook)
+                              'auto-revert-notify-rm-watch))
+                ;; Fallback to file checks.
+                (set (make-local-variable 'auto-revert-use-notify) nil)))))
 
         (defalias 'auto-revert-notify-add-watch #'correct-auto-revert-notify-add-watch)
 
@@ -272,7 +274,7 @@ Each entry is either:
         (setq
          auto-revert-use-notify t       ;default
          auto-revert-notify-exclude-dir-regexp (auto-revert-notify-exclude-dir-regexp-add-regex
-                                                (concat "\\|" "^" (expand-file-name "." "~") "/$"))))))
+                                                (concat "\\|" "^" (expand-file-name "." "~") "/$")))))))
 
 (defun lotus-editing/init-simple ()
   (use-package simple

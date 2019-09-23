@@ -151,7 +151,7 @@ Each entry is either:
                                   '(lambda ()
                                      (call-interactively
                                       'lotus-check-session-saving))))))))
-    :commands 'lotus-desktop-session-restore
+    :commands (lotus-desktop-session-restore)
     :config
     (progn
 
@@ -207,13 +207,14 @@ Each entry is either:
                                        (call-interactively
                                         'lotus-check-session-saving))))))))
 
-      (when nil
+      (when t
         (progn
           (add-hook 'session-unified-save-all-sessions-before-hook' clean-buffer-list))))
 
     (when t
       (use-package init-setup
         ;; :ensure t
+        :defer t
         :config
         (progn
           (progn

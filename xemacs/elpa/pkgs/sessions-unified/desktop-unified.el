@@ -85,15 +85,6 @@
               ,@(mapcar '(lambda (s)
                            (read (desktop-value-to-string s))) l)))))))
 
-  (when nil ;; (testing
-   ;; (desktop-make-create-buffer-list (current-buffer))
-   (let ((desktop-buffer-ok-count 0)
-         (desktop-buffer-fail-count 0)
-         desktop-first-buffer)
-     ;; (apply 'desktop-create-buffer (car (lotus-elscreen-get-desktop-buffer-args-list)))
-     (apply 'desktop-create-buffer
-            (car (lotus-elscreen-get-desktop-buffer-args-list)))))
-
   (defun desktop-make-create-buffer-list (buffer)
     (let ((l (desktop-buffer-info buffer))
           ;; (eager desktop-restore-eager)
