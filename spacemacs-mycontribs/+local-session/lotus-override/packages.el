@@ -2,7 +2,7 @@
 ;;
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
 ;;
-;; Author: sharad <s@think530-spratap>
+;; Author: s <>
 ;; URL: https://github.com/syl20bnr/spacemacs
 ;;
 ;; This file is not part of GNU Emacs.
@@ -250,5 +250,4 @@ backend is tried first."
                 ;; File is not registered.
                 (vc-file-setprop file 'vc-backend 'none)
                 nil)))))
-
         ))))
