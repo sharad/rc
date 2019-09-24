@@ -212,7 +212,7 @@ Defaults to \"origin\"."
         ))))
 
 (defun lotus-override/post-init-vc-hooks ()
-  (use-package git-gutter+
+  (use-package vc-hooks
     :defer t
     :config
     (progn
