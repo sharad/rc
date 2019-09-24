@@ -21,11 +21,6 @@ If the argument is a list, the files must all have the same back end."
          nil)))
 
 
-
-
-
-(vc-backend buffer-file-name)
-
 (defun vc-registered (file)
   "Return non-nil if FILE is registered in a version control system.
 
@@ -39,33 +34,23 @@ backend is tried first."
            (string-match vc-ignore-dir-regexp (file-name-directory file)))
       nil)
      ((and (boundp 'file-name-handler-alist)
-          (setq handler (find-file-name-handler file 'vc-registered)))
+           (setq handler (find-file-name-handler file 'vc-registered)))
       ;; handler should set vc-backend and return t if registered
       (funcall handler 'vc-registered file))
      (t
       ;; There is no file name handler.
       ;; Try vc-BACKEND-registered for each handled BACKEND.
-      (catch 'found))))
-  (let ((backend (vc-file-getprop file 'vc-backend)))
-    (mapc
-     (lambda (b)
-       (and (vc-call-backend b 'registered file))
-      (vc-file-setprop file 'vc-backend b)
-      (throw 'found t))
-     (if (or (not backend) (eq backend 'none))
-         vc-handled-backends
-       (cons backend vc-handled-backends
+      (catch 'found
+        (let ((backend (vc-file-getprop file 'vc-backend)))
+          (mapc
+           (lambda (b)
+             (and (or (vc-call-backend b 'registered file)
+                      (vc-call-backend b 'registered (file-truename file)))
+                  (vc-file-setprop file 'vc-backend b)
+                  (throw 'found t)))
+           (if (or (not backend) (eq backend 'none))
+               vc-handled-backends
+             (cons backend vc-handled-backends))))
         ;; File is not registered.
         (vc-file-setprop file 'vc-backend 'none)
         nil)))))
-
-
-(vc-registered (file-truename buffer-file-name))
-(vc-file-getprop (file-truename buffer-file-name) 'vc-backend)
-
-(vc-file-getprop buffer-file-name 'vc-backend)
-
-(vc-file-setprop buffer-file-name 'vc-backend 'Git)
-
-(setq handler
-      (find-file-name-handler (file-truename buffer-file-name) 'vc-registered))

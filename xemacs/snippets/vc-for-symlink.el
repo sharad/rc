@@ -1,63 +1,35 @@
 
 
+(defun vc-registered (file)
+  "Return non-nil if FILE is registered in a version control system.
 
-
-
-(defun vc-deduce-fileset (&optional observer allow-unregistered
-                                    state-model-only-files)
-  "Deduce a set of files and a backend to which to apply an operation.
-Return (BACKEND FILESET FILESET-ONLY-FILES STATE CHECKOUT-MODEL).
-
-If we're in VC-dir mode, FILESET is the list of marked files,
-or the directory if no files are marked.
-Otherwise, if in a buffer visiting a version-controlled file,
-FILESET is a single-file fileset containing that file.
-Otherwise, if ALLOW-UNREGISTERED is non-nil and the visited file
-is unregistered, FILESET is a single-file fileset containing it.
-Otherwise, throw an error.
-
-STATE-MODEL-ONLY-FILES if non-nil, means that the caller needs
-the FILESET-ONLY-FILES STATE and MODEL info.  Otherwise, that
-part may be skipped.
-
-BEWARE: this function may change the current buffer."
-  ;; FIXME: OBSERVER is unused.  The name is not intuitive and is not
-  ;; documented.  It's set to t when called from diff and print-log.
-  (let (backend)
+This function performs the check each time it is called.  To rely
+on the result of a previous call, use `vc-backend' instead.  If the
+file was previously registered under a certain backend, then that
+backend is tried first."
+  (let (handler)
     (cond
-     ((derived-mode-p 'vc-dir-mode)
-      (vc-dir-deduce-fileset state-model-only-files))
-     ((derived-mode-p 'dired-mode)
-      (if observer
-          (vc-dired-deduce-fileset)
-        (error "State changing VC operations not supported in `dired-mode'")))
-     ((setq backend (vc-backend buffer-file-name))
-      (if state-model-only-files
-          (list backend (list buffer-file-name)
-                (list buffer-file-name)
-                (vc-state buffer-file-name)
-                (vc-checkout-model backend buffer-file-name))
-        (list backend (list buffer-file-name))))
-     ((and (buffer-live-p vc-parent-buffer)
-           ;; FIXME: Why this test?  --Stef
-           (or (buffer-file-name vc-parent-buffer)
-               (with-current-buffer vc-parent-buffer
-                 (derived-mode-p 'vc-dir-mode))))
-      (progn                  ;FIXME: Why not `with-current-buffer'? --Stef.
-        (set-buffer vc-parent-buffer)
-        (vc-deduce-fileset observer allow-unregistered state-model-only-files)))
-     ((and (derived-mode-p 'log-view-mode)
-           (setq backend (vc-responsible-backend default-directory)))
-      (list backend nil))
-     ((not buffer-file-name)
-      (error "Buffer %s is not associated with a file" (buffer-name)))
-     ((and allow-unregistered (not (vc-registered buffer-file-name)))
-      (if state-model-only-files
-          (list (vc-backend-for-registration (buffer-file-name))
-                (list buffer-file-name)
-                (list buffer-file-name)
-                (when state-model-only-files 'unregistered)
-                nil)
-        (list (vc-backend-for-registration (buffer-file-name))
-              (list buffer-file-name))))
-     (t (error "File is not under version control")))))
+     ((and (file-name-directory file)
+           (string-match vc-ignore-dir-regexp (file-name-directory file)))
+      nil)
+     ((and (boundp 'file-name-handler-alist)
+           (setq handler (find-file-name-handler file 'vc-registered)))
+      ;; handler should set vc-backend and return t if registered
+      (funcall handler 'vc-registered file))
+     (t
+      ;; There is no file name handler.
+      ;; Try vc-BACKEND-registered for each handled BACKEND.
+      (catch 'found
+        (let ((backend (vc-file-getprop file 'vc-backend)))
+          (mapc
+           (lambda (b)
+             (and (or (vc-call-backend b 'registered file)
+                      (vc-call-backend b 'registered (file-truename file)))
+                  (vc-file-setprop file 'vc-backend b)
+                  (throw 'found t)))
+           (if (or (not backend) (eq backend 'none))
+               vc-handled-backends
+             (cons backend vc-handled-backends))))
+        ;; File is not registered.
+        (vc-file-setprop file 'vc-backend 'none)
+        nil)))))
