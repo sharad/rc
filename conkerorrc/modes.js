@@ -15,6 +15,7 @@ session_pref('browser.history_expire_days', 30);
 
 function session_stop_loading_buffers(window) {
     if (!window) window = get_recent_conkeror_window();
+    window.alert("Now Running session_stop_loading_buffers.")
     for (var i = 0; i < window.buffers.count; i++)
     {
         stop_loading( window.buffers.get_buffer(i) );
@@ -24,7 +25,12 @@ function session_stop_loading_buffers(window) {
 let _session_stop_loading_buffers = function (window) {
     remove_hook("window_initialize_late_hook", _session_stop_loading_buffers);
     // spawn(_session_auto_save_auto_load(user_gave_urls));
-    session_stop_loading_buffers();
+    // session_stop_loading_buffers();
+    window = get_recent_conkeror_window();
+    if (window) {
+        window.setTimeout(session_stop_loading_buffers, 2);
+        window.alert("Will run session_stop_loading_buffers after 2 secs.")
+    }
 };
 
 add_hook("window_initialize_late_hook", _session_stop_loading_buffers);

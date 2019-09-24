@@ -64,8 +64,7 @@ function load_rc_files() {
         }
     }
 }
-function load_files()
-{
+function load_local_files() {
     var files = ["/home/s/hell/.conkerorrc/local/security.js",
                  "/home/s/hell/.conkerorrc/local/office.js"];
     for(f in files) {
@@ -74,15 +73,8 @@ function load_files()
     }
 }
 
-load_files();
+load_local_files();
 load_rc_files();
-
-//{{
-for (var i = 0; i < get_recent_conkeror_window().buffers.count; i++)
-{
-  stop_loading(get_recent_conkeror_window().buffers.get_buffer(i));
-}
-//}}
 
 
 

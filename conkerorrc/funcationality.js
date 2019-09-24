@@ -1,5 +1,40 @@
 // -*- mode: js -*-
 
+//{{
+
+
+{
+    var window = get_recent_conkeror_window();
+    if (window) {
+        window.minibuffer.message("Now Running session_stop_loading_buffers.");
+        window.alert("Now Running session_stop_loading_buffers.");
+    }
+
+    function ABC_session_stop_loading_buffers (window) {
+        if (!window) window = get_recent_conkeror_window();
+        window.alert("Now Running ABC_session_stop_loading_buffers.");
+        for (var i = 0; i < window.buffers.count; i++)
+        {
+            stop_loading( window.buffers.get_buffer(i) );
+        }
+    };
+
+    let _ABC_session_stop_loading_buffers = function (window) {
+        remove_hook("window_initialize_hook", _ABC_session_stop_loading_buffers);
+        window = get_recent_conkeror_window();
+        if (window) {
+            window.setTimeout(ABC_session_stop_loading_buffers, 800);
+            window.alert("Will run ABC_session_stop_loading_buffers after 2 secs.");
+        }
+    };
+
+    add_hook("window_initialize_hook", _ABC_session_stop_loading_buffers);
+
+    // ABC_session_stop_loading_buffers();
+}
+
+//}}
+
 
 //{{ Remember the last save directory for downloads
 // Add the following code to your rc:
