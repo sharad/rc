@@ -620,7 +620,6 @@ en all buffer were creaed idly."
         (if (desktop-get-desktop-save-filename)
             (let ((desktop-restore-frames nil)
                   (enable-local-eval t)                ;query
-
                   (enable-recursive-minibuffers t)
                   (flymake-run-in-place nil)
                   (show-error (called-interactively-p 'interactive))
