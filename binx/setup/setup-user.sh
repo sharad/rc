@@ -60,7 +60,7 @@ DEB_PKG_NECESSARY="cvs subversion git git-cvs cvs2svn git-review legit git-extra
 DEB_PKG_NECESSARY1="fish ondir zsh-syntax-highlighting doc-base snooze"
 DEB_PKG_WITH_ERROR="edb"
 DEB_PKG_APPEARANCE="lxappearance gnome-tweak-tool gnome-themes-standard libgtk-3-dev console-data gnome-session gnome-settings-daemon gnome-panel policykit-1-gnome dex"
-DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp virtualbox-dkms virtualbox-guest-x11 vagrant libvirt-clients docker-compose"
+DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp virtualbox-dkms virtualbox-guest-x11 vagrant libvirt-clients docker-compose virt-manager libvirt-daemon libvirt-daemon-system qemu kvm vagrant vagrant-libvirt vagrant-lxc vagrant-mutate "
 
 DEB_EXTRA_PKG1=" libpam-tmpdir xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip python3-secretstorage copyq parcellite clipit diodon dunst zathura apvlv udiskie xsel xfce4-clipman rofi shellex"
 DEB_EXTRA_PKG_COMMUNICATION="pidgin finch pidgin-skype pidgin-skypeweb empathy empathy-skype pidgin-gnome-keyring purple-skypeweb telegram-purple pidgin-plugin-pack bitlbee-libpurple bitlbee-plugin-otr tor" #  bitlbee
@@ -101,6 +101,7 @@ DEB_PKG_DOC="wv epub-utils"
 DEB_PKG_DOC_PUB="hugo jekyll"
 DEB_PKG_JAVA1="libreoffice-java-common"
 DEB_PKG_LINT="shellcheck splint splint-data yapf yapf3 foodcritic ansible-lint adlint ansible-lint api-sanity-checker flycheck-doc"
+DEB_PKG_CM_TOOL="ansible itamae"
 DEB_PKG_DEB="devscripts revu-tools debaux devscripts dput"
 DEB_PKG_BUILD="elida pbuilder"
 DEB_PKG_VOICE="espeak-ng espeak-ng-espeak xmms2 gxmms2 promoe gmpc mpd mpc"
@@ -733,6 +734,7 @@ function setup_apt_packages()
         DEB_PKG_DOC_PUB
         DEB_PKG_JAVA1
         DEB_PKG_LINT
+        DEB_PKG_CM_TOOL
         DEB_PKG_DEB
         DEB_PKG_BUILD
         DEB_PKG_VOICE
