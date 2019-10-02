@@ -321,18 +321,23 @@
                            key-lists))))
 
 (defun org-capture+reset-source (ptree)
-  (let ((candidates (org-capture+-reset-candidates ptree)))
+  (let (sources
+        (candidates (org-capture+-reset-candidates ptree)))
     (when ptree
-        (list
-         (helm-build-sync-source "Reset"
-           :candidates candidates
-           :multiline t
-           :action     #'(lambda (keys)
-                           (org-capture+-guided (apply #'ptree-put ptree nil keys))))
-         (helm-build-sync-source "Run"
-           :candidates (list (cons "Run" ptree))
-           :multiline t
-           :action     #'org-capture+-run-or-edit-ptree)))))
+      (let ((reset-source (helm-build-sync-source "Reset"
+                            :candidates candidates
+                            :multiline t
+                            :action     #'(lambda (keys)
+                                            (org-capture+-guided (apply #'ptree-put ptree nil keys)))))
+            (run-source (when (org-capture+-ptree-runnable-p ptree)
+                          (helm-build-sync-source "Run"
+                            :candidates (list (cons "Run" ptree))
+                            :multiline t
+                            :action     #'org-capture+-run-or-edit-ptree))))
+        (when run-source
+          (push run-source sources))
+        (push reset-source sources)
+        sources))))
 
 
 ;; (setq org-capture+-learned-templates nil)
