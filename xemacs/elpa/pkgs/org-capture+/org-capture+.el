@@ -1,8 +1,8 @@
-;;; org-capture+.el --- org capture plus         -*- lexical-binding: t; -*-
+;;; org-capture+-eng.el --- org capture plus eng     -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012  Sharad Pratap
+;; Copyright (C) 2019  s
 
-;; Author: Sharad Pratap <sh4r4d _at_ _G-mail_>
+;; Author: s <>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -20,719 +20,381 @@
 
 ;;; Commentary:
 
+;;
+
 ;;; Code:
 
-;; Required libraries
+(provide 'org-capture+-eng)
+
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Required%20libraries][Required libraries:1]]
-(require 'org-capture)
-;; Required libraries:1 ends here
+(require 'org-capture+-helm-dynamic)
+
 
-;; Mode definition
+(defvar org-capture+-learned-templates nil)
 
+;; checkout org-capture-templates variable
+(defvar org-capture+-types   '(("Org Entry" . entry)
+                               ("List Item" . item)
+                               ("Checklist Item" . chckitem)
+                               ("Table Line" . table-line)
+                               ("Plain Text" . plain)
+                               ("Log note" . log-note)))
+(defvar org-capture+-target-names '(("File" . file)
+                                    ("Org entry Id" . id)
+                                    ("File and Headline Regular Expression". file+regexp)
+                                    ("File Headline" . file+headline)
+                                    ("File Outline path" . file+olp)
+                                    ("File Outline path Date-tree" . file+olp+datetree)
+                                    ("File and Function to find Headline" . file+function)
+                                    ("Current Org Clock" . clock)
+                                    ("Function" . function)
+                                    ("Marker" . marker)))
+(defvar org-capture+-meta-data nil)
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Mode%20definition][Mode definition:1]]
-(defvar org-capture-plus-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map "\C-c\C-c" #'org-capture-plus-finalize)
-    (define-key map "\C-c\C-k" #'org-capture-kill)
-    (define-key map "\C-c\C-w" #'org-capture-refile)
-    map)
-  "Keymap for `org-capture-plus-mode', a minor mode.
-Use this map to set additional keybindings for when Org mode is used
-for a capture buffer.")
+(defvar org-capture+-plist '(:type nil
+                             :target (:file     nil
+                                      :name     nil
+                                      :headlines nil)
+                             :template nil
+                             :description nil))
+
 
-(defvar org-capture-plus-mode-hook nil
-  "Hook for the `org-capture-plus-mode' minor mode.")
+(defun plist-keys (plist)
+  "Return keys in a PLIST."
+  (-slice plist 0 nil 2))
 
-(define-minor-mode org-capture-plus-mode
-  "Minor mode for special key bindings in a capture buffer.
+(defun ptree-get (tree &rest keys)
+  (let ((key (car keys)))
+    (if (and key
+             (consp tree))
+        (apply #'ptree-get (plist-get tree key) (cdr keys))
+      (unless (cdr keys) tree))))
 
-Turning on this mode runs the normal hook `org-capture-plus-mode-hook'."
-  nil " Cap" org-capture-plus-mode-map
-  (setq-local org-capture-mode t)
-  (setq-local
-   header-line-format
-   (substitute-command-keys
-    "\\<org-capture-plus-mode-map>Capture buffer.  Finish \
-`\\[org-capture-plus-finalize]', refile `\\[org-capture-refile]', \
-abort `\\[org-capture-kill]'.")))
-;; Mode definition:1 ends here
+(defun ptree-put (tree value &rest keys)
+  (let ((key (car keys)))
+    (if (and key
+             (or (null tree)
+                 (consp tree)))
+        (setq tree
+              (plist-put tree key
+                         (if (cdr keys)
+                             (apply #'ptree-put (plist-get tree key) value (cdr keys))
+                           value))))))
 
-;; org-capture-plus-finalize
+(defun ptree-keys (tree)
+  (mapcar #'(lambda (key)
+              (let ((subtree (plist-get tree key)))
+                (message "key: %s subtree: %s" key subtree)
+                (if (and (consp subtree)
+                         (keywordp (car subtree)))
+                    (cons key (ptree-keys subtree))
+                  (list key))))
+          (plist-keys tree)))
 
+(defun ptree-key-lists-keys (ptree-keys)
+  (letrec ((dfs #'(lambda (tree)
+                    (if (cdr tree)
+                        (mapcar #'(lambda (l)
+                                    (cons (car tree) (car (funcall dfs l))))
+                                (cdr tree))
+                      (list tree)))))
+    (mapcan dfs ptree-keys)))
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*org-capture-plus-finalize][org-capture-plus-finalize:1]]
-(defun org-capture-plus-finalize (&optional stay-with-capture)
-  (interactive "P")
-  (let ((before-finalize (org-capture-get :before-finalize))
-        (after-finalize (org-capture-get :after-finalize))
-        (buff   (org-base-buffer (current-buffer)))
-        (pos    (point-min))
-        (marker (make-marker)))
+(defun ptree-key-lists (ptree-keys)
+  (ptree-key-lists-keys (ptree-keys ptree-keys)))
+
 
-    (set-marker marker pos buff)
-    ;; (buffer-base-buffer (current-buffer))
-    (when (or (null before-finalize)
-              (funcall before-finalize marker))
-      (when (org-capture-finalize stay-with-capture)
-        (unless (null after-finalize)
-          (funcall after-finalize marker))))))
-;; org-capture-plus-finalize:1 ends here
+(defun org-capture+-meta--get (&rest keys)
+  (apply #'ptree-get org-capture+-meta-data keys))
 
-;; Overriding org-capture-place-template function
+(defun org-capture+-meta--put (value &rest keys)
+  (setq org-capture+-meta-data
+        (apply #'ptree-put org-capture+-meta-data value keys)))
 
+(defun org-capture+-meta-get (keys key)
+  (apply #'ptree-get org-capture+-meta-data (append keys (list key))))
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Overriding%20org-capture-place-template%20function][Overriding org-capture-place-template function:1]]
-(defun org-capture-place-template (&optional inhibit-wconf-store)
-  "Insert the template at the target location, and display the buffer.
-When `inhibit-wconf-store', don't store the window configuration, as it
-may have been stored before."
-  (unless inhibit-wconf-store
-    (org-capture-put :return-to-wconf (current-window-configuration)))
-  (delete-other-windows)
-  (org-switch-to-buffer-other-window
-   (org-capture-get-indirect-buffer (org-capture-get :buffer) "CAPTURE"))
-  (widen)
-  (outline-show-all)
-  (goto-char (org-capture-get :pos))
-  (setq-local outline-level 'org-outline-level)
-  (pcase (org-capture-get :type)
-    ((or `nil `entry) (org-capture-place-entry))
-    (`table-line      (org-capture-place-table-line))
-    (`plain           (org-capture-place-plain-text))
-    (`item            (org-capture-place-item))
-    (`checkitem       (org-capture-place-item))
-    (`log-note        (org-capture-place-log-note)))
-  (org-capture-plus-mode 1)
-  (setq-local org-capture-current-plist org-capture-plist))
-;; Overriding org-capture-place-template function:1 ends here
+(defun org-capture+-meta-put (value keys key)
+  (setq org-capture+-meta-data
+        (apply #'ptree-put org-capture+-meta-data value (append keys (list key)))))
+
 
-;; Providing log note function for capture
+(defun org-capture+-helm-common-action (ptree &rest keys)
+  #'(lambda (candidate)
+      (org-capture+-guided (apply #'ptree-put ptree candidate keys))))
+
 
+(defun org-capture+-helm-sync (ptree &rest keys)
+  (let* ((prompt     (org-capture+-meta-get keys :prompt))
+         (filter     (org-capture+-meta-get keys :filter))
+         (candidates (when filter (funcall filter ptree))))
+    (list
+     (helm-build-sync-source prompt
+       :candidates candidates
+       :action     (apply #'org-capture+-helm-common-action ptree keys)))))
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Providing%20log%20note%20function%20for%20capture][Providing log note function for capture:1]]
-;; check org-store-log-note
-;; check org-add-log-note
-;; check org-add-log-setup
-;;
-;; effective-time
+(defun org-capture+-helm-dummy (ptree &rest keys)
+  (let* ((prompt     (org-capture+-meta-get keys :prompt))
+         (filter     (org-capture+-meta-get keys :filter))
+         (candidates (when filter (funcall filter ptree))))
+    (list
+     (helm-build-dummy-source prompt
+       :action     (apply #'org-capture+-helm-common-action ptree keys)))))
 
-(defun org-capture-place-log-note ()
-  "Place the template plainly.
-If the target locator points at an Org node, place the template into
-the text of the entry, before the first child.  If not, place the
-template at the beginning or end of the file.
-Of course, if exact position has been required, just put it there."
-  ;; (debug)
-  (let* ((txt (org-capture-get :template))
-         beg end
-         (note-purpose (or (org-capture-get :note-purpose) 'note))
-         (effective-time (org-current-effective-time))
-         (note-state (org-capture-get :note-state))
-         (note-previous-state (org-capture-get :note-previous-state))
-         (note-how (org-capture-get :note-how))
-         (note-extra (org-capture-get :note-extra)))
-    ;; (cond
-    ;;   ((org-capture-get :exact-position)
-    ;;    (goto-char (org-capture-get :exact-position)))
-    ;;   ((and (org-capture-get :target-entry-p)
-    ;;         (bolp)
-    ;;         (looking-at org-outline-regexp))
-    ;;    ;; we should place the text into this entry
-    ;;    (if (org-capture-get :prepend)
-    ;;        ;; Skip meta data and drawers
-    ;;        (org-end-of-meta-data t)
-    ;;        ;; go to ent of the entry text, before the next headline
-    ;;        (outline-next-heading)))
-    ;;   (t
-    ;;    ;; beginning or end of file
-    ;;    (goto-char (if (org-capture-get :prepend) (point-min) (point-max)))))
+(defun org-capture+-helm-gen (ptree &rest keys)
+  (let* ((prompt     (org-capture+-meta-get keys :prompt))
+         (filter     (org-capture+-meta-get keys :filter))
+         (candidates (when filter (funcall filter ptree))))
+    (helm-template-gen-source #'org-capture+-tree-predicate
+                              '(t xx yy)
+                              0
+                              (apply #'org-capture+-helm-common-action ptree keys))))
+
 
-    (if (and (org-capture-get :target-entry-p)
-              (bolp)
-              (looking-at org-outline-regexp))
-        (let ((note (cdr (assq note-purpose org-log-note-headings)))
-              lines)
-          (progn
-            (while (string-match "\\`# .*\n[ \t\n]*" txt)
-              (setq txt (replace-match "" t t txt)))
-            (when (string-match "\\s-+\\'" txt)
-              (setq txt (replace-match "" t t txt)))
-            (setq lines (org-split-string txt "\n"))
-            (when (org-string-nw-p note)
-              (setq note
-                    (org-replace-escapes
-                     note
-                     (list (cons "%u" (user-login-name))
-                           (cons "%U" user-full-name)
-                           (cons "%t" (format-time-string
-                                       (org-time-stamp-format 'long 'inactive)
-                                       effective-time))
-                           (cons "%T" (format-time-string
-                                       (org-time-stamp-format 'long nil)
-                                       effective-time))
-                           (cons "%d" (format-time-string
-                                       (org-time-stamp-format nil 'inactive)
-                                       effective-time))
-                           (cons "%D" (format-time-string
-                                       (org-time-stamp-format nil nil)
-                                       effective-time))
-                           (cons "%s" (cond
-                                       ((not note-state) "")
-                                       ((string-match-p org-ts-regexp note-state)
-                                        (format "\"[%s]\""
-                                                (substring note-state 1 -1)))
-                                       (t (format "\"%s\"" note-state))))
-                           (cons "%S"
-                                 (cond
-                                  ((not note-previous-state) "")
-                                  ((string-match-p org-ts-regexp
-                                                   note-previous-state)
-                                   (format "\"[%s]\""
-                                           (substring
-                                            note-previous-state 1 -1)))
-                                  (t (format "\"%s\""
-                                             note-previous-state)))))))
-              (when lines (setq note (concat note " \\\\")))
-              (push note lines)))
+(defun org-capture-helm-action (ptree value &rest keys)
+  (apply #'ptree-put ptree value keys))
+
 
-          (when lines ;; (and lines (not (or current-prefix-arg org-note-abort)))
-            (progn ;; with-current-buffer (marker-buffer note-marker)
-              (progn ;; org-with-wide-buffer
-               ;; Find location for the new note.
-               ;; (goto-char note-marker)
-               ;; (set-marker note-marker nil)
+(defun org-select-targets (&rest targets)
+  (remove-if-not #'(lambda (trg)
+                     (memq (cdr trg) targets))
+                 org-capture+-target-names))
+
 
-               ;; Note associated to a clock is to be located right after
-               ;; the clock.  Do not move point.
-               (unless (eq note-purpose 'clock-out)
-                 (goto-char (org-log-beginning t)))
-               ;; Make sure point is at the beginning of an empty line.
-               (cond ((not (bolp)) (let ((inhibit-read-only t)) (insert "\n")))
-                     ((looking-at "[ \t]*\\S-") (save-excursion (insert "\n"))))
-               ;; In an existing list, add a new item at the top level.
-               ;; Otherwise, indent line like a regular one.
-               (let ((itemp (org-in-item-p)))
-                 (if itemp
-                     (indent-line-to
-                      (let ((struct (save-excursion
-                                      (goto-char itemp) (org-list-struct))))
-                        (org-list-get-ind (org-list-get-top-point struct) struct)))
-                   (org-indent-line)))
+(defun org-capture+-build-target-arg (ptree)
+  (let ((name      (ptree-get ptree :target :name))
+        (file      (ptree-get ptree :target :file))
+        (headlines (ptree-get ptree :target :headlines))
+        (function  (ptree-get ptree :target :function))
+        (marker    (ptree-get ptree :target :marker)))
+    (case name
+      (file              (list name file))
+      (id                (list name id))
+      (file+headline     (list name file (car (last headlines))))
+      (file+olp          (append (list name file) headlines))
+      (file+olp+datetree (append (list name file) headlines))
+      (file+function     (list name function))
+      (clock)            (list name)
+      (function          (list name function))
+      (marker            (list name marker)))))
 
-               ;; (or (bolp) (newline))
-               ;; (org-capture-empty-lines-before)
-               (setq beg (point))
-               (insert (org-list-bullet-string "-") (pop lines))
-               (let ((ind (org-list-item-body-column (line-beginning-position))))
-                 (dolist (line lines)
-                   (insert "\n")
-                   (indent-line-to ind)
-                   (insert line)))
-               ;; (message "Note stored")
-               ;; (org-capture-empty-lines-after)
-               (org-capture-position-for-last-stored beg)
-               (setq end (point))
-               (let ((end end)) ;; (1- end)
-                 (org-capture-mark-kill-region beg end)
-                 (org-capture-narrow beg end))
-               (if (or (re-search-backward "%\\?" beg t)
-                       (re-search-forward "%\\?" end t))
-                   (replace-match ""))
-               (when nil
-                 (org-back-to-heading t)
-                 (org-cycle-hide-drawers 'children))
-               ;; Fix `buffer-undo-list' when `org-store-log-note' is called
-               ;; from within `org-add-log-note' because `buffer-undo-list'
-               ;; is then modified outside of `org-with-remote-undo'.
-               (when (eq this-command 'org-agenda-todo)
-                 (setcdr buffer-undo-list (cddr buffer-undo-list)))))))
-      (error "marker %s buffer is nil" 'marker))))
-;; Providing log note function for capture:1 ends here
+(defun org-capture+-build-arg (ptree)
+  (let ((type     (ptree-get ptree :type))
+        (template (ptree-get ptree :template)))
+    (list type
+          (org-capture+-build-target-arg ptree)
+          template)))
 
-;; set target improved
+(defun org-capture+-run-ptree (ptree)
+  (apply #'org-capture-run
+         (org-capture+-build-arg ptree)))
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*set%20target%20improved][set target improved:1]]
-(defun org-capture-set-target-location-improved (&optional target)
-  "Find TARGET buffer and position.
-Store them in the capture property list."
-  (let ((target-entry-p t))
-    (save-excursion
-      (pcase (or target (org-capture-get :target))
-        (`(file ,path)
-         (set-buffer (org-capture-target-buffer path))
-         (org-capture-put-target-region-and-position)
-         (widen)
-         (setq target-entry-p nil))
-        (`(id ,id)
-         (pcase (org-id-find id)
-           (`(,path . ,position)
-            (set-buffer (org-capture-target-buffer path))
-            (widen)
-            (org-capture-put-target-region-and-position)
-            (goto-char position))
-           (_ (error "Cannot find target ID \"%s\"" id))))
-        (`(file+headline ,path ,headline)
-         (set-buffer (org-capture-target-buffer path))
-         ;; Org expects the target file to be in Org mode, otherwise
-         ;; it throws an error.  However, the default notes files
-         ;; should work out of the box.  In this case, we switch it to
-         ;; Org mode.
-         (unless (derived-mode-p 'org-mode)
-           (org-display-warning
-            (format "Capture requirement: switching buffer %S to Org mode"
-                    (current-buffer)))
-           (org-mode))
-         (org-capture-put-target-region-and-position)
-         (widen)
-         (goto-char (point-min))
-         (if (re-search-forward (format org-complex-heading-regexp-format
-                                        (regexp-quote headline))
-                                nil t)
-             (beginning-of-line)
-           (goto-char (point-max))
-           (unless (bolp) (insert "\n"))
-           (insert "* " headline "\n")
-           (beginning-of-line 0)))
-        (`(file+olp ,path . ,outline-path)
-         (let ((m (org-find-olp (cons (org-capture-expand-file path)
-                                      outline-path))))
-           (set-buffer (marker-buffer m))
-           (org-capture-put-target-region-and-position)
-           (widen)
-           (goto-char m)
-           (set-marker m nil)))
-        (`(file+regexp ,path ,regexp)
-         (set-buffer (org-capture-target-buffer path))
-         (org-capture-put-target-region-and-position)
-         (widen)
-         (goto-char (point-min))
-         (if (not (re-search-forward regexp nil t))
-             (error "No match for target regexp in file %s" path)
-           (goto-char (if (org-capture-get :prepend)
-                          (match-beginning 0)
-                        (match-end 0)))
-           (org-capture-put :exact-position (point))
-           (setq target-entry-p
-                 (and (derived-mode-p 'org-mode) (org-at-heading-p)))))
-        (`(file+olp+datetree ,path . ,outline-path)
-         (let ((m (if outline-path
-                      (org-find-olp (cons (org-capture-expand-file path)
-                                          outline-path))
-                    (set-buffer (org-capture-target-buffer path))
-                    (point-marker))))
-           (set-buffer (marker-buffer m))
-           (org-capture-put-target-region-and-position)
-           (widen)
-           (goto-char m)
-           (set-marker m nil)
-           (require 'org-datetree)
-           (org-capture-put-target-region-and-position)
-           (widen)
-           ;; Make a date/week tree entry, with the current date (or
-           ;; yesterday, if we are extending dates for a couple of hours)
-           (funcall
-            (if (eq (org-capture-get :tree-type) 'week)
-                #'org-datetree-find-iso-week-create
-              #'org-datetree-find-date-create)
-            (calendar-gregorian-from-absolute
-             (cond
-              (org-overriding-default-time
-               ;; Use the overriding default time.
-               (time-to-days org-overriding-default-time))
-              ((or (org-capture-get :time-prompt)
-                   (equal current-prefix-arg 1))
-               ;; Prompt for date.
-               (let ((prompt-time
-                      (org-read-date nil t nil "Date for tree entry:" (current-time))))
-                 (org-capture-put
-                  :default-time
-                  (cond ((and
-                          (or (not (boundp 'org-time-was-given))
-                              (not org-time-was-given))
-                          (not (= (time-to-days prompt-time) (org-today))))
-                         ;; Use 00:00 when no time is given for another
-                         ;; date than today?
-                         (apply #'encode-time
-                                (append '(0 0 0)
-                                        (cl-cdddr (decode-time prompt-time)))))
-                        ((string-match "\\([^ ]+\\)--?[^ ]+[ ]+\\(.*\\)"
-                                       org-read-date-final-answer)
-                         ;; Replace any time range by its start.
-                         (apply #'encode-time
-                                (org-read-date-analyze
-                                 (replace-match "\\1 \\2" nil nil
-                                                org-read-date-final-answer)
-                                 prompt-time (decode-time prompt-time))))
-                        (t prompt-time)))
-                 (time-to-days prompt-time)))
-              (t
-               ;; Current date, possibly corrected for late night
-               ;; workers.
-               (org-today))))
-            ;; the following is the keep-restriction argument for
-            ;; org-datetree-find-date-create
-            (if outline-path 'subtree-at-point))))
-        (`(file+function ,path ,function)
-         (set-buffer (org-capture-target-buffer path))
-         (org-capture-put-target-region-and-position)
-         (widen)
-         (funcall function)
-         (org-capture-put :exact-position (point))
-         (setq target-entry-p
-               (and
-                (derived-mode-p 'org-mode)
-                (org-at-heading-p))))
-        (`(function ,fun)
-         (funcall fun)
-         (org-capture-put :exact-position (point))
-         (setq target-entry-p
-               (and (derived-mode-p 'org-mode) (org-at-heading-p))))
-        (`(clock)
-         (if (and
-              (markerp org-clock-hd-marker)
-              (marker-buffer org-clock-hd-marker))
-             (progn
-               (set-buffer (marker-buffer org-clock-hd-marker))
-               (org-capture-put-target-region-and-position)
-               (widen)
-               (goto-char org-clock-hd-marker))
-           (error "No running clock that could be used as capture target")))
-        (`(marker ,hd-marker)
-         (let ((hd-marker
-                (cond
-                 ((markerp hd-marker) hd-marker)
-                 ((symbolp hd-marker) (symbol-value hd-marker))
-                 (t (error "value %s is not marker" hd-marker)))))
-           (message "hd-marker %s" hd-marker)
-           (if (and
-                (markerp hd-marker)
-                (marker-buffer hd-marker))
-               (progn
-                 (set-buffer (marker-buffer hd-marker))
-                 (org-capture-put-target-region-and-position)
-                 (widen)
-                 (goto-char hd-marker)
-                 (progn
-                   (org-capture-put :exact-position (point))
-                   (setq target-entry-p
-                         (and
-                          (derived-mode-p 'org-mode)
-                          (org-at-heading-p)))))
-             (error "No running clock that could be used as capture target"))))
-        (target (error "Invalid capture target specification: %S" target)))
+(defun org-capture+-run-or-edit-ptree (ptree)
+  (if (org-capture+-ptree-runnable-p ptree)
+      (org-capture+-run-ptree ptree)
+    (org-capture+-guided ptree)))
+
 
-      (org-capture-put :buffer (current-buffer)
-                       :pos (point)
-                       :target-entry-p target-entry-p
-                       :decrypted
-                       (and (featurep 'org-crypt)
-                            (org-at-encrypted-entry-p)
-                            (save-excursion
-                              (org-decrypt-entry)
-                              (and
-                               (org-back-to-heading t)
-                               (point))))))))
-;; set target improved:1 ends here
+;; cons of name value
+(defun org-capture+-get-file-headlines (file match &rest headlines)
+  (when (file-exists-p file)
+    (with-current-buffer (find-file-noselect file)
+      (let ((m (org-find-olp (cons file headlines))))
+        (if (markerp m)
+            (goto-char m)
+          (when headlines
+            (error "Can not find headlines %s in file %s"
+                   headlines
+                   file)))
+        (org-map-entries #'(lambda ()
+                             ;; https://emacs.stackexchange.com/questions/41870/org-mode-retrieve-current-heading-and-parents-programmatically
+                             (let* ((level   (org-element-property :level (org-element-at-point)))
+                                    (prefix  (concat (make-string level ?\*) " "))
+                                    (headline-tags   (org-get-heading))
+                                    (headline-notags (substring-no-properties (org-get-heading 'no-tags))))
+                               (cons (org-fontify-like-in-org-mode (concat prefix headline-tags))
+                                     (org-get-outline-path t))))
+                         match
+                         (if m 'tree 'file))))))
 
-;; new capture
+(defun org-capture+-get-org-files ()
+  org-agenda-files)
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*new%20capture][new capture:1]]
-(defun org-capture-plus-get-template (template)
-  (cond
-   ((stringp template) template)
-   ((fboundp template) (funcall template))
-   ((symbolp template) (symbol-value template))
-   (t template)))
+(defun org-capture+-get-markers ())
+
+(defun org-capture+-get-org-entry-id ()
+  ())
+
+(defun org-capture+-get-file-functions ()
+  ())
+
+(defun org-capture+-get-functions ()
+  ())
+
+
+(defmacro define-org-capture+-filter (tree-keys &rest body)
+  (destructuring-bind (ptree . keys) tree-keys
+   `(let ((fn #'(lambda (,ptree) ,@body)))
+      (org-capture+-meta-put fn ',keys :filter))))
+(put 'define-org-capture+-filter 'lisp-indent-function 1)
+
 
 ;;;###autoload
-(defun org-capture-run (type target template &rest plist)
-  "Capture something.
-\\<org-capture-plus-mode-map>
-This will let you select a template from `org-capture-templates', and
-then file the newly captured information.  The text is immediately
-inserted at the target location, and an indirect buffer is shown where
-you can edit it.  Pressing `\\[org-capture-plus-finalize]' brings you back to the \
-previous
-state of Emacs, so that you can continue your work.
-
-When called interactively with a `\\[universal-argument]' prefix argument \
-GOTO, don't
-capture anything, just go to the file/headline where the selected
-template stores its notes.
-
-With a `\\[universal-argument] \\[universal-argument]' prefix argument, go to \
-the last note stored.
-
-When called with a `C-0' (zero) prefix, insert a template at point.
-
-When called with a `C-1' (one) prefix, force prompting for a date when
-a datetree entry is made.
-
-ELisp programs can set KEYS to a string associated with a template
-in `org-capture-templates'.  In this case, interactive selection
-will be bypassed.
-
-If `org-capture-use-agenda-date' is non-nil, capturing from the
-agenda will use the date at point as the default date.  Then, a
-`C-1' prefix will tell the capture process to use the HH:MM time
-of the day at point (if any) or the current HH:MM time."
-  ;; (interactive "P")
-
-  (when (and org-capture-use-agenda-date
-             (eq major-mode 'org-agenda-mode))
-    (setq org-overriding-default-time
-          (org-get-cursor-date t ;; (equal goto 1)
-                               )))
-
-  (let* ((orig-buf (current-buffer))
-         (annotation (if (and (boundp 'org-capture-link-is-already-stored)
-                              org-capture-link-is-already-stored)
-                         (plist-get org-store-link-plist :annotation)
-                       (ignore-errors (org-store-link nil))))
-         ;; (template (or org-capture-entry (org-capture-select-template keys)))
-         (template (or org-capture-entry
-                       (org-capture-plus-get-template template)))
-         initial)
-    (setq initial (or org-capture-initial
-                      (and (org-region-active-p)
-                           (buffer-substring (point) (mark)))))
-    (when (stringp initial)
-      (remove-text-properties 0 (length initial) '(read-only t) initial))
-    (when (stringp annotation)
-      (remove-text-properties 0 (length annotation)
-                              '(read-only t) annotation))
-
-
-
-    ;; (org-capture-set-plist template)
-
-    (setq org-capture-plist plist)
-    (org-capture-put
-     ;; :key (car entry)
-     ;; :description (nth 1 entry)
-     :target target)
-
-    (let ((txt template)
-          (type (or type 'entry)))
-      (when (or (not txt) (and (stringp txt) (not (string-match "\\S-" txt))))
-        ;; The template may be empty or omitted for special types.
-        ;; Here we insert the default templates for such cases.
-        (cond
-         ((eq type 'item) (setq txt "- %?"))
-         ((eq type 'checkitem) (setq txt "- [ ] %?"))
-         ((eq type 'table-line) (setq txt "| %? |"))
-         ((member type '(nil entry)) (setq txt "* %?\n  %a"))))
-      (org-capture-put :template txt :type type))
-
-    (org-capture-get-template)
-
-    (org-capture-put :original-buffer orig-buf
-                     :original-file (or (buffer-file-name orig-buf)
-                                        (and (featurep 'dired)
-                                             (car (rassq orig-buf
-                                                         dired-buffers))))
-                     :original-file-nondirectory
-                     (and (buffer-file-name orig-buf)
-                          (file-name-nondirectory
-                           (buffer-file-name orig-buf)))
-                     :annotation annotation
-                     :initial initial
-                     :return-to-wconf (current-window-configuration)
-                     :default-time
-                     (or org-overriding-default-time
-                         (org-current-time)))
-
-    (org-capture-set-target-location-improved)
-
-    (condition-case error
-        (org-capture-put :template (org-capture-fill-template))
-      ((error quit)
-       (if (get-buffer "*Capture*") (kill-buffer "*Capture*"))
-       (error "Capture abort: %s" error)))
-
-    (setq org-capture-clock-keep (org-capture-get :clock-keep))
-    (if (and
-         (not (org-capture-get :target))
-         (eq 'immdediate (car (org-capture-get :target)))) ;; (equal goto 0)
-        ;;insert at point
-        (org-capture-insert-template-here)
-      (condition-case error
-          (org-capture-place-template
-           (eq (car (org-capture-get :target)) 'function))
-        ((error quit)
-         (if (and (buffer-base-buffer (current-buffer))
-                  (string-prefix-p "CAPTURE-" (buffer-name)))
-             (kill-buffer (current-buffer)))
-         (set-window-configuration (org-capture-get :return-to-wconf))
-         (error "Capture template `%s': %s"
-                (org-capture-get :key)
-                (nth 1 error))))
-      (if (and (derived-mode-p 'org-mode)
-               (org-capture-get :clock-in))
-          (condition-case nil
-              (progn
-                (if (org-clock-is-active)
-                    (org-capture-put :interrupted-clock
-                                     (copy-marker org-clock-marker)))
-                (org-clock-in)
-                (setq-local org-capture-clock-was-started t))
-            (error
-             "Could not start the clock in this capture buffer")))
-      (if (org-capture-get :immediate-finish)
-          (org-capture-plus-finalize)))))
-
-;; (defalias 'org-capture-run 'org-capture-plus)
-;; new capture:1 ends here
-
-;; Application
-
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Application][Application:1]]
-(defun org-goto-refile (&optional refile-targets)
-  "Refile goto."
-  ;; mark paragraph if no region is set
-  (let* ((org-refile-targets (or refile-targets org-refile-targets))
-         (target (save-excursion (safe-org-refile-get-location)))
-         (file (nth 1 target))
-         (pos (nth 3 target)))
-    (when (set-buffer (find-file-noselect file)) ;; (switch-to-buffer (find-file-noselect file) 'norecord)
-      (goto-char pos))))
-
-(defun org-create-new-task ()
+(defun org-capture+-initialize ()
   (interactive)
-  (org-capture-run
-   'entry
-   '(function org-goto-refile)
-   "* TODO %? %^g\n %i\n [%a]\n"
-   :empty-lines 1))
+  (setq org-capture+-meta-data nil)
+  (setq org-capture+-plist '(:type nil
+                             :target (:file     nil
+                                      :name     nil
+                                      :headlines nil)
+                             :template nil
+                             :description nil))
+  (org-capture+-meta--put "Types" :type :prompt)
+  (org-capture+-meta--put "Files" :target :file :prompt)
+  (org-capture+-meta--put "Targets" :target :name :prompt)
+  (org-capture+-meta--put "Headings" :target :headlines :prompt)
+  (org-capture+-meta--put "Description" :description :prompt)
+  (org-capture+-meta--put "Templates" :template :prompt)
 
+  (org-capture+-meta--put #'org-capture+-helm-sync :type :source)
+  (org-capture+-meta--put #'org-capture+-helm-sync :target :file :source)
+  (org-capture+-meta--put #'org-capture+-helm-sync :target :name :source)
+  (org-capture+-meta--put #'org-capture+-helm-sync :target :headlines :source)
+  (org-capture+-meta--put #'org-capture+-helm-dummy :description :source)
+  (org-capture+-meta--put #'org-capture+-helm-gen :template :source)
 
-(when nil
+  (org-capture+-meta--put 'single :type :alignment)
+  (org-capture+-meta--put 'multi :target :file :alignment)
+  (org-capture+-meta--put 'single :target :name :alignment)
+  (org-capture+-meta--put 'single :target :headlines :alignment)
+  (org-capture+-meta--put 'single :description :alignment)
+  (org-capture+-meta--put 'multi :template :alignment)
 
-  (org-capture-run
-   'log-note
-   '(clock)
-   "* TODO %? %^g\n %i\n [%a]\n"
-   :empty-lines 1)
+  (define-org-capture+-filter (ptree :type)
+    org-capture+-types)
 
-  (org-capture-run
-   'log-note
-   '(clock)
-   "Test\n"
-   :unnarrowed nil
-   :empty-lines 1)
+  (define-org-capture+-filter (ptree :target :name)
+    (let* ((file      (ptree-get ptree :target :file))
+           (headlines (ptree-get ptree :target :headlines)))
+      (if file
+          (apply #'org-select-targets
+                 (if headlines
+                     (if (> (length headlines) 1)
+                         '(file+olp file+olp+datetree)
+                       '(file+headline file+olp file+olp+datetree))
+                   '(file file+headline file+olp file+olp+datetree)))
+        org-capture+-target-names)))
 
-  ;; https://orgmode.org/manual/Template-elements.html#Template-elements
-  ;; template expansion properties
-  (org-capture-run
-   'log-note
-   '(marker org-clock-marker)
-   "Hello"
-   :unnarrowed nil
-   :empty-lines 1)
+  (define-org-capture+-filter (ptree :target :file)
+    (let ((name (ptree-get ptree :target :name)))
+      (when (memq name
+                  '(nil file file+headline file+olp file+olp+datetree))
+        (org-capture+-get-org-files))))
 
-  (org-capture-run
-   'log-note
-   '(marker testmrkr)
-   "Test Hello 1"
-   ;; :immediate-finish t
-   :empty-lines 1)
+  (define-org-capture+-filter (ptree :target :headlines)
+    (let* ((file      (ptree-get ptree :target :file))
+           (headlines (ptree-get ptree :target :headlines)))
+      (when (and file
+                 (null headlines))
+        (apply #'org-capture+-get-file-headlines file t headlines)))))
 
-  (org-capture-run
-   'entry
-   '(marker testmrkr)
-   "* Hello"
-   ;; :immediate-finish t
-   :empty-lines 1)
+(org-capture+-initialize)
+
 
-  (org-capture-run
-   'entry
-   '(clock)
-   "* Hello"
-   ;; :immediate-finish t
-   :empty-lines 1)
+(defun org-capture+-reset-candidates (ptree)
+  (let ((key-lists (ptree-key-lists ptree)))
+    (mapcar #'(lambda (keys)
+                (cons (format "%s%s%s"
+                              (org-capture+-meta-get keys :prompt)
+                              (if (eq (org-capture+-meta-get keys :alignment) 'multi) "\n" ": ")
+                              (apply #'ptree-get ptree keys))
+                      keys))
+            (remove-if-not #'(lambda (keys) (apply #'ptree-get ptree keys))
+                           key-lists))))
 
+(defun org-capture+reset-source (ptree)
+  (let ((candidates (org-capture+-reset-candidates ptree)))
+    (when ptree
+        (list
+         (helm-build-sync-source "Reset"
+           :candidates candidates
+           :multiline t
+           :action     #'(lambda (keys)
+                           (org-capture+-guided (apply #'ptree-put ptree nil keys))))
+         (helm-build-sync-source "Run"
+           :candidates (list (cons "Run" ptree))
+           :multiline t
+           :action     #'org-capture+-run-or-edit-ptree)))))
+
 
-  (org-capture-run
-   'entry
-   '(function org-goto-refile)
-   "* TODO %? %^g\n %i\n [%a]\n"
-   :empty-lines 1)
+;; (setq org-capture+-learned-templates nil)
 
+(defun org-captue+-drive-prompt (ptree)
+  (if ptree
+      (let* ((description (ptree-get ptree :description))
+             (type        (car (rassoc (ptree-get ptree :type) org-capture+-types)))
+             (target      (car (rassoc (ptree-get ptree :target :name) org-capture+-target-names)))
+             (headlines   (ptree-get ptree :target :headlines))
+             (file        (ptree-get ptree :target :file))
+             (filename    (if file (file-name-nondirectory file))))
+        (format "%s(%s) %s %s %s" type target description filename headlines))
+    "New"))
 
+(defun org-capture+-learned-templates-source ()
+  (let ((candidates (mapcar #'(lambda (ptree)
+                                (cons (org-captue+-drive-prompt ptree) ptree))
+                            org-capture+-learned-templates)))
+    (list
+     (helm-build-sync-source "Defined Templates"
+       :candidates candidates
+       :action     (list (cons "Run" #'org-capture+-run-or-edit-ptree)
+                         (cons "Edit" #'org-capture+-guided))))))
+
 
+(defun org-capture+-ptree-runnable-p (ptree)
+  (every #'(lambda (keys) (apply #'ptree-get ptree keys))
+         (ptree-key-lists org-capture+-plist)))
+
+;; TODO: Add resets which will help to edit existing
+;;       take new as editing an anonymous
 
+;;;###autoload
+(defun org-capture+-guided (&optional ptree)
+  (interactive)
+  (let ((learned-sources (org-capture+-learned-templates-source))
+        (reset-source    (org-capture+reset-source ptree))
+        sources)
 
-  (org-capture-run
-   'log-note
-   '(marker testmrkr)
-   "Test Hello 1"
-   ;; :immediate-finish t
-   :empty-lines 1)
+    (if org-capture+-plist
+        (dolist (keys (ptree-key-lists org-capture+-plist))
+          (unless (apply #'ptree-get ptree keys)
+            (setq sources
+                  (nconc sources
+                         (apply (org-capture+-meta-get keys :source) ptree keys)))))
+      (error "org-capture+-plist is %s" org-capture+-plist))
 
+    (if (or sources
+            (ptree-get ptree :in-learned))
+        (helm :sources (append learned-sources
+                               sources
+                               reset-source))
+      (progn
+        (unless (ptree-get ptree :in-learned)
+          (ptree-put ptree t :in-learned)
+          (push ptree org-capture+-learned-templates)))
+      (when (and
+             (org-capture+-ptree-runnable-p ptree)
+             (y-or-n-p "Launch: "))
+          (org-capture+-run-ptree ptree))
+      (message "ptree %s" ptree))))
 
- )
+;;;###autoload
+(defalias 'org-capture+ #'org-capture+-guided)
+
 
-(when nil
-(let (helm-sources)
-    ;; (when (marker-buffer org-clock-default-task)
-    ;;   (push
-    ;;    (helm-build-sync-source "Default Task"
-    ;;     :candidates (list (lotus-org-marker-selection-line org-clock-default-task))
-    ;;     :action (list ;; (cons "Select" 'identity)
-    ;;              (cons "Clock in and track" #'identity)))
-    ;;    helm-sources))
-
-    ;; (when (marker-buffer org-clock-interrupted-task)
-    ;;   (push
-    ;;    (helm-build-sync-source "The task interrupted by starting the last one"
-    ;;      :candidates (list (lotus-org-marker-selection-line org-clock-interrupted-task))
-    ;;      :action (list ;; (cons "Select" 'identity)
-    ;;               (cons "Clock in and track" #'identity)))
-    ;;    helm-sources))
-
-    (when (and
-           (org-clocking-p)
-           (marker-buffer org-clock-marker))
-      (push
-       (helm-build-sync-source "Current Clocking Task"
-         :candidates (list (lotus-org-marker-selection-line org-clock-marker))
-         :action (list ;; (cons "Select" 'identity)
-                  (cons "Clock in and track" #'identity)))
-       helm-sources))
-
-    ;; (when org-clock-history
-    ;;   (push
-    ;;    (helm-build-sync-source "Recent Tasks"
-    ;;      :candidates (mapcar 'sacha-org-context-clock-dyntaskpl-selection-line dyntaskpls)
-    ;;      :action (list ;; (cons "Select" 'identity)
-    ;;               (cons "Clock in and track" #'(lambda (dyntaskpl) (plist-get dyntaskpl ))))
-    ;;    helm-sources)))
-
-    (helm
-     helm-sources)))
-;; Application:1 ends here
-
-;; Provide this file
-
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Provide%20this%20file][Provide this file:1]]
-(provide 'org-capture+)
-;;; org-capture+.el ends here
-;; Provide this file:1 ends here
-
-;; Debug code
-
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Debug%20code][Debug code:1]]
-(defvar org-capture+-debug nil "org-capture+-debug")
-
-(defun org-capture+-debug (level &rest args)
-  (when org-capture+-debug
-    (when (car args)
-      (apply #'format args)
-      (when (member level '(:emergency :error :warning :debug))
-        ;; (apply #'lwarn 'occ level args)
-        (apply #'lwarn 'org-capture+ level args))
-      (unless (eq level :nodisplay)
-        (apply #'message args)))))
-;; Debug code:1 ends here
+(defun self-insert-test ()
+  (interactive)
+  (message "Hello")
+  (self-insert-command 1))
+
+;;; org-capture+-eng.el ends here

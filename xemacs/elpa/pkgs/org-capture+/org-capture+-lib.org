@@ -38,7 +38,6 @@
 #+END_SRC
 
 ** Rest
-
 *** Debug code
     #+begin_src elisp
 
@@ -85,7 +84,6 @@
       abort `\\[org-capture-kill]'.")))
     #+end_src
 
-
 *** org-capture-plus-finalize
 
     #+begin_src emacs-lisp
@@ -109,7 +107,6 @@
 
 
     #+end_src
-
 
 *** Overriding org-capture-place-template function
 
