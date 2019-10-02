@@ -6,7 +6,7 @@
 
 ** Preamble
 #+BEGIN_SRC emacs-lisp :padline no :comments no :noweb no
-;;; org-capture+.el --- org capture plus         -*- lexical-binding: t; -*-
+;;; org-capture+-lib.el --- org capture plus         -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -744,6 +744,6 @@
 #+END_SRC
 ** Provide this file
 #+BEGIN_SRC emacs-lisp
-(provide 'org-capture+)
-;;; org-capture+.el ends here
+(provide 'org-capture+-lib)
+;;; org-capture+-lib.el ends here
 #+END_SRC

@@ -1,4 +1,4 @@
-;;; org-capture+-eng.el --- org capture plus eng     -*- lexical-binding: t; -*-
+;;; org-capture+.el --- org capture plus eng     -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2019  s
 
@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(provide 'org-capture+-eng)
+(provide 'org-capture+)
 
 
 (require 'org-capture+-helm-dynamic)
@@ -222,11 +222,8 @@
 
 (defun org-capture+-get-markers ())
 
-(defun org-capture+-get-org-entry-id ()
-  ())
-
-(defun org-capture+-get-file-functions ()
-  ())
+[x](defun org-capture+-get-org-entry-id ()(  ())defun org-capture+-get-file-functions ())
+  ()
 
 (defun org-capture+-get-functions ()
   ())
@@ -397,4 +394,4 @@
   (message "Hello")
   (self-insert-command 1))
 
-;;; org-capture+-eng.el ends here
+;;; org-capture+.el ends here
