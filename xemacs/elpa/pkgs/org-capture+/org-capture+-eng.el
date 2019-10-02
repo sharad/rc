@@ -317,7 +317,11 @@
                        (org-capture+-guided (apply #'ptree-put ptree nil keys)))))))
 
 
-(setq org-capture+-learned-templates '(()))
+(setq org-capture+-learned-templates '((:in-learned t
+                                        :type   'entry
+                                        :target (:file "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/start.org"
+                                                 :name file+headline
+                                                 :headlines ("Works" "Meru Works")))))
 
 (defun org-captue+-drive-prompt (ptree)
   (if ptree
@@ -358,12 +362,17 @@
                          (apply (org-capture+-meta-get keys :source) ptree keys)))))
       (error "org-capture+-plist is %s" org-capture+-plist))
 
-    (if sources
+    (if (or sources
+            (ptree-get ptree :in-learned))
         (helm :sources (append learned-sources
                                sources
                                reset-source))
-      (push ptree org-capture+-learned-templates)
-      (org-capture+-run-ptree ptree)
+      (progn
+        (unless (ptree-get ptree :in-learned)
+          (ptree-put ptree t :in-learned)
+          (push ptree org-capture+-learned-templates)))
+      (when (y-or-n-p "Launch: ")
+          (org-capture+-run-ptree ptree))
       (message "ptree %s" ptree))))
 
 ;;;###autoload
