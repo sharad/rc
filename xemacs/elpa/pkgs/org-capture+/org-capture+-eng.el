@@ -314,14 +314,14 @@
        :candidates candidates
        :multiline t
        :action     #'(lambda (keys)
-                       (org-capture+-guided (apply #'ptree-put ptree nil keys)))))))
+                       (org-capture+-guided (apply #'ptree-put ptree nil keys))))
+     (helm-build-sync-source "Run"
+       :candidates (list (cons "Run" ptree))
+       :multiline t
+       :action     #'org-capture+-run-ptree))))
 
 
-(setq org-capture+-learned-templates '((:in-learned t
-                                        :type   'entry
-                                        :target (:file "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/start.org"
-                                                 :name file+headline
-                                                 :headlines ("Works" "Meru Works")))))
+;; (setq org-capture+-learned-templates nil)
 
 (defun org-captue+-drive-prompt (ptree)
   (if ptree
