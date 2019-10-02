@@ -27,10 +27,21 @@
 (provide 'org-capture+)
 
 
+(require 'org-capture+-lib)
 (require 'org-capture+-helm-dynamic)
 
 
 (defvar org-capture+-learned-templates nil)
+
+(with-eval-after-load "desktop"
+  (add-to-list
+   'desktop-globals-to-save
+   'org-capture+-learned-templates))
+
+(with-eval-after-load "session"
+  (add-to-list
+   'session-globals-include
+   '(org-capture+-learned-templates 100)))
 
 ;; checkout org-capture-templates variable
 (defvar org-capture+-types   '(("Org Entry" . entry)
@@ -387,6 +398,9 @@
 
 ;;;###autoload
 (defalias 'org-capture+ #'org-capture+-guided)
+
+
+(define-key global-map [remap org-capture] 'org-capture+)
 
 
 (defun self-insert-test ()

@@ -1,4 +1,4 @@
-;;; org-capture+.el --- org capture plus         -*- lexical-binding: t; -*-
+;;; org-capture+-lib.el --- org capture plus         -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -24,14 +24,14 @@
 
 ;; Required libraries
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Required%20libraries][Required libraries:1]]
+;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+-lib.org::*Required%20libraries][Required libraries:1]]
 (require 'org-capture)
 ;; Required libraries:1 ends here
 
 ;; Mode definition
 
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Mode%20definition][Mode definition:1]]
+;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+-lib.org::*Mode%20definition][Mode definition:1]]
 (defvar org-capture-plus-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map "\C-c\C-c" #'org-capture-plus-finalize)
@@ -62,7 +62,7 @@ abort `\\[org-capture-kill]'.")))
 ;; org-capture-plus-finalize
 
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*org-capture-plus-finalize][org-capture-plus-finalize:1]]
+;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+-lib.org::*org-capture-plus-finalize][org-capture-plus-finalize:1]]
 (defun org-capture-plus-finalize (&optional stay-with-capture)
   (interactive "P")
   (let ((before-finalize (org-capture-get :before-finalize))
@@ -83,7 +83,7 @@ abort `\\[org-capture-kill]'.")))
 ;; Overriding org-capture-place-template function
 
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Overriding%20org-capture-place-template%20function][Overriding org-capture-place-template function:1]]
+;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+-lib.org::*Overriding%20org-capture-place-template%20function][Overriding org-capture-place-template function:1]]
 (defun org-capture-place-template (&optional inhibit-wconf-store)
   "Insert the template at the target location, and display the buffer.
 When `inhibit-wconf-store', don't store the window configuration, as it
@@ -111,7 +111,7 @@ may have been stored before."
 ;; Providing log note function for capture
 
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Providing%20log%20note%20function%20for%20capture][Providing log note function for capture:1]]
+;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+-lib.org::*Providing%20log%20note%20function%20for%20capture][Providing log note function for capture:1]]
 ;; check org-store-log-note
 ;; check org-add-log-note
 ;; check org-add-log-setup
@@ -253,7 +253,7 @@ Of course, if exact position has been required, just put it there."
 
 ;; set target improved
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*set%20target%20improved][set target improved:1]]
+;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+-lib.org::*set%20target%20improved][set target improved:1]]
 (defun org-capture-set-target-location-improved (&optional target)
   "Find TARGET buffer and position.
 Store them in the capture property list."
@@ -438,7 +438,7 @@ Store them in the capture property list."
 
 ;; new capture
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*new%20capture][new capture:1]]
+;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+-lib.org::*new%20capture][new capture:1]]
 (defun org-capture-plus-get-template (template)
   (cond
    ((stringp template) template)
@@ -588,7 +588,7 @@ of the day at point (if any) or the current HH:MM time."
 
 ;; Application
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Application][Application:1]]
+;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+-lib.org::*Application][Application:1]]
 (defun org-goto-refile (&optional refile-targets)
   "Refile goto."
   ;; mark paragraph if no region is set
@@ -716,14 +716,14 @@ of the day at point (if any) or the current HH:MM time."
 
 ;; Provide this file
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Provide%20this%20file][Provide this file:1]]
-(provide 'org-capture+)
-;;; org-capture+.el ends here
+;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+-lib.org::*Provide%20this%20file][Provide this file:1]]
+(provide 'org-capture+-lib)
+;;; org-capture+-lib.el ends here
 ;; Provide this file:1 ends here
 
 ;; Debug code
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Debug%20code][Debug code:1]]
+;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+-lib.org::*Debug%20code][Debug code:1]]
 (defvar org-capture+-debug nil "org-capture+-debug")
 
 (defun org-capture+-debug (level &rest args)
