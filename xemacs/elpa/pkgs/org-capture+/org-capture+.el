@@ -366,8 +366,9 @@
              (target      (car (rassoc (ptree-get ptree :target :name) org-capture+-target-names)))
              (headlines   (ptree-get ptree :target :headlines))
              (file        (org-capture+-file-strip-lcp (ptree-get ptree :target :file)))
-             (filename    (if file (file-name-nondirectory file))))
-        (format "%s(%s) %s %s %s" type target description filename headlines))
+             (filename    (if file (file-name-nondirectory file)))
+             (template    (s-trim (ptree-get ptree :template)))) ;TODO from where trimp-string
+        (format "%s(%s) %s %s %s\n%s" type target description filename headlines template))
     "New"))
 
 (defun org-capture+-learned-templates-source ()
@@ -377,6 +378,7 @@
     (list
      (helm-build-sync-source "Defined Templates"
        :candidates candidates
+       :multiline  t
        :action     (list (cons "Run" #'org-capture+-run-or-edit-ptree)
                          (cons "Edit" #'org-capture+-guided))))))
 
