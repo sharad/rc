@@ -137,4 +137,11 @@
 (global-set-key-warn-if-bind (kbd "C-H-g") 'reset-helm-input)
 (global-set-key-warn-if-bind (kbd "C-H-h") 'reset-helm-input)
 
+(require 's)
+(require 'dash)
+(defun s-lcp (&rest strings)
+  (if (null strings)
+      ""
+    (-reduce-from #'s-shared-start (first strings) (rest strings))))
+
 ;;; lotus-utils.el ends here

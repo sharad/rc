@@ -102,6 +102,7 @@
   file-level
   cat
   plist
+  format-file
   format-string
   ;; rank
   rank)
@@ -129,7 +130,9 @@
 
 (cl-defstruct (occ-collection (:include occ-obj-collection))
   roots
-  files)
+  files
+  ;; TODO: implement it
+  file-lcp)
 
 (cl-defstruct (occ-list-collection (:include occ-collection))
   list)

@@ -27,6 +27,10 @@
 (provide 'org-capture+)
 
 
+(require 'lotus-utils)
+(require 's)
+
+
 (require 'org-capture+-lib)
 (require 'org-capture+-helm-dynamic)
 
@@ -36,12 +40,12 @@
 (with-eval-after-load "desktop"
   (add-to-list
    'desktop-globals-to-save
-   'org-capture+-learned-templates))
+   '(org-capture+-learned-templates 10000)))
 
 (with-eval-after-load "session"
   (add-to-list
    'session-globals-include
-   '(org-capture+-learned-templates 100)))
+   '(org-capture+-learned-templates 10000)))
 
 ;; checkout org-capture-templates variable
 (defvar org-capture+-types   '(("Org Entry" . entry)
@@ -128,6 +132,11 @@
 (defun org-capture+-meta-put (value keys key)
   (setq org-capture+-meta-data
         (apply #'ptree-put org-capture+-meta-data value (append keys (list key)))))
+
+
+(defun org-capture+-file-strip-lcp (file)
+  (let ((lcp (apply #'s-lcp (org-capture+-get-org-files))))
+    (s-chop-prefix lcp file)))
 
 
 (defun org-capture+-helm-common-action (ptree &rest keys)
@@ -231,10 +240,17 @@
 (defun org-capture+-get-org-files ()
   org-agenda-files)
 
+(defun org-capture+-get-org-prefixless-files ()
+  (mapcar #'org-capture+-file-strip-lcp
+          (org-capture+-get-org-files)))
+
 (defun org-capture+-get-markers ())
 
-[x](defun org-capture+-get-org-entry-id ()(  ())defun org-capture+-get-file-functions ())
-  ()
+(defun org-capture+-get-org-entry-id ()
+  ())
+
+(defun org-capture+-get-file-functions ()
+  ())
 
 (defun org-capture+-get-functions ()
   ())
@@ -297,7 +313,7 @@
     (let ((name (ptree-get ptree :target :name)))
       (when (memq name
                   '(nil file file+headline file+olp file+olp+datetree))
-        (org-capture+-get-org-files))))
+        (org-capture+-get-org-prefixless-files))))
 
   (define-org-capture+-filter (ptree :target :headlines)
     (let* ((file      (ptree-get ptree :target :file))
@@ -348,7 +364,7 @@
              (type        (car (rassoc (ptree-get ptree :type) org-capture+-types)))
              (target      (car (rassoc (ptree-get ptree :target :name) org-capture+-target-names)))
              (headlines   (ptree-get ptree :target :headlines))
-             (file        (ptree-get ptree :target :file))
+             (file        (org-capture+-file-strip-lcp (ptree-get ptree :target :file)))
              (filename    (if file (file-name-nondirectory file))))
         (format "%s(%s) %s %s %s" type target description filename headlines))
     "New"))

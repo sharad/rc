@@ -27,6 +27,10 @@
 (provide 'occ-print)
 
 
+(require 'lotus-utils)
+(require 's)
+
+
 (cl-defmethod occ-uniquify-file ((tsk occ-tsk))
   (let* ((filename (occ-get-property tsk 'file))
          (basename (file-name-nondirectory filename))
@@ -68,7 +72,8 @@ pointing to it."
 (cl-defmethod occ-fontify-like-in-org-mode ((obj occ-tsk))
   (let* ((level    (or (occ-get-property obj 'level) 0))
          (subtree-level (or (occ-get-property obj 'subtree-level) 0))
-         (filename (occ-get-property obj 'file))
+         ;; (filename (occ-get-property obj 'file))
+         (filename (occ-format-file obj))
          (filename-prefix (concat (make-string
                                    (1+ subtree-level)
                                    occ-fontify-like-org-file-bullet)
@@ -95,6 +100,12 @@ pointing to it."
 
 (cl-defmethod occ-build-format-string ((obj occ-tsk))
   (occ-fontify-like-in-org-mode obj))
+
+
+(cl-defmethod occ-build-format-file ((obj occ-tsk))
+  (let ((filename (occ-get-property obj 'file))
+        (lcp      (apply #'s-lcp (occ-files))))
+    (s-chop-prefix lcp filename)))
 
 
 (cl-defgeneric occ-format (obj

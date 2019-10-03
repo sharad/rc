@@ -31,28 +31,18 @@
 (require 'sessions-unified)
 
 
-;;For Session
-;; (with-eval-after-load "session" ;;
-
-;; (setq desktop-path '("~/.emacs.d/"))
-;; (setq desktop-dirname "~/.emacs.d/")
-;; (setq desktop-base-file-name
-;;       (concat
-;;        "emacs-desktop"
-;;        (if (boundp 'server-name)
-;;            (concat "-" server-name))))
-
-;; (defvar *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
 (setq session-save-file (auto-config-file "session/session.el"))
 
 (defun lotus-session-saved-session ()
   (if (file-exists-p session-save-file) session-save-file))
 
+;;;###autoload
 (defun session-vc-save-session ()
   (if (lotus-session-saved-session)
       (put-file-in-rcs session-save-file))
   (session-save-session))
 
+;;;###autoload
 (defun session-vc-restore-session ()
   (unless (lotus-session-saved-session)
     (message "lotus-session-vc-session-restore: %s not found so trying to checkout it." session-save-file)
@@ -110,6 +100,7 @@
 (add-hook 'session-after-jump-to-last-change-hook
           #'le::maybe-reveal)
 ;;}}
+
 ;;  (session-initialize))
 ;; Something like this is recommended to get emacs to shut-up
 ;; and never ask you for a coding system. Otherwise this can

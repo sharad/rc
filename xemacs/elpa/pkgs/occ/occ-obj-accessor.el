@@ -182,6 +182,19 @@
   (setf (occ-tsk-format-string obj) value))
 
 
+;; occ-tsk - accessors
+(cl-defmethod occ-format-file ((obj occ-tsk))
+  ;; (occ-debug :debug "occ-tsk-format-file(occ-tsk=%s)" obj)
+  (let ((format-file (occ-tsk-format-file obj)))
+    (unless format-file
+      (setf (occ-tsk-format-file obj) (occ-build-format-file obj)))
+    (occ-tsk-format-file obj)))
+
+(cl-defmethod (setf occ-format-file) (value (obj occ-tsk))
+  ;; (occ-debug :debug "occ-tsk-format-file(occ-tsk=%s)" obj)
+  (setf (occ-tsk-format-file obj) value))
+
+
 ;; occ-ctx - accessors
 (cl-defmethod occ-avgrank ((obj occ-ctx))
   (occ-debug :debug "occ-avgrank(occ-ctx=%s)" obj)
