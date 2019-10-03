@@ -79,7 +79,6 @@
     (let ((note (@! @:note :new)))
       (@:message "Helloooo")
       (@:message "Helloo %s" (@:make-message))
-      (read-from-minibuffer "Test: ")
       (funcall (@ note :send)
                note
                '(clock)

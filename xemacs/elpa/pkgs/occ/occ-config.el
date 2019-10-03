@@ -30,6 +30,21 @@
 (require 'occ-macros)
 
 
+;; check
+;; https://emacs.stackexchange.com/questions/12111/why-is-defgroup-useful
+
+(defgroup occ nil
+  "Org Context clock."
+  :prefix "occ-"
+  :group 'extensions
+  :group 'convenience
+  :version "0.1"
+  :link '(emacs-commentary-link :tag "Commentary" "occ.el")
+  :link '(emacs-library-link :tag "Lisp File" "occ.el")
+  :link '(custom-manual "(occ) Top")
+  :link '(info-link "(occ) Customization"))
+
+
 (defcustom occ-unnamed t
   "occ-unnamed")
 

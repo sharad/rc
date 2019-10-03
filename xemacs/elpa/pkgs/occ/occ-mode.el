@@ -26,26 +26,41 @@
 
 (provide 'occ-mode)
 
-;; https://nullprogram.com/blog/2013/02/06/
 
+(require 'occ-config)
+
+
+(defvar occ-mode-main-keymap (make-keymap) "occ-mode keymap.")
+
+;; https://www.emacswiki.org/emacs/PrefixKey
+;; https://stackoverflow.com/questions/25524710/define-key-in-prefix-keymap-for-a-particular-mode
+
+(define-prefix-command 'occ-mode-keymap)
+
+(defun occ-enable-mode-map ()
+  (define-key occ-mode-main-keymap (kbd "M-n") 'occ-mode-keymap))
+
+(defun occ-disable-mode-map ()
+  (define-key occ-mode-main-keymap (kbd "M-n") nil))
+
+
+(define-key occ-mode-keymap (kbd "v") 'occ-version)
+(define-key occ-mode-keymap (kbd "q") 'occ-keep-quiet-for)
+
+;;;###autoload
 (define-minor-mode occ-mode
   "Toggle Occ mode.
       ...rest of documentation as before..."
   ;; The initial value.
   :init-value nil
+  :global     t
   ;; The indicator for the mode line.
   :lighter " Occ"
   ;; The minor mode bindings.
-  :keymap
-  '(([C-backspace] . occ-electric-delete)
-    ([C-M-backspace]
-     . (lambda ()
-         (interactive)
-         (occ-electric-delete t))))
-  :group 'hunger
+  :keymap occ-mode-main-keymap
+  :group 'occ
   (if occ-mode
       (occ-insinuate)
     (occ-uninsinuate)))
 
-
 ;;; occ-mode.el ends here
