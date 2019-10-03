@@ -78,20 +78,15 @@
     (let ((note (@! @:note :new)))
       (@:message "Helloooo")
       (@:message "Helloo %s" (@:make-message))
-      (funcall
-       (@ note :send)
-       note
-       '(clock)
-       (apply
-        #'format
-        (string-join
-         '("* Reading mail subject: %s"
-           "from: %s"
-           "to: %s")
-         "\n")
-        (lotus-plist-get-members
-         (@:make-message)
-         '(:subject :from :to))))))
+      (read-from-minibuffer "Test: ")
+      (funcall (@ note :send)
+               note
+               '(clock)
+               (apply #'format
+                      (string-join '("* Reading mail subject: %s" "from: %s" "to: %s") "\n")
+                      (lotus-plist-get-members
+                       (@:make-message)
+                       '(:subject :from :to))))))
 
   (def@ @@ :make-event-gnus ()
     (when (and
@@ -123,13 +118,9 @@
            (from (message-fetch-field "From" t))
            (to (message-fetch-field "To" t))
            (link (concat "mu4e:msgid:" (activity~wipe-brackets msgid))))
-      (list
-       :subject
-       subject
-       :from
-       from
-       :to
-       to)))
+      (list :subject subject
+            :from    from
+            :to      to)))
 
   (def@ @@ :make-event ()
     "Make mail send event."
@@ -137,15 +128,11 @@
       (apply (@ note :send)
              note
              '(clock)
-             (apply
-              #'format
-              (string-join
-               '("* Sent mail subject: %s"
-                 "to: %s")
-               "\n")
-              (lotus-plist-get-members
-               (@:make-message)
-               '(:subject :to))))))
+             (apply #'format
+                    (string-join
+                     '("* Sent mail subject: %s" "to: %s") "\n")
+                    (lotus-plist-get-members (@:make-message)
+                                             '(:subject :to))))))
 
   (def@ @@ :make-event-gnus ()
     (when (and gnus-message-buffer
@@ -164,7 +151,10 @@
 
 
 (defun mail-event-run-action ()
-  (@! @mail-read-event-detector-instance :make-event-gnus))
+  (run-with-timer nil nil
+                  ;; gnus-article-prepare-hook neeed to be finished before any interactive command
+                  #'(lambda ()
+                      (@! @mail-read-event-detector-instance :make-event-gnus))))
 
 ;;;###autoload
 (defun activity-mail-event-activate ()

@@ -334,9 +334,9 @@
                             :candidates (list (cons "Run" ptree))
                             :multiline t
                             :action     #'org-capture+-run-or-edit-ptree))))
+        (push reset-source sources)
         (when run-source
           (push run-source sources))
-        (push reset-source sources)
         sources))))
 
 
