@@ -38,14 +38,15 @@
 ;;; Code:
 
 (provide 'mail-event)
+
 
 (require 'org-capture-note)
+
 
 ;; https://emacs.stackexchange.com/questions/101/how-can-i-create-an-org-link-for-each-email-sent-by-mu4e
 ;; http://kitchingroup.cheme.cmu.edu/blog/2014/06/08/Better-integration-of-org-mode-and-email/
 ;; https://github.com/danieroux/emacs/blob/master/mine/djr-org-mu4e-capture-sent.el
 ;; TODO: see it https://orgmode.org/manual/Template-expansion.html#Template-expansion
-
 
 (defun activity~wipe-brackets (msgid)
   (interactive)
@@ -164,36 +165,17 @@
   (setf @mail-send-event-detector-instance
         (@! @event-dectector-class :gen-mail-send-event-detector "gnus send mail event"))
 
-  (add-hook
-   'gnus-article-prepare-hook
-   #'mail-event-run-action))
+  (add-hook 'gnus-article-prepare-hook
+            #'mail-event-run-action))
 
 ;;;###autoloda
 (defun activity-mail-event-deactivate ()
-  (remove-hook
-   'gnus-article-prepare-hook
-   #'mail-event-run-action))
+  (remove-hook 'gnus-article-prepare-hook
+               #'mail-event-run-action))
 
 ;;;###autoload
-(activity-register
- "mail-event"
- #'activity-mail-event-activate #'activity-mail-event-deactivate)
-
-
-;; checking: Restricted Stock Unit (RSU) | Assumed Meru Award(s)
-;; Helloooo
-;; Helloo (:subject Restricted Stock Unit (RSU) | Assumed Meru Award(s) :from Robert Turner <rturner@fortinet.com> :to "stockadmin@fortinet.com" <stockadmin@fortinet.com>)
-;; Test entry (clock) * Reading mail subject: Restricted Stock Unit (RSU) | Assumed Meru Award(s)
-;; from: Robert Turner <rturner@fortinet.com>
-;; to: "stockadmin@fortinet.com" <stockadmin@fortinet.com> (nil)
-;; Wrong capture capture-plist: (nil)
-;; occ-switch-buffer-run-curr-ctx-timer-function: begin
-;; occ-try-clock-schedule-next-timeout: begin
-;; occ-try-clock-in-next-timeout: begin
-;; task-projbuffs-base-dir: changing supplied base-dir nil and task-projbuffs-base-dir to /home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/
-;; Mark set [3 times]
-
-
-;; (nbutlast gnus-article-prepare-hook 1)
-
+(activity-register "mail-event"
+                   #'activity-mail-event-activate
+                   #'activity-mail-event-deactivate)
+
 ;;; mail-event.el ends here
