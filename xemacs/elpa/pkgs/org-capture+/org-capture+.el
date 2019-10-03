@@ -241,7 +241,8 @@
   org-agenda-files)
 
 (defun org-capture+-get-org-prefixless-files ()
-  (mapcar #'org-capture+-file-strip-lcp
+  (mapcar #'(lambda (file)
+              (cons (org-capture+-file-strip-lcp file) file))
           (org-capture+-get-org-files)))
 
 (defun org-capture+-get-markers ())
