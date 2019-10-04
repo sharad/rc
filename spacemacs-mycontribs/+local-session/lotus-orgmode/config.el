@@ -661,6 +661,9 @@
                ,(expand-file-name "../rss/osnews.org" (org-publish-get-attribute "tasks" "org" :base-directory))
                "OSNews Entries"))))))
 
+(defun lotus-orgmode-config/init-org-git-link ()
+  (progn))
+
 (defun lotus-orgmode-config/init-org2rem ()
   (progn ;; org2rem
     ;; (add-hook 'org-mode-hook

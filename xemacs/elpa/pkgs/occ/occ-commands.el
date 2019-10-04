@@ -305,7 +305,7 @@
 (defun occ-insinuate (&optional spec)
   (interactive)
   (occ-message "occ-insinuate: begin")
-  (occ-initialize)
+  (occ-initialize spec)
   (occ-message "occ-insinuate: finish"))
 
 ;;;###autoload

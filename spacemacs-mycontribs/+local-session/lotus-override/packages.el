@@ -96,6 +96,4 @@ Each entry is either:
   (use-package vc-hooks
     :defer t
     :config
-    (progn
-      (progn
-        (lotus-override/post-init-vc-hooks-config)))))
+    (lotus-override/post-init-vc-hooks-config)))

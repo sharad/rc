@@ -36,7 +36,7 @@
 
 (defconst LAYER-packages
   '(
-    (PACKAGE :location local)
+    PACKAGE
     )
   "The list of Lisp packages required by the LAYER layer.
 
@@ -67,9 +67,11 @@ Each entry is either:
 
 (defun LAYER/init-PACKAGE ()
   (use-package PACKAGE
-      :defer t
-      :config
-      (progn
-        )))
+    :defer t
+    :init
+    (LAYER/init-PACKAGE-init)
+    :config
+    (progn
+      (LAYER/init-PACKAGE-config))))
 
 ;;; packages.el ends here

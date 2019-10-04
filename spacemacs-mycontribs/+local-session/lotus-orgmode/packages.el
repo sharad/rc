@@ -46,6 +46,7 @@
     (org-clock :location local)
     (org2rem :location local)
     (org-feed :location local)
+    org-git-link
     worf
     orgnav
     ;; (orgstruct :location local)
@@ -183,19 +184,26 @@ Each entry is either:
       (progn
         (lotus-orgmode-config/init-org-clock))))
 
-(defun lotus-orgmode/init-org-feed ()
-  (use-package org-feed
+(defun lotus-orgmode/init-org-git-link ()
+  (use-package org-git-link
       :defer t
       :config
       (progn
-        (lotus-orgmode-config/init-org-feed))))
+        (lotus-orgmode-config/init-org-git-link))))
+
+(defun lotus-orgmode/init-org-feed ()
+  (use-package org-feed
+    :defer t
+    :config
+    (progn
+      (lotus-orgmode-config/init-org-feed))))
 
 (defun lotus-orgmode/init-org2rem ()
   (use-package org2rem
-      :defer t
-      :config
-      (progn
-        (lotus-orgmode-config/init-org2rem))))
+    :defer t
+    :config
+    (progn
+      (lotus-orgmode-config/init-org2rem))))
 
 (defun lotus-orgmode/init-org-notmuch ()
   (use-package org-notmuch

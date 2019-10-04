@@ -33,6 +33,7 @@
 (require 'occ-commands)
 (require 'occ-resolve-clock)
 (require 'occ-test)
+(require 'occ-config)
 
 
 ;; ;;;###autoload
@@ -56,7 +57,7 @@
 
 
 ;;;###autoload
-(defun occ-initialize ()
+(defun occ-initialize (&optional spec)
   "occ-initialize"
   (setq *occ-tsk-previous-ctx* (occ-make-ctx-at-point))
   (progn

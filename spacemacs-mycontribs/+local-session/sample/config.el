@@ -23,8 +23,12 @@
 ;;
 
 ;;; Code:
+
 
+(defun LAYER/init-PACKAGE-init ()
+  (progn))
 
-
-;; (provide 'config)
+(defun LAYER/init-PACKAGE-config ()
+  (progn))
+
 ;;; config.el ends here
