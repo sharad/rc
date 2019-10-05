@@ -32,6 +32,7 @@
 (require 'occ-cl-utils)
 (require 'occ-obj-utils)
 (require 'occ-resolve-clock)
+(require 'occ-mode)
 
 
 ;; example of clos in cl-struct-js2-export-binding-node is a variable defined in ‘js2-mode.el’.

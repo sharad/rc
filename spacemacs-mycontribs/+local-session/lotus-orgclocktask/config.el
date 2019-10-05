@@ -24,7 +24,6 @@
 
 ;;; Code:
 
-
 (when (configuration-layer/package-usedp 'org-clock-in-if-not)
   (defun spacemacs/org-clock-in-if-not-enable ()
     (progn
@@ -41,11 +40,6 @@
 
 
   (spacemacs/org-clock-in-if-not-enable))
-
-
-
-
-
 
 (defun lotus-orgmode-config/post-init-org ())
 
@@ -600,7 +594,5 @@
       ;;       (if (fboundp 'org-clock-start-check-timer-insiuate)
       ;;           (org-clock-start-check-timer-insiuate)))
       ;;     t))
-
-
-;; (provide 'config)
+
 ;;; config.el ends here
