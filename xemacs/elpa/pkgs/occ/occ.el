@@ -30,6 +30,7 @@
 
 
 (require 'occ-main)
+(require 'occ-util-common)
 (require 'occ-commands)
 (require 'occ-resolve-clock)
 (require 'occ-test)

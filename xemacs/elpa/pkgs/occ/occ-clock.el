@@ -116,9 +116,8 @@
          (obj-ctx        (occ-ctxual-tsk-ctx obj))
          (new-marker     (if obj-tsk (occ-tsk-marker obj-tsk)))
          (new-heading    (if obj-tsk (occ-tsk-heading obj-tsk))))
-    (when (and
-           new-marker
-           (marker-buffer new-marker))
+    (when (and new-marker
+               (marker-buffer new-marker))
 
       (let* ((org-log-note-clock-out nil)
              (old-marker             org-clock-marker)
@@ -149,7 +148,6 @@
           (when old-heading
             (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
 
-          ;; (occ-clock-in obj-tsk)
           (if (or
                (occ-unnamed-p obj)
                (occ-associable-p obj))
@@ -172,7 +170,11 @@
             (with-current-buffer old-buff
               (setq buffer-read-only old-buff-read-only)))
           retval)))))
+
 
+
+(cl-defmethod occ-ignore-p ((buff buffer))
+  nil)
 
 (cl-defmethod occ-ignore-p ((obj occ-ctx))
   (let ((buff (occ-ctx-buffer obj)))
@@ -180,7 +182,8 @@
      (occ-chgable-p)
      buff (buffer-live-p buff)
      (not (minibufferp buff))
-     (not (ignore-p buff)))))
+     (not (occ-ignore-p buff)))))
+
 
 (cl-defmethod occ-clockable-p ((obj occ-ctx))
   (let ((buff (occ-ctx-buffer obj)))
@@ -188,7 +191,8 @@
      (occ-chgable-p)
      buff (buffer-live-p buff)
      (not (minibufferp buff))
-     (not (ignore-p buff)))))
+     (not (occ-ignore-p buff)))))
+
 
 (cl-defmethod occ-clock-in ((obj occ-ctx)
                             &key

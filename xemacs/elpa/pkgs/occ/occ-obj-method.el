@@ -237,7 +237,7 @@
                   (format "context buffer is not live now."))
                  ((minibufferp buff)
                   (format "context buffer is minibuffer."))
-                 ((ignore-p buff)
+                 ((occ-ignore-p buff)
                   (format "context buffer is ignored buffer."))
                  ((equal prev curr)
                   (format "context is not changed."))

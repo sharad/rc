@@ -58,6 +58,7 @@
   (setq occ-debug-uncond nil))
 
 
+;;;###autoload
 (defun occ-debug (level &rest args)
   (when occ-debug
     (when (car args)
@@ -68,10 +69,12 @@
       (unless (eq level :nodisplay)
         (apply #'message args)))))
 
+;;;###autoload
 (defun occ-message (&rest args)
   (apply #'message args)
   (apply #'occ-debug :debug args))
 
+;;;###autoload
 (defun occ-debug-uncond (&rest args)
   (when occ-debug-uncond
     (apply #'occ-message args)))
@@ -123,9 +126,8 @@
 
 
 (defun occ-valid-marker (marker)
-  (when (and
-         marker
-         (marker-buffer marker))
+  (when (and marker
+             (marker-buffer marker))
     marker))
 
 
@@ -193,10 +195,6 @@
             (if (null tail) (error "There is no position ~D in ~S." pos list))
             (push node (cdr tail))
             list)))))
-
-
-(cl-defmethod ignore-p ((buff buffer))
-  nil)
 
 
 (defmacro occ-run-unobtrusively (&rest body)

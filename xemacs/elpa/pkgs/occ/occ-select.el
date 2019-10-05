@@ -76,7 +76,7 @@
                    (= 1 (length candidates-filtered)))
                   (let* ((candidate (car candidates-filtered))
                          (action    (car (funcall action-transformer action candidate)))
-                         (action    (if (consp action) (cdr action) action)))
+                         (action    (or  (cdr-safe action) action)))
                     (funcall action candidate))
                 (helm
                  ;; :keymap occ-helm-map
