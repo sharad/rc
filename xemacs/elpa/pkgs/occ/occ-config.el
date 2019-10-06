@@ -27,6 +27,7 @@
 (provide 'occ-config)
 
 
+(require 'occ-util-common)
 (require 'occ-macros)
 
 
@@ -71,12 +72,14 @@
    ((eq config 'ask)  (y-or-n-p msg))
    ((eq config t) t)
    (t nil)))
+
 
 ;; org-agenda-category-icon-alist
 ;; https://orgmode.org/manual/Categories.html
 ;; org-todo-keywords
 ;; ((sequence "TODO(t)" "STARTED" "NEXT(n)" "|" "DONE(d@/!)" "|" "CLOSED(c@/!)")
 ;;  (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(C@/!)" "PHONE" "MEETING"))
+
 
 (cl-defstruct occ-entry-types
   :sequence

@@ -178,20 +178,20 @@
 
 (cl-defmethod occ-ignore-p ((obj occ-ctx))
   (let ((buff (occ-ctx-buffer obj)))
-    (and
-     (occ-chgable-p)
-     buff (buffer-live-p buff)
-     (not (minibufferp buff))
-     (not (occ-ignore-p buff)))))
+    (and (occ-chgable-p)
+         buff
+         (buffer-live-p buff)
+         (not (minibufferp buff))
+         (not (occ-ignore-p buff)))))
 
 
 (cl-defmethod occ-clockable-p ((obj occ-ctx))
   (let ((buff (occ-ctx-buffer obj)))
-    (and
-     (occ-chgable-p)
-     buff (buffer-live-p buff)
-     (not (minibufferp buff))
-     (not (occ-ignore-p buff)))))
+    (and (occ-chgable-p)
+         buff
+         (buffer-live-p buff)
+         (not (minibufferp buff))
+         (not (occ-ignore-p buff)))))
 
 
 (cl-defmethod occ-clock-in ((obj occ-ctx)

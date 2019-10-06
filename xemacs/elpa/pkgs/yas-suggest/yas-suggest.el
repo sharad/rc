@@ -33,6 +33,7 @@
 
 
 ;; from http://www.lothar.com/blog/2-emacs/
+;;;###autoload
 (defun char-isalpha-p (thechar)
   "Check to see if thechar is a letter"
   (and (or (and (>= thechar ?a)
@@ -40,16 +41,19 @@
            (and (>= thechar ?A)
                 (<= thechar ?Z)))))
 
+;;;###autoload
 (defun char-isnum-p (thechar)
   "Check to see if thechar is a number"
   (and (>= thechar ?0) (<= thechar ?9)))
 
+;;;###autoload
 (defun char-isalnum-p (thechar)
   (or (char-isalpha-p thechar)
       (char-isnum-p thechar)))
 
 
 ;; /usr/share/emacs23/site-lisp/dictionaries-common/flyspell.el
+;;;###autoload
 (defun yas/expandable-at-point ()
   "Return non-nil if a snippet can be expanded here."
   ;; (car (yas/current-key))
@@ -63,6 +67,7 @@
 ;;   (message "this-command %s" this-command))
 ;; (remove-hook 'post-command-hook 'showthiscommand)
 
+;;;###autoload
 (defun yas/current-key-1 ()
   "Get the key under current position. A key is used to find
 the template of a snippet in the current snippet-table."
@@ -94,6 +99,7 @@ the template of a snippet in the current snippet-table."
           start
           end)))
 
+;;;###autoload
 (defun yas/current-key-0 ()
   "Get the key under current position. A key is used to find
 the template of a snippet in the current snippet-table."
@@ -123,6 +129,7 @@ the template of a snippet in the current snippet-table."
           start
           end)))
 
+;;;###autoload
 (defun yas-check-word-p ()
   "Return t when the word at `point' has to be checked.
 The answer depends of several criteria.

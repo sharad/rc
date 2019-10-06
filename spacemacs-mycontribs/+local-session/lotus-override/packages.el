@@ -39,6 +39,7 @@
     (lsdb    :location local)
     git-gutter+
     git-link
+    vc
     vc-hooks
     )
   "The list of Lisp packages required by the lotus-override layer.
@@ -91,6 +92,12 @@ Each entry is either:
     (progn
       (progn
         (lotus-override/post-init-git-link-config)))))
+
+(defun lotus-override/init-vc ()
+  (use-package vc-hooks
+    :defer t
+    :config
+    (lotus-override/init-vc-config)))
 
 (defun lotus-override/post-init-vc-hooks ()
   (use-package vc-hooks

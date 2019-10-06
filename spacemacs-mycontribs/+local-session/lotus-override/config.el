@@ -153,9 +153,7 @@ Defaults to \"origin\"."
                              start
                              end))))))))))
 
-
-
-(defun lotus-override/post-init-vc-hooks-config ()
+(defun override-vc-registered ()
   (progn
     (defun vc-registered (file)
       "Return non-nil if FILE is registered in a version control system.
@@ -190,5 +188,11 @@ backend is tried first."
             ;; File is not registered.
             (vc-file-setprop file 'vc-backend 'none)
             nil)))))))
+
+(defun lotus-override/post-init-vc-hooks-config ()
+  (override-vc-registered))
+
+(defun lotus-override/init-vc-config ()
+  (override-vc-registered))
 
 ;;; config.el ends here

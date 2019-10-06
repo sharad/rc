@@ -49,6 +49,12 @@
 
 ;;; Code:
 
+(provide 'autoinsert+)
+
+
+(require 'autoinsert)
+
+
 (defgroup auto-insert+ nil
   "Automatic mode-dependent insertion of text into new files."
   :prefix "auto-insert+-"
@@ -96,14 +102,15 @@ The value must be an absolute directory name;
 thus, on a GNU or Unix system, it must end in a slash."
   :type 'directory
   :group 'auto-insert+)
-
+
 
 (defvar auto-insert+-alist nil)
 (defvar auto-noinsert+-alist nil)
 (defvar auto-insert+action-handlers nil "autoinsert+ handlers")
+
 
 ;;(setq auto-insert+-alist nil auto-noinsert+-alist nil)
-
+;;;###autoload
 (defun add-auto-insert+action-handler (key handler)
   "add autoinsert+ handler"
   (setq auto-insert+action-handlers
@@ -111,10 +118,12 @@ thus, on a GNU or Unix system, it must end in a slash."
          auto-insert+action-handlers
          key handler)))
 
+;;;###autoload
 (defun auto-insert+choose-action (alist)
-       (let ((name (completing-read "Which? " alist)))
-         (cdr (assoc name alist))))
+  (let ((name (completing-read "Which? " alist)))
+    (cdr (assoc name alist))))
 
+;;;###autoload
 (defun auto-insert+run-action (action)
   ;; TODO: Add support function with arguments
   (save-window-excursion
@@ -130,69 +139,91 @@ thus, on a GNU or Unix system, it must end in a slash."
          (if handler
              (funcall handler ac))))
      action)))
+
 
-(add-auto-insert+action-handler
- :skeleton
- '(lambda (ac) (skeleton-insert ac)))
+;;;###autoload
+(defun auto-insert+-insinuate ()
+  (add-auto-insert+action-handler
+   :skeleton
+   '(lambda (ac) (skeleton-insert ac)))
 
-(add-auto-insert+action-handler
- :func
- '(lambda (ac) (funcall ac)))
+  (add-auto-insert+action-handler
+   :func
+   '(lambda (ac) (funcall ac)))
 
-(add-auto-insert+action-handler
- :plain-file
- '(lambda (ac)
-   (if (file-readable-p ac)
-       (insert-file-contents ac)
-       (if (file-readable-p (expand-file-name ac auto-insert+-directory))
-           (insert-file-contents (expand-file-name ac auto-insert+-directory))
-           (error "error: %s file not exists" ac)))))
+  (add-auto-insert+action-handler
+   :plain-file
+   #'(lambda (ac)
+       (if (file-readable-p ac)
+           (insert-file-contents ac)
+         (if (file-readable-p (expand-file-name ac auto-insert+-directory))
+             (insert-file-contents (expand-file-name ac auto-insert+-directory))
+           (error "error: %s file not exists" ac))))))
 
+;;;###autoload
+(auto-insert+-insinuate)
+
+
+;;;###autoload
 (defun char-isalpha-p (thechar)
   "Check to see if thechar is a letter"
-  (and (or (and (>= thechar ?a) (<= thechar ?z))
-         (and (>= thechar ?A) (<= thechar ?Z)))))
+  (and (or (and (>= thechar ?a)
+                (<= thechar ?z))
+           (and (>= thechar ?A)
+                (<= thechar ?Z)))))
 
+;;;###autoload
 (defun char-isnum-p (thechar)
   "Check to see if thechar is a number"
-  (and (>= thechar ?0) (<= thechar ?9)))
+  (and (>= thechar ?0)
+       (<= thechar ?9)))
 
+;;;###autoload
 (defun char-isalnum-p (thechar)
-  (or (char-isalpha-p thechar) (char-isnum-p thechar)))
+  (or (char-isalpha-p thechar)
+      (char-isnum-p thechar)))
 
 ;; (mapcar (lambda (s)
 ;;           (remove-if-not 'char-isalpha-p s))
 ;;         (mapcar 'car auto-mode-alist))
 
 ;; ? How to unify mode (cdr auto-mode-alist) and file names
+
 
+;;;###autoload
 (defun auto-mode-alist-get-modes-from-file (file) ;return list
   )
 
+;;;###autoload
 (defun auto-mode-alist-get-fileregexs-from-mode (file) ;return list
   )
 
+;;;###autoload
 (defun regex-equal (r1 r2)
   (string-equal
    (remove-if-not 'char-isalpha-p r1)
    (remove-if-not 'char-isalpha-p r2)))
+
 
-(regex-equal
- "\\.el\\'"
- (car (find 'emacs-lisp-mode auto-mode-alist :key 'cdr :test 'eq)))
-
+(when nil
+  (regex-equal
+   "\\.el\\'"
+   (car (find 'emacs-lisp-mode auto-mode-alist :key 'cdr :test 'eq))))
 ;; thos fileregex o mode o auto-mode-alist matchs files regx o
 ;; template o auto-insert-alist than that mode also need also cause
 ;; that template to be used.
+
 
+;;;###autoload
 (defun auto-mode-alist-get-from-moderegex (inmode tmplregex) ;return list
   ;; inmode: given file mode
   ;; inregx: template file regex
   (let ((mode-regexs (remove-if-not (lambda (e)
                                       (eq e inmode)) auto-mode-alist :key 'cdr)))
     (remove-if-not '(lambda (e)
-                     (regex-equal (car e) tmplregex))
+                      (regex-equal (car e) tmplregex))
                    mode-regexs)))
+
 
 ;; (defun auto-mode-alist-get-modes-from-moderegex-p (inmode tmplregex) ;return list
 ;;   ;; inmode: given file mode
@@ -202,7 +233,9 @@ thus, on a GNU or Unix system, it must end in a slash."
 ;;               mode-regexs
 ;;               :test '(lambda (e)
 ;;                       (regex-equal (car e) tmplregex)))))
+
 
+;;;###autoload
 (defun auto-mode-alist-get-from-strmode (infile tmplmode) ;return list
   ;; inmode: given file mode
   ;; inregx: template file regex
@@ -213,6 +246,7 @@ thus, on a GNU or Unix system, it must end in a slash."
 
 ;; TODO: checkout pcre2el.el
 ;; TODO: check major mode with reverse auto-mode-alist file pattern.
+
 
 ;;;###autoload
 (defun auto-insert+ (&optional force)
@@ -224,71 +258,72 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
       (and
        (not buffer-read-only)
        (or (eq this-command 'auto-insert+)
-	   (and auto-insert+
-		(or force (and (bobp) (eobp)))))
+           (and auto-insert+
+                (or force (and (bobp) (eobp)))))
        ;; no action test
        (let ((alist auto-noinsert+-alist)
              noaction-alist cond)
          (while alist
            (setq cond (caar alist))
-	   (if (if (symbolp cond)
-		   (let ((cond-major-mode cond))
-                      (eq cond-major-mode major-mode))
-                   (let ((file-regex-cond cond))
-                     (and buffer-file-name
-                          (string-match file-regex-cond buffer-file-name))))
-	       (setq
+           (if (if (symbolp cond)
+                   (let ((cond-major-mode cond))
+                     (eq cond-major-mode major-mode))
+                 (let ((file-regex-cond cond))
+                   (and buffer-file-name
+                        (string-match file-regex-cond buffer-file-name))))
+               (setq
                 noaction-alist (append noaction-alist (caar alist))
                 alist nil))
            (setq alist (cdr alist)))
          ;; (message "noaction-alist %s" noaction-alist)
          (not noaction-alist)))
 
-       ;; all actions test and accumulation
-       (let ((alist auto-insert+-alist)
-	     case-fold-search
-             cond
-             desc
-             action-alist)
-	 (goto-char 1)
-	 ;; find all matching alist entry
-	 (while alist
-	   (let* ((element (car alist))
-                  (cond    (car element))
-                  (newdesc (plist-get (cdr element) :desc)))
-             ;; (message "cond %s newdesc %s" cond newdesc)
-             (if (some (lambda (c)
-                         (if (symbolp c)
-                             (let ((cond-major-mode c))
-                               (or (eq cond major-mode)
-                                   (auto-mode-alist-get-from-strmode buffer-file-name cond-major-mode)))
-                             (let ((file-regex-cond c))
-                               (or
-                                (and buffer-file-name
-                                     (string-match cond buffer-file-name))
-                                (auto-mode-alist-get-from-moderegex major-mode file-regex-cond)))))
-                       (if (consp cond) cond (list cond)))
-                 (setq action-alist (append action-alist (plist-get (cdr element) :action-alist))
-                       desc (concat
-                             desc
-                             (if newdesc
-                                 (format (concat (if desc " or") " %s") newdesc))))))
-           (setq alist (cdr alist)))
-         ;; (message "action-alist %s" action-alist)
-	 ;; Now, if we found something, do it
-         (if (and action-alist
-                  (or (not auto-insert+-query)
-                      (if (eq auto-insert+-query 'function)
-                          (eq this-command 'auto-insert+))
-                      (y-or-n-p (format auto-insert+-prompt desc))))
-             (auto-insert+run-action (auto-insert+choose-action action-alist)))
+    ;; all actions test and accumulation
+    (let ((alist auto-insert+-alist)
+          case-fold-search
+          cond
+          desc
+          action-alist)
+      (goto-char 1)
+      ;; find all matching alist entry
+      (while alist
+        (let* ((element (car alist))
+               (cond    (car element))
+               (newdesc (plist-get (cdr element) :desc)))
+          ;; (message "cond %s newdesc %s" cond newdesc)
+          (if (some (lambda (c)
+                      (if (symbolp c)
+                          (let ((cond-major-mode c))
+                            (or (eq cond major-mode)
+                                (auto-mode-alist-get-from-strmode buffer-file-name cond-major-mode)))
+                        (let ((file-regex-cond c))
+                          (or
+                           (and buffer-file-name
+                                (string-match cond buffer-file-name))
+                           (auto-mode-alist-get-from-moderegex major-mode file-regex-cond)))))
+                    (if (consp cond) cond (list cond)))
+              (setq action-alist (append action-alist (plist-get (cdr element) :action-alist))
+                    desc (concat
+                          desc
+                          (if newdesc
+                              (format (concat (if desc " or") " %s") newdesc))))))
+        (setq alist (cdr alist)))
+      ;; (message "action-alist %s" action-alist)
+      ;; Now, if we found something, do it
+      (if (and action-alist
+               (or (not auto-insert+-query)
+                   (if (eq auto-insert+-query 'function)
+                       (eq this-command 'auto-insert+))
+                   (y-or-n-p (format auto-insert+-prompt desc))))
+          (auto-insert+run-action (auto-insert+choose-action action-alist)))
 
-	 (and (buffer-modified-p)
-	      (not (eq this-command 'auto-insert+))
-	      (set-buffer-modified-p (eq auto-insert+ t)))))
+      (and (buffer-modified-p)
+           (not (eq this-command 'auto-insert+))
+           (set-buffer-modified-p (eq auto-insert+ t)))))
   ;; Return nil so that it could be used in
   ;; `find-file-not-found-hooks', though that's probably inadvisable.
   nil)
+
 
 ;;;###autoload
 (defun define-auto-insert+ (pattern-mode desc name actkey action &optional after)
@@ -303,82 +338,89 @@ or if CONDITION had no actions, after all other CONDITIONs."
     (push (cons pattern-mode nil) auto-insert+-alist))
   (let* ((elt (assoc pattern-mode auto-insert+-alist)))
     (when elt
-        (setcdr elt (plist-put (cdr elt) :desc desc))
-        (let* ((action-alist (plist-get (cdr  elt)
-                                        :action-alist)))
-          (unless (assoc name action-alist)
-            (push (list name) action-alist))
-          (let ((name-action (assoc name action-alist)))
-            (if name-action
-                (setcdr name-action
-                        (if after
-                            (append (cdr name-action) (list (cons actkey action)))
-                            (push (cons actkey action) (cdr name-action))))))
-          (setcdr elt
-                  (plist-put (cdr  elt)
-                             :action-alist
-                             action-alist))))))
+      (setcdr elt (plist-put (cdr elt) :desc desc))
+      (let* ((action-alist (plist-get (cdr  elt)
+                                      :action-alist)))
+        (unless (assoc name action-alist)
+          (push (list name) action-alist))
+        (let ((name-action (assoc name action-alist)))
+          (if name-action
+              (setcdr name-action
+                      (if after
+                          (append (cdr name-action) (list (cons actkey action)))
+                        (push (cons actkey action) (cdr name-action))))))
+        (setcdr elt
+                (plist-put (cdr  elt)
+                           :action-alist
+                           action-alist))))))
+
 
 ;;;###autoload
 (defun set-auto-insert+noaction (condition)
   "Set pattern where auto-insert+ should not be performed."
   (unless (member condition auto-noinsert+-alist)
-      (push condition auto-noinsert+-alist)))
+    (push condition auto-noinsert+-alist)))
+
 
-(progn
-  (require 'autoinsert)
+;;;###autoload
+(with-eval-after-load 'autoinsert
+  ;; (require 'autoinsert)
   (defun action-type-old-autoinsert-alist (action)
     ;; TODO: Add support function with arguments
     (if action
         (cond
-          ((and
-            (stringp action)
-            (or
-             (file-readable-p action)
-             (file-readable-p
-              (expand-file-name
-               action auto-insert+-directory))))
-           :plain-file)
-          ((and (consp action)
-                (not (eq (car action) 'lambda)))
-           :skeleton)
-          ((or
-            (symbolp action)
-            (and
-             (consp action)
-             (eq (car action) 'lambda)))
-           :func)
-          (t ;; (error "action is recognizable.")
-           :unknown))
-        (error "action is nil")))
+         ((and
+           (stringp action)
+           (or
+            (file-readable-p action)
+            (file-readable-p
+             (expand-file-name
+              action auto-insert+-directory))))
+          :plain-file)
+         ((and (consp action)
+               (not (eq (car action) 'lambda)))
+          :skeleton)
+         ((or
+           (symbolp action)
+           (and
+            (consp action)
+            (eq (car action) 'lambda)))
+          :func)
+         (t ;; (error "action is recognizable.")
+          :unknown))
+      (error "action is nil")))
 
   (defun add-from-autoinsert-alist (name alist)
     (dolist (elt alist)
       (let ((pattern-mode (if (consp (car elt))
                               (caar elt)
-                              (car elt)))
+                            (car elt)))
             (desc         (if (consp (car elt))
                               (cdar elt)
-                              (if (symbolp (car elt))
-                                  (symbol-name (car elt))
-                                  (car elt))))
+                            (if (symbolp (car elt))
+                                (symbol-name (car elt))
+                              (car elt))))
             (action       (cdr elt))
             (type         (action-type-old-autoinsert-alist (cdr elt))))
         (if (vectorp (cdr elt))
             (dolist (a (append (cdr elt) nil))
               (define-auto-insert+ pattern-mode desc name type a t))
-            (define-auto-insert+ pattern-mode desc   name type action t)))))
+          (define-auto-insert+ pattern-mode desc   name type action t)))))
 
   (add-from-autoinsert-alist "old" auto-insert-alist))
+
 
+;;;###autoload
 (defvar tmpledir-alist
   '(("yastemp" "~/emacs.d/template.d/autoinsert" )
     ("autoinsert" "~/emacs.d/template.d/autoinsert")
     ("template" "~/emacs.d/template.d/template")))
 
+;;;###autoload
 (defun template-buffer ()
   (tmpldir )
   ())
+
 
 ;; auto-insert+-alist
 
@@ -398,8 +440,6 @@ insert a template for the file depending on the mode of the buffer."
                auto-insert+-mode (not auto-insert+-mode)))
 
       (add-hook 'find-file-hook 'auto-insert+)
-      (remove-hook 'find-file-hook 'auto-insert+)))
-
-(provide 'autoinsert+)
-
+    (remove-hook 'find-file-hook 'auto-insert+)))
+
 ;;; autoinsert.el ends here
