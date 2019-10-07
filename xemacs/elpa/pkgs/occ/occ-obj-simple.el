@@ -147,10 +147,10 @@
 
 (cl-defmethod occ-capture ((obj occ-obj-ctx-tsk)
                            &optional clock-in-p)
-  (let* ((mrk      (occ-obj-marker obj))
-         (tsk      (occ-obj-tsk    obj))
-         (ctx      (occ-obj-ctx    obj))
-         (template (occ-capture+-helm-select-template)))
+  (let ((mrk      (occ-obj-marker obj))
+        (tsk      (occ-obj-tsk    obj))
+        (ctx      (occ-obj-ctx    obj))
+        (template (occ-capture+-helm-select-template)))
     (when template
       (with-org-capture-run marker 'entry `(marker ,mrk) template '(:empty-lines 1)
         (let* ((tmp-tsk  (occ-make-tsk marker))
@@ -161,7 +161,7 @@
                (child-ctxual-tsk (occ-build-ctxual-tsk-with child-tsk ctx)))
           (when child-tsk
             (occ-induct-child tsk child-tsk)
-            (if clock-in-p
+            (when clock-in-p
                 (occ-try-clock-in child-ctxual-tsk))))))))
 
 

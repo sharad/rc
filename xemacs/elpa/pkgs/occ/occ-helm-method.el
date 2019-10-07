@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2019  s
 
-;; Author: s <spratap@merunetworks.com>
+;; Author: Sharad <>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -33,10 +33,11 @@
     ;; (define-key map (kbd "RET")           'helm-ff-RET)
     (define-key map (kbd "C-]")           'helm-ff-run-toggle-basename)
     (define-key map (kbd "S-RET")         'occ-helm-run-child-clock-in)
-    (helm-define-key-with-subkeys map (kbd "DEL") ?\d 'helm-ff-delete-char-backward
-                                  '((C-backspace . helm-ff-run-toggle-auto-update)
-                                    ([C-c DEL] . helm-ff-run-toggle-auto-update))
-                                  nil 'helm-ff-delete-char-backward--exit-fn)
+    (helm-define-key-with-subkeys map
+      '((kbd "DEL") ?\d 'helm-ff-delete-char-backward
+        (C-backspace . helm-ff-run-toggle-auto-update)
+        ([C-c DEL] . helm-ff-run-toggle-auto-update
+         nil 'helm-ff-delete-char-backward--exit-fn)))
     (when helm-ff-lynx-style-map
       (define-key map (kbd "<left>")      'helm-find-files-up-one-level)
       (define-key map (kbd "<right>")     'helm-execute-persistent-action))
