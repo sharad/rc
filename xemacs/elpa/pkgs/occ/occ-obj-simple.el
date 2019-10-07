@@ -50,6 +50,7 @@
 (require 'occ-select)
 (require 'occ-helm)
 (require 'occ-clock)
+(require 'occ-util-method)
 
 
 (defvar occ-idle-timeout 7)
@@ -129,11 +130,15 @@
 
 
 (cl-defgeneric occ-capture (obj
-                            &optional clock-in-p)
+                            &key
+                            template
+                            clock-in)
   "occ-capture")
 
 (cl-defmethod occ-capture ((obj marker)
-                           &optional clock-in-p)
+                           &key
+                           template
+                           clock-in)
   (org-capture-run
    'entry
    `(marker ,obj)
@@ -141,16 +146,22 @@
    :empty-lines 1))
 
 (cl-defmethod occ-capture ((obj occ-tsk)
-                           &optional clock-in-p)
+                           &key
+                           template
+                           clock-in)
   (let ((mrk (occ-tsk-marker obj)))
-    (occ-capture mrk)))
+    (occ-capture mrk
+                 :clock-in clock-in)))
 
 (cl-defmethod occ-capture ((obj occ-obj-ctx-tsk)
-                           &optional clock-in-p)
+                           &key
+                           template
+                           clock-in)
   (let ((mrk      (occ-obj-marker obj))
         (tsk      (occ-obj-tsk    obj))
         (ctx      (occ-obj-ctx    obj))
-        (template (occ-capture+-helm-select-template)))
+        (template (or template
+                      (occ-capture+-helm-select-template))))
     (when template
       (with-org-capture-run marker 'entry `(marker ,mrk) template '(:empty-lines 1)
         (let* ((tmp-tsk  (occ-make-tsk marker))
@@ -161,8 +172,17 @@
                (child-ctxual-tsk (occ-build-ctxual-tsk-with child-tsk ctx)))
           (when child-tsk
             (occ-induct-child tsk child-tsk)
-            (when clock-in-p
-                (occ-try-clock-in child-ctxual-tsk))))))))
+            (when clock-in
+              (occ-try-clock-in child-ctxual-tsk))))))))
+
+(cl-defmethod occ-capture ((obj null)
+                           &key
+                           template
+                           clock-in)
+  (let ((ctx-tsk (occ-match-select (occ-make-ctx-at-point))))
+    (occ-capture ctx-tsk
+                 :template template
+                 :clock-in clock-in)))
 
 
 (cl-defgeneric occ-procreate-child (obj)
@@ -236,18 +256,24 @@
        (error "Capture abort: %s" error)))) t)
 
 
-(cl-defmethod occ-fast-procreate-child ((obj occ-obj-ctx-tsk))
-  (let ((tsk        (occ-obj-tsk obj))
-        (ctx        (occ-obj-ctx obj)))
+(cl-defmethod occ-tsk-txt ((obj occ-obj-ctx)
+                           (heading string))
+  "Build a task name description from OBJ occ-ctx")
+
+
+(cl-defmethod occ-fast-procreate-child ((heading string))
+  (let ((ctx        (occ-obj-ctx obj)))
     (if (not (occ-unnamed-p tsk))
-        (occ-capture obj helm-current-prefix-arg)
+        (occ-capture nil
+                     :template (occ-tsk-txt ctx heading)
+                     :clock-in helm-current-prefix-arg)
       (let ((title (occ-title obj 'captilize)))
         (error "%s is unnamed %s so can not create child "
                (occ-format obj 'captilize)
                title
                title)))))
 
-(cl-defmethod occ-fast-procreate-anonymous-child ((obj occ-obj-ctx-tsk))
+(cl-defmethod occ-fast-procreate-anonymous-child ((heading string))
   (let ((tsk        (occ-obj-tsk obj))
         (ctx        (occ-obj-ctx obj)))
     (if (not (occ-unnamed-p tsk))
@@ -263,10 +289,12 @@
   "occ-child-clock-in")
 
 (cl-defmethod occ-procreate-child-clock-in ((obj marker))
-  (occ-capture obj t))
+  (occ-capture obj
+               :clock-in t))
 
 (cl-defmethod occ-procreate-child-clock-in ((obj occ-obj-tsk))
-  (occ-capture obj t))
+  (occ-capture obj
+               :clock-in t))
 
 
 (defun occ-confirm (fn new)

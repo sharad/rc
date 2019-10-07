@@ -27,22 +27,22 @@
 (provide 'occ-helm-method)
 
 
-(defvar occ-helm-map
-  (let ((map (make-sparse-keymap)))
-    (set-keymap-parent map helm-map)
-    ;; (define-key map (kbd "RET")           'helm-ff-RET)
-    (define-key map (kbd "C-]")           'helm-ff-run-toggle-basename)
-    (define-key map (kbd "S-RET")         'occ-helm-run-child-clock-in)
-    (helm-define-key-with-subkeys map
-      '((kbd "DEL") ?\d 'helm-ff-delete-char-backward
-        (C-backspace . helm-ff-run-toggle-auto-update)
-        ([C-c DEL] . helm-ff-run-toggle-auto-update
-         nil 'helm-ff-delete-char-backward--exit-fn)))
-    (when helm-ff-lynx-style-map
-      (define-key map (kbd "<left>")      'helm-find-files-up-one-level)
-      (define-key map (kbd "<right>")     'helm-execute-persistent-action))
-    (delq nil map))
-  "Keymap for `helm-find-files'.")
+;; (defvar occ-helm-map
+;;   (let ((map (make-sparse-keymap)))
+;;     (set-keymap-parent map helm-map)
+;;     ;; (define-key map (kbd "RET")           'helm-ff-RET)
+;;     (define-key map (kbd "C-]")           'helm-ff-run-toggle-basename)
+;;     (define-key map (kbd "S-RET")         'occ-helm-run-child-clock-in)
+;;     (helm-define-key-with-subkeys map
+;;       '((kbd "DEL") ?\d 'helm-ff-delete-char-backward
+;;         (C-backspace . helm-ff-run-toggle-auto-update)
+;;         ([C-c DEL] . helm-ff-run-toggle-auto-update
+;;          nil 'helm-ff-delete-char-backward--exit-fn)))
+;;     (when helm-ff-lynx-style-map
+;;       (define-key map (kbd "<left>")      'helm-find-files-up-one-level)
+;;       (define-key map (kbd "<right>")     'helm-execute-persistent-action))
+;;     (delq nil map))
+;;   "Keymap for `helm-find-files'.")
 
 (defvar occ-helm-doc-header " (\\<helm-find-files-map>\\[helm-find-files-up-one-level]: Go up one level)"
   "*The doc that is inserted in the Name header of a find-files or dired source.")
@@ -137,27 +137,28 @@
                                      :builder            builder
                                      :action             action
                                      :action-transformer action-transformer)
-   (occ-helm-dummy-source "Create fast tsk"     #'occ-fast-procreate-child-clock-in)
-   (occ-helm-dummy-source "Create template tsk" #'occ-procreate-child-clock-in)))
+   (occ-helm-dummy-source "Create"             #'occ-fast-procreate-child-clock-in)
+   (occ-helm-dummy-source "Create Anonymous"   #'occ-fast-procreate-anonymous-child)
+   (occ-helm-dummy-source "Create by Template" #'occ-procreate-child-clock-in)))
 
 
-(cl-defmethod occ-helm-select ((obj occ-ctx)
-                               &key
-                               filters
-                               builder
-                               return-transform
-                               action
-                               action-transformer
-                               timeout)
-  (let ((ctx-tsk (occ-select obj
-                             :filters            filters
-                             :builder            builder
-                             :return-transform   return-transform
-                             :action             action
-                             :action-transformer action-transformer
-                             :timeout            timeout)))
-    (occ-debug :debug "Selected ctxual-tsk %s" (occ-format ctx-tsk 'capitalize))
-    ctx-tsk))
+;; (cl-defmethod occ-helm-select ((obj occ-ctx)
+;;                                &key
+;;                                filters
+;;                                builder
+;;                                return-transform
+;;                                action
+;;                                action-transformer
+;;                                timeout)
+;;   (let ((ctx-tsk (occ-select obj
+;;                              :filters            filters
+;;                              :builder            builder
+;;                              :return-transform   return-transform
+;;                              :action             action
+;;                              :action-transformer action-transformer
+;;                              :timeout            timeout)))
+;;     (occ-debug :debug "Selected ctxual-tsk %s" (occ-format ctx-tsk 'capitalize))
+;;     ctx-tsk))
 
 
 (defun occ-helm-select-XYZ (obj
