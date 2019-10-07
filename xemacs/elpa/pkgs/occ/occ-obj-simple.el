@@ -65,22 +65,20 @@
   "occ-goto")
 
 (cl-defmethod occ-goto ((obj marker))
-  (progn
-    (switch-to-buffer (marker-buffer obj))
-    ;; TODO find about "org-overview"
-    ;; https://stackoverflow.com/questions/25161792/emacs-org-mode-how-can-i-fold-everything-but-the-current-headline
-    ;; https://emacs.stackexchange.com/questions/26827/test-whether-org-mode-heading-or-list-is-folded
-    ;; https://github.com/facetframer/orgnav
-    ;; https://stackoverflow.com/questions/6198339/show-org-mode-outline-up-to-a-certain-heading-level
-    ;; (outline-show-all)
-    (org-content 10)
-    (goto-char obj)))
+  (switch-to-buffer (marker-buffer obj))
+  ;; TODO find about "org-overview"
+  ;; https://stackoverflow.com/questions/25161792/emacs-org-mode-how-can-i-fold-everything-but-the-current-headline
+  ;; https://emacs.stackexchange.com/questions/26827/test-whether-org-mode-heading-or-list-is-folded
+  ;; https://github.com/facetframer/orgnav
+  ;; https://stackoverflow.com/questions/6198339/show-org-mode-outline-up-to-a-certain-heading-level
+  ;; (outline-show-all)
+  (org-content 10)
+  (goto-char obj))
 
 (cl-defmethod occ-goto ((obj occ-obj-tsk))
   (let ((mrk (occ-obj-marker obj)))
-    (if (and
-         (markerp mrk)
-         (marker-buffer mrk))
+    (if (and (markerp mrk)
+             (marker-buffer mrk))
         (occ-goto mrk)
       (error "marker %s invalid." mrk))))
 
@@ -89,39 +87,34 @@
   "occ-set-to")
 
 (cl-defmethod occ-set-to ((obj marker))
-  (progn
-    (set-buffer (marker-buffer obj))
-    ;; TODO find about "org-overview"
-    ;; https://stackoverflow.com/questions/25161792/emacs-org-mode-how-can-i-fold-everything-but-the-current-headline
-    ;; https://emacs.stackexchange.com/questions/26827/test-whether-org-mode-heading-or-list-is-folded
-    ;; https://github.com/facetframer/orgnav
-    ;; https://stackoverflow.com/questions/6198339/show-org-mode-outline-up-to-a-certain-heading-level
-    ;; (outline-show-all)
-    ;; (org-content 10)
-    (goto-char obj)))
+  (set-buffer (marker-buffer obj))
+  ;; TODO find about "org-overview"
+  ;; https://stackoverflow.com/questions/25161792/emacs-org-mode-how-can-i-fold-everything-but-the-current-headline
+  ;; https://emacs.stackexchange.com/questions/26827/test-whether-org-mode-heading-or-list-is-folded
+  ;; https://github.com/facetframer/orgnav
+  ;; https://stackoverflow.com/questions/6198339/show-org-mode-outline-up-to-a-certain-heading-level
+  ;; (outline-show-all)
+  ;; (org-content 10)
+  (goto-char obj))
 
 (cl-defmethod occ-set-to ((obj occ-obj-tsk))
   (let ((mrk (occ-obj-marker obj)))
-    (if (and
-         (markerp mrk)
-         (marker-buffer mrk))
+    (if (and (markerp mrk)
+             (marker-buffer mrk))
         (occ-set-to mrk)
       (error "marker %s invalid." mrk))))
-
 
 
-(cl-defmethod occ-induct-child ((obj occ-tree-tsk)
+(cl-defmethod occ-induct-child ((obj   occ-tree-tsk)
                                 (child occ-tree-tsk))
   (occ-set-property child 'subtree-level
                     (occ-get-property obj 'subtree-level))
   (occ-insert-node-after-element child obj
                                  (occ-tree-collection-list (occ-collection-object)))
-  (setf
-   (occ-tree-tsk-subtree obj) (nconc
-                               (occ-tree-tsk-subtree obj)
-                               (list  child))))
+  (setf (occ-tree-tsk-subtree obj) (nconc (occ-tree-tsk-subtree obj)
+                                          (list  child))))
 
-(cl-defmethod occ-induct-child ((obj occ-list-tsk)
+(cl-defmethod occ-induct-child ((obj   occ-list-tsk)
                                 (child occ-list-tsk))
   (occ-set-property child 'subtree-level
                     (occ-get-property obj 'subtree-level))
@@ -151,7 +144,8 @@
                            clock-in)
   (let ((mrk (occ-tsk-marker obj)))
     (occ-capture mrk
-                 :clock-in clock-in)))
+                 :clock-in clock-in
+                 :template template)))
 
 (cl-defmethod occ-capture ((obj occ-obj-ctx-tsk)
                            &key
@@ -188,54 +182,55 @@
 (cl-defgeneric occ-procreate-child (obj)
   "occ-child")
 
-(cl-defmethod occ-procreate-child ((obj marker))
+(cl-defmethod occ-procreate-child ((obj marker)
+                                   &key
+                                   template
+                                   clock-in)
   (if (not (occ-unnamed-p obj))
-      (occ-capture obj helm-current-prefix-arg)
+      (occ-capture obj
+                   :clock-in clock-in ;; helm-current-prefix-arg
+                   :template template)
     (let ((title (occ-title obj 'captilize)))
      (error "%s is unnamed %s so can not create child "
            (occ-format obj 'captilize)
            title
            title))))
 
-(cl-defmethod occ-procreate-child ((obj occ-obj-tsk))
+(cl-defmethod occ-procreate-child ((obj occ-obj-tsk)
+                                   &key
+                                   template
+                                   clock-in)
   (if (not (occ-unnamed-p obj))
-      (occ-capture obj helm-current-prefix-arg)
+      (occ-capture obj
+                   :clock-in clock-in ;; helm-current-prefix-arg
+                   :template template)
     (let ((title (occ-title obj 'captilize)))
       (error "%s is unnamed %s so can not create child "
              (occ-format obj 'captilize)
              title
              title))))
-
-;; (cl-defmethod occ-procreate-child ((obj occ-obj-ctx-tsk))
-;;   (if (not (occ-unnamed-p obj))
-;;       (occ-capture obj helm-current-prefix-arg)
-;;     (let ((title (occ-title obj 'captilize)))
-;;       (error "%s is unnamed %s so can not create child "
-;;              (occ-format obj 'captilize)
-;;              title
-;;              title))))
 
 
 (defun sacha/org-capture-prefill-template (template &rest values)
   "Pre-fill TEMPLATE with VALUES."
-  (setq template (or template (org-capture-get :template)))
-  (with-temp-buffer
-    (insert template)
-    (goto-char (point-min))
-    (while (re-search-forward
-            (concat "%\\("
-                    "\\[\\(.+\\)\\]\\|"
-                    "<\\([^>\n]+\\)>\\|"
-                    "\\([tTuUaliAcxkKInfF]\\)\\|"
-                    "\\(:[-a-zA-Z]+\\)\\|"
-                    "\\^\\({\\([^}]*\\)}\\)"
-                    "?\\([gGtTuUCLp]\\)?\\|"
-                    "%\\\\\\([1-9][0-9]*\\)"
-                    "\\)") nil t)
-      (if (car values)
-          (replace-match (car values) nil t))
-      (setq values (cdr values)))
-    (buffer-string)))
+  (let ((template (or template)))
+   (with-temp-buffer
+     (insert template)
+     (goto-char (point-min))
+     (while (re-search-forward
+             (concat "%\\("
+                     "\\[\\(.+\\)\\]\\|"
+                     "<\\([^>\n]+\\)>\\|"
+                     "\\([tTuUaliAcxkKInfF]\\)\\|"
+                     "\\(:[-a-zA-Z]+\\)\\|"
+                     "\\^\\({\\([^}]*\\)}\\)"
+                     "?\\([gGtTuUCLp]\\)?\\|"
+                     "%\\\\\\([1-9][0-9]*\\)"
+                     "\\)") nil t)
+       (if (car values)
+           (replace-match (car values) nil t))
+       (setq values (cdr values)))
+     (buffer-string))))
 
 (defun sacha/helm-org-create-task (candidate)
   (let ((entry (org-capture-select-template "T")))
@@ -258,31 +253,27 @@
 
 (cl-defmethod occ-tsk-txt ((obj occ-obj-ctx)
                            (heading string))
-  "Build a task name description from OBJ occ-ctx")
+  "Build a task name description from OBJ occ-ctx"
+  (concat "* " heading "\n"))
 
 
-(cl-defmethod occ-fast-procreate-child ((heading string))
-  (let ((ctx        (occ-obj-ctx obj)))
-    (if (not (occ-unnamed-p tsk))
-        (occ-capture nil
-                     :template (occ-tsk-txt ctx heading)
-                     :clock-in helm-current-prefix-arg)
-      (let ((title (occ-title obj 'captilize)))
-        (error "%s is unnamed %s so can not create child "
-               (occ-format obj 'captilize)
-               title
-               title)))))
+(cl-defmethod occ-fast-procreate-child ((heading string)
+                                        &key
+                                        template
+                                        clock-in)
+  (let ((ctx (occ-make-ctx-at-point)))
+    (occ-capture nil
+                 :clock-in clock-in ;; helm-current-prefix-arg
+                 :template (occ-tsk-txt ctx heading))))
 
-(cl-defmethod occ-fast-procreate-anonymous-child ((heading string))
-  (let ((tsk        (occ-obj-tsk obj))
-        (ctx        (occ-obj-ctx obj)))
-    (if (not (occ-unnamed-p tsk))
-        (occ-capture obj helm-current-prefix-arg)
-      (let ((title (occ-title obj 'captilize)))
-        (error "%s is unnamed %s so can not create child "
-               (occ-format obj 'captilize)
-               title
-               title)))))
+(cl-defmethod occ-fast-procreate-anonymous-child ((heading string)
+                                                  &key
+                                                  template
+                                                  clock-in)
+  (let ((ctx (occ-make-ctx-at-point)))
+    (occ-capture nil
+                 :clock-in clock-in ;; helm-current-prefix-arg
+                 :template (occ-tsk-txt ctx heading))))
 
 
 (cl-defgeneric occ-procreate-child-clock-in (obj)

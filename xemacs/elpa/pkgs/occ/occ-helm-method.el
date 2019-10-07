@@ -137,28 +137,9 @@
                                      :builder            builder
                                      :action             action
                                      :action-transformer action-transformer)
-   (occ-helm-dummy-source "Create"             #'occ-fast-procreate-child-clock-in)
+   (occ-helm-dummy-source "Create"             #'occ-fast-procreate-child)
    (occ-helm-dummy-source "Create Anonymous"   #'occ-fast-procreate-anonymous-child)
    (occ-helm-dummy-source "Create by Template" #'occ-procreate-child-clock-in)))
-
-
-;; (cl-defmethod occ-helm-select ((obj occ-ctx)
-;;                                &key
-;;                                filters
-;;                                builder
-;;                                return-transform
-;;                                action
-;;                                action-transformer
-;;                                timeout)
-;;   (let ((ctx-tsk (occ-select obj
-;;                              :filters            filters
-;;                              :builder            builder
-;;                              :return-transform   return-transform
-;;                              :action             action
-;;                              :action-transformer action-transformer
-;;                              :timeout            timeout)))
-;;     (occ-debug :debug "Selected ctxual-tsk %s" (occ-format ctx-tsk 'capitalize))
-;;     ctx-tsk))
 
 
 (defun occ-helm-select-XYZ (obj

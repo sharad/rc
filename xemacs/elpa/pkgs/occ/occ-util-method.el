@@ -28,35 +28,35 @@
 
 
 ;;;###autoload
-(cl-defmethod occ-match-select ((obj occ-obj-ctx-tsk))
+(cl-defmethod occ-match-select ((obj occ-obj-ctx))
   (let ((filters            (occ-match-filters))
         (builder            #'occ-build-ctxual-tsk-with)
         (action             (occ-get-helm-actions-tree obj '(t actions general edit)))
         (action-transformer #'(lambda (action candidate)
                                 (occ-get-helm-actions-tree obj '(t actions general edit))))
         (timeout            occ-idle-timeout))
-   (occ-helm-select ctx
+   (occ-helm-select obj
                     :filters            filters
                     :builder            builder
                     :action             action
                     :action-transformer action-transformer
                     :timeout            timeout)))
 
-(cl-defmethod occ-list-select ((obj occ-obj-ctx-tsk))
+(cl-defmethod occ-list-select ((obj occ-obj-ctx))
   (let ((filters            (occ-list-filters))
         (builder            #'occ-build-ctsk-with)
         (action             (occ-get-helm-actions-tree obj '(t actions general edit)))
         (action-transformer #'(lambda (action candidate)
                                 (occ-get-helm-actions-tree obj '(t actions general edit))))
         (timeout            occ-idle-timeout))
-   (occ-select ctx
+   (occ-select obj
                :filters            filters
                :builder            builder
                :action             action
                :action-transformer action-transformer
                :timeout            timeout)))
 
-(cl-defmethod occ-list-debug-select ((obj occ-obj-ctx-tsk))
+(cl-defmethod occ-list-debug-select ((obj occ-obj-ctx))
   (let ((filters            (occ-list-filters))
         (builder            #'occ-build-ctsk-with)
         (action             (occ-get-helm-actions-tree obj '(t actions general edit)))
@@ -64,7 +64,7 @@
         (action-transformer #'(lambda (action candidate)
                                 (occ-get-helm-actions-tree obj '(t actions general edit))))
         (timeout            occ-idle-timeout))
-    (let ((retval-ctx-tsk (occ-select ctx
+    (let ((retval-ctx-tsk (occ-select obj
                                       :filters            filters
                                       :builder            builder
                                       :return-transform   return-transform
@@ -75,22 +75,21 @@
                         retval-ctx-tsk
                         (occ-format (occ-return-get-value retval-ctx-tsk) 'capitalize)
                         (occ-return-get-label retval-ctx-tsk))
-      (if (and
-           (occ-return-in-labels-p retval-ctx-tsk occ-return-select-label)
-           (occ-return-get-value retval-ctx-tsk))
+      (if (and (occ-return-in-labels-p retval-ctx-tsk occ-return-select-label)
+               (occ-return-get-value retval-ctx-tsk))
           (let ((ctsk     (occ-return-get-value retval-ctx-tsk))
                 (launcher (cdr (assoc (completing-read "Action: " action) action))))
             (funcall launcher ctsk))
         (occ-debug-uncond "occ-helm-list-debug-select((obj occ-ctx)): No selection")))))
 
-(cl-defmethod occ-list-launch ((obj occ-obj-ctx-tsk))
+(cl-defmethod occ-list-launch ((obj occ-obj-ctx))
   (let ((filters            (occ-list-filters))
         (builder            #'occ-build-ctsk-with)
         (return-transform   t)
         (action             (occ-get-helm-actions-tree obj '(t actions general edit)))
         (action-transformer (occ-get-helm-actions-tree-genertator obj '(t actions general edit)))
         (timeout            occ-idle-timeout))
-    (let ((retval-ctx-tsk (occ-select ctx
+    (let ((retval-ctx-tsk (occ-select obj
                                       :filters            filters
                                       :builder            builder
                                       :return-transform   return-transform

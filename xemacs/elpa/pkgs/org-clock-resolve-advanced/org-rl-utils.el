@@ -135,11 +135,9 @@
 
 
 (defun time-p (time)
-  (or
-   (eq 'now time)
-   (and
-    (consp time)
-    (nth 1 time))))
+  (or (eq 'now time)
+      (and (consp time)
+           (nth 1 time))))
 
 (defun time-eq (time1 time2)
   (< (abs (time-to-seconds (time-subtract time1 time2))) 60))

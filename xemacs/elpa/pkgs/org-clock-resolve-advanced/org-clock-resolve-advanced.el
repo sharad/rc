@@ -67,36 +67,36 @@ so long."
                (time-to-seconds (time-subtract (current-time) org-clock-last-idle-start-time)))
            (org-user-idle-seconds))
           ;; (org-rl-debug nil "(org-user-idle-seconds) %s" (org-user-idle-seconds))
-          (when (and
-                 org-clock-idle-time
-                 (not org-clock-resolving-clocks)
-                 org-clock-marker
-                 (marker-buffer org-clock-marker))
+          (when (and org-clock-idle-time
+                     (not org-clock-resolving-clocks)
+                     org-clock-marker
+                     (marker-buffer org-clock-marker))
             (org-rl-debug nil
-             "org-rl-resolve-clocks-if-idle: pass2 org-clock-last-idle-start-time: %s, (org-user-idle-seconds) %s"
-             (if org-clock-last-idle-start-time
-                 (time-to-seconds (time-subtract (current-time) org-clock-last-idle-start-time)))
-             (org-user-idle-seconds))
-            (let* ((org-clock-user-idle-seconds
-                    (if org-clock-last-idle-start-time
-                        (time-to-seconds
-                         (time-subtract (current-time) org-clock-last-idle-start-time))
-                      (org-user-idle-seconds)))
-                   (org-clock-user-idle-start
-                    (time-subtract (current-time)
-                                   org-clock-user-idle-seconds))
+                          "org-rl-resolve-clocks-if-idle: pass2 org-clock-last-idle-start-time: %s, (org-user-idle-seconds) %s"
+                          (if org-clock-last-idle-start-time
+                              (time-to-seconds (time-subtract (current-time) org-clock-last-idle-start-time)))
+                          (org-user-idle-seconds))
+            (let* ((org-clock-user-idle-seconds (if org-clock-last-idle-start-time
+                                                    (time-to-seconds (time-subtract (current-time)
+                                                                                    org-clock-last-idle-start-time))
+                                                  (org-user-idle-seconds)))
+                   (org-clock-user-idle-start   (time-subtract (current-time) org-clock-user-idle-seconds))
                    (org-clock-resolving-clocks-due-to-idleness t))
 
               (setq org-clock-last-idle-start-time org-clock-user-idle-start)
 
+              (cl-assert (nth 1 org-clock-user-idle-start))
+
               (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
                   (funcall org-rl-clock-resolve-time
-                   (org-rl-make-clock org-clock-marker
-                                      org-clock-start-time
-                                      org-clock-user-idle-start
-                                      t) ;TODO: what important.
-                   (org-rl-make-clock nil 'now 'now)
-                   'ask nil nil)
+                           (org-rl-make-clock org-clock-marker
+                                              org-clock-start-time
+                                              org-clock-user-idle-start
+                                              t) ;TODO: what important.
+                           (org-rl-make-clock nil 'now 'now)
+                           'ask
+                           nil
+                           nil)
                 (org-rl-debug nil
                  "org-rl-resolve-clocks-if-idle: pass3 not calling resolve time org-clock-last-idle-start-time: %s, (org-user-idle-seconds) %s"
                  (if org-clock-last-idle-start-time
