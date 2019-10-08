@@ -42,11 +42,11 @@
     org-agenda
     ob-tangle
     publishing
-    (org-timer :location local)
-    (org-clock :location local)
-    (org2rem :location local)
-    (org-feed :location local)
-    org-git-link
+    (org-timer    :location local)
+    (org-clock    :location local)
+    (org2rem      :location local)
+    (org-feed     :location local)
+    (org-git-link :location local)
     worf
     orgnav
     ;; (orgstruct :location local)

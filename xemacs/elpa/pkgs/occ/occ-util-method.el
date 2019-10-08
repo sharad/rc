@@ -27,7 +27,6 @@
 (provide 'occ-util-method)
 
 
-;;;###autoload
 (cl-defmethod occ-match-select ((obj occ-obj-ctx))
   (let ((filters            (occ-match-filters))
         (builder            #'occ-build-ctxual-tsk-with)
@@ -35,12 +34,12 @@
         (action-transformer #'(lambda (action candidate)
                                 (occ-get-helm-actions-tree obj '(t actions general edit))))
         (timeout            occ-idle-timeout))
-   (occ-helm-select obj
-                    :filters            filters
-                    :builder            builder
-                    :action             action
-                    :action-transformer action-transformer
-                    :timeout            timeout)))
+    (occ-select obj
+                :filters            filters
+                :builder            builder
+                :action             action
+                :action-transformer action-transformer
+                :timeout            timeout)))
 
 (cl-defmethod occ-list-select ((obj occ-obj-ctx))
   (let ((filters            (occ-list-filters))

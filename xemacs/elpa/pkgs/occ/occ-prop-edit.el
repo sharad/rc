@@ -26,6 +26,9 @@
 (provide 'occ-prop-edit)
 
 
+(require 'time-stamp)
+
+
 (require 'timer-utils-lotus)
 (eval-when-compile
   (require 'timer-utils-lotus))

@@ -92,16 +92,18 @@
                  :resume 'noresume)))))
       (occ-debug :debug "Running occ-list-select-internal"))))
 
-(cl-defmethod occ-list-select ((obj occ-ctx)
-                               &key
-                               filters
-                               builder
-                               return-transform
-                               action
-                               action-transformer
-                               auto-select-if-only
-                               timeout)
-  (let ((action-transformer (or action-transformer (occ-get-helm-actions-tree-genertator obj '(t actions general edit))))
+(cl-defmethod occ-list-selection ((obj occ-ctx)
+                                  &key
+                                  filters
+                                  builder
+                                  return-transform
+                                  action
+                                  action-transformer
+                                  auto-select-if-only
+                                  timeout)
+  (let ((action-transformer (or action-transformer
+                                (occ-get-helm-actions-tree-genertator obj
+                                                                      '(t actions general edit))))
         (timeout            (or timeout occ-idle-timeout)))
     (helm-timed timeout (occ-helm-select-buffer)
       (occ-debug :debug "running occ-list-select")
@@ -116,9 +118,8 @@
                                                   :timeout             timeout)))
           (occ-debug :debug "occ-list-select: selected = %s" selected)
           (if return-transform
-              (or ;as return value is going to be used.
-               selected
-               (occ-make-return occ-return-quit-label selected))
+              (or selected ;as return value is going to be used.
+                  (occ-make-return occ-return-quit-label selected))
             selected))))))
 
 
@@ -147,14 +148,14 @@
         (timeout            (or timeout occ-idle-timeout)))
     (let* ((unfiltered-count      (occ-length)))
       (if (> unfiltered-count 0)
-          (let ((retval (occ-list-select obj
-                                         :filters             filters
-                                         :builder             builder
-                                         :return-transform    return-transform
-                                         :action              action
-                                         :action-transformer  action-transformer
-                                         :auto-select-if-only auto-select-if-only
-                                         :timeout             timeout)))
+          (let ((retval (occ-list-selection obj
+                                            :filters             filters
+                                            :builder             builder
+                                            :return-transform    return-transform
+                                            :action              action
+                                            :action-transformer  action-transformer
+                                            :auto-select-if-only auto-select-if-only
+                                            :timeout             timeout)))
             (occ-debug :debug "occ-select((obj occ-ctx)): occ-list-select returned %s"
                               (occ-format retval 'capitalize))
             retval)
