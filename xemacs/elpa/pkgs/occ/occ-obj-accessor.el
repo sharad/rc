@@ -433,11 +433,12 @@ pointing to it."
 (cl-defmethod occ-collection-obj-list ((collection occ-collection)
                                        (obj occ-ctx)
                                        &key
-                                       builder)
+                                       builder
+                                       obtrusive)
   "return CTSKs list"
   (let ((builder (or builder #'occ-build-ctsk-with)))
     (let ((ctsks
-            (occ-run-unobtrusively
+           (occ-run-unobtrusively obtrusive
               (let ((tsks (occ-collect-list collection))) ;;????TODO
                 (when tsks
                   (mapcar #'(lambda (tsk) (funcall builder tsk obj))
@@ -451,7 +452,8 @@ pointing to it."
 (cl-defmethod occ-collection-obj-list ((collection occ-collection)
                                        (obj occ-ctx)
                                        &key
-                                       builder)
+                                       builder
+                                       obtrusive)
   "return CTSKs list"
   (let ((builder (or builder #'occ-build-ctsk-with)))
     (let ((ctsks
@@ -466,33 +468,41 @@ pointing to it."
 
 (cl-defmethod occ-collection-obj-list ((collection occ-collection)
                                        (obj null)
-                                       &key builder)
+                                       &key
+                                       builder
+                                       obtrusive)
   "return CTSKs list"
   (occ-collection-obj-list collection
                            (occ-make-ctx-at-point)
-                           :builder builder))
+                           :builder   builder
+                           :obtrusive obtrusive))
 
 
 ;; http://sachachua.com/blog/2015/03/getting-helm-org-refile-clock-create-tasks/
 
 (cl-defgeneric occ-list (obj
                          &key
-                         builder)
+                         builder
+                         obtrusive)
   "occ-list")
 
 (cl-defmethod occ-list ((obj occ-ctx)
                         &key
-                        builder)
+                        builder
+                        obtrusive)
   "return CTXUAL-TSKs container"
   (occ-collection-obj-list (occ-collection-object)
                            obj
-                           :builder builder))
+                           :builder builder
+                           :obtrusive obtrusive))
 
 (cl-defmethod occ-list ((obj null)
-                        &key builder)
+                        &key builder
+                        obtrusive)
   "return TSKs container"
   (occ-list (occ-make-ctx-at-point)
-            :builder builder))
+            :builder   builder
+            :obtrusive obtrusive))
 
 (cl-defmethod occ-length ()
   (length (occ-collect-list (occ-collection-object))))

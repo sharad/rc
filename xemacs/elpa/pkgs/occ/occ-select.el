@@ -51,7 +51,8 @@
                                         action
                                         action-transformer
                                         auto-select-if-only
-                                        timeout)
+                                        timeout
+                                        obtrusive)
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
   (lotus-with-no-active-minibuffer-if
       (progn
@@ -65,7 +66,7 @@
               (timeout             (or timeout
                                        occ-idle-timeout)))
 
-          (let* ((candidates-unfiltered (occ-list obj :builder builder))
+          (let* ((candidates-unfiltered (occ-list obj :builder builder :obtrusive obtrusive))
                  (unfiltered-count      (length candidates-unfiltered))
                  (candidates-filtered   (occ-filter obj
                                                     filters
@@ -100,7 +101,8 @@
                                   action
                                   action-transformer
                                   auto-select-if-only
-                                  timeout)
+                                  timeout
+                                  obtrusive)
   (let ((action-transformer (or action-transformer
                                 (occ-get-helm-actions-tree-genertator obj
                                                                       '(t actions general edit))))
@@ -115,7 +117,8 @@
                                                   :action              action
                                                   :action-transformer  action-transformer
                                                   :auto-select-if-only auto-select-if-only
-                                                  :timeout             timeout)))
+                                                  :timeout             timeout
+                                                  :obtrusive           obtrusive)))
           (occ-debug :debug "occ-list-select: selected = %s" selected)
           (if return-transform
               (or selected ;as return value is going to be used.
@@ -139,7 +142,8 @@
                           action
                           action-transformer
                           auto-select-if-only
-                          timeout)
+                          timeout
+                          obtrusive)
   "return interactively selected TSK or NIL"
   (unless builder (error "Builder can not be nil"))
   (occ-debug :debug "occ-select((obj occ-ctx)): begin")
@@ -155,7 +159,8 @@
                                             :action              action
                                             :action-transformer  action-transformer
                                             :auto-select-if-only auto-select-if-only
-                                            :timeout             timeout)))
+                                            :timeout             timeout
+                                            :obtrusive           obtrusive)))
             (occ-debug :debug "occ-select((obj occ-ctx)): occ-list-select returned %s"
                               (occ-format retval 'capitalize))
             retval)
@@ -173,7 +178,8 @@
                           action
                           action-transformer
                           auto-select-if-only
-                          timeout)
+                          timeout
+                          obtrusive)
   (occ-debug :debug "occ-select((obj null)): begin")
   (let ((retval (occ-select (occ-make-ctx-at-point)
                             :filters             filters
@@ -182,7 +188,8 @@
                             :action              action
                             :action-transformer  action-transformer
                             :auto-select-if-only auto-select-if-only
-                            :timeout             timeout)))
+                            :timeout             timeout
+                            :obtrusive           obtrusive)))
     (occ-debug :debug "occ-select((obj null)): occ-select((obj occ-ctx)) returned %s"
                       (occ-format retval 'capitalize))
     retval))

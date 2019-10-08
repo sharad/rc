@@ -2,6 +2,7 @@
 
 ;; Copyright (C) 2019  s
 
+
 ;; Author: s <sh4r4d@gmail.com>
 ;; Keywords: convenience
 
@@ -27,7 +28,9 @@
 (provide 'occ-util-method)
 
 
-(cl-defmethod occ-match-select ((obj occ-obj-ctx))
+(cl-defmethod occ-match-select ((obj occ-obj-ctx)
+                                &key
+                                obtrusive)
   (let ((filters            (occ-match-filters))
         (builder            #'occ-build-ctxual-tsk-with)
         (action             (occ-get-helm-actions-tree obj '(t actions general edit)))
@@ -39,9 +42,12 @@
                 :builder            builder
                 :action             action
                 :action-transformer action-transformer
-                :timeout            timeout)))
+                :timeout            timeout
+                :obtrusive          obtrusive)))
 
-(cl-defmethod occ-list-select ((obj occ-obj-ctx))
+(cl-defmethod occ-list-select ((obj occ-obj-ctx)
+                               &key
+                               obtrusive)
   (let ((filters            (occ-list-filters))
         (builder            #'occ-build-ctsk-with)
         (action             (occ-get-helm-actions-tree obj '(t actions general edit)))
@@ -53,9 +59,12 @@
                :builder            builder
                :action             action
                :action-transformer action-transformer
-               :timeout            timeout)))
+               :timeout            timeout
+               :obtrusive          obtrusive)))
 
-(cl-defmethod occ-list-debug-select ((obj occ-obj-ctx))
+(cl-defmethod occ-list-debug-select ((obj occ-obj-ctx)
+                                     &key
+                                     obtrusive)
   (let ((filters            (occ-list-filters))
         (builder            #'occ-build-ctsk-with)
         (action             (occ-get-helm-actions-tree obj '(t actions general edit)))
@@ -69,7 +78,8 @@
                                       :return-transform   return-transform
                                       :action             action
                                       :action-transformer action-transformer
-                                      :timeout            timeout)))
+                                      :timeout            timeout
+                                      :obtrusive          obtrusive)))
       (occ-debug-uncond "occ-helm-list-debug-select((obj occ-ctx)): selected original: %s, retval: %s with label %s"
                         retval-ctx-tsk
                         (occ-format (occ-return-get-value retval-ctx-tsk) 'capitalize)
@@ -81,7 +91,9 @@
             (funcall launcher ctsk))
         (occ-debug-uncond "occ-helm-list-debug-select((obj occ-ctx)): No selection")))))
 
-(cl-defmethod occ-list-launch ((obj occ-obj-ctx))
+(cl-defmethod occ-list-launch ((obj occ-obj-ctx)
+                               &key
+                               obtrusive)
   (let ((filters            (occ-list-filters))
         (builder            #'occ-build-ctsk-with)
         (return-transform   t)
@@ -94,7 +106,8 @@
                                       :return-transform   return-transform
                                       :action             action
                                       :action-transformer action-transformer
-                                      :timeout            timeout)))
+                                      :timeout            timeout
+                                      :obtrusive          obtrusive)))
        (occ-debug-uncond "occ-helm-list-debug-select((obj occ-ctx)): selected original: %s, retval: %s with label %s"
                          retval-ctx-tsk
                          (occ-format (occ-return-get-value retval-ctx-tsk) 'capitalize)

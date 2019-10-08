@@ -173,7 +173,8 @@
                            &key
                            template
                            clock-in)
-  (let ((ctx-tsk (occ-match-select (occ-make-ctx-at-point))))
+  (let ((ctx-tsk (occ-list-select (occ-make-ctx-at-point)
+                                  :obtrusive t)))
     (occ-capture ctx-tsk
                  :template template
                  :clock-in clock-in)))

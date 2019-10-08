@@ -209,16 +209,18 @@
             list)))))
 
 
-(defmacro occ-run-unobtrusively (&rest body)
-  `(if (called-interactively-p 'any)
+(defmacro occ-run-unobtrusively (obtrusive &rest body)
+  `(if (or obtrusive
+           (called-interactively-p 'any))
        (progn
          ,@body)
      (while-no-input
       (redisplay)
       ,@body)))
 
-(defmacro occ-run-unobtrusively (&rest body)
-  `(if (called-interactively-p 'any)
+(defmacro occ-run-unobtrusively (obtrusive &rest body)
+  `(if (or obtrusive
+           (called-interactively-p 'any))
        (progn ,@body)
     (let ((retval (while-no-input
                    (redisplay)
