@@ -39,6 +39,18 @@
 (defvar occ-debug-uncond nil "occ-debug-uncond")
 
 
+
+;; DEPENDENCY remove it.
+(defun dirname-of-file (file &optional final-slash)
+  ;; (ido-no-final-slash
+  (if final-slash
+      (expand-file-name
+       (file-name-directory file))
+    (directory-file-name
+     (expand-file-name
+      (file-name-directory file)))))
+
+
 ;;;###autoload
 (defun occ-enable-debug ()
   (interactive)
