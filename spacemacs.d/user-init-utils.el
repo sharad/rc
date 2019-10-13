@@ -275,6 +275,7 @@
     vim-empty-lines
     vinegar
     wakatime
+    window-purpose
     ))
 
 (defun spacemacs-dist-layers-include ()
