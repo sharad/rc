@@ -84,7 +84,7 @@ DEB_SYS_PKG1="duc baobab agedu tpb daemontools sysstat isag dos2unix powermanage
 DEB_SYS_MAIL="dovecot-core dovecot-imapd mail-stack-delivery ntpdate postfix augeas-tools augeas-lenses notmuch muchsync notmuch-addrlookup notmuch-emacs afew ldap-utils bbdb3 elpa-lbdb lsdb mu-cite libfinance-quote-perl mail-notification"
 DEB_DEV_GTD="tomboy zim anki mnemosyne mnemosyne-blog sqlitebrowser"
 DEB_PKG_LEARNING="gpodder"
-DEB_PKG_TOOL_TERM="jq"
+DEB_PKG_TOOL_TERM="jq recutils"
 DEB_PKG_TOOL_GUI="lightdm osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin python-osd gpointing-device-settings touchfreeze bash-completion libinput-tools keynav feh geeqie wmaker xserver-xephyr xrootconsole tilda eterm" # xserver-xorg-input-synaptics
 DEB_PKG2_TOOL_GUI="unclutter xscreensaver xscreensaver-gl xss-lock rss-glx xssproxy xscreensaver-data-extra xscreensaver-gl-extra" # event
 DEB_PKG3_TOOL_GUI="synenergy quicksynenergy xserver-xorg-input-synaptics" # xserver-xorg-core-hwe-18.04 xserver-xorg-input-synaptics-hwe-18.04 # event
@@ -122,6 +122,7 @@ DEB_PKG_LANG_HASKELL="ghc alex happy haddock hlint"
 DEB_PKG_LANG_ERLANG="elixir esl-erlang"
 # https://askubuntu.com/questions/77657/how-to-enable-arabic-support-in-gnome-terminal
 DEB_PKG_LANGUAGE="dict dict-freedict-eng-hin bicon libfribidi0 libfribidi-dev"
+DEB_PKG_CLOUD_VM_TOOLS="cloud-init cloud-utils "
 
 PY_PIP_PKG="termdown "
 NODE_PKG="tern "
@@ -745,7 +746,8 @@ function setup_apt_packages()
         DEB_PKG_LANG_OCAML
         DEB_PKG_LANG_SMALLTALK
         DEB_PKG_LANG_SCHEME
-	DEB_PKG_LANGUAGE
+	      DEB_PKG_LANGUAGE
+        DEB_PKG_CLOUD_VM_TOOLS
     )
 
     for pkg in ${deb_pkg_lists[*]}

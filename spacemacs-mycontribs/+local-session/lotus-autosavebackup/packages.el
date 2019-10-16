@@ -80,23 +80,20 @@ Each entry is either:
 
 (defun lotus-autosavebackup/init-rcs-backup ()
   (use-package rcs-backup
+    :init
+    (use-package startup-hooks
       :defer t
-      :commands (rcs-backup-mode)
       :config
-      (progn
-        (rcs-backup-mode t)))
-
-  (progn
+      (add-to-enable-login-session-interrupting-feature-hook
+       '(lambda ()
+          (rcs-backup-mode t))
+       t))
+    :defer t
+    :commands (rcs-backup-mode)
+    :config
     (progn
-      (use-package startup-hooks
-        :defer t
-        :config
-        (progn
-          (progn
-            (add-to-enable-login-session-interrupting-feature-hook
-             '(lambda ()
-                (rcs-backup-mode t))
-             t)))))))
+      (rcs-backup-mode t))))
+
 
 (defun lotus-autosavebackup/init-files ()
   (use-package files
