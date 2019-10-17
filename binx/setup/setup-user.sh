@@ -113,7 +113,7 @@ DEB_PKG_MGM_PKG_MGM="wajig vrms"
 
 DEB_PKG_PROGRAMMING=" " # Iosevka
 DEB_PKG_ASSEMBLY="nasm yasm " # Iosevka
-DEB_PKG_LANG_LEARN="guile-2.2 guile-2.0 ocaml-interp gnu-smalltalk squeak-vm elixir"
+DEB_PKG_LANG_LEARN="guile-2.2 guile-2.0 guile-2.0-dev ocaml-interp gnu-smalltalk squeak-vm elixir"
 DEB_PKG_LANG_OCAML="ocaml-interp"
 DEB_PKG_LANG_SMALLTALK="gnu-smalltalk gnu-smalltalk-el gnu-smalltalk-browser"
 DEB_PKG_LANG_SCHEME="guile-2.2 guile-2.0 scsh"
