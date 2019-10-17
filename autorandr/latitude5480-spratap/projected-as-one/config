@@ -7,11 +7,13 @@ off
 output HDMI-3
 off
 output eDP-1
-mode 1920x1080
+gamma 1.0:0.833:0.769
+mode 800x600
 pos 0x0
 primary
-rate 60.01
+rate 60.32
 output DP-2
+gamma 1.0:0.833:0.769
 mode 800x600
 pos 0x0
 rate 60.32
