@@ -138,8 +138,7 @@ Each entry is either:
     :init
     (lotus-orgclocktask/init-lotus-utils-init)
     :config
-    ((lotus-orgclocktask/init-lotus-utils-config))))
-
+    (lotus-orgclocktask/init-lotus-utils-config)))
 
 (defun lotus-orgclocktask/init-org-clock-unnamed-task ()
   (use-package org-clock-unnamed-task

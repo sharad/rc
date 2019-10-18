@@ -32,6 +32,7 @@ typeset -UT INFOPATH infopath
 path=(
     ~/bin
     ~/.local/bin
+    ~/.cask/bin
     /usr/local/bin
     /usr/local/sbin
     /bin
