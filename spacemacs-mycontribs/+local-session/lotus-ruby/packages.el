@@ -37,8 +37,8 @@
 (defconst lotus-ruby-packages
   '(
     ;; (PACKAGE :location local)
-    ruby-mode
-    )
+    ruby-mode)
+    
   "The list of Lisp packages required by the lotus-ruby layer.
 
 Each entry is either:
@@ -94,13 +94,13 @@ with the result."
                          "end"
                          "#"
                          (lambda (arg) (ruby-end-of-block))
-                         nil
-                         ))
+                         nil))
+                         
           (hs-minor-mode t))
 
         (add-hook 'ruby-mode-hook
                   '(lambda ()
-                     (define-key ruby-mode-map "\M-q" 'jw-rb-fill-comment-region) ))
+                     (define-key ruby-mode-map "\M-q" 'jw-rb-fill-comment-region)))
 
         (add-hook 'ruby-mode-hook 'ruby-custom-setup)
 
@@ -115,8 +115,8 @@ with the result."
                                 (save-match-data
                                   (looking-at "^#!"))))
                             (shell-command (concat "chmod u+x " buffer-file-name))
-                            (message (concat "Saved as script: " buffer-file-name))
-                            ))))
+                            (message (concat "Saved as script: " buffer-file-name))))))
+                            
 
         ;JeffreyRadcliffe -- Here is a method which calls the interpreter on the entire buffer, putting the output in another window:
         (defun ruby-eval-buffer () (interactive)
@@ -151,7 +151,7 @@ with the result."
 
         ;; http://www.emacswiki.org/emacs/FlymakeRuby
         ;; http://github.com/purcell/emacs.d/blob/master/site-lisp/flymake-ruby/flymake-ruby.el
-        (require 'flymake-ruby nil nil)
+        ;; (require 'flymake-ruby nil nil)
 
 
         ;;{{ from: http://stackoverflow.com/questions/1282501/running-irb-in-emacs-via-run-ruby-echos-everything-i-type
@@ -165,15 +165,15 @@ with the result."
             (inf-ruby-keys)))
 
         ;; Register Ruby Mode Hook
-        (add-hook 'ruby-mode-hook 'my-ruby-mode-hook)
+        (add-hook 'ruby-mode-hook 'my-ruby-mode-hook)))))
         ;;}}
 
         ;; (deh-require-maybe rinari
         ;;   t)
-        )
+        
 
 
-      )))
+      
 
 ;; (defun lotus-ruby/init-PACKAGE ()
 ;;   (use-package PACKAGE

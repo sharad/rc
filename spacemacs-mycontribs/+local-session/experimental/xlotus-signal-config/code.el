@@ -26,16 +26,16 @@
 
 
 (defvar emacs-hang-load-file
-  (auto-config-file "hang/hang.el")
+  (lotus-cache-file "hang/hang.el")
   "emacs hang load file")
 
 (defun emacs-collect-states-and-log ()
   (interactive)
   (with-current-buffer "*Messages*"
-    (write-region nil t (auto-config-file "message/message.log")))
+    (write-region nil t (lotus-cache-file "message/message.log")))
   (backtrace-to-buffer "*CurrentBacktrace*")
   (with-current-buffer "*CurrentBacktrace*"
-    (write-region nil t (auto-config-file "backtrace/backtrace.log"))))
+    (write-region nil t (lotus-cache-file "backtrace/backtrace.log"))))
 
 (add-hook 'kill-emacs-hook 'emacs-collect-states-and-log)
 

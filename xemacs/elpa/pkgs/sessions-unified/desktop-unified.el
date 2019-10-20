@@ -108,7 +108,7 @@
 
 
 ;; (with-eval-after-load "desktop"
-;; (testing
+;; (when session-unified-debug
 ;; http://stackoverflow.com/questions/2703743/restore-emacs-session-desktop
 ;; (desktop-save-mode 1)
 ;; (desktop-read)
@@ -204,9 +204,9 @@ so returns nil if pid is nil."
 ;; (make-directory (expand-file-name "autoconfig/desktop/" user-emacs-directory) t)
 ;; (setq todoo-file-name (expand-file-name "autoconfig/desktop/" user-emacs-directory))
 
-(setq desktop-path (auto-config-file "desktop/"))
+(setq desktop-path (expand-file-name "desktop/" session-unified-dir))
 
-(setq desktop-dirname (auto-config-file "desktop/"))
+(setq desktop-dirname (expand-file-name "desktop/" session-unified-dir))
 
 (setq desktop-base-lock-name
       (concat
@@ -327,6 +327,7 @@ so returns nil if pid is nil."
 
 (defun desktop-vc-save (&optional desktop-save-filename)
   (interactive "Fdesktop file: ")
+  (make-session-unified-dir "desktop")
   (let* ((desktop-save-filename (or desktop-save-filename *desktop-save-filename*))
          (desktop-base-file-name (file-name-nondirectory desktop-save-filename)))
     (desktop-save (dirname-of-file desktop-save-filename))
@@ -606,9 +607,15 @@ en all buffer were creaed idly."
 
 ;; use session-restore to restore the desktop manually
 
+(defvar lotus-construct-desktop-filename-regex-function nil)
+
+(defun lotus-construct-desktop-filename-regex-function-default ()
+  (concat "^" (getenv "HOME") "/"
+          (file-name-nondirectory (directory-file-name session-unified-dir))
+          "/"  "desktop" "/emacs-desktop-" server-name))
 
 ;; (debug)
-
+
 ;;;###autoload
 (defun lotus-desktop-session-restore ()
   "Restore a saved emacs session."
@@ -624,7 +631,9 @@ en all buffer were creaed idly."
                   (flymake-run-in-place nil)
                   (show-error (called-interactively-p 'interactive))
                   (*constructed-name-desktop-save-filename*
-                   (concat "^" (getenv "HOME") "/.emacs.d/.cache/autoconfig/desktop/emacs-desktop-" server-name)))
+                   (if (functionp lotus-construct-desktop-filename-regex-function)
+                       (funcall lotus-construct-desktop-filename-regex-function)
+                     (lotus-construct-desktop-filename-regex-function-default))))
               (setq debug-on-error t)
               (funcall sessions-unified-utils-notify "lotus-desktop-session-restore" "entering lotus-desktop-session-restore")
 
@@ -718,7 +727,7 @@ en all buffer were creaed idly."
 
 ;; 'lotus-desktop-session-save)
 
-;; (testing
+;; (when session-unified-debug
 ;;  (remove-hook 'session-before-save-hook
 ;;               'my-desktop-save))
 

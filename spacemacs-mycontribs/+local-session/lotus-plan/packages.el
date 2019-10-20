@@ -336,7 +336,7 @@ instead of a string."
                 (setq
                  calendar-mark-diary-entries-flag t
                  ;;   mark-diary-entries-in-calendar t
-                 diary-file (auto-config-file "diary/diary"))
+                 diary-file (lotus-cache-file "diary/diary"))
                 (touch-file diary-file)))
 
           (use-package muse-wiki ;; Allow wiki-links
@@ -395,7 +395,7 @@ instead of a string."
                                 (with-eval-after-load "planner-registry"
                                   (progn
                                     (setq
-                                     planner-registry-file (auto-config-file "planner/planner-registry.el"))
+                                     planner-registry-file (lotus-cache-file "planner/planner-registry.el"))
                                     (unless (file-exists-p planner-registry-file)
                                       (auto-config-dir (dirname-of-file planner-registry-file) t))
                                     (save-excursion
@@ -433,7 +433,7 @@ instead of a string."
         (setq
          planner-id-add-task-id-flag t
          planner-id-update-automatically t ;; default
-         planner-id-tracking-file (auto-config-file "plan/planner-ids")))))
+         planner-id-tracking-file (lotus-cache-file "plan/planner-ids")))))
 
 (defun lotus-plan/init-planner-cyclic ()
   (use-package planner-cyclic
@@ -441,7 +441,7 @@ instead of a string."
       :config
       (progn
         (setq
-         planner-cyclic-diary-file (auto-config-file "plan/planner-cyclic-diary-file")
+         planner-cyclic-diary-file (lotus-cache-file "plan/planner-cyclic-diary-file")
          planner-cyclic-diary-nag t))))
 
 (defun lotus-plan/init-planner-deadline ()
@@ -598,7 +598,7 @@ instead of a string."
             :config
             (progn
               (setq
-               timeclock-file (convert-standard-filename (auto-config-file "timeclock/timelog")))))
+               timeclock-file (convert-standard-filename (lotus-cache-file "timeclock/timelog")))))
 
         (use-package planner-timeclock-summary
             :defer t
@@ -637,7 +637,7 @@ instead of a string."
           ;; planner-registry-insinuate some time create problem in daemon startup.
           ;; as it may start to ask input.
 
-          (setq planner-registry-file (auto-config-file "planner/planner-registry.el")))
+          (setq planner-registry-file (lotus-cache-file "planner/planner-registry.el")))
 
         (when nil
          (use-package startup-hooks

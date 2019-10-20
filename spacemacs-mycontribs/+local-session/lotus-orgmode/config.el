@@ -364,7 +364,7 @@
 (defun lotus-orgmode-config/post-init-org-agenda ()
   (progn
 
-    (require 'file-utils)
+    ;; (require 'file-utils)
 
     (setq org-agenda-custom-commands nil)
 
@@ -601,7 +601,7 @@
   (progn
     (setq
      ;; org-timer-default-timer 25
-     org-clock-persist-file  (auto-config-file "org/clock/org-clock-save.el")
+     org-clock-persist-file  (lotus-cache-file "org/clock/org-clock-save.el")
      org-log-note-clock-out t           ;excellent, great
      org-clock-clocked-in-display 'both ;; ('mode-line 'frame-title 'both)
      org-clock-idle-time 5 ;; minutes

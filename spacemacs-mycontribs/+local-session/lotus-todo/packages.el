@@ -94,7 +94,7 @@ Each entry is either:
     (progn
       ;; part of emacs-goodies-el
       ;; http://www.emacswiki.org/emacs/ToDoo
-      (setq todoo-file-name (auto-config-file "todoo/todo"))
+      (setq todoo-file-name (lotus-cache-file "todoo/todo"))
       (defun todoo-or-close-todoo()
         (interactive)
         (if (eq major-mode 'todoo-mode)
@@ -121,8 +121,8 @@ Each entry is either:
       ;; https://groups.google.com/forum/?fromgroups=#!msg/gnu.emacs.sources/7v7Wlnocr8o/bSUKTMEdL4QJ
 
       (setq
-       todo-file-do   (auto-config-file "todo-mode/todo-do")
-       todo-file-done (auto-config-file "todo-mode/todo-done")))))
+       todo-file-do   (lotus-cache-file "todo-mode/todo-do")
+       todo-file-done (lotus-cache-file "todo-mode/todo-done")))))
 
 (defun lotus-todo/init-todostack ()
   (use-package todostack
@@ -130,7 +130,7 @@ Each entry is either:
     :config
     (progn
       ;; beautiful
-      (setq todostack-save-file (auto-config-file "todostacksave/todostacksave.el"))
+      (setq todostack-save-file (lotus-cache-file "todostacksave/todostacksave.el"))
       (add-hook 'kill-emacs-hook        'todostack-save)
       (add-hook 'emacs-startup-hook     'todostack-load)
       (add-hook 'todostack-post-op-hook 'todostack-save))))

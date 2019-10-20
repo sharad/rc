@@ -58,26 +58,25 @@
 
 ;; (require 'dot-emacs-helper)
 
-(require 'general-testing)
+;; (require 'general-testing)
 ;; testing
 (require 'rcs-backup)
-
 (require 'cl)
 
 (eval-when-compile
   '(require 'cl))
 
-(require 'wrappers)
-(require 'basic-utils)
+;; (require 'wrappers)
+;; (require 'basic-utils)
 ;; run-at-time-or-now
-(require 'utils-custom)
+;; (require 'utils-custom)
 ;; lotus-read-sexp
-(require 'misc-utils)
+;; (require 'misc-utils)
 
 (require 'desktop)
 (require 'session)
 (require 'elscreen)
-(require 'emacs-panel)
+;; (require 'emacs-panel)
 
 ;; ;; BUG TODO
 ;; (require 'vc-config)

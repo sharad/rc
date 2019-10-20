@@ -28,11 +28,22 @@
 
 
 ;; import utils-custom.el also may things are there
+
+(defvar debug-info-directory "~/.debug-info/")
+
 (defvar emacs-hang-load-file
-  (auto-config-file "hang/hang.el")
+  (expand-file-name
+   "hang/hang.el" debug-info-directory)
   "emacs hang load file")
 
 
+(defun ensure-debug-info-directory (&optional path)
+  (make-directory
+   (if path
+       (expand-file-name path debug-info-directory)
+       debug-info-directory)
+   t))
+
 (defun backtrace-to-buffer (&optional buffer)
   ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Internals-of-Debugger.html
   (let ((buffer (or buffer (get-buffer-create "Test"))))
@@ -48,8 +59,8 @@
 ;; (defun emacs-collect-states-and-log ()
 ;;   (interactive)
 ;;   (let ((backtrace-buffer (get-buffer-create "*CurrentBacktrace*"))
-;;         (backtrace-file   (auto-config-file "backtrace/backtrace.log"))
-;;         (message-file     (auto-config-file "message/message.log")))
+;;         (backtrace-file   (expand-file-name "backtrace/backtrace.log"))
+;;         (message-file     (expand-file-name "message/message.log")))
 ;;     (message "(recursion-depth) = %d" (recursion-depth))
 ;;     (message "emacs-collect-states-and-log: taking backtrace in %s" backtrace-file)
 ;;     (message "emacs-collect-states-and-log: taking messages in %s"  message-file)
@@ -64,8 +75,10 @@
 (defun emacs-collect-states-and-log ()
   (interactive)
   (let ((backtrace-buffer (get-buffer-create "*CurrentBacktrace*"))
-        (backtrace-file   (auto-config-file "backtrace/backtrace.log"))
-        (message-file     (auto-config-file "message/message.log")))
+        (backtrace-file   (expand-file-name "backtrace/backtrace.log" debug-info-directory))
+        (message-file     (expand-file-name "message/message.log" debug-info-directory)))
+    (ensure-debug-info-directory "backtrace")
+    (ensure-debug-info-directory "message")
     (message "(recursion-depth) = %d" (recursion-depth))
     (message "emacs-collect-states-and-log: taking backtrace in %s" backtrace-file)
     (message "emacs-collect-states-and-log: taking messages in %s"  message-file)
@@ -131,7 +144,8 @@
 
 (defun debugger-output-to-file (&rest debugger-args)
   (let ((backtrace-buffer (get-buffer-create "*CurrentBacktrace*"))
-        (backtrace-file   (auto-config-file "backtrace/backtrace.log")))
+        (backtrace-file   (expand-file-name "backtrace/backtrace.log" debug-info-directory)))
+    (ensure-debug-info-directory "backtrace")
     (with-current-buffer backtrace-buffer
       (with-output-to-temp-buffer (current-buffer)
         (let ((buffer-read-only nil))

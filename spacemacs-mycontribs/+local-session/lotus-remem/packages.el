@@ -70,12 +70,12 @@ Each entry is either:
     :defer t
     :config
     (progn
-      (require 'basic-utils)
-      (require 'misc-utils)
+      ;; (require 'basic-utils)
+      ;; (require 'misc-utils)
       ;; (define-key perly-sense-map (kbd "C-d") 'perly-sense-smart-docs-at-point)
       ;; (define-key perly-sense-map (kbd "C-g") 'perly-sense-smart-go-to-at-point)
       ;; (require 'misc-utils) ;; auto-config-file
-      (setq remem-logfile (auto-config-file "remem/remem-log-file")
+      (setq remem-logfile (lotus-cache-file "remem/remem-log-file")
             remem-prog-dir "/usr/bin"
             remem-database-dir "~/.RA-indexes"
             remem-scopes-list '(("doc" 6 5 500)

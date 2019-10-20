@@ -24,10 +24,5 @@
 
 ;;; Code:
 
-(autoload 'auto-config-file               "misc-config" "auto config file."   t)
-(autoload 'auto-config-dir                "misc-config" "auto config file."   t)
-
-
-(provide 'auto-load-config)
 
 ;;; auto-load-config.el ends here

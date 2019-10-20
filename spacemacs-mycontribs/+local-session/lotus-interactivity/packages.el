@@ -113,373 +113,377 @@ Each entry is either:
 
 (defun lotus-interactivity/post-init-ido ()
   (use-package ido
-      :defer t
-      :config
+    :defer t
+    :config
+    (progn
+      ;;
+      ;;
+      ;;
+      ;; ;; from http://www.emacswiki.org/emacs/InteractivelyDoThings
+      ;;
+      ;; ;; icicles or ido no iswitch
+      ;;
+      ;; ;;I find "C-xb RET" to complicated in comparison to how often it is used:
+      ;; ;;(define-key global-map [(kbd "C-\r")] 'iswitchb-buffer)
+      ;; ; nice way to change buffer. Use C-enter then C-s and C-r then enter to change the buffer.
+      ;; ; More help with C-h f iswitchb.
+      ;; ; C-c to toggle case-sensitivity
+      ;;
+      ;; ;;!! commented in favour of ido.
+      ;; ;; ( if (xrequire 'iswitchb)
+      ;; ;;     (iswitchb-default-keybindings))
+      ;;
+      ;; ;;in the .emacs
+
       (progn
-        ;;
-        ;;
-        ;;
-        ;; ;; from http://www.emacswiki.org/emacs/InteractivelyDoThings
-        ;;
-        ;; ;; icicles or ido no iswitch
-        ;;
-        ;; ;;I find "C-xb RET" to complicated in comparison to how often it is used:
-        ;; ;;(define-key global-map [(kbd "C-\r")] 'iswitchb-buffer)
-        ;; ; nice way to change buffer. Use C-enter then C-s and C-r then enter to change the buffer.
-        ;; ; More help with C-h f iswitchb.
-        ;; ; C-c to toggle case-sensitivity
-        ;;
-        ;; ;;!! commented in favour of ido.
-        ;; ;; ( if (xrequire 'iswitchb)
-        ;; ;;     (iswitchb-default-keybindings))
-        ;;
-        ;; ;;in the .emacs
+        (defun ido-is-ftp-directory (&optional dir)
+          (string-match
+           (if nil ;; ido-enable-tramp-completion
+               "\\`/[^/:][^/:]+:"  ;; like tramp-file-name-regexp-unified, but doesn't match single drive letters
+             "\\`/[^/:][^/:]+:/")
+           (or dir ido-current-directory))))
 
-        (progn
-          (defun ido-is-ftp-directory (&optional dir)
-            (string-match
-             (if nil ;; ido-enable-tramp-completion
-                 "\\`/[^/:][^/:]+:"  ;; like tramp-file-name-regexp-unified, but doesn't match single drive letters
-                 "\\`/[^/:][^/:]+:/")
-             (or dir ido-current-directory))))
+      (progn ;; ido
+        ;; (require 'misc-utils)
+        (setq ido-save-directory-list-file (lotus-cache-file "ido/ido.last")))
 
-        (progn ;; ido
+      (progn
+        (defun ido-is-ftp-directory (&optional dir)
+          (string-match
+           (if nil ;; ido-enable-tramp-completion
+               "\\`/[^/:][^/:]+:"  ;; like tramp-file-name-regexp-unified, but doesn't match single drive letters
+             "\\`/[^/:][^/:]+:/")
+           (or dir ido-current-directory)))
 
-          (require 'misc-utils)
+        ;; (input-pending-p)
 
-          (setq ido-save-directory-list-file (auto-config-file "ido/ido.last"))
+        (defun ido-make-merged-file-list (text auto wide)
+          (let (res)
+            (message "Searching for `%s'...." text)
+            (condition-case nil
+                (if (eq t (setq res
+                                (while-no-input
+                                  (ido-make-merged-file-list-1 text auto wide))))
+                    (setq res 'input-pending-p))
+              (quit
+               (setq res t
+                     ido-try-merged-list nil
+                     ido-use-merged-list nil)))
+            (when (and res (listp res))
+              (setq res (ido-sort-merged-list res auto)))
+            (when (and (or ido-rotate-temp ido-rotate-file-list-default)
+                       (listp res)
+                       (> (length text) 0))
+              (let ((elt (assoc text res)))
+                (when (and elt (not (eq elt (car res))))
+                  (setq res (delq elt res))
+                  (setq res (cons elt res)))))
+            (message nil)
+            res))
 
-            (defun ido-is-ftp-directory (&optional dir)
-              (string-match
-               (if nil ;; ido-enable-tramp-completion
-                   "\\`/[^/:][^/:]+:"  ;; like tramp-file-name-regexp-unified, but doesn't match single drive letters
-                   "\\`/[^/:][^/:]+:/")
-               (or dir ido-current-directory)))
+        (setq ido-default-buffer-method 'maybe-frame
+              ido-case-fold t)
 
-            ;; (input-pending-p)
+        (ido-mode t)
 
-            (defun ido-make-merged-file-list (text auto wide)
-              (let (res)
-                (message "Searching for `%s'...." text)
-                (condition-case nil
-                    (if (eq t (setq res
-                                    (while-no-input
-                                      (ido-make-merged-file-list-1 text auto wide))))
-                        (setq res 'input-pending-p))
-                  (quit
-                   (setq res t
-                         ido-try-merged-list nil
-                         ido-use-merged-list nil)))
-                (when (and res (listp res))
-                  (setq res (ido-sort-merged-list res auto)))
-                (when (and (or ido-rotate-temp ido-rotate-file-list-default)
-                           (listp res)
-                           (> (length text) 0))
-                  (let ((elt (assoc text res)))
-                    (when (and elt (not (eq elt (car res))))
-                      (setq res (delq elt res))
-                      (setq res (cons elt res)))))
-                (message nil)
-                res))
+        (when nil
+          ;; from: http://www.emacswiki.org/emacs/init-ido.el
+          (ido-mode t)                                        ;开启ido模式
+          (setq ido-enable-flex-matching t)                   ;模糊匹配
+          (setq ido-everywhere nil)                           ;禁用ido everyting, 拷贝操作不方便
+          (add-hook 'ido-make-file-list-hook 'ido-sort-mtime) ;文件的排序方法
+          (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime))  ;目录的排序方法
 
-            (setq
-             ido-default-buffer-method 'maybe-frame
-             ido-case-fold t)
+        (when nil ;; "bookmark"
+          (with-eval-after-load "bookmark"
+            ;; http://www.emacswiki.org/emacs/InteractivelyDoThings#toc10
 
-            (ido-mode t)
+            ;; (setq enable-recursive-minibuffers nil)
+            (define-key ido-file-dir-completion-map [(meta control ?b)] 'ido-goto-bookmark)
+            (defun ido-goto-bookmark (bookmark)
+              (interactive
+               (let ((enable-recursive-minibuffers t))
+                 (list (bookmark-completing-read "Jump to bookmark"
+                                                 bookmark-current-bookmark))))
+              (unless bookmark
+                (error "No bookmark specified"))
+              (let ((filename (bookmark-get-filename bookmark)))
+                (if (file-directory-p filename)
+                    (progn
+                      (ido-set-current-directory filename)
+                      (setq ido-text ""))
+                  (progn
+                    (ido-set-current-directory (file-name-directory filename))))
+                (setq ido-exit        'refresh
+                      ido-text-init   ido-text
+                      ido-rotate-temp t)
+                (exit-minibuffer))))))
 
-            (when nil
-              ;; from: http://www.emacswiki.org/emacs/init-ido.el
-              (ido-mode t)                                        ;开启ido模式
-              (setq ido-enable-flex-matching t)                   ;模糊匹配
-              (setq ido-everywhere nil)                           ;禁用ido everyting, 拷贝操作不方便
-              (add-hook 'ido-make-file-list-hook 'ido-sort-mtime) ;文件的排序方法
-              (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)  ;目录的排序方法
-              )
+      (progn)
+      ;; ido-work-file-list
+      ;; ido-work-directory-list
+      ;; ido-last-directory-list
+      ;; command-history
+      ;; (setq ido-last-directory-list (read (current-buffer))
+      ;;       ido-work-directory-list (read (current-buffer))
+      ;;       ido-work-file-list (read (current-buffer))
+      ;;       ido-dir-file-cache (read (current-buffer))
+      ;;       ido-unc-hosts-cache (read (current-buffer)))
+      ;; (defun ido-load-history (&optional arg)
+      ;; (defun ido-wash-history ()
 
+      ;;
+      ;;	 ;; Mimicking an invocation of ido followed by some keys
+      ;;
+      ;;	 ;; I use ERC, and I wanted to bind something to the equivalent of
+      ;;	 ;; “C-x b #”: that is, launching ido-switch-buffer and hitting a #
+      ;;	 ;; so that ERC channels are given as options. However, it’s tough in
+      ;;	 ;; general to write elisp or keyboard macros that run a command and
+      ;;	 ;; start entering things into a minibuffer without finishing the
+      ;;	 ;; prompt. For this special case, though, this elisp works:
+      ;;
+      ;;	 ;; (ido-buffer-internal ido-default-buffer-method nil nil nil "#")
+      ;;
+      ;;	 ;; Miscellaneous Applications of Ido
+      ;;	 ;; M-x mode
+      ;;
+      ;;	 (setq ido-execute-command-cache nil)
+      ;;
+      ;;	 (defun ido-execute-command ()
+      ;;		 (interactive)
+      ;;		 (call-interactively
+      ;;			(intern
+      ;;			 (ido-completing-read
+      ;;				"M-x "
+      ;;				(progn
+      ;;					(unless ido-execute-command-cache
+      ;;						(mapatoms (lambda (s)
+      ;;												(when (commandp s)
+      ;;													(setq ido-execute-command-cache
+      ;;																(cons (format "%S" s) ido-execute-command-cache))))))
+      ;;					ido-execute-command-cache)))))
+      ;;
+      ;;	 (add-hook 'ido-setup-hook
+      ;;						 (lambda ()
+      ;;							 (setq ido-enable-flex-matching t)
+      ;;							 (global-set-key "\M-x" 'ido-execute-command)))
+      ;;
+      ;;	 ;; Invoking Bookmarks From Ido
+      ;;
+      ;;	 ;; Did you ever want to use bookmarks from within ido? I just did a
+      ;;	 ;; little mashup of bookmark and ido code, just M-C-b from your ido
+      ;;	 ;; file selection. – AnselmHelbig
+      ;;
+      ;;	 (setq enable-recursive-minibuffers t)
+      ;;	 (define-key ido-file-dir-completion-map [(meta control ?b)] 'ido-goto-bookmark)
+      ;;	 (defun ido-goto-bookmark (bookmark)
+      ;;		 (interactive
+      ;;			(list (bookmark-completing-read "Jump to bookmark"
+      ;;																			bookmark-current-bookmark)))
+      ;;		 (unless bookmark
+      ;;			 (error "No bookmark specified"))
+      ;;		 (let ((filename (bookmark-get-filename bookmark)))
+      ;;			 (ido-set-current-directory
+      ;;				(if (file-directory-p filename)
+      ;;						filename
+      ;;					(file-name-directory filename)))
+      ;;			 (setq ido-exit				 'refresh
+      ;;						 ido-text-init	 ido-text
+      ;;						 ido-rotate-temp t)
+      ;;			 (exit-minibuffer)))
+      ;;
+      ;;	 ;; If you don’t want to set recursive minibuffers globally, you
+      ;;	 ;; could also activate them locally in the above function using a
+      ;;	 ;; let declaration.
+      ;;
+      ;;	 ;; See also InvokeBookmarks.
+      ;;	 ;; Complete find-tag using ido
+      ;;
+      ;;	 (defun my-ido-find-tag ()
+      ;;		 "Find a tag using ido"
+      ;;		 (interactive)
+      ;;		 (tags-completion-table)
+      ;;		 (let (tag-names)
+      ;;			 (mapc (lambda (x)
+      ;;							 (unless (integerp x)
+      ;;								 (push (prin1-to-string x t) tag-names)))
+      ;;						 tags-completion-table)
+      ;;			 (find-tag (ido-completing-read "Tag: " tag-names))))
+      ;;
+      ;;	 ;; Find files in Tags File
+      ;;
+      ;;	 ;; From the screencast above:
+      ;;
+      ;;	 (defun ido-find-file-in-tag-files ()
+      ;;		 (interactive)
+      ;;		 (save-excursion
+      ;;			 (let ((enable-recursive-minibuffers t))
+      ;;				 (visit-tags-table-buffer))
+      ;;			 (find-file
+      ;;				(expand-file-name
+      ;;				 (ido-completing-read
+      ;;					"Project file: " (tags-table-files) nil t)))))
+      ;;
+      ;;	 ;; Selects among the files listed in the tags file. Similar to “find file
+      ;;	 ;; in project” in TextMate; the tags file defines your project.
+      ;;
+      ;;	 ;; Icicles command ‘icicle-find-file-in-tag-table’ does this also. See
+      ;;	 ;; Icicles - Tags File Projects.	 Ido on steroids (make it to complete
+      ;;	 ;; everything)
+      ;;
+      ;;	 ;; Hocus pocus, abracadabra, presto!
+      ;;
+      ;;	 (defadvice completing-read
+      ;;		 (around foo activate)
+      ;;		 (if (boundp 'ido-cur-list)
+      ;;				 ad-do-it
+      ;;			 (setq ad-return-value
+      ;;						 (ido-completing-read
+      ;;							prompt
+      ;;							(all-completions "" collection predicate)
+      ;;							nil require-match initial-input hist def))))
+      ;;
+      ;;	 ;; That works with everything but subr’s, from which
+      ;;	 ;; execute-extended-command is the one that matters (what is binded
+      ;;	 ;; to M-x). But we can get what we want from M-x
+      ;;
+      ;;	 (global-set-key
+      ;;		"\M-x"
+      ;;		(lambda ()
+      ;;			(interactive)
+      ;;			(call-interactively
+      ;;			 (intern
+      ;;				(ido-completing-read
+      ;;				 "M-x "
+      ;;				 (all-completions "" obarray 'commandp))))))
+      ;;
+      ;;	 ;; Make Ido complete almost anything (except the stuff where it
+      ;;	 ;; shouldn't)
+      ;;
+      ;;	 ;; This is a refinement of the above. It adds two features:
+      ;;
+      ;;	 ;; 1. You can force the original completing-read to be used in specific
+      ;;	 ;;		 cases by locally binding a variable.
+      ;;
+      ;;	 ;; 2. If there are no possible completions, the original completing-read
+      ;;	 ;;		 will be used, since ido can’t contribute anything in this case.
+      ;;
+      ;;	 (defvar ido-enable-replace-completing-read t
+      ;;		 "If t, use ido-completing-read instead of completing-read if possible.
+      ;;
+      ;;		 Set it to nil using let in around-advice for functions where the
+      ;;		 original completing-read is required.	For example, if a function
+      ;;		 foo absolutely must use the original completing-read, define some
+      ;;		 advice like this:
+      ;;
+      ;;		 (defadvice foo (around original-completing-read-only activate)
+      ;;			 (let (ido-enable-replace-completing-read) ad-do-it))")
+      ;;
+      ;;	 ;; Replace completing-read wherever possible, unless directed otherwise
+      ;;
+      ;;	 (defadvice completing-read
+      ;;		 (around use-ido-when-possible activate)
+      ;;		 (if (or (not ido-enable-replace-completing-read) ; Manual override disable ido
+      ;;						 (boundp 'ido-cur-list)) ; Avoid infinite loop from ido calling this
+      ;;				 ad-do-it
+      ;;			 (let ((allcomp (all-completions "" collection predicate)))
+      ;;				 (if allcomp
+      ;;						 (setq ad-return-value
+      ;;									 (ido-completing-read prompt
+      ;;																				allcomp
+      ;;																				nil require-match initial-input hist def))
+      ;;					 ad-do-it))))
+      ;;
+      ;;	 ;; Ido Hacks (modifying Ido's behavior) Display Completions Vertically
+      ;;
+      ;;	 ;; It’s a lot easier to scan long path names if they’re displayed
+      ;;	 ;; vertically, instead of horizontally. Run this to achieve just that:
+      ;;
+      ;;	 ;; (setq ido-decorations
+      ;;	 ;;				(quote ("\n-> " "" "\n	 " "\n	 ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
+      ;;
+      ;;	 ;; – timcharper Control-TAB buffer switching with Ido
+      ;;
+      ;;	 ;; nXhtml tweaks Ido to do ControlTABbufferCycling combined with Ido’s
+      ;;	 ;; normal buffer switching.	Sort files by mtime
+      ;;
+      ;;	 ;; Why would anyone want an alphabetically sorted list? You can save
+      ;;	 ;; keystrokes if the most recently modified files are at the front:
+      ;;
+      ;;																				 ; sort ido filelist by mtime instead of alphabetically
+      ;;	 (add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
+      ;;	 (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
+      ;;	 (defun ido-sort-mtime ()
+      ;;		 (setq ido-temp-list
+      ;;					 (sort ido-temp-list
+      ;;								 (lambda (a b)
+      ;;									 (let ((ta (nth 5 (file-attributes (concat ido-current-directory a))))
+      ;;												 (tb (nth 5 (file-attributes (concat ido-current-directory b)))))
+      ;;										 (if (= (nth 0 ta) (nth 0 tb))
+      ;;												 (> (nth 1 ta) (nth 1 tb))
+      ;;											 (> (nth 0 ta) (nth 0 tb)))))))
+      ;;		 (ido-to-end	;; move . files to end (again)
+      ;;			(delq nil (mapcar
+      ;;								 (lambda (x) (if (string-equal (substring x 0 1) ".") x))
+      ;;								 ido-temp-list))))
+      ;;
+      ;;	 ;; If you want to ensure ‘.’ is not buried by this, change the final
+      ;;	 ;; lambda as follows (or equivalent:
+      ;;
+      ;;	 (lambda (x) (if (and (not (string-equal x ".")) (string-equal (substring x 0 1) ".")) x))
+      ;;
+      ;;	 ;; Depending on the type of entities (e.g. file names) in the list
+      ;;	 ;; and your current context, it can often be more convenient to sort
+      ;;	 ;; alphabetically. It all depends. For files and directories, this
+      ;;	 ;; is why we have different sort orders in DiredMode (see, e.g.,
+      ;;	 ;; DiredSortMenu).
+      ;;
+      ;;	 ;; See also SortOrder.	 A better (IMHO) ido-edit-input function
+      ;;
+      ;;	 ;; In order to be more consistent with the normal find-file HCI, to
+      ;;	 ;; which I am really really used (and, by the waym with the way
+      ;;	 ;; command shells do completion), I changed slighlty the behaviour
+      ;;	 ;; of the backspace and C-e keys in ‘file mode :
+      ;;
+      ;;	 (defun ido-my-edit-input () "bla" (interactive)
+      ;;		 (setq ido-current-directory
+      ;;					 (concat (abbreviate-file-name ido-current-directory) ido-text ))
+      ;;		 (setq ido-text "")
+      ;;		 (ido-edit-input)
+      ;;		 )
+      ;;
+      ;;	 (defun ido-my-keys ()
+      ;;		 "Add my keybindings for ido."
+      ;;		 (when (eq ido-cur-item 'file)
+      ;;			 (define-key ido-mode-map (kbd "ESC DEL") 'ido-delete-backward-updir)
+      ;;			 (define-key ido-mode-map (kbd "C-e") 'ido-my-edit-input)
+      ;;			 (define-key ido-mode-map (kbd "<backspace>") 'ido-my-edit-input)
+      ;;			 ))
+      ;;
+      ;;	 ;; Maybe this is useless with recent versions of emacs/ido, but here
+      ;;	 ;; I’m forced to use emacs 21, so I downloaded ido 1.56 from
+      ;;	 ;; cua.dk (see above) and it works like a charm. My only difficulty
+      ;;	 ;; was that I had to comment this line in ido-read-internal, and i
+      ;;	 ;; don’t really know what kind of wizardry I am trying to cheat
+      ;;	 ;; here.
+      ;;
+      ;;	 ;;(process-environment (cons "HOME=/" process-environment))
+      ;;
+      ;; )
+      ;;
+      
 
-            (when nil ;; "bookmark"
-              (with-eval-after-load "bookmark"
-                ;; http://www.emacswiki.org/emacs/InteractivelyDoThings#toc10
-
-                ;; (setq enable-recursive-minibuffers nil)
-                (define-key ido-file-dir-completion-map [(meta control ?b)] 'ido-goto-bookmark)
-                (defun ido-goto-bookmark (bookmark)
-                  (interactive
-                   (let ((enable-recursive-minibuffers t))
-                     (list (bookmark-completing-read "Jump to bookmark"
-                                                     bookmark-current-bookmark))))
-                  (unless bookmark
-                    (error "No bookmark specified"))
-                  (let ((filename (bookmark-get-filename bookmark)))
-                    (if (file-directory-p filename)
-                        (progn
-                          (ido-set-current-directory filename)
-                          (setq ido-text ""))
-                        (progn
-                          (ido-set-current-directory (file-name-directory filename))))
-                    (setq ido-exit        'refresh
-                          ido-text-init   ido-text
-                          ido-rotate-temp t)
-                    (exit-minibuffer))))))
-
-        (progn
-          ;; ido-work-file-list
-          ;; ido-work-directory-list
-          ;; ido-last-directory-list
-          ;; command-history
-          ;; (setq ido-last-directory-list (read (current-buffer))
-          ;;       ido-work-directory-list (read (current-buffer))
-          ;;       ido-work-file-list (read (current-buffer))
-          ;;       ido-dir-file-cache (read (current-buffer))
-          ;;       ido-unc-hosts-cache (read (current-buffer)))
-          ;; (defun ido-load-history (&optional arg)
-          ;; (defun ido-wash-history ()
-
-          ;;
-          ;;	 ;; Mimicking an invocation of ido followed by some keys
-          ;;
-          ;;	 ;; I use ERC, and I wanted to bind something to the equivalent of
-          ;;	 ;; “C-x b #”: that is, launching ido-switch-buffer and hitting a #
-          ;;	 ;; so that ERC channels are given as options. However, it’s tough in
-          ;;	 ;; general to write elisp or keyboard macros that run a command and
-          ;;	 ;; start entering things into a minibuffer without finishing the
-          ;;	 ;; prompt. For this special case, though, this elisp works:
-          ;;
-          ;;	 ;; (ido-buffer-internal ido-default-buffer-method nil nil nil "#")
-          ;;
-          ;;	 ;; Miscellaneous Applications of Ido
-          ;;	 ;; M-x mode
-          ;;
-          ;;	 (setq ido-execute-command-cache nil)
-          ;;
-          ;;	 (defun ido-execute-command ()
-          ;;		 (interactive)
-          ;;		 (call-interactively
-          ;;			(intern
-          ;;			 (ido-completing-read
-          ;;				"M-x "
-          ;;				(progn
-          ;;					(unless ido-execute-command-cache
-          ;;						(mapatoms (lambda (s)
-          ;;												(when (commandp s)
-          ;;													(setq ido-execute-command-cache
-          ;;																(cons (format "%S" s) ido-execute-command-cache))))))
-          ;;					ido-execute-command-cache)))))
-          ;;
-          ;;	 (add-hook 'ido-setup-hook
-          ;;						 (lambda ()
-          ;;							 (setq ido-enable-flex-matching t)
-          ;;							 (global-set-key "\M-x" 'ido-execute-command)))
-          ;;
-          ;;	 ;; Invoking Bookmarks From Ido
-          ;;
-          ;;	 ;; Did you ever want to use bookmarks from within ido? I just did a
-          ;;	 ;; little mashup of bookmark and ido code, just M-C-b from your ido
-          ;;	 ;; file selection. – AnselmHelbig
-          ;;
-          ;;	 (setq enable-recursive-minibuffers t)
-          ;;	 (define-key ido-file-dir-completion-map [(meta control ?b)] 'ido-goto-bookmark)
-          ;;	 (defun ido-goto-bookmark (bookmark)
-          ;;		 (interactive
-          ;;			(list (bookmark-completing-read "Jump to bookmark"
-          ;;																			bookmark-current-bookmark)))
-          ;;		 (unless bookmark
-          ;;			 (error "No bookmark specified"))
-          ;;		 (let ((filename (bookmark-get-filename bookmark)))
-          ;;			 (ido-set-current-directory
-          ;;				(if (file-directory-p filename)
-          ;;						filename
-          ;;					(file-name-directory filename)))
-          ;;			 (setq ido-exit				 'refresh
-          ;;						 ido-text-init	 ido-text
-          ;;						 ido-rotate-temp t)
-          ;;			 (exit-minibuffer)))
-          ;;
-          ;;	 ;; If you don’t want to set recursive minibuffers globally, you
-          ;;	 ;; could also activate them locally in the above function using a
-          ;;	 ;; let declaration.
-          ;;
-          ;;	 ;; See also InvokeBookmarks.
-          ;;	 ;; Complete find-tag using ido
-          ;;
-          ;;	 (defun my-ido-find-tag ()
-          ;;		 "Find a tag using ido"
-          ;;		 (interactive)
-          ;;		 (tags-completion-table)
-          ;;		 (let (tag-names)
-          ;;			 (mapc (lambda (x)
-          ;;							 (unless (integerp x)
-          ;;								 (push (prin1-to-string x t) tag-names)))
-          ;;						 tags-completion-table)
-          ;;			 (find-tag (ido-completing-read "Tag: " tag-names))))
-          ;;
-          ;;	 ;; Find files in Tags File
-          ;;
-          ;;	 ;; From the screencast above:
-          ;;
-          ;;	 (defun ido-find-file-in-tag-files ()
-          ;;		 (interactive)
-          ;;		 (save-excursion
-          ;;			 (let ((enable-recursive-minibuffers t))
-          ;;				 (visit-tags-table-buffer))
-          ;;			 (find-file
-          ;;				(expand-file-name
-          ;;				 (ido-completing-read
-          ;;					"Project file: " (tags-table-files) nil t)))))
-          ;;
-          ;;	 ;; Selects among the files listed in the tags file. Similar to “find file
-          ;;	 ;; in project” in TextMate; the tags file defines your project.
-          ;;
-          ;;	 ;; Icicles command ‘icicle-find-file-in-tag-table’ does this also. See
-          ;;	 ;; Icicles - Tags File Projects.	 Ido on steroids (make it to complete
-          ;;	 ;; everything)
-          ;;
-          ;;	 ;; Hocus pocus, abracadabra, presto!
-          ;;
-          ;;	 (defadvice completing-read
-          ;;		 (around foo activate)
-          ;;		 (if (boundp 'ido-cur-list)
-          ;;				 ad-do-it
-          ;;			 (setq ad-return-value
-          ;;						 (ido-completing-read
-          ;;							prompt
-          ;;							(all-completions "" collection predicate)
-          ;;							nil require-match initial-input hist def))))
-          ;;
-          ;;	 ;; That works with everything but subr’s, from which
-          ;;	 ;; execute-extended-command is the one that matters (what is binded
-          ;;	 ;; to M-x). But we can get what we want from M-x
-          ;;
-          ;;	 (global-set-key
-          ;;		"\M-x"
-          ;;		(lambda ()
-          ;;			(interactive)
-          ;;			(call-interactively
-          ;;			 (intern
-          ;;				(ido-completing-read
-          ;;				 "M-x "
-          ;;				 (all-completions "" obarray 'commandp))))))
-          ;;
-          ;;	 ;; Make Ido complete almost anything (except the stuff where it
-          ;;	 ;; shouldn't)
-          ;;
-          ;;	 ;; This is a refinement of the above. It adds two features:
-          ;;
-          ;;	 ;; 1. You can force the original completing-read to be used in specific
-          ;;	 ;;		 cases by locally binding a variable.
-          ;;
-          ;;	 ;; 2. If there are no possible completions, the original completing-read
-          ;;	 ;;		 will be used, since ido can’t contribute anything in this case.
-          ;;
-          ;;	 (defvar ido-enable-replace-completing-read t
-          ;;		 "If t, use ido-completing-read instead of completing-read if possible.
-          ;;
-          ;;		 Set it to nil using let in around-advice for functions where the
-          ;;		 original completing-read is required.	For example, if a function
-          ;;		 foo absolutely must use the original completing-read, define some
-          ;;		 advice like this:
-          ;;
-          ;;		 (defadvice foo (around original-completing-read-only activate)
-          ;;			 (let (ido-enable-replace-completing-read) ad-do-it))")
-          ;;
-          ;;	 ;; Replace completing-read wherever possible, unless directed otherwise
-          ;;
-          ;;	 (defadvice completing-read
-          ;;		 (around use-ido-when-possible activate)
-          ;;		 (if (or (not ido-enable-replace-completing-read) ; Manual override disable ido
-          ;;						 (boundp 'ido-cur-list)) ; Avoid infinite loop from ido calling this
-          ;;				 ad-do-it
-          ;;			 (let ((allcomp (all-completions "" collection predicate)))
-          ;;				 (if allcomp
-          ;;						 (setq ad-return-value
-          ;;									 (ido-completing-read prompt
-          ;;																				allcomp
-          ;;																				nil require-match initial-input hist def))
-          ;;					 ad-do-it))))
-          ;;
-          ;;	 ;; Ido Hacks (modifying Ido's behavior) Display Completions Vertically
-          ;;
-          ;;	 ;; It’s a lot easier to scan long path names if they’re displayed
-          ;;	 ;; vertically, instead of horizontally. Run this to achieve just that:
-          ;;
-          ;;	 ;; (setq ido-decorations
-          ;;	 ;;				(quote ("\n-> " "" "\n	 " "\n	 ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
-          ;;
-          ;;	 ;; – timcharper Control-TAB buffer switching with Ido
-          ;;
-          ;;	 ;; nXhtml tweaks Ido to do ControlTABbufferCycling combined with Ido’s
-          ;;	 ;; normal buffer switching.	Sort files by mtime
-          ;;
-          ;;	 ;; Why would anyone want an alphabetically sorted list? You can save
-          ;;	 ;; keystrokes if the most recently modified files are at the front:
-          ;;
-          ;;																				 ; sort ido filelist by mtime instead of alphabetically
-          ;;	 (add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
-          ;;	 (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
-          ;;	 (defun ido-sort-mtime ()
-          ;;		 (setq ido-temp-list
-          ;;					 (sort ido-temp-list
-          ;;								 (lambda (a b)
-          ;;									 (let ((ta (nth 5 (file-attributes (concat ido-current-directory a))))
-          ;;												 (tb (nth 5 (file-attributes (concat ido-current-directory b)))))
-          ;;										 (if (= (nth 0 ta) (nth 0 tb))
-          ;;												 (> (nth 1 ta) (nth 1 tb))
-          ;;											 (> (nth 0 ta) (nth 0 tb)))))))
-          ;;		 (ido-to-end	;; move . files to end (again)
-          ;;			(delq nil (mapcar
-          ;;								 (lambda (x) (if (string-equal (substring x 0 1) ".") x))
-          ;;								 ido-temp-list))))
-          ;;
-          ;;	 ;; If you want to ensure ‘.’ is not buried by this, change the final
-          ;;	 ;; lambda as follows (or equivalent:
-          ;;
-          ;;	 (lambda (x) (if (and (not (string-equal x ".")) (string-equal (substring x 0 1) ".")) x))
-          ;;
-          ;;	 ;; Depending on the type of entities (e.g. file names) in the list
-          ;;	 ;; and your current context, it can often be more convenient to sort
-          ;;	 ;; alphabetically. It all depends. For files and directories, this
-          ;;	 ;; is why we have different sort orders in DiredMode (see, e.g.,
-          ;;	 ;; DiredSortMenu).
-          ;;
-          ;;	 ;; See also SortOrder.	 A better (IMHO) ido-edit-input function
-          ;;
-          ;;	 ;; In order to be more consistent with the normal find-file HCI, to
-          ;;	 ;; which I am really really used (and, by the waym with the way
-          ;;	 ;; command shells do completion), I changed slighlty the behaviour
-          ;;	 ;; of the backspace and C-e keys in ‘file mode :
-          ;;
-          ;;	 (defun ido-my-edit-input () "bla" (interactive)
-          ;;		 (setq ido-current-directory
-          ;;					 (concat (abbreviate-file-name ido-current-directory) ido-text ))
-          ;;		 (setq ido-text "")
-          ;;		 (ido-edit-input)
-          ;;		 )
-          ;;
-          ;;	 (defun ido-my-keys ()
-          ;;		 "Add my keybindings for ido."
-          ;;		 (when (eq ido-cur-item 'file)
-          ;;			 (define-key ido-mode-map (kbd "ESC DEL") 'ido-delete-backward-updir)
-          ;;			 (define-key ido-mode-map (kbd "C-e") 'ido-my-edit-input)
-          ;;			 (define-key ido-mode-map (kbd "<backspace>") 'ido-my-edit-input)
-          ;;			 ))
-          ;;
-          ;;	 ;; Maybe this is useless with recent versions of emacs/ido, but here
-          ;;	 ;; I’m forced to use emacs 21, so I downloaded ido 1.56 from
-          ;;	 ;; cua.dk (see above) and it works like a charm. My only difficulty
-          ;;	 ;; was that I had to comment this line in ido-read-internal, and i
-          ;;	 ;; don’t really know what kind of wizardry I am trying to cheat
-          ;;	 ;; here.
-          ;;
-          ;;	 ;;(process-environment (cons "HOME=/" process-environment))
-          ;;
-          ;; )
-          ;;
-          )
-
-        (progn ;; "Completing Read Multiple"
-          (defun ido-completing-read-multiple (prompt choices &optional predicate require-match initial-input hist def sentinel)
-            "Read multiple items with ido-completing-read. Reading stops
+      (progn ;; "Completing Read Multiple"
+        (defun ido-completing-read-multiple (prompt
+                                             choices
+                                             &optional
+                                             predicate
+                                             require-match
+                                             initial-input
+                                             hist
+                                             def
+                                             sentinel)
+          "Read multiple items with ido-completing-read. Reading stops
   when the user enters SENTINEL. By default, SENTINEL is
   \"*done*\". SENTINEL is disambiguated with clashing completions
   by appending _ to SENTINEL until it becomes unique. So if there
@@ -487,33 +491,31 @@ Each entry is either:
   most _ at the end is the actual sentinel value. See
   documentation for `ido-completing-read' for details on the
   other parameters."
-            (let
-                ((sentinel (if sentinel sentinel "*done*"))
-                 (done-reading nil)
-                 (res ()))
+          (let ((sentinel (if sentinel sentinel "*done*"))
+                (done-reading nil)
+                (res ()))
+            ;; uniquify the SENTINEL value
+            (while (find sentinel choices)
+              (setq sentinel (concat sentinel "_")))
+            (setq choices (cons sentinel choices))
 
-              ;; uniquify the SENTINEL value
-              (while (find sentinel choices)
-                (setq sentinel (concat sentinel "_")))
-              (setq choices (cons sentinel choices))
+            ;; read some choices
+            (while (not done-reading)
+              (setq this-choice (ido-completing-read prompt choices predicate require-match initial-input hist def))
+              (if (equal this-choice sentinel)
+                  (setq done-reading t)
+                (setq res (cons this-choice res))))
+            ;; return the result
+            res)))
+      
 
-              ;; read some choices
-              (while (not done-reading)
-                (setq this-choice (ido-completing-read prompt choices predicate require-match initial-input hist def))
-                (if (equal this-choice sentinel)
-                    (setq done-reading t)
-                    (setq res (cons this-choice res))))
-
-              ;; return the result
-              res))
-          )
-
-        (progn
+      (progn
 
 
-          (require 'misc-utils)
+        ;; (require 'misc-utils)
+        ))))
 
-          ))))
+          
 
 (defun lotus-interactivity/post-init-smex ()
   (use-package smex

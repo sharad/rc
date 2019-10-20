@@ -37,7 +37,7 @@
 (defconst lotus-cursor-packages
   '(
     hl-line
-    hl-line+
+    ;; hl-line+ ;; package not found
     )
   "The list of Lisp packages required by the lotus-cursor layer.
 
@@ -66,38 +66,38 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-cursor/init-hl-line+ ()
-  ;;{{ from: http://www-sop.inria.fr/everest/Clement.Hurlin/linux.shtml
-  ;; 05/08/07, emacs: I find useful to highlight the line (snapshot)
-  ;; where the cursor points because it avoids getting lost when
-  ;; switching between numerous windows. You can enable this with:
-  ;; (hl-line-mode) ;; for the current buffer
-  ;; (global-hl-line-mode) ;; for all buffers
-
-  ;; http://www.emacswiki.org/emacs/hl-line%2b.el
-  ;;  To use this library, put this in your Emacs init file (~/.emacs):
-  ;;
-  (use-package hl-line+
-      :defer t
-      :config
-      (progn
-        ;;
-        ;;  To turn on `global-hl-line-mode' only when Emacs is idle, by
-        ;;  default, add this line also to your init file:
-        ;;
-        ;; Highlight only when idle
-        (hl-line-toggle-when-idle 1)
-        (hl-line-when-idle-interval 70))
-      ))
-
-
 (defun lotus-cursor/init-hl-line ()
   (use-package hl-line
-      :defer t
-      :config
-      (progn
-        (hl-line-mode) ;; for the current buffer
-        (global-hl-line-mode) ;; for all buffers
-        )))
+    :defer t
+    :config
+    (progn
+      (hl-line-mode) ;; for the current buffer
+      (global-hl-line-mode) ;; for all buffers
+      )))
+
+;; package not found
+;; (defun lotus-cursor/init-hl-line+ ()
+;;   ;;{{ from: http://www-sop.inria.fr/everest/Clement.Hurlin/linux.shtml
+;;   ;; 05/08/07, emacs: I find useful to highlight the line (snapshot)
+;;   ;; where the cursor points because it avoids getting lost when
+;;   ;; switching between numerous windows. You can enable this with:
+;;   ;; (hl-line-mode) ;; for the current buffer
+;;   ;; (global-hl-line-mode) ;; for all buffers
+
+;;   ;; http://www.emacswiki.org/emacs/hl-line%2b.el
+;;   ;;  To use this library, put this in your Emacs init file (~/.emacs):
+;;   ;;
+;;   (use-package hl-line+
+;;       :defer t
+;;       :config
+;;       (progn
+;;         ;;
+;;         ;;  To turn on `global-hl-line-mode' only when Emacs is idle, by
+;;         ;;  default, add this line also to your init file:
+;;         ;;
+;;         ;; Highlight only when idle
+;;         (hl-line-toggle-when-idle 1)
+;;         (hl-line-when-idle-interval 70))
+;;       ))
 
 ;;; packages.el ends here

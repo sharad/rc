@@ -29,7 +29,7 @@
 ;; breadcrumb
 (deh-require-maybe breadcrumb
   ;;
-  (setq bc-bookmark-file (auto-config-file "breadcrumb/breadcrumbe.el"))
+  (setq bc-bookmark-file (lotus-cache-file "breadcrumb/breadcrumbe.el"))
 
   (autoload 'bc-set               "breadcrumb" "Set bookmark in current point."   t)
   (autoload 'bc-previous          "breadcrumb" "Go to previous bookmark."         t)

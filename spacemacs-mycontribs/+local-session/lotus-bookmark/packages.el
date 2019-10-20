@@ -42,7 +42,7 @@
     saveplace
     (breadcrumb :location local)
     bm
-    bookmark+
+    ;; bookmark+ ;; package not found
     (linkd :location local)
     )
   "The list of Lisp packages required by the lotus-bookmark layer.
@@ -77,14 +77,14 @@ Each entry is either:
       :defer t
       :config
       (progn
-        (setq save-place-file (auto-config-file "save-place/places")))))
+        (setq save-place-file (lotus-cache-file "save-place/places")))))
 
 (defun lotus-bookmark/init-breadcrumb ()
   (use-package breadcrumb
       :defer t
       :config
       (progn
-        (setq bc-bookmark-file (auto-config-file "breadcrumb/breadcrumbe.el"))
+        (setq bc-bookmark-file (lotus-cache-file "breadcrumb/breadcrumbe.el"))
 
         (autoload 'bc-set               "breadcrumb" "Set bookmark in current point."   t)
         (autoload 'bc-previous          "breadcrumb" "Go to previous bookmark."         t)
@@ -100,7 +100,7 @@ Each entry is either:
                :defer t
                :config
                (progn
-                 (setq bm-repository-file (auto-config-file "bm/bm-repository")))))
+                 (setq bm-repository-file (lotus-cache-file "bm/bm-repository")))))
 
 
 (defun lotus-bookmark/init-bookmark ()
@@ -108,19 +108,20 @@ Each entry is either:
       :defer t
       :config
       (progn
-        (setq bookmark-file (auto-config-file "bookmark/bookmarks.el"))
-        (setq bookmark-default-file (auto-config-file "bookmark/bookmarks.el")))))
+        (setq bookmark-file (lotus-cache-file "bookmark/bookmarks.el"))
+        (setq bookmark-default-file (lotus-cache-file "bookmark/bookmarks.el")))))
 
-(defun lotus-bookmark/init-bookmark+ ()
-  (use-package bookmark+
-      :defer t
-      :config
-      (progn
-        ;; available in elpa
-        (setq bmkp-bmenu-state-file    (auto-config-file "bookmark+/emacs-bmk-bmenu-state.el")
-              bmkp-bmenu-commands-file (auto-config-file "bookmark+/emacs-bmk-bmenu-commands.el"))
-
-        (remove-hook 'kill-emacs-hook 'bookmark-bmenu-save))))
+;; package not found
+;; (defun lotus-bookmark/init-bookmark+ ()
+;;   (use-package bookmark+
+;;       :defer t
+;;       :config
+;;       (progn
+;;         ;; available in elpa
+;;         (setq bmkp-bmenu-state-file    (lotus-cache-file "bookmark+/emacs-bmk-bmenu-state.el")
+;;               bmkp-bmenu-commands-file (lotus-cache-file "bookmark+/emacs-bmk-bmenu-commands.el"))
+;;
+;;         (remove-hook 'kill-emacs-hook 'bookmark-bmenu-save))))
 
 (defun lotus-bookmark/init-linkd ()
   (use-package linkd

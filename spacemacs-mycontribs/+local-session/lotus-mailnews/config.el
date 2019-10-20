@@ -453,7 +453,7 @@ always hide."
 (deh-require-maybe bbdb
 
 
-  (setq bbdb-file (auto-config-file "bbdb/bbdb"))
+  (setq bbdb-file (lotus-cache-file "bbdb/bbdb"))
 
   (defun bbdb/gnus-pop-up-bbdb-buffer-for-some-time ()
     (bbdb/gnus-pop-up-bbdb-buffer)

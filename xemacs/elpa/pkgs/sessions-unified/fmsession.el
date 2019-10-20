@@ -27,13 +27,11 @@
 (provide 'fmsession)
 
 
-;; (require 'elscreen)
-(require 'emacs-panel)
 
+(require 'session-unified)
 
 
-(require 'sessions-unified)
-(require 'session-unified)
+(defvar session-unified-debug nil)
 
 
 (defvar session-unified-utils-select-frame-fn #'select-frame-set-input-focus "session-unified-utils-select-frame-fn")
@@ -212,7 +210,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
 
 ;; (desktop-make-create-buffer-list (current-buffer))
 
-(require 'utils-config)
+;; (require 'utils-config)
 
 (defvar *elscreen-session-restore-data* nil "elscreen session restore data like current screen buffer among multiple screens.")
 
@@ -248,7 +246,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
                    (session-current-buffer-file
                     (cdr (assoc 'current-buffer-file session-list))))
               ;; (when t
-              (testing
+              (when session-unified-debug
                (message "Bstart: session-current-screen-buffers %s" session-current-screen-buffers)
                (message "Astart: screen-to-name-alist %s" session-list)
                (message "Cstart: desktop-buffers %s" desktop-buffers))
@@ -334,7 +332,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
                     (setq buff-files (cdr buff-files))
 
                     (message "progn buff-files: %s" buff-files)
-                    (testing (message "else"))))
+                    (when session-unified-debug (message "else"))))
 
                 (setq screens (cdr screens))
                 (message "while screen: %s" screens)
@@ -366,7 +364,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
           (error "1 Screen is not active for frame %s" nframe))
 
         ;; (let* ((desktop-buffers
-        (testing
+        (when session-unified-debug
          (message "elscreen-notify-screen-modification"))
         (elscreen-notify-screen-modification 'force-immediately)
         (message "elscreen-session-session-list-set: DONE."))
@@ -463,7 +461,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
   (if elscreen-session
       (let ((elscreen-session-list
              (cdr (assoc elscreen-session *frames-elscreen-session*))))
-        (testing
+        (when session-unified-debug
          (message "Nstart: session-session %s" elscreen-session))
         (if elscreen-session-list
             (elscreen-session-session-list-set elscreen-session-list (or nframe (selected-frame)))
@@ -744,7 +742,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
   (remove-hook 'delete-frame-functions
                #'frame-session-save))
 
-(testing
+(when session-unified-debug
  (frame-parameter (selected-frame) 'frame-spec-id)
  after-make-frame-functions
  delete-frame-functions

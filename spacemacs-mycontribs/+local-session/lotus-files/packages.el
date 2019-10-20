@@ -47,7 +47,7 @@
     (iswitchb :location local)
     (iswitchb-fc :location local)
     (ifind-mode :location local)
-    (ffw :location local)
+    ffw
     multibackup
     (ff-relativedir :location local)
     ;; find-files-unified
@@ -517,11 +517,11 @@ directory, select directory. Lastly the file is opened."
 
 (defun lotus-files/init-ffw ()
   (use-package ffw
-      :demand t
-      :config
-      (progn
-        (global-set-key-if-unbind (kbd "s-x s-f") 'find-file-wizard)
-        )))
+    :defer t
+    :config
+    (progn
+      (global-set-key-if-unbind (kbd "s-x s-f") 'find-file-wizard)
+      )))
 
 (defun lotus-files/init-multibackup ()
   (use-package multibackup

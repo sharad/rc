@@ -76,7 +76,7 @@
 
 (require 'basic-utils)
 (require 'basic-macros)
-(require 'perforce-test)
+;; (require 'perforce-test)
 
 (add-hook 'after-init-hook
           #'(lambda ()
@@ -97,13 +97,6 @@
 (defvar enable-p4-login nil "test")
 ;;}}
 
-
-
-
-
-
-
-
 
 
 ;;;{{{ disable startup interrupting feature till first frame created.

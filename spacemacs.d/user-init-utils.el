@@ -1,4 +1,4 @@
-
+
 (defun dotspacemacs/reinit ()
   (setq-default
    dotspacemacs-which-key-delay 3.0)    ;BUG not working
@@ -287,7 +287,7 @@
 
 
 (defun lotus-dist-layers-group-dirs (&optional layers-group-top-dir)
-  (let ((layers-group-top-dir (or layers-group-top-dir "~/.emacs.d/layers")))
+  (let ((layers-group-top-dir (or layers-group-top-dir (expand-file-name "layers" spacemacs-start-directory))))
     (directory-files layers-group-top-dir t "^+.*")))
 
 (defun lotus-dist-layers-select (layer-dir &optional match)
@@ -300,7 +300,7 @@
       (directory-files layer-dir nil match)))))
 
 (defun lotus-dist-layers-group-dirs-layers-select (&optional layers-group-top-dir match)
-  (let ((layers-group-top-dir (or layers-group-top-dir "~/.emacs.d/layers")))
+  (let ((layers-group-top-dir (or layers-group-top-dir (expand-file-name "layers" spacemacs-start-directory))))
     (apply #'append
            (mapcar
             #'(lambda (path)
@@ -312,7 +312,7 @@
 (defun lotus-layers-list ()
   (let* ((all-layers
           (append
-           (lotus-dist-layers-group-dirs-layers-select "~/.emacs.d/layers/")
+           (lotus-dist-layers-group-dirs-layers-select (expand-file-name "layers" spacemacs-start-directory))
            (lotus-dist-layers-group-dirs-layers-select "~/.spacemacs-mycontribs/" "^lotus-[a-zA-Z]+")))
          (all-without-excluded-layers
           (set-difference
@@ -320,6 +320,30 @@
          (all-with-included-layers
           (append all-without-excluded-layers (spacemacs-dist-layers-include))))
     all-with-included-layers))
+
+
+(defun lotus-startup-lists ()
+  '((recents . 5)
+    (projects . 3)
+    (bookmarks . 10)
+    (agenda . 7)
+    (todos . 7)))
+
+
+(defun lotus-themes ()
+  '(ujelly
+    reverse
+    twilight
+    spacemacs-dark
+    spacemacs-light
+    solarized-light
+    solarized-dark
+    leuven
+    monokai
+    zenburn
+    arjen-grey
+    ;; arjen
+    ))
 
 
 (defun lotus-disable-report-org ()
@@ -406,7 +430,7 @@
     (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path))
 
   ;; Old order
-  (progn
+  (when nil
     (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
     ;; remove this
     (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
@@ -433,23 +457,24 @@
   ;; (add-to-list 'load-path "~/.xemacs/pkgrepos/spacemacs/misc/world/uncatagegoriged")
 
   (progn
-    (unless(assoc "gnu" package-archives)
-      (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
-    (unless(assoc "marmalade" package-archives)
-      (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/")))
-    (unless(assoc "ELPA" package-archives)
-      (add-to-list 'package-archives '("ELPA" . "https://tromey.com/elpa/")))
-    (unless(assoc "melpa" package-archives)
-      (add-to-list 'package-archives '("melpa" . "https://melpa.milkbox.net/packages/")))
-    (unless(assoc "org" package-archives)
-      (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/")))
-    (unless(assoc "local" package-archives)
-      (add-to-list 'package-archives '("local" . "~/.xemacs/elpa/upload"))))
+    (unless (assoc "gnu" configuration-layer-elpa-archives)
+      (add-to-list 'configuration-layer-elpa-archives '("gnu" . "https://elpa.gnu.org/packages/")))
+    (unless (assoc "marmalade" configuration-layer-elpa-archives)
+      (add-to-list 'configuration-layer-elpa-archives '("marmalade" . "https://marmalade-repo.org/packages/")))
+    (unless (assoc "ELPA" configuration-layer-elpa-archives)
+      (add-to-list 'configuration-layer-elpa-archives '("ELPA" . "https://tromey.com/elpa/")))
+    (unless(assoc "melpa" configuration-layer-elpa-archives)
+      (add-to-list 'configuration-layer-elpa-archives '("melpa" . "https://melpa.milkbox.net/packages/")))
+    (unless(assoc "org" configuration-layer-elpa-archives)
+      (add-to-list 'configuration-layer-elpa-archives '("org" . "https://orgmode.org/elpa/")))
+    (unless(assoc "local" configuration-layer-elpa-archives)
+      (add-to-list 'configuration-layer-elpa-archives '("local" . "~/.xemacs/elpa/upload"))))
+  ;; (package-refresh-contents)
 
   (defvar *emacs-in-init* t "Emacs is in init.")
-  (defvar user-emacs-directory "~/.emacs.d")
+  (defvar user-emacs-directory spacemacs-start-directory)
   (defvar reloading-libraries nil "used in session-conf.el")
-  (setq user-emacs-directory "~/.emacs.d")
+  (setq user-emacs-directory spacemacs-start-directory)
   (setq *emacs-in-init* t)
   (add-hook 'after-init-hook
             (lambda ()
@@ -463,7 +488,7 @@
      messages-buffer-max-lines 2000))
 
   ;; BUG settle these
-  (require 'basic-utils)
+  ;; (require 'basic-utils)
 
   ;; (progn
   ;;    ;; server-auth-dir (auto-config-dir "server" t)
@@ -509,7 +534,7 @@
 
 
   ;;TODO
-  (require 'misc-utils)
+  ;; (require 'misc-utils)
 
   (progn ;;  server
 
@@ -548,8 +573,7 @@
         (message (concat "YES SERVER: " server-name)))))
 
 
-  (setq
-   dotspacemacs-excluded-packages '(vi-tilde-fringe))
+  (setq dotspacemacs-excluded-packages '(vi-tilde-fringe))
 
   (lotus-necessary-test)
 
@@ -577,9 +601,22 @@
 
 (defun lotus-emacs-user-init-finish ()
   (message "loading lotus-emacs-user-init-finish begin")
+  (progn
+    (unless (assoc "gnu" package-archives)
+      (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
+    (unless (assoc "marmalade" package-archives)
+      (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/")))
+    (unless (assoc "ELPA" package-archives)
+      (add-to-list 'package-archives '("ELPA" . "https://tromey.com/elpa/")))
+    (unless(assoc "melpa" package-archives)
+      (add-to-list 'package-archives '("melpa" . "https://melpa.milkbox.net/packages/")))
+    (unless(assoc "org" package-archives)
+      (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/")))
+    (unless(assoc "local" package-archives)
+      (add-to-list 'package-archives '("local" . "~/.xemacs/elpa/upload"))))  
+  (package-initialize)
   (dotspacemacs/reinit)
 
-  (package-initialize)
 
   ;;   (font-family-list)
   ;; (setq

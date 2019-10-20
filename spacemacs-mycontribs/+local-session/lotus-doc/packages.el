@@ -37,7 +37,7 @@
 (defconst lotus-doc-packages
   '(
     eldoc
-    eldoc-extension
+    ;; eldoc-extension ;; package not found
     c-eldoc
     (clweb :location local)                               ;good
     )
@@ -100,12 +100,13 @@ Each entry is either:
         (add-hook 'c++-mode-hook 'c-turn-on-eldoc-mode)
         (setq c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ "))))
 
-(defun lotus-doc/init-eldoc-extension ()
-  (use-package eldoc-extension
-      :defer t
-      :config
-      (progn
-        )))
+;; package not found
+;; (defun lotus-doc/init-eldoc-extension ()
+;;   (use-package eldoc-extension
+;;       :defer t
+;;       :config
+;;       (progn
+;;         )))
 
 (defun lotus-doc/init-clweb ()
   (use-package clweb

@@ -27,8 +27,8 @@
 
 (deh-require-maybe howm
   (setq
-   howm-keyword-file (auto-config-file "howm/howm-keys.el")
-   howm-history-file (auto-config-file "howm/howm-history.el")))
+   howm-keyword-file (lotus-cache-file "howm/howm-keys.el")
+   howm-history-file (lotus-cache-file "howm/howm-history.el")))
 
 
 (provide 'howm-config)

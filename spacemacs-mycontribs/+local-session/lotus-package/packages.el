@@ -96,20 +96,20 @@ Each entry is either:
            ;; (require 'cl)
            ;; (require 'utils-config)
 
-           (defvar package-user-dir
-             (expand-file-name (convert-standard-filename "~/.emacs.d/elpa"))
-             "package-user-dir")
+           ;; (defvar package-user-dir
+           ;;   (expand-file-name (convert-standard-filename "~/.emacs.d/elpa"))
+           ;;   "package-user-dir")
 
            (defvar lotus-package-installed-archive (expand-file-name "installed-archive.el" package-user-dir) "Known Installed packages.")
 
-           (defconst *elpa-package-dir* "~/.emacs.d/elpa")
+           ;; (defconst *elpa-package-dir* "~/.emacs.d/elpa")
 
            (defvar package-archives nil "package archive")
 
-           (setq
-            package-user-dir (expand-file-name (convert-standard-filename "~/.emacs.d/elpa"))
+           ;; (setq
+           ;;  package-user-dir (expand-file-name (convert-standard-filename "~/.emacs.d/elpa"))
 
-            lotus-package-installed-archive (expand-file-name "installed-archive.el" package-user-dir))
+           ;;  lotus-package-installed-archive (expand-file-name "installed-archive.el" package-user-dir))
 
            ;; *elpa-package-dir* "~/.emacs.d/elpa"
 
@@ -126,12 +126,12 @@ Each entry is either:
 
            (when nil (package-initialize))
 
-           (when (file-directory-p *elpa-package-dir*)
-             (mapc #'(lambda (path)
-                       (when (file-directory-p path)
-                         (add-to-list 'load-path path)))
-                   (directory-files *elpa-package-dir* t "[a-zA-Z]+"))
-             (byte-recompile-directory *elpa-package-dir*))
+           ;; (when (file-directory-p *elpa-package-dir*)
+           ;;   (mapc #'(lambda (path)
+           ;;             (when (file-directory-p path)
+           ;;               (add-to-list 'load-path path)))
+           ;;         (directory-files *elpa-package-dir* t "[a-zA-Z]+"))
+           ;;   (byte-recompile-directory *elpa-package-dir*))
 
            (when nil
              (when (file-exists-p lotus-package-installed-archive)

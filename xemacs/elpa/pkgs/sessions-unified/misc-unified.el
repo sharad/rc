@@ -32,7 +32,7 @@
 (require 'session-unified)
 
 
-(require 'savehist-20+)
+;; (require 'savehist-20+)
 
 
 (when (featurep 'savehist-20+)
@@ -40,7 +40,7 @@
   (setq savehist-additional-variables    ;; also save...
         '(search ring regexp-search-ring)    ;; ... my search entries
         savehist-autosave-interval 60        ;; save every minute (default: 5 min)
-        savehist-file (auto-config-file "savehist/savehist.el"))   ;; keep my home clean
+        savehist-file (expand-file-name "savehist/savehist.el" session-unified-dir))   ;; keep my home clean
   ;; do customization before activation
   (savehist-mode t))
 
@@ -54,7 +54,7 @@
 ;;   (desktop-recover-interactive))
 
 ;; (deh-require-maybe desktopaid
-(testing
+(when session-unified-debug
   ;; see: http://desktopaid.sourceforge.net/
   (dta-hook-up))
 
@@ -63,8 +63,8 @@
 ;;   ;; http://www.emacswiki.org/emacs/frame-restore.el
 ;;   )
 
-(require 'revive)
-(require 'tapestry)
+;; (require 'revive)
+;; (require 'tapestry)
 
 ;; first test it with startup
 ;; (deh-require-maybe winner

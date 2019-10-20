@@ -28,16 +28,26 @@
 
 
 
-(require 'sessions-unified)
-
+(defvar session-unified-dir "~/.session-unified/")
 
-(setq session-save-file (auto-config-file "session/session.el"))
+(defvar session-unified-debug nil)
+
+(defun make-session-unified-dir (&optional path)
+  (let ((dir (if path
+                 (expand-file-name path session-unified-dir)
+               session-unified-dir)))
+   (unless (file-directory-p dir)
+     (make-directory dir t))))
+
+(make-session-unified-dir)
+(setq session-save-file (expand-file-name "session/session.el" session-unified-dir))
 
 (defun lotus-session-saved-session ()
   (if (file-exists-p session-save-file) session-save-file))
 
 ;;;###autoload
 (defun session-vc-save-session ()
+  (make-session-unified-dir "session")
   (if (lotus-session-saved-session)
       (put-file-in-rcs session-save-file))
   (session-save-session))

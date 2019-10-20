@@ -36,9 +36,9 @@
 
 (defconst lotus-basic-startup-packages
   '(
-    (basic-utils :location local)
-    (init-setup :location local)
-    (utils-custom :location local)
+    ;; (basic-utils :location local)
+    ;; (init-setup :location local)
+    ;; (utils-custom :location local)
     startup-hooks
     sessions-unified
     elscreen
@@ -71,28 +71,28 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-basic-startup/init-basic-utils ()
-  (use-package basic-utils
-      ;; :ensure t
-      ;; :defer t
-      :demand t
-      :commands (add-to-hook)
-      :config
-    (progn
-      )))
+;; (defun lotus-basic-startup/init-basic-utils ()
+;;   (use-package basic-utils
+;;       ;; :ensure t
+;;       ;; :defer t
+;;       :demand t
+;;       :commands (add-to-hook)
+;;       :config
+;;     (progn
+;;       )))
 
-(defun lotus-basic-startup/init-init-setup ()
-  (use-package init-setup
-      ;; :ensure t
-      :config
-      (progn
-        )))
+;; (defun lotus-basic-startup/init-init-setup ()
+;;   (use-package init-setup
+;;       ;; :ensure t
+;;       :config
+;;       (progn
+;;         )))
 
-(defun lotus-basic-startup/init-utils-custom ()
-  (use-package utils-custom
-      ;; :ensure t
-      :config
-      (progn)))
+;; (defun lotus-basic-startup/init-utils-custom ()
+;;   (use-package utils-custom
+;;     ;; :ensure t
+;;     :config
+;;     (progn)))
 
 
 (defun lotus-basic-startup/init-startup-hooks ()

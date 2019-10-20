@@ -113,7 +113,7 @@ Each entry is either:
       :config
       (progn
         (progn
-          (setq ac-comphist-file (auto-config-file "auto-complete/ac-comphist.dat"))
+          (setq ac-comphist-file (lotus-cache-file "auto-complete/ac-comphist.dat"))
           ;; (define-key ac-mode-map (kbd "C-M-<tab>") 'auto-complete)
           (global-auto-complete-mode t)
 

@@ -72,7 +72,7 @@ Each entry is either:
       :config
       (progn
         (setq
-         uptimes-database  (auto-config-file "uptimes/uptimes")))))
+         uptimes-database  (lotus-cache-file "uptimes/uptimes")))))
 
 (defun lotus-stats/init-uptimes ()
   (use-package uptimes

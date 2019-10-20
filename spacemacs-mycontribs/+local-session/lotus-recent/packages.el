@@ -74,7 +74,7 @@ Each entry is either:
     :config
     (progn
       (setq
-       recentf-save-file (auto-config-file "recentf/recentf")
+       recentf-save-file (lotus-cache-file "recentf/recentf")
        recentf-exclude (list (regexp-opt '(".org$" ".rem$")))
        recentf-max-saved-items 99
        ;; http://lists.gnu.org/archive/html/bug-gnu-emacs/2007-07/msg00007.html

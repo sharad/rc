@@ -132,7 +132,7 @@ Each entry is either:
               :defer t))
 
         (progn
-          (setq tramp-persistency-file-name (auto-config-file "tramp/persistency"))
+          (setq tramp-persistency-file-name (lotus-cache-file "tramp/persistency"))
           (use-package startup-hooks
               :defer t
               :config

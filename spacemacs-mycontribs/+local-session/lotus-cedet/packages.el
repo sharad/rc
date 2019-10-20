@@ -107,7 +107,7 @@ Each entry is either:
       :config
       (progn
         (progn
-          (setq ede-project-placeholder-cache-file (auto-config-file "ede/ede-projects.el"))
+          (setq ede-project-placeholder-cache-file (lotus-cache-file "ede/ede-projects.el"))
           (global-ede-mode 1)                      ; Enable the Project management system
           ;; (global-srecode-minor-mode 1)            ; Enable template insertion menu
           )
