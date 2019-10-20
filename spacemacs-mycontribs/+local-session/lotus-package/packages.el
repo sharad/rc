@@ -113,7 +113,7 @@ Each entry is either:
 
            ;; *elpa-package-dir* "~/.emacs.d/elpa"
 
-           (progn
+           (when nil ;; progn
 
              (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
@@ -277,8 +277,7 @@ Each entry is either:
       (progn
         (progn
           (setq
-           package-archive-upload-base
-           "~/.xemacs/elpa/upload")))))
+           package-archive-upload-base "~/.xemacs/elpa/upload")))))
 
 
 (defun lotus-package/init-package-dev-utils-lotus ()
