@@ -103,13 +103,23 @@
                    (apply 'message fmt args))))))
 
 (defvar sessions-unified-utils-notify nil)
+
 
 (unless (null 'sessions-unified-utils-notify)
   (setq sessions-unified-utils-notify
         (lambda (title fmt &rest args)
           (concat title ": "
                   (apply 'message fmt args)))))
+
 
+;;;###autoload
+(defun protable-display-graphic-p ()
+  (display-graphic-p))
+
+(when (< emacs-major-version 24)
+    (defun protable-display-graphic-p ()
+      (eq (frame-parameter (selected-frame) 'window-system) 'x)))
+
 ;;;###autoload
 (defun add-to-enable-desktop-restore-interrupting-feature-hook (fn &optional append local)
   (interactive)

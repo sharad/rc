@@ -602,7 +602,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
 
     (message "in frame-session-set-this-location")
 
-    (let* ((xwin-enabled (custom-display-graphic-p))
+    (let* ((xwin-enabled (protable-display-graphic-p))
            (wm-hints
             (if xwin-enabled
                 (ignore-errors (emacs-panel-wm-hints))))
