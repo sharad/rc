@@ -127,8 +127,7 @@
               (nconc (assoc key (cdr list)) (list item))
             (nconc list (list item))))))))
 
-
-
+;;;###autoload
 (defun tree-add (keys item list)
   (let ((key (car keys)))
     (if (cdr list)
@@ -149,6 +148,7 @@
             (nconc list (list item))))))))
 
 
+;;;###autoload
 (defun tree-flatten (predicate L)
   ;; https://stackoverflow.com/a/19967639
   "Converts a list to single level."

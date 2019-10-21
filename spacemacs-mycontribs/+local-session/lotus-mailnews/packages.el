@@ -125,9 +125,6 @@ Each entry is either:
       (progn
         (setq
          lsdb-file
-         (lotus-cache-file "lsdb/lsdb"))
-        (unless (file-exists-p lsdb-file)
-          (auto-config-dir
-           (file-name-directory lsdb-file) t))))))
+         (lotus-cache-file "lsdb/lsdb"))))))
 
 ;;; packages.el ends here

@@ -359,6 +359,7 @@
         (backtrace)
         (message "backtrace creating report.org<2> buffer not going to debug.")
         (debug))))
+
 (defun lotus-debug-emacs-user-init-begin ()
   (add-hook 'fundamental-mode-hook
             #'lotus-disable-report-org)
@@ -734,11 +735,10 @@
 
       (setq-default yas-fallback-behavior 'call-other-command)
 
-      (setq
-       x-select-enable-primary t))
+      (setq x-select-enable-primary t))
 
-      ;; do not want it.
-      ;; (setq yas/trigger-key "")
+    ;; do not want it.
+    ;; (setq yas/trigger-key "")
 
 
     (when nil                           ; FROM where this came.
@@ -794,48 +794,59 @@ variable."
 
 
 
-  (deh-require-maybe folding
-    (defun toggle-hiding (column)
-      (interactive "P")
-      (if hs-minor-mode
-          (if (condition-case nil
-                  (hs-toggle-hiding)
-                (error t))
-              ;; (hs-show-all)
-              (hs-show-block))
-        (toggle-selective-display column)))  ;; set-selective-display is a simple, universal function which hides
-    ;; code according to its indentation level. It can be used as a
-    ;; fall-back for hs-toggle-hiding.
+  ;; (deh-require-maybe folding
+  ;;   (defun toggle-hiding (column)
+  ;;     (interactive "P")
+  ;;     (if hs-minor-mode
+  ;;         (if (condition-case nil
+  ;;                 (hs-toggle-hiding)
+  ;;               (error t))
+  ;;             ;; (hs-show-all)
+  ;;             (hs-show-block))
+  ;;       (toggle-selective-display column)))  ;; set-selective-display is a simple, universal function which hides
+  ;;   ;; code according to its indentation level. It can be used as a
+  ;;   ;; fall-back for hs-toggle-hiding.
 
-    ;; First, define a toggling function based on set-selective-display:
+  ;;   ;; First, define a toggling function based on set-selective-display:
 
-    (defun toggle-selective-display (column)
-      (interactive "P")
-      (set-selective-display
-       (or column
-           (unless selective-display
-             (1+ (current-column))))))
+  ;;   (defun toggle-selective-display (column)
+  ;;     (interactive "P")
+  ;;     (set-selective-display
+  ;;      (or column
+  ;;          (unless selective-display
+  ;;            (1+ (current-column))))))
 
-    ;; The above is based on jao’s quick and dirty code folding code. The
-    ;; hiding level can be passed as an prefix argument, or is based on
-    ;; the horizontal position of point. Calling the function again brings
-    ;; the code back.
+  ;;   ;; The above is based on jao’s quick and dirty code folding code. The
+  ;;   ;; hiding level can be passed as an prefix argument, or is based on
+  ;;   ;; the horizontal position of point. Calling the function again brings
+  ;;   ;; the code back.
 
-    ;; Now, define another function which calls hs-toggle-hiding if it’s
-    ;; available, or else falls back on toggle-selective-display:
+  ;;   ;; Now, define another function which calls hs-toggle-hiding if it’s
+  ;;   ;; available, or else falls back on toggle-selective-display:
 
-    (defun toggle-hiding (column)
-      (interactive "P")
-      (if hs-minor-mode
-          (if (condition-case nil
-                  (hs-toggle-hiding)
-                (error t))
-              ;; (hs-show-all)
-              (hs-show-block))
-        (toggle-selective-display column)))
+  ;;   (defun toggle-hiding (column)
+  ;;     (interactive "P")
+  ;;     (if hs-minor-mode
+  ;;         (if (condition-case nil
+  ;;                 (hs-toggle-hiding)
+  ;;               (error t))
+  ;;             ;; (hs-show-all)
+  ;;             (hs-show-block))
+  ;;       (toggle-selective-display column)))
 
-    (global-set-key-if-unbind (kbd "C-+") 'toggle-hiding)
-    (global-set-key-if-unbind (kbd "C-=") 'toggle-selective-display))
+  ;;   (global-set-key-if-unbind (kbd "C-+") 'toggle-hiding)
+  ;;   (global-set-key-if-unbind (kbd "C-=") 'toggle-selective-display))
+
+
+  ;; http://emacs.stackexchange.com/questions/19096/how-do-i-turn-off-spacemacs-s-tildes-on-empty-lines
+  (when (fboundp 'spacemacs/toggle-vi-tilde-fringe-off)
+    (spacemacs/toggle-vi-tilde-fringe-off))
+
+  (when (fboundp 'global-vi-tilde-fringe-mode)
+    (global-vi-tilde-fringe-mode -1))
+
+  (delete-selection-mode 1)
+
 
   (progn ;;
     (defun maxmin-optimized-value (val scale div &optional max min)
@@ -853,15 +864,6 @@ variable."
 
     (when (fboundp 'set-default-face-height-by-resolution)
       (defalias 'mycustom-face-set #'set-default-face-height-by-resolution))
-
-    ;; http://emacs.stackexchange.com/questions/19096/how-do-i-turn-off-spacemacs-s-tildes-on-empty-lines
-    (when (fboundp 'spacemacs/toggle-vi-tilde-fringe-off)
-      (spacemacs/toggle-vi-tilde-fringe-off))
-
-    (when (fboundp 'global-vi-tilde-fringe-mode)
-      (global-vi-tilde-fringe-mode -1))
-
-    (delete-selection-mode 1)
 
     (mycustom-face-set))
 
@@ -926,37 +928,6 @@ variable."
   (message "loading lotus-necessary-functionality finished"))
 
 (defun lotus-necessary-functionality-once-add-to-spacemacs-later ()
-
-  (when nil
-    ;; from ~/.emacs.d/elpa/org-plus-contrib-20181230/etc/ORG-NEWS
-    ;; * Version 9.2
-    ;; ** Incompatible changes
-    ;; *** Removal of OrgStruct mode mode and radio lists
-
-    ;; OrgStruct minor mode and radio lists mechanism (~org-list-send-list~
-    ;;                                                 and ~org-list-radio-lists-templates~) are removed from the code base.
-
-    ;; Note that only radio /lists/ have been removed, not radio tables.
-
-    ;; If you want to manipulate lists like in Org in other modes, we suggest
-    ;; to use orgalist.el, which you can install from GNU ELPA.
-
-    ;; If you want to use Org folding outside of Org buffers, you can have a
-    ;; look at the outshine package in the MELPA repository.
-    (progn
-      (if (fboundp 'turn-on-orgstruct)
-          (add-hook 'message-mode-hook #'turn-on-orgstruct)
-        (lwarn 'error 'spacemacs "turn-on-orgstruct is not available for message-mode-hook"))
-      (if (fboundp 'turn-on-orgstruct++)
-          (add-hook 'message-mode-hook #'turn-on-orgstruct++)
-        (lwarn 'error 'spacemacs "turn-on-orgstruct++ is not available for message-mode-hook"))))
-
-  (progn
-    ;; https://www.emacswiki.org/emacs/OutlineMinorMode
-    ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
-    ;; http://www.modernemacs.com/post/outline-ivy/
-    ;; https://orgmode.org/worg/org-tutorials/org-outside-org.html
-    )
 
   (progn
 
