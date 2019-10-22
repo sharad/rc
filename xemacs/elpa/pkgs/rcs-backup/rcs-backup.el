@@ -62,11 +62,15 @@
 
 (defvar rcs-backup-vc-file nil "")
 
+;; (defun rcs-ci-executable-find (file)
+;;   ;; (require 'tramp-util)
+;;   (if (file-remote-p file)
+;;       (tramp-handle-executable-find "ci")
+;;     (executable-find "ci")))
+
 (defun rcs-ci-executable-find (file)
-  (require 'tramp-util)
-  (if (file-remote-p file)
-      (tramp-handle-executable-find "ci")
-      (executable-find "ci")))
+  ;; (require 'tramp-util)
+  (executable-find "ci"))
 
 
 (defun vc-find-backend (file &optional backends)

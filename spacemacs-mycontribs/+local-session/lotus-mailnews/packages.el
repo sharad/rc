@@ -123,8 +123,6 @@ Each entry is either:
     :config
     (progn
       (progn
-        (setq
-         lsdb-file
-         (lotus-cache-file "lsdb/lsdb"))))))
+        (setq lsdb-file (lotus-cache-file "lsdb/lsdb"))))))
 
 ;;; packages.el ends here

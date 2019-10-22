@@ -28,6 +28,10 @@
 (require 'basic-macros)
 (require 'basic-utils) ;; global-set-key-if-unbind
 
+
+
+
+
 (deh-section "autoconfig"
   (unless user-emacs-directory
     (error "user-emacs-directory is not set"))
@@ -37,9 +41,9 @@
   (defun auto-config-file (file-path)
     (make-directory
      (if (file-name-directory file-path)
-	 (expand-file-name
-	  (file-name-directory file-path)
-	  (expand-file-name ".cache/autoconfig" user-emacs-directory))
+         (expand-file-name
+          (file-name-directory file-path)
+          (expand-file-name ".cache/autoconfig" user-emacs-directory))
        (expand-file-name ".cache/autoconfig" user-emacs-directory))
      t)
     (expand-file-name file-path (expand-file-name ".cache/autoconfig" user-emacs-directory)))
@@ -48,17 +52,17 @@
     ;; Remove optional final slash from string S
     (let ((l (1- (length s))))
       (if (and (> l 0) (eq (aref s l) ?/))
-	  (substring s 0 l)
-	s)))
+          (substring s 0 l)
+        s)))
 
   (defun auto-config-dir (dir-path &optional create-it)
     (unless user-emacs-directory
       (error "user-emacs-directory is not set"))
     (make-directory
      (if (if create-it dir-path (file-name-directory (simple-no-final-slash dir-path)))
-	 (expand-file-name
-	  (if create-it dir-path (file-name-directory (simple-no-final-slash dir-path)))
-	  (expand-file-name "autoconfig" user-emacs-directory))
+         (expand-file-name
+          (if create-it dir-path (file-name-directory (simple-no-final-slash dir-path)))
+          (expand-file-name "autoconfig" user-emacs-directory))
        (expand-file-name "autoconfig" user-emacs-directory))
      t)
     (expand-file-name dir-path (expand-file-name "autoconfig" user-emacs-directory))))

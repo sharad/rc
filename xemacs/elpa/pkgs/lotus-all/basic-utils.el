@@ -229,19 +229,6 @@
       (error
        (lotus-message-notify "run-each-hooks" "Error: function:\n%s error %s" (pp-to-string f) e)))))
 
-(when nil
-  (defun toignore ()
-    (message "asdfds"))
-
-
-  (defalias 'toignore 'ignore)
-
-  (fset 'alttoignore (symbol-function 'toignore))
-  (fset 'ignore (symbol-function 'alttoignore))
-
-  (toignore)
-  (alttoignore))
-
 ;;;###autoload
 (defvar *undefine-function-alist* nil "undefine-function-alist")
 

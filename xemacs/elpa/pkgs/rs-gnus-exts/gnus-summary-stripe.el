@@ -71,9 +71,12 @@
 ;;
 ;;
 
+(provide 'gnus-summary-stripe)
+
+
 ;;; Require
 (require 'stripe-buffer)
-
+
 ;;; Code:
 
 (defcustom gnus-summary-stripe-regexp nil
@@ -88,7 +91,5 @@
 
 (add-hook 'gnus-summary-prepare-hook 'gnus-summary-stripe)
 (add-hook 'gnus-summary-update-hook 'gnus-summary-stripe)
-
-(provide 'gnus-summary-stripe)
-
+
 ;;; gnus-summary-stripe.el ends here

@@ -55,15 +55,18 @@
 ;;                  "Office.Sent Items"
 ;;                  "sent"))))
 
-(setq gnus-message-archive-group        ;even I have handled it in gnus-posting-style
-      '("sent"
-        (if (message-news-p)
-            '("sent-news")
-            `("sent-mail"
-              ,@(if (member (system-name) office-host-names)
-                    '("Office.Meru.Sent Items" "Office.Fortinet.Sent Items"))))
-        '(format-time-string "sent.%Y-%m")
-        ))
+(setq
+ gnus-message-archive-method '(nnimap "localhost")
+ gnus-message-archive-group        ;even I have handled it in gnus-posting-style
+ #'(lambda (group)
+     (append
+      (list "sent")
+      (if (message-news-p)
+          '("sent-news")
+        `("sent-mail"
+          ,@(if (member (system-name) office-host-names)
+                '("Office.Meru.Sent Items" "Office.Fortinet.Sent Items"))))
+      (list (format-time-string "sent.%Y-%m")))))
 
 
 ;; http://www.gnus.org/manual/gnus_153.html

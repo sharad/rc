@@ -78,6 +78,7 @@
  gnus-treat-strip-banner t)
 
 (setq gnus-article-date-lapsed-new-header t)
+
 (add-hook 'gnus-part-display-hook 'gnus-article-date-lapsed)
 (add-hook 'gnus-part-display-hook 'gnus-article-date-local)
 
