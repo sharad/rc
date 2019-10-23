@@ -24,40 +24,42 @@
 
 ;;; Code:
 
-(setq bbdb-file (expand-file-name "bbdb/bbdb" "~/.emacs.d/.cache/autoconfig"))
+(deh-require-maybe bbdb
 
-(defun bbdb/gnus-pop-up-bbdb-buffer-for-some-time ()
-  (if (functionp 'bbdb/gnus-pop-up-bbdb-buffer)
-      (progn
-        (bbdb/gnus-pop-up-bbdb-buffer)
-        ;; (with-selected-window (get-buffer-window gnus-article-buffer)
-        ;;   (gnus-summary-goto-subject (cdr gnus-article-current)))
-        (let ((win-bbdb (get-buffer-window "*BBDB*")))
-          (when win-bbdb
-            ;; (run-at-time "4 sec" nil #'delete-window w))))
-            (run-at-time "4 sec" nil #'(lambda (w)
-                                         (if (and
-                                              (windowp w)
-                                              (window-valid-p w))
-                                             ;; (old-delete-window w)
-                                             (progn
-                                               (delete-window w)
-                                               (message "deleted %s window" w))))
-                         win-bbdb))))
-    (message "#'bbdb/gnus-pop-up-bbdb-buffer is not present in bbdb3 use some other function for popup.")))
 
-(define-key gnus-summary-mode-map (kbd "s-c s-v")  'bbdb/gnus-pop-up-bbdb-buffer)
+  (setq bbdb-file (expand-file-name "bbdb/bbdb" "~/.emacs.d/.cache/autoconfig"))
 
-(setq bbdb-use-pop-up t
-      bbdb-save-db-timeout 0) ;; I want it
-(remove-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer)
-(add-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer-for-some-time)
+  (defun bbdb/gnus-pop-up-bbdb-buffer-for-some-time ()
+    (if (functionp 'bbdb/gnus-pop-up-bbdb-buffer)
+        (progn
+          (bbdb/gnus-pop-up-bbdb-buffer)
+          ;; (with-selected-window (get-buffer-window gnus-article-buffer)
+          ;;   (gnus-summary-goto-subject (cdr gnus-article-current)))
+          (let ((win-bbdb (get-buffer-window "*BBDB*")))
+            (when win-bbdb
+              ;; (run-at-time "4 sec" nil #'delete-window w))))
+              (run-at-time "4 sec" nil #'(lambda (w)
+                                           (if (and
+                                                (windowp w)
+                                                (window-valid-p w))
+                                               ;; (old-delete-window w)
+                                               (progn
+                                                 (delete-window w)
+                                                 (message "deleted %s window" w))))
+                           win-bbdb))))
+      (message "#'bbdb/gnus-pop-up-bbdb-buffer is not present in bbdb3 use some other function for popup.")))
 
-(defun toggle-bbdb-use-pop-up ()
-  (interactive)
-  (setq
-   bbdb-use-pop-up (not bbdb-use-pop-up)))
+  (define-key gnus-summary-mode-map (kbd "s-c s-v")  'bbdb/gnus-pop-up-bbdb-buffer)
 
+  (setq bbdb-use-pop-up t
+        bbdb-save-db-timeout 0) ;; I want it
+  (remove-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer)
+  (add-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer-for-some-time)
+
+  (defun toggle-bbdb-use-pop-up ()
+    (interactive)
+    (setq
+     bbdb-use-pop-up (not bbdb-use-pop-up))))
 
 ;;
 

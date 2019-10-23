@@ -550,7 +550,8 @@ This function is called at the very end of Spacemacs initialization."
  '(planner-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
  '(planner-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
  '(psc-ide-add-import-on-completion t t)
- '(psc-ide-rebuild-on-save nil t))
+ '(psc-ide-rebuild-on-save nil t)
+ '(send-mail-function (quote sendmail-send-it)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
