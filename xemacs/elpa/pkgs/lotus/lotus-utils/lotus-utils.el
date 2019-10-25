@@ -144,4 +144,14 @@
       ""
     (-reduce-from #'s-shared-start (first strings) (rest strings))))
 
+
+;;;###autoload
+(defun forgive/them ()
+  (interactive)
+  (if (and
+       (featurep 'develock)
+       (assq major-mode develock-keywords-alist))
+      (develock-mode -1))
+  (highlight-changes-visible-mode -1))
+
 ;;; lotus-utils.el ends here

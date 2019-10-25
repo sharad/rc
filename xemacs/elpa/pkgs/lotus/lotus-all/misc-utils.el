@@ -24,15 +24,15 @@
 
 ;;; Code:
 
-(require 'dot-emacs-helper)
-(require 'basic-macros)
+;; (require 'dot-emacs-helper)
+;; (require 'basic-macros)
 (require 'basic-utils) ;; global-set-key-if-unbind
 
 
 
 
 
-(deh-section "autoconfig"
+(progn ;; deh-section "autoconfig"
   (unless user-emacs-directory
     (error "user-emacs-directory is not set"))
 
@@ -67,10 +67,10 @@
      t)
     (expand-file-name dir-path (expand-file-name "autoconfig" user-emacs-directory))))
 
-(deh-featurep pcache
+(progn ;; deh-featurep pcache
   (setq pcache-directory (auto-config-dir "var/pcache/" t)))
 
-(deh-featurep abbrev
+(progn ;; deh-featurep abbrev
   (setq abbrev-file-name (auto-config-file "abbrev/abbrev_defs")))
 
 ;; create an indirect buffer
@@ -85,15 +85,10 @@ The indirect buffer can have another major mode."
 ;; a key. Now I can use C-c i to insert the current date.
 
 ;; Insertion of Dates.
-(deh-section "insert date time"
-  (deh-require insert-time-string)
-  (defun insert-date-string ()
-    "Insert a nicely formated date string."
-    (interactive)
-    (insert (format-time-string "%Y-%m-%d")))
-  ;; org-time-stamp
-  )
-
+(defun insert-date-string ()
+  "Insert a nicely formated date string."
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d")))
 
 (if (not running-xemacs)
    (menu-bar-mode -10))
@@ -160,7 +155,7 @@ The indirect buffer can have another major mode."
 ;; Consider using the `ispell-parser' to check your text.  For instance
 ;; consider adding:
 
-(deh-require-maybe ispell
+(progn ;; deh-require-maybe ispell
  (add-hook 'tex-mode-hook                ;for tex
           (function (lambda () (setq ispell-parser 'tex)))))
 
@@ -330,7 +325,7 @@ The indirect buffer can have another major mode."
 
 (put 'set-goal-column 'disabled nil)
 
-(deh-require-maybe flymake               ;excellent
+(progn ;; deh-require-maybe flymake               ;excellent
   (add-hook 'find-file-hook 'flymake-find-file-hook))
 
 
@@ -339,7 +334,7 @@ The indirect buffer can have another major mode."
 ;; of lines, and deletes excess newlines from the ends of buffers.
 ;;
 ;; get it from: http://www.dsmit.com/lisp/
-(deh-require-maybe whitespace
+(progn ;; deh-require-maybe whitespace
   (setq whitespace-auto-cleanup t)
   (when (functionp 'whitespace-global-mode)
     (whitespace-global-mode 1)))
@@ -353,22 +348,8 @@ The indirect buffer can have another major mode."
     (cd *work-dir*))
 
 
-(deh-require-maybe smart-operator)
 
-
-(deh-require-maybe thingatpt)
-(deh-require-maybe thingatpt+)
-
-(when nil
-  ;; BUG for new system
- (deh-require-maybe (progn help+ help-fns+ help-macro+ help-mode+)
-  )
-
-(deh-require-maybe (progn ido-load-library kill-ring-ido kill-ring-search)
-  ))
-
-
-(deh-section "Close all frame"
+(progn ;; deh-section "Close all frame"
   (defun close-all-frames ()
     (interactive)
     (dolist (f (frame-list))
@@ -381,14 +362,14 @@ The indirect buffer can have another major mode."
       (set-input-method "devanagari-itrans" nil)))
 
 
-(deh-require-maybe imenu-tree
+(progn ;; deh-require-maybe imenu-tree
   (setq imenu-tree-windata '(frame right 0.2 delete))
 
   )
 
 (when nil
   ;; BUG
-  (deh-require-maybe (progn pastie pastbin paste2)
+  (progn ;; deh-require-maybe (progn pastie pastbin paste2)
     ))
 
 
@@ -414,7 +395,7 @@ The indirect buffer can have another major mode."
      enable-p4-login nil
      tramp-mode nil
      ido-mode nil)
-    (deh-featurep epa
+    (progn ;; deh-featurep epa
       (if (fboundp 'epa-file-disable)
           (epa-file-disable))))
 
@@ -427,10 +408,10 @@ The indirect buffer can have another major mode."
     (login-to-perforce)
     ;; (update-ssh-agent t) ;; should be called when tramp file accessed. - see how it will work in case lotus-desktop-session-restore.
     ;;test
-    (deh-featurep epa
+    (progn ;; deh-featurep epa
       (if (fboundp 'epa-file-disable)
           (epa-file-enable)))
-    (deh-featurep (and light-symbol hilit-chg)
+    (progn ;; deh-featurep (and light-symbol hilit-chg)
       (add-element-to-lists '(lambda ()
                               (light-symbol-mode 1)
                               (highlight-changes-visible-mode t)
@@ -458,7 +439,7 @@ The indirect buffer can have another major mode."
     (progn
 
       (progn
-(deh-section "crontab-mode"
+(progn ;; deh-section "crontab-mode"
   (autoload 'crontab-mode "crontab-mode.el" "Major mode for editing your crontab file." t)
   (eval-after-load "crontab-mode"
     '(progn
@@ -473,7 +454,7 @@ The indirect buffer can have another major mode."
           buffer-file-name crontab-default-file
           default-directory (file-name-directory buffer-file-name)))))))
 
-(deh-section "centered-cursor-mode"
+(progn ;; deh-section "centered-cursor-mode"
   (defun centered-cursor-stay-same-pos ()
     (interactive)
     (unless (ad-find-advice 'ccm-first-start 'before 'reset-ccm-vpos)
@@ -513,7 +494,7 @@ The indirect buffer can have another major mode."
 
 (progn
   (progn
-   (deh-section "Emacs Code Jump"
+   (progn ;; deh-section "Emacs Code Jump"
      ;; http://lists.gnu.org/archive/html/help-gnu-emacs/2009-09/msg00669.html
 
      (defun elisp-disassemble (function)
@@ -609,7 +590,7 @@ The indirect buffer can have another major mode."
 
 
 
-     (deh-section "Emacs jump"
+     (progn ;; deh-section "Emacs jump"
        ;; with output following C-h v or C-h f I use `jump-to-form' -
        ;; bound here to f12:
 
@@ -633,17 +614,17 @@ The indirect buffer can have another major mode."
    )
 
   (progn
-    (deh-section "New"
-      '(deh-require-maybe (progn
+    (progn ;; deh-section "New"
+      '(progn ;; deh-require-maybe (progn
                             ipa         ;problem resetting current-idle-time
                             org-pua
                             )
         ;;http://www.emacswiki.org/emacs/InPlaceAnnotations
         )
-      (deh-require-maybe alert
+      (progn ;; deh-require-maybe alert
         ;;http://www.emacswiki.org/emacs/alert.el
         )
-      (deh-require-maybe org-pua
+      (progn ;; deh-require-maybe org-pua
         ;;http://www.emacswiki.org/emacs-es/org-pua.el
         ))
     )
@@ -653,7 +634,7 @@ The indirect buffer can have another major mode."
 ;; check here
 (progn
 
-(deh-require-maybe point-stack
+(progn ;; deh-require-maybe point-stack
   (global-set-key-if-unbind '[(f5)] 'point-stack-push)
   (global-set-key-if-unbind '[(f6)] 'point-stack-pop)
   (global-set-key-if-unbind '[(f7)] 'point-stack-forward-stack-pop)
@@ -662,14 +643,14 @@ The indirect buffer can have another major mode."
   (global-set-key-if-unbind (kbd "s-<left>") 'point-stack-pop)
   (global-set-key-if-unbind (kbd "s-<left>") 'point-stack-forward-stack-pop))
 
-(deh-require-maybe byte-code-cache)
+(progn ;; deh-require-maybe byte-code-cache)
 
 (when nil                               ;obslete
-  (deh-require-maybe lazy-lock
+  (progn ;; deh-require-maybe lazy-lock
   ;; http://www.opensource.apple.com/source/emacs/emacs-54/emacs/lisp/lazy-lock.el
   ))
 
-(deh-section "misc"
+(progn ;; deh-section "misc"
   ;; from: http://www.zerny.dk/emacs/dot-emacs.el
   (defun cycle-windows()
     "cycle the buffer of the windows in cyclic ordering"
@@ -679,7 +660,7 @@ The indirect buffer can have another major mode."
                  (set-window-buffer (next-window window 0) (window-buffer window))
                  (set-window-buffer window next-window-buffer))) (butlast (window-list nil 0)))))
 
-(deh-section "examine"
+(progn ;; deh-section "examine"
   (defun display-expression-value (var)
     (interactive "sexp: ")
     (let ((buf (get-buffer-create "*output*")))
@@ -694,7 +675,7 @@ The indirect buffer can have another major mode."
 )
 )
 
-(deh-section "vim"
+(progn ;; deh-section "vim"
   ;; viper-mode
   ;; viper-go-away
   (defun open-xvim ()
@@ -716,7 +697,7 @@ The indirect buffer can have another major mode."
         (error "No file is associated with buffer %s" (current-buffer)))))
 
 
-(deh-require-maybe ielm
+(progn ;; deh-require-maybe ielm
   ;; * Trying from the interactive emacs lisp mode (M-x ielm)
   (defalias 'repl 'ielm)
   (add-hook 'lotus-enable-startup-interrupting-feature-hook
@@ -726,7 +707,7 @@ The indirect buffer can have another major mode."
             t))
 
 
-(deh-section "vimrc"
+(progn ;; deh-section "vimrc"
   ;; http://stackoverflow.com/questions/4236808/syntax-highlight-a-vimrc-file-in-emacs
   (define-generic-mode 'vimrc-generic-mode
       '()
@@ -743,7 +724,7 @@ The indirect buffer can have another major mode."
     "Generic mode for Vim configuration files.")
   (add-to-list 'auto-mode-alist '("vimrc\\'" . vimrc-generic-mode)))
 
-(deh-require-maybe wtf
+(progn ;; deh-require-maybe wtf
 ;; wtf.el provides the ability to look up the definitions of popular
 ;; conversational and computing acronyms.
 )
@@ -757,11 +738,11 @@ The indirect buffer can have another major mode."
     (buffer-string)))
 ;; thanks to “Pascal J Bourguignon” and “TheFlyingDutchman 〔zzbba…@aol.com〕”. 2010-09-02
 
-(deh-require-maybe ini-mode
+(progn ;; deh-require-maybe ini-mode
   (autoload 'ini-mode "ini-mode" nil t)
   (add-to-list 'auto-mode-alist '("\\.ini\\'" . ini-mode)))
 
-(deh-require-maybe any-ini-mode
+(progn ;; deh-require-maybe any-ini-mode
   (add-to-list 'auto-mode-alist '(".*\\.ini$" . any-ini-mode))
   (add-to-list 'auto-mode-alist '(".*\\.conf$" . any-ini-mode)))
 

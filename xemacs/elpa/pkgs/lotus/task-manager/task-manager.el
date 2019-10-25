@@ -29,9 +29,9 @@
 ;; (require 'publishing)
 ;; (require 'org-publishing)
 ;; (require 'muse-publishing)
-(require 'iproject)
-(require 'project-buffer-file)
-(require 'file-utils)
+;; (require 'iproject)
+;; (require 'project-buffer-file)
+;; (require 'file-utils)
 (require 'inflections) ;; for pluralize-string
 
 (defvar *task-desc-file-name* ".task-desc" "*task-desc-file-name*")

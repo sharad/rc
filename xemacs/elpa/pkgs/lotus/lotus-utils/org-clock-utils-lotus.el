@@ -211,66 +211,20 @@
 ;; (org-clock-get-nth-clock-times org-clock-marker 1)
 
 
+
+(eval-when-compile
+  (require 'org-misc-utils-lotus))
+
 (progn
-  (eval-when-compile
-    (require 'org-misc-utils-lotus))
 
-  (progn
-    (setq
-     ;; org-timer-default-timer 25
-     org-clock-persist-file  (auto-config-file "org/clock/org-clock-save.el")
-     org-log-note-clock-out t           ;excellent, great
-     org-clock-clocked-in-display 'both ;; ('mode-line 'frame-title 'both)
-     org-clock-idle-time 5 ;; minutes
-     org-clock-resolve-expert nil ;; good
-     org-clock-sound t ;; could be file name
-     ;; org-clock-current-task
-     ;; org-clock-heading
-     org-clock-history-length 100
-     ;; org-clock-marker
-     ;; org-clock-history
-     org-clock-persist t
-     ;; org-clock-out-switch-to-state ;; good
-     ;; org-clock-in-switch-to-state
-     org-clock-out-remove-zero-time-clocks t))
+  (defun org-idle-tracing-function (orig-fun &rest args)
+    (message "org-resolve-clocks-if-idle called with args %S" args)
+    (let ((res (apply orig-fun args)))
+      (message "org-resolve-clocks-if-idle returned %S" res)
+      res))
 
-  (progn
+  (advice-add 'org-resolve-clocks-if-idle :around #'org-idle-tracing-function))
 
-    (defun org-idle-tracing-function (orig-fun &rest args)
-      (message "org-resolve-clocks-if-idle called with args %S" args)
-      (let ((res (apply orig-fun args)))
-        (message "org-resolve-clocks-if-idle returned %S" res)
-        res))
-
-    (advice-add 'org-resolve-clocks-if-idle :around #'org-idle-tracing-function)
-
-    ;; (advice-remove 'display-buffer #'org-idle-tracing-function)
-    )
-
-  (progn
-    (when nil
-      (defvar org-clock-display-timer-delay 2 "Org clock display timer delay")
-
-      (defun org-clock-display-with-timer (start end old-len)
-        (when (buffer-modified-p)
-          ;; (when org-clock-display-timer
-          ;;   (cancel-timer org-clock-display-timer)
-          ;;   (setq org-clock-display-timer nil))
-          ;; (setq
-          ;;  org-clock-display-timer
-          ;;  (run-with-timer org-clock-display-timer-delay nil 'org-clock-display))
-          (org-clock-display)))
-
-      (defun org-mode-setup-clock-display ()
-        (make-variable-buffer-local 'org-clock-display-timer)
-        (add-hook 'after-change-functions
-                  'org-clock-display-with-timer))
-
-      (add-hook 'org-mode-hook 'org-mode-setup-clock-display)))
-
-  (progn
-
-    ))
 
 ;;;###autoload
 (defun lotus-org-clock-detect-first-clockin-of-day ()
@@ -318,11 +272,6 @@ he has to read scheme, guixsd details, than see similar module and try to implem
          (pos (nth 3 target)))
     (when (set-buffer (find-file-noselect file)) ;; (switch-to-buffer (find-file-noselect file) 'norecord)
       (goto-char pos))))
-
-;;;###autoload
-(defun org-clock-new-task ()
-  (interactive)
-  (org-capture nil "x"))
 
 ;;;}}}
 

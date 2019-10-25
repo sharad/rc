@@ -40,6 +40,7 @@
 (require 'occ-prop)
 (require 'occ-obj-simple)
 (require 'occ-debug-method)
+(require 'occ-unnamed)
 (require 'occ-helm)
 
 
