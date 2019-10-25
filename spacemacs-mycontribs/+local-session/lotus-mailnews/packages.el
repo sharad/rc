@@ -405,9 +405,6 @@ Each entry is either:
                 ;;      (set (make-local-variable 'message-sendmail-f-is-evil) t)
                 ;;      (set (make-local-variable 'message-sendmail-envelope-from) 'header))))
 
-                
-
-
                 (message-news-p
                  (name ,myname)
                  (signature "Regards,\n-sharad")
@@ -554,7 +551,7 @@ Each entry is either:
                          ;; (add-hook 'gnus-message-setup-hook 'jreply nil t)
                          (remove-hook (make-local-variable 'message-setup-hook) 'xsteve-message-citation)
                          (add-hook (make-local-variable 'gnus-message-setup-hook) 'jreply nil t)))
-                 
+
                  ;; (xsteve-message-citation)))
                  ;; (body :file "~/Documents/Template/j/reply")
                  ;; (body jreply)

@@ -64,7 +64,7 @@ article."
         (org-gnus-follow-link group message-id)
       (message "Couldn't get relevant infos for switching to Gnus."))))
 
-(define-key notmuch-show-mode-map (kbd "C-c C-c") 'th-notmuch-goto-message-in-gnus)
+;; (define-key notmuch-show-mode-map (kbd "C-c C-c") 'th-notmuch-goto-message-in-gnus)
 
 
 ;; http://www.emacswiki.org/emacs/NotMuch
@@ -97,7 +97,7 @@ article."
           (gnus-summary-refer-article message-id)) ; simpler than org-gnus method?
       (message "Couldn't get relevant infos for switching to Gnus."))))
 
-(define-key notmuch-show-mode-map (kbd "C-c C-c") 'notmuch-goto-message-in-gnus)
+;; (define-key notmuch-show-mode-map (kbd "C-c C-c") 'notmuch-goto-message-in-gnus)
 
 ;; gnus-pers
 
