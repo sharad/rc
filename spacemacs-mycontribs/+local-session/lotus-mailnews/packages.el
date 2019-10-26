@@ -52,6 +52,17 @@
     sendmail
     dbus
     mailcrypt
+    nnheader
+    gnus-group
+
+    mm-decode
+    nntodo
+    gnus-summary
+    rs-gnus-exts
+    gnus-start
+    host-info
+    common-info
+    passwds
 
     host-info
     common-info
@@ -1018,7 +1029,7 @@ Each entry is either:
       (progn
         (add-hook 'gnus-select-group-hook 'gnus-group-set-timestamp)
         (setq gnus-group-line-format
-                                        ;"%M\%S\%p\%P\%5y: %(%-40,40g%) %d\n")
+              ;"%M\%S\%p\%P\%5y: %(%-40,40g%) %d\n")
               "%M\%S\%p\%P\%5y: %(%-100,100g%) %6,6~(cut 2)d\n"))
       (progn
         (setq gnus-permanently-visible-groups ".*INBOX")
@@ -1035,6 +1046,8 @@ Each entry is either:
                      encapsulate-images on expiry-wait 6))))))
       (progn
         ;;{{Exiting http://www.stanford.edu/~rgm/comp/dotgnus.html
+
+        (defvar my-before-kill-emacs-hook nil)
 
         (defun my-gnus-kill-on-exit-emacs-fn ()
           "Kill Gnus when exiting Emacs. Added to `my-before-kill-emacs-hook'."
@@ -1056,10 +1069,7 @@ Each entry is either:
         ;;           (or (getenv "GNUSTEP_USER_ROOT") "~/GNUstep"))))
         ;;     (gnus-play-jingle))
 
-        (add-hook 'gnus-after-exiting-gnus-hook 'my-gnus-after-exiting-gnus-hook-fn)
-        ;;}}
-        ))))
-
+        (add-hook 'gnus-after-exiting-gnus-hook 'my-gnus-after-exiting-gnus-hook-fn)))))
 
 (defun lotus-mailnews/init-mm-decode ()
   (use-package mm-decode
@@ -1140,7 +1150,6 @@ Each entry is either:
 
         (setq gnus-permanently-visible-groups "^nntodo+")))))
 
-
 (defun lotus-mailnews/init-gnus-summary ()
   (use-package gnus-summary
     :defer t
@@ -1175,7 +1184,6 @@ Each entry is either:
                     (if (gnus-news-group-p gnus-newsgroup-name)
                         (local-set-key "f"  'gnus-summary-followup)
                       (local-set-key "f"  'gnus-summary-mail-forward))))))))
-
 
 (defun lotus-mailnews/init-rs-gnus-exts ()
   (use-package rs-gnus-exts
@@ -1243,7 +1251,7 @@ Each entry is either:
                  (gnus-summary-display-arrow t)
                  (gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
                  (gnus-article-sort-functions '(gnus-article-sort-by-date gnus-article-sort-by-score)))
-                                        ;"Gnus: %g [%A] %Z"
+                ;"Gnus: %g [%A] %Z"
 
                 ("nnimap.*\\.bugs"
                  (gnus-summary-line-format ,lotus-gnus/bugzilla-summry-line-format))
@@ -1252,12 +1260,11 @@ Each entry is either:
                  (gnus-summary-line-format ,lotus-gnus/sent-summry-line-format)
                  (gnus-summary-display-arrow t)
                  (gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
-                                        ;"Gnus: %g [%A] %Z"
+                 ;"Gnus: %g [%A] %Z"
                  (gnus-extra-headers '(To Newsgroups X-Newsreader))
                  (gnus-ignored-from-addresses "Sharad Pratap\\|sh4r4d.*\\|spratap.*"))
                 ("nnshimbun.*"
                  (encapsulate-images t))))))))
-
 
 (defun lotus-mailnews/init-gnus-start ()
   (use-package gnus-start
@@ -1295,7 +1302,7 @@ Each entry is either:
 
          gnus-dribble-directory (expand-file-name ".cache/autoconfig/gnus/gnus-data" user-emacs-directory)
          gnus-always-read-dribble-file t
-                                        ;http://sunsite.ualberta.ca/Documentation/Gnu/emacs-20.7/html_chapter/gnus_1.html#SEC12
+         ;http://sunsite.ualberta.ca/Documentation/Gnu/emacs-20.7/html_chapter/gnus_1.html#SEC12
          ;; You can turn off writing the `.newsrc' file by setting
          ;; gnus-save-newsrc-file to nil, which means you can delete the file
          ;; and save some space, as well as exiting from Gnus faster. However,
@@ -1323,5 +1330,4 @@ Each entry is either:
     :config
     (progn
       (progn))))
-
 ;;; packages.el ends here

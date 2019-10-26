@@ -1,4 +1,28 @@
 ;;; config.el --- config                             -*- lexical-binding: t; -*-
+
+
+(defmacro lotus-fix-later (&rest body)
+  `(when nil
+     ,@body))
+
+(let ((osetup
+       (expand-file-name
+        ".repos/git/main/resource/userorg/main/readwrite/public/user/osetup" "~")))
+  (push (expand-file-name "info.d/common/elisp" osetup) load-path)
+  (let ((default-local-lib
+          (expand-file-name "info.d/hosts/default/elisp" osetup))
+        (local-lib
+         (expand-file-name (concat "info.d/hosts/" (system-name) "/elisp") osetup)))
+    (push
+     (if (file-directory-p local-lib)
+         local-lib
+       default-local-lib)
+     load-path)))
+
+(require 'host-info)
+(require 'common-info)
+(require 'passwds)
+
 
 
 ;; notmuch
@@ -813,7 +837,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 (defvar gnus-mst-display-new-messages "New Mails" "doc")
 (defvar gnus-mst-notify-groups "*" "doc")
 
-(when (xrequire 'gnus-notify)
+(when (require 'gnus-notify nil t)
   (setq gnus-mst-display-new-messages "New mails"
         gnus-mst-notify-groups
         (if (equal (system-name) "spratap")
@@ -932,7 +956,8 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
       gnus-agent nil)
 
 ;;{{
-(setq gnus-local-domain (or (getenv "DOMAINNAME") office-fqdn))
+(lotus-fix-later
+ (setq gnus-local-domain (or (getenv "DOMAINNAME") office-fqdn)))
 ;;}}
 
 ;;{{ other file

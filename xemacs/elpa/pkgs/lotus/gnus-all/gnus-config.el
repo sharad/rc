@@ -75,7 +75,7 @@
 
 
 
-(xrequire 'sigbegone)
+(require 'sigbegone)
 
 
 
