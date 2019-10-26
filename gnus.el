@@ -385,7 +385,7 @@
 
 ;;{{
 
-(require-dir-libs "~/.xemacs/elpa/pkgs/gnus-all")
+;; (require-dir-libs "~/.xemacs/elpa/pkgs/gnus-all")
 
 ;;}}
 

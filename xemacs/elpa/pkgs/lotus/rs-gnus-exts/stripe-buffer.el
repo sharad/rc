@@ -89,9 +89,12 @@
 (defvar stripe-highlight-overlays nil
   "The overlays for `stripe-buffer'.")
 
+;;;###autoload
 (make-variable-buffer-local 'stripe-highlight-face)
+;;;###autoload
 (make-variable-buffer-local 'stripe-highlight-overlays)
 
+;;;###autoload
 (defun stripe-buffer-on (stripe-regexp &optional stripe-line-interval buffer)
   "Make turn on stripe line with BUFFER.
 `stripe-regexp' is match string per line.
@@ -112,6 +115,7 @@
             (push overlay stripe-highlight-overlays))
           (forward-line stripe-line-interval))))))
 
+;;;###autoload
 (defun stripe-buffer-off (&optional buffer)
   "Make turn off stripe line for BUFFER."
   (interactive)

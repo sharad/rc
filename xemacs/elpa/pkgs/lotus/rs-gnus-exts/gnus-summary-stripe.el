@@ -84,12 +84,15 @@
   :type 'string
   :group 'gnus-summary)
 
+;;;###autoload
 (defun gnus-summary-stripe ()
   "Strip line in `gnus-summary-buffer' with `gnus-summary-stripe-regexp'."
   (interactive)
   (stripe-buffer-on gnus-summary-stripe-regexp 2))
 
+;;;###autoload
 (add-hook 'gnus-summary-prepare-hook 'gnus-summary-stripe)
+;;;###autoload
 (add-hook 'gnus-summary-update-hook 'gnus-summary-stripe)
 
 ;;; gnus-summary-stripe.el ends here

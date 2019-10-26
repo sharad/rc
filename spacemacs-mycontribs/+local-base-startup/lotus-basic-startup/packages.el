@@ -236,6 +236,8 @@ Each entry is either:
 (defun lotus-basic-startup/init-elscreen ()
   (use-package elscreen
     :defer t
+    :init
+    (elscreen-start)
     :config
     (progn
       (defun elscreen-move-right ()

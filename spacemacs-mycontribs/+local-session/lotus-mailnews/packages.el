@@ -41,33 +41,29 @@
     lsdb
     shimbun
     notmuch
-    gnus-win
-    gnus-sum
-    gnus-msg
-    gnus-pers
-    gnus-namazu
+    (gnus-win :location local)
+    (gnus-sum :location local)
+    (gnus-msg :location local)
+    (gnus-pers :location local)
+    (gnus-namazu :location local)
     gnus-demon
-    gnus-dired
-    message
+    (gnus-dired :location local)
+    (message :location local)
     sendmail
     dbus
-    mailcrypt
-    nnheader
-    gnus-group
+    (mailcrypt :location local)
+    (nnheader :location local)
+    (gnus-group :location local)
 
-    mm-decode
-    nntodo
-    gnus-summary
+    (mm-decode :location local)
+    (nntodo :location local)
+    (gnus-summary :location local)
     rs-gnus-exts
-    gnus-start
-    host-info
+    (gnus-start :location local)
+    (common-info :location local)
+    (host-info :location local)
     common-info
     passwds
-
-    host-info
-    common-info
-    passwds
-
     )
   "The list of Lisp packages required by the lotus-mailnews layer.
 
@@ -1186,7 +1182,7 @@ Each entry is either:
                       (local-set-key "f"  'gnus-summary-mail-forward))))))))
 
 (defun lotus-mailnews/init-rs-gnus-exts ()
-  (use-package rs-gnus-exts
+  (use-package gnus-summary-stripe
     :defer t
     :config
     (progn
