@@ -63,8 +63,7 @@
     (common-info :location local)
     (host-info :location local)
     common-info
-    passwds
-    )
+    passwds)
   "The list of Lisp packages required by the lotus-mailnews layer.
 
 Each entry is either:
@@ -888,7 +887,8 @@ Each entry is either:
           :defer t
           :config
           (progn
-            (add-hook 'message-mode-hook (lambda () (footnote-mode 1))))))
+            (add-hook 'message-mode-hook
+                      #'(lambda () (footnote-mode 1))))))
       (progn
         (add-hook 'message-mode-hook ;          'turn-on-auto-fill)
                   '(lambda ()

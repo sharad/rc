@@ -912,8 +912,6 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 ;; --
 
-
-
 (defun johnsu01/mailto (url)
   "Follow a mailto URL as passed from Iceweasel, prompting for a posting style."
   (let ((gnus-newsgroup-name
@@ -947,7 +945,6 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
                     '(lambda ()
                        (define-key message-mode-map "\C-c\t" 'external-abook-try-expand))))))
 ;;}}
-
 
 ;; fit in correct place
 
