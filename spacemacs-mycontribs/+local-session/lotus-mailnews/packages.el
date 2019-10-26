@@ -52,6 +52,11 @@
     sendmail
     dbus
     mailcrypt
+
+    host-info
+    common-info
+    passwds
+
     )
   "The list of Lisp packages required by the lotus-mailnews layer.
 
@@ -87,8 +92,16 @@ Each entry is either:
     :config
     (progn
       (progn
+        (setq gnus-interactive-exit t))
+      (progn
         (gnus-delay-initialize))
       (progn
+        ;; If non-nil, the startup message won't be displayed. That way, your
+        ;; boss might not notice that you are reading news instead of doing
+        ;; your job.
+        (setq gnus-inhibit-startup-message t))
+      (progn
+        (setq gnus-asynchronous t)
         (setq gnus-select-method '(nntp "news.gmane.org"))
 
         (add-to-list
@@ -117,9 +130,24 @@ Each entry is either:
         (setq
          gnus-directory      (concat gnus-home-directory "News/"))
         (setq
-         nndraft-directory (concat gnus-directory "drafts/")))))
-
-
+         nndraft-directory (concat gnus-directory "drafts/")))
+      (progn
+        (use-package gnus-start
+          :defer t
+          :config
+          (progn
+            (setq gnus-startup-file   (expand-file-name ".cache/autoconfig/gnus/newsrc" user-emacs-directory)
+                  gnus-read-active-file nil
+                  gnus-check-new-newsgroups nil ; 'ask-server
+                  gnus-save-newsrc-file t
+                  ))))
+      (progn
+        (use-package simple
+          :defer t
+          :config
+          (progn
+            (progn
+              (setq mail-user-agent 'gnus-user-agent)))))))
 
   (progn                                ;unconditionally
     (progn
@@ -325,7 +353,15 @@ Each entry is either:
     :config
     (progn
       (progn
-        )
+        (setq gnus-gcc-mark-as-read t)
+        (setq gnus-gcc-externalize-attachments nil))
+      (progn
+        ;; http://www.inference.phy.cam.ac.uk/cjb/dotfiles/dotgnus
+
+        (defadvice gnus-summary-reply (after formalities () activate)
+          ;; (cjb-add-formalities)
+          "Thanks."
+          (dummy-add-formalities)))
       (progn
         (setq gnus-posting-styles
 
@@ -394,7 +430,7 @@ Each entry is either:
                       default-email))))
 
 
-                                        ; try to get only to address, not all in CC Bcc)
+                ; try to get only to address, not all in CC Bcc)
 
                 ;; (eval ;; (if (equal (system-name) ,office-host-name)
                 ;;  (unless (equal (system-name) ,office-host-name)
@@ -573,7 +609,7 @@ Each entry is either:
                  (eval
                   (progn
                     (set (make-local-variable 'message-cite-reply-above) t)
-                    (set (make-local-variable 'message-cite-reply-position) 'above))))))
+                    (set (make-local-variable 'message-cite-reply-position) 'above))))))))))
 
 
         ;; (".*"
@@ -581,7 +617,7 @@ Each entry is either:
         ;;   (with-current-buffer gnus-article-buffer
         ;;     (message-fetch-field "to")))
 
-        ))))
+        
 
 (defun lotus-mailnews/init-gnus-art ()
   (use-package gnus-art
@@ -742,8 +778,6 @@ Each entry is either:
       (progn
         (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)))))
 
-
-
 (defun lotus-mailnews/init-gnus-daemon ()
   (use-package gnus-daemon
     :defer t
@@ -765,6 +799,8 @@ Each entry is either:
     :defer t
     :config
     (progn
+      (progn
+        (setq message-from-style nil))
       (progn
         (setq
          gnus-message-archive-method '(nnimap "localhost")
@@ -941,5 +977,351 @@ Each entry is either:
         (if (yes-or-no-p "Sign message? ")
             (mc-sign-message))))))
 
+(defun lotus-mailnews/init-nnheader ()
+  (use-package nnheader
+    :defer t
+    :config
+    (progn
+      (progn
+        (setq gnus-nov-is-evil nil)))))
+
+(defun lotus-mailnews/init-gnus-group ()
+  (use-package gnus-group
+    :defer t
+    :config
+    (progn
+      (progn
+        (global-set-key-if-unbind (kbd "H-s") 'gnus-group-save-newsrc))
+      (progn
+        (setq  gnus-invalid-group-regexp "[:`'\"]\\|^$"))
+      (progn
+        ;;Face http://sunsite.ualberta.ca/Documentation/Gnu/emacs-20.7/html_chapter/gnus_2.html#SEC20
+
+        (when t
+          (face-spec-set 'my-group-face-1
+                         '((t (:foreground "Red" :bold t))))
+          (face-spec-set 'my-group-face-2
+                         '((t (:foreground "SeaGreen" :bold t))))
+          (face-spec-set 'my-group-face-3
+                         '((t (:foreground "SpringGreen" :bold t))))
+          (face-spec-set 'my-group-face-4
+                         '((t (:foreground "SteelBlue" :bold t))))
+          (face-spec-set 'my-group-face-5
+                         '((t (:foreground "SkyBlue" :bold t))))
+
+          (setq gnus-group-highlight
+                '(((> unread 200) . my-group-face-1)
+                  ((and (< level 3) (zerop unread)) . my-group-face-2)
+                  ((< level 3) . my-group-face-3)
+                  ((zerop unread) . my-group-face-4)
+                  (t . my-group-face-5)))))
+      (progn
+        (add-hook 'gnus-select-group-hook 'gnus-group-set-timestamp)
+        (setq gnus-group-line-format
+                                        ;"%M\%S\%p\%P\%5y: %(%-40,40g%) %d\n")
+              "%M\%S\%p\%P\%5y: %(%-100,100g%) %6,6~(cut 2)d\n"))
+      (progn
+        (setq gnus-permanently-visible-groups ".*INBOX")
+        (define-key gnus-group-mode-map "b" 'gnus-group-get-new-news)
+        (add-hook 'gnus-group-mode-hook 'gnus-topic-mode))
+      (progn
+        (use-package shimbun
+          :defer t
+          :config
+          (progn
+            (setq nnshimbun-group-parameters-alist
+                  '(
+                    ("^nnshimbun.*:" index-range all prefetch-articles off
+                     encapsulate-images on expiry-wait 6))))))
+      (progn
+        ;;{{Exiting http://www.stanford.edu/~rgm/comp/dotgnus.html
+
+        (defun my-gnus-kill-on-exit-emacs-fn ()
+          "Kill Gnus when exiting Emacs. Added to `my-before-kill-emacs-hook'."
+          (setq gnus-interactive-exit nil)
+          (gnus-group-exit))
+
+        (add-hook 'my-before-kill-emacs-hook 'my-gnus-kill-on-exit-emacs-fn)
+
+
+        (defun my-gnus-after-exiting-gnus-hook-fn ()
+          "Function added to `gnus-after-exiting-gnus-hook'."
+          (remove-hook 'my-before-kill-emacs-hook 'gnus-group-exit)
+          (mapcar (lambda (buff)
+                    (and (get-buffer buff) (kill-buffer buff)))
+                  '("bbdb" "*BBDB*" "*Compile-Log*" "posts")))
+        ;;   (let ((gnus-startup-jingle
+        ;;          (expand-file-name
+        ;;           "Library/WindowMaker/Sounds/Windows/chimes.wav"
+        ;;           (or (getenv "GNUSTEP_USER_ROOT") "~/GNUstep"))))
+        ;;     (gnus-play-jingle))
+
+        (add-hook 'gnus-after-exiting-gnus-hook 'my-gnus-after-exiting-gnus-hook-fn)
+        ;;}}
+        ))))
+
+
+(defun lotus-mailnews/init-mm-decode ()
+  (use-package mm-decode
+    :defer t
+    :config
+    (progn
+      (progn
+        (use-package diary-lib
+          :defer t
+          :config
+          (progn
+            ;; diary-from-outlook-gnus is an interactive compiled Lisp function in
+            ;; `diary-lib.el'.
+
+            ;; (diary-from-outlook-gnus &optional NOCONFIRM)
+
+            ;; Maybe snarf diary entry from Outlook-generated message in Gnus.
+            ;; Unless the optional argument NOCONFIRM is non-nil (which is the case when
+            ;; this function is called interactively), then if an entry is found the
+            ;; user is asked to confirm its addition.
+            ;; Add this function to `gnus-article-prepare-hook' to notice appointments
+            ;; automatically.
+
+            ;; (require 'mm-decode)
+            ;; (require 'mm-util)
+
+            (defun diary-from-outlook-gnus-safe ()
+              (ignore-errors
+                (diary-from-outlook-gnus)))
+            (remove-hook 'gnus-article-prepare-hook 'diary-from-outlook-gnus)
+            ;; this function `diary-from-outlook-gnus'
+            ;; when failed with error "no buffer name with multipart/related"
+            ;; it left article in the end, so I have to remove it.
+            (add-hook 'gnus-article-prepare-hook 'diary-from-outlook-gnus-safe)
+
+            ;; using icalendar.el wotrking
+
+            (deh-require-maybe mm-decode
+              (defvar icalendar-outlook-file nil)
+              (defun my-save-icalendar (handle)
+                (let ((diary icalendar-outlook-file))
+                  (when (and (equal (car (mm-handle-type handle)) "text/calendar")
+                             (gnus-mime-view-part-internally handle)
+                             (mm-with-part handle (icalendar-import-buffer diary)))
+                    (message "Saved calendar entry in %s" diary))))
+
+              (setq gnus-article-mime-part-function 'my-save-icalendar)
+
+              (add-hook
+               'gnus-mime-multipart-functions
+               '("text/calendar" . my-save-icalendar)))))))))
+
+(defun lotus-mailnews/init-nntodo ()
+  ;; (require 'todo-gnus)
+  (use-package nntodo
+    :defer t
+    :config
+    (progn
+      (progn
+        ;; Also it could be usefull to see always all todo items,
+        ;; regardless if they are marked as unread or read:
+        (pushnew '(("^nntodo+"
+                    (display . all)))
+                 gnus-parameters))
+      (progn
+        ;; http://www.emacswiki.org/emacs/TodoGnus
+        (setq nntodo-mbox-file "~/.nntodo")
+
+        ;; Then go into the Server Buffer (with ^) and add there a new Server
+        ;; (with a; nntodo as server method) Now go back to the group buffer
+        ;; and add your new todo-group (with G m and nntodo as the
+        ;; method). You can’t access an empty group, so first you eigther have
+        ;; to create a message (C-u a in the group buffer, when over the
+        ;; group’s name) or copy/move a message (B c or B m) to the group.
+
+        ;; You maybe don’t want todo groups to be hidden, if there are
+        ;; no unread items.
+
+        (setq gnus-permanently-visible-groups "^nntodo+")))))
+
+
+(defun lotus-mailnews/init-gnus-summary ()
+  (use-package gnus-summary
+    :defer t
+    :config
+    (progn
+      (progn
+        (add-hook 'gnus-summary-mode-hook
+                  (lambda ()
+                    (local-set-key (kbd "<tab>") 'gnus-summary-next-unread-article)
+                    (local-set-key "="  'toggle-article-window)
+                    ;; (local-set-key "n"  'gnus-summary-next-article)
+                    ;; (local-set-key "p"  'gnus-summary-prev-article)
+                    ;; (local-set-key "!"  'gnus-summary-put-mark-as-ticked-next)
+                    ;; (local-set-key "d"  'gnus-summary-put-mark-as-expirable-next)
+                    ;; (local-set-key "u"  'gnus-summary-clear-mark-forward)
+                    ;; (local-set-key "r"  'gnus-summary-dwim-reply)
+                    ;; (local-set-key "R"  'gnus-summary-dwim-reply-with-original)
+                    ;; ;; creating real problem
+                    ;; ;; (local-set-key "x"  'gnus-summary-delete-article)
+                    ;; (local-set-key "g"  'gnus-summary-goto-group)
+                    ;; (local-set-key "?"  'gnus-info-find-node)
+                    ;; (local-set-key "l"  'gnus-summary-exit)
+                    ;; (local-set-key "s"  'gnus-summary-save-and-expire)
+                    ;; (local-set-key "v"  'gnus-article-view-part)
+                    ;; (local-set-key "c"  'gnus-summary-mail-other-window)
+                    ;; (local-set-key "$f" 'gnus-summary-sort-by-author)
+                    ;; (local-set-key "$a" 'gnus-summary-sort-by-original)
+                    ;; (local-set-key "$d" 'gnus-summary-sort-by-date)
+                    ;; (local-set-key "$s" 'gnus-summary-sort-by-subject)
+                    ;; (local-set-key "$z" 'gnus-summary-sort-by-chars)
+                    ;; (local-set-key "$e" 'gnus-summary-sort-by-score)
+                    (if (gnus-news-group-p gnus-newsgroup-name)
+                        (local-set-key "f"  'gnus-summary-followup)
+                      (local-set-key "f"  'gnus-summary-mail-forward))))))))
+
+
+(defun lotus-mailnews/init-rs-gnus-exts ()
+  (use-package rs-gnus-exts
+    :defer t
+    :config
+    (progn
+      (progn
+        (rs-gnus-summary-tree-arrows-01))
+      (progn ;; deh-require-maybe gnus-summary-stripe
+        (setq gnus-summary-stripe-regexp "^.+│.+│.+│"))
+      (progn
+        (setq rs-gnus-summary-line-content-type-alist
+              '(("^text/plain"             " ")
+                ("^text/html"              "h")
+                ("^message/rfc822"         "f") ;; forwarded
+                ("^multipart/mixed"        "m")
+                ("^multipart/alternative"  "a")
+                ("^multipart/related"      "r")
+                ("^multipart/signed"       "s")
+                ("^multipart/encrypted"    "e")
+                ("^multipart/report"       "t")
+                ("^application/"           "A")
+                ("^image/"                 "I")))
+
+        (defvar lotus-gnus/global-summry-line-format   nil "")
+        (defvar lotus-gnus/bugzilla-summry-line-format nil "")
+        (defvar lotus-gnus/sent-summry-line-format     nil "")
+
+        (defalias 'gnus-user-format-function-ct 'rs-gnus-summary-line-content-type)
+        (defalias 'gnus-user-format-function-size 'rs-gnus-summary-line-message-size)
+        (defalias 'gnus-user-format-function-score 'rs-gnus-summary-line-score)
+        (defalias 'gnus-user-format-function-label 'rs-gnus-summary-line-label)
+        ;;
+        (setq gnus-balloon-face-0 'rs-gnus-balloon-0
+              gnus-balloon-face-1 'rs-gnus-balloon-1
+              gnus-face-1         'rs-gnus-face-1)
+
+        (copy-face 'default 'rs-gnus-face-1)
+
+        (let* (;;(marks "%0{%«%U%R%z %u&score;%u&ct; %4u&size;%»%}")
+               ;; (marks "%0«%U%R%z%u&atch;%u&score;%u&ct;%4u&size;%»")
+               (marks "%0«%U%R%z%u&atch;%u&score;%u&ct;%4k%»")
+               ;; (marks "%0{%U%R%z%}")
+               ;; (attachment "%0{%@%}")
+               (pipe "%3{│%}")
+               ;; (date  (concat pipe "%1{%d%}" pipe))
+               (date  (concat pipe "%1{%&user-date;%}" pipe))
+               (lines " %1{%-4L%}: ")
+               (from "%4{%-20,20f%}")
+               (thread-mark "%1{%B%}")
+               (subject "%s")
+               (sp " ")
+               (nl "\n"))
+          ;;(bugzilla-who "%4{%-20,20ub%}")
+
+          (setq
+           lotus-gnus/global-summry-line-format   (concat marks date lines from sp pipe sp thread-mark subject nl)
+           lotus-gnus/bugzilla-summry-line-format (concat marks date lines from sp pipe sp thread-mark subject nl)
+           lotus-gnus/sent-summry-line-format     (concat marks date lines from sp pipe sp thread-mark subject nl)))
+
+        (setq gnus-parameters
+              `(
+                (".*"
+                 (gnus-summary-line-format ,lotus-gnus/global-summry-line-format)
+                 (gnus-summary-display-arrow t)
+                 (gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
+                 (gnus-article-sort-functions '(gnus-article-sort-by-date gnus-article-sort-by-score)))
+                                        ;"Gnus: %g [%A] %Z"
+
+                ("nnimap.*\\.bugs"
+                 (gnus-summary-line-format ,lotus-gnus/bugzilla-summry-line-format))
+
+                ("nnimap.*\\.sent-mail\\|.*sent"
+                 (gnus-summary-line-format ,lotus-gnus/sent-summry-line-format)
+                 (gnus-summary-display-arrow t)
+                 (gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
+                                        ;"Gnus: %g [%A] %Z"
+                 (gnus-extra-headers '(To Newsgroups X-Newsreader))
+                 (gnus-ignored-from-addresses "Sharad Pratap\\|sh4r4d.*\\|spratap.*"))
+                ("nnshimbun.*"
+                 (encapsulate-images t))))))))
+
+
+(defun lotus-mailnews/init-gnus-start ()
+  (use-package gnus-start
+    :defer t
+    :config
+    (progn
+      (progn
+        (setq
+         ;;see http://sunsite.ualberta.ca/Documentation/Gnu/emacs-20.7/html_chapter/gnus_1.html#SEC13
+
+         ;;  1.9 Auto Save
+
+         ;; Whenever you do something that changes the Gnus data (reading
+         ;; articles, catching up, killing/subscribing groups), the change is
+         ;; added to a special dribble buffer. This buffer is auto-saved the
+         ;; normal Emacs way. If your Emacs should crash before you have saved
+         ;; the `.newsrc' files, all changes you have made can be recovered
+         ;; from this file.
+
+         ;; If Gnus detects this file at startup, it will ask the user whether
+         ;; to read it. The auto save file is deleted whenever the real
+         ;; startup file is saved.
+
+         ;; If gnus-use-dribble-file is nil, Gnus won't create and maintain a
+         ;; dribble buffer. The default is t.
+
+         ;; Gnus will put the dribble file(s) in gnus-dribble-directory. If
+         ;; this variable is nil, which it is by default, Gnus will dribble
+         ;; into the directory where the `.newsrc' file is located. (This is
+         ;; normally the user's home directory.) The dribble file will get the
+         ;; same file permissions as the .newsrc file.
+
+         ;; If gnus-always-read-dribble-file is non-nil, Gnus will read the
+         ;; dribble file on startup without querying the user.
+
+         gnus-dribble-directory (expand-file-name ".cache/autoconfig/gnus/gnus-data" user-emacs-directory)
+         gnus-always-read-dribble-file t
+                                        ;http://sunsite.ualberta.ca/Documentation/Gnu/emacs-20.7/html_chapter/gnus_1.html#SEC12
+         ;; You can turn off writing the `.newsrc' file by setting
+         ;; gnus-save-newsrc-file to nil, which means you can delete the file
+         ;; and save some space, as well as exiting from Gnus faster. However,
+         ;; this will make it impossible to use other newsreaders than
+         ;; Gnus. But hey, who would want to, right?
+         gnus-save-newsrc-file nil)))))
+
+(defun lotus-mailnews/init-host-info ()
+  (use-package host-info
+    :defer t
+    :config
+    (progn
+      (progn))))
+
+(defun lotus-mailnews/init-common-info ()
+  (use-package common-info
+    :defer t
+    :config
+    (progn
+      (progn))))
+
+(defun lotus-mailnews/init-passwds ()
+  (use-package passwds
+    :defer t
+    :config
+    (progn
+      (progn))))
 
 ;;; packages.el ends here

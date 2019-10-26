@@ -246,7 +246,7 @@ always hide."
       (gnus-summary-reply-with-original nil))
      ((y-or-n-p "Reply to all ? ")
       ;; or gnus-summary-very-wide-reply-with-original ?
-      (gnus-summary-wide-reply-with-original nil)
+      (gnus-summary-wide-reply-with-original< nil)
       (goto-char (point-min))
       (flush-lines "^Cc: $"))
      (t (gnus-summary-reply-with-original nil)))
@@ -437,6 +437,77 @@ always hide."
         first-name-in-name
       (capitalize first-name-in-email))))
 
+;; gnus-msg
+
+;;{{ http://www.inference.phy.cam.ac.uk/cjb/dotfiles/dotgnus
+
+(defun dummy-add-formalities ()
+  "Thanks."
+  (message-position-point))
+
+(defun cjb-add-formalities ()
+  "Add the sender's first name and my tag to e-mail."
+  ;; Modified from <http://www.repose.cx/conf/.elisp/de-gnus.el>
+  (save-excursion
+    (message-goto-signature)
+    ;; (previous-line 1)
+    (forward-line)
+    (when (not (looking-at "Sharad"))
+         (insert "\n\n- Sharad."))
+    (let* ((to (message-fetch-field "To")))
+         (address-comp (mail-extract-address-components to))
+         (name (car address-comp))
+         (first (or (and name (concat "" (car (split-string name)))) ""))
+
+         (when first
+           ;; Go to the first line of the message body.
+           (message-goto-body)
+           (insert "Hi,\n\n")
+           (kill-line)
+           (kill-line)
+           (kill-line)
+           (message-goto-signature)
+           (forward-line -4)
+           (newline)))))
+
+;; rs-gnus-exts - gnus-summary
+
+(defun my-gnus-summary-line-initialize ()
+  "Setup my summary line."
+  (interactive)
+  ;; Alias for the content-type function:
+  (defalias 'gnus-user-format-function-ct 'rs-gnus-summary-line-content-type)
+  ;; Alias for the size function:
+  (defalias 'gnus-user-format-function-size 'rs-gnus-summary-line-message-size)
+  ;; Alias for the score function:
+  (defalias 'gnus-user-format-function-score 'rs-gnus-summary-line-score)
+  ;;
+  (defalias 'gnus-user-format-function-label 'rs-gnus-summary-line-label)
+  ;;
+  ;; Use them:
+  (setq gnus-balloon-face-0 'rs-gnus-balloon-0)
+  (setq gnus-balloon-face-1 'rs-gnus-balloon-1)
+  ;; Unbold face for UTF arrows: (FIXME: Doesn't work on marauder.)
+  (copy-face 'default 'rs-gnus-face-1)
+  (setq gnus-face-1 'rs-gnus-face-1)
+  ;; (set-face-italic-p 'rs-gnus-face-1 nil)
+  ;; (dolist (el '(gnus-summary-low-ancient-face
+  ;; 		gnus-summary-low-read-face
+  ;; 		gnus-summary-low-ticked-face
+  ;; 		gnus-summary-low-undownloaded-face
+  ;; 		gnus-summary-low-unread-face))
+  ;;   (message "%s" el)
+  ;;   (set-face-italic-p el nil)
+  ;;   (set-face-bold-p el nil)
+  ;;   (sit-for 1))
+  (if (or (not window-system)
+          (string-match "marauder\\|siogo" system-name))
+      (rs-gnus-summary-tree-arrows-latin)
+    (rs-gnus-summary-tree-arrows))
+  ;; Set line format:
+  (setq gnus-summary-line-format
+        "%«%U%R%u&score;%u&ct; %4u&size;%»%* %(%-20,20f%) %1«%1{%B %}%s%»\n"))
+
 ;; message template
 
 (defvar message-template-directory "~/.xemacs/gnustmpls/")
@@ -580,7 +651,7 @@ when Gnus hangs on network outs or changes."
            (gnus-message 6 "Disabled integration with NetworkManager"))))
 
 ;; stats
-
+;; ---
 (defun stat (beg end)
   (interactive "r")
   (let (header from-list subject-list from subject (n 0) (chars 0))
@@ -625,6 +696,134 @@ when Gnus hangs on network outs or changes."
     (insert (format "%4i %s\n"
                     (cdr (nth i alist))
                     (car (nth i alist))))))
+
+;; --
+
+
+(defun sdfsdgfdsgdfg-gnus-user-format-function-b (header)
+  (let ((descr
+         ;; (assq 'x-bugzilla-who (mail-header-extra header))))
+         (or
+          (gnus-extra-header 'x-bugzilla-who header)
+          (gnus-extra-header 'X-Bugzilla-Who header))))
+    ;; (if descr (cdr descr) "bugzilla")))
+    (if descr descr "bugzilla")))
+
+
+(defun gnus-user-format-function-atch (header)
+  ;; http://osdir.com/ml/emacs.gnus.user/2006-08/msg00011.html
+  "Display @ for message with attachment in summary line.
+
+You need to add `Content-Type' to `nnmail-extra-headers' and
+`gnus-extra-headers', see Info node `(gnus)To From Newsgroups'."
+  (let ((case-fold-search t)
+        (ctype (or (cdr (assq 'Content-Type (mail-header-extra header)))
+                   "text/plain"))
+        indicator)
+    (when (string-match "^multipart/mixed" ctype)
+      (setq indicator "@"))
+    (if indicator
+        indicator
+      " ")))
+
+
+;; gnus-notification
+
+;;{{ from: http://www.emacswiki.org/emacs/GnusBiff
+(defvar foundnewmbox "")
+
+(defun fmbiff ()
+  (interactive)
+  (save-excursion
+    (with-current-buffer gnus-group-buffer
+      ;; (set-buffer "*Group*")
+                                        ; (beginning-of-buffer)
+      (goto-char (point-min))
+      (defvar foundanymbox nil)
+      (cond ((re-search-forward "INBOX.ALL" nil t)
+             (setq foundanymbox t))
+            (t (setq foundanymbox nil)))
+      ;; (set-buffer "*Group*")
+                                        ; (beginning-of-buffer)
+      (goto-char (point-min))
+      (cond ((re-search-forward "0: INBOX.ALL" nil t)
+             (setq foundnewmbox ""))
+            (t (if foundanymbox (setq foundnewmbox "[M]")
+                 (setq foundnewmbox ""))))
+      (message nil))))
+
+(unless (member 'foundnewmbox global-mode-string)
+  (setq global-mode-string (append global-mode-string
+                                   (list 'foundnewmbox))))
+
+;; ----
+
+
+(defvar mac-biff-lighter ""
+  "Lighter used by `mac-biff-mode'.")
+
+(defvar mac-biff-mail-re "\\([[:digit:]]+\\)"
+  "Regular expression to match number counts in a Gnus buffer.")
+
+(define-minor-mode mac-biff-mode
+  "Minor mode to display state of new email."
+  nil mac-biff-lighter nil
+  (if mac-biff-mode
+      (progn (add-hook 'gnus-after-getting-new-news-hook 'mac-biff-update)
+             (add-hook 'gnus-exit-group-hook 'mac-biff-update)
+             (mac-biff-update))
+    (remove-hook 'gnus-after-getting-new-news-hook 'mac-biff-update)
+    (remove-hook 'gnus-exit-group-hook 'mac-biff-update)))
+
+(defun mac-biff-update1 ()
+  "Read the mail count from Gnus."
+  (let ((buffer (get-buffer "*Group*"))
+        (count 0))
+    (when buffer
+      (with-current-buffer buffer
+        (goto-char (point-min))
+        (while (re-search-forward mac-biff-mail-re nil t)
+          (setq count (+ count (string-to-number (match-string 1)))))))
+    (setq mac-biff-lighter (if (= count 0)
+                               ""
+                             (format " [%d]" count)))))
+;;}}
+
+
+;;{{ from: http://stackoverflow.com/questions/1053245/new-mail-notifications-in-gnus-for-emacs
+(defun mac-biff-update ()
+  "Read the mail count from Gnus."
+  (let ((buffer (get-buffer "*Group*"))
+        (count 0))
+    (when buffer
+      (with-current-buffer buffer
+        (goto-char (point-min))
+        (while (re-search-forward mac-biff-mail-re nil t)
+          (setq count (+ count (string-to-number (match-string 1)))))))
+    (if (> count 0)
+        (if (= 0 (shell-command
+                                        ;(format "/usr/local/bin/growlnotify -a Emacs.app -m 'You have %d new messages!'" count)))))
+                  (format "zenity --question --text 'You have %d new messages!'" count)))
+            (make-frame)))))
+
+;; --
+
+;;{{ from: http://www.emacswiki.org/emacs/GnusNotify
+
+(defvar gnus-mst-display-new-messages "New Mails" "doc")
+(defvar gnus-mst-notify-groups "*" "doc")
+
+(when (xrequire 'gnus-notify)
+  (setq gnus-mst-display-new-messages "New mails"
+        gnus-mst-notify-groups
+        (if (equal (system-name) "spratap")
+            '("nnimap+localhost:Office.INBOX" "nnimap+localhost:Office.lists.info.india" "nnimap+localhost:Office.lists.info.india-misc")
+          '("nnimap+localhost:nnimap+localhost:Gmail.INBOX"))))
+
+;;}}
+
+
+(add-hook 'gnus-after-getting-new-news-hook 'fmbiff)
 
 ;; mail-utils
 
@@ -686,6 +885,82 @@ when Gnus hangs on network outs or changes."
               (message-inhibit-body-encoding t))
           (message-resend address)))
       (gnus-summary-mark-article-as-forwarded article))))
-
 
+;; --
+
+
+
+(defun johnsu01/mailto (url)
+  "Follow a mailto URL as passed from Iceweasel, prompting for a posting style."
+  (let ((gnus-newsgroup-name
+         (completing-read "Use posting style of group: "
+                          gnus-active-hashtb nil
+                          (gnus-read-active-file-p))))
+    (setq url (url-unhex-string url))
+    ;; (browse-url-mail url)
+    (gnus-url-mailto url))
+  ;; message-mail does not do anything with the body argument, so we have to.
+  (if (string-match (regexp-quote "?") url)
+      (let* ((start (match-end 0))
+             (args (url-parse-query-string
+                    (substring url start nil)))
+             (body (cadr (assoc-string "body" args t))))
+        (when body
+          (switch-to-buffer (car (message-buffers)))
+          (save-excursion
+            (message-goto-body)
+            (insert body))))))
+
+
+;; --
+;;{{ Address Book http://www.emacswiki.org/emacs/ExternalAbook
+(when (require 'external-abook nil t)
+  (setq external-abook-command "timeout 4 /usr/bin/lbdbq '%s*' | sed 1d | cut -d'	' -f1,2") ;;"contacts -lf '%%e\t%%n' %s")
+
+  (eval-after-load "message"
+    '(progn
+       (add-to-list 'message-mode-hook
+                    '(lambda ()
+                       (define-key message-mode-map "\C-c\t" 'external-abook-try-expand))))))
+;;}}
+
+
+;; fit in correct place
+
+(setq gnus-registry-install t
+      nnmail-crosspost t
+      gnus-agent nil)
+
+;;{{
+(setq gnus-local-domain (or (getenv "DOMAINNAME") office-fqdn))
+;;}}
+
+;;{{ other file
+
+(setq
+
+ ;; message-send-mail-function 'message-send-mail-with-sendmail
+ ;; message-sendmail-envelope-from 'header
+ ;; message-sendmail-f-is-evil nil
+
+ ;; tls-checktrust 'ask
+ ;; tls-program '("gnutls-cli --x509cafile /etc/ssl/certs/ca-certificates.crt -p %p %h"
+ ;;               "gnutls-cli --x509cafile /etc/ssl/certs/ca-certificates.crt -p %p %h --protocols ssl3"
+ ;;               "openssl s_client -connect %h:%p -CAfile /etc/ssl/certs/ca-certificates.crt -no_ssl2 -ign_eof")
+ gnus-agent-synchronize-flags nil
+ ;; gnus-agent-queue-mail 'always
+ ;; gnus-agent-prompt-send-queue t
+ ;; gnus-asynchronous t
+ ;; gnus-agent-go-online t
+ ;; mm-text-html-renderer 'gnus-w3m
+ gnus-summary-display-arrow t
+ gnus-completing-read-function 'gnus-ido-completing-read
+ mail-user-agent 'gnus-user-agent
+ read-mail-command 'gnus)
+ ;;gnus-treat-display-smileys nil
+
+(autoload 'sendmail-send-it "sendmail")
+
+;; (require 'sigbegone)
+
 ;;; config.el ends here
