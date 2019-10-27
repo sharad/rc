@@ -5,23 +5,17 @@
   `(when nil
      ,@body))
 
-(let ((osetup
-       (expand-file-name
-        ".repos/git/main/resource/userorg/main/readwrite/public/user/osetup" "~")))
-  (push (expand-file-name "info.d/common/elisp" osetup) load-path)
-  (let ((default-local-lib
-          (expand-file-name "info.d/hosts/default/elisp" osetup))
-        (local-lib
-         (expand-file-name (concat "info.d/hosts/" (system-name) "/elisp") osetup)))
-    (push
-     (if (file-directory-p local-lib)
-         local-lib
-       default-local-lib)
-     load-path)))
+(defun lotus-load-if-exists (file)
+  (when (file-exists-p file)
+    (load file)))
 
-(require 'host-info)
-(require 'common-info)
-(require 'passwds)
+(lotus-load-if-exists "~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/info.d/common/elisp/common-info.el")
+(lotus-load-if-exists "~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/info.d/common/elisp/passwds.el")
+(lotus-load-if-exists "~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/info.d/hosts/default/elisp/host-info.el")
+(lotus-load-if-exists (concat "~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/info.d/hosts/"
+                              (system-name)
+                              "/elisp/host-info.el"))
+
 
 
 

@@ -551,6 +551,18 @@ This function is called at the very end of Spacemacs initialization."
  '(planner-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
  '(psc-ide-add-import-on-completion t t)
  '(psc-ide-rebuild-on-save nil t)
+ '(safe-local-variable-values
+   (quote
+    ((checkdoc-minor-mode . 1)
+     (major-mode . emacs-lisp)
+     (typescript-backend . tide)
+     (typescript-backend . lsp)
+     (javascript-backend . tern)
+     (javascript-backend . lsp)
+     (go-backend . go-mode)
+     (go-backend . lsp)
+     (elixir-enable-compilation-checking . t)
+     (elixir-enable-compilation-checking))))
  '(send-mail-function (quote sendmail-send-it)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
