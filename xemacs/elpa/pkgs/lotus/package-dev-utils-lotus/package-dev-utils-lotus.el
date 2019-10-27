@@ -562,6 +562,8 @@ will be deleted."
                 ob-async
                 elfeed-org
                 org-password-manager
+                org-clock-unnamed-task
+                occ
                 org-plus-contrib)))
 
     (dolist (p pkgs)

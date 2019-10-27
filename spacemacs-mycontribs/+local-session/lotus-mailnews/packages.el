@@ -315,8 +315,9 @@ Each entry is either:
         (interactive)
         (let
             ((article-buffer (car
-                              (remove-if-not '(lambda (bn)
-                                                (string-match "*Article" bn 0)) (mapcar #'buffer-name (buffer-list))))))
+                              (remove-if-not #'(lambda (bn)
+                                                 (string-match "*Article" bn 0))
+                                             (mapcar #'buffer-name (buffer-list))))))
           (if (and article-buffer
                    (get-buffer-window article-buffer nil))
               (gnus-configure-windows 'summary 'force)
