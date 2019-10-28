@@ -1919,4 +1919,112 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
     (setq gnus-permanently-visible-groups "^nntodo+")))
 
+(defun lotus-mailnews/init-gnus-summary-config ()
+  (progn
+    (add-hook 'gnus-summary-mode-hook
+              (lambda ()
+                (local-set-key (kbd "<tab>") 'gnus-summary-next-unread-article)
+                (local-set-key "="  'toggle-article-window)
+                ;; (local-set-key "n"  'gnus-summary-next-article)
+                ;; (local-set-key "p"  'gnus-summary-prev-article)
+                ;; (local-set-key "!"  'gnus-summary-put-mark-as-ticked-next)
+                ;; (local-set-key "d"  'gnus-summary-put-mark-as-expirable-next)
+                ;; (local-set-key "u"  'gnus-summary-clear-mark-forward)
+                ;; (local-set-key "r"  'gnus-summary-dwim-reply)
+                ;; (local-set-key "R"  'gnus-summary-dwim-reply-with-original)
+                ;; ;; creating real problem
+                ;; ;; (local-set-key "x"  'gnus-summary-delete-article)
+                ;; (local-set-key "g"  'gnus-summary-goto-group)
+                ;; (local-set-key "?"  'gnus-info-find-node)
+                ;; (local-set-key "l"  'gnus-summary-exit)
+                ;; (local-set-key "s"  'gnus-summary-save-and-expire)
+                ;; (local-set-key "v"  'gnus-article-view-part)
+                ;; (local-set-key "c"  'gnus-summary-mail-other-window)
+                ;; (local-set-key "$f" 'gnus-summary-sort-by-author)
+                ;; (local-set-key "$a" 'gnus-summary-sort-by-original)
+                ;; (local-set-key "$d" 'gnus-summary-sort-by-date)
+                ;; (local-set-key "$s" 'gnus-summary-sort-by-subject)
+                ;; (local-set-key "$z" 'gnus-summary-sort-by-chars)
+                ;; (local-set-key "$e" 'gnus-summary-sort-by-score)
+                (if (gnus-news-group-p gnus-newsgroup-name)
+                    (local-set-key "f"  'gnus-summary-followup)
+                  (local-set-key "f"  'gnus-summary-mail-forward))))))
+
+(defun lotus-mailnews/init-rs-gnus-exts-config ()
+  (progn
+    (rs-gnus-summary-tree-arrows-01))
+  (progn ;; deh-require-maybe gnus-summary-stripe
+    (setq gnus-summary-stripe-regexp "^.+│.+│.+│"))
+  (progn
+    (setq rs-gnus-summary-line-content-type-alist
+          '(("^text/plain"             " ")
+            ("^text/html"              "h")
+            ("^message/rfc822"         "f") ;; forwarded
+            ("^multipart/mixed"        "m")
+            ("^multipart/alternative"  "a")
+            ("^multipart/related"      "r")
+            ("^multipart/signed"       "s")
+            ("^multipart/encrypted"    "e")
+            ("^multipart/report"       "t")
+            ("^application/"           "A")
+            ("^image/"                 "I")))
+    
+    (defvar lotus-gnus/global-summry-line-format   nil "")
+    (defvar lotus-gnus/bugzilla-summry-line-format nil "")
+    (defvar lotus-gnus/sent-summry-line-format     nil "")
+    
+    (defalias 'gnus-user-format-function-ct 'rs-gnus-summary-line-content-type)
+    (defalias 'gnus-user-format-function-size 'rs-gnus-summary-line-message-size)
+    (defalias 'gnus-user-format-function-score 'rs-gnus-summary-line-score)
+    (defalias 'gnus-user-format-function-label 'rs-gnus-summary-line-label)
+    ;;
+    (setq gnus-balloon-face-0 'rs-gnus-balloon-0
+          gnus-balloon-face-1 'rs-gnus-balloon-1
+          gnus-face-1         'rs-gnus-face-1)
+    
+    (copy-face 'default 'rs-gnus-face-1)
+    
+    (let* (;;(marks "%0{%«%U%R%z %u&score;%u&ct; %4u&size;%»%}")
+           ;; (marks "%0«%U%R%z%u&atch;%u&score;%u&ct;%4u&size;%»")
+           (marks "%0«%U%R%z%u&atch;%u&score;%u&ct;%4k%»")
+           ;; (marks "%0{%U%R%z%}")
+           ;; (attachment "%0{%@%}")
+           (pipe "%3{│%}")
+           ;; (date  (concat pipe "%1{%d%}" pipe))
+           (date  (concat pipe "%1{%&user-date;%}" pipe))
+           (lines " %1{%-4L%}: ")
+           (from "%4{%-20,20f%}")
+           (thread-mark "%1{%B%}")
+           (subject "%s")
+           (sp " ")
+           (nl "\n"))
+      ;;(bugzilla-who "%4{%-20,20ub%}")
+      
+      (setq
+       lotus-gnus/global-summry-line-format   (concat marks date lines from sp pipe sp thread-mark subject nl)
+       lotus-gnus/bugzilla-summry-line-format (concat marks date lines from sp pipe sp thread-mark subject nl)
+       lotus-gnus/sent-summry-line-format     (concat marks date lines from sp pipe sp thread-mark subject nl)))
+    
+    (setq gnus-parameters
+          `(
+            (".*"
+             (gnus-summary-line-format ,lotus-gnus/global-summry-line-format)
+             (gnus-summary-display-arrow t)
+             (gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
+             (gnus-article-sort-functions '(gnus-article-sort-by-date gnus-article-sort-by-score)))
+                                        ;"Gnus: %g [%A] %Z"
+            
+            ("nnimap.*\\.bugs"
+             (gnus-summary-line-format ,lotus-gnus/bugzilla-summry-line-format))
+            
+            ("nnimap.*\\.sent-mail\\|.*sent"
+             (gnus-summary-line-format ,lotus-gnus/sent-summry-line-format)
+             (gnus-summary-display-arrow t)
+             (gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
+                                        ;"Gnus: %g [%A] %Z"
+             (gnus-extra-headers '(To Newsgroups X-Newsreader))
+             (gnus-ignored-from-addresses "Sharad Pratap\\|sh4r4d.*\\|spratap.*"))
+            ("nnshimbun.*"
+             (encapsulate-images t))))))
+
 ;;; config.el ends here
