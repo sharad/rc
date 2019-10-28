@@ -1218,6 +1218,18 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 ;; (require 'sigbegone)
 
 
+(defun lotus-mailnews/pre-init-gnus-init ()
+  (progn
+    (progn
+      (setq gnus-init-file "~/.gnus.el"))
+    (make-directory (expand-file-name ".cache/gnus/" user-emacs-directory) t)
+    (setq
+     gnus-home-directory (expand-file-name ".cache/gnus/" user-emacs-directory))
+    (setq
+     gnus-directory      (concat gnus-home-directory "News/"))
+    (setq
+     nndraft-directory (concat gnus-directory "drafts/"))))
+
 (defun lotus-mailnews/pre-init-gnus-config ()
   (progn
     (setq gnus-interactive-exit t)
@@ -1413,6 +1425,35 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
           (gnus-configure-windows 'article 'force))))))
 
 (defun lotus-mailnews/init-gnus-sum-config ()
+  (progn
+    (add-hook 'gnus-summary-mode-hook
+               #'(lambda ()
+                   (local-set-key (kbd "<tab>") 'gnus-summary-next-unread-article)
+                   (local-set-key "="  'toggle-article-window)
+                   ;; (local-set-key "n"  'gnus-summary-next-article)
+                   ;; (local-set-key "p"  'gnus-summary-prev-article)
+                   ;; (local-set-key "!"  'gnus-summary-put-mark-as-ticked-next)
+                   ;; (local-set-key "d"  'gnus-summary-put-mark-as-expirable-next)
+                   ;; (local-set-key "u"  'gnus-summary-clear-mark-forward)
+                   ;; (local-set-key "r"  'gnus-summary-dwim-reply)
+                   ;; (local-set-key "R"  'gnus-summary-dwim-reply-with-original)
+                   ;; ;; creating real problem
+                   ;; ;; (local-set-key "x"  'gnus-summary-delete-article)
+                   ;; (local-set-key "g"  'gnus-summary-goto-group)
+                   ;; (local-set-key "?"  'gnus-info-find-node)
+                   ;; (local-set-key "l"  'gnus-summary-exit)
+                   ;; (local-set-key "s"  'gnus-summary-save-and-expire)
+                   ;; (local-set-key "v"  'gnus-article-view-part)
+                   ;; (local-set-key "c"  'gnus-summary-mail-other-window)
+                   ;; (local-set-key "$f" 'gnus-summary-sort-by-author)
+                   ;; (local-set-key "$a" 'gnus-summary-sort-by-original)
+                   ;; (local-set-key "$d" 'gnus-summary-sort-by-date)
+                   ;; (local-set-key "$s" 'gnus-summary-sort-by-subject)
+                   ;; (local-set-key "$z" 'gnus-summary-sort-by-chars)
+                   ;; (local-set-key "$e" 'gnus-summary-sort-by-score)
+                   (if (gnus-news-group-p gnus-newsgroup-name)
+                       (local-set-key "f"  'gnus-summary-followup)
+                     (local-set-key "f"  'gnus-summary-mail-forward)))))
   (progn
     (setq
      gnus-extra-headers          '(To Newsgroups Content-Type Date)
@@ -1914,37 +1955,6 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     ;; no unread items.
 
     (setq gnus-permanently-visible-groups "^nntodo+")))
-
-(defun lotus-mailnews/init-gnus-summary-config ()
-  (progn
-    (add-hook 'gnus-summary-mode-hook
-              (lambda ()
-                (local-set-key (kbd "<tab>") 'gnus-summary-next-unread-article)
-                (local-set-key "="  'toggle-article-window)
-                ;; (local-set-key "n"  'gnus-summary-next-article)
-                ;; (local-set-key "p"  'gnus-summary-prev-article)
-                ;; (local-set-key "!"  'gnus-summary-put-mark-as-ticked-next)
-                ;; (local-set-key "d"  'gnus-summary-put-mark-as-expirable-next)
-                ;; (local-set-key "u"  'gnus-summary-clear-mark-forward)
-                ;; (local-set-key "r"  'gnus-summary-dwim-reply)
-                ;; (local-set-key "R"  'gnus-summary-dwim-reply-with-original)
-                ;; ;; creating real problem
-                ;; ;; (local-set-key "x"  'gnus-summary-delete-article)
-                ;; (local-set-key "g"  'gnus-summary-goto-group)
-                ;; (local-set-key "?"  'gnus-info-find-node)
-                ;; (local-set-key "l"  'gnus-summary-exit)
-                ;; (local-set-key "s"  'gnus-summary-save-and-expire)
-                ;; (local-set-key "v"  'gnus-article-view-part)
-                ;; (local-set-key "c"  'gnus-summary-mail-other-window)
-                ;; (local-set-key "$f" 'gnus-summary-sort-by-author)
-                ;; (local-set-key "$a" 'gnus-summary-sort-by-original)
-                ;; (local-set-key "$d" 'gnus-summary-sort-by-date)
-                ;; (local-set-key "$s" 'gnus-summary-sort-by-subject)
-                ;; (local-set-key "$z" 'gnus-summary-sort-by-chars)
-                ;; (local-set-key "$e" 'gnus-summary-sort-by-score)
-                (if (gnus-news-group-p gnus-newsgroup-name)
-                    (local-set-key "f"  'gnus-summary-followup)
-                  (local-set-key "f"  'gnus-summary-mail-forward))))))
 
 (defun lotus-mailnews/init-rs-gnus-exts-config ()
   (progn

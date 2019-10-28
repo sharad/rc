@@ -56,7 +56,6 @@
     (gnus-group :location local)
     (mm-decode :location local)
     (nntodo :location local)
-    (gnus-summary :location local)
     rs-gnus-exts
     (gnus-start :location local)
     (common-info :location local)
@@ -90,24 +89,13 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-
 (defun lotus-mailnews/pre-init-gnus ()
   (use-package gnus
+    :init
+    (lotus-mailnews/pre-init-gnus-init)
     :defer t
     :config
-    (lotus-mailnews/pre-init-gnus-config))
-
-  (progn                                ;unconditionally
-    (progn
-      (progn
-        (setq gnus-init-file "~/.gnus.el"))
-      (make-directory (expand-file-name ".cache/gnus/" user-emacs-directory) t)
-      (setq
-       gnus-home-directory (expand-file-name ".cache/gnus/" user-emacs-directory))
-      (setq
-       gnus-directory      (concat gnus-home-directory "News/"))
-      (setq
-       nndraft-directory (concat gnus-directory "drafts/")))))
+    (lotus-mailnews/pre-init-gnus-config)))
 
 (defun lotus-mailnews/post-init-gnus ()
   (use-package gnus
@@ -152,7 +140,7 @@ Each entry is either:
     (lotus-mailnews/init-gnus-sum-config)))
 
 (defun lotus-mailnews/init-gnus-msg ()
-  (use-package lsdb
+  (use-package gnus-msg
     :defer t
     :config
     (lotus-mailnews/init-gnus-msg-config)))
@@ -164,7 +152,7 @@ Each entry is either:
     (lotus-mailnews/init-gnus-art-config)))
 
 (defun lotus-mailnews/init-nnmail ()
-  (use-package lsdb
+  (use-package nnmail
     :defer t
     :config
     (lotus-mailnews/init-nnmail-config)))
@@ -242,12 +230,6 @@ Each entry is either:
     :defer t
     :config
     (lotus-mailnews/init-nntodo-config)))
-
-(defun lotus-mailnews/init-gnus-summary ()
-  (use-package gnus-summary
-    :defer t
-    :config
-    (lotus-mailnews/init-gnus-summary-config)))
 
 (defun lotus-mailnews/init-rs-gnus-exts ()
   (use-package gnus-summary-stripe
