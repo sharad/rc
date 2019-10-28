@@ -74,7 +74,7 @@ Each entry is either:
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
 
-(defun lotus-expand/init-abbrev ()
+(defun lotus-expand/post-init-abbrev ()
   (use-package pde-indent-dwim
     :defer t
     :config

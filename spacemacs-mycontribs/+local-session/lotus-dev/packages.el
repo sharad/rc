@@ -949,94 +949,93 @@ Add directory to search path for source files using the GDB command, dir."))
 
 (defun lotus-dev/init-erefactor ()
   (use-package erefactor
-      :defer t
-      :config
-      (progn
-        ;; Put this file into load-path'ed directory,
-        ;; and byte compile its if desired.
-        ;; And put the following expression into your ~/.emacs.
-        ;;
-        ;;     (eval-after-load 'lisp-mode
-        ;;       '(progn
-        ;;          (require 'erefactor)
-        ;;          (define-key emacs-lisp-mode-map "\C-c\C-v" erefactor-map)))
-        ;;
-        ;; And set these variables correctly.
-        ;;  `erefactor-lint-path-alist', `erefactor-lint-by-emacsen'
+    :defer t
+    :config
+    (progn
+      ;; Put this file into load-path'ed directory,
+      ;; and byte compile its if desired.
+      ;; And put the following expression into your ~/.emacs.
+      ;;
+      ;;     (eval-after-load 'lisp-mode
+      ;;       '(progn
+      ;;          (require 'erefactor)
+      ;;          (define-key emacs-lisp-mode-map "\C-c\C-v" erefactor-map)))
+      ;;
+      ;; And set these variables correctly.
+      ;;  `erefactor-lint-path-alist', `erefactor-lint-by-emacsen'
 
-        ;; Put the following in your .emacs, if you desire highlighting local variable.
-        ;;
-        ;;     (add-hook 'emacs-lisp-mode-hook 'erefactor-lazy-highlight-turn-on)
-        ;;     (add-hook 'lisp-interaction-mode-hook 'erefactor-lazy-highlight-turn-on)
+      ;; Put the following in your .emacs, if you desire highlighting local variable.
+      ;;
+      ;;     (add-hook 'emacs-lisp-mode-hook 'erefactor-lazy-highlight-turn-on)
+      ;;     (add-hook 'lisp-interaction-mode-hook 'erefactor-lazy-highlight-turn-on)
 
-        ;; Usage:
+      ;; Usage:
 
-        ;; C-c C-v l : elint current buffer in clean environment.
-        ;; C-c C-v L : elint current buffer by multiple emacs binaries.
-        ;;             See `erefactor-lint-emacsen'
-        ;; C-c C-v r : Rename symbol in current buffer.
-        ;;             Resolve `let' binding as long as i can.
-        ;; C-c C-v R : Rename symbol in requiring modules and current buffer.
-        ;; C-c C-v h : Highlight current symbol in this buffer
-        ;;             and suppress `erefacthr-highlight-mode'.
-        ;; C-c C-v d : Dehighlight all by above command.
-        ;; C-c C-v c : Switch prefix bunch of symbols.
-        ;;             ex: '(hoge-var hoge-func) -> '(foo-var foo-func)
-        ;; C-c C-v ? : Display flymake elint warnings/errors
+      ;; C-c C-v l : elint current buffer in clean environment.
+      ;; C-c C-v L : elint current buffer by multiple emacs binaries.
+      ;;             See `erefactor-lint-emacsen'
+      ;; C-c C-v r : Rename symbol in current buffer.
+      ;;             Resolve `let' binding as long as i can.
+      ;; C-c C-v R : Rename symbol in requiring modules and current buffer.
+      ;; C-c C-v h : Highlight current symbol in this buffer
+      ;;             and suppress `erefacthr-highlight-mode'.
+      ;; C-c C-v d : Dehighlight all by above command.
+      ;; C-c C-v c : Switch prefix bunch of symbols.
+      ;;             ex: '(hoge-var hoge-func) -> '(foo-var foo-func)
+      ;; C-c C-v ? : Display flymake elint warnings/errors
 
-        ;; * To show compilation warnings when evaluate `defun' form.
-        ;;
-        ;;   M-x erefactor-check-eval-mode
+      ;; * To show compilation warnings when evaluate `defun' form.
+      ;;
+      ;;   M-x erefactor-check-eval-mode
 
 
-        (when nil
-          ;; code run by elint
-          (progn
-            (setq load-path
-                  (append load-path 'nil))
-            (find-file "/home/s/hell/.xemacs/pkgrepos/mypkgs/session-start/office-config.el")
-            (goto-char
-             (point-min))
-            (condition-case err
-                (let
-                    (sexp)
-                  (while t
-                    (setq sexp
-                          (read
-                           (current-buffer)))
-                    (cond
-                      ((memq
-                        (car-safe sexp)
-                        'require)
-                       (princ
-                        (format "Evaluating %s... " sexp))
-                       (eval sexp))
-                      ((eq
-                        (car-safe sexp)
-                        'eval-when-compile)
-                       (princ
-                        (format "Evaluating %s... "
-                                `(progn ,@(cdr-safe sexp))))
-                       (eval
-                        `(progn ,@(cdr-safe sexp)))))))
-              (error nil))
-            (macroexpand
-             '(labels nil))
-            (elint-initialize)
-            (elint-current-buffer)
-            (with-current-buffer "*Elint*"
-              (princ
-               (buffer-string))))))))
-
+      (when nil
+        ;; code run by elint
+        (progn
+          (setq load-path
+                (append load-path 'nil))
+          (find-file "/home/s/hell/.xemacs/pkgrepos/mypkgs/session-start/office-config.el")
+          (goto-char
+           (point-min))
+          (condition-case err
+              (let
+                  (sexp)
+                (while t
+                  (setq sexp
+                        (read
+                         (current-buffer)))
+                  (cond
+                   ((memq
+                     (car-safe sexp)
+                     'require)
+                    (princ
+                     (format "Evaluating %s... " sexp))
+                    (eval sexp))
+                   ((eq
+                     (car-safe sexp)
+                     'eval-when-compile)
+                    (princ
+                     (format "Evaluating %s... "
+                             `(progn ,@(cdr-safe sexp))))
+                    (eval
+                     `(progn ,@(cdr-safe sexp)))))))
+            (error nil))
+          (macroexpand
+           '(labels nil))
+          (elint-initialize)
+          (elint-current-buffer)
+          (with-current-buffer "*Elint*"
+            (princ
+             (buffer-string))))))))
 
 (defun lotus-dev/init-uncrustify-mode ()
   (use-package uncrustify-mode
-      :defer t
-      :config
-      (progn
-        (add-hook 'c-mode-common-hook
-                  '(lambda ()
-                    (uncrustify-mode -1))))))
+    :defer t
+    :config
+    (progn
+      (add-hook 'c-mode-common-hook
+                '(lambda ()
+                   (uncrustify-mode -1))))))
 
 
 (defun lotus-dev/post-init-srefactor ()
@@ -1073,7 +1072,7 @@ Add directory to search path for source files using the GDB command, dir."))
           (semantic-mode 1) ;; -> this is optional for Lisp
           ))))
 
-(defun lotus-dev/init-python ()
+(defun lotus-dev/post-init-python ()
   (use-package python
     :defer t
     :config

@@ -121,7 +121,7 @@ Each entry is either:
     :config
     (lotus-mailnews/init-shimbun-config)))
 
-(defun lotus-mailnews/init-notmuch ()
+(defun lotus-mailnews/post-init-notmuch ()
   (use-package notmuch-address
     :defer t
     :config
@@ -169,6 +169,12 @@ Each entry is either:
     :config
     (lotus-mailnews/init-gnus-namazu-config)))
 
+(defun lotus-mailnews/init-gnus-demon ()
+  (use-package gnus-demon
+    :defer t
+    :config
+    (lotus-mailnews/init-gnus-demon-config)))
+
 (defun lotus-mailnews/init-gnus-dired ()
   (use-package gnus-dired
     :defer t
@@ -193,7 +199,7 @@ Each entry is either:
     :config
     (lotus-mailnews/init-sendmail-config)))
 
-(defun lotus-mailnews/init-dbus ()
+(defun lotus-mailnews/post-init-dbus ()
   (use-package dbus
     :defer t
     :config
@@ -255,7 +261,7 @@ Each entry is either:
     :config
     (lotus-mailnews/init-common-info-config)))
 
-(defun lotus-mailnews/init-passwds ()
+(defun lotus-mailnews/post-init-passwds ()
   (use-package passwds
     :defer t
     :config

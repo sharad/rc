@@ -93,7 +93,7 @@ Each entry is either:
       (progn
         (lotus-override/post-init-git-link-config)))))
 
-(defun lotus-override/init-vc ()
+(defun lotus-override/post-init-vc ()
   (use-package vc-hooks
     :defer t
     :config

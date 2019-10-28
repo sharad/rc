@@ -1404,32 +1404,35 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
                    (vertical 25
                              (group 1.0))
                    (vertical 1.0
-                             (summary 1.0 point)))))
+                             (summary 1.0 point)))))))
 
-    ;; Add info configuration also for function `gnus-info-find-node'
 
-    ;; gnus-buffer-configuration
-
-    ;;}}
-
-    (defun toggle-article-window ()
-      (interactive)
-      (let
-          ((article-buffer (car
-                            (remove-if-not #'(lambda (bn)
-                                               (string-match "*Article" bn 0))
-                                             ((message "message" format-args)apcar #'buffer-name (buffer-list))))))
-        (if (and article-buffer
-                 (get-buffer-window article-buffer nil))
-            (gnus-configure-windows 'summary 'force)
-          (gnus-configure-windows 'article 'force))))))
 
 (defun lotus-mailnews/init-gnus-sum-config ()
+  (use-package gnus-win
+    :defer t
+    :config
+    (progn
+      ;; Add info configuration also for function `gnus-info-find-node'
+
+      ;; gnus-buffer-configuration
+
+      ;;}}
+      (defun lotus-toggle-article-window ()
+        (interactive)
+        (let ((article-buffer (car
+                               (remove-if-not #'(lambda (bn)
+                                                  (string-match "*Article" bn 0))
+                                              (mapcar #'buffer-name (buffer-list))))))
+          (if (and article-buffer
+                   (get-buffer-window article-buffer nil))
+              (gnus-configure-windows 'summary 'force)
+            (gnus-configure-windows 'article 'force))))))
   (progn
     (add-hook 'gnus-summary-mode-hook
                #'(lambda ()
                    (local-set-key (kbd "<tab>") 'gnus-summary-next-unread-article)
-                   (local-set-key "="  'toggle-article-window)
+                   (local-set-key "="           'lotus-toggle-article-window)
                    ;; (local-set-key "n"  'gnus-summary-next-article)
                    ;; (local-set-key "p"  'gnus-summary-prev-article)
                    ;; (local-set-key "!"  'gnus-summary-put-mark-as-ticked-next)
@@ -1473,6 +1476,16 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     (setq gnus-user-date-format-alist
           '(((gnus-seconds-today) . " %k:%M") ;dans la journée = 14:39
             ((+ 86400 (gnus-seconds-today)) . "hier %k:%M")
+                                        ;hier = hier 14:39
+            ((+ 604800 (gnus-seconds-today)) . "%a %k:%M")
+                                        ;dans la semaine = sam 14:39
+            ((gnus-seconds-month) . "%a %d") ;ce mois = sam 28
+            ((gnus-seconds-year) . "%b %d") ;durant l'année = mai 28
+            (t . "%b %d '%y"))))
+  (progn
+    (setq gnus-user-date-format-alist
+          '(((gnus-seconds-today) . " %k:%M") ;dans la journée = 14:39
+            ((+ 86400 (gnus-seconds-today)) . "yesterday %k:%M")
                                         ;hier = hier 14:39
             ((+ 604800 (gnus-seconds-today)) . "%a %k:%M")
                                         ;dans la semaine = sam 14:39
@@ -1526,28 +1539,28 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
                  (gnus-article-strip-trailing-space))))
   (progn
     (setq
-     gnus-treat-body-boundary 'head
-     gnus-treat-date-lapsed 'head
-     gnus-treat-display-x-face 'head
-     gnus-treat-strip-cr 2
-     gnus-treat-strip-leading-blank-lines t
+     gnus-treat-body-boundary              'head
+     gnus-treat-date-lapsed                'head
+     gnus-treat-display-x-face             'head
+     gnus-treat-strip-cr                   2
+     gnus-treat-strip-leading-blank-lines  t
      gnus-treat-strip-multiple-blank-lines t
      gnus-treat-strip-trailing-blank-lines t
-     gnus-treat-unsplit-urls t
+     gnus-treat-unsplit-urls               t
 
-     gnus-treat-date-english 'head
-     gnus-treat-date-iso8601 'head
-     gnus-treat-date-lapsed 'head
-     gnus-treat-date-local 'head
-     gnus-treat-date-original 'head
-     gnus-treat-date-user-defined 'head
-     gnus-treat-date-ut 'head
-     gnus-treat-date-original 'head
+     gnus-treat-date-english               'head
+     gnus-treat-date-iso8601               'head
+     gnus-treat-date-lapsed                'head
+     gnus-treat-date-local                 'head
+     gnus-treat-date-original              'head
+     gnus-treat-date-user-defined          'head
+     gnus-treat-date-ut                    'head
+     gnus-treat-date-original              'head
      ;; Make sure Gnus doesn't display smiley graphics.
-     gnus-treat-display-smileys t
-     gnus-treat-hide-boring-headers 'head
-     gnus-treat-hide-signature nil ;; (unless (equal (system-name) office-host-name) 'last)
-     gnus-treat-strip-banner t))
+     gnus-treat-display-smileys            t
+     gnus-treat-hide-boring-headers        'head
+     gnus-treat-hide-signature             nil ;; (unless (equal (system-name) office-host-name) 'last)
+     gnus-treat-strip-banner               t))
   (progn
     (setq gnus-article-x-face-command
           ;; http://git.gnus.org/cgit/gnus.git/plain/lisp/gnus-art.el?h=V5-8&id=9e60844ade6660e25359aefaf313daf3e92ff3a9
@@ -1625,6 +1638,9 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
       :config
       (progn
         (add-hook 'midnight-hook 'xsteve-gnus-update-namazu-index)))))
+
+(defun lotus-mailnews/init-gnus-demon-config ()
+  ())
 
 (defun lotus-mailnews/init-gnus-dired-config ()
   (progn
@@ -1732,14 +1748,15 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
                   #'(lambda () (footnote-mode 1))))))
   (progn
     (add-hook 'message-mode-hook ;          'turn-on-auto-fill)
-              '(lambda ()
-                 (turn-on-auto-fill)
-                 (setq fill-column 70)))
+              #'(lambda ()
+                  (turn-on-auto-fill)
+                  (setq fill-column 70)))
     (setq message-generate-headers-first t)
-    (setq message-kill-buffer-on-exit t)
+    (setq message-kill-buffer-on-exit    t)
     ;;{{ http://www.gnus.org/manual/gnus_401.html
     (setq gnus-confirm-mail-reply-to-news t)
     (setq message-user-fqdn (concat "personal.machine.of." myshortname ".com")))
+
   (progn
     (defvar *use-msmtp-for-senmail* nil "msmtp to use")
 
@@ -1979,14 +1996,14 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     (defvar lotus-gnus/bugzilla-summry-line-format nil "")
     (defvar lotus-gnus/sent-summry-line-format     nil "")
 
-    (defalias 'gnus-user-format-function-ct 'rs-gnus-summary-line-content-type)
-    (defalias 'gnus-user-format-function-size 'rs-gnus-summary-line-message-size)
+    (defalias 'gnus-user-format-function-ct    'rs-gnus-summary-line-content-type)
+    (defalias 'gnus-user-format-function-size  'rs-gnus-summary-line-message-size)
     (defalias 'gnus-user-format-function-score 'rs-gnus-summary-line-score)
     (defalias 'gnus-user-format-function-label 'rs-gnus-summary-line-label)
     ;;
-    (setq gnus-balloon-face-0 'rs-gnus-balloon-0
-          gnus-balloon-face-1 'rs-gnus-balloon-1
-          gnus-face-1         'rs-gnus-face-1)
+    (setq gnus-balloon-face-0                  'rs-gnus-balloon-0
+          gnus-balloon-face-1                  'rs-gnus-balloon-1
+          gnus-face-1                          'rs-gnus-face-1)
 
     (copy-face 'default 'rs-gnus-face-1)
 
