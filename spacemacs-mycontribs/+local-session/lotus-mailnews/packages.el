@@ -46,7 +46,7 @@
     (gnus-msg :location local)
     (gnus-pers :location local)
     (gnus-namazu :location local)
-    gnus-demon
+    (gnus-daemon :location local)
     (gnus-dired :location local)
     (message :location local)
     sendmail

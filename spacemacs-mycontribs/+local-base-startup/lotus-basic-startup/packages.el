@@ -136,6 +136,11 @@ Each entry is either:
     :init
     (progn
       (progn
+        (defun lotus-construct-desktop-filename-regex-function ()
+          (concat "^" (expand-file-name
+                       (concat ".cache/" (file-name-nondirectory (directory-file-name session-unified-dir)))
+                       user-emacs-directory)
+                  "/"  "desktop" "/emacs-desktop-" server-name))
         (setq session-unified-dir (expand-file-name ".cache/session-unified" user-emacs-directory))
         (setq desktop-path        (expand-file-name "desktop/" session-unified-dir))
         (setq desktop-dirname     (expand-file-name "desktop/" session-unified-dir))
