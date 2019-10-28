@@ -615,7 +615,7 @@ always hide."
           default-email))))
 
 
-                                        ; try to get only to address, not all in CC Bcc)
+    ;; try to get only to address, not all in CC Bcc)
 
     ;; (eval ;; (if (equal (system-name) ,office-host-name)
     ;;  (unless (equal (system-name) ,office-host-name)

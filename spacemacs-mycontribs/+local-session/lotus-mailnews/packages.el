@@ -36,32 +36,32 @@
 
 (defconst lotus-mailnews-packages
   '(
-    (gnus :location local)
+    (gnus        :location local)
     bbdb
     lsdb
     shimbun
     notmuch
-    (gnus-win :location local)
-    (gnus-sum :location local)
-    (gnus-msg :location local)
-    (gnus-pers :location local)
+    (gnus-win    :location local)
+    (gnus-sum    :location local)
+    (gnus-msg    :location local)
+    (gnus-pers   :location local)
     (gnus-namazu :location local)
     (gnus-daemon :location local)
-    (gnus-dired :location local)
-    (message :location local)
+    (gnus-dired  :location local)
+    (message     :location local)
     sendmail
     dbus
-    (mailcrypt :location local)
-    (nnheader :location local)
-    (gnus-group :location local)
-    (mm-decode :location local)
-    (nntodo :location local)
+    (mailcrypt   :location local)
+    (nnheader    :location local)
+    (gnus-group  :location local)
+    (mm-decode   :location local)
+    (nntodo      :location local)
     rs-gnus-exts
-    (gnus-start :location local)
+    (gnus-start  :location local)
     (common-info :location local)
-    (host-info :location local)
+    (host-info   :location local)
     (common-info :location local)
-    (passwds :location local))
+    (passwds     :location local))
   "The list of Lisp packages required by the lotus-mailnews layer.
 
 Each entry is either:
