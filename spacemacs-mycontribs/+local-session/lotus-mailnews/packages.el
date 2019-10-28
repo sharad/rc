@@ -284,6 +284,6 @@ Each entry is either:
   (use-package passwds
     :defer t
     :config
-    (progn
-      (progn))))
+    (lotus-mailnews/init-passwds-config)))
+
 ;;; packages.el ends here

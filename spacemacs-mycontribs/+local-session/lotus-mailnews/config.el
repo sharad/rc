@@ -2073,4 +2073,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 (defun lotus-mailnews/init-common-info-config ()
   ())
 
+(defun lotus-mailnews/init-passwds-config ()
+  ())
+
 ;;; config.el ends here
