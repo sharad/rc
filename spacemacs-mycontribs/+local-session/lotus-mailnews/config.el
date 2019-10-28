@@ -670,7 +670,7 @@ when Gnus hangs on network outs or changes."
 
 ;; stats
 ;; ---
-(defun stat (beg end)
+(defun lotus-gnus-stat (beg end)
   (interactive "r")
   (let (header from-list subject-list from subject (n 0) (chars 0))
     (save-excursion
@@ -695,19 +695,19 @@ when Gnus hangs on network outs or changes."
     (insert (format "Total number of posts: %i\n" n))
     (insert (format "Average bytes/post: %f\n" (/ (float chars) n)))
     (insert (format "Total number of posters: %i\n" (length from-list)))
-    (insert (format "Average posts/poster: %f\n\n" (stat-mean from-list)))
-    (stat-top from-list 20)
+    (insert (format "Average posts/poster: %f\n\n" (lotus-gnus-stat-mean from-list)))
+    (lotus-gnus-stat-top from-list 20)
     (insert (format "\nTotal number of subjects: %i\n" (length subject-list)))
-    (insert (format "Average posts/subject: %f\n\n" (stat-mean subject-list)))
-    (stat-top subject-list 20)))
+    (insert (format "Average posts/subject: %f\n\n" (lotus-gnus-stat-mean subject-list)))
+    (lotus-gnus-stat-top subject-list 20)))
 
-(defun stat-mean (alist)
+(defun lotus-gnus-stat-mean (alist)
   (let ((mean 0))
     (dolist (x alist)
       (incf mean (cdr x)))
     (/ (float mean) (length alist))))
 
-(defun stat-top (alist &optional n)
+(defun lotus-gnus-stat-top (alist &optional n)
   (dotimes (i (if (integerp n)
                   (min n (length alist))
                 (length alist)))
