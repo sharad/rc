@@ -43,10 +43,10 @@
      (if (file-name-directory file-path)
          (expand-file-name
           (file-name-directory file-path)
-          (expand-file-name ".cache/autoconfig" user-emacs-directory))
-       (expand-file-name ".cache/autoconfig" user-emacs-directory))
+          (expand-file-name ".cache" user-emacs-directory))
+       (expand-file-name ".cache" user-emacs-directory))
      t)
-    (expand-file-name file-path (expand-file-name ".cache/autoconfig" user-emacs-directory)))
+    (expand-file-name file-path (expand-file-name ".cache" user-emacs-directory)))
 
   (defun simple-no-final-slash (s)
     ;; Remove optional final slash from string S
@@ -62,16 +62,16 @@
      (if (if create-it dir-path (file-name-directory (simple-no-final-slash dir-path)))
          (expand-file-name
           (if create-it dir-path (file-name-directory (simple-no-final-slash dir-path)))
-          (expand-file-name "autoconfig" user-emacs-directory))
-       (expand-file-name "autoconfig" user-emacs-directory))
+          user-emacs-directory)
+       user-emacs-directory)
      t)
-    (expand-file-name dir-path (expand-file-name "autoconfig" user-emacs-directory))))
+    (expand-file-name dir-path user-emacs-directory)))
 
 (progn ;; deh-featurep pcache
   (setq pcache-directory (auto-config-dir "var/pcache/" t)))
 
-(progn ;; deh-featurep abbrev
-  (setq abbrev-file-name (auto-config-file "abbrev/abbrev_defs")))
+;; (progn ;; deh-featurep abbrev
+;;   (setq abbrev-file-name (auto-config-file "abbrev/abbrev_defs")))
 
 ;; create an indirect buffer
 (defun indirect-buffer ()

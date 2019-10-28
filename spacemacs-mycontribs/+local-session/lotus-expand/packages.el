@@ -36,6 +36,7 @@
 
 (defconst lotus-expand-packages
   '(
+    abbrev
     pabbrev
     auto-complete
     (pde-indent-dwim :location local)
@@ -72,6 +73,15 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+
+(defun lotus-expand/init-abbrev ()
+  (use-package pde-indent-dwim
+    :defer t
+    :config
+    (progn
+      (setq abbrev-file-name (expand-file-name ".cache/abbrev/abbrev_defs" user-emacs-directory)))))
+      ;; (global-set-key-if-unbind (kbd "C-M-=") 'pde-indent-dwim)
+
 (defun lotus-expand/init-pabbrev ()
 
 
@@ -87,25 +97,25 @@ Each entry is either:
 
   ; (global-set-key-if-unbind (kbd "M-'") 'just-one-space)
   (use-package pabbrev
-               :defer t
-               :config
-               (progn
-                 (progn
-                   (setq
-                    pabbrev-idle-timer-verbose nil
-                    pabbrev-read-only-error t))
-                 (progn
-                   (with-eval-after-load "sessions-mgr"
-                     (add-to-list 'desktop-minor-mode-handlers
-                                  (cons 'pabbrev-mode
-                                        (desktop-get-readonly-proof-mode pabbrev-mode)))))
-                 (progn
-                   (add-hook
-                    'read-only-mode-hook
-                    #'(lambda ()
-                        (when buffer-read-only
-                          (message "disabling pabbrev-mode"))
-                        (pabbrev-mode -1)))))))
+    :defer t
+    :config
+    (progn
+      (progn
+        (setq
+         pabbrev-idle-timer-verbose nil
+         pabbrev-read-only-error t))
+      (progn
+        (with-eval-after-load "sessions-mgr"
+          (add-to-list 'desktop-minor-mode-handlers
+                       (cons 'pabbrev-mode
+                             (desktop-get-readonly-proof-mode pabbrev-mode)))))
+      (progn
+        (add-hook
+         'read-only-mode-hook
+         #'(lambda ()
+             (when buffer-read-only
+               (message "disabling pabbrev-mode"))
+             (pabbrev-mode -1)))))))
 
 (defun lotus-expand/post-init-auto-complete ()
   (use-package auto-complete

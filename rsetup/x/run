@@ -67,7 +67,7 @@ fi
 xterm \
     -fullscreen \
     -hold -maximized \
-    -e "ish -s bash -- timeout -k 120 70 tail --retry -n 100 -f ~/.xsession-errors ~/.stumpwm.d/debug-output.log ~/.emacs.d/.cache/autoconfig/startup/$EMACS_SERVER_NAME/startup.log" >> ~/.xsession-errors 2>&1 &!
+    -e "ish -s bash -- timeout -k 120 70 tail --retry -n 100 -f ~/.xsession-errors ~/.stumpwm.d/debug-output.log ~/.emacs.d/.cache/startup/$EMACS_SERVER_NAME/startup.log" >> ~/.xsession-errors 2>&1 &!
 
 if whence -p xte >& /dev/null
 then
@@ -76,7 +76,7 @@ mousemove 42 42
 EOF
 fi
 
-emacs_daemon_start >/dev/null 2>&1 # already going into ~/.emacs.d/.cache/autoconfig/startup/$server/startup.log
+emacs_daemon_start >/dev/null 2>&1 # already going into ~/.emacs.d/.cache/startup/$server/startup.log
 
 # if which $HOME/bin/ecryptfs-mount-private >/dev/null 2>&1
 # then

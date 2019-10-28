@@ -103,7 +103,7 @@ function emacs_daemon_start()
 	              # rm -f   \#.ido.last\#
                 pkill emacs
 
-                EMACS_STARTUP_LOG_DIR=~/.emacs.d/.cache/autoconfig/startup/$server/
+                EMACS_STARTUP_LOG_DIR=~/.emacs.d/.cache/startup/$server/
 
                 mkdir -p $EMACS_STARTUP_LOG_DIR
 

@@ -614,7 +614,7 @@
     (unless(assoc "org" package-archives)
       (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/")))
     (unless(assoc "local" package-archives)
-      (add-to-list 'package-archives '("local" . "~/.xemacs/elpa/upload"))))  
+      (add-to-list 'package-archives '("local" . "~/.xemacs/elpa/upload"))))
   (package-initialize)
   (dotspacemacs/reinit)
 
@@ -631,7 +631,7 @@
   ;; (spacemacs/set-default-font dotspacemacs-default-font)
 
   (when nil
-    (put-file-in-rcs (auto-config-file "startup/startup.log"))
+    (put-file-in-rcs (expand-file-name ".cache/startup/startup.log" user-emacs-directory))
     (with-current-buffer "*Messages*"
       (setq messages-buffer-max-lines 2000)
       ;; old-messages-buffer-max-lines

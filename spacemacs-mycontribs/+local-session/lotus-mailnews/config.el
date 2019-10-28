@@ -9,10 +9,12 @@
   (when (file-exists-p file)
     (load-file file)))
 
-(lotus-load-if-exists "~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/info.d/common/elisp/common-info.el")
-(lotus-load-if-exists "~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/info.d/common/elisp/passwds.el")
-(lotus-load-if-exists "~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/info.d/hosts/default/elisp/host-info.el")
-(lotus-load-if-exists (concat "~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/info.d/hosts/"
+(defvar osetup-dir "~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup")
+
+(lotus-load-if-exists (expand-file-name "info.d/common/elisp/common-info.el" osetup-dir))
+(lotus-load-if-exists (expand-file-name "info.d/common/elisp/passwds.el" osetup-dir))
+(lotus-load-if-exists (expand-file-name "info.d/hosts/default/elisp/host-info.el" osetup-dir))
+(lotus-load-if-exists (concat (expand-file-name "info.d/hosts/" osetup-dir)
                               (system-name)
                               "/elisp/host-info.el"))
 
@@ -1256,6 +1258,8 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
       (setq
        gnus-directory      (concat gnus-home-directory "News/"))
       (setq
+       ;; https://www.emacswiki.org/emacs/MessageMode
+       message-auto-save-directory (concat gnus-directory "drafts/")
        nndraft-directory (concat gnus-directory "drafts/")))
     (progn
       (use-package gnus-start
@@ -1600,7 +1604,9 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 (defun lotus-mailnews/init-message-config ()
   (progn
-    (setq message-from-style nil))
+    (setq message-from-style nil
+          ;; https://www.emacswiki.org/emacs/MessageMode
+          message-auto-save-directory (concat gnus-directory "drafts/")))
   (progn
     (setq
      gnus-message-archive-method '(nnimap "localhost")
@@ -2020,7 +2026,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 (defun lotus-mailnews/init-gnus-start-config ()
   (progn
     (setq
-     ;;see http://sunsite.ualberta.ca/Documentation/Gnu/emacs-20.7/html_chapter/gnus_1.html#SEC13
+     ;; see http://sunsite.ualberta.ca/Documentation/Gnu/emacs-20.7/html_chapter/gnus_1.html#SEC13
 
      ;;  1.9 Auto Save
 
