@@ -94,7 +94,7 @@ article."
       (replace-regexp-in-string ":\\." ":" group))))
     ;; Seems like we don't even need this part:
     ;; (setq group (replace-regexp-in-string "nnimap\\+localhost:\\.?" "" group))
-    
+
 
 (defun notmuch-goto-message-in-gnus ()
   "Open a summary buffer containing the current notmuch
@@ -555,6 +555,249 @@ always hide."
       (previous-line))
     (template-simple-expand-template file)))
 
+;; posting style
+
+(defun lotus-gnus-posting-style-function ()
+  `(
+    (t                              ;global
+
+     ,@(if (member (system-name) office-host-names)
+           `(
+             (name ,myname)
+             (signature "Regards,\n-sharad")
+             (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
+             ;; ("Jabber-ID" ,office-email)
+             (address ,office-email))
+         ;; ("From" ,office-email)
+
+         `((name ,myname)
+           (signature "Regards,\n-sharad")
+           ("Jabber-ID" ,jabber-id)
+           (address ,email-addr)))
+     ;; ("From" ,email-addr)
+
+
+     ("Posting-style" "t")
+
+     ;; ("nnml:.*"
+     ;;  (From (with-current-buffer gnus-article-buffer
+             ;;          (message-fetch-field "to"))))
+
+     ;; Note: about Form header it if it is set it override
+     ;; `address' header that override user-mail-address, so Form
+     ;; > address > user-mail-address
+
+     ;; Rule means that you use the
+     ;; To address as the From address in all your outgoing
+     ;; replies, which might be handy if you fill many roles. You
+     ;; may also use message-alternative-emails instead.
+
+     ;; (From
+     ;;  (if (and message-reply-headers
+     ;;           (get-buffer gnus-article-buffer)) ; check it if it is current buffer
+     ;;      (with-current-buffer gnus-article-buffer
+     ;;        (message-fetch-field "to"))))
+
+     ;; http://www.gnu.org/software/emacs/manual/html_node/gnus/Posting-Styles.html
+     (From
+      (let* ((default-email (concat myname " <" (if (member (system-name) office-host-names) office-email email-addr) ">"))
+             (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
+                     (with-current-buffer gnus-article-buffer
+                       (message-fetch-field "to"))))
+             (email (if to (car (mail-header-parse-address to))))
+             (email-name (if email (assoc email lotus-gnus-name-emails-map))))
+        (if email
+            (if email-name
+                (concat (cdr email-name) " <" (car email-name) ">")
+              default-email)
+          default-email))))
+
+
+                                        ; try to get only to address, not all in CC Bcc)
+
+    ;; (eval ;; (if (equal (system-name) ,office-host-name)
+    ;;  (unless (equal (system-name) ,office-host-name)
+    ;;    (progn
+    ;;      (set (make-local-variable 'message-send-mail-function) 'message-send-mail-with-sendmail)
+    ;;      (set (make-local-variable 'sendmail-program) "/usr/bin/msmtp") ;; we substitute sendmail with msmtp
+    ;;      (set (make-local-variable 'message-sendmail-extra-arguments) nil)
+    ;;      (set (make-local-variable 'message-sendmail-f-is-evil) t)
+    ;;      (set (make-local-variable 'message-sendmail-envelope-from) 'header))))
+
+    (message-news-p
+     (name ,myname)
+     (signature "Regards,\n-sharad")
+     ("Jabber-ID" ,jabber-id)
+     ("Posting-style" "message-news-p")
+
+     ;; (address ,email-addr)
+     ;; ("From" ,email-addr)
+
+     (From
+      (let* ((default-email (concat myname " <" (if (member (system-name) office-host-names) office-email email-addr) ">"))
+             (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
+                     (with-current-buffer gnus-article-buffer
+                       (message-fetch-field "to"))))
+             (email (if to (car (mail-header-parse-address to))))
+             (email-name (if email (assoc email lotus-gnus-name-emails-map))))
+        (if email
+            (if email-name
+                (concat (cdr email-name) " <" (car email-name) ">")
+              default-email)
+          default-email)))
+
+     (address
+      (let* ((default-email (concat myname " <" (if (member (system-name) office-host-names) office-email email-addr) ">"))
+             (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
+                     (with-current-buffer gnus-article-buffer
+                       (message-fetch-field "to"))))
+             (email (if to (car (mail-header-parse-address to))))
+             (email-name (if email (assoc email lotus-gnus-name-emails-map))))
+        (if email
+            (if email-name
+                (concat (cdr email-name) " <" (car email-name) ">")
+              default-email)
+          default-email)))
+
+     (eval
+      (progn
+        (set (make-local-variable 'gnus-message-archive-group)
+             '(,(format-time-string "sent.%Y-%m")
+               "sent"
+               "sent-news")
+             ((save-excursion )t (make-local-variable 'message-citation-line-function) 'message-insert-formatted-citation-line)
+             (set (make-local-variable 'message-cite-reply-above) nil)
+             (set (make-local-variable 'message-cite-reply-position) 'traditional)))))
+
+
+    (message-mail-p
+     ;; message is mail and this is not my system taj then do not save Gcc copy in sent-mail
+     ("Posting-style" "message-mail-p")
+     (From
+      (let* ((default-email (concat myname " <" (if (member (system-name) office-host-names) office-email email-addr) ">"))
+             (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
+                     (with-current-buffer gnus-article-buffer
+                       (message-fetch-field "to"))))
+             (email (if to (car (mail-header-parse-address to))))
+             (email-name (if email (assoc email lotus-gnus-name-emails-map))))
+        (if email
+            (if email-name
+                (concat (cdr email-name) " <" (car email-name) ">")
+              default-email)
+          default-email)))
+
+     (address
+      (let* ((default-email (concat myname " <" (if (member (system-name) office-host-names) office-email email-addr) ">"))
+             (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
+                     (with-current-buffer gnus-article-buffer
+                       (message-fetch-field "to"))))
+             (email (if to (car (mail-header-parse-address to))))
+             (email-name (if email (assoc email lotus-gnus-name-emails-map))))
+        (if email
+            (if email-name
+                (concat (cdr email-name) " <" (car email-name) ">")
+              default-email)
+          default-email)))
+
+     (eval (unless (equal (system-name) "taj")
+             (set (make-local-variable 'gnus-message-archive-group)
+                  '("sent"
+                    "sent-mail"
+                    ,(format-time-string "sent.%Y-%m")
+                    ,@(if (member (system-name) office-host-names)
+                          '("Office.Meru.Sent Items" "Office.Fortinet.Sent Items")))))))
+
+    ("Gmail.*"
+     (name ,myname)
+     (signature "Regards,\n-sharad")
+     ;; (address ,email-addr)
+     ("Posting-style" "Gmail.*"))
+
+    ;; ("Gmail.official"
+    ;;  (address "Sharad Pratap <sharad@pratap.net.in>"))
+
+    ("Office.*"
+     (name ,myname)
+     (signature "Regards,\n-sharad")
+     (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
+     (address ,office-fortinet-email)
+     ("From" ,office-fortinet-email)
+     ("Posting-style" "Office.*")
+     (eval (set (make-local-variable 'gnus-message-archive-group)
+                '(,(format-time-string "sent.%Y-%m")
+                  "sent"
+                  "sent-mail"
+                  "Office.Fortinet.Sent Items"
+                  "Office.Meru.Sent Items"))))
+
+    ("Office.Fortinet.*\\|nnvirtual:Inbox-Sent\\|nnvirtual:Incoming"
+     (name ,myname)
+     (signature "Regards,\n-sharad")
+     (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
+     (address ,office-fortinet-email)
+     ("From" ,office-fortinet-email)
+     ("Posting-style" "Office.Fortinet.*")
+     (eval (set (make-local-variable 'gnus-message-archive-group)
+                '(,(format-time-string "sent.%Y-%m")
+                  "sent"
+                  "sent-mail"
+                  "Office.Fortinet.Sent Items"))))
+
+    ("Office.Meru.*"
+     (name ,myname)
+     (signature "Regards,\n-sharad")
+     (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
+     (address ,office-meru-email)
+     ("From" ,office-meru-email)
+     ("Posting-style" "Office.Meru.*")
+     (eval (set (make-local-variable 'gnus-message-archive-group)
+                '(,(format-time-string "sent.%Y-%m")
+                  "sent"
+                  "sent-mail"
+                  "Office.Meru.Sent Items"))))
+
+    ;; J sites
+    ((header "Received monster.co.in\\|naukri.com") ;reply
+     (signature nil)
+     ("Posting-style" "(header \"Received\" \"monster.co.in\\|naukri.com\")")
+     (eval (progn
+             ;; (set (make-local-variable 'message-cite-function) 'sc-cite-original)
+             ;; (set (make-local-variable 'message-cite-reply-above) t)
+             (set (make-local-variable 'message-citation-line-function) 'message-insert-formatted-citation-line)
+             (set (make-local-variable 'message-cite-reply-above) t)
+             (set (make-local-variable 'message-cite-reply-position) 'above)
+             (remove-hook 'message-setup-hook 'xsteve-message-citation t)
+             ;; (add-hook 'gnus-message-setup-hook 'jreply nil t)
+             (remove-hook (make-local-variable 'message-setup-hook) 'xsteve-message-citation)
+             (add-hook (make-local-variable 'gnus-message-setup-hook) 'jreply nil t)))
+
+     ;; (xsteve-message-citation)))
+     ;; (body :file "~/Documents/Template/j/reply")
+     ;; (body jreply)
+     ;; (signature (concat "Regards,\n" ,myname))
+     ;; (eval (add-hook 'message-setup-hook 'xsteve-message-citation t t)) ;; set in global hook
+     ;; (eval (add-hook 'message-signature-setup-hook 'xsteve-message-citation nil t))
+     ;; (eval (set (make-local-variable 'message-cite-function) 'sc-cite-original))
+     (x-url ,myurl))
+
+    ((save-excursion
+       (let ((article-buf
+              (car (remove-if-not
+                    '(lambda (bn)
+                       (string-match "*Article" bn 0))
+                    (mapcar 'buffer-name (buffer-list)))))
+             (when (and )rticle-buf
+                   (set-buffer article-buf)
+                   (> (count-lines (point-min) (point-max)) 30)))))
+     (eval
+      (progn
+        (set (make-local-variable 'message-cite-reply-above) t)
+        (set (make-local-variable 'message-cite-reply-position) 'above))))))
+;; (".*"
+;;  (From
+;;   (with-current-buffer gnus-article-buffer
+;;     (message-fetch-field "to")))
+
 ;; gnus-daemon
 
 ;; Group Level
@@ -781,9 +1024,10 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
   "Minor mode to display state of new email."
   nil mac-biff-lighter nil
   (if mac-biff-mode
-      (progn (add-hook 'gnus-after-getting-new-news-hook 'mac-biff-update)
-             (add-hook 'gnus-exit-group-hook 'mac-biff-update)
-             (mac-biff-update))
+      (progn
+        (add-hook 'gnus-after-getting-new-news-hook 'mac-biff-update)
+        (add-hook 'gnus-exit-group-hook 'mac-biff-update)
+        (mac-biff-update))
     (remove-hook 'gnus-after-getting-new-news-hook 'mac-biff-update)
     (remove-hook 'gnus-exit-group-hook 'mac-biff-update)))
 
@@ -800,7 +1044,6 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
                                ""
                              (format " [%d]" count)))))
 ;;}}
-
 
 ;;{{ from: http://stackoverflow.com/questions/1053245/new-mail-notifications-in-gnus-for-emacs
 (defun mac-biff-update ()
@@ -1007,9 +1250,9 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
             "Gmail\\.INBOX\\|Gmail\\.sent-mail"))))
     (progn
       (setq gnus-init-file "~/.gnus.el")
-      (make-directory (expand-file-name ".cache/autoconfig/gnus/" user-emacs-directory) t)
+      (make-directory (expand-file-name ".cache/gnus/" user-emacs-directory) t)
       (setq
-       gnus-home-directory (expand-file-name "autoconfig/gnus/" user-emacs-directory))
+       gnus-home-directory (expand-file-name ".cache/gnus/" user-emacs-directory))
       (setq
        gnus-directory      (concat gnus-home-directory "News/"))
       (setq
@@ -1019,7 +1262,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
         :defer t
         :config
         (progn
-          (setq gnus-startup-file   (expand-file-name ".cache/autoconfig/gnus/newsrc" user-emacs-directory)
+          (setq gnus-startup-file   (expand-file-name ".cache/gnus/newsrc" user-emacs-directory)
                 gnus-read-active-file nil
                 gnus-check-new-newsgroups nil ; 'ask-server
                 gnus-save-newsrc-file t))))
@@ -1036,9 +1279,9 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
   (progn
     (progn
       (setq gnus-init-file "~/.gnus.el"))
-    (make-directory (expand-file-name ".cache/autoconfig/gnus/" user-emacs-directory) t)
+    (make-directory (expand-file-name ".cache/gnus/" user-emacs-directory) t)
     (setq
-     gnus-home-directory (expand-file-name "autoconfig/gnus/" user-emacs-directory))
+     gnus-home-directory (expand-file-name ".cache/gnus/" user-emacs-directory))
     (setq
      gnus-directory      (nnheader-concat gnus-home-directory "News/"))
     (setq
@@ -1056,7 +1299,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
 
   (progn
-    (setq bbdb-file (expand-file-name "bbdb/bbdb" "~/.emacs.d/.cache/autoconfig"))
+    (setq bbdb-file (expand-file-name "bbdb/bbdb" "~/.emacs.d/.cache/"))
 
     (defun bbdb/gnus-pop-up-bbdb-buffer-for-some-time ()
       (if (functionp 'bbdb/gnus-pop-up-bbdb-buffer)
@@ -1080,7 +1323,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
     (define-key gnus-summary-mode-map (kbd "s-c s-v")  'bbdb/gnus-pop-up-bbdb-buffer)
 
-    (setq bbdb-use-pop-up t             ;TODO: 
+    (setq bbdb-use-pop-up t             ;TODO:
           bbdb-save-db-timeout 0) ;; I want it
     (remove-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer)
     (add-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer-for-some-time)
@@ -1194,263 +1437,17 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 (defun lotus-mailnews/init-gnus-msg-config ()
   (progn
-    (setq gnus-gcc-mark-as-read t)
-    (setq gnus-gcc-externalize-attachments nil))
+    (setq gnus-gcc-mark-as-read t
+          gnus-gcc-externalize-attachments nil))
   (progn
     ;; http://www.inference.phy.cam.ac.uk/cjb/dotfiles/dotgnus
-    
+
     (defadvice gnus-summary-reply (after formalities () activate)
       ;; (cjb-add-formalities)
       "Thanks."
       (dummy-add-formalities)))
   (progn
-    (setq gnus-posting-styles
-          
-          ;; As you might surmise from this example, this alist consists
-          ;; of several styles. Each style will be applicable if the first
-          ;; element “matches”, in some form or other. The entire alist
-          ;; will be iterated over, from the beginning towards the end,
-          ;; and each match will be applied,
-          ;; _WHICH_MEANS_THAT_ATTRIBUTES_IN_LATER_STYLES_THAT_MATCH_OVERRIDE_THE_SAME_ATTRIBUTES_IN_EARLIER_MATCHING_STYLES. So
-          ;; ‘comp.programming.literate’ will have the ‘Death to
-          ;; everybody’ signature and the ‘What me?’ Organization header.
-          
-          ;; based on reply article
-          `(
-            (t                              ;global
-             
-             ,@(if (member (system-name) office-host-names)
-                   `(
-                     (name ,myname)
-                     (signature "Regards,\n-sharad")
-                     (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
-                     ;; ("Jabber-ID" ,office-email)
-                     (address ,office-email))
-                 ;; ("From" ,office-email)
-                 
-                 `((name ,myname)
-                   (signature "Regards,\n-sharad")
-                   ("Jabber-ID" ,jabber-id)
-                   (address ,email-addr)))
-             ;; ("From" ,email-addr)
-             
-             
-             ("Posting-style" "t")
-             
-             ;; ("nnml:.*"
-             ;;  (From (with-current-buffer gnus-article-buffer
-             ;;          (message-fetch-field "to"))))
-             
-             ;; Note: about Form header it if it is set it override
-             ;; `address' header that override user-mail-address, so Form
-             ;; > address > user-mail-address
-             
-             ;; Rule means that you use the
-             ;; To address as the From address in all your outgoing
-             ;; replies, which might be handy if you fill many roles. You
-             ;; may also use message-alternative-emails instead.
-             
-             ;; (From
-             ;;  (if (and message-reply-headers
-             ;;           (get-buffer gnus-article-buffer)) ; check it if it is current buffer
-             ;;      (with-current-buffer gnus-article-buffer
-             ;;        (message-fetch-field "to"))))
-             
-             ;; http://www.gnu.org/software/emacs/manual/html_node/gnus/Posting-Styles.html
-             (From
-              (let* ((default-email (concat myname " <" (if (member (system-name) office-host-names) office-email email-addr) ">"))
-                     (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
-                             (with-current-buffer gnus-article-buffer
-                               (message-fetch-field "to"))))
-                     (email (if to (car (mail-header-parse-address to))))
-                     (email-name (if email (assoc email lotus-gnus-name-emails-map))))
-                (if email
-                    (if email-name
-                        (concat (cdr email-name) " <" (car email-name) ">")
-                      default-email)
-                  default-email))))
-            
-            
-                                        ; try to get only to address, not all in CC Bcc)
-            
-            ;; (eval ;; (if (equal (system-name) ,office-host-name)
-            ;;  (unless (equal (system-name) ,office-host-name)
-            ;;    (progn
-            ;;      (set (make-local-variable 'message-send-mail-function) 'message-send-mail-with-sendmail)
-            ;;      (set (make-local-variable 'sendmail-program) "/usr/bin/msmtp") ;; we substitute sendmail with msmtp
-            ;;      (set (make-local-variable 'message-sendmail-extra-arguments) nil)
-            ;;      (set (make-local-variable 'message-sendmail-f-is-evil) t)
-            ;;      (set (make-local-variable 'message-sendmail-envelope-from) 'header))))
-            
-            (message-news-p
-             (name ,myname)
-             (signature "Regards,\n-sharad")
-             ("Jabber-ID" ,jabber-id)
-             ("Posting-style" "message-news-p")
-             
-             ;; (address ,email-addr)
-             ;; ("From" ,email-addr)
-             
-             (From
-              (let* ((default-email (concat myname " <" (if (member (system-name) office-host-names) office-email email-addr) ">"))
-                     (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
-                             (with-current-buffer gnus-article-buffer
-                               (message-fetch-field "to"))))
-                     (email (if to (car (mail-header-parse-address to))))
-                     (email-name (if email (assoc email lotus-gnus-name-emails-map))))
-                (if email
-                    (if email-name
-                        (concat (cdr email-name) " <" (car email-name) ">")
-                      default-email)
-                  default-email)))
-             
-             (address
-              (let* ((default-email (concat myname " <" (if (member (system-name) office-host-names) office-email email-addr) ">"))
-                     (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
-                             (with-current-buffer gnus-article-buffer
-                               (message-fetch-field "to"))))
-                     (email (if to (car (mail-header-parse-address to))))
-                     (email-name (if email (assoc email lotus-gnus-name-emails-map))))
-                (if email
-                    (if email-name
-                        (concat (cdr email-name) " <" (car email-name) ">")
-                      default-email)
-                  default-email)))
-             
-             (eval
-              (progn
-                (set (make-local-variable 'gnus-message-archive-group)
-                     '(,(format-time-string "sent.%Y-%m")
-                       "sent"
-                       "sent-news")
-                    ((save-excursion )t (make-local-variable 'message-citation-line-function) 'message-insert-formatted-citation-line)
-                    (set (make-local-variable 'message-cite-reply-above) nil)
-                    (set (make-local-variable 'message-cite-reply-position) 'traditional)))))
-            
-            
-            (message-mail-p
-             ;; message is mail and this is not my system taj then do not save Gcc copy in sent-mail
-             ("Posting-style" "message-mail-p")
-             (From
-              (let* ((default-email (concat myname " <" (if (member (system-name) office-host-names) office-email email-addr) ">"))
-                     (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
-                             (with-current-buffer gnus-article-buffer
-                               (message-fetch-field "to"))))
-                     (email (if to (car (mail-header-parse-address to))))
-                     (email-name (if email (assoc email lotus-gnus-name-emails-map))))
-                (if email
-                    (if email-name
-                        (concat (cdr email-name) " <" (car email-name) ">")
-                      default-email)
-                  default-email)))
-             
-             (address
-              (let* ((default-email (concat myname " <" (if (member (system-name) office-host-names) office-email email-addr) ">"))
-                     (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
-                             (with-current-buffer gnus-article-buffer
-                               (message-fetch-field "to"))))
-                     (email (if to (car (mail-header-parse-address to))))
-                     (email-name (if email (assoc email lotus-gnus-name-emails-map))))
-                (if email
-                    (if email-name
-                        (concat (cdr email-name) " <" (car email-name) ">")
-                      default-email)
-                  default-email)))
-             
-             (eval (unless (equal (system-name) "taj")
-                     (set (make-local-variable 'gnus-message-archive-group)
-                          '("sent"
-                            "sent-mail"
-                            ,(format-time-string "sent.%Y-%m")
-                            ,@(if (member (system-name) office-host-names)
-                                  '("Office.Meru.Sent Items" "Office.Fortinet.Sent Items")))))))
-            
-            ("Gmail.*"
-             (name ,myname)
-             (signature "Regards,\n-sharad")
-             ;; (address ,email-addr)
-             ("Posting-style" "Gmail.*"))
-            
-            ;; ("Gmail.official"
-            ;;  (address "Sharad Pratap <sharad@pratap.net.in>"))
-            
-            ("Office.*"
-             (name ,myname)
-             (signature "Regards,\n-sharad")
-             (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
-             (address ,office-fortinet-email)
-             ("From" ,office-fortinet-email)
-             ("Posting-style" "Office.*")
-             (eval (set (make-local-variable 'gnus-message-archive-group)
-                        '(,(format-time-string "sent.%Y-%m")
-                          "sent"
-                          "sent-mail"
-                          "Office.Fortinet.Sent Items"
-                          "Office.Meru.Sent Items"))))
-            
-            ("Office.Fortinet.*\\|nnvirtual:Inbox-Sent\\|nnvirtual:Incoming"
-             (name ,myname)
-             (signature "Regards,\n-sharad")
-             (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
-             (address ,office-fortinet-email)
-             ("From" ,office-fortinet-email)
-             ("Posting-style" "Office.Fortinet.*")
-             (eval (set (make-local-variable 'gnus-message-archive-group)
-                        '(,(format-time-string "sent.%Y-%m")
-                          "sent"
-                          "sent-mail"
-                          "Office.Fortinet.Sent Items"))))
-            
-            ("Office.Meru.*"
-             (name ,myname)
-             (signature "Regards,\n-sharad")
-             (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
-             (address ,office-meru-email)
-             ("From" ,office-meru-email)
-             ("Posting-style" "Office.Meru.*")
-             (eval (set (make-local-variable 'gnus-message-archive-group)
-                        '(,(format-time-string "sent.%Y-%m")
-                          "sent"
-                          "sent-mail"
-                          "Office.Meru.Sent Items"))))
-            
-            ;; J sites
-            ((header "Received monster.co.in\\|naukri.com") ;reply
-             (signature nil)
-             ("Posting-style" "(header \"Received\" \"monster.co.in\\|naukri.com\")")
-             (eval (progn
-                     ;; (set (make-local-variable 'message-cite-function) 'sc-cite-original)
-                     ;; (set (make-local-variable 'message-cite-reply-above) t)
-                     (set (make-local-variable 'message-citation-line-function) 'message-insert-formatted-citation-line)
-                     (set (make-local-variable 'message-cite-reply-above) t)
-                     (set (make-local-variable 'message-cite-reply-position) 'above)
-                     (remove-hook 'message-setup-hook 'xsteve-message-citation t)
-                     ;; (add-hook 'gnus-message-setup-hook 'jreply nil t)
-                     (remove-hook (make-local-variable 'message-setup-hook) 'xsteve-message-citation)
-                     (add-hook (make-local-variable 'gnus-message-setup-hook) 'jreply nil t)))
-             
-             ;; (xsteve-message-citation)))
-             ;; (body :file "~/Documents/Template/j/reply")
-             ;; (body jreply)
-             ;; (signature (concat "Regards,\n" ,myname))
-             ;; (eval (add-hook 'message-setup-hook 'xsteve-message-citation t t)) ;; set in global hook
-             ;; (eval (add-hook 'message-signature-setup-hook 'xsteve-message-citation nil t))
-             ;; (eval (set (make-local-variable 'message-cite-function) 'sc-cite-original))
-             (x-url ,myurl))
-            
-            ((save-excursion
-               (let ((article-buf
-                      (car (remove-if-not
-                            '(lambda (bn)
-                               (string-match "*Article" bn 0))
-                            (mapcar 'buffer-name (buffer-list)))))
-                     (when (and )rticle-buf
-                           (set-buffer article-buf)
-                           (> (count-lines (point-min) (point-max)) 30)))))
-             (eval
-              (progn
-                (set (make-local-variable 'message-cite-reply-above) t)
-                (set (make-local-variable 'message-cite-reply-position) 'above))))))))
+    (setq gnus-posting-styles (lotus-gnus-posting-style-function))))
 
 (defun lotus-mailnews/init-gnus-art-config ()
   (progn
@@ -1469,7 +1466,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     (setq gnus-article-date-lapsed-new-header t)
     (add-hook 'gnus-part-display-hook 'gnus-article-date-lapsed)
     (add-hook 'gnus-part-display-hook 'gnus-article-date-local)
-    
+
     (add-hook 'gnus-article-prepare-hook
               '(lambda ()
                  ;; 	     (gnus-article-de-quoted-unreadable)
@@ -1492,7 +1489,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
      gnus-treat-strip-multiple-blank-lines t
      gnus-treat-strip-trailing-blank-lines t
      gnus-treat-unsplit-urls t
-     
+
      gnus-treat-date-english 'head
      gnus-treat-date-iso8601 'head
      gnus-treat-date-lapsed 'head
@@ -1545,7 +1542,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
             "^Content-Type"
             "^X-Face:"
             "^X-Face")
-          
+
           gnus-sorted-header-list
           '("^From:"
             "^Subject:"
@@ -1678,7 +1675,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
         (add-hook 'message-send-hook 'ispell-message)
         ;; In your ~/.gnus.el, if you prefer on-the-fly spell-checking say
         (add-hook 'message-mode-hook (lambda () (flyspell-mode 1))))))
-  
+
   (progn
     (use-package footnote
       :defer t
@@ -1698,9 +1695,9 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     (setq message-user-fqdn (concat "personal.machine.of." myshortname ".com")))
   (progn
     (defvar *use-msmtp-for-senmail* nil "msmtp to use")
-    
+
     (setq *use-msmtp-for-senmail* (equal (system-name) "asfsdspratap"))
-    
+
     (if *use-msmtp-for-senmail* ;; where I am using msmtp
         (setq  ;; for msmtp
          ;; see http://www.gnus.org/manual/message_36.html
@@ -1817,16 +1814,16 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
                  encapsulate-images on expiry-wait 6))))))
   (progn
     ;;{{Exiting http://www.stanford.edu/~rgm/comp/dotgnus.html
-    
+
     (defvar my-before-kill-emacs-hook nil)
-    
+
     (defun my-gnus-kill-on-exit-emacs-fn ()
       "Kill Gnus when exiting Emacs. Added to `my-before-kill-emacs-hook'."
       (setq gnus-interactive-exit nil)
       (gnus-group-exit))
-    
+
     (add-hook 'my-before-kill-emacs-hook 'my-gnus-kill-on-exit-emacs-fn)
-    
+
 
     (defun my-gnus-after-exiting-gnus-hook-fn ()
       "Function added to `gnus-after-exiting-gnus-hook'."
@@ -1839,7 +1836,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     ;;           "Library/WindowMaker/Sounds/Windows/chimes.wav"
     ;;           (or (getenv "GNUSTEP_USER_ROOT") "~/GNUstep"))))
     ;;     (gnus-play-jingle))
-    
+
     (add-hook 'gnus-after-exiting-gnus-hook 'my-gnus-after-exiting-gnus-hook-fn)))
 
 (defun lotus-mailnews/init-mm-decode-config ()
@@ -1850,19 +1847,19 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
       (progn
         ;; diary-from-outlook-gnus is an interactive compiled Lisp function in
         ;; `diary-lib.el'.
-        
+
         ;; (diary-from-outlook-gnus &optional NOCONFIRM)
-        
+
         ;; Maybe snarf diary entry from Outlook-generated message in Gnus.
         ;; Unless the optional argument NOCONFIRM is non-nil (which is the case when
         ;; this function is called interactively), then if an entry is found the
         ;; user is asked to confirm its addition.
         ;; Add this function to `gnus-article-prepare-hook' to notice appointments
         ;; automatically.
-        
+
         ;; (require 'mm-decode)
         ;; (require 'mm-util)
-        
+
         (defun diary-from-outlook-gnus-safe ()
           (ignore-errors
             (diary-from-outlook-gnus)))
@@ -1871,9 +1868,9 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
         ;; when failed with error "no buffer name with multipart/related"
         ;; it left article in the end, so I have to remove it.
         (add-hook 'gnus-article-prepare-hook 'diary-from-outlook-gnus-safe)
-        
+
         ;; using icalendar.el wotrking
-        
+
         (progn
           (defvar icalendar-outlook-file nil)
           (defun my-save-icalendar (handle)
@@ -1882,9 +1879,9 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
                          (gnus-mime-view-part-internally handle)
                          (mm-with-part handle (icalendar-import-buffer diary)))
                 (message "Saved calendar entry in %s" diary))))
-          
+
           (setq gnus-article-mime-part-function 'my-save-icalendar)
-          
+
           (add-hook
            'gnus-mime-multipart-functions
            '("text/calendar" . my-save-icalendar)))))))
@@ -1961,11 +1958,11 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
             ("^multipart/report"       "t")
             ("^application/"           "A")
             ("^image/"                 "I")))
-    
+
     (defvar lotus-gnus/global-summry-line-format   nil "")
     (defvar lotus-gnus/bugzilla-summry-line-format nil "")
     (defvar lotus-gnus/sent-summry-line-format     nil "")
-    
+
     (defalias 'gnus-user-format-function-ct 'rs-gnus-summary-line-content-type)
     (defalias 'gnus-user-format-function-size 'rs-gnus-summary-line-message-size)
     (defalias 'gnus-user-format-function-score 'rs-gnus-summary-line-score)
@@ -1974,9 +1971,9 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     (setq gnus-balloon-face-0 'rs-gnus-balloon-0
           gnus-balloon-face-1 'rs-gnus-balloon-1
           gnus-face-1         'rs-gnus-face-1)
-    
+
     (copy-face 'default 'rs-gnus-face-1)
-    
+
     (let* (;;(marks "%0{%«%U%R%z %u&score;%u&ct; %4u&size;%»%}")
            ;; (marks "%0«%U%R%z%u&atch;%u&score;%u&ct;%4u&size;%»")
            (marks "%0«%U%R%z%u&atch;%u&score;%u&ct;%4k%»")
@@ -1992,12 +1989,12 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
            (sp " ")
            (nl "\n"))
       ;;(bugzilla-who "%4{%-20,20ub%}")
-      
+
       (setq
        lotus-gnus/global-summry-line-format   (concat marks date lines from sp pipe sp thread-mark subject nl)
        lotus-gnus/bugzilla-summry-line-format (concat marks date lines from sp pipe sp thread-mark subject nl)
        lotus-gnus/sent-summry-line-format     (concat marks date lines from sp pipe sp thread-mark subject nl)))
-    
+
     (setq gnus-parameters
           `(
             (".*"
@@ -2006,10 +2003,10 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
              (gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
              (gnus-article-sort-functions '(gnus-article-sort-by-date gnus-article-sort-by-score)))
                                         ;"Gnus: %g [%A] %Z"
-            
+
             ("nnimap.*\\.bugs"
              (gnus-summary-line-format ,lotus-gnus/bugzilla-summry-line-format))
-            
+
             ("nnimap.*\\.sent-mail\\|.*sent"
              (gnus-summary-line-format ,lotus-gnus/sent-summry-line-format)
              (gnus-summary-display-arrow t)
@@ -2024,33 +2021,33 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
   (progn
     (setq
      ;;see http://sunsite.ualberta.ca/Documentation/Gnu/emacs-20.7/html_chapter/gnus_1.html#SEC13
-     
+
      ;;  1.9 Auto Save
-     
+
      ;; Whenever you do something that changes the Gnus data (reading
      ;; articles, catching up, killing/subscribing groups), the change is
      ;; added to a special dribble buffer. This buffer is auto-saved the
      ;; normal Emacs way. If your Emacs should crash before you have saved
      ;; the `.newsrc' files, all changes you have made can be recovered
      ;; from this file.
-     
+
      ;; If Gnus detects this file at startup, it will ask the user whether
      ;; to read it. The auto save file is deleted whenever the real
      ;; startup file is saved.
-     
+
      ;; If gnus-use-dribble-file is nil, Gnus won't create and maintain a
      ;; dribble buffer. The default is t.
-     
+
      ;; Gnus will put the dribble file(s) in gnus-dribble-directory. If
      ;; this variable is nil, which it is by default, Gnus will dribble
      ;; into the directory where the `.newsrc' file is located. (This is
      ;; normally the user's home directory.) The dribble file will get the
      ;; same file permissions as the .newsrc file.
-     
+
      ;; If gnus-always-read-dribble-file is non-nil, Gnus will read the
      ;; dribble file on startup without querying the user.
-     
-     gnus-dribble-directory (expand-file-name ".cache/autoconfig/gnus/gnus-data" user-emacs-directory)
+
+     gnus-dribble-directory (expand-file-name ".cache/gnus/gnus-data" user-emacs-directory)
      gnus-always-read-dribble-file t
                                         ;http://sunsite.ualberta.ca/Documentation/Gnu/emacs-20.7/html_chapter/gnus_1.html#SEC12
      ;; You can turn off writing the `.newsrc' file by setting

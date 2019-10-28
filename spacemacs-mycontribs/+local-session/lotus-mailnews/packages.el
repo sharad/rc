@@ -54,7 +54,6 @@
     (mailcrypt :location local)
     (nnheader :location local)
     (gnus-group :location local)
-
     (mm-decode :location local)
     (nntodo :location local)
     (gnus-summary :location local)
@@ -62,8 +61,8 @@
     (gnus-start :location local)
     (common-info :location local)
     (host-info :location local)
-    common-info
-    passwds)
+    (common-info :location local)
+    (passwds :location local))
   "The list of Lisp packages required by the lotus-mailnews layer.
 
 Each entry is either:
@@ -102,9 +101,9 @@ Each entry is either:
     (progn
       (progn
         (setq gnus-init-file "~/.gnus.el"))
-      (make-directory (expand-file-name ".cache/autoconfig/gnus/" user-emacs-directory) t)
+      (make-directory (expand-file-name ".cache/gnus/" user-emacs-directory) t)
       (setq
-       gnus-home-directory (expand-file-name "autoconfig/gnus/" user-emacs-directory))
+       gnus-home-directory (expand-file-name ".cache/gnus/" user-emacs-directory))
       (setq
        gnus-directory      (concat gnus-home-directory "News/"))
       (setq
