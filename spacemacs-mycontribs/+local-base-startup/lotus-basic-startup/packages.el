@@ -135,16 +135,19 @@ Each entry is either:
     :defer t
     :init
     (progn
+      (progn
+        (setq session-unified-dir (expand-file-name ".cache/session-unified" user-emacs-directory))
+        (setq desktop-path        (expand-file-name "desktop/" session-unified-dir))
+        (setq desktop-dirname     (expand-file-name "desktop/" session-unified-dir))
+        (setq session-save-file   (expand-file-name "session/session.el" session-unified-dir)))
       (when t
         (with-eval-after-load "startup-hooks"
           (add-to-enable-startup-interrupting-feature-hook
            #'frame-session-restore-hook-func
            t)
-
           (add-to-enable-startup-interrupting-feature-hook
            '(lambda ()
               (run-at-time-or-now 7 'lotus-desktop-session-restore)))
-
           (add-to-enable-startup-interrupting-feature-hook
            '(lambda ()
               (run-at-time-or-now 70
