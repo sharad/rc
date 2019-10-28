@@ -266,59 +266,19 @@ Each entry is either:
   (use-package gnus-start
     :defer t
     :config
-    (progn
-      (progn
-        (setq
-         ;;see http://sunsite.ualberta.ca/Documentation/Gnu/emacs-20.7/html_chapter/gnus_1.html#SEC13
-
-         ;;  1.9 Auto Save
-
-         ;; Whenever you do something that changes the Gnus data (reading
-         ;; articles, catching up, killing/subscribing groups), the change is
-         ;; added to a special dribble buffer. This buffer is auto-saved the
-         ;; normal Emacs way. If your Emacs should crash before you have saved
-         ;; the `.newsrc' files, all changes you have made can be recovered
-         ;; from this file.
-
-         ;; If Gnus detects this file at startup, it will ask the user whether
-         ;; to read it. The auto save file is deleted whenever the real
-         ;; startup file is saved.
-
-         ;; If gnus-use-dribble-file is nil, Gnus won't create and maintain a
-         ;; dribble buffer. The default is t.
-
-         ;; Gnus will put the dribble file(s) in gnus-dribble-directory. If
-         ;; this variable is nil, which it is by default, Gnus will dribble
-         ;; into the directory where the `.newsrc' file is located. (This is
-         ;; normally the user's home directory.) The dribble file will get the
-         ;; same file permissions as the .newsrc file.
-
-         ;; If gnus-always-read-dribble-file is non-nil, Gnus will read the
-         ;; dribble file on startup without querying the user.
-
-         gnus-dribble-directory (expand-file-name ".cache/autoconfig/gnus/gnus-data" user-emacs-directory)
-         gnus-always-read-dribble-file t
-         ;http://sunsite.ualberta.ca/Documentation/Gnu/emacs-20.7/html_chapter/gnus_1.html#SEC12
-         ;; You can turn off writing the `.newsrc' file by setting
-         ;; gnus-save-newsrc-file to nil, which means you can delete the file
-         ;; and save some space, as well as exiting from Gnus faster. However,
-         ;; this will make it impossible to use other newsreaders than
-         ;; Gnus. But hey, who would want to, right?
-         gnus-save-newsrc-file nil)))))
+    (lotus-mailnews/init-gnus-start-config)))
 
 (defun lotus-mailnews/init-host-info ()
   (use-package host-info
     :defer t
     :config
-    (progn
-      (progn))))
+    (lotus-mailnews/init-host-info-config)))
 
 (defun lotus-mailnews/init-common-info ()
   (use-package common-info
     :defer t
     :config
-    (progn
-      (progn))))
+    (lotus-mailnews/init-common-info-config)))
 
 (defun lotus-mailnews/init-passwds ()
   (use-package passwds
