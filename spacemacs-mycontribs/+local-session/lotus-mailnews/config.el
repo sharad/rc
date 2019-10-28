@@ -7,7 +7,7 @@
 
 (defun lotus-load-if-exists (file)
   (when (file-exists-p file)
-    (load file)))
+    (load-file file)))
 
 (lotus-load-if-exists "~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/info.d/common/elisp/common-info.el")
 (lotus-load-if-exists "~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/info.d/common/elisp/passwds.el")
@@ -15,11 +15,9 @@
 (lotus-load-if-exists (concat "~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/info.d/hosts/"
                               (system-name)
                               "/elisp/host-info.el"))
-
-
-
 
 ;; notmuch
+
 (defun lotus-gnu-notmuch-current-message-id ()
   (interactive)
   (let ((id (with-current-buffer gnus-original-article-buffer
@@ -124,8 +122,6 @@ article."
   (interactive)
   (setq gnus-personality-activate
         (not gnus-personality-activate)))
-
-
 
 (defun gnus-personality-init/sharad ()
   "Install Personality functionality into message mode."
@@ -743,7 +739,6 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     (if indicator
         indicator
       " ")))
-
 
 ;; gnus-notification
 
@@ -775,7 +770,6 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
                                    (list 'foundnewmbox))))
 
 ;; ----
-
 
 (defvar mac-biff-lighter ""
   "Lighter used by `mac-biff-mode'.")
@@ -926,7 +920,6 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
           (save-excursion
             (message-goto-body)
             (insert body))))))
-
 
 ;; --
 ;;{{ Address Book http://www.emacswiki.org/emacs/ExternalAbook

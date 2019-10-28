@@ -158,12 +158,6 @@ Each entry is either:
     :config
     (lotus-mailnews/init-gnus-msg-config)))
 
-
-        ;; (".*"
-        ;;  (From
-        ;;   (with-current-buffer gnus-article-buffer
-        ;;     (message-fetch-field "to")))
-
 (defun lotus-mailnews/init-gnus-art ()
   (use-package gnus-art
     :defer t
