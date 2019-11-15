@@ -1220,7 +1220,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 ;; (require 'sigbegone)
 
 
-(defun lotus-mailnews/pre-init-gnus-init ()
+(defun lotus-mailnews/post-init-gnus-init ()
   (progn
     (progn
       (setq gnus-init-file "~/.gnus.el"))
@@ -1232,7 +1232,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     (setq
      nndraft-directory (concat gnus-directory "drafts/"))))
 
-(defun lotus-mailnews/pre-init-gnus-config ()
+(defun lotus-mailnews/post-init-gnus-config ()
   (progn
     (setq gnus-interactive-exit t)
     (progn

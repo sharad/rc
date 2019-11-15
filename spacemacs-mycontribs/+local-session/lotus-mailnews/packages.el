@@ -46,7 +46,6 @@
     (gnus-msg    :location local)
     (gnus-pers   :location local)
     (gnus-namazu :location local)
-    (gnus-daemon :location local)
     (gnus-dired  :location local)
     (gnus-demon  :location local)
     (message     :location local)
@@ -90,13 +89,13 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-mailnews/pre-init-gnus ()
+(defun lotus-mailnews/post-init-gnus ()
   (use-package gnus
     :init
-    (lotus-mailnews/pre-init-gnus-init)
+    (lotus-mailnews/post-init-gnus-init)
     :defer t
     :config
-    (lotus-mailnews/pre-init-gnus-config)))
+    (lotus-mailnews/post-init-gnus-config)))
 
 (defun lotus-mailnews/post-init-gnus ()
   (use-package gnus
@@ -177,7 +176,7 @@ Each entry is either:
     (lotus-mailnews/init-gnus-dired-config)))
 
 (defun lotus-mailnews/init-gnus-demon ()
-  (use-package gnus-daemon
+  (use-package gnus-demon
     :init
     (lotus-mailnews/init-gnus-demon-init)
     :defer t
