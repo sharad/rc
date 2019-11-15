@@ -1479,6 +1479,28 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
             ((gnus-seconds-year) . "%b %d") ;durant l'année = mai 28
             (t . "%b %d '%y"))))
   (progn
+    (add-hook 'gnus-summary-prepare-hook
+              #'(lambda () (end-of-buffer) (forward-line -1)))
+
+    (add-hook 'gnus-summary-prepared-hook
+              #'(lambda () (end-of-buffer) (forward-line -1)))
+
+    ;; (setq gnus-thread-sort-functions
+    ;;       '(gnus-thread-sort-by-number
+    ;;         gnus-thread-sort-by-most-recent-date))
+
+    (setq gnus-summary-thread-gathering-function
+          'gnus-gather-threads-by-references)
+
+    ;; (setq gnus-user-date-format-alist
+    ;;       '(((gnus-seconds-today) . "    %k:%M")
+    ;;         (604800 . "%a %k:%M")
+    ;;         ((gnus-seconds-month)
+    ;;          . "%a %d")
+    ;;         ((gnus-seconds-year)
+    ;;          . "%b %d")
+    ;;         (t . "%b %d '%y")))
+
     ;; Sort threads by the date of the root node.
     ;; (setq gnus-thread-sort-functions `(gnus-thread-sort-by-date))
     ;; (setq gnus-thread-sort-functions
