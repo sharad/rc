@@ -1272,9 +1272,6 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
       ;; boss might not notice that you are reading news instead of doing
       ;; your job.
       (setq gnus-inhibit-startup-message t))
-
-
-
     (progn
       (use-package gnus-start
         :defer t
@@ -1293,7 +1290,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
           (progn
             (setq mail-user-agent 'gnus-user-agent)))))
     (progn
-      ;; gnus-sum not called 
+      ;; gnus-sum not called
       (lotus-mailnews/init-gnus-sum-config))))
 
 (defun lotus-mailnews/post-init-gnus-config ()
