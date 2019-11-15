@@ -48,9 +48,10 @@
     (gnus-namazu :location local)
     (gnus-daemon :location local)
     (gnus-dired  :location local)
+    (gnus-demon  :location local)
     (message     :location local)
-    sendmail
-    dbus
+    (sendmail    :location local)
+    (dbus        :location local)
     (mailcrypt   :location local)
     (nnheader    :location local)
     (gnus-group  :location local)
@@ -169,23 +170,19 @@ Each entry is either:
     :config
     (lotus-mailnews/init-gnus-namazu-config)))
 
-(defun lotus-mailnews/init-gnus-demon ()
-  (use-package gnus-demon
-    :defer t
-    :config
-    (lotus-mailnews/init-gnus-demon-config)))
-
 (defun lotus-mailnews/init-gnus-dired ()
   (use-package gnus-dired
     :defer t
     :config
     (lotus-mailnews/init-gnus-dired-config)))
 
-(defun lotus-mailnews/init-gnus-daemon ()
+(defun lotus-mailnews/init-gnus-demon ()
   (use-package gnus-daemon
+    :init
+    (lotus-mailnews/init-gnus-demon-init)
     :defer t
     :config
-    (lotus-mailnews/init-gnus-daemon-config)))
+    (lotus-mailnews/init-gnus-demon-config)))
 
 (defun lotus-mailnews/init-message ()
   (use-package message

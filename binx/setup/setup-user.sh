@@ -108,9 +108,7 @@ DEB_PKG_VOICE="espeak-ng espeak-ng-espeak xmms2 gxmms2 promoe gmpc mpd mpc"
 # https://github.com/ryanoasis/nerd-fonts
 # https://www.reddit.com/r/stumpwm/comments/8nywfc/resetting_font_changes/
 DEB_PKG_FONTS="fonts-firacode " # Iosevka
-
 DEB_PKG_MGM_PKG_MGM="wajig vrms"
-
 DEB_PKG_PROGRAMMING=" " # Iosevka
 DEB_PKG_ASSEMBLY="nasm yasm " # Iosevka
 DEB_PKG_LANG_LEARN="guile-2.2 guile-2.0 guile-2.0-dev ocaml-interp gnu-smalltalk squeak-vm elixir"
@@ -122,7 +120,7 @@ DEB_PKG_LANG_HASKELL="ghc alex happy haddock hlint"
 DEB_PKG_LANG_ERLANG="elixir esl-erlang"
 # https://askubuntu.com/questions/77657/how-to-enable-arabic-support-in-gnome-terminal
 DEB_PKG_LANGUAGE="dict dict-freedict-eng-hin bicon libfribidi0 libfribidi-dev"
-DEB_PKG_CLOUD_VM_TOOLS="cloud-init cloud-utils "
+DEB_PKG_CLOUD_VM_TOOLS="cloud-init cloud-utils"
 
 PY_PIP_PKG="termdown "
 NODE_PKG="tern "

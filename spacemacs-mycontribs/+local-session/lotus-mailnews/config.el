@@ -787,10 +787,10 @@ always hide."
               (car (remove-if-not
                     '(lambda (bn)
                        (string-match "*Article" bn 0))
-                    (mapcar 'buffer-name (buffer-list)))))
-             (when (and )rticle-buf
-                   (set-buffer article-buf)
-                   (> (count-lines (point-min) (point-max)) 30)))))
+                    (mapcar 'buffer-name (buffer-list))))))
+         (when article-buf
+           (set-buffer article-buf)
+           (> (count-lines (point-min) (point-max)) 30))))
      (eval
       (progn
         (set (make-local-variable 'message-cite-reply-above) t)
@@ -1101,8 +1101,8 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
               (intern (ido-completing-read "Modifier to apply: "
                                            '("google-lucky" "google"))))))
      (list fn)))
-  (let* ((region-active (and (region-active-p)
-                             (not (equal (region-beginning) (region-end)))))
+  (let* ((region-active (when (region-active-p)
+                          (not (equal (region-beginning) (region-end)))))
          (bound (if region-active
                     (cons (region-beginning) (region-end))
                   (bounds-of-thing-at-point 'word)))
@@ -1414,10 +1414,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     :config
     (progn
       ;; Add info configuration also for function `gnus-info-find-node'
-
       ;; gnus-buffer-configuration
-
-      ;;}}
       (defun lotus-toggle-article-window ()
         (interactive)
         (let ((article-buffer (car
@@ -1639,20 +1636,38 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
       (progn
         (add-hook 'midnight-hook 'xsteve-gnus-update-namazu-index)))))
 
-(defun lotus-mailnews/init-gnus-demon-config ()
-  ())
-
 (defun lotus-mailnews/init-gnus-dired-config ()
   (progn
     (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)))
 
-(defun lotus-mailnews/init-gnus-daemon-config ()
+(defun lotus-mailnews/init-gnus-demon-init ()
+  (setq gnus-use-demon t))
+
+(defun lotus-mailnews/init-gnus-demon-config ()
   (progn
     (setq gnus-use-demon t)
     (add-hook 'gnus-group-mode-hook 'gnus-demon-init)
     (add-hook 'gnus-exit-gnus-hook 'gnus-demon-cancel)
     ;; Sort threads by the date of the root node.
-    (setq gnus-thread-sort-functions `(gnus-thread-sort-by-date))
+    ;; (setq gnus-thread-sort-functions `(gnus-thread-sort-by-date))
+    ;; (setq gnus-thread-sort-functions
+    ;;       '(gnus-thread-sort-by-date
+    ;;         gnus-thread-sort-by-number))
+    ;;         ;; gnus-thread-sort-by-subject
+    ;;         ;; gnus-thread-sort-by-total-score
+    ;; (setq gnus-thread-sort-functions
+    ;;       '(gnus-thread-sort-by-date
+    ;;         gnus-thread-sort-by-number
+    ;;         gnus-thread-sort-by-subject
+    ;;         gnus-thread-sort-by-total-score))
+    ;; (setq gnus-thread-sort-functions
+    ;;       '((not gnus-thread-sort-by-date)
+    ;;         gnus-thread-sort-by-number
+    ;;         gnus-thread-sort-by-subject
+    ;;         (not gnus-thread-sort-by-total-score)))
+    (setq gnus-thread-sort-functions
+          '(gnus-thread-sort-by-date
+            gnus-thread-sort-by-number))
     ;; Initialize the Gnus daemon, check new mail every six minutes.
     ;; (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news 1 nil))
     ;; (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news-now 2 nil)
@@ -1710,8 +1725,8 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
       (message-goto-body)
       (search-forward-regexp "Hi")
       (move-beginning-of-line 1)
-      (if (looking-at "Hi")
-          (kill-line))))
+      (when (looking-at "Hi")
+        (kill-line))))
   (progn
     (define-key message-mode-map [f6] 'xsteve-message-citation-toggle))
   (progn
@@ -1727,6 +1742,14 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
   (progn
     (use-package ispell
+      :init
+      (progn
+        (add-hook 'message-send-hook
+                  'ispell-message)
+        ;; In your ~/.gnus.el, if you prefer on-the-fly spell-checking say
+        (add-hook 'message-mode-hook
+                  #'(lambda ()
+                      (flyspell-mode 1))))
       :defer t
       :config
       (progn

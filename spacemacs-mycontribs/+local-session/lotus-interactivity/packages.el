@@ -47,7 +47,13 @@
     crm
     swiper
     helm
-    )
+    bs
+    ;; contentswitch
+    ibuffer
+    ibuffer-vc
+    ;; ibuf-ext
+    follow)
+    
   "The list of Lisp packages required by the lotus-interactivity layer.
 
 Each entry is either:
@@ -603,9 +609,48 @@ Each entry is either:
 
 (defun lotus-interactivity/post-init-helm ()
   (use-package helm
-   :defer t
-   :config
-   (progn
-     (progn
-       (setq helm-exit-idle-delay 0.3)))))
+    :defer t
+    :config
+    (progn
+      (progn
+        (setq helm-exit-idle-delay 0.3)))))
+
+(defun lotus-interactivity/init-bs ()
+  (use-package bs
+    :defer t
+    :config
+    (progn
+      (progn
+        (lotus-interactivity/init-bs-config)))))
+
+;; (defun lotus-interactivity/init-contentswitch ()
+;;   (use-package contentswitch
+;;     :defer t
+;;     :config
+;;     (progn)))
+
+(defun lotus-interactivity/init-ibuffer ()
+  (use-package ibuffer
+    :defer t
+    :config
+    (lotus-interactivity/init-ibuffer-config)))
+
+(defun lotus-interactivity/init-ibuffer-vc ()
+  (use-package ibuffer-vc
+    :defer t
+    :config
+    (lotus-interactivity/init-ibuffer-vc-config)))
+
+;; (defun lotus-interactivity/init-ibuf-ext ()
+;;   (use-package ibuf-ext
+;;     :defer t
+;;     :config
+;;     (lotus-interactivity/init-ibuf-ext-config)))
+
+(defun lotus-interactivity/init-follow ()
+  (use-package follow
+    :defer t
+    :config
+    (lotus-interactivity/init-follow-config)))
+
 ;;; packages.el ends here
