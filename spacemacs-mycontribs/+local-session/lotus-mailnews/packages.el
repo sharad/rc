@@ -96,7 +96,10 @@ Each entry is either:
     (lotus-mailnews/post-init-gnus-init)
     :defer t
     :config
-    (lotus-mailnews/post-init-gnus-config)))
+    (lotus-mailnews/post-init-gnus-config))
+
+
+  (lotus-mailnews/post-init-gnus-init))
 
 (defun lotus-mailnews/post-init-gnus ()
   (use-package gnus
