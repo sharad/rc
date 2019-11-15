@@ -1217,10 +1217,13 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 (autoload 'sendmail-send-it "sendmail")
 
+;; https://www.emacswiki.org/emacs/CategoryMailAddons
 ;; (require 'sigbegone)
+
 
 
 (defun lotus-mailnews/post-init-gnus-init ()
+  (interactive)
   (progn
     (progn
       (setq gnus-init-file "~/.gnus.el"))

@@ -552,6 +552,12 @@
         (lotus-hide-group group force-call-cmd)
       (lotus-unhide-group group force-call-cmd))))
 
+(defun lotus-interactivity/init-ibuf-ext-init ()
+  (setq group-start-fun-alist
+        '(("gnus"    . (gnus-unplugged . gnus-group-exit))
+          ("erc"     . (lotus-erc-start-or-switch))
+          ("planner" . (plan)))))
+
 (defun lotus-interactivity/init-ibuf-ext-config ()
   (setq group-start-fun-alist
         '(("gnus"    . (gnus-unplugged . gnus-group-exit))

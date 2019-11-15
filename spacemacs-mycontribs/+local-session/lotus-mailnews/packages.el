@@ -90,6 +90,7 @@ Each entry is either:
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
 (defun lotus-mailnews/post-init-gnus ()
+  (interactive)
   (use-package gnus
     :init
     (lotus-mailnews/post-init-gnus-init)

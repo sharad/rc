@@ -48,12 +48,12 @@
     swiper
     helm
     bs
-    ;; contentswitch
+    contentswitch
     ibuffer
     ibuffer-vc
-    ;; ibuf-ext
+    (ibuf-ext :location local)
     follow)
-    
+
   "The list of Lisp packages required by the lotus-interactivity layer.
 
 Each entry is either:
@@ -623,11 +623,11 @@ Each entry is either:
       (progn
         (lotus-interactivity/init-bs-config)))))
 
-;; (defun lotus-interactivity/init-contentswitch ()
-;;   (use-package contentswitch
-;;     :defer t
-;;     :config
-;;     (progn)))
+(defun lotus-interactivity/init-contentswitch ()
+  (use-package contentswitch
+    :defer t
+    :config
+    (progn)))
 
 (defun lotus-interactivity/init-ibuffer ()
   (use-package ibuffer
@@ -641,11 +641,13 @@ Each entry is either:
     :config
     (lotus-interactivity/init-ibuffer-vc-config)))
 
-;; (defun lotus-interactivity/init-ibuf-ext ()
-;;   (use-package ibuf-ext
-;;     :defer t
-;;     :config
-;;     (lotus-interactivity/init-ibuf-ext-config)))
+(defun lotus-interactivity/init-ibuf-ext ()
+  (use-package ibuf-ext
+    :init
+    (lotus-interactivity/init-ibuf-ext-init)
+    :defer t
+    :config
+    (lotus-interactivity/init-ibuf-ext-config)))
 
 (defun lotus-interactivity/init-follow ()
   (use-package follow
