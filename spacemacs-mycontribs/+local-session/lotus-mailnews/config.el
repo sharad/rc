@@ -1222,7 +1222,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 
 
-(defun lotus-mailnews/post-init-gnus-init ()
+(defun lotus-mailnews/common-init-gnus ()
   (interactive)
   (progn
     (progn
@@ -1257,7 +1257,12 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
             "Office\\.INBOX\\|Office\\.sent-mail"
           "Gmail\\.INBOX\\|Gmail\\.sent-mail")))))
 
+(defun lotus-mailnews/post-init-gnus-init ()
+  (interactive)
+  (lotus-mailnews/common-init-gnus))
+
 (defun lotus-mailnews/post-init-gnus-config ()
+  (lotus-mailnews/common-init-gnus)
   (progn
     (setq gnus-interactive-exit t)
     (progn
@@ -1267,39 +1272,9 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
       ;; boss might not notice that you are reading news instead of doing
       ;; your job.
       (setq gnus-inhibit-startup-message t))
-    (progn
-      (setq gnus-asynchronous t)
-      (setq gnus-select-method '(nntp "news.gmane.org"))
 
-      (add-to-list
-       'gnus-secondary-select-methods
-       '(nnimap "localhost"
-                (nnimap-address "localhost")
-                ;; (nnimap-server-port 993)
-                ;; (nnimap-server-port 443)
-                (nnimap-server-port 143)
-                (nnimap-stream network)
-                (nnimap-authenticator login)
-                (nnimap-authinfo-file "~/.authinfo.gpg")
-                (nnir-search-engin imap)))
 
-      (add-to-list
-       'gnus-secondary-select-methods
-       `(nnvirtual
-         ,(if (equal (system-name) office-host-name)
-              "Office\\.INBOX\\|Office\\.sent-mail"
-            "Gmail\\.INBOX\\|Gmail\\.sent-mail"))))
-    (progn
-      (setq gnus-init-file "~/.gnus.el")
-      (make-directory (expand-file-name ".cache/gnus/" user-emacs-directory) t)
-      (setq
-       gnus-home-directory (expand-file-name ".cache/gnus/" user-emacs-directory))
-      (setq
-       gnus-directory      (concat gnus-home-directory "News/"))
-      (setq
-       ;; https://www.emacswiki.org/emacs/MessageMode
-       message-auto-save-directory (concat gnus-directory "drafts/")
-       nndraft-directory (concat gnus-directory "drafts/")))
+
     (progn
       (use-package gnus-start
         :defer t
