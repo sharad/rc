@@ -103,18 +103,18 @@
 (defun lotus-interactivity/init-bs-config ()
   ;; Finally, to flip sequentially through buffers (like Alt-Tab in a
   ;; window manager) I use iflipb:
-  
+
   (setq iflipb-boring-buffer-filter 'my-bs-ignore-buffer)
-  
+
   ;; http://scottfrazersblog.blogspot.in/2010/01/emacs-filtered-buffer-switching.html
-  
+
   (defvar my-bs-always-show-regexps '("\\*\\(scratch\\|info\\|grep\\|compilation\\)\\*")
     "*Buffer regexps to always show when buffer switching.")
   (defvar my-bs-never-show-regexps '("^\\s-" "^\\*" "TAGS$")
     "*Buffer regexps to never show when buffer switching.")
   (defvar my-ido-ignore-dired-buffers t
     "*If non-nil, buffer switching should ignore dired buffers.")
-  
+
   (defun my-bs-str-in-regexp-list (str regexp-list)
     "Return non-nil if str matches anything in regexp-list."
     (let ((case-fold-search nil))
@@ -122,7 +122,7 @@
         (dolist (regexp regexp-list)
           (when (string-match regexp str)
             (throw 'done t))))))
-  
+
   (defun my-bs-ignore-buffer (name)
     "Return non-nil if the named buffer should be ignored."
     (or (and (not (my-bs-str-in-regexp-list name my-bs-always-show-regexps))
@@ -131,15 +131,15 @@
              (save-excursion
                (set-buffer name)
                (equal major-mode 'dired-mode)))))
-  
-  
+
+
   ;; This is set up to ignore all buffers that start with a space or
   ;; '*', except for scratch, info, grep, and compilation buffers.
   ;; Dired buffers are also ignored.
-  
+
   ;; []The function to toggle between the two most recently used buffers
   ;; is easy enough:
-  
+
   (defun my-bs-toggle ()
     "Toggle buffers, ignoring certain ones."
     (interactive)
@@ -149,26 +149,26 @@
                     (my-bs-ignore-buffer (buffer-name buf)))
           (switch-to-buffer buf)
           (throw 'done t)))))
-  
-  
+
+
   ;; I use ido to switch buffers by name:
-  
+
   ;; (setq ido-ignore-buffers '(my-bs-ignore-buffer))
-  
-  
+
+
   ;; I like bs for getting a list of buffers to choose from:
-  
+
   (setq bs-configurations
         '(("all" nil nil nil nil nil)
           ("files" nil nil nil #'(lambda (buf) (my-bs-ignore-buffer (buffer-name buf))) nil)))
   (setq bs-cycle-configuration-name "files")
-  
-  
+
+
   ;; This sets up two bs configurations, one that shows all the
   ;; buffers and one that only shows my subset.  Somewhat off-topic, I
   ;; like bs but not the default look ... too much information.
   ;; Here's my simplified version:
-  
+
   (setq bs-mode-font-lock-keywords
         (list
          ; Headers
@@ -181,7 +181,7 @@
          '("^[ .]+\\(\\*\\)" 1 font-lock-warning-face)
          ; Read-only buffers
          '("^[ .*]+\\(\\%\\)" 1 font-lock-variable-name-face)))
-  
+
   (setq bs-attributes-list
         (quote (("" 2 2 left bs--get-marked-string)
                 ("M" 1 1 left bs--get-modified-string)
@@ -382,180 +382,182 @@
          (or cbuff obuff)))))))
 
 (defun lotus-interactivity/init-ibuffer-vc-config ())
+
+;; lotus-interactivity/init-ibuf-ext-config
+
+(defun lotus-get-ibuffer-filter-groups ()
+  (cdr (assoc "default" ibuffer-saved-filter-groups)))
+
+
+(defun get-ibuffer-group (&optional default-group cmd)
+  (ido-completing-read "iBuffer Group: "
+                       (remove-if-not
+                        '(lambda (g)
+                           (funcall (cond
+                                     ((eq cmd 'start) #'car)
+                                     ((eq cmd 'stop) #'cdr)
+                                     ((eq cmd nil) #'(lambda (x) t))
+                                     (t #'identity))
+                                    (cdr (assoc g group-start-fun-alist))))
+                        (mapcar #'car (lotus-get-ibuffer-filter-groups)))
+                       nil
+                       nil
+                       nil
+                       nil
+                       (or (if (stringp default-group) default-group)
+                           (lotus-ibuffer-containing-group-of-buffer (current-buffer)))))
+
+
+
+(defun lotus-ibuffer-included-in-group-p (buf group &optional nodefault)
+  (let* ((filter-group-alist (if nodefault
+                                 (lotus-get-ibuffer-filter-groups)
+                               (append (lotus-get-ibuffer-filter-groups)
+                                       (list (cons "Default" nil)))))
+         (group-with-filterset (assoc group filter-group-alist))
+         (filterset (cdr group-with-filterset)))
+    (if (null group-with-filterset)
+        (error "no such group: %s" group)
+      (ibuffer-included-in-filters-p buf filterset))))
+
+(defun lotus-ibuffer-included-in-groups-p (buf &rest groups)
+  (let (ret)
+    (while (and (not ret) groups)
+      (setq ret (lotus-ibuffer-included-in-group-p buf (car groups))
+            groups (cdr groups)))
+    ret))
+
+(defun lotus-ibuffer-containing-group-of-buffer (buf &optional default)
+  (let (ret
+        (filter-group-alist (if (not default)
+                                (lotus-get-ibuffer-filter-groups)
+                              (append (lotus-get-ibuffer-filter-groups)
+                                      (list (cons "Default" nil))))))
+    (while (and (not ret) filter-group-alist)
+      (setq ret (if (lotus-ibuffer-included-in-group-p buf (caar filter-group-alist))
+                    (caar filter-group-alist))
+            filter-group-alist (cdr filter-group-alist)))
+    ret))
+
+(defun lotus-ibuffer-get-group-buffers (group &optional current-last)
+  (let* ((filter-group-alist (append (lotus-get-ibuffer-filter-groups)
+                                     (list (cons "Default" nil))))
+         (group-with-filterset (assoc group filter-group-alist))
+         (filterset (cdr group-with-filterset))
+         (buffers
+          (if current-last
+              (reverse (buffer-list))
+            (buffer-list))))
+    (if (null group-with-filterset)
+        (error "no such group: %s" group)
+      (remove-if-not #'(lambda (buf)
+                         (ibuffer-included-in-filters-p buf filterset))
+                     buffers))))
+
+(defun lotus-context-switch-buffer (&optional arg)
+  (interactive "P")
+  (let ((group (lotus-ibuffer-containing-group-of-buffer (current-buffer) t)))
+    (switch-to-buffer
+     (ido-completing-read
+      (format "Buffer from %s group: " group)
+      (mapcar #'buffer-name (lotus-ibuffer-get-group-buffers group t))))))
+
+(defvar group-window-configuration-alist nil "group and window-configuration alist")
+
+(defvar group-start-fun-alist nil "group start fun alist")
+
+(defun lotus-ibuffer-bury-group (group &optional buflist)
+  ;; Should use current buffer's group
+  (interactive)
+  (dolist (buf (or buflist (lotus-ibuffer-get-group-buffers group)))
+    (bury-buffer buf)))
+
+(defun lotus-hide-group (&optional group call-stop-up-cmd)
+  ;; Should use current buffer's group
+  (interactive "P")
+  (when (or call-stop-up-cmd
+            (if (called-interactively-p 'any) group))
+    (call-group-start-stop-alist-cmd group 'stop)
+    ;; correct it
+    (setq group-window-configuration-alist
+          (remove-if #'(lambda (gc)
+                         (string-equal group (car gc)))
+                     group-window-configuration-alist)))
+  (let* ((call-stop-up-cmd
+          (or call-stop-up-cmd
+              (if (called-interactively-p 'any) group)))
+         (group (or
+                 (unless (called-interactively-p 'any) group)
+                 (get-ibuffer-group nil (if call-stop-up-cmd 'stop))))
+         (buflist (lotus-ibuffer-get-group-buffers group)))
+    (when buflist
+      (when (equal group (lotus-ibuffer-containing-group-of-buffer (current-buffer)))
+        (set-assoc group (elscreen-current-window-configuration) group-window-configuration-alist))
+      (lotus-ibuffer-bury-group group buflist)
+      (delete-other-windows))))
+
+
+(defun call-group-start-stop-alist-cmd (group start-or-stop)
+  (let ((fun (if (equal start-or-stop 'start)
+                 (cadr (assoc group group-start-fun-alist))
+               (cddr (assoc group group-start-fun-alist))))
+        (cmd-type (if (equal start-or-stop 'start)
+                      "startup"
+                    "stop")))
+    (if fun
+        (funcall fun)
+      (message "No %s command associated with: `%s' group" cmd-type group))))
+
+(defun lotus-ibuffer-unbury-group (group &optional buflist)
+  ;; should ask for group.
+  (interactive))
+;; (dolist (buf (or buflist (lotus-ibuffer-get-group-buffers group))
+;;          (unbury-buffer buf))))
+
+(defun lotus-unhide-group (&optional group call-start-up-cmd)
+  ;; should ask for group.
+  (interactive "P")
+  (let* ((call-start-up-cmd
+          (or call-start-up-cmd
+              (if (called-interactively-p 'any) group)))
+         (group (or
+                 (unless (called-interactively-p 'any) group)
+                 (get-ibuffer-group nil (if call-start-up-cmd 'start))))
+         (buflist (lotus-ibuffer-get-group-buffers group)))
+    (if buflist
+        (progn
+          (lotus-ibuffer-unbury-group group buflist)
+          (switch-to-buffer (car buflist))
+          (if (assoc group group-window-configuration-alist)
+              ;;                 (set-window-configuration (cdr (assoc group group-window-configuration-alist)))
+              (elscreen-apply-window-configuration (cdr (assoc group group-window-configuration-alist))))
+          (if call-start-up-cmd
+              (call-group-start-stop-alist-cmd group 'start)))
+      (call-group-start-stop-alist-cmd group 'start))))
+
+;;{{ Good :: Excellent beautiful Great!! Thanks XSteve
+;; Use the keybinding M-F7 to toggle between the gnus window configuration and your normal editing windows.
+
+;;;####autoload
+(defun toggle-ibuffer-group (&optional group force-call-cmd)
+  ;; Should use current buffer's group
+  (interactive "P")
+  (let* ((force-call-cmd
+          (or force-call-cmd
+              (if (called-interactively-p 'any) group)))
+         (group (or
+                 (unless (called-interactively-p 'any) group)
+                 (get-ibuffer-group nil (if force-call-cmd 'any)))))
+    (if (lotus-ibuffer-included-in-group-p (current-buffer) group)
+        (lotus-hide-group group force-call-cmd)
+      (lotus-unhide-group group force-call-cmd))))
 
 (defun lotus-interactivity/init-ibuf-ext-config ()
-  (defun lotus-get-ibuffer-filter-groups ()
-    (cdr (assoc "default" ibuffer-saved-filter-groups)))
-  
-  
-  (defun get-ibuffer-group (&optional default-group cmd)
-    (ido-completing-read "iBuffer Group: "
-                         (remove-if-not
-                          '(lambda (g)
-                             (funcall (cond
-                                       ((eq cmd 'start) #'car)
-                                       ((eq cmd 'stop) #'cdr)
-                                       ((eq cmd nil) #'(lambda (x) t))
-                                       (t #'identity))
-                                      (cdr (assoc g group-start-fun-alist))))
-                          (mapcar #'car (lotus-get-ibuffer-filter-groups)))
-                         nil
-                         nil
-                         nil
-                         nil
-                         (or (if (stringp default-group) default-group)
-                             (lotus-ibuffer-containing-group-of-buffer (current-buffer)))))
-  
-  
-  
-  (defun lotus-ibuffer-included-in-group-p (buf group &optional nodefault)
-    (let* ((filter-group-alist (if nodefault
-                                   (lotus-get-ibuffer-filter-groups)
-                                 (append (lotus-get-ibuffer-filter-groups)
-                                         (list (cons "Default" nil)))))
-           (group-with-filterset (assoc group filter-group-alist))
-           (filterset (cdr group-with-filterset)))
-      (if (null group-with-filterset)
-          (error "no such group: %s" group)
-        (ibuffer-included-in-filters-p buf filterset))))
-  
-  (defun lotus-ibuffer-included-in-groups-p (buf &rest groups)
-    (let (ret)
-      (while (and (not ret) groups)
-        (setq ret (lotus-ibuffer-included-in-group-p buf (car groups))
-              groups (cdr groups)))
-      ret))
-  
-  (defun lotus-ibuffer-containing-group-of-buffer (buf &optional default)
-    (let (ret
-          (filter-group-alist (if (not default)
-                                  (lotus-get-ibuffer-filter-groups)
-                                (append (lotus-get-ibuffer-filter-groups)
-                                        (list (cons "Default" nil))))))
-      (while (and (not ret) filter-group-alist)
-        (setq ret (if (lotus-ibuffer-included-in-group-p buf (caar filter-group-alist))
-                      (caar filter-group-alist))
-              filter-group-alist (cdr filter-group-alist)))
-      ret))
-  
-  (defun lotus-ibuffer-get-group-buffers (group &optional current-last)
-    (let* ((filter-group-alist (append (lotus-get-ibuffer-filter-groups)
-                                       (list (cons "Default" nil))))
-           (group-with-filterset (assoc group filter-group-alist))
-           (filterset (cdr group-with-filterset))
-           (buffers
-            (if current-last
-                (reverse (buffer-list))
-              (buffer-list))))
-      (if (null group-with-filterset)
-          (error "no such group: %s" group)
-        (remove-if-not #'(lambda (buf)
-                           (ibuffer-included-in-filters-p buf filterset))
-                       buffers))))
-  
-  
-  (defun lotus-context-switch-buffer (&optional arg)
-    (interactive "P")
-    (let ((group (lotus-ibuffer-containing-group-of-buffer (current-buffer) t)))
-      (switch-to-buffer
-       (ido-completing-read
-        (format "Buffer from %s group: " group)
-        (mapcar #'buffer-name (lotus-ibuffer-get-group-buffers group t))))))
-  
-  (defvar group-window-configuration-alist nil "group and window-configuration alist")
-  
-  (defvar group-start-fun-alist nil "group start fun alist")
-  
   (setq group-start-fun-alist
         '(("gnus"    . (gnus-unplugged . gnus-group-exit))
           ("erc"     . (lotus-erc-start-or-switch))
-          ("planner" . (plan))))
-  
-  (defun lotus-ibuffer-bury-group (group &optional buflist)
-    ;; Should use current buffer's group
-    (interactive)
-    (dolist (buf (or buflist (lotus-ibuffer-get-group-buffers group)))
-      (bury-buffer buf)))
-  
-  (defun lotus-hide-group (&optional group call-stop-up-cmd)
-    ;; Should use current buffer's group
-    (interactive "P")
-    (when (or call-stop-up-cmd
-              (if (called-interactively-p 'any) group))
-      (call-group-start-stop-alist-cmd group 'stop)
-      ;; correct it
-      (setq group-window-configuration-alist
-            (remove-if #'(lambda (gc)
-                           (string-equal group (car gc)))
-                       group-window-configuration-alist)))
-    (let* ((call-stop-up-cmd
-            (or call-stop-up-cmd
-                (if (called-interactively-p 'any) group)))
-           (group (or
-                   (unless (called-interactively-p 'any) group)
-                   (get-ibuffer-group nil (if call-stop-up-cmd 'stop))))
-           (buflist (lotus-ibuffer-get-group-buffers group)))
-      (when buflist
-        (when (equal group (lotus-ibuffer-containing-group-of-buffer (current-buffer)))
-          (set-assoc group (elscreen-current-window-configuration) group-window-configuration-alist))
-        (lotus-ibuffer-bury-group group buflist)
-        (delete-other-windows))))
-  
-  
-  (defun call-group-start-stop-alist-cmd (group start-or-stop)
-    (let ((fun (if (equal start-or-stop 'start)
-                   (cadr (assoc group group-start-fun-alist))
-                 (cddr (assoc group group-start-fun-alist))))
-          (cmd-type (if (equal start-or-stop 'start)
-                        "startup"
-                      "stop")))
-      (if fun
-          (funcall fun)
-        (message "No %s command associated with: `%s' group" cmd-type group))))
-  
-  (defun lotus-ibuffer-unbury-group (group &optional buflist)
-    ;; should ask for group.
-    (interactive))
-  ;; (dolist (buf (or buflist (lotus-ibuffer-get-group-buffers group))
-  ;;          (unbury-buffer buf))))
-  
-  (defun lotus-unhide-group (&optional group call-start-up-cmd)
-    ;; should ask for group.
-    (interactive "P")
-    (let* ((call-start-up-cmd
-            (or call-start-up-cmd
-                (if (called-interactively-p 'any) group)))
-           (group (or
-                   (unless (called-interactively-p 'any) group)
-                   (get-ibuffer-group nil (if call-start-up-cmd 'start))))
-           (buflist (lotus-ibuffer-get-group-buffers group)))
-      (if buflist
-          (progn
-            (lotus-ibuffer-unbury-group group buflist)
-            (switch-to-buffer (car buflist))
-            (if (assoc group group-window-configuration-alist)
-                ;;                 (set-window-configuration (cdr (assoc group group-window-configuration-alist)))
-                (elscreen-apply-window-configuration (cdr (assoc group group-window-configuration-alist))))
-            (if call-start-up-cmd
-                (call-group-start-stop-alist-cmd group 'start)))
-        (call-group-start-stop-alist-cmd group 'start))))
-  
-  ;;{{ Good :: Excellent beautiful Great!! Thanks XSteve
-  ;; Use the keybinding M-F7 to toggle between the gnus window configuration and your normal editing windows.
-  
-  ;;;####autoload
-  (defun toggle-ibuffer-group (&optional group force-call-cmd)
-    ;; Should use current buffer's group
-    (interactive "P")
-    (let* ((force-call-cmd
-            (or force-call-cmd
-                (if (called-interactively-p 'any) group)))
-           (group (or
-                   (unless (called-interactively-p 'any) group)
-                   (get-ibuffer-group nil (if force-call-cmd 'any)))))
-      (if (lotus-ibuffer-included-in-group-p (current-buffer) group)
-          (lotus-hide-group group force-call-cmd)
-        (lotus-unhide-group group force-call-cmd)))))
+          ("planner" . (plan)))))
+
 
 (defun lotus-interactivity/init-follow-config ())
 

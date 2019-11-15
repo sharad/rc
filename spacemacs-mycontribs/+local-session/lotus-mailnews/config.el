@@ -1228,9 +1228,31 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     (setq
      gnus-home-directory (expand-file-name ".cache/gnus/" user-emacs-directory))
     (setq
-     gnus-directory      (concat gnus-home-directory "News/"))
+     gnus-directory      (expand-file-name "News/" gnus-home-directory))
     (setq
-     nndraft-directory (concat gnus-directory "drafts/"))))
+     nndraft-directory (expand-file-name "drafts/" gnus-directory)))
+  (progn
+    (setq gnus-asynchronous t)
+    (setq gnus-select-method '(nntp "news.gmane.org"))
+
+    (add-to-list
+     'gnus-secondary-select-methods
+     '(nnimap "localhost"
+              (nnimap-address "localhost")
+              ;; (nnimap-server-port 993)
+              ;; (nnimap-server-port 443)
+              (nnimap-server-port 143)
+              (nnimap-stream network)
+              (nnimap-authenticator login)
+              (nnimap-authinfo-file "~/.authinfo.gpg")
+              (nnir-search-engin imap)))
+
+    (add-to-list
+     'gnus-secondary-select-methods
+     `(nnvirtual
+       ,(if (equal (system-name) office-host-name)
+            "Office\\.INBOX\\|Office\\.sent-mail"
+          "Gmail\\.INBOX\\|Gmail\\.sent-mail")))))
 
 (defun lotus-mailnews/post-init-gnus-config ()
   (progn
@@ -1703,10 +1725,6 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 (defun lotus-mailnews/init-message-config ()
   (progn
-    (setq message-from-style nil
-          ;; https://www.emacswiki.org/emacs/MessageMode
-          message-auto-save-directory (concat gnus-directory "drafts/")))
-  (progn
     (setq
      gnus-message-archive-method '(nnimap "localhost")
      gnus-message-archive-group        ;even I have handled it in gnus-posting-style
@@ -1795,7 +1813,8 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
       :config
       (progn
         (add-hook 'message-mode-hook
-                  #'(lambda () (footnote-mode 1))))))
+                  #'(lambda ()
+                      (footnote-mode 1))))))
   (progn
     (add-hook 'message-mode-hook ;          'turn-on-auto-fill)
               #'(lambda ()
@@ -1820,7 +1839,15 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
       (setq
        ;; see http://www.gnus.org/manual/message_36.html
        message-sendmail-f-is-evil nil
-       message-sendmail-envelope-from 'header))))
+       message-sendmail-envelope-from 'header)))
+  (progn
+    (setq message-from-style nil))
+  (progn
+    (use-package gnus
+      :defer t
+      :config
+      (progn ;; https://www.emacswiki.org/emacs/MessageMode
+        (setq message-auto-save-directory (expand-file-name "drafts/" gnus-directory))))))
 
 (defun lotus-mailnews/init-sendmail-config ()
   (progn
