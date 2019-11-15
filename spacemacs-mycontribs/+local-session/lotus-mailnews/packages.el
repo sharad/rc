@@ -202,6 +202,8 @@ Each entry is either:
     (lotus-mailnews/init-dbus-config)))
 
 (defun lotus-mailnews/init-mailcrypt ()
+  ;; use EasyPG as mailcrypt not available now
+  ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Security.html
   (use-package mailcrypt
     :defer t
     :commands (mc-install-read-mode mc-install-write-mode)
