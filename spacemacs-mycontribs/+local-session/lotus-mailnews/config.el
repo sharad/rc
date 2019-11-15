@@ -76,10 +76,12 @@ Example:
 article."
   (interactive)
   (let ((group (th-notmuch-file-to-group (notmuch-show-get-filename)))
-        (message-id (replace-regexp-in-string
-                     "^id:" "" (notmuch-show-get-message-id))))
-    (if (and group message-id)
-        (org-gnus-follow-link group message-id)
+        (message-id (replace-regexp-in-string "^id:" ""
+                                              (notmuch-show-get-message-id))))
+    (if (and group
+             message-id)
+        (org-gnus-follow-link group
+                              message-id)
       (message "Couldn't get relevant infos for switching to Gnus."))))
 
 ;; (define-key notmuch-show-mode-map (kbd "C-c C-c") 'th-notmuch-goto-message-in-gnus)
@@ -1289,7 +1291,10 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
         :config
         (progn
           (progn
-            (setq mail-user-agent 'gnus-user-agent)))))))
+            (setq mail-user-agent 'gnus-user-agent)))))
+    (progn
+      ;; gnus-sum not called 
+      (lotus-mailnews/init-gnus-sum-config))))
 
 (defun lotus-mailnews/post-init-gnus-config ()
   (progn
@@ -1409,22 +1414,6 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 
 (defun lotus-mailnews/init-gnus-sum-config ()
-  (use-package gnus-win
-    :defer t
-    :config
-    (progn
-      ;; Add info configuration also for function `gnus-info-find-node'
-      ;; gnus-buffer-configuration
-      (defun lotus-toggle-article-window ()
-        (interactive)
-        (let ((article-buffer (car
-                               (remove-if-not #'(lambda (bn)
-                                                  (string-match "*Article" bn 0))
-                                              (mapcar #'buffer-name (buffer-list))))))
-          (if (and article-buffer
-                   (get-buffer-window article-buffer nil))
-              (gnus-configure-windows 'summary 'force)
-            (gnus-configure-windows 'article 'force))))))
   (progn
     (add-hook 'gnus-summary-mode-hook
                #'(lambda ()
@@ -1488,7 +1477,45 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
                                         ;dans la semaine = sam 14:39
             ((gnus-seconds-month) . "%a %d") ;ce mois = sam 28
             ((gnus-seconds-year) . "%b %d") ;durant l'année = mai 28
-            (t . "%b %d '%y")))))
+            (t . "%b %d '%y"))))
+  (progn
+    ;; Sort threads by the date of the root node.
+    ;; (setq gnus-thread-sort-functions `(gnus-thread-sort-by-date))
+    ;; (setq gnus-thread-sort-functions
+    ;;       '(gnus-thread-sort-by-date
+    ;;         gnus-thread-sort-by-number))
+    ;;         ;; gnus-thread-sort-by-subject
+    ;;         ;; gnus-thread-sort-by-total-score
+    ;; (setq gnus-thread-sort-functions
+    ;;       '(gnus-thread-sort-by-date
+    ;;         gnus-thread-sort-by-number
+    ;;         gnus-thread-sort-by-subject
+    ;;         gnus-thread-sort-by-total-score))
+    ;; (setq gnus-thread-sort-functions
+    ;;       '((not gnus-thread-sort-by-date)
+    ;;         gnus-thread-sort-by-number
+    ;;         gnus-thread-sort-by-subject
+    ;;         (not gnus-thread-sort-by-total-score)))
+    (setq gnus-thread-sort-functions
+          '(gnus-thread-sort-by-date
+            gnus-thread-sort-by-number)))
+  (progn
+    (use-package gnus-win
+      :defer t
+      :config
+      (progn
+        ;; Add info configuration also for function `gnus-info-find-node'
+        ;; gnus-buffer-configuration
+        (defun lotus-toggle-article-window ()
+          (interactive)
+          (let ((article-buffer (car
+                                 (remove-if-not #'(lambda (bn)
+                                                    (string-match "*Article" bn 0))
+                                                (mapcar #'buffer-name (buffer-list))))))
+            (if (and article-buffer
+                     (get-buffer-window article-buffer nil))
+                (gnus-configure-windows 'summary 'force)
+              (gnus-configure-windows 'article 'force))))))))
 
 (defun lotus-mailnews/init-gnus-msg-config ()
   (progn
@@ -1646,28 +1673,6 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 (defun lotus-mailnews/init-gnus-demon-config ()
   (progn
     (setq gnus-use-demon t)
-    (add-hook 'gnus-group-mode-hook 'gnus-demon-init)
-    (add-hook 'gnus-exit-gnus-hook 'gnus-demon-cancel)
-    ;; Sort threads by the date of the root node.
-    ;; (setq gnus-thread-sort-functions `(gnus-thread-sort-by-date))
-    ;; (setq gnus-thread-sort-functions
-    ;;       '(gnus-thread-sort-by-date
-    ;;         gnus-thread-sort-by-number))
-    ;;         ;; gnus-thread-sort-by-subject
-    ;;         ;; gnus-thread-sort-by-total-score
-    ;; (setq gnus-thread-sort-functions
-    ;;       '(gnus-thread-sort-by-date
-    ;;         gnus-thread-sort-by-number
-    ;;         gnus-thread-sort-by-subject
-    ;;         gnus-thread-sort-by-total-score))
-    ;; (setq gnus-thread-sort-functions
-    ;;       '((not gnus-thread-sort-by-date)
-    ;;         gnus-thread-sort-by-number
-    ;;         gnus-thread-sort-by-subject
-    ;;         (not gnus-thread-sort-by-total-score)))
-    (setq gnus-thread-sort-functions
-          '(gnus-thread-sort-by-date
-            gnus-thread-sort-by-number))
     ;; Initialize the Gnus daemon, check new mail every six minutes.
     ;; (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news 1 nil))
     ;; (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news-now 2 nil)
@@ -1924,7 +1929,10 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     ;;           (or (getenv "GNUSTEP_USER_ROOT") "~/GNUstep"))))
     ;;     (gnus-play-jingle))
 
-    (add-hook 'gnus-after-exiting-gnus-hook 'my-gnus-after-exiting-gnus-hook-fn)))
+    (add-hook 'gnus-after-exiting-gnus-hook 'my-gnus-after-exiting-gnus-hook-fn))
+  (progn
+    (add-hook 'gnus-group-mode-hook 'gnus-demon-init)
+    (add-hook 'gnus-exit-gnus-hook 'gnus-demon-cancel)))
 
 (defun lotus-mailnews/init-mm-decode-config ()
   (progn
