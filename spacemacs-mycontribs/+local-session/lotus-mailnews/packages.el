@@ -37,6 +37,8 @@
 (defconst lotus-mailnews-packages
   '(
     (gnus        :location local)
+    (nndraft     :location local)
+    (gnus-gravatar :location local)
     bbdb
     lsdb
     shimbun
@@ -96,16 +98,31 @@ Each entry is either:
     (lotus-mailnews/post-init-gnus-init)
     :defer t
     :config
-    (lotus-mailnews/post-init-gnus-config))
+    (lotus-mailnews/post-init-gnus-config)))
 
+  ;; (spacemacs|use-package-add-hook gnus
+  ;;   :post-init
+  ;;   (lotus-mailnews/post-init-gnus-init)
+  ;;   :post-config
+  ;;   (lotus-mailnews/post-init-gnus-config))
+  
 
-  (lotus-mailnews/post-init-gnus-init))
-
-(defun lotus-mailnews/post-init-gnus ()
-  (use-package gnus
+  ;; (debug)
+  ;; (lotus-mailnews/post-init-gnus-init)
+  ;; (lotus-mailnews/post-init-gnus-config)
+  ;; (debug)
+  
+(defun lotus-mailnews/init-nndraft ()
+  (use-package nndraft
     :defer t
     :config
-    (lotus-mailnews/post-init-gnus-config)))
+    (lotus-mailnews/init-nndraft-config)))
+
+(defun lotus-mailnews/init-gnus-gravatar ()
+  (use-package gnus-gravatar
+    :defer t
+    :config
+    (lotus-mailnews/init-gnus-gravatar-config)))
 
 (defun lotus-mailnews/post-init-bbdb ()
   (use-package bbdb

@@ -9,14 +9,17 @@
   (when (file-exists-p file)
     (load-file file)))
 
-(defvar osetup-dir "~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup")
+(defvar lotus-osetup-dir "~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup")
 
-(lotus-load-if-exists (expand-file-name "info.d/common/elisp/common-info.el" osetup-dir))
-(lotus-load-if-exists (expand-file-name "info.d/common/elisp/passwds.el" osetup-dir))
-(lotus-load-if-exists (expand-file-name "info.d/hosts/default/elisp/host-info.el" osetup-dir))
-(lotus-load-if-exists (concat (expand-file-name "info.d/hosts/" osetup-dir)
-                              (system-name)
-                              "/elisp/host-info.el"))
+(defun lotus-load-osetup-dir ()
+  (lotus-load-if-exists (expand-file-name "info.d/common/elisp/common-info.el" lotus-osetup-dir))
+  (lotus-load-if-exists (expand-file-name "info.d/common/elisp/passwds.el" lotus-osetup-dir))
+  (lotus-load-if-exists (expand-file-name "info.d/hosts/default/elisp/host-info.el" lotus-osetup-dir))
+  (lotus-load-if-exists (concat (expand-file-name "info.d/hosts/" lotus-osetup-dir)
+                                (system-name)
+                                "/elisp/host-info.el")))
+
+(lotus-load-osetup-dir)
 
 ;; notmuch
 
@@ -170,14 +173,6 @@ article."
       (gnus-summary-goto-subject
        (cdr gnus-article-current)))))
 
-
-;;}}
-
-;;{{
-
-;;}}
-
-;;{{
 (defun article-show-attachment (&optional arg)
   "Hide the signature in the current article.
 If given a negative prefix, always show; if given a positive prefix,
@@ -1224,45 +1219,49 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 (defun lotus-mailnews/common-init-gnus ()
   (interactive)
+  ;; (debug)
   (progn
-    (progn
-      (setq gnus-init-file "~/.gnus.el"))
-    (make-directory (expand-file-name ".cache/gnus/" user-emacs-directory) t)
-    (setq
-     gnus-home-directory (expand-file-name ".cache/gnus/" user-emacs-directory))
-    (setq
-     gnus-directory      (expand-file-name "News/" gnus-home-directory))
-    (setq
-     nndraft-directory (expand-file-name "drafts/" gnus-directory)))
+    (setq gnus-init-file "~/.gnus.el")
+    (make-directory           (expand-file-name ".cache/gnus/" user-emacs-directory) t)
+    (setq gnus-home-directory (expand-file-name ".cache/gnus/" user-emacs-directory))
+    (setq gnus-directory      (expand-file-name "News/" gnus-home-directory))
+    (use-package nndraft
+      :defer t
+      :config
+      (progn
+        (setq nndraft-directory (expand-file-name "drafts/" gnus-directory)))))
   (progn
     (setq gnus-asynchronous t)
-    (setq gnus-select-method '(nntp "news.gmane.org"))
+    (setq gnus-select-method '(nntp "news.gmane.org"))))
 
-    (add-to-list
-     'gnus-secondary-select-methods
-     '(nnimap "localhost"
-              (nnimap-address "localhost")
-              ;; (nnimap-server-port 993)
-              ;; (nnimap-server-port 443)
-              (nnimap-server-port 143)
-              (nnimap-stream network)
-              (nnimap-authenticator login)
-              (nnimap-authinfo-file "~/.authinfo.gpg")
-              (nnir-search-engin imap)))
+(defun lotus-mailnews/common-config-gnus ()
+  ;; (debug)
+  (add-to-list
+   'gnus-secondary-select-methods
+   '(nnimap "localhost"
+            (nnimap-address "localhost")
+            ;; (nnimap-server-port 993)
+            ;; (nnimap-server-port 443)
+            (nnimap-server-port 143)
+            (nnimap-stream network)
+            (nnimap-authenticator login)
+            (nnimap-authinfo-file "~/.authinfo.gpg")
+            (nnir-search-engin imap)))
 
-    (add-to-list
-     'gnus-secondary-select-methods
-     `(nnvirtual
-       ,(if (equal (system-name) office-host-name)
-            "Office\\.INBOX\\|Office\\.sent-mail"
-          "Gmail\\.INBOX\\|Gmail\\.sent-mail")))))
+  (add-to-list
+   'gnus-secondary-select-methods
+   `(nnvirtual
+     ,(if (equal (system-name) office-host-name)
+          "Office\\.INBOX\\|Office\\.sent-mail"
+        "Gmail\\.INBOX\\|Gmail\\.sent-mail"))))
 
 (defun lotus-mailnews/post-init-gnus-init ()
-  (interactive)
   (lotus-mailnews/common-init-gnus))
 
 (defun lotus-mailnews/post-init-gnus-config ()
+  (interactive)
   (lotus-mailnews/common-init-gnus)
+  (lotus-mailnews/common-config-gnus)
   (progn
     (setq gnus-interactive-exit t)
     (progn
@@ -1277,11 +1276,10 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
         :defer t
         :config
         (progn
-          (setq gnus-startup-file   (expand-file-name ".cache/gnus/newsrc" user-emacs-directory)
-                gnus-read-active-file nil
+          (setq gnus-startup-file         (expand-file-name ".cache/gnus/newsrc" user-emacs-directory)
+                gnus-read-active-file     nil
                 gnus-check-new-newsgroups nil ; 'ask-server
-                gnus-save-newsrc-file t))))
-
+                gnus-save-newsrc-file     t))))
     (progn
       (use-package simple
         :defer t
@@ -1289,25 +1287,53 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
         (progn
           (progn
             (setq mail-user-agent 'gnus-user-agent)))))
+
+    (progn
+      (setq gnus-init-file "~/.gnus.el")
+      (make-directory      (expand-file-name ".cache/gnus/" user-emacs-directory) t)
+      (setq
+       gnus-home-directory (expand-file-name ".cache/gnus/" user-emacs-directory))
+      (use-package nnheader
+        :defer t
+        :config
+        (progn
+          (progn
+            (setq
+             gnus-directory      (nnheader-concat gnus-home-directory "News/")))
+          (progn
+            (use-package nndraft
+              :defer t
+              :config
+              (progn
+                (setq nndraft-directory (nnheader-concat gnus-directory      "drafts/"))))))))
+
+    (use-package gnus-gravatar
+      :defer t
+      :config
+      (progn
+        (add-hook
+         'gnus-article-prepare-hook
+         'gnus-treat-mail-gravatar)))
+
     (progn
       ;; gnus-sum not called
       (lotus-mailnews/init-gnus-sum-config))))
 
-(defun lotus-mailnews/post-init-gnus-config ()
-  (progn
+(defun lotus-mailnews/init-nndraft-config ()
+  (use-package nnheader
+    :defer t
+    :config
     (progn
-      (setq gnus-init-file "~/.gnus.el"))
-    (make-directory (expand-file-name ".cache/gnus/" user-emacs-directory) t)
-    (setq
-     gnus-home-directory (expand-file-name ".cache/gnus/" user-emacs-directory))
-    (setq
-     gnus-directory      (nnheader-concat gnus-home-directory "News/"))
-    (setq
-     nndraft-directory  (nnheader-concat gnus-directory "drafts/")))
-  (progn
-    (add-hook
-     'gnus-article-prepare-hook
-     'gnus-treat-mail-gravatar)))
+      (setq nndraft-directory (nnheader-concat gnus-directory "drafts/")))))
+
+(defun lotus-mailnews/init-gnus-gravatar-config ()
+  (use-package gnus-gravatar
+    :defer t
+    :config
+    (progn
+      (add-hook
+       'gnus-article-prepare-hook
+       'gnus-treat-mail-gravatar))))
 
 (defun lotus-mailnews/post-init-bbdb-config ()
   (progn
@@ -1882,7 +1908,14 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
         (mc-sign-message))))
 
 (defun lotus-mailnews/init-nnheader-config ()
-  (setq gnus-nov-is-evil nil))
+  (setq gnus-nov-is-evil nil)
+  (use-package nnheader
+    :defer t
+    :config
+    (progn
+      (setq
+       gnus-directory      (nnheader-concat gnus-home-directory "News/")
+       nndraft-directory   (nnheader-concat gnus-directory      "drafts/")))))
 
 (defun lotus-mailnews/init-gnus-group-config ()
   (progn
