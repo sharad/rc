@@ -67,6 +67,7 @@ GDK_RGBA=0
 export GDK_RGBA
 
 if false ## GUIX not works
+then
   ## https://www.juev.org/2009/09/27/stumpwm/
   # D-bus
   DBUS_LOG=~/.logs/debug.log
