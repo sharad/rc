@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 ## checkout http://www.ldc.usb.ve/docs/svn/svn.advanced.externaldifftools.html#svn.advanced.externaldifftools.diff.ex-1
 

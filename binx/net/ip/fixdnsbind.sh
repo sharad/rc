@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 
 resolvednses=( ${(f)"$(grep nameserver /etc/resolv.conf | grep -v 127.0 | tr -s  ' \t'  ' ' | cut -d' ' -f2 )"} )

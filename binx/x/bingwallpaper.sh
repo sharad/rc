@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 # author: Whizzzkid (me@nishantarora.in)
 
 # Base URL

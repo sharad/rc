@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 # base theirs mine merged
 LOCAL=$3
 REMOTE=$2

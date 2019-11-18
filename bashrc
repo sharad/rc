@@ -209,3 +209,23 @@ export CVSROOT=/home/c_sharad/rpstry
 # }}}
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+
+## GUIX
+
+# Source the system-wide file.
+if [ -r /etc/bashrc ]
+then
+  source /etc/bashrc
+fi
+
+# Adjust the prompt depending on whether we're in 'guix environment'.
+if [ -n "$GUIX_ENVIRONMENT" ]
+then
+    PS1='\u@\h \w [env]\$ '
+else
+    PS1='\u@\h \w\$ '
+fi
+
+## GUIX
+

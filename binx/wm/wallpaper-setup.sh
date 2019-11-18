@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 function setvars() {
     LOCAL_WALLPAPER_DIR=~/.share/backgrounds

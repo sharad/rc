@@ -50,7 +50,8 @@ export PATH MANPATH XFILESEARCHPATH
 
 export TCAT=lpr			# for man -t
 
-PATH=~/bin:~/.local/bin:/usr/local/bin:/usr/local/sbin:/bin:/usr/bin:/sbin:/usr/sbin:~/.emacs.d/term-cmd:/home/linuxbrew/.linuxbrew/bin
+# PATH=/var/guix/profiles/system/profile/etc/profile:$PATH
+PATH=$PATH:~/bin:~/.local/bin:/usr/local/bin:/usr/local/sbin:/bin:/usr/bin:/sbin:/usr/sbin:~/.emacs.d/term-cmd:/home/linuxbrew/.linuxbrew/bin
 
 MANPATH=/usr/man:/usr/X11R6/man:/usr/openwin/man
 

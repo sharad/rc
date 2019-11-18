@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 foreach f ( *(.) ) {
     dir=$(echo $f | cut -d_ -f4-6 ) ;

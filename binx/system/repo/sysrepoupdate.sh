@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 function setvar() {
     # enable_file=~/.var/comm/disable/$pgm

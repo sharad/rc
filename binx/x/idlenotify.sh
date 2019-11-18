@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 ##
 ## alarm.sh
 ## Login : <s@taj>

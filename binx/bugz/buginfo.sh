@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 ##
 ## getinfo.sh
 ## Login : <sh4r4d _at_ _G-mail_>

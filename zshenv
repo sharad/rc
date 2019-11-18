@@ -29,7 +29,17 @@
 typeset -U PATH path
 typeset -UT INFOPATH infopath
 
+
+## GUIX
+# Source the system-wide file.
+if [ -r /etc/profile ]
+then
+  source /etc/profile
+fi
+## GUIX
+
 path=(
+    /var/guix/profiles/system/profile/etc/profile
     ~/bin
     ~/.local/bin
     ~/.cask/bin
