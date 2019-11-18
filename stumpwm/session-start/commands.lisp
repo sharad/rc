@@ -704,6 +704,7 @@
   (xlib:kill-client *display* (xlib:window-id window)))
 
 
+#+ql
 (progn
   ;; http://theatticlight.net/posts/Stumpwm-shutdown-nag/
   (ql:quickload 'cl-cron)

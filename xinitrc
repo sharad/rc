@@ -4,8 +4,12 @@
 # last modified:
 
 
-# WM=${1:-stumpwm}
-WM=/usr/local/bin/x-session-stumpwm
+if [ -e /usr/local/bin/x-session-stumpwm ]
+then
+  WM=/usr/local/bin/x-session-stumpwm
+else
+  WM=${1:-stumpwm}
+fi
 
 # ~/bin/xhook
 
