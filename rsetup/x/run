@@ -122,8 +122,11 @@ then
     # which  gnubiff &&  gnubiff  -n &
     # xmodmap ~/.xmodmaprc	# excellent, why i was not knowing it before.
 
-    # unset Caps Lock
-    python -c 'from ctypes import *; X11 = cdll.LoadLibrary("libX11.so.6"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'  >> ~/.xsession-errors 2>&1
+    if whence -p python
+    then
+      # unset Caps Lock
+      python -c 'from ctypes import *; X11 = cdll.LoadLibrary("libX11.so.6"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'  >> ~/.xsession-errors 2>&1
+    fi
 
     if whence -p xmodmap >& /dev/null
     then

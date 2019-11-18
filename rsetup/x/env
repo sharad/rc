@@ -88,6 +88,12 @@ then
     date >> $DBUS_LOG
 fi
 
-autocutsel -f &!
+if whence -p autocutsel
+then
+  autocutsel -f &!
+fi
 
-xcompmgr -a &!
+if whence -p xcompmgr
+then
+  xcompmgr -a &!
+fi

@@ -36,6 +36,10 @@ if [ -r /etc/profile ]
 then
   source /etc/profile
 fi
+
+GUIX_PROFILE="/home/s/hell/.guix-profile"
+. $GUIX_PROFILE/etc/profile
+
 ## GUIX
 
 path=(

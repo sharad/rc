@@ -113,11 +113,13 @@ then
     # fi
 fi
 
-
+if whence -p atq
+then
 atq
 if [ $(atq | cut -f1 | wc -l) -gt 0 ]
 then
     atrm  $(atq | cut -f1)
+fi
 fi
 
 if whence -p xsetroot >& /dev/null
@@ -378,10 +380,15 @@ then
     fi
 fi
 
-autocutsel -f &!
+if whence -p autocutsel
+then
+  autocutsel -f &!
+fi
 
-xcompmgr -a &!
-
+if whence -p xcompmgr
+then
+  xcompmgr -a &!
+fi
 
 ### fonts start
 

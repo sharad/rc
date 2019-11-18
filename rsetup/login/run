@@ -73,11 +73,13 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
         leave +0800
     fi
 
+    if whence -p atq
+    then
     atq
     if [ $(atq | cut -f1 | wc -l) -gt 0 ] ; then
         atrm  $(atq | cut -f1) >& /dev/null
     fi
-
+    fi
 fi                              # if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connection, and when user is root.
 
 ## improve:
