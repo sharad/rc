@@ -43,18 +43,18 @@ GUIX_PROFILE="/home/s/hell/.guix-profile"
 ## GUIX
 
 path=(
-    /var/guix/profiles/system/profile/etc/profile
+    # /var/guix/profiles/system/profile/etc/profile
     ~/bin
     ~/.local/bin
     ~/.cask/bin
-    /usr/local/bin
-    /usr/local/sbin
+    # /usr/local/bin
+    # /usr/local/sbin
     /bin
     /usr/bin
-    /sbin
-    /usr/sbin
+    # /sbin
+    # /usr/sbin
     ~/.emacs.d/term-cmd
-    /home/linuxbrew/.linuxbrew/bin
+    # /home/linuxbrew/.linuxbrew/bin
     $path
     )
 

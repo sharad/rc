@@ -227,5 +227,8 @@ else
     PS1='\u@\h \w\$ '
 fi
 
+GUIX_PROFILE="/home/s/hell/.guix-profile"
+. $GUIX_PROFILE/etc/profile
+
 ## GUIX
 
