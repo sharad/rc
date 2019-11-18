@@ -85,11 +85,12 @@
 
 (defun load-slime ()
   (interactive)
-  (load-file (concat
-              (if (file-directory-p  (get-slime-config 'slime-path))
-                  (get-slime-config 'slime-path)
-                  "/usr/share/emacs/site-lisp/elpa-src/slime-2.20")
-              "/slime.el")))
+  (let ((slime-file (expand-file-name "slime.el"
+                                (if (file-directory-p  (get-slime-config 'slime-path))
+                                    (get-slime-config 'slime-path)
+                                  "/usr/share/emacs/site-lisp/elpa-src/slime-2.20"))))
+    (when (file-exists-p slime-file)
+      (load-file slime-file))))
 
 (load-slime)
 

@@ -291,10 +291,11 @@
     "stumpwm"
     ;; "stumpwm-with-slynk"
     ;; "cl-stumpwm"
-    ;; "emacs-stumpwm-mode"
+    "emacs-stumpwm-mode"
     "i3status"
     "dmenu"
     "st"
+    "xrdb"
     "xterm"
     "glibc-utf8-locales"))
 
@@ -376,7 +377,7 @@
                               (comment "Bob's sister")
                               (group "users")
                               (home-directory "/home/s/hell")
-			      ;; (shell #~(string-append #$zsh "/bin/zsh"))
+			      (shell #~(string-append #$zsh "/bin/zsh"))
                               (supplementary-groups
                                '("wheel" "netdev" "audio" "video")))
 			     (user-account
