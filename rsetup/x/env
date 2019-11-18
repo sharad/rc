@@ -66,34 +66,45 @@ export XBPROFILE
 GDK_RGBA=0
 export GDK_RGBA
 
-## https://www.juev.org/2009/09/27/stumpwm/
-# D-bus
-DBUS_LOG=~/.logs/debug.log
-date >> $DBUS_LOG
-echo rsetup/x/env before >> $DBUS_LOG
-echo DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS >> $DBUS_LOG
-echo DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID >> $DBUS_LOG
-echo DBUS_SESSION_BUS_WINDOWID=$DBUS_SESSION_BUS_WINDOWID >> $DBUS_LOG
-echo rsetup/x/env before >> $DBUS_LOG
-date >> $DBUS_LOG
-if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"
-then
-    eval $(dbus-launch --sh-syntax --exit-with-session)
-    date >> $DBUS_LOG
-    echo rsetup/x/env after >> $DBUS_LOG
-    echo DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS >> $DBUS_LOG
-    echo DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID >> $DBUS_LOG
-    echo DBUS_SESSION_BUS_WINDOWID=$DBUS_SESSION_BUS_WINDOWID >> $DBUS_LOG
-    echo rsetup/x/env after >> $DBUS_LOG
-    date >> $DBUS_LOG
+if false ## GUIX not works
+  ## https://www.juev.org/2009/09/27/stumpwm/
+  # D-bus
+  DBUS_LOG=~/.logs/debug.log
+  date >> $DBUS_LOG
+  echo rsetup/x/env before >> $DBUS_LOG
+  echo DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS >> $DBUS_LOG
+  echo DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID >> $DBUS_LOG
+  echo DBUS_SESSION_BUS_WINDOWID=$DBUS_SESSION_BUS_WINDOWID >> $DBUS_LOG
+  echo rsetup/x/env before >> $DBUS_LOG
+  date >> $DBUS_LOG
+
+  if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"
+  then
+      eval $(dbus-launch --sh-syntax --exit-with-session)
+      date >> $DBUS_LOG
+      echo rsetup/x/env after >> $DBUS_LOG
+      echo DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS >> $DBUS_LOG
+      echo DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID >> $DBUS_LOG
+      echo DBUS_SESSION_BUS_WINDOWID=$DBUS_SESSION_BUS_WINDOWID >> $DBUS_LOG
+      echo rsetup/x/env after >> $DBUS_LOG
+      date >> $DBUS_LOG
+  fi
 fi
+
+
 
 if whence -p autocutsel
 then
-  autocutsel -f &!
+  if ! pgrep autocutsel
+  then
+    autocutsel -f &!
+  fi
 fi
 
 if whence -p xcompmgr
 then
-  xcompmgr -a &!
+  if ! pgrep xcompmgr
+  then
+    xcompmgr -a &!
+  fi
 fi

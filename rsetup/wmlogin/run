@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+# exit
+
 mkdir -p ~/.logs/
 
 echo > ~/.logs/wmlogin.log
@@ -382,12 +384,18 @@ fi
 
 if whence -p autocutsel
 then
-  autocutsel -f &!
+  if ! pgrep autocutsel
+  then
+      autocutsel -f &!
+  fi
 fi
 
 if whence -p xcompmgr
 then
+    if ! pgrep xcompmgr
+    then
   xcompmgr -a &!
+  fi
 fi
 
 ### fonts start
