@@ -305,6 +305,7 @@
     ;; at
     "curl"
     "python"
+    "ruby"
     "autocutsel"
     "xcompmgr"
     "wget"
