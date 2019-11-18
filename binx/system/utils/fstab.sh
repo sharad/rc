@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # from: http://unix.stackexchange.com/a/96150
 # from: http://unix.stackexchange.com/questions/96037/how-to-align-fstab-entries-easily

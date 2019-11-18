@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 SSH_KEY_DUMP=$1
 SITEDIR=/usr/local

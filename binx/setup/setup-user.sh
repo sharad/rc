@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ## create a setup-disk.sh
 ## for creating lvm disk layout for different sizes of harddisk of 500GB 1T

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # from https://github.com/rlafuente/textan/raw/master/conky-rss.sh
 # RSS Display Script by Bill Woodford (admin@sdesign.us) v1.0
 #

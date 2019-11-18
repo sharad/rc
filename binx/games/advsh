@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #	ash -- "Adventure shell"
 #	last edit:	86/04/21	D A Gwyn
 #	SCCS ID:	@(#)ash.sh	1.4

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 function COPYRIGHT () { cat <<'---'
 This is the `eev-rctool' file of GNU eev.
 Copyright (C) 2005, 2006, 2007 Free Software Foundation, Inc.

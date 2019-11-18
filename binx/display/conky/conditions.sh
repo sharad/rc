@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # https://github.com/topherh/Homestash/raw/master/.conky/scripts/conditions.sh
 
 #Czyta dane z pliku

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 currency1=$1
 currency2=$2
