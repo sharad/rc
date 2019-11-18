@@ -272,6 +272,8 @@
     "screen"
     "tmux"
     "kitty"
+    "lxqt-openssh-askpass"
+    "gettext"
     "ecryptfs-utils"
     "zsh"
     "vim"
