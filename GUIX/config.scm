@@ -142,7 +142,8 @@
    %lotus-mapped-device-ubuntu-swap))
 
 
-(define %lotus-swap-devices '("/dev/mapper/ubuntu-swap"))
+;; (define %lotus-swap-devices '("/dev/mapper/ubuntu-swap"))
+(define %lotus-swap-devices '("/dev/ubuntu/swap"))
 
 
 (define %lotus-file-system-guix-root (file-system
@@ -223,14 +224,15 @@
 
 (define %lotus-lvm-file-systems
   (list
-   %lotus-file-system-guix-root
-   %lotus-file-system-guix-store
-   %lotus-file-system-vg01-lv01
-   %lotus-file-system-vg02-lv01
-   %lotus-file-system-vgres01-lvres01
-   %lotus-file-system-house-home
-   ;; %lotus-file-system-ubuntu-local
-   %lotus-file-system-ubuntu-opt))
+    ;; %lotus-file-system-ubuntu-swap
+    %lotus-file-system-guix-root
+    %lotus-file-system-guix-store
+    %lotus-file-system-vg01-lv01
+    %lotus-file-system-vg02-lv01
+    %lotus-file-system-vgres01-lvres01
+    %lotus-file-system-house-home
+    ;; %lotus-file-system-ubuntu-local
+    %lotus-file-system-ubuntu-opt))
 
 (define %lotus-file-system-boot-efi (file-system
                                      (mount-point "/boot/efi")
@@ -472,7 +474,7 @@
  (mapped-devices  %lotus-mapped-devices)
  (users           %lotus-users)
  (file-systems    %lotus-file-systems)
- ;; (swap-devices    %lotus-swap-devices)
+ (swap-devices    %lotus-swap-devices)
  (bootloader      %lotus-bootloader)
  (packages        %lotus-packages)
  (services        %lotus-services)
