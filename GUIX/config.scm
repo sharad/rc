@@ -142,6 +142,9 @@
    %lotus-mapped-device-ubuntu-swap))
 
 
+(define %lotus-swap-devices '("/dev/mapper/ubuntu-swap"))
+
+
 (define %lotus-file-system-guix-root (file-system
                                        (mount-point "/")
                                        (device "/dev/mapper/guix-root")
@@ -262,6 +265,13 @@
 
 (define %lotus-system-selected-package-names
   (list
+    "m4"
+    "binutils"
+    ;; "coreutils"
+    ;; "diffutils"
+    ;; "findutils"
+    ;; "gnu-make"
+    ;; "patch"
     "gdm"
     "gpm"
     "git"
@@ -291,6 +301,7 @@
     "ncurses-with-gpm"
     "ncurses"
     "stumpwm"
+    "guile-wm"
     ;; "stumpwm-with-slynk"
     ;; "cl-stumpwm"
     "emacs-stumpwm-mode"
@@ -444,6 +455,11 @@
 (define %lotus-initrd %lotus-metal-initrd)
 
 
+(define %lotus-setuid-programs (cons*
+                                 #~(string-append #$ecryptfs-utils "/sbin/mount.ecryptfs_private")
+                                 %setuid-programs))
+
+
 (operating-system
  (kernel          linux)
  (firmware        %lotus-firmware)
@@ -452,10 +468,11 @@
  (timezone        %lotus-timezone)
  (keyboard-layout %lotus-keyboard-layout)
  (host-name       %lotus-host-name)
+ (setuid-programs %lotus-setuid-programs)
  (mapped-devices  %lotus-mapped-devices)
  (users           %lotus-users)
  (file-systems    %lotus-file-systems)
- ;; (swap-devices    (list %lotus-mapped-device-ubuntu-swap))
+ ;; (swap-devices    %lotus-swap-devices)
  (bootloader      %lotus-bootloader)
  (packages        %lotus-packages)
  (services        %lotus-services)
