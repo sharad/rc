@@ -38,7 +38,10 @@ then
 fi
 
 GUIX_PROFILE="/home/s/hell/.guix-profile"
-. $GUIX_PROFILE/etc/profile
+if [ -r $GUIX_PROFILE/etc/profile ]
+then
+ . $GUIX_PROFILE/etc/profile
+fi
 
 ## GUIX
 
