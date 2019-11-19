@@ -427,17 +427,20 @@ fi
  echo timeout 2s ~/bin/get-imap-pass -u localhost
  if ! timeout 2s ~/bin/get-imap-pass -u localhost >& /dev/null ;
  then
-     echo pkill gnome-keyr
-     pkill gnome-keyr
-     echo sleep 1s
-     sleep 1s
-     echo gnome-keyring-daemon --daemonize
-     gnome-keyring-daemon --daemonize
-     echo timeout 7s ~/bin/get-imap-pass -u localhost
-     if timeout 7s ~/bin/get-imap-pass -u localhost
+     if false
      then
-         echo pkill gnome-keyr
-         : pkill gnome-keyr
+       echo pkill gnome-keyr
+       pkill gnome-keyr
+       echo sleep 1s
+       sleep 1s
+       echo gnome-keyring-daemon --daemonize
+       gnome-keyring-daemon --daemonize
+       echo timeout 7s ~/bin/get-imap-pass -u localhost
+       if timeout 7s ~/bin/get-imap-pass -u localhost
+       then
+           echo pkill gnome-keyr
+           : pkill gnome-keyr
+       fi
      fi
  fi
 ) &!
@@ -452,4 +455,4 @@ then
   echo notify-send test test >>& ~/.logs/wmlogin.log &!
 fi
 
-cat ~/.logs/wmlogin.log >> ~/.logs/wmlogin.log
+# cat ~/.logs/wmlogin.log 
