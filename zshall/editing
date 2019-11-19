@@ -305,21 +305,21 @@ bindaykey_map_if_define	"\C-x\e'"	x-set-selection
 # bindaykey_map_if_define   '\e[6~'		end-of-buffer-or-history       # page down
 
 
-[[ -n ${key[Up]} ]] &&  bindaykey_map_if_define	"${key[Up]}"         up-line-or-history             # up arrow
-[[ -n ${key[Down]} ]] &&  bindaykey_map_if_define	"${key[Down]}"       down-line-or-history           # down arrow
-# [[ -n ${key[Up]} ]] &&  bindaykey_map_if_define   'C-x'$key[Up]         up-line-history
-# [[ -n ${key[Down]} ]] &&  bindaykey_map_if_define   'C-x'$key[Down]       down-line-history
-[[ -n ${key[Shift-Up]} ]] &&  bindaykey_map_if_define   "${key[Shift-Up]}"     up-line-or-search              # cursor up
-[[ -n ${key[Shift-Down]} ]] &&  bindaykey_map_if_define   "${key[Shift-Down]}"   down-line-or-search            # <ESC>-
-[[ -n ${key[Right]} ]] &&  bindaykey_map_if_define  	"${key[Right]}"      forward-char                   # right arrow
-[[ -n ${key[Left]} ]] &&  bindaykey_map_if_define	  "${key[Left]}"       backward-char                  # left arrow
-[[ -n ${key[PageUp]} ]] &&  bindaykey_map_if_define   "${key[PageUp]}"	 beginning-of-buffer-or-history # page up
-[[ -n ${key[PageDown]} ]] &&  bindaykey_map_if_define   "${key[PageDown]}"	 end-of-buffer-or-history       # page down
+# [[ -n ${key[Up]} ]]         &&  bindaykey_map_if_define   'C-x'$key[Up]         up-line-history
+# [[ -n ${key[Down]} ]]       &&  bindaykey_map_if_define   'C-x'$key[Down]       down-line-history
+[[ -n ${key[Up]} ]]         &&  bindaykey_map_if_define	"${key[Up]}"         up-line-or-history             # up arrow
+[[ -n ${key[Down]} ]]       &&  bindaykey_map_if_define	"${key[Down]}"       down-line-or-history           # down arrow
+[[ -n ${key[Shift-Up]} ]]   &&  bindaykey_map_if_define "${key[Shift-Up]}"   up-line-or-search              # cursor up
+[[ -n ${key[Shift-Down]} ]] &&  bindaykey_map_if_define "${key[Shift-Down]}" down-line-or-search            # <ESC>-
+[[ -n ${key[Right]} ]]      &&  bindaykey_map_if_define "${key[Right]}"      forward-char                   # right arrow
+[[ -n ${key[Left]} ]]       &&  bindaykey_map_if_define	"${key[Left]}"       backward-char                  # left arrow
+[[ -n ${key[PageUp]} ]]     &&  bindaykey_map_if_define "${key[PageUp]}"	   beginning-of-buffer-or-history # page up
+[[ -n ${key[PageDown]} ]]   &&  bindaykey_map_if_define "${key[PageDown]}"	 end-of-buffer-or-history       # page down
 
-[ "$key[Control-Left]"  != "$key[Left]" ]  && bindaykey_map_if_define   $key[Control-Left]  backward-word
-[ "$key[Control-Right]" != "$key[Right]" ] && bindaykey_map_if_define   $key[Control-Right] forward-word
-[ "$key[Control-Up]"    != "$key[Up]" ]    && bindaykey_map_if_define   $key[Control-Up]    up-line-or-search
-[ "$key[Control-Down]"  != "$key[Down]" ]  && bindaykey_map_if_define   $key[Control-Down]  down-line-or-search
+[[ -n ${key[Control-Left]} ]]  &&  [ "$key[Control-Left]"  != "$key[Left]" ]  && bindaykey_map_if_define   $key[Control-Left]  backward-word
+[[ -n ${key[Control-Right]} ]] &&  [ "$key[Control-Right]" != "$key[Right]" ] && bindaykey_map_if_define   $key[Control-Right] forward-word
+[[ -n ${key[Control-Up]} ]]    &&  [ "$key[Control-Up]"    != "$key[Up]" ]    && bindaykey_map_if_define   $key[Control-Up]    up-line-or-search
+[[ -n ${key[Control-Down]} ]]  &&  [ "$key[Control-Down]"  != "$key[Down]" ]  && bindaykey_map_if_define   $key[Control-Down]  down-line-or-search
 
 
 # Copy
