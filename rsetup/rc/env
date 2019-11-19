@@ -101,7 +101,7 @@ function update-ssh-agent-unconditionally()
                 fi
             fi
         fi
-    elif [ "x${SSH_AUTH_SOCK}" != "x" -a -S "${SSH_AUTH_SOCK}" ]
+    elif [ "x${SSH_AUTH_SOCK}" != "x" -a -S "${SSH_AUTH_SOCK}" ] # in case of gnome-keyring and systemd user ssh-agent daaemon pid is not required.
     then
         if ! ssh-add -l >/dev/null 2>&1
         then
