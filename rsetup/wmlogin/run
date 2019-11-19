@@ -39,12 +39,14 @@ fi
 
 
 # give access to mpd
-
-notify-send wmlogin/run "starting wmlogin/run" &!
+if whence -p notify-send >& /dev/null
+then
+  notify-send wmlogin/run "starting wmlogin/run" &!
+fi
 
 echo wmlogin/run "starting wmlogin/run" >>& ~/.logs/wmlogin.log &!
 
-if whence xte >& /dev/null
+if whence -p xte >& /dev/null
 then
     xte <<EOF >>& ~/.logs/wmlogin.log &!
 mousemove 42 42
@@ -60,14 +62,21 @@ fi
 
 ##{{
 # may be very much required.
-xdg-autostart &!
-systemctl --user start gvfs-daemon.service
-systemctl --user start gvfs-afc-volume-monitor.service
-systemctl --user start gvfs-goa-volume-monitor.service
-systemctl --user start gvfs-gphoto2-volume-monitor.service
-systemctl --user start gvfs-metadata.service
-systemctl --user start gvfs-mtp-volume-monitor.service
-systemctl --user start gvfs-udisks2-volume-monitor.service
+if whence -p xdg-autostart 
+then
+  xdg-autostart &!
+fi
+
+if whence -p systemctl >& /dev/null
+then
+  systemctl --user start gvfs-daemon.service
+  systemctl --user start gvfs-afc-volume-monitor.service
+  systemctl --user start gvfs-goa-volume-monitor.service
+  systemctl --user start gvfs-gphoto2-volume-monitor.service
+  systemctl --user start gvfs-metadata.service
+  systemctl --user start gvfs-mtp-volume-monitor.service
+  systemctl --user start gvfs-udisks2-volume-monitor.service
+fi
 ##}}
 
 if whence -p conky >& /dev/null &&
@@ -115,13 +124,13 @@ then
     # fi
 fi
 
-if whence -p atq
+if whence -p atq >& /dev/null
 then
-atq
-if [ $(atq | cut -f1 | wc -l) -gt 0 ]
-then
-    atrm  $(atq | cut -f1)
-fi
+  atq
+  if [ $(atq | cut -f1 | wc -l) -gt 0 ]
+  then
+      atrm  $(atq | cut -f1)
+  fi
 fi
 
 if whence -p xsetroot >& /dev/null
@@ -304,9 +313,12 @@ emacs_daemon_start              # in case it were not started in x/run
 
 
 # pgrep xautolock >& /dev/null && xautolock -locknow &!
-if pgrep xautolock >& /dev/null
+if whence -p xautolock >& /dev/null
 then
-    xautolock -locknow >> ~/.logs/wmlogin.log 2>&1 &!
+  if pgrep xautolock >& /dev/null
+  then
+      xautolock -locknow >> ~/.logs/wmlogin.log 2>&1 &!
+  fi
 fi
 
 foreach prog (
@@ -382,7 +394,7 @@ then
     fi
 fi
 
-if whence -p autocutsel
+if whence -p autocutsel >& /dev/null
 then
   if ! pgrep autocutsel
   then
@@ -390,20 +402,21 @@ then
   fi
 fi
 
-if whence -p xcompmgr
+if whence -p xcompmgr >& /dev/null
 then
-    if ! pgrep xcompmgr
+    if ! pgrep xcompmgr >& /dev/null
     then
   xcompmgr -a &!
   fi
 fi
 
 ### fonts start
-
-gsettings set org.gnome.desktop.interface monospace-font-name 'Ubuntu Mono 08'&!
-gsettings set org.gnome.desktop.interface document-font-name 'Sans 08' &!
-gsettings set org.gnome.desktop.interface font-name 'Ubuntu 08' &!
-
+if whwnce -p gsetting >& /dev/null
+then
+  gsettings set org.gnome.desktop.interface monospace-font-name 'Ubuntu Mono 08'&!
+  gsettings set org.gnome.desktop.interface document-font-name 'Sans 08' &!
+  gsettings set org.gnome.desktop.interface font-name 'Ubuntu 08' &!
+fi
 
 ### fonts end
 
@@ -433,8 +446,10 @@ gsettings set org.gnome.desktop.interface font-name 'Ubuntu 08' &!
 
 # xterm -e "ish -s bash -- echo Completed wmlogin/run " >> ~/.logs/wmlogin.log 2>&1 &!
 
-
-notify-send test test &!
-echo notify-send test test >>& ~/.logs/wmlogin.log &!
+if whence -p notify-send >& /dev/null
+then
+  notify-send test test &!
+  echo notify-send test test >>& ~/.logs/wmlogin.log &!
+fi
 
 cat ~/.logs/wmlogin.log >> ~/.logs/wmlogin.log

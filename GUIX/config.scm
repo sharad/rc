@@ -322,6 +322,13 @@
    "autorandr"
    "xrandr-invert-colors"
    "aspell"
+
+   "polkit"
+   "polkit-gnome"
+   "redshift"
+
+   "keynav"
+   "conky"
    "surf"
    "xprop"
    "xautolock"
@@ -472,7 +479,7 @@
 
 
 ;; (define %lotus-host-name "komputilo")
-(define %lotus-host-name "scheme")
+(define %lotus-host-name "guilem")
 
 
 
