@@ -206,7 +206,39 @@ interactive("open-bookmark-group",
                     });
             });
 
-define_key(content_buffer_normal_keymap, "C-c o", "open-bookmark-group");
+define_key(content_buffer_normal_keymap, "C-c O", "open-bookmark-group");
+
+interactive("open-bookmark-group-link",
+            "Opens bookmark from the given group name.",
+            function (I) {
+                var prefix = I.P;
+                var name = yield I.minibuffer.read($prompt = "Group",
+                                                   $history = "Group",
+                                                   $completer = new prefix_completer($completions = Object.keys(bookmark_groups)),
+                                                   $default_completion = "Plutono",
+                                                   $require_match,
+                                                   $auto_complete);
+                var link_url = yield I.minibuffer.read($prompt = "Link",
+                                                       $history = "Link",
+                                                       $completer = new prefix_completer($completions = bookmark_groups[name]),
+                                                       $default_completion = "www.ndtv.com",
+                                                       $require_match,
+                                                       $auto_complete);
+                // load_url_in_new_buffer(link, I.window);
+                // https://searchcode.com/codesearch/view/96760023/
+                // if (prefix !== null && prefix !== undefined) {
+                //     if (typeof prefix == "object")
+                //         prompt += prefix[0] == 4 ? " C-u" : " "+prefix[0];
+                //     else
+                //         prompt += " "+prefix;
+                browser_object_follow(I.buffer,
+                                      https://searchcode.com/codesearch/view/96760023/
+                                      (prefix !== null && prefix !== undefined) ? OPEN_NEW_BUFFER : OPEN_CURRENT_BUFFER,
+                                      link_url);
+            });
+
+define_key(content_buffer_normal_keymap, "C-c o", "open-bookmark-group-link");
+
 //}}
 
 

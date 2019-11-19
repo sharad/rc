@@ -332,23 +332,21 @@
 
 (define %lotus-other-packages
   (list 
-    "xmodmap"
-    ;; at
-    "curl"
-    "python"
-    "ruby"
-    "autocutsel"
-    "xcompmgr"
-    "wget"
-    ;; "notify-send"
-    ;; "notify"
-    "xmlstarlet"  
-    "xwininfo"
-    "xmlstarlet"
-    ;; tput
-    "imagemagick"
-
-    ))
+   "xmodmap"
+   ;; at
+   "curl"
+   "python"
+   "ruby"
+   "autocutsel"
+   "xcompmgr"
+   "wget"
+   ;; "notify-send"
+   ;; "notify"
+   "xmlstarlet"  
+   "xwininfo"
+   "xmlstarlet"
+   "imagemagick"
+   ))
 
 (define %lotus-package-names-for-installation 
   (append 

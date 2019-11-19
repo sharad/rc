@@ -2,7 +2,7 @@
 #
 #
 #
-exit
+# exit
 
 WM=stumpwm
 
