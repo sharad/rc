@@ -324,6 +324,7 @@
    "aspell"
    "xautolock"
    "slock"
+   "xset"
    "xsetroot"
    "gcc-toolchain"
    "strace"
