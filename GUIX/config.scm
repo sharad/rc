@@ -312,6 +312,11 @@
     "st"
     "xrdb"
     "xterm"
+    "xdotool"
+    "xrandr"
+    "arandr"
+    "autorandr"
+    "xrandr-invert-colors"
     "glibc-utf8-locales"))
 
 (define %lotus-other-packages
