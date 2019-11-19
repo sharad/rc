@@ -274,6 +274,7 @@
     ;; "findutils"
     ;; "gnu-make"
     ;; "patch"
+    "shroud"
     "gdm"
     "gpm"
     "git"
