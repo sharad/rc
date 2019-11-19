@@ -31,12 +31,13 @@ for startup in sh login ; do
     [ -r ~/.rsetup/$startup/run ] && ~/.rsetup/$startup/run
 done
 
-if which zsh > /dev/null 2>&1
-then
-    export SHELL="$(which zsh)"
-elif [ -x /bin/zsh ] # GUIX
-then
-  export SHELL=/bin/zsh
-fi
+
+# if which zsh > /dev/null 2>&1
+# then
+#     export SHELL="$(which zsh)"
+# elif [ -x /bin/zsh ] # GUIX
+# then
+#  export SHELL=/bin/zsh
+# fi
 
 
