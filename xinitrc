@@ -3,34 +3,16 @@
 #
 # last modified:
 
-
 if [ -e /usr/local/bin/x-session-stumpwm ]
 then
-  WM=/usr/local/bin/x-session-stumpwm
+    XINITRC_DEFAULT_WM=/usr/local/bin/x-session-stumpwm
 else
-  WM=${1:-stumpwm}
+    XINITRC_DEFAULT_WM=stumpwm
 fi
 
+WM=${1:-$XINITRC_DEFAULT_WM}
+
 # ~/bin/xhook
-
-case $HOSTTYPE in
-    sparc)   suffix=sun	;;
-    i*86)    suffix=pc	;;
-esac
-[ -f $HOME/.Xdefaults-$suffix ]  &&  xrdb -merge $HOME/.Xdefaults-$suffix
-
-
-## Stuff specific to SunOS 4.1.x.
-##
-case $OSTYPE in
-    SunOS4|sunos4*)
-	eval `svenv -env`
-	$OPENWINHOME/lib/openwin-sys
-	;;
-#    *linux*)
-#        export OLWMMENU=~/.openwin-menu-linux
-#	;;
-esac
 
 # ## Start the window manager and give it time to initialize.
 # ##
