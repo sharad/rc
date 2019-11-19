@@ -317,6 +317,10 @@
     "arandr"
     "autorandr"
     "xrandr-invert-colors"
+    "aspell"
+    "xautolock"
+    "slock"
+    "gcc-toolchain"
     "glibc-utf8-locales"))
 
 (define %lotus-other-packages
