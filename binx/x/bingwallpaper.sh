@@ -1,6 +1,16 @@
 #!/usr/bin/env zsh
 # author: Whizzzkid (me@nishantarora.in)
 
+
+## XML aliases
+if whence -p xmlstarlet >& /dev/null
+then
+  alias xml=xmlstarle 
+elif whence -p xml >& /dev/null
+then
+  alias xmlstartlet=xml
+fi
+
 # Base URL
 
 bing="http://www.bing.com"

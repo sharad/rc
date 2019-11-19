@@ -6,8 +6,8 @@
         Name = Logo.WMDock;
         BuggyApplication = No;
         AutoLaunch = No;
-        Lock = No;
         Position = "0,0";
+        Lock = No;
         Command = "-";
       },
       {
@@ -15,8 +15,8 @@
         Name = "x-terminal-emulator.XTerm";
         BuggyApplication = No;
         AutoLaunch = No;
-        Lock = No;
         Position = "0,1";
+        Lock = No;
         Command = "x-terminal-emulator";
       },
       {
@@ -24,8 +24,8 @@
         Name = groupLeader.WPrefs;
         BuggyApplication = No;
         AutoLaunch = No;
-        Lock = Yes;
         Position = "0,2";
+        Lock = Yes;
         Command = "/usr/lib/GNUstep/System/Applications/WPrefs.app/WPrefs";
       }
     );
@@ -35,8 +35,8 @@
         Name = Logo.WMDock;
         BuggyApplication = No;
         AutoLaunch = No;
-        Lock = No;
         Position = "0,0";
+        Lock = No;
         Command = "-";
       },
       {
@@ -44,8 +44,8 @@
         Name = "x-terminal-emulator.XTerm";
         BuggyApplication = No;
         AutoLaunch = No;
-        Lock = No;
         Position = "0,1";
+        Lock = No;
         Command = "x-terminal-emulator";
       },
       {
@@ -53,13 +53,13 @@
         Name = groupLeader.WPrefs;
         BuggyApplication = No;
         AutoLaunch = No;
-        Lock = Yes;
         Position = "0,2";
+        Lock = Yes;
         Command = "/usr/lib/GNUstep/System/Applications/WPrefs.app/WPrefs";
       }
     );
-    Lowered = No;
     Position = "-64,0";
+    Lowered = No;
   };
   Clip = {
     Forced = No;
@@ -70,6 +70,7 @@
     Lock = No;
     Command = "-";
   };
+  Applications = ();
   Workspaces = (
     {
       Clip = {
@@ -83,4 +84,5 @@
       Name = Main;
     }
   );
+  Workspace = Main;
 }

@@ -122,10 +122,10 @@ fi
 alias vlc='vlc --play-and-exit -f'
 
 ## XML aliases
-if whence -p xmlstarlet
+if whence -p xmlstarlet >& /dev/null
 then
-  alias xml=xmlstarlet
-elif whence -p xml
+  alias xml=xmlstarle
+elif whence -p xml >& /dev/null
 then
   alias xmlstartlet=xml
 fi

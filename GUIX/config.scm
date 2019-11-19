@@ -323,6 +323,11 @@
    "xrandr-invert-colors"
    "aspell"
    "xmlstarlet"
+   "libxslt"
+
+   "windowmaker"
+   "wmnd"
+   "menumaker"
 
    "fortune-mod"
 
