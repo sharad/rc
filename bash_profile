@@ -2,6 +2,14 @@
 ##
 ##  last modified:   11-Dec-1998  Fri  09:09
 
+umask 022
+[ -n "$PS1" ]  &&  . $HOME/.bashrc
+
+if [ -r ~/.bashrc ]
+then
+    . ~/.bashrc
+fi
+
 # export CDPATH=:..:~:~/pno/src:~/dest
 # export    TERMINFO=/sas/share/terminfo
 export EDITOR=general-editor
@@ -104,5 +112,3 @@ fi
 #----------------  End of IXI Motif Settings  ---------------------
 
 
-umask 022
-[ -n "$PS1" ]  &&  . $HOME/.bashrc

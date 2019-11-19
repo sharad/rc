@@ -42,11 +42,11 @@ if [ -r $GUIX_PROFILE/etc/profile ]
 then
  . $GUIX_PROFILE/etc/profile
 fi
-
 ## GUIX
 
 path=(
-    # /var/guix/profiles/system/profile/etc/profile
+    $path
+    # /home/linuxbrew/.linuxbrew/bin
     ~/bin
     ~/.local/bin
     ~/.cask/bin
@@ -57,8 +57,6 @@ path=(
     # /sbin
     # /usr/sbin
     ~/.emacs.d/term-cmd
-    # /home/linuxbrew/.linuxbrew/bin
-    $path
     )
 
 infopath=(

@@ -321,6 +321,7 @@
     "aspell"
     "xautolock"
     "slock"
+    "xsetroot"
     "gcc-toolchain"
     "strace"
     "guile-readline"
