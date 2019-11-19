@@ -322,6 +322,7 @@
    "autorandr"
    "xrandr-invert-colors"
    "aspell"
+   "xmlstarlet"
 
    "polkit"
    "polkit-gnome"
