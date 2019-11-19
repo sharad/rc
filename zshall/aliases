@@ -122,7 +122,14 @@ fi
 alias vlc='vlc --play-and-exit -f'
 
 ## XML aliases
-alias xml=xmlstarlet
+if whence -p xmlstarlet
+then
+  alias xml=xmlstarlet
+elif whence -p xml
+then
+  alias xmlstartlet=xml
+fi
+
 alias makeitxhtml='tidy -asxml 2>/dev/null | xmllint - | sed -e '\''s/&ndash;//g'\'' -e '\''s|xmlns="http://www.w3.org/1999/xhtml"||'\'' '
 
 ## ps

@@ -57,7 +57,7 @@ fi
 if whence -p xautolock >& /dev/null &&
        ! pgrep xautolock >& /dev/null
 then
-    xautolock -detectsleep >>& ~/.logs/wmlogin.log &!
+    xautolock -detectsleep -locker "alarm -l" >>& ~/.logs/wmlogin.log &!
 fi
 
 ##{{

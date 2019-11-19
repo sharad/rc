@@ -324,6 +324,8 @@
    "aspell"
    "xmlstarlet"
 
+   "fortune-mod"
+
    "polkit"
    "polkit-gnome"
    "redshift"
