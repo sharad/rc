@@ -469,7 +469,7 @@
 
 
 ;; (define %lotus-host-name "komputilo")
-(define %lotus-host-name "gscheme")
+(define %lotus-host-name "scheme")
 
 
 

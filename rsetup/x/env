@@ -15,7 +15,7 @@ then
 
     if [ ! -e ~/.rsetup/${__comp}/env.d/${HOST} ]
     then
-        mkdir ~/.rsetup/${__comp}/env.d/
+        mkdir -p ~/.rsetup/${__comp}/env.d/
         cp ~/.rsetup/${__comp}/env.tmpl ~/.rsetup/${__comp}/env.d/${HOST}
     fi
 

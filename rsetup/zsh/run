@@ -15,7 +15,7 @@ then
     fi
     if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ]
     then
-        mkdir ~/.rsetup/${__comp}/run.d/
+        mkdir -p ~/.rsetup/${__comp}/run.d/
         cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
     fi
 

@@ -149,7 +149,7 @@ then
         # export SSH_AUTH_SOCK=""
 
         # pkill ssh-agent
-        [  -d $HOME/.ssh ] || mkdir $HOME/.ssh
+        [  -d $HOME/.ssh ] || mkdir -p $HOME/.ssh
 
 
         if ! ssh-add -l 2>&1 > /dev/null &&
