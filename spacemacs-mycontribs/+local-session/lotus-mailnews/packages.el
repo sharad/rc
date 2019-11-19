@@ -36,34 +36,34 @@
 
 (defconst lotus-mailnews-packages
   '(
-    (gnus        :location local)
-    (nndraft     :location local)
+    (gnus          :location local)
+    (nndraft       :location local)
     (gnus-gravatar :location local)
     bbdb
     lsdb
     shimbun
     notmuch
-    (gnus-win    :location local)
-    (gnus-sum    :location local)
-    (gnus-msg    :location local)
-    (gnus-pers   :location local)
-    (gnus-namazu :location local)
-    (gnus-dired  :location local)
-    (gnus-demon  :location local)
-    (message     :location local)
-    (sendmail    :location local)
-    (dbus        :location local)
-    (mailcrypt   :location local)
-    (nnheader    :location local)
-    (gnus-group  :location local)
-    (mm-decode   :location local)
-    (nntodo      :location local)
+    (gnus-win      :location local)
+    (gnus-sum      :location local)
+    (gnus-msg      :location local)
+    (gnus-pers     :location local)
+    (gnus-namazu   :location local)
+    (gnus-dired    :location local)
+    (gnus-demon    :location local)
+    (message       :location local)
+    (sendmail      :location local)
+    (dbus          :location local)
+    (mailcrypt     :location local)
+    (nnheader      :location local)
+    (gnus-group    :location local)
+    (mm-decode     :location local)
+    (todo-gnus        :location local)
     rs-gnus-exts
-    (gnus-start  :location local)
-    (common-info :location local)
-    (host-info   :location local)
-    (common-info :location local)
-    (passwds     :location local))
+    (gnus-start    :location local)
+    (common-info   :location local)
+    (host-info     :location local)
+    (common-info   :location local)
+    (passwds       :location local))
   "The list of Lisp packages required by the lotus-mailnews layer.
 
 Each entry is either:
@@ -100,18 +100,6 @@ Each entry is either:
     :config
     (lotus-mailnews/post-init-gnus-config)))
 
-  ;; (spacemacs|use-package-add-hook gnus
-  ;;   :post-init
-  ;;   (lotus-mailnews/post-init-gnus-init)
-  ;;   :post-config
-  ;;   (lotus-mailnews/post-init-gnus-config))
-  
-
-  ;; (debug)
-  ;; (lotus-mailnews/post-init-gnus-init)
-  ;; (lotus-mailnews/post-init-gnus-config)
-  ;; (debug)
-  
 (defun lotus-mailnews/init-nndraft ()
   (use-package nndraft
     :defer t
@@ -249,12 +237,12 @@ Each entry is either:
     :config
     (lotus-mailnews/init-mm-decode-config)))
 
-(defun lotus-mailnews/init-nntodo ()
+(defun lotus-mailnews/init-todo-gnus ()
   ;; (require 'todo-gnus)
-  (use-package nntodo
+  (use-package todo-gnus
     :defer t
     :config
-    (lotus-mailnews/init-nntodo-config)))
+    (lotus-mailnews/init-todo-gnus-config)))
 
 (defun lotus-mailnews/init-rs-gnus-exts ()
   (use-package gnus-summary-stripe

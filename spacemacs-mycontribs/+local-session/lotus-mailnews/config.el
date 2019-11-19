@@ -2038,7 +2038,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
            'gnus-mime-multipart-functions
            '("text/calendar" . my-save-icalendar)))))))
 
-(defun lotus-mailnews/init-nntodo-config ()
+(defun lotus-mailnews/init-todo-gnus-config ()
   (progn
     ;; Also it could be usefull to see always all todo items,
     ;; regardless if they are marked as unread or read:
