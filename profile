@@ -8,6 +8,20 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
+## GUIX
+# Source the system-wide file.
+if [ -r /etc/profile ]
+then
+  source /etc/profile
+fi
+
+GUIX_PROFILE="/home/s/hell/.guix-profile"
+if [ -r $GUIX_PROFILE/etc/profile ]
+then
+ . $GUIX_PROFILE/etc/profile
+fi
+## GUIX
+
 export PATH=$PATH:~/bin
 
 for startup in sh login ; do
@@ -17,4 +31,12 @@ for startup in sh login ; do
     [ -r ~/.rsetup/$startup/run ] && ~/.rsetup/$startup/run
 done
 
-export SHELL=/bin/zsh
+if which zsh > /dev/null 2>&1
+then
+    export SHELL="$(which zsh)"
+elif [ -x /bin/zsh ] # GUIX
+then
+  export SHELL=/bin/zsh
+fi
+
+

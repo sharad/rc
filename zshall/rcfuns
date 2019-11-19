@@ -388,7 +388,7 @@ function mkrsetupdir () {
         dir=$1
         mkdir -p ~/.rsetup/$dir/{env,run}.d
         cat > ~/.rsetup/$dir/run <<EOF
-#!/bin/zsh
+#!/usr/bin/env zsh
 [ -r ~/.rsetup/$dir/run.d/\${HOST} ] && ~/.rsetup/$dir/run.d/\${HOST}
 EOF
 

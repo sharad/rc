@@ -294,6 +294,7 @@
     "emacs-helm-ag"
     "emacs"
     "rxvt-unicode"
+    "sakura"
     "libxft"
     "scsh"
     "openbox"

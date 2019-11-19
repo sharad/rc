@@ -7,7 +7,7 @@ Script to tidy up given directory.
 
 
 ** Interperter
-#+BEGIN_SRC sh :padline no :comments no :shebang "#!/bin/zsh"
+#+BEGIN_SRC sh :padline no :comments no :shebang "#!/usr/bin/env zsh"
 # -*- major-mode: sh; -*-
 #+END_SRC
 

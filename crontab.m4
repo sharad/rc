@@ -5,7 +5,13 @@ changequote(`[', `]')
 # m h  dom mon dow   command
 
 #variable set
-SHELL=/bin/zsh
+if which zsh > /dev/null 2>&1
+then
+    export SHELL="$(which zsh)"
+elif [ -x /bin/zsh ] # GUIX
+then
+  export SHELL=/bin/zsh
+fi
 MAILTO=$MAILTO
 
 

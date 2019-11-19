@@ -458,29 +458,39 @@
 ;;Termsn
 ;;Termsn
 (stumpwm:defcommand xterm (&optional title) ((:rest "title: "))
-            (run-wcli-command (concatenate 'string "xterm"
-                                          (if title (format nil " -T ~a" title)))))
+  (run-wcli-command (concatenate 'string "xterm"
+                                 (if title (format nil " -T ~a" title)))))
 
 ;; ;;Termsn *emacs-planner-tasks*
 ;; (stumpwm:defcommand urxvt (&optional title) ((:rest "title: "))
 ;;             (run-wcli-command (concatenate 'string "urxvtc"
 ;;                                           (if title (format nil " -T ~a" title)))))
-(stumpwm:defcommand urxvt () ()
-  (run-wcli-command (concatenate 'string "urxvt" ;; "urxvtc"
+
+(when nil
+  ;; should not change dir here
+  ;; it should happen from environment
+  (stumpwm:defcommand urxvt () ()
+    (run-wcli-command (concatenate 'string "urxvt" ;; "urxvtc"
+                                   (format nil " ~a-T ~a"
+                                           (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
+                                             (if (probe-file paradise)
+                                                 (concatenate 'string " -cd " paradise " ")
+                                                 " "))
+                                           (substitute #\_ #\Space (prin1-to-string (group-name (current-group)))))))))
+
+(stumpwm:defcommand kitty () ()
+  (run-wcli-command (concatenate 'string "kitty"
+                                 (format nil " -T ~a"
+                                         (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
+
+(stumpwm:defcommand sakura () ()
+  (run-wcli-command (concatenate 'string "sakura"
                                  (format nil " -T ~a"
                                          (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
 
 (stumpwm:defcommand urxvt () ()
   (run-wcli-command (concatenate 'string "urxvt" ;; "urxvtc"
-                                 ;; (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
-                                 ;;   (if (probe-file paradise)
-                                 ;;       (concatenate 'string " -cd " paradise " ")
-                                 ;;       ""))
-                                 (format nil " ~a-T ~a"
-                                         (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
-                                           (if (probe-file paradise)
-                                               (concatenate 'string " -cd " paradise " ")
-                                               " "))
+                                 (format nil " -T ~a"
                                          (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
 
 (stumpwm:defcommand xterm () ()

@@ -21,7 +21,7 @@
     `(progn ,@ks)))
 
 (defkeys-top
-    ("s-RET"      "exec sakura")
+    ;; ("s-RET"      "exec sakura")
     ("s-p"        "dmenu")
   ("s-R"        "reinit")
   ("s-Q"        "quit")
@@ -419,6 +419,8 @@
              (kbd "E") "editor")
 
 (fill-keymap *term-commands-map*
+             (kbd "k") "kitty"
+             (kbd "s") "sakura"
              (kbd "u") "urxvt"
              (kbd "x") "xterm")
 

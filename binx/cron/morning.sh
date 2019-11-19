@@ -1,6 +1,5 @@
 #!/usr/bin/env zsh
 
-#!/bin/zsh
 ##
 ## alarm.sh
 ## Login : <s@taj>

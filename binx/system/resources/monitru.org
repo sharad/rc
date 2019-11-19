@@ -5,7 +5,7 @@
 * monitru
 
 ** Preamble
-#+begin_src sh :padline no :comments no :noweb no :shebang #!/bin/zsh
+#+begin_src sh :padline no :comments no :noweb no :shebang #!/usr/bin/env zsh
 # -*- major-mode: sh; -*-
 #+end_src
 ** Rest
