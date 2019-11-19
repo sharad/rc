@@ -322,6 +322,8 @@
    "autorandr"
    "xrandr-invert-colors"
    "aspell"
+   "surf"
+   "xprop"
    "xautolock"
    "slock"
    "xset"
