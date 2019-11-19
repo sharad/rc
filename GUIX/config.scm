@@ -294,6 +294,7 @@
     "emacs-helm-ag"
     "emacs"
     "rxvt-unicode"
+    "libxft"
     "scsh"
     "openbox"
     "awesome"
@@ -321,6 +322,12 @@
     "xautolock"
     "slock"
     "gcc-toolchain"
+    "strace"
+    "guile-readline"
+    "stapler"
+    "pidgin"
+    "pidgin-otr"
+    "telegram-purple"
     "glibc-utf8-locales"))
 
 (define %lotus-other-packages
