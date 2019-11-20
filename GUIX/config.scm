@@ -330,6 +330,7 @@
    "aspell"
    "xmlstarlet"
    "libxslt"
+   "tidy"
 
    "windowmaker"
    "wmnd"
