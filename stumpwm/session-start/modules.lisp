@@ -5,16 +5,18 @@
 (require :cl-fad)
 
 ;; FOR GUIX
-(defvar *contrib-dir* nil)
+(defvar *contrib-dirs* nil)
 (defun local-set-contrib-dir ()
   (let* ((contrib-dirs '(#p"/usr/local/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib/"
-                          #p"/home/s/hell/.stumpwm.d/contrib/"))
-         (contrib-dir  (find-if #'probe-file contrib-dirs)))
-    (when (and contrib-dir
-               (probe-file contrib-dir))
-      (setf *contrib-dir* contrib-dir)
-      (add-to-load-path contrib-dir)
-      (set-module-dir contrib-dir))))
+                         #p"/home/s/hell/.stumpwm.d/contrib/"
+                         #p"/home/s/hell/.stumpwm/contrib/"))
+         (contrib-dirs  (member-if #'probe-file contrib-dirs)))
+    (dolist (dir contrib-dirs)
+     (when (and dir
+               (probe-file dir))
+      (push dir *contrib-dirs*)
+      (add-to-load-path dir)
+      (set-module-dir dir)))))
 ;; FOR GUIX
 
 ;; #-quicklisp
@@ -27,8 +29,8 @@
       (message "failed to load ~a" module))
   #-quicklisp
   (when (and
-         (boundp '*contrib-dir*)
-         (probe-file *contrib-dir*))
+         (boundp '*contrib-dirs*)
+         (probe-file *contrib-dirs*))
     (stumpwm:load-module module)
     (stumpwm::message "failed to load ~a" module)))
 
@@ -53,15 +55,16 @@
       (when (cl-fad:directory-pathname-p dir)
         (cl-fad:list-directory dir)))))
 
-  (defun stumpwm-contrib-modules (dir)
+  (defun stumpwm-contrib-modules (dirs)
     (reverse
-     (mapcar
-      #'(lambda (asd-path) (car (last (pathname-directory asd-path))))
-      (list-directory-resursively
-       dir
-       :predicate
-       #'(lambda (path)
-           (string-equal (pathname-type path) "asd"))))))
+     (apply #'append
+            (mapcar #'(lambda (dir)
+                        (mapcar #'(lambda (asd-path)
+                                    (car (last (pathname-directory asd-path))))
+                                (list-directory-resursively dir
+                                                            :predicate #'(lambda (path)
+                                                                           (string-equal (pathname-type path) "asd")))))
+                    dirs))))
 
   (defvar *stumpwm-contrib-exclude-modules* '(
                                               "notify"
@@ -82,9 +85,9 @@
 
   (setf *stumpwm-contrib-include-modules-in-end* '())
 
-  (defun stumpwm-contrib-included-modules (dir)
+  (defun stumpwm-contrib-included-modules (dirs)
     (set-difference
-     (stumpwm-contrib-modules dir)
+     (stumpwm-contrib-modules dirs)
      *stumpwm-contrib-exclude-modules*
      :test #'string-equal))
 
@@ -93,7 +96,7 @@
         (mod
          (append
           (reverse
-           (stumpwm-contrib-included-modules *contrib-dir*))
+           (stumpwm-contrib-included-modules *contrib-dirs*))
           *stumpwm-contrib-include-modules-in-end*))
       (stumpwm::message "loading ~a" mod)
       (ignore-errors
@@ -150,7 +153,7 @@
                     ;; "stumpwm.contrib.dbus"
                     "notify")))
     (set-difference
-     (stumpwm-contrib-included-modules *contrib-dir*)
+     (stumpwm-contrib-included-modules *contrib-dirs*)
      modlist :test #'string-equal)))
 
   (when t
@@ -161,6 +164,7 @@
     (load-all-modules)))
 
 
+(require :remember-win)
 
 
 

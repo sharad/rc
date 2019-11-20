@@ -43,6 +43,7 @@
     (push :pa *FEATURES*))
 
 (load (concat  *session-dir* "/modules.lisp"))
+(require :remember-win)
 
 
 
