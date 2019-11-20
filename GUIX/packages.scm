@@ -57,11 +57,27 @@
 
 (define %lotus-other-packages
   (list
-   "next"
+   "emacs-geiser"
+   "emacs-sesman"
+   "guile-studio"
    "emacs-guix"
+
+   "rcs"
+   "darcs"
+
+   "myconkeror"
+   "next"
+
+   "font-adobe-source-code-pro"
+   "font-terminus"
+   "font-dejavu"
+   "font-hack"
+   "fribidi"
+
    "xmodmap"
    ;; at
    "curl"
+   "perl"
    "python"
    "ruby"
    "autocutsel"

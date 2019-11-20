@@ -20,6 +20,8 @@
 
 ;; Import nonfree linux module.
 (use-modules (nongnu packages linux))
+(use-modules (lotus packages conkeror))
+
 
 
 (use-modules (gnu packages linux))
@@ -301,7 +303,7 @@
 (define %lotus-simple-users (list
                              (user-account
                               (name "s")
-                              (comment "Bob's sister")
+                              (comment "sharad")
                               (group "users")
                               (home-directory "/home/s/hell")
                               (shell #~(string-append #$zsh "/bin/zsh"))

@@ -183,9 +183,9 @@ function emacs_daemon_start()
                 # GDK_RGBA=0 EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
                 if [ "x$MY_DBUS_SESSION" != "x" ] && whence -p dbus-launch >& /dev/null
                 then
-                    SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=:0.0 timeout 240s dbus-launch --autolaunch=$MY_DBUS_SESSION emacs --daemon=$server 2>&1 | tee $EMACS_STARTUP_LOG_DIR/startup.log
+                    SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=${DISPLAY-:0.0} timeout 240s dbus-launch --autolaunch=$MY_DBUS_SESSION emacs --daemon=$server 2>&1 | tee $EMACS_STARTUP_LOG_DIR/startup.log
                 else
-                    SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=:0.0 timeout 240s emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
+                    SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=${DISPLAY-:0.0} timeout 240s emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
                 fi
 
                 print "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> $EMACS_STARTUP_LOG_DIR/startup.log
@@ -201,6 +201,24 @@ function emacs_daemon_start()
         unset __cwd
     fi # if whence -p emacs >& /dev/null || ! pgrep emacs >& /dev/null
 }
+
+
+
+function ssh_agent_use_run_keychain()
+{
+    if [ "x${SSH_AUTH_SOCK}" = "x" ]
+    then
+        if [ "x${SSH_AGENT_PID}" = "x" ]
+        then
+            if [ -e $RUN_KEYRING ]
+            then
+                SSH_AUTH_SOCK=$RUN_KEYRING
+            fi
+        fi
+    fi
+}
+
+ssh_agent_use_run_keychain
 
 if [ "x${HOST}" = "x" ]
 then

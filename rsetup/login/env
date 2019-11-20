@@ -60,6 +60,9 @@ function start_keychain_screen() {
     # }}}
 }
 
+RUN_KEYRING=/run/user/1000/keyring/ssh
+export RUN_KEYRING
+
 if [ "${LOGIN_ENV}x" = "x" ]
 then
     LOGIN_ENV=LOGIN_ENV
@@ -70,6 +73,18 @@ then
     # {{{ start at least one screen what ever be the case.
     start_keychain_screen
     # }}}
+
+    if [ "x${SSH_AUTH_SOCK}" = "x" ]
+    then
+        if [ "x${SSH_AGENT_PID}" = "x" ]
+        then
+            if [ -e $RUN_KEYRING ]
+            then
+                SSH_AUTH_SOCK=$RUN_KEYRING
+                export SSH_AUTH_SOCK
+            fi
+        fi
+    fi
 
     if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
            ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null # if pid is set and no working alive ssh-agent process.
