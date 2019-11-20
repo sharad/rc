@@ -227,7 +227,7 @@ else
     PS1='\u@\h \w\$ '
 fi
 
-GUIX_PROFILE="/home/s/hell/.guix-profile"
+GUIX_PROFILE="$HOME/.guix-profile"
 if [ -r $GUIX_PROFILE/etc/profile ]
 then
   . $GUIX_PROFILE/etc/profile

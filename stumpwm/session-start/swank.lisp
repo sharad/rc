@@ -15,12 +15,14 @@
 
 ;; FOR GUIX
 (defun load-swank-loader ()
-  (let* ((loaders '(#p"/run/current-system/profile/share/common-lisp/source/cl-slime-swank/swank-loader.lisp" 
-                    #p"~/.config/guix/current/share/common-lisp/source/cl-slime-swank/swank-loader.lisp"
-                    #p"~/.guix-profile/share/common-lisp/source/cl-slime-swank/swank-loader.lisp"
-    		    #p"/usr/share/common-lisp/source/slime/swank-loader.lisp"))
-         (loader  (find-if #'probe-file loaders)))
-    (load loader)))
+  (let* ((swank-loaders '(#p"/usr/share/common-lisp/source/slime/swank-loader.lisp"
+                          #p"~/.guix-profile/share/common-lisp/source/cl-slime-swank/swank-loader.lisp"
+                          #p"~/.config/guix/current/share/common-lisp/source/cl-slime-swank/swank-loader.lisp"
+                          #p"/run/current-system/profile/share/common-lisp/source/cl-slime-swank/swank-loader.lisp"))
+         (swank-loader  (find-if #'probe-file swank-loaders)))
+    (when (and swank-loader
+               (probe-file swank-loader))
+        (load swank-loader))))
 ;; FOR GUIX
 
 ;; from http://lists.common-lisp.net/pipermail/slime-devel/2008-August/015346.html

@@ -7,17 +7,17 @@
 
 ;;;; QuickLisp :start --
 ;;; The following lines added by ql:add-to-init-file:
-#-quicklisp
-(progn
-  (let* ((qlisp-parent-dir
-           (car (member-if #'directory '(#p"/usr/local/share/common-lisp/source/"))))
-         (quicklisp-init
-           (when qlisp-parent-dir
-             (merge-pathnames "quicklisp/setup.lisp" qlisp-parent-dir))))
-    (when (and
-           quicklisp-init
-           (probe-file quicklisp-init))
+
+(defun local-initialize-quicklisp ()
+  (let* ((qlisp-parent-dir (find-if #'directory '(#p"/usr/local/share/common-lisp/source/")))
+         (quicklisp-init   (when qlisp-parent-dir
+                             (merge-pathnames "quicklisp/setup.lisp" qlisp-parent-dir))))
+    (when (and quicklisp-init
+               (probe-file quicklisp-init))
       (load quicklisp-init))))
+
+#-quicklisp
+(local-initialize-quicklisp)
 ;;;; QuickLisp :end
 
 #+quicklisp
@@ -28,9 +28,11 @@
   ;;   (ql:quickload "quicklisp-slime-helper"))
 
   (progn
-    (defparameter *quicklisp-local-home-dir* (merge-pathnames "../paradise/opt/lisp/common-lisp/quicklisp/" (user-homedir-pathname)))
-    (when (probe-file (merge-pathnames "local-projects" *quicklisp-local-home-dir*))
-      (nconc ql:*local-project-directories* (list (merge-pathnames "local-projects" *quicklisp-local-home-dir*)))))
+    (defparameter *quicklisp-local-home-dir*    (merge-pathnames "../paradise/opt/lisp/common-lisp/quicklisp/" (user-homedir-pathname)))
+    (defparameter *quicklisp-local-project-dir* (merge-pathnames "local-projects" *quicklisp-local-home-dir*))
+    (when (probe-file *quicklisp-local-project-dir*)
+      (nconc ql:*local-project-directories*
+             (list *quicklisp-local-project-dir*))))
 
   (progn
     (ql:update-dist "quicklisp") ; To get updated software
@@ -72,7 +74,7 @@
         #'package-name
         (list-all-packages))
        :test #'string=)
-  (format t "TEst")
+  (format t "TEST")
   (require :in.net.sharad.utils))
 
 

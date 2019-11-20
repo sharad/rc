@@ -82,6 +82,16 @@
   (list "font-lohit"
         "font-indic"))
 
+(define %lotus-media-packages
+  (list "libva"
+        "libva-utils"
+        "gstreamer"
+        "gst-libav"
+        "gst123"
+        "libvdpau"
+        "mpg123"
+        "mpg321"))
+
 (define %lotus-gui-packages
   (list "i3status"
         "dmenu"
@@ -140,6 +150,7 @@
           %lotus-other-packages
           %lotus-mail-packages
           %lotus-font-packages
+          %lotus-media-packages
           %lotus-gui-packages
           %lotus-text-packages
           %lotus-notification-packages))

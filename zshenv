@@ -36,8 +36,7 @@ if [ -r /etc/profile ]
 then
   source /etc/profile
 fi
-
-GUIX_PROFILE="/home/s/hell/.guix-profile"
+GUIX_PROFILE="$HOME/.guix-profile"
 if [ -r $GUIX_PROFILE/etc/profile ]
 then
  . $GUIX_PROFILE/etc/profile
@@ -67,14 +66,16 @@ infopath=(
 export DOTREMINDERS=~/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem # for remind or rem
 export HOST
 # export WORKPLACE=
+# [ -r ~/.$WORKPLACE.zshenv ] && source ~/.$WORKPLACE.zshenv
 
-[ -r ~/.$WORKPLACE.zshenv ] && source ~/.$WORKPLACE.zshenv
-
-[  -r ~/.rsetup/sh/env  ] &&
-source ~/.rsetup/sh/env
+if [  -r ~/.rsetup/sh/env  ]
+then
+    source ~/.rsetup/sh/env
+fi
 
 export ALTERNATE_EDITOR='echo bye'
-if [ $DISPLAY ] ; then
+if [ "x" != "x$DISPLAY" ]
+then
     export EDITOR=~/bin/general-xeditor
     export VISUAL=$EDITOR
     export BROWSER="conkeror"
