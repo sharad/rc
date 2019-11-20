@@ -364,6 +364,7 @@
 
    "sbcl"
    "cl-fad"
+   "cl-slime-swank"
 
    "glibc-utf8-locales"))
 

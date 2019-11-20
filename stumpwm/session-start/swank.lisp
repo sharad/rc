@@ -13,37 +13,27 @@
 ;; Load swank.
 ;; C-z ; swank will kick this off
 
-;; (load "/usr/share/common-lisp/source/slime/swank-loader.lisp")
-;; (load "/usr/share/emacs/site-lisp/slime/swank-loader.lisp")
-
-
 ;; FOR GUIX
-(when nil
- (load "/usr/share/common-lisp/source/slime/swank-loader.lisp"))
-
+(defun swank-loader-fun ()
+  ;; ~/.config/guix/current
+  ;; ~/.guix-profile
+  (let* ((loaders '(#p"/run/current-system/profile/share/common-lisp/source/cl-slime-swank/swank-loader.lisp" 
+    		    #p"/usr/share/common-lisp/source/slime/swank-loader.lisp"))
+         (loader  (find-if #'probe-file loaders)))
+    (load loader)))
 
 ;; (let ((swank-loader (make-list-from-emacs-eval "(car (list swank-loader-full-path))")))
 ;;   (load swank-loader))
 
-;; (load "/all/res/share/common-lisp/quicklisp/dists/quicklisp/software/slime-20120307-cvs/swank-loader.lisp")
-
-;; (if (functionp 'swank-loader::init)
-;;     (swank-loader::init))
-
-;; (swank-loader::init)
 ;; from http://lists.common-lisp.net/pipermail/slime-devel/2008-August/015346.html
-#+swank-loader
-(swank-loader::init :setup nil)
-
-
-;; (if (and
-;;      (package-name :swank-loader)
-;;      (find-symbol "init" :swank-loader))
-;;     (if (functionp 'swank-loader::init)
-;;         (swank-loader::init)))
-
+(require :swank)
+(swank-loader-fun)
 
 #+swank-loader
+(when (functionp 'swank-loader::init)
+   (swank-loader::init :setup nil))
+
+#+swank
 (defcommand swank () ()
   (setf stumpwm:*top-level-error-action* :break)
   (if (swank:create-server :port 4005
