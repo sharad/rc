@@ -74,13 +74,14 @@
 
 (define %lotus-mail-packages
   (list "mailutils"
-        "offlimeimap"
+        "offlineimap"
         "notmuch"
         "mu"))
 
 (define %lotus-font-packages
   (list "font-lohit"
-        "font-indic"))
+        ;; "font-indic"
+	))
 
 (define %lotus-media-packages
   (list "libva"
@@ -140,7 +141,8 @@
         "tidy"))
 
 (define %lotus-notification-packages
-  (list "osdsh"
+  (list "guile-xosd" 
+	;; "osdsh"
         "xosd"
         "libnotify"
         "dunst"))

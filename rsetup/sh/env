@@ -1,6 +1,6 @@
 # -*- mode: shell-script; -*-
 
-if [ "x$HOST" == "x" ]
+if [ "x" = "x$HOST" ]
 then
     HOST=$HOSNAME
     export HOST
