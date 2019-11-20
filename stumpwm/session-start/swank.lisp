@@ -14,23 +14,22 @@
 ;; C-z ; swank will kick this off
 
 ;; FOR GUIX
-(defun swank-loader-fun ()
-  ;; ~/.config/guix/current
-  ;; ~/.guix-profile
+(defun load-swank-loader ()
   (let* ((loaders '(#p"/run/current-system/profile/share/common-lisp/source/cl-slime-swank/swank-loader.lisp" 
+                    #p"~/.config/guix/current/share/common-lisp/source/cl-slime-swank/swank-loader.lisp"
+                    #p"~/.guix-profile/share/common-lisp/source/cl-slime-swank/swank-loader.lisp"
     		    #p"/usr/share/common-lisp/source/slime/swank-loader.lisp"))
          (loader  (find-if #'probe-file loaders)))
     (load loader)))
-
-;; (let ((swank-loader (make-list-from-emacs-eval "(car (list swank-loader-full-path))")))
-;;   (load swank-loader))
+;; FOR GUIX
 
 ;; from http://lists.common-lisp.net/pipermail/slime-devel/2008-August/015346.html
 (require :swank)
-(swank-loader-fun)
+(load-swank-loader)
 
 #+swank-loader
 (when (functionp 'swank-loader::init)
+   ;; (setq swank-loader::*fasl-directory* "/tmp/fasl/")
    (swank-loader::init :setup nil))
 
 #+swank
