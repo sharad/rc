@@ -15,7 +15,11 @@
 
 ;; (load "/usr/share/common-lisp/source/slime/swank-loader.lisp")
 ;; (load "/usr/share/emacs/site-lisp/slime/swank-loader.lisp")
-(load "/usr/share/common-lisp/source/slime/swank-loader.lisp")
+
+
+;; FOR GUIX
+(when nil
+ (load "/usr/share/common-lisp/source/slime/swank-loader.lisp"))
 
 
 ;; (let ((swank-loader (make-list-from-emacs-eval "(car (list swank-loader-full-path))")))
@@ -28,6 +32,7 @@
 
 ;; (swank-loader::init)
 ;; from http://lists.common-lisp.net/pipermail/slime-devel/2008-August/015346.html
+#+swank-loader
 (swank-loader::init :setup nil)
 
 
@@ -38,6 +43,7 @@
 ;;         (swank-loader::init)))
 
 
+#+swank-loader
 (defcommand swank () ()
   (setf stumpwm:*top-level-error-action* :break)
   (if (swank:create-server :port 4005

@@ -2,8 +2,11 @@
 
 (in-package :stumpwm)
 
+(require :cl-fad)
+
 ;;  #-quicklisp
-(defvar *contrib-dir* #p"/usr/local/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib/")
+;; (defvar *contrib-dir* #p"/usr/local/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib/")
+(defvar *contrib-dir* #p"/home/s/hell/.stumpwm.d/contrib/")
 
 (add-to-load-path *contrib-dir*)
 (set-module-dir *contrib-dir*)

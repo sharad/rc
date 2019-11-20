@@ -354,13 +354,17 @@
    "slock"
    "xset"
    "xsetroot"
-   "gcc-toolchain"
-   "strace"
-   "guile-readline"
-   "stapler"
    "pidgin"
    "pidgin-otr"
    "telegram-purple"
+   "stapler"
+   "gcc-toolchain"
+   "strace"
+   "guile-readline"
+
+   "sbcl"
+   "cl-fad"
+
    "glibc-utf8-locales"))
 
 (define %lotus-other-packages
