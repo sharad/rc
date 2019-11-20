@@ -42,16 +42,18 @@
 (if (find-package :pa-fnstumpwm)
     (push :pa *FEATURES*))
 
-#-pa
-(defcommand run-cli-command (cmd) ((:shell "program: "))
-  (run-shell-command cmd))
-#+pa (import 'pa-fnstumpwm::run-cli-command)
-#-pa
-(defcommand run-wcli-command (cmd) ((:shell "program: "))
-        (run-shell-command cmd))
-#+pa (import 'pa-fnstumpwm::run-wcli-command)
-#-pa
-(defun process-pid (process)
-  #+sbcl (sb-ext:process-pid process)
-  #-sbcl (error 'not-implemented))
-#+pa (import 'pa-fnstumpwm::process-pid)
+(load (concat  *session-dir* "/modules.lisp"))
+
+;; #-pa
+;; (defcommand run-cli-command (cmd) ((:shell "program: "))
+;;   (run-shell-command cmd))
+;; #+pa (import 'pa-fnstumpwm::run-cli-command)
+;; #-pa
+;; (defcommand run-wcli-command (cmd) ((:shell "program: "))
+;;         (run-shell-command cmd))
+;; #+pa (import 'pa-fnstumpwm::run-wcli-command)
+;; #-pa
+;; (defun process-pid (process)
+;;   #+sbcl (sb-ext:process-pid process)
+;;   #-sbcl (error 'not-implemented))
+;; #+pa (import 'pa-fnstumpwm::process-pid)
