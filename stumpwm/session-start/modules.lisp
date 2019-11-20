@@ -175,24 +175,6 @@
   ;; start the polling timer process
   (clipboard-history:start-clipboard-manager))
 
-
-;; #-remember-win
-;; (defcommand run-cli-command (cmd) ((:shell "program: "))
-;;   un-shell-command cmd))
-#+remember-win 
-(import 'remember-win::run-cli-command)
-;; #-remember-win
-;; (defcommand run-wcli-command (cmd) ((:shell "program: "))
- ;;       (run-shell-command cmd))
-#+remember-win 
-(import 'remember-win::run-wcli-command)
-;; #-remember-win
-;; (defun process-pid (process)
-;;   #+sbcl (sb-ext:process-pid process)
-;;  #-sbcl (error 'not-implemented))
-#+remember-win 
-(import 'remember-win::process-pid)
-
 ;; (load-external-module "wmii-like-stumpwmrc")
 
 ;;}}}

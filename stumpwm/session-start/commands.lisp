@@ -81,7 +81,7 @@
   (stumpwm:defcommand grab-desktop-info () ()
     "Get video grabbing process pid"
     (let* ((pid (if (and video-pid (sb-ext:process-alive-p video-pid))
-                    (process-pid video-pid)))
+                    (remember-win:process-pid video-pid)))
            (file (if (and filename (probe-file filename))
                      filename))
            filesize)
@@ -98,7 +98,7 @@
     (if (and video-pid (sb-ext:process-alive-p video-pid))
         (message
          "Already desktop grabber is running with pid: ~a~&outputting into ~a"
-         (process-pid video-pid) filename)
+         (remember-win:process-pid video-pid) filename)
         (let* ((filearg (or filearg "/tmp/out.mpeg"))
                                         ;(width (run-shell-command "xrandr | grep 'Screen 0' | awk '{ printf \"%s\", $8 }'" t))
                                         ;(hight (run-shell-command "xrandr | grep 'Screen 0' | awk '{ printf \"%s\", $10 }' | sed 's/,.*//'" t))
@@ -114,9 +114,9 @@
                              filearg)))
           (if (and filearg (probe-file filearg))
               (create-backup filearg))
-          (when (setf video-pid (run-cli-command capture-cmd))
+          (when (setf video-pid (remember-win:run-cli-command capture-cmd))
             (setf filename filearg)
-            (message "Your pid is ~a with cmd ~a" (process-pid video-pid) capture-cmd)))))
+            (message "Your pid is ~a with cmd ~a" (remember-win:process-pid video-pid) capture-cmd)))))
 
   ;;(message-no-timeout capture-cmd))))
 
@@ -125,7 +125,7 @@
     (if (and video-pid
              (sb-ext:process-alive-p video-pid))
                                         ;(signal 'INT)))
-        (let ((pid (process-pid video-pid)))
+        (let ((pid (remember-win:process-pid video-pid)))
           (when (sb-ext:process-kill video-pid 2)
             (message (concatenate 'string
                                   "Stopped the desktop grabbing from the pid ~a~%"
@@ -139,7 +139,7 @@
                                         ;disable video playing while
                                         ;video grabbing is on.
     (if (and filename (probe-file filename))
-        (run-wcli-command (format nil "vlc --play-and-exit ~a" filename))
+        (remember-win:run-wcli-command (format nil "vlc --play-and-exit ~a" filename))
         (progn
           (message "No output file present to play.")
           (setf filename nil))))
@@ -238,28 +238,36 @@
                                (min (length pgm) (length s)))))
       (wait-for-program pgm)))
 
-#-pa
+;; #-pa
 (progn
 
   ;; https://stackoverflow.com/questions/8830888/whats-the-canonical-way-to-join-strings-in-a-list
-  (defun string-join (separator strings)
-    " "
-    (let ((separator (replace-all "~" "~~" separator)))
-      (format nil
-              (concatenate 'string "~{~a~^" separator "~}")
-              strings)))
+  ;; (defun string-join (separator &rest strings)
+  ;;   " "
+  ;;   (let ((separator (replace-all "~" "~~" separator)))
+  ;;     (format nil
+  ;;             (concatenate 'string "~{~a~^" separator "~}")
+  ;;             strings)))
 
-  (defun build-emacslcient-cmd (args)
+  (defun string-join (separator &rest strings)
+    " "
+    (format nil
+            (concatenate 'string "~{~a~^" separator "~}")
+            strings))
+
+  (defun build-emacslcient-cmd (&rest args)
     (let ((home         (getenv "HOME"))
           (display      (getenv "DISPLAY"))
-          (emacs-server (or (getenv "EMACS_SERVER_NAME") "general"))())
+          (emacs-server (or (getenv "EMACS_SERVER_NAME") "general")))
       (let* ((emacs-server-file (concat home "/.emacs.d/server/" emacs-server))
-             (emacsclient-cmd   (string-join "emacsclient -d " display  "-f" emacs-server-file)))
-        (string-join emacsclient-cmd args))))
+             (emacsclient-cmd   (string-join " " "emacsclient -d " display  "-f" emacs-server-file)))
+        (if args
+            (apply #'string-join " " emacsclient-cmd args)
+            emacsclient-cmd))))
 
   (stumpwm:defcommand editor () ()
     ;;(if (wait-for-nwprogram "emacsclient")
-    (run-wcli-command
+    (remember-win:run-wcli-command
      (build-emacslcient-cmd "-nc"
                             "-e" "'(setq spec-id \"main\")" )))
 
@@ -268,23 +276,23 @@
                                                  (concat "(serve-window-manager-request "
                                                          (prin1-to-string (format nil "~a" (substitute #\_ #\Space (stumpwm::group-name (stumpwm::current-group)))))
                                                          ")"))))
-      (run-wcli-command
+      (remember-win:run-wcli-command
        (build-emacslcient-cmd "-nc" "-e" serve-window-manager-request-with-id))))
 
   (stumpwm:defcommand xeditor () ()
     (emacsclient))
 
   (stumpwm:defcommand mail-reader () ()
-    (run-wcli-command (build-emacslcient-cmd "-n" "-e" "'(make-mail-chat-frame)'")))
+    (remember-win:run-wcli-command (build-emacslcient-cmd "-n" "-e" "'(make-mail-chat-frame)'")))
 
   (stumpwm:defcommand new-mail () ()
     (if (wait-for-program "emacsclient")
-        (run-wcli-command (build-emacslcient-cmd "-n" "-e" "'(gnus-group-mail)'")))))
+        (remember-win:run-wcli-command (build-emacslcient-cmd "-n" "-e" "'(gnus-group-mail)'")))))
 
 (stumpwm:defcommand emacs-gnus () ()
   (if (wait-for-nwprogram "emacsclient")
-      (run-wcli-command
-       (run-wcli-command (build-emacslcient-cmd  "-e" "'(gnus)'")))))
+      (remember-win:run-wcli-command
+       (remember-win:run-wcli-command (build-emacslcient-cmd  "-e" "'(gnus)'")))))
 
 (stumpwm:defcommand gnusclient () ()
   (if (wait-for-program "emacsclient")
@@ -314,7 +322,7 @@
 
 (stumpwm:defcommand gnome-quit () ()
   (run-shell-command "gconftool-2 --type boolean --set /apps/nautilus/preferences/show_desktop true")
-  (run-wcli-command
+  (remember-win:run-wcli-command
    (concat "gnome-session-save --gui --logout-dialog")))
 
 (stumpwm:defcommand mutt () ()
@@ -325,7 +333,7 @@
 (stumpwm:defcommand ebib () ()
   (run-or-raise
    "xterm -title ebib -e emacs -nw -f ebib"
-    '(:title "ebib")))
+   '(:title "ebib")))
 
 ;; (stumpwm:defcommand ebib () ()
 ;;   (run-or-raise-cli
@@ -335,39 +343,43 @@
 ;;                                      (ebib))\"")
 ;;     '(:title "ebib")))
 
+(stumpwm:defcommand epiphany () ()
+  (remember-win:run-wcli-command
+   (concat "epiphany --profile=" (getenv "HOME") "/.config/epiphany-profiles/" (getenv "XBPROFILE"))))
+
 (stumpwm:defcommand firefox () ()
-   (run-wcli-command
-    (concat "firefox -P " (getenv "XBPROFILE"))))
+  (remember-win:run-wcli-command
+   (concat "firefox -P " (getenv "XBPROFILE"))))
 
 (stumpwm:defcommand firefox-tor () ()
-   (run-wcli-command
+   (remember-win:run-wcli-command
     (concat "firefox -P tor")))
 
 (stumpwm:defcommand xbrowser () ()
-            (run-wcli-command
+            (remember-win:run-wcli-command
              (concat
               (or (getenv "XBROWSER")
                   (concat
                    (getenv "HOME") "/bin/conkeror-redirected" " -P " (getenv "XBPROFILE"))))))
 
 (stumpwm:defcommand xbrowser-tor () ()
-            (run-wcli-command "conkeror -P tor"))
+            (remember-win:run-wcli-command "conkeror -P tor"))
 
 (stumpwm:defcommand seamonkey () ()
-   (run-wcli-command
+   (remember-win:run-wcli-command
     (concat "seamonkey -P " (getenv "XBPROFILE"))))
 
 (stumpwm:defcommand mozilla () ()
-   (run-wcli-command
+   (remember-win:run-wcli-command
     (concat "mozilla -P " (getenv "XBPROFILE"))))
 
 (stumpwm:defcommand conkeror () ()
-   (run-wcli-command
+   (remember-win:run-wcli-command
     (concat "firefox -P " (getenv "XBPROFILE"))))
 
 (stumpwm:defcommand virt-manager () ()
             "virt-manager"
-  (run-wcli-command "virt-manager"))
+  (remember-win:run-wcli-command "virt-manager"))
 
 (stumpwm:defcommand w3m () ()
    (run-or-raise
@@ -447,13 +459,13 @@
 ;;Termsn
 ;; (dolist '(term (xterm urxvt mrxvt))
 ;;         (stumpwm:defcommand term (&optional title) ((:rest "title: "))
-;;                     (run-wcli-command (concatenate 'string (symbole-name term)
+;;                     (remember-win:run-wcli-command (concatenate 'string (symbole-name term)
 ;;                                                   (if title (format nil " -T ~a" title))))))
 
 ;;(run-shell-command "xterm"))
 
 ;; (stumpwm:defcommand xterm () ()
-;;             (run-wcli-command "xterm"))
+;;             (remember-win:run-wcli-command "xterm"))
 
 ;;Termsn
 ;;Termsn
@@ -470,22 +482,22 @@
                (format nil " -T ~a" (lotus-group-name-string))))
 
 (stumpwm:defcommand kitty () ()
-  (run-wcli-command (lotus-terminal-command-with-group-name-title "kitty")))
+  (remember-win:run-wcli-command (lotus-terminal-command-with-group-name-title "kitty")))
 
 (stumpwm:defcommand sakura () ()
-  (run-wcli-command (lotus-terminal-command-with-group-name-title "sakura")))
+  (remember-win:run-wcli-command (lotus-terminal-command-with-group-name-title "sakura")))
 
 (stumpwm:defcommand urxvt () ()
-  (run-wcli-command (lotus-terminal-command-with-group-name-title "urxvt")))
+  (remember-win:run-wcli-command (lotus-terminal-command-with-group-name-title "urxvt")))
 
 (stumpwm:defcommand xterm () ()
-  (run-wcli-command (lotus-terminal-command-with-group-name-title "xterm")))
+  (remember-win:run-wcli-command (lotus-terminal-command-with-group-name-title "xterm")))
 
 (stumpwm:defcommand mrxvt (&optional title) ((:rest "title: "))
-  (run-wcli-command (lotus-terminal-command-with-group-name-title "mrxvt")))
+  (remember-win:run-wcli-command (lotus-terminal-command-with-group-name-title "mrxvt")))
 
 (stumpwm:defcommand xscreen () ()
-  (run-wcli-command "xterm -e screen"))
+  (remember-win:run-wcli-command "xterm -e screen"))
 
 ;;Google calendar
 (stumpwm:defcommand gcal-week () ()
