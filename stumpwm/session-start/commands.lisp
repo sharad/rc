@@ -466,46 +466,35 @@
 ;;             (run-wcli-command (concatenate 'string "urxvtc"
 ;;                                           (if title (format nil " -T ~a" title)))))
 
-(when nil
-  ;; should not change dir here
-  ;; it should happen from environment
-  (stumpwm:defcommand urxvt () ()
-    (run-wcli-command (concatenate 'string "urxvt" ;; "urxvtc"
-                                   (format nil " ~a-T ~a"
-                                           (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
-                                             (if (probe-file paradise)
-                                                 (concatenate 'string " -cd " paradise " ")
-                                                 " "))
-                                           (substitute #\_ #\Space (prin1-to-string (group-name (current-group)))))))))
+(defun lotus-group-name-string ()
+  ;; (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))
+  (prin1-to-string (group-name (current-group))))
+
+(defun lotus-group-name-string-title ()
+  (format nil " -T ~a" (lotus-group-name-string)))
+
+(defun lotus-terminal-command-with-group-name-title (term-cmd)
+  (concatenate 'string
+               term-cmd
+               (format nil " -T ~a" (lotus-group-name-string))))
 
 (stumpwm:defcommand kitty () ()
-  (run-wcli-command (concatenate 'string "kitty"
-                                 (format nil " -T ~a"
-                                         (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
+  (run-wcli-command (lotus-terminal-command-with-group-name-title "kitty")))
 
 (stumpwm:defcommand sakura () ()
-  (run-wcli-command (concatenate 'string "sakura"
-                                 (format nil " -T ~a"
-                                         (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
+  (run-wcli-command (lotus-terminal-command-with-group-name-title "sakura")))
 
 (stumpwm:defcommand urxvt () ()
-  (run-wcli-command (concatenate 'string "urxvt" ;; "urxvtc"
-                                 (format nil " -T ~a"
-                                         (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
+  (run-wcli-command (lotus-terminal-command-with-group-name-title "urxvt")))
 
 (stumpwm:defcommand xterm () ()
-  (run-wcli-command (concatenate 'string "xterm"
-                                 (format nil " -T ~a"
-                                         (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
+  (run-wcli-command (lotus-terminal-command-with-group-name-title "xterm")))
 
 (stumpwm:defcommand mrxvt (&optional title) ((:rest "title: "))
-  (run-wcli-command (concatenate 'string "mrxvt"
-                                 (if title (format nil " -title ~a" title)))))
+  (run-wcli-command (lotus-terminal-command-with-group-name-title "mrxvt")))
 
 (stumpwm:defcommand xscreen () ()
   (run-wcli-command "xterm -e screen"))
-;;  (run-shell-command "xterm -e screen"))
-
 
 ;;Google calendar
 (stumpwm:defcommand gcal-week () ()

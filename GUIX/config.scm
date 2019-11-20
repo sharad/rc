@@ -265,149 +265,149 @@
 
 
 
-(define %lotus-system-selected-package-names
-  (list
-   "m4"
-   "binutils"
-   ;; "coreutils"
-   ;; "diffutils"
-   ;; "findutils"
-   ;; "gnu-make"
-   ;; "patch"
-   "libxdg-basedir"
-   "xdg-user-dirs"
-   "xdg-utils"
-   "shroud"
-   "gdm"
-   "gpm"
-   "git"
-   "git-remote-gcrypt"
-   "guile-colorized"
-   "file"
-   "font-lohit"
-   "screen"
-   "tmux"
-   "kitty"
-   "lxqt-openssh-askpass"
-   "gettext"
-   "ecryptfs-utils"
-   "zsh"
-   "zsh-autosuggestions"
-   "hstr"
-   "shflags"
-   "vim"
-   "the-silver-searcher"
-   "emacs-ag"
-   "emacs-helm-ag"
-   "emacs"
-   "rxvt-unicode"
-   "sakura"
-   "seahorse"
-   "libxft"
-   "scsh"
-   "openbox"
-   "awesome"
-   "i3-wm"
-   "gparted"
-   "parted"
-   "ncurses-with-gpm"
-   "ncurses"
-   "stumpwm"
-   "guile-wm"
-   ;; "stumpwm-with-slynk"
-   ;; "cl-stumpwm"
-   "emacs-stumpwm-mode"
-   "i3status"
-   "dmenu"
-   "st"
-   "xrdb"
-   "xterm"
-   "xdotool"
-   "xrandr"
-   "arandr"
-   "autorandr"
-   "xrandr-invert-colors"
-   "aspell"
-   "xmlstarlet"
-   "libxslt"
-   "tidy"
+;; (define %lotus-system-selected-package-names
+;;   (list
+;;    "m4"
+;;    "binutils"
+;;    ;; "coreutils"
+;;    ;; "diffutils"
+;;    ;; "findutils"
+;;    ;; "gnu-make"
+;;    ;; "patch"
+;;    "libxdg-basedir"
+;;    "xdg-user-dirs"
+;;    "xdg-utils"
+;;    "shroud"
+;;    "gdm"
+;;    "gpm"
+;;    "git"
+;;    "git-remote-gcrypt"
+;;    "guile-colorized"
+;;    "file"
+;;    "font-lohit"
+;;    "screen"
+;;    "tmux"
+;;    "kitty"
+;;    "lxqt-openssh-askpass"
+;;    "gettext"
+;;    "ecryptfs-utils"
+;;    "zsh"
+;;    "zsh-autosuggestions"
+;;    "hstr"
+;;    "shflags"
+;;    "vim"
+;;    "the-silver-searcher"
+;;    "emacs-ag"
+;;    "emacs-helm-ag"
+;;    "emacs"
+;;    "rxvt-unicode"
+;;    "sakura"
+;;    "seahorse"
+;;    "libxft"
+;;    "scsh"
+;;    "openbox"
+;;    "awesome"
+;;    "i3-wm"
+;;    "gparted"
+;;    "parted"
+;;    "ncurses-with-gpm"
+;;    "ncurses"
+;;    "stumpwm"
+;;    "guile-wm"
+;;    ;; "stumpwm-with-slynk"
+;;    ;; "cl-stumpwm"
+;;    "emacs-stumpwm-mode"
+;;    "i3status"
+;;    "dmenu"
+;;    "st"
+;;    "xrdb"
+;;    "xterm"
+;;    "xdotool"
+;;    "xrandr"
+;;    "arandr"
+;;    "autorandr"
+;;    "xrandr-invert-colors"
+;;    "aspell"
+;;    "xmlstarlet"
+;;    "libxslt"
+;;    "tidy"
 
-   "windowmaker"
-   "wmnd"
-   "menumaker"
+;;    "windowmaker"
+;;    "wmnd"
+;;    "menumaker"
 
-   "fortune-mod"
+;;    "fortune-mod"
 
-   "polkit"
-   "polkit-gnome"
-   "redshift"
-   "xosd"
-   "libnotify"
-   "dunst"
+;;    "polkit"
+;;    "polkit-gnome"
+;;    "redshift"
+;;    "xosd"
+;;    "libnotify"
+;;    "dunst"
 
-   "keynav"
-   "conky"
-   "surf"
-   "xprop"
-   "xwininfo"
-   "xautolock"
-   "slock"
-   "xset"
-   "xsetroot"
-   "pidgin"
-   "pidgin-otr"
-   "telegram-purple"
-   "stapler"
-   "gcc-toolchain"
-   "strace"
-   "guile-readline"
+;;    "keynav"
+;;    "conky"
+;;    "surf"
+;;    "xprop"
+;;    "xwininfo"
+;;    "xautolock"
+;;    "slock"
+;;    "xset"
+;;    "xsetroot"
+;;    "pidgin"
+;;    "pidgin-otr"
+;;    "telegram-purple"
+;;    "stapler"
+;;    "gcc-toolchain"
+;;    "strace"
+;;    "guile-readline"
 
-   "sbcl"
-   "cl-fad"
-   "cl-slime-swank"
+;;    "sbcl"
+;;    "cl-fad"
+;;    "cl-slime-swank"
 
-   "glibc-utf8-locales"))
+;;    "glibc-utf8-locales"))
 
-(define %lotus-other-packages
-  (list 
-   "xmodmap"
-   ;; at
-   "curl"
-   "python"
-   "ruby"
-   "autocutsel"
-   "xcompmgr"
-   "wget"
-   ;; "notify-send"
-   ;; "notify"
-   "xmlstarlet"  
-   "xwininfo"
-   "xmlstarlet"
-   "imagemagick"
-   ))
+;; (define %lotus-other-packages
+;;   (list
+;;    "xmodmap"
+;;    ;; at
+;;    "curl"
+;;    "python"
+;;    "ruby"
+;;    "autocutsel"
+;;    "xcompmgr"
+;;    "wget"
+;;    ;; "notify-send"
+;;    ;; "notify"
+;;    "xmlstarlet"
+;;    "xwininfo"
+;;    "xmlstarlet"
+;;    "imagemagick"
+;;    ))
 
-(define %lotus-package-names-for-installation 
-  (append 
-       %lotus-other-packages
-       %lotus-system-selected-package-names))
+;; (define %lotus-package-names-for-installation 
+;;   (append %lotus-other-packages
+;;           %lotus-system-selected-package-names))
 
-(define %lotus-system-desktop-packages (list 
-					 lvm2
-                                         ;; for HTTPS access
-                                         nss-certs
-                                         ;; for user mounts
-                                         gvfs))
+;; (define %lotus-system-desktop-packages (list lvm2
+;;                                              ;; for HTTPS access
+;;                                              nss-certs
+;;                                              ;; for user mounts
+;;                                              gvfs))
 
 
-(define %lotus-system-selected-packages
-  (map specification->package
-       %lotus-package-names-for-installation))
+;; (define %lotus-system-selected-packages
+;;   (map specification->package
+;;        %lotus-package-names-for-installation))
 
-(define %lotus-system-packages (append %lotus-system-desktop-packages
-                                      %lotus-system-selected-packages))
+;; (define %lotus-system-packages (append %lotus-system-desktop-packages
+;;                                       %lotus-system-selected-packages))
 
-(define %lotus-packages (append %lotus-system-packages
-                                %base-packages))
+;; (define %lotus-packages (append %lotus-system-packages
+;;                                 %base-packages))
+
+(load "packages.scm")
 
 
 (define %lotus-keyboard-layout (keyboard-layout "us" "altgr-intl"))
