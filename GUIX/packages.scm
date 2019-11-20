@@ -57,6 +57,8 @@
 
 (define %lotus-other-packages
   (list
+   "next"
+   "emacs-guix"
    "xmodmap"
    ;; at
    "curl"
