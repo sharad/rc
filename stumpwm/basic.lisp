@@ -42,7 +42,7 @@
 (if (find-package :pa-fnstumpwm)
     (push :pa *FEATURES*))
 
-(load (concat  *session-dir* "/modules.lisp"))
+(load (concat *initdir* "/modules.lisp"))
 (require :remember-win)
 
 

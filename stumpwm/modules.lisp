@@ -6,17 +6,19 @@
 
 ;; FOR GUIX
 (defvar *contrib-dirs* nil)
+
 (defun local-set-contrib-dir ()
-  (let* ((contrib-dirs '(#p"/usr/local/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib/"
-                         #p"/home/s/hell/.stumpwm.d/contrib/"
-                         #p"/home/s/hell/.stumpwm/contrib/"))
+  (let* ((contrib-dirs '(;; "/usr/local/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib/"
+                         "/home/s/hell/.stumpwm.d/contrib/"))
          (contrib-dirs  (member-if #'probe-file contrib-dirs)))
     (dolist (dir contrib-dirs)
-     (when (and dir
-               (probe-file dir))
-      (push dir *contrib-dirs*)
-      (add-to-load-path dir)
-      (set-module-dir dir)))))
+      (when dir
+        (unless (member dir *contrib-dirs*)
+          (push dir *contrib-dirs*))
+        (message "adding ~a" dir)
+        (set-module-dir dir)
+        (dolist (mdir asdf:*central-registry*)
+          (add-to-load-path mdir))))))
 ;; FOR GUIX
 
 ;; #-quicklisp
@@ -28,11 +30,7 @@
       (ql:quickload module)
       (message "failed to load ~a" module))
   #-quicklisp
-  (when (and
-         (boundp '*contrib-dirs*)
-         (probe-file *contrib-dirs*))
-    (stumpwm:load-module module)
-    (stumpwm::message "failed to load ~a" module)))
+  (stumpwm:load-module module))
 
 ;; (defcommand load-external-module (name) ((:module "Load Module: "))
 ;;   ())
@@ -85,22 +83,21 @@
 
   (setf *stumpwm-contrib-include-modules-in-end* '())
 
-  (defun stumpwm-contrib-included-modules (dirs)
-    (set-difference
-     (stumpwm-contrib-modules dirs)
-     *stumpwm-contrib-exclude-modules*
-     :test #'string-equal))
+  (defun stumpwm-contrib-included-modules (&rest dirs)
+    (let ((dirs (or dirs *contrib-dirs*)))
+      (set-difference (stumpwm-contrib-modules dirs)
+                      *stumpwm-contrib-exclude-modules*
+                      :test #'string-equal)))
 
   (defun load-all-modules ()
-    (dolist
-        (mod
-         (append
-          (reverse
-           (stumpwm-contrib-included-modules *contrib-dirs*))
-          *stumpwm-contrib-include-modules-in-end*))
+    (dolist (mod (append (reverse (stumpwm-contrib-included-modules))
+                         *stumpwm-contrib-include-modules-in-end*))
       (stumpwm::message "loading ~a" mod)
-      (ignore-errors
-       (stumpwm::load-external-module mod))))
+      ;; (sleep 1)
+      (if nil
+          (stumpwm::load-external-module mod)
+          (ignore-errors
+           (stumpwm::load-external-module mod)))))
 
 
   (defun stumpwm-contrib-new-modules ()
@@ -160,12 +157,8 @@
     (message "loading all modules now")
     (load-all-modules))
 
-  (defcommand load-all-eexternal-modules () ()
+  (defcommand load-all-external-modules () ()
     (load-all-modules)))
-
-
-(require :remember-win)
-
 
 
 ;; enable
