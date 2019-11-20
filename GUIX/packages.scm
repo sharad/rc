@@ -39,8 +39,6 @@
    "ncurses-with-gpm"
    "ncurses"
 
-
-
    "polkit"
    "polkit-gnome"
    "redshift"

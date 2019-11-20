@@ -265,148 +265,7 @@
 
 
 
-;; (define %lotus-system-selected-package-names
-;;   (list
-;;    "m4"
-;;    "binutils"
-;;    ;; "coreutils"
-;;    ;; "diffutils"
-;;    ;; "findutils"
-;;    ;; "gnu-make"
-;;    ;; "patch"
-;;    "libxdg-basedir"
-;;    "xdg-user-dirs"
-;;    "xdg-utils"
-;;    "shroud"
-;;    "gdm"
-;;    "gpm"
-;;    "git"
-;;    "git-remote-gcrypt"
-;;    "guile-colorized"
-;;    "file"
-;;    "font-lohit"
-;;    "screen"
-;;    "tmux"
-;;    "kitty"
-;;    "lxqt-openssh-askpass"
-;;    "gettext"
-;;    "ecryptfs-utils"
-;;    "zsh"
-;;    "zsh-autosuggestions"
-;;    "hstr"
-;;    "shflags"
-;;    "vim"
-;;    "the-silver-searcher"
-;;    "emacs-ag"
-;;    "emacs-helm-ag"
-;;    "emacs"
-;;    "rxvt-unicode"
-;;    "sakura"
-;;    "seahorse"
-;;    "libxft"
-;;    "scsh"
-;;    "openbox"
-;;    "awesome"
-;;    "i3-wm"
-;;    "gparted"
-;;    "parted"
-;;    "ncurses-with-gpm"
-;;    "ncurses"
-;;    "stumpwm"
-;;    "guile-wm"
-;;    ;; "stumpwm-with-slynk"
-;;    ;; "cl-stumpwm"
-;;    "emacs-stumpwm-mode"
-;;    "i3status"
-;;    "dmenu"
-;;    "st"
-;;    "xrdb"
-;;    "xterm"
-;;    "xdotool"
-;;    "xrandr"
-;;    "arandr"
-;;    "autorandr"
-;;    "xrandr-invert-colors"
-;;    "aspell"
-;;    "xmlstarlet"
-;;    "libxslt"
-;;    "tidy"
-
-;;    "windowmaker"
-;;    "wmnd"
-;;    "menumaker"
-
-;;    "fortune-mod"
-
-;;    "polkit"
-;;    "polkit-gnome"
-;;    "redshift"
-;;    "xosd"
-;;    "libnotify"
-;;    "dunst"
-
-;;    "keynav"
-;;    "conky"
-;;    "surf"
-;;    "xprop"
-;;    "xwininfo"
-;;    "xautolock"
-;;    "slock"
-;;    "xset"
-;;    "xsetroot"
-;;    "pidgin"
-;;    "pidgin-otr"
-;;    "telegram-purple"
-;;    "stapler"
-;;    "gcc-toolchain"
-;;    "strace"
-;;    "guile-readline"
-
-;;    "sbcl"
-;;    "cl-fad"
-;;    "cl-slime-swank"
-
-;;    "glibc-utf8-locales"))
-
-;; (define %lotus-other-packages
-;;   (list
-;;    "xmodmap"
-;;    ;; at
-;;    "curl"
-;;    "python"
-;;    "ruby"
-;;    "autocutsel"
-;;    "xcompmgr"
-;;    "wget"
-;;    ;; "notify-send"
-;;    ;; "notify"
-;;    "xmlstarlet"
-;;    "xwininfo"
-;;    "xmlstarlet"
-;;    "imagemagick"
-;;    ))
-
-;; (define %lotus-package-names-for-installation 
-;;   (append %lotus-other-packages
-;;           %lotus-system-selected-package-names))
-
-;; (define %lotus-system-desktop-packages (list lvm2
-;;                                              ;; for HTTPS access
-;;                                              nss-certs
-;;                                              ;; for user mounts
-;;                                              gvfs))
-
-
-;; (define %lotus-system-selected-packages
-;;   (map specification->package
-;;        %lotus-package-names-for-installation))
-
-;; (define %lotus-system-packages (append %lotus-system-desktop-packages
-;;                                       %lotus-system-selected-packages))
-
-;; (define %lotus-packages (append %lotus-system-packages
-;;                                 %base-packages))
-
+;; packages
 (load "packages.scm")
 
 
@@ -445,51 +304,45 @@
                               (comment "Bob's sister")
                               (group "users")
                               (home-directory "/home/s/hell")
-			      (shell #~(string-append #$zsh "/bin/zsh"))
+                              (shell #~(string-append #$zsh "/bin/zsh"))
                               (supplementary-groups
                                '("wheel" "netdev" "audio" "video")))
-			     (user-account
-                               (name "j")
-                               (comment "Jam")
-                               (group "users")
-                               (home-directory "/home/j")
-                               (supplementary-groups
-                               '("wheel" "netdev" "audio" "video")))
-			     ))
+                             (user-account
+                              (name "j")
+                              (comment "Jam")
+                              (group "users")
+                              (home-directory "/home/j")
+                              (supplementary-groups
+                               '("wheel" "netdev" "audio" "video")))))
 
 (define %lotus-users (append %lotus-simple-users
                              %base-user-accounts))
 
 
- (define %lotus-simple-services (list (service gnome-desktop-service-type)
-                                      (service xfce-desktop-service-type)
-                                      (service mate-desktop-service-type)
-                                      (service enlightenment-desktop-service-type)
-                                      (service openssh-service-type)
-                                      (service tor-service-type)
-                                      (set-xorg-configuration
+(define %lotus-simple-services (list (service gnome-desktop-service-type)
+                                     (service xfce-desktop-service-type)
+                                     (service mate-desktop-service-type)
+                                     (service enlightenment-desktop-service-type)
+                                     (service openssh-service-type)
+                                     (service tor-service-type)
+                                     (set-xorg-configuration
                                       (xorg-configuration
-                                        (keyboard-layout %lotus-keyboard-layout)))))
+                                       (keyboard-layout %lotus-keyboard-layout)))))
 
- (define %lotus-services (append %lotus-simple-services
-                                 %desktop-services))
+(define %lotus-simple-and-desktop-services (append %lotus-simple-services
+                                                   %desktop-services))
 
-;; (define %lotus-services (append %desktop-services))
-;; (define %lotus-services (append (list (service dhcp-client-service-type)
-;;                                      (service openssh-service-type
-;;                                               (openssh-configuration
-;;                                                (port-number 2222))))
-;;                                %base-services))
+(define %lotus-desktop-services (append %desktop-services))
+(define %lotus-base-with-dhcp-services
+  (append (list (service dhcp-client-service-type)
+                (service openssh-service-type
+                         (openssh-configuration
+                          (port-number 2222))))
+          %base-services))
 
-;; (define %lotus-services (append (list (service dhcp-client-service-type)
-;;                                      (service openssh-service-type
-;;                                                (openssh-configuration
-;;                                                (port-number 2222))))
-;;                                %base-services))
+(define %lotus-base-services %base-services)
 
-;; (define %lotus-services (append (list)
-;;                                %base-services))
-
+(define %lotus-services  %lotus-simple-and-desktop-services)
 
 
 (define %lotus-firmware (list linux-firmware))

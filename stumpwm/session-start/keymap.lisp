@@ -425,6 +425,7 @@
              (kbd "x") "xterm")
 
 (fill-keymap *browser-commands-map*
+             (kbd "e") "epiphany"
              (kbd "b") "xbrowser"
              (kbd "f") "firefox"
              (kbd "t") "xbrowser-tor"
