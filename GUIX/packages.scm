@@ -56,37 +56,36 @@
 
 
 (define %lotus-other-packages
-  (list
-   "emacs-geiser"
-   "emacs-sesman"
-   "guile-studio"
-   "emacs-guix"
+  (list "emacs-geiser"
+        "emacs-sesman"
+        "guile-studio"
+        "emacs-guix"
 
-   "rcs"
-   "darcs"
+        "rcs"
+        "darcs"
 
-   ;; "myconkeror"
-   "next"
+        ;; "myconkeror"
+        "next"
 
-   "font-adobe-source-code-pro"
-   "font-terminus"
-   "font-dejavu"
-   "font-hack"
-   "fribidi"
+        "font-adobe-source-code-pro"
+        "font-terminus"
+        "font-dejavu"
+        "font-hack"
+        "fribidi"
 
-   "xmodmap"
-   ;; at
-   "curl"
-   "perl"
-   "python"
-   "ruby"
-   "autocutsel"
-   "xcompmgr"
-   "wget"
-   "xmlstarlet"
-   "xwininfo"
-   "xmlstarlet"
-   "imagemagick"))
+        "xmodmap"
+        ;; at
+        "curl"
+        "perl"
+        "python"
+        "ruby"
+        "autocutsel"
+        "xcompmgr"
+        "wget"
+        "xmlstarlet"
+        "xwininfo"
+        "xmlstarlet"
+        "imagemagick"))
 
 (define %lotus-mail-packages
   (list "mailutils"
