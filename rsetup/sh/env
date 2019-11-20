@@ -1,12 +1,24 @@
 # -*- mode: shell-script; -*-
 
+
+## GUIX
+# Source the system-wide file.
+if [ -r /etc/profile ]
+then
+    source /etc/profile
+fi
+GUIX_PROFILE="$HOME/.guix-profile"
+if [ -r $GUIX_PROFILE/etc/profile ]
+then
+    . $GUIX_PROFILE/etc/profile
+fi
+export GUIX_PROFILE
+## GUIX
+
+
 # default values
 OFFLINEIMAPACCOUNT=Gmail
 WORKPLACE=merunetworks.com
-# default values
-
-
-
 
 EDITOR='emacsclient -t -c -f ~/.emacs.d/server/general '
 VISUAL='emacsclient -t -c -f ~/.emacs.d/server/general '
@@ -18,23 +30,87 @@ else
 fi
 
 VISUAL=$EDITOR
-
 BROWSER=w3m
+
+if [ "x$EMACS_SERVER_NAME" = "x" ]
+then
+    EMACS_SERVER_NAME=general
+    export EMACS_SERVER_NAME
+fi
+
+if [ "x$EMACS_DIST_DIR" = "x" ]
+then
+    EMACS_DIST_DIR=.xemacs
+    export EMACS_DIST_DIR
+fi
+# default values
+
+
+
+
+
+
+
+
+if [ "x${HOST}" = "x" ]
+then
+    HOST=$HOSTNAME
+fi
+
+if [ "x${HOST}" != "x" ]
+then
+    __comp=sh
+
+    if [ -d ~/.rsetup/${__comp}/env.d/${HOST} ]
+    then
+        rm -rf ~/.rsetup/${__comp}/env.d/${HOST}
+    fi
+    if [ ! -e ~/.rsetup/${__comp}/env.d/${HOST} ]
+    then
+        mkdir -p ~/.setup/osetup/setup/rsetup.d/sh.d/env.d
+        cp ~/.rsetup/${__comp}/env.tmpl ~/.rsetup/${__comp}/env.d/${HOST}
+    fi
+
+    if [ -r ~/.rsetup/${__comp}/env.d/${HOST} ]
+    then
+        . ~/.rsetup/${__comp}/env.d/${HOST}
+    fi
+    unset __comp
+else
+    echo env var HOST is not set $HOST
+fi
+
+
+
+
+
+
+
 
 export EDITOR
 export VISUAL
 export BROWSER
+export EMACS_DIST_DIR
 
 GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 export GIT_DISCOVERY_ACROSS_FILESYSTEM
 
-MACHINE_ID=/var/lib/dbus/machine-id
+
+if [ -r /var/lib/dbus/machine-id ]
+then
+    MACHINE_ID=/var/lib/dbus/machine-id
+elif [ -r /etc/machine-id ]
+then
+    MACHINE_ID=/etc/machine-id
+fi
+
 if [ -r "$MACHINE_ID" ]
 then
     # GUIX
-    MY_DBUS_SESSION=$(cat $MACHINE_ID)
+    MY_DBUS_SESSION="$(cat ${MACHINE_ID})"
     export MY_DBUS_SESSION
 fi
+unset MACHINE_ID
 
 
 if [ "x" != "x$WORKPLACE" ] ; then
@@ -51,17 +127,6 @@ else
 fi
 
 
-if [ "x$EMACS_SERVER_NAME" = "x" ]
-then
-    EMACS_SERVER_NAME=general
-    export EMACS_SERVER_NAME
-fi
-
-if [ "x$EMACS_DIST_DIR" = "x" ]
-then
-    EMACS_DIST_DIR=.xemacs
-    export EMACS_DIST_DIR
-fi
 
 
 function emacs_daemon_start()
