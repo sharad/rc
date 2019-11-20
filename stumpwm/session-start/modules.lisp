@@ -5,18 +5,19 @@
 (require :cl-fad)
 
 ;; FOR GUIX
+(defvar *contrib-dir* nil)
 (defun local-set-contrib-dir ()
   (let* ((contrib-dirs '(#p"/usr/local/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib/"
                           #p"/home/s/hell/.stumpwm.d/contrib/"))
          (contrib-dir  (find-if #'probe-file contrib-dirs)))
     (when (and contrib-dir
                (probe-file contrib-dir))
-      (defvar *contrib-dir* contrib-dir)
+      (setf *contrib-dir* contrib-dir)
       (add-to-load-path contrib-dir)
       (set-module-dir contrib-dir))))
 ;; FOR GUIX
 
-#-quicklisp
+;; #-quicklisp
 (local-set-contrib-dir)
 
 (defun load-external-module (module)
