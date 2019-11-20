@@ -442,7 +442,7 @@
    (restore-from-file (data-dir-file filename))))
 
 (stumpwm:defcommand save-group-dump (filename) ((:rest "Dump name: "))
- (dump-group-to-file (data-dir-file filename)))
+  (dump-group-to-file (data-dir-file filename)))
 
 ;;Termsn
 ;; (dolist '(term (xterm urxvt mrxvt))
@@ -457,15 +457,6 @@
 
 ;;Termsn
 ;;Termsn
-(stumpwm:defcommand xterm (&optional title) ((:rest "title: "))
-  (run-wcli-command (concatenate 'string "xterm"
-                                 (if title (format nil " -T ~a" title)))))
-
-;; ;;Termsn *emacs-planner-tasks*
-;; (stumpwm:defcommand urxvt (&optional title) ((:rest "title: "))
-;;             (run-wcli-command (concatenate 'string "urxvtc"
-;;                                           (if title (format nil " -T ~a" title)))))
-
 (defun lotus-group-name-string ()
   ;; (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))
   (prin1-to-string (group-name (current-group))))
