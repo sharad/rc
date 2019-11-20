@@ -65,7 +65,7 @@
    "rcs"
    "darcs"
 
-   "myconkeror"
+   ;; "myconkeror"
    "next"
 
    "font-adobe-source-code-pro"
@@ -158,7 +158,7 @@
 
 (define %lotus-notification-packages
   (list "guile-xosd" 
-	;; "osdsh"
+        ;; "osdsh"
         "xosd"
         "libnotify"
         "dunst"))

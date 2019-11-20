@@ -257,7 +257,7 @@
 
   (defun build-emacslcient-cmd (&rest args)
     (let ((home         (getenv "HOME"))
-          (display      (getenv "DISPLAY"))
+          (display      (or (getenv "DISPLAY") ":0.0"))
           (emacs-server (or (getenv "EMACS_SERVER_NAME") "general")))
       (let* ((emacs-server-file (concat home "/.emacs.d/server/" emacs-server))
              (emacsclient-cmd   (string-join " " "emacsclient -d " display  "-f" emacs-server-file)))

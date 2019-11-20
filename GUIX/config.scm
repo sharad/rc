@@ -20,7 +20,7 @@
 
 ;; Import nonfree linux module.
 (use-modules (nongnu packages linux))
-(use-modules (lotus packages conkeror))
+;; (use-modules (lotus packages conkeror))
 
 
 
