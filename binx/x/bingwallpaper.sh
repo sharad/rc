@@ -3,12 +3,13 @@
 
 
 ## XML aliases
-if whence -p xmlstarlet >& /dev/null
+
+if whence -p $XMLCMD >& /dev/null
 then
-  alias xml=xmlstarle 
+  XMLCMD=$XMLCMD
 elif whence -p xml >& /dev/null
 then
-  alias xmlstartlet=xml
+  XMLCMD=xml
 fi
 
 # Base URL
@@ -103,7 +104,7 @@ function resolveDownloadImg() {
     curl -s -o $localPath $reqImgURL
     if file $localPath | grep -q HTML
     then
-        newReqImgURL="$(xmlstarlet sel -t -v  'html/body/h2/a/@href' $localPath)"
+        newReqImgURL="$($XMLCMD sel -t -v  'html/body/h2/a/@href' $localPath)"
         if [ -n "$newReqImgURL" ]
         then
             echo Now downloading "$newReqImgURL" >&2
