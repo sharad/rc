@@ -151,171 +151,10 @@ fi
 
 emacs_daemon_start              # in case it were not started in x/run
 
-#### # if [ -x /usr/libexec/at-spi-registryd ]
-#### then
-#### #     DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/libexec/at-spi-registryd &!
-#### #  elif [  -x  /usr/lib/at-spi2-core/at-spi2-registryd ]
-#### then
-#### #     DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/lib/at-spi2-core/at-spi2-registryd &!
-#### # fi
-####
-####
-#### # whence -p gnome-screensaver &&
-#### # pgrep gnome-screensaver ||
-#### # gnome-screensaver &!
-####
-#### if [ -x /usr/lib/gnome-settings-daemon/gnome-settings-daemon ]
-#### then
-####     pgrep gnome-settings >& /dev/null || /usr/lib/gnome-settings-daemon/gnome-settings-daemon &!
-#### elif [ -x /usr/libexec/gnome-settings-daemon ]
-#### then
-####     pgrep gnome-settings >& /dev/null || /usr/libexec/gnome-settings-daemon &!
-#### else
-####     whence -p gnome-settings-daemon &&
-####     pgrep gnome-settings >& /dev/null || gnome-settings-daemon &!
-####     sleep 1s;
-#### fi
-####
-####
-####
-####
-#### if [ -x  /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ]
-##### then
-####     pgrep gnome-settings >& /dev/null ||  /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &!
-####     sleep 1s;
-#### elif [ -x /usr/libexec/polkit-gnome-authentication-agent-1 ]
-#### then
-####     pgrep gnome-settings >& /dev/null || /usr/libexec/polkit-gnome-authentication-agent-1 &!
-####     sleep 1s;
-#### else
-####     whence -p polkit-gnome-authentication-agent-1 >& /dev/null &&
-####     pgrep polkit-gnome >& /dev/null || polkit-gnome-authentication-agent-1 &!
-####     sleep 1s;
-#### fi
-####
-####
-#### # pgrep gnome-keyring-d >& /dev/null || /usr/bin/gnome-keyring-daemon --start --foreground --components=secrets  &!
-#### sleep 1s;
-####
-#### pgrep goa-daemon || DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/lib/gnome-online-accounts/goa-daemon &!
-#### sleep 1s;
-#### pgrep nm-applet >& /dev/null || nm-applet --sm-disable &!
-#### sleep 1s;
-####
-####
-#### # pgrep empathy ||
-#### # DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
-####
-#### if whence -p syndaemon >& /dev/null ; then
-####     syndaemon -i 1 -d &!
-####     sleep 1s;
-####     whence -p synclient >& /dev/null &&
-####     pgrep synclient >& /dev/null ||
-####     synclient TouchpadOff=1 &!
-####     sleep 1s;
-#### fi
-####
-#### if [ -x /usr/lib/gvfs/gvfsd ]
-#### then
-####     ! pgrep gvfsd || /usr/lib/gvfs/gvfsd -r ~/.gvfs &!
-#### fi
-####
-#### foreach prog (
-####     ## it is automatically started by gdm, so no need to start it.
-####     # gnome-keyring-daemon
-####     gnome-power-manager
-####     mail-notification
-####     blueman-adapters
-####     blueman-applet
-####     bluetoothd
-####     empathy
-####     synergys
-####     ) {
-####         if whence -p $prog >& /dev/null && ! pgrep $prog[0,15] >& /dev/null ; then
-####             $prog &!
-####             echo started $prog >&2
-#### 	    pgrep $prog[0,15] >&2
-####             sleep 1s;
-####         else
-####             print Not starting $prog >&2
-####         fi
-####     }
-####
-####
-#### if whence -p pidgin >& /dev/null && ! pgrep pidgin | grep -v orig | grep pidgin ; then
-####     pidgin &!
-####     print started pidgin >&2
-####     pgrep pidgin >&2
-####     sleep 1s
-#### else
-####     print Not starting pidgin >&2
-#### fi
-####
-#### if whence xte ; then
-####     xte <<EOF
-#### mousemove 42 42
-#### EOF
-#### fi
-####
-#### pgrep xautolock >& /dev/null && xautolock -locknow &!
-####
-#### # ~/bin/syncimap -r               # enable, done in rsetup/x/run
-#### echo stumpwmrc end here >&2
-####
-#### atq
-#### if [ $(atq | cut -f1 | wc -l) -gt 0 ]
-#### then
-####     atrm  $(atq | cut -f1)
-#### fi
-####
-####
-#### # WM specific setup
-#### ~/bin/wallpaper-setup &!
-#### ~/bin/stumpwm-setup &!
-####
-#### # Android LinConnect
-#### if [ -x ~/.linconnect/LinConnectServer/update.sh ] && ! pgrep linconnect_serv >& /dev/null ; then
-####     # https://github.com/hauckwill/linconnect-server
-####     # https://play.google.com/store/apps/details?id=com.willhauck.linconnectclient
-####     rm -f ~/.logs/linconnect.1
-####     mv ~/.logs/linconnect ~/.logs/linconnect.1
-####     ~/.linconnect/LinConnectServer/main/linconnect_server.py >& ~/.logs/linconnect &!
-#### fi
-####
-#### if [ -x /usr/share/android-notifier-desktop/run.sh ] &&
-####     java -DconfigDir=~/.config -Djava.util.prefs.userRoot=$configDir/android-notifier-desktop \
-####         -Djava.net.preferIPv4Stack=true -client -Xms8m -Xmx32m \
-####         -jar /usr/share/android-notifier-desktop/android-notifier-desktop.jar -i |
-####     grep "not" ; then
-####     /usr/share/android-notifier-desktop/run.sh >& ~/.logs/android-notifier-desktop.log &!
-#### fi
-####
-#### pgrep xautolock >& /dev/null && xautolock -locknow &!
-####
-####
-#### ## ssh-agent access needed.
-#### whence -p xautolock >& /dev/null &&
-#### pgrep xautolock >& /dev/null ||
-#### xautolock -detectsleep &!
-####
-#### whence -p conky >& /dev/null &&
-#### pgrep conky >& /dev/null ||
-#### conky &!
-####
-#### whence synclient >& /dev/null &&
-#### pgrep synclient >& /dev/null ||
-#### synclient  TapButton1=1
-####
-####
-####
-####
-
-
-
 # pgrep xautolock >& /dev/null && xautolock -locknow &!
 if whence -p xautolock >& /dev/null
 then
-  if pgrep xautolock >& /dev/null
+  if ! pgrep xautolock >& /dev/null
   then
       xautolock -locknow >> ~/.logs/wmlogin.log 2>&1 &!
   fi
@@ -358,12 +197,6 @@ then
     keynav >> ~/.logs/wmlogin.log 2>&1  &!
 fi
 
-# if whence -p skyped >& /dev/null &&
-#    ! pgrep skyped >& /dev/null
-# then
-#     skyped -c ~/.skyped/skyped.conf >&/dev/null &!
-# fi
-
 # Android LinConnect
 if [ -x ~/.linconnect/LinConnectServer/update.sh ] &&
        ! pgrep linconnect_serv >> ~/.logs/wmlogin.log 2>&1
@@ -396,10 +229,10 @@ fi
 
 if whence -p autocutsel >& /dev/null
 then
-  if ! pgrep autocutsel
-  then
-      autocutsel -f &!
-  fi
+    if ! pgrep autocutsel >& /dev/null
+    then
+        autocutsel -f &!
+    fi
 fi
 
 if whence -p xcompmgr >& /dev/null

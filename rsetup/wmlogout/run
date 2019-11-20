@@ -50,7 +50,46 @@ foreach prog (
     }
 
 
-pkill dbus-daemon
+if whence -p dbus-daemon >& /dev/null
+then
+    if pgrep dbus-daemon >& /dev/null
+    then
+        pkill dbus-daemon
+    fi
+fi
+
+if whence -p xautolock >& /dev/null
+then
+    if pgrep xautolock >& /dev/null
+    then
+        pkill xautolock
+    fi
+fi
+
+if whence -p keynav >& /dev/null  &&
+       pgrep keynav >& /dev/null
+then
+    pkill keynav
+fi
+
+if whence -p autocutsel >& /dev/null
+then
+    if pgrep autocutsel >& /dev/null
+    then
+        pkill autocutsel
+    fi
+fi
+
+if whence -p xcompmgr >& /dev/null
+then
+    if pgrep xcompmgr >& /dev/null
+    then
+        pkill xcompmgr
+    fi
+fi
+
+
+
 
 
 [  -x ~/.rsetup/xlogout/run ] &&

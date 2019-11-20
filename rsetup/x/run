@@ -99,7 +99,7 @@ fi
 
 if whence -p ~/bin/syncimap >& /dev/null
 then
-    ~/bin/syncimap -d >> ~/.xsession-errors 2>&1               # it only get secinfo from x keyring; disable
+    ~/bin/syncimap -r >> ~/.xsession-errors 2>&1               # it only get secinfo from x keyring; disable
 fi
 
 if whence -p xhost >& /dev/null
