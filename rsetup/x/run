@@ -69,7 +69,7 @@ then
     xterm \
         -fullscreen \
         -hold -maximized \
-        -e "ish -s bash -- timeout -k 120 70 tail --retry -n 100 -f ~/.xsession-errors ~/.stumpwm.d/debug-output.log ~/.emacs.d/.cache/startup/$EMACS_SERVER_NAME/startup.log" >> ~/.xsession-errors 2>&1 &!
+        -e "ish -s bash -- timeout -k 120 70 tail --retry -n 100 -f $HOME/.xsession-errors $HOME/.stumpwm.d/debug-output.log $HOME/.emacs.d/.cache/startup/$EMACS_SERVER_NAME/startup.log" >> $HOME/.xsession-errors 2>&1 &!
 fi
 
 if whence -p xte >& /dev/null
@@ -79,7 +79,10 @@ mousemove 42 42
 EOF
 fi
 
-emacs_daemon_start >/dev/null 2>&1 # already going into ~/.emacs.d/.cache/startup/$server/startup.log
+if whence -f emacs_daemon_start >& /dev/null
+then
+    emacs_daemon_start >/dev/null 2>&1 # already going into ~/.emacs.d/.cache/startup/$server/startup.log
+fi
 
 # if which $HOME/bin/ecryptfs-mount-private >/dev/null 2>&1
 # then
@@ -94,7 +97,10 @@ then
     ~/bin/syncimap -r >> ~/.xsession-errors 2>&1               # it only get secinfo from x keyring; enable
 fi
 
-~/bin/syncimap -d >> ~/.xsession-errors 2>&1               # it only get secinfo from x keyring; disable
+if whence -p ~/bin/syncimap >& /dev/null
+then
+    ~/bin/syncimap -d >> ~/.xsession-errors 2>&1               # it only get secinfo from x keyring; disable
+fi
 
 if whence -p xhost >& /dev/null
 then

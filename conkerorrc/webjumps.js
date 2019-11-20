@@ -231,13 +231,17 @@ interactive("open-bookmark-group-link",
                 //         prompt += prefix[0] == 4 ? " C-u" : " "+prefix[0];
                 //     else
                 //         prompt += " "+prefix;
+                // }
+
+                I.minibuffer.message("Link to open: " + link_url);
+
                 browser_object_follow(I.buffer,
-                                      https://searchcode.com/codesearch/view/96760023/
-                                      (prefix !== null && prefix !== undefined) ? OPEN_NEW_BUFFER : OPEN_CURRENT_BUFFER,
+                                      ((prefix !== null && prefix !== undefined) ? OPEN_NEW_BUFFER : OPEN_CURRENT_BUFFER),
                                       link_url);
             });
 
 define_key(content_buffer_normal_keymap, "C-c o", "open-bookmark-group-link");
+
 
 //}}
 

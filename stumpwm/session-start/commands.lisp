@@ -693,8 +693,8 @@
 (stumpwm:defcommand start-wm-components () ()
   (message "started start-wm-components")
   (prog1
-      (run-shell-command
-       (concat (getenv "HOME") "/.rsetup/x/run"))
+      ;; (run-shell-command
+      ;;  (concat (getenv "HOME") "/.rsetup/x/run"))
       (run-shell-command
        (concat (getenv "HOME") "/.rsetup/wmlogin/run"))
     (message "done start-wm-components")))

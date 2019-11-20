@@ -31,9 +31,10 @@ export GIT_DISCOVERY_ACROSS_FILESYSTEM
 MACHINE_ID=/var/lib/dbus/machine-id
 if [ -r "$MACHINE_ID" ]
 then
+    # GUIX
     MY_DBUS_SESSION=$(cat $MACHINE_ID)
+    export MY_DBUS_SESSION
 fi
-export MY_DBUS_SESSION
 
 
 if [ "x" != "x$WORKPLACE" ] ; then
@@ -110,12 +111,13 @@ function emacs_daemon_start()
                 # export GDK_RGBA=0
                 # EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
                 # GDK_RGBA=0 EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
-                if whence -p dbus-launch >& /dev/null
+                if [ "x$MY_DBUS_SESSION" != "x" ] && whence -p dbus-launch >& /dev/null
                 then
                     SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=:0.0 timeout 240s dbus-launch --autolaunch=$MY_DBUS_SESSION emacs --daemon=$server 2>&1 | tee $EMACS_STARTUP_LOG_DIR/startup.log
                 else
                     SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=:0.0 timeout 240s emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
                 fi
+
                 print "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> $EMACS_STARTUP_LOG_DIR/startup.log
 
                 unset EMACS_STARTUP_LOG_DIR
