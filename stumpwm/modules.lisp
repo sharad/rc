@@ -9,16 +9,18 @@
 
 (defun local-set-contrib-dir ()
   (let* ((contrib-dirs '(;; "/usr/local/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib/"
-                         "/home/s/hell/.stumpwm.d/contrib/"))
+                         "/home/s/hell/.stumpwm.d/contrib/"
+                         "/home/s/hell/.stumpwm/contrib/"))
          (contrib-dirs  (member-if #'probe-file contrib-dirs)))
     (dolist (dir contrib-dirs)
       (when dir
         (unless (member dir *contrib-dirs*)
-          (push dir *contrib-dirs*))
-        (message "adding ~a" dir)
-        (set-module-dir dir)
-        (dolist (mdir asdf:*central-registry*)
-          (add-to-load-path mdir))))))
+          (push dir *contrib-dirs*)
+          (message "adding ~a" dir)
+          (set-module-dir dir)
+          (setf *load-path* nil)
+          (dolist (mdir asdf:*central-registry*)
+            (add-to-load-path mdir)))))))
 ;; FOR GUIX
 
 ;; #-quicklisp
