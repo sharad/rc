@@ -16,7 +16,9 @@
 
 (use-modules (gnu))
 (use-package-modules screen)
+
 
+(use-modules (gnu system locale))
 
 ;; Import nonfree linux module.
 (use-modules (nongnu packages linux))
@@ -321,11 +323,11 @@
                              %base-user-accounts))
 
 
-(define %lotus-copy-current-file-in-etc (list
-                                         ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
-                                         ;; Copy current config to /etc/config.scm
-                                         (simple-service 'config-file etc-service-type
-                                                         `(("config.scm" ,this-file)))))
+;; (define %lotus-copy-current-file-in-etc (list
+;;                                          ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
+;;                                          ;; Copy current config to /etc/config.scm
+;;                                          (simple-service 'config-file etc-service-type
+;;                                                          `(("config.scm" ,this-file)))))
 
 (define %lotus-simple-services (list (service gnome-desktop-service-type)
                                      (service xfce-desktop-service-type)

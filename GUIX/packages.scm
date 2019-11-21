@@ -60,13 +60,14 @@
         "emacs-sesman"
         "guile-studio"
         "emacs-guix"
+        "emacs-math-symbol-lists"
+        "emacs-pretty-mode"
 
         "rcs"
         "darcs"
 
         "dovecot"
         ;; "postfix"
-
         ;; "myconkeror"
         "next"
 
@@ -74,6 +75,7 @@
         "font-terminus"
         "font-dejavu"
         "font-hack"
+        "font-awesome"
         "fribidi"
 
         "xmodmap"
