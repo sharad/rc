@@ -356,7 +356,18 @@
 (define %lotus-firmware (list linux-firmware))
 
 
+;; (define %lotus-locale "en_US.utf8")
+
+;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
+
 (define %lotus-locale "en_US.utf8")
+
+(define %lotus-locale-definitions (list (locale-definition (source "en_US")
+                                                           (name   "en_US.utf8"))))
+;; (locale-definition (source "ru_RU")
+;;                    (name "ru_RU.utf8"))
+
+
 
 
 ;; (define %lotus-timezone "Europe/Berlin")
@@ -373,26 +384,27 @@
 
 
 (define %lotus-setuid-programs (cons*
-                                 #~(string-append #$ecryptfs-utils "/sbin/mount.ecryptfs_private")
-                                 %setuid-programs))
+                                #~(string-append #$ecryptfs-utils "/sbin/mount.ecryptfs_private")
+                                %setuid-programs))
 
 
 (operating-system
- (kernel          linux)
- (firmware        %lotus-firmware)
- (initrd          %lotus-initrd)
- (locale          %lotus-locale)
- (timezone        %lotus-timezone)
- (keyboard-layout %lotus-keyboard-layout)
- (host-name       %lotus-host-name)
- (setuid-programs %lotus-setuid-programs)
- (mapped-devices  %lotus-mapped-devices)
- (users           %lotus-users)
- (file-systems    %lotus-file-systems)
- (swap-devices    %lotus-swap-devices)
- (bootloader      %lotus-bootloader)
- (packages        %lotus-packages)
- (services        %lotus-services)
+ (kernel             linux)
+ (firmware           %lotus-firmware)
+ (initrd             %lotus-initrd)
+ (locale             %lotus-locale)
+ (locale-definitions %lotus-locale-definitions)
+ (timezone           %lotus-timezone)
+ (keyboard-layout    %lotus-keyboard-layout)
+ (host-name          %lotus-host-name)
+ (setuid-programs    %lotus-setuid-programs)
+ (mapped-devices     %lotus-mapped-devices)
+ (users              %lotus-users)
+ (file-systems       %lotus-file-systems)
+ (swap-devices       %lotus-swap-devices)
+ (bootloader         %lotus-bootloader)
+ (packages           %lotus-packages)
+ (services           %lotus-services)
  ;; Allow resolution of '.local' host names with mDNS.
  (name-service-switch %mdns-host-lookup-nss))
 
