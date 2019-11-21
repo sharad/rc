@@ -456,20 +456,30 @@ fi
 # "$TERM" = "dumb" for emacs tramp
 if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let emacs tramp work.
 {
-    cat ~/.logs/stderr/zshall/*
-    echo Could see all messages in '~/.logs/stderr/zshall/*'
+    if [[ $(cat ~/.logs/stderr/zshall/* 2>&1 ) ]]
+    then
+        cat ~/.logs/stderr/zshall/*
+        echo Could see all messages in '~/.logs/stderr/zshall/*'
+    fi
 
     if [ -d ~/Sink/ ]
     then
-        print 'ls ~/Sink'
-        ls --color=always -F -C ~/Sink/
-        echo
+        if [ $(command ls -1 ~/Sink | tr -d '\n') != localPublic ]
+        then
+            print 'ls ~/Sink'
+            ls --color=always -F -C ~/Sink/
+            echo
+        fi
     fi
 
-    if whence -p ncal > /dev/null 2>&1 ; then
+    if whence -p ncal > /dev/null 2>&1
+    then
     	# ncal -3 -w
-    	# ncal -3
-    	cal -3
+    	  # ncal -3
+        if [[ $(cal -3 2>&1 ) ]]
+        then
+    	      cal -3
+        fi
     fi
     # display all people around, reminders and todos.
     # See who all are present and what they are doing.
@@ -479,38 +489,71 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
 
     echo # insert a empty line
 
-    if whence -p rem > /dev/null 2>&1 ; then
-        command rem -ahq >& /dev/null
-    elif whence -p remind > /dev/null 2>&1 ; then
-        if [ -r $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem ] ; then
-            command remind -ahq $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem >& /dev/null
+    if whence -p rem > /dev/null 2>&1
+    then
+        if [[ $(command rem -ahq 2>&1 ) ]]
+        then
+            command rem -ahq >& /dev/null
+        fi
+    elif whence -p remind > /dev/null 2>&1
+    then
+        if [ -r $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem ]
+        then
+            if [[ $(command remind -ahq $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem 2>&1 ) ]]
+            then
+                command remind -ahq $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem # >& /dev/null
+            fi
         fi
     fi
-    if whence -p bugz >& /dev/null; then
-        : bugz  search -a spratap # -s new,open,reopen
+    if whence -p bugz >& /dev/null
+    then
+        if [[ $(bugz  search -a spratap 2>&1 ) ]]
+        then
+            bugz  search -a spratap # -s new,open,reopen
+        fi
     fi
 
     autoload ztodo
-    if whence -f ztodo >&/dev/null ; then
-        print ztodo:
-        ztodo list
+    if whence -f ztodo >&/dev/null
+    then
+        if [[ $(ztodo list 2>&1 ) ]]
+        then
+            print ztodo:
+            ztodo list
+        fi
     fi
-    if whence -f sticky-note >&/dev/null ; then
-        print sticky-note:
-        sticky-note -l
+    if whence -f sticky-note >&/dev/null
+    then
+        if [[ $(sticky-note -l 2>&1 ) ]]
+        then
+            print sticky-note:
+            sticky-note -l
+        fi
     fi
-    if whence -f sched >&/dev/null ; then
-        print sched:
-        sched
+    if whence -f sched >&/dev/null
+    then
+        if [[ $(sched 2>&1 ) ]]
+        then
+            print sched:
+            sched
+        fi
     fi
-    if whence -f calendar >&/dev/null ; then
+    if whence -f calendar >&/dev/null
+    then
         autoload calendar
-        print calendar:
-        calendar -a
+        if [[ $(calendar -a 2>&1 ) ]]
+        then
+            print calendar:
+            calendar -a
+        fi
     fi
-    if whence -w calender | grep command >&/dev/null ; then
-        print bsd calendar:
-        ## command calendar
+    if whence -w calender | grep command >&/dev/null
+    then
+        if [[ $(command calendar 2>&1 ) ]]
+        then
+            print bsd calendar:
+            command calendar
+        fi
     fi
 
 } |

@@ -15,7 +15,7 @@ fi
 GUIX_PROFILE="$HOME/.guix-profile"
 if [ -r $GUIX_PROFILE/etc/profile ]
 then
-    . $GUIX_PROFILE/etc/profile
+  . $GUIX_PROFILE/etc/profile
 fi
 export GUIX_PROFILE
 ## GUIX

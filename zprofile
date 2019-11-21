@@ -50,12 +50,23 @@
 # Clear existing broken ssh-agent environment
 #
 
-[ -r ~/.profile ] &&
-source ~/.profile
-# ~/.login-run
+if [ -r ~/.profile ]
+then
+    source ~/.profile
+fi
 
-[  -r ~/.rsetup/sh/env  ] &&
-source ~/.rsetup/sh/env
-[  -r ~/.rsetup/sh/run ] &&
-~/.rsetup/sh/run
-
+# for startup in login ; do
+for startup in sh
+do
+    if [ -r ~/.rsetup/$startup/env ]
+    then
+        . ~/.rsetup/$startup/env
+    fi
+done
+for startup in sh
+do
+    if [ -r ~/.rsetup/$startup/run ]
+    then
+        ~/.rsetup/$startup/run
+    fi
+done

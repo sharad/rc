@@ -31,7 +31,8 @@
 #       /etc/zlogout are read.
 
 
-for startup in sh login ; do
+# for startup in sh login ; do
+for startup in login ; do
     [ -r ~/.rsetup/$startup/env ] && . ~/.rsetup/$startup/env
 done
 for startup in sh login ; do

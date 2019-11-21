@@ -346,7 +346,9 @@ then
     [ -r $HOME/.rsetup/login/env.d/${HOST} ] && . $HOME/.rsetup/login/env.d/${HOST}
 
 else
-    echo LOGIN_ENV is set
+    # uncomment for debugging
+    # echo LOGIN_ENV is set > /dev/null 2>&1
+    echo LOGIN_ENV is set > /dev/null 2>&1
 fi                              # [ "${LOGIN_ENV}x" = "x" ]
 
 

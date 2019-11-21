@@ -3,7 +3,7 @@
 ;; Window managment ------------------------------------------------------------
 
 (in-package :stumpwm)
-
+
 
 
 ;;{{{ Notification system
@@ -217,6 +217,7 @@
 (stumpwm:defcommand pwd () ()
   (get-current-directory))
 
+
 (defun emacs-server-running-p ()
   (or (probe-file (concat *home-dir* ".emacs_server"))
       (probe-file (concat "/tmp/" (getenv "UID") "/server"))))
@@ -238,7 +239,6 @@
                                (min (length pgm) (length s)))))
       (wait-for-program pgm)))
 
-#-pa
 (progn
 
   ;; https://stackoverflow.com/questions/8830888/whats-the-canonical-way-to-join-strings-in-a-list
@@ -250,7 +250,6 @@
   ;;             strings)))
 
   (defun string-join (separator &rest strings)
-    " "
     (format nil
             (concatenate 'string "~{~a~^" separator "~}")
             strings))
@@ -265,19 +264,21 @@
             (apply #'string-join " " emacsclient-cmd args)
             emacsclient-cmd))))
 
-  (stumpwm:defcommand ZZeditor () ()
+  (stumpwm:defcommand editor () ()
     ;;(if (wait-for-nwprogram "emacsclient")
     (remember-win:run-wcli-command
      (build-emacslcient-cmd "-nc"
                             "-e" "'(setq spec-id \"main\")" )))
 
+  (defun printable-group-name ()
+    (prin1-to-string (format nil "~a"
+                             (substitute #\_ #\Space (stumpwm::group-name (stumpwm::current-group))))))
+
   (stumpwm:defcommand emacsclient () ()
-    (let ((serve-window-manager-request-with-id (prin1-to-string
-                                                 (concat "(serve-window-manager-request "
-                                                         (prin1-to-string (format nil "~a" (substitute #\_ #\Space (stumpwm::group-name (stumpwm::current-group)))))
-                                                         ")"))))
+    (let ((server-winmgr-req-id (prin1-to-string
+                                 (concat "(serve-window-manager-request " (printable-group-name) ")"))))
       (remember-win:run-wcli-command
-       (build-emacslcient-cmd "-nc" "-e" serve-window-manager-request-with-id))))
+       (build-emacslcient-cmd "-nc" "-e" server-winmgr-req-id))))
 
   (stumpwm:defcommand xeditor () ()
     (emacsclient))
@@ -288,6 +289,7 @@
   (stumpwm:defcommand new-mail () ()
     (if (wait-for-program "emacsclient")
         (remember-win:run-wcli-command (build-emacslcient-cmd "-n" "-e" "'(gnus-group-mail)'")))))
+
 
 (stumpwm:defcommand emacs-gnus () ()
   (if (wait-for-nwprogram "emacsclient")
