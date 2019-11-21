@@ -456,7 +456,7 @@ fi
 # "$TERM" = "dumb" for emacs tramp
 if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let emacs tramp work.
 {
-    if [[ $(cat ~/.logs/stderr/zshall/* 2>&1 ) ]]
+    if [[ $(cat ~/.logs/stderr/zshall/* 2>&1 | head -2 ) ]]
     then
         cat ~/.logs/stderr/zshall/*
         echo Could see all messages in '~/.logs/stderr/zshall/*'
@@ -476,7 +476,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
     then
     	# ncal -3 -w
     	  # ncal -3
-        if [[ $(cal -3 2>&1 ) ]]
+        if [[ $(cal -3 2>&1 | head -2 ) ]]
         then
     	      cal -3
         fi
@@ -491,7 +491,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
 
     if whence -p rem > /dev/null 2>&1
     then
-        if [[ $(command rem -ahq 2>&1 ) ]]
+        if [[ $(command rem -ahq 2>&1 | head -2 ) ]]
         then
             command rem -ahq >& /dev/null
         fi
@@ -499,7 +499,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
     then
         if [ -r $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem ]
         then
-            if [[ $(command remind -ahq $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem 2>&1 ) ]]
+            if [[ $(command remind -ahq $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem 2>&1 | head -2 ) ]]
             then
                 command remind -ahq $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem # >& /dev/null
             fi
@@ -507,7 +507,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
     fi
     if whence -p bugz >& /dev/null
     then
-        if [[ $(bugz  search -a spratap 2>&1 ) ]]
+        if [[ $(bugz  search -a spratap 2>&1 | head -2 ) ]]
         then
             bugz  search -a spratap # -s new,open,reopen
         fi
@@ -516,7 +516,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
     autoload ztodo
     if whence -f ztodo >&/dev/null
     then
-        if [[ $(ztodo list 2>&1 ) ]]
+        if [[ $(ztodo list 2>&1 | head -2 ) ]]
         then
             print ztodo:
             ztodo list
@@ -524,7 +524,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
     fi
     if whence -f sticky-note >&/dev/null
     then
-        if [[ $(sticky-note -l 2>&1 ) ]]
+        if [[ $(sticky-note -l 2>&1 | head -2 ) ]]
         then
             print sticky-note:
             sticky-note -l
@@ -532,7 +532,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
     fi
     if whence -f sched >&/dev/null
     then
-        if [[ $(sched 2>&1 ) ]]
+        if [[ $(sched 2>&1 | head -2 ) ]]
         then
             print sched:
             sched
@@ -541,7 +541,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
     if whence -f calendar >&/dev/null
     then
         autoload calendar
-        if [[ $(calendar -a 2>&1 ) ]]
+        if [[ $(calendar -a 2>&1 | head -2 ) ]]
         then
             print calendar:
             calendar -a
@@ -549,7 +549,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
     fi
     if whence -w calender | grep command >&/dev/null
     then
-        if [[ $(command calendar 2>&1 ) ]]
+        if [[ $(command calendar 2>&1 | head -2 ) ]]
         then
             print bsd calendar:
             command calendar
