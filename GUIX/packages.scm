@@ -78,6 +78,10 @@
         "font-awesome"
         "fribidi"
 
+        ;; "p4"
+
+        "time"
+
         "xmodmap"
         ;; at
         "curl"

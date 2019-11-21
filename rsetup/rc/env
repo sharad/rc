@@ -74,7 +74,7 @@ export RUN_KEYRING
 
 function ssh_agent_use_run_keychain()
 {
-    if [ "x${SSH_AUTH_SOCK}" = "x" ]
+    if [ "x${SSH_AUTH_SOCK}" = "x" -o "${SSH_AUTH_SOCK}" = "${RUN_KEYRING}" ]
     then
         if [ "x${SSH_AGENT_PID}" = "x" ]
         then
@@ -87,11 +87,13 @@ function ssh_agent_use_run_keychain()
     fi
 }
 
-ssh_agent_use_run_keychain
+# ssh_agent_use_run_keychain
 
 
 function update-ssh-agent-unconditionally()
 {
+    ssh_agent_use_run_keychain
+
     # echo called update-ssh-agent-unconditionally
     if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is not set
         ps ${SSH_AGENT_PID} >/dev/null 2>&1                         && # if pid is set and working alive ssh-agent process.
@@ -198,10 +200,10 @@ function update-ssh-agent()
 # it is to be used interactively, should not distrub flow login process etc.
 # update-ssh-agent                # use it when required.
 
+ssh_agent_use_run_keychain
 
 
-
-
+##
 IN_API_KEY=4b4f1599407c4f789e8b79e02762934a
 export IN_API_KEY
 
@@ -235,3 +237,5 @@ unset __subcomp
 unset __comp
 
 unset MACHINE_ID
+
+

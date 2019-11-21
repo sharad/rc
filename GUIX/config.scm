@@ -17,13 +17,18 @@
 (use-modules (gnu))
 (use-package-modules screen)
 
+;; other guix
 
 (use-modules (gnu system locale))
 
+;; non-guix
+
 ;; Import nonfree linux module.
 (use-modules (nongnu packages linux))
-;; (use-modules (lotus packages conkeror))
+
+;; my packages
 
+(use-modules (lotus packages perforce))
 
 
 (use-modules (gnu packages linux))
