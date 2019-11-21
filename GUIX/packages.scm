@@ -78,7 +78,12 @@
         "font-awesome"
         "fribidi"
 
-        ;; "p4"
+        "p4"
+        "pavucontrol"
+        "pulsemixer"
+
+        "patchelf"
+        "gdb"
 
         "time"
 
