@@ -16,15 +16,13 @@
 (stumpwm:defcommand notify (msg) ((:rest "Notify: "))
   (msg-notify "~a" msg))
 ;;}}}
-
-
-
-;; #+pb (fboundp 'stumpwm::run-cli-command)
+
 
 (stumpwm:defcommand fnext () ()
   (stumpwm::focus-next-frame (stumpwm:current-group)))
 (stumpwm:defcommand fprev () ()
   (stumpwm::focus-prev-frame (stumpwm:current-group)))
+
 
 ;; Aquasole
 ;; OSD text
@@ -32,11 +30,12 @@
   (let* ((screen (stumpwm:current-screen))
          (w (window-xwin (screen-focus screen))))
     (stumpwm::echo-in-window w
-                            (stumpwm::screen-font screen)
-                            (stumpwm::screen-fg-color screen)
-                            (stumpwm::screen-bg-color screen)
-                            "Test de l'osd"))
+                             (stumpwm::screen-font screen)
+                             (stumpwm::screen-fg-color screen)
+                             (stumpwm::screen-bg-color screen)
+                             "Test de l'osd"))
   (xlib:display-finish-output *display*))
+
 
 (stumpwm:defcommand hsbalance-frames () ()
   "hsbalance-frames"
@@ -51,30 +50,32 @@
     (only)
     (dotimes (c gwin-count (balance-frames))
       (vsplit))))
+
 
 ;; menu test
 (stumpwm:defcommand test-menu () ()
-   (select-from-menu (current-screen)
-                     '("a b qsdfùksdfqsdf sf"
-                       "qsdf qsdf grfghd dwxfg"
-                       "dfgdfg dsfgsd fg dfg df"
-                       "dsfg dsfgds fdfhrttg"
-                       "lpmk f*qzlfsdùflgsdfùl"
-                       "dfhdf"
-                       "dsfg dfsghlmkgfhl"
-                       "kvfbùsdlfkg"
-                       "sdflmgksd"
-                       "fg")))
+  (select-from-menu (current-screen)
+                    '("a b qsdfùksdfqsdf sf"
+                      "qsdf qsdf grfghd dwxfg"
+                      "dfgdfg dsfgsd fg dfg df"
+                      "dsfg dsfgds fdfhrttg"
+                      "lpmk f*qzlfsdùflgsdfùl"
+                      "dfhdf"
+                      "dsfg dfsghlmkgfhl"
+                      "kvfbùsdlfkg"
+                      "sdflmgksd"
+                      "fg")))
+
 
 (defun create-backup (filename)
   #+ignore (class utility)
   "Create backup"
   (if (and filename (probe-file filename))
-      ;(translate-pathname filename filename (concatenate 'string filename "~"))))
+                                        ;(translate-pathname filename filename (concatenate 'string filename "~"))))
       (rename-file filename (concatenate 'string filename "~"))))
 
 ;; (create-backup "/tmp/out.mpg")
-
+
 
 (let (video-pid
       filename)
@@ -90,9 +91,9 @@
           (message "No desktop grabbing is going on in my knowledge.~@[~&But previous recording could be found in ~a~]" file))))
 
   (stumpwm:defcommand grab-desktop () ();(&optional filearg) ((:rest "Filename: "))
-      (if (and video-pid (sb-ext:process-alive-p video-pid))
-          (grab-desktop-stop)
-          (grab-desktop-start (read-one-line (current-screen) "Filename: " :initial-input "/tmp/out.flv"))))
+    (if (and video-pid (sb-ext:process-alive-p video-pid))
+        (grab-desktop-stop)
+        (grab-desktop-start (read-one-line (current-screen) "Filename: " :initial-input "/tmp/out.flv"))))
 
   (stumpwm:defcommand grab-desktop-start (&optional filearg) ((:rest "Filename: "))
     (if (and video-pid (sb-ext:process-alive-p video-pid))
@@ -105,13 +106,13 @@
                (geometry (run-shell-command "xwininfo -root | grep 'geometry' | awk '{printf \"%s\", $2;}'" t))
                (depth    (run-shell-command "xwininfo -root | grep -i 'Depth' | awk '{printf \"%s\", $2;}'" t))
                (capture-cmd
-                (concatenate 'string
+                 (concatenate 'string
                                         ;"ffmpeg -y -f x11grab -s xga -r 24 -i "
                                         ;"ffmpeg -f x11grab -s " width "x" hight " -r 24 -i "
-                             "ffmpeg -f x11grab -s " geometry " -r " depth " -i "
-                             (getenv "DISPLAY")
-                             ".0 -sameq "
-                             filearg)))
+                              "ffmpeg -f x11grab -s " geometry " -r " depth " -i "
+                              (getenv "DISPLAY")
+                              ".0 -sameq "
+                              filearg)))
           (if (and filearg (probe-file filearg))
               (create-backup filearg))
           (when (setf video-pid (remember-win:run-cli-command capture-cmd))
@@ -121,7 +122,7 @@
   ;;(message-no-timeout capture-cmd))))
 
   (stumpwm:defcommand grab-desktop-stop () ()
-    ; shuld offer to play the last recordind, control it by user variable.
+                                        ; shuld offer to play the last recordind, control it by user variable.
     (if (and video-pid
              (sb-ext:process-alive-p video-pid))
                                         ;(signal 'INT)))
@@ -178,8 +179,9 @@
           m))
 
   (define-key stumpwm:*root-map* (kbd "\\") '*desktop-grab-map*))
+
 
-                                 ;;"ffmpeg -f x11grab -s " width "x" hight " -r 24 -i " (getenv "DISPLAY") ".0 -sameq " filename)))
+;;"ffmpeg -f x11grab -s " width "x" hight " -r 24 -i " (getenv "DISPLAY") ".0 -sameq " filename)))
 
 (stumpwm:defcommand display-groups () ()
   (message "~a" (screen-groups (current-screen))))
@@ -209,6 +211,7 @@
 
 (stumpwm:defcommand display-frame-preferences () ()
   (notify *window-placement-rules*))
+
 
 ;; Misc commands --------------------------------------------------------------
 (stumpwm:defcommand cd (path) ((:rest "Dir: "))
@@ -303,6 +306,7 @@
 (stumpwm:defcommand gnusclient () ()
   (if (wait-for-program "emacsclient")
       (emacs-gnus)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; from window.lisp
@@ -426,17 +430,19 @@
   (run-shell-command "fetchmail"))
 (stumpwm:defcommand fetchmail-kill-daemon () ()
   (run-shell-command "fetchmail -q"))
+
 
 ;;unison synchronization
 (stumpwm:defcommand unison-synchronization (host) ((:rest "Synchro host: "))
-   (run-shell-command (concat *home-dir*
-                              "/bin/synchro "
-                              host)))
+  (run-shell-command (concat *home-dir*
+                             "/bin/synchro "
+                             host)))
+
 
 (stumpwm:defcommand paste () ()
-            (let ((text (get-x-selection 1)))
-              (and text (window-send-string text))))
-
+  (let ((text (get-x-selection 1)))
+    (and text (window-send-string text))))
+
 
 ;;screenshot-to-website
 (stumpwm:defcommand screenshot-to-website (filename) ((:rest "Filename: "))
@@ -449,27 +455,17 @@
 (stumpwm:defcommand screenshot-to-file (filename) ((:rest "Filename: "))
   (run-shell-command
    (format nil "import -window root ~a" filename)))
+
 
 (stumpwm:defcommand restore-group-dump (filename) ((:rest "Dump name: "))
- (let ((group (add-group (current-screen) filename)))
-   (switch-to-group group)
-   (restore-from-file (data-dir-file filename))))
+  (let ((group (add-group (current-screen) filename)))
+    (switch-to-group group)
+    (restore-from-file (data-dir-file filename))))
 
 (stumpwm:defcommand save-group-dump (filename) ((:rest "Dump name: "))
   (dump-group-to-file (data-dir-file filename)))
+
 
-;;Termsn
-;; (dolist '(term (xterm urxvt mrxvt))
-;;         (stumpwm:defcommand term (&optional title) ((:rest "title: "))
-;;                     (remember-win:run-wcli-command (concatenate 'string (symbole-name term)
-;;                                                   (if title (format nil " -T ~a" title))))))
-
-;;(run-shell-command "xterm"))
-
-;; (stumpwm:defcommand xterm () ()
-;;             (remember-win:run-wcli-command "xterm"))
-
-;;Termsn
 ;;Termsn
 (defun lotus-group-name-string ()
   ;; (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))
@@ -500,6 +496,7 @@
 
 (stumpwm:defcommand xscreen () ()
   (remember-win:run-wcli-command "xterm -e screen"))
+
 
 ;;Google calendar
 (stumpwm:defcommand gcal-week () ()
@@ -543,7 +540,7 @@
   (run-shell-command (format nil (concat "gcalcli quick '~a'~%")
                              evt))
   (message "Added event: ~a" evt))
-
+
 
 ;; cmus-remote control
 (stumpwm:defcommand cmus-play () ()
@@ -554,7 +551,7 @@
   (run-shell-command "cmus-remote -n"))
 (stumpwm:defcommand cmus-prev () ()
   (run-shell-command "cmus-remote -r"))
-
+
 
 (stumpwm:defcommand restart-conky () ()
    (run-shell-command
@@ -563,6 +560,7 @@
 (stumpwm:defcommand conky () ()
   (run-shell-command
    "conky -d -c ~/.conkyrc/main/conkyrc"))
+
 
 (stumpwm:defcommand file-manager () ()
   ;; (format "nautilus --no-default-window --no-desktop %s" dir)
@@ -572,6 +570,7 @@
 (stumpwm:defcommand file-manager-quit () ()
   (stumpwm:run-shell-command
    "nautilus -q"))
+
 
 (stumpwm:defcommand toggle-touchpad () ()
   "Toggle the laptop touchpad on/off.
@@ -595,8 +594,9 @@
                    }'"))
 
 (define-key stumpwm:*root-map* (kbd "X") "refocus-conkeror")
+
 
-(debug-sleep)
+;; (debug-sleep)
 
 
 (stumpwm:defcommand lock-stumpwm () ()
@@ -681,7 +681,7 @@
         (progn
           (pull-hidden-other))))))
 
-(debug-sleep)
+;; (debug-sleep)
 
 
 (stumpwm:defcommand start-wm-components () ()
@@ -729,13 +729,15 @@
     (use-package 'cl-cont)))
 
 
-(debug-sleep)
+;; (debug-sleep)
+
 
 (stumpwm:defcommand gnext-nonempty () ()
   )
 
 (stumpwm:defcommand gprev-nonempty () ()
-            )
+  )
+
 
 (stumpwm:defcommand env (&optional (var t)) ((:string "env var: "))
   (let ((var (if (string-equal "" var) t var)))
@@ -762,6 +764,7 @@
               (message "env[~a] unchanged" var)
               (if (setf (getenv var) changed-value)
                   (message "env[~a]: ~a" var changed-value)))))))
+
 
 (stumpwm:defcommand find-cousor () ()
   (run-shell-command "~/bin/find-cursor --color black")
