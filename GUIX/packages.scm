@@ -64,6 +64,9 @@
         "rcs"
         "darcs"
 
+        "dovecot"
+        ;; "postfix"
+
         ;; "myconkeror"
         "next"
 

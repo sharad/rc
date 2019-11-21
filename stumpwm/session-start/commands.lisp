@@ -238,7 +238,7 @@
                                (min (length pgm) (length s)))))
       (wait-for-program pgm)))
 
-;; #-pa
+#-pa
 (progn
 
   ;; https://stackoverflow.com/questions/8830888/whats-the-canonical-way-to-join-strings-in-a-list
@@ -265,7 +265,7 @@
             (apply #'string-join " " emacsclient-cmd args)
             emacsclient-cmd))))
 
-  (stumpwm:defcommand editor () ()
+  (stumpwm:defcommand ZZeditor () ()
     ;;(if (wait-for-nwprogram "emacsclient")
     (remember-win:run-wcli-command
      (build-emacslcient-cmd "-nc"
