@@ -20,6 +20,10 @@
 ;; other guix
 
 (use-modules (gnu system locale))
+
+(define this-file
+  (local-file (basename (assoc-ref (current-source-location) 'filename))
+              "config.scm"))
 
 ;; non-guix
 
@@ -328,11 +332,11 @@
                              %base-user-accounts))
 
 
-;; (define %lotus-copy-current-file-in-etc (list
-;;                                          ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
-;;                                          ;; Copy current config to /etc/config.scm
-;;                                          (simple-service 'config-file etc-service-type
-;;                                                          `(("config.scm" ,this-file)))))
+(define %lotus-copy-current-file-in-etc (list
+                                         ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
+                                         ;; Copy current config to /etc/config.scm
+                                         (simple-service 'config-file etc-service-type
+                                                         `(("config.scm" ,this-file)))))
 
 (define %lotus-simple-services (list (service gnome-desktop-service-type)
                                      (service xfce-desktop-service-type)
