@@ -37,6 +37,7 @@
 (defconst lotus-lang-packages
   '(
     (elisp-mode :location local)
+    (ispelll    :locaion local)
     )
   "The list of Lisp packages required by the lotus-lang layer.
 
@@ -75,5 +76,16 @@ Each entry is either:
                   #'(lambda ()
                       (make-local-variable 'lisp-indent-function)
                       (setq lisp-indent-function #'lisp-indent-function)))))))
+
+(defun lotus-lang/init-ispell ()
+  (use-package ispell
+    :defer t
+    :config
+    (progn
+      (progn
+        ;; https://emacs.stackexchange.com/questions/38162/ispell-cant-find-my-dictionary
+        (setq ispell-aspell-data-dir "/gnu/store/4xck8jrf3r7ciwabzlqfrs1lm1qqrlx4-aspell-0.60.6.1/lib/aspell-0.60"
+              ispell-aspell-dict-dir "/gnu/store/4xck8jrf3r7ciwabzlqfrs1lm1qqrlx4-aspell-0.60.6.1/lib/aspell-0.60")))))
+        
 
 ;;; packages.el ends here
