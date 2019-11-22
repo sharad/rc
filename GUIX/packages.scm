@@ -62,6 +62,9 @@
         "emacs-guix"
         "emacs-math-symbol-lists"
         "emacs-pretty-mode"
+        "emacs-el-mock"
+        "emacs-flyspell-correct"
+        "jupyter"
 
         "rcs"
         "darcs"
@@ -69,7 +72,7 @@
         "dovecot"
         ;; "postfix"
         ;; "myconkeror"
-        "next"
+        ;; "next"
 
         "font-adobe-source-code-pro"
         "font-terminus"
@@ -84,6 +87,7 @@
 
         "patchelf"
         "gdb"
+        "tree"
 
         "time"
 
