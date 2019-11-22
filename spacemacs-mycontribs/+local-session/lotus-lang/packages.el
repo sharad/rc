@@ -38,7 +38,10 @@
   '(
     (elisp-mode :location local)
     (ispelll    :locaion local)
-    )
+    geiser)
+    ;; (geiser-impl :location local)
+    
+
   "The list of Lisp packages required by the lotus-lang layer.
 
 Each entry is either:
@@ -86,6 +89,14 @@ Each entry is either:
         ;; https://emacs.stackexchange.com/questions/38162/ispell-cant-find-my-dictionary
         (setq ispell-aspell-data-dir "/gnu/store/4xck8jrf3r7ciwabzlqfrs1lm1qqrlx4-aspell-0.60.6.1/lib/aspell-0.60"
               ispell-aspell-dict-dir "/gnu/store/4xck8jrf3r7ciwabzlqfrs1lm1qqrlx4-aspell-0.60.6.1/lib/aspell-0.60")))))
-        
+
+(defun lotus-lang/post-init-geiser ()
+  (use-package geiser-impl
+    :defer t
+    :config
+    (progn
+      (progn
+        ;; check (describe-variable 'geiser-active-implementations)
+        (setq geiser-default-implementation 'guile)))))
 
 ;;; packages.el ends here
