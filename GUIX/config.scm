@@ -391,7 +391,7 @@
 
 
 (define %lotus-bootloader %lotus-efi-bootloader)
-(define %lotus-initrd %lotus-metal-initrd)
+(define %lotus-initrd     %lotus-metal-initrd)
 
 
 (define %lotus-setuid-programs (cons*
@@ -399,8 +399,11 @@
                                 %setuid-programs))
 
 
+(define %lotus-kernel linux)
+
+
 (operating-system
- (kernel             linux)
+ (kernel             %lotus-kernel)
  (firmware           %lotus-firmware)
  (initrd             %lotus-initrd)
  (locale             %lotus-locale)

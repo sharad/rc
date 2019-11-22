@@ -1,4 +1,63 @@
 
+(define %lotus-other-packages
+  (list "emacs-geiser"
+        "emacs-sesman"
+        "guile-studio"
+        "emacs-guix"
+        "emacs-math-symbol-lists"
+        "emacs-pretty-mode"
+        "emacs-el-mock"
+        "emacs-flyspell-correct"
+        "jupyter"
+
+        "rcs"
+        "darcs"
+
+        "dovecot"
+        ;; "postfix"
+        ;; "myconkeror"
+        ;; "next"
+
+        "font-adobe-source-code-pro"
+        "font-terminus"
+        "font-dejavu"
+        "font-hack"
+        "font-awesome"
+        "fribidi"
+
+        "p4"
+        "pavucontrol"
+        "pulsemixer"
+
+        "patchelf"
+        "gdb"
+        "tree"
+
+        "time"
+
+        "xmodmap"
+        ;; at
+        "curl"
+        "perl"
+        "python"
+        "ruby"
+        "autocutsel"
+        "xcompmgr"
+        "wget"
+        "xmlstarlet"
+        "xwininfo"
+        "xmlstarlet"
+        "imagemagick"
+
+        "bsdmainutils"
+        "git-annex"
+        "git-remote-gcrypt"
+
+
+
+
+        ))
+
 (define %lotus-system-selected-package-names
   (list
    "m4"
@@ -53,57 +112,6 @@
    "cl-slime-swank"
 
    "glibc-utf8-locales"))
-
-
-(define %lotus-other-packages
-  (list "emacs-geiser"
-        "emacs-sesman"
-        "guile-studio"
-        "emacs-guix"
-        "emacs-math-symbol-lists"
-        "emacs-pretty-mode"
-        "emacs-el-mock"
-        "emacs-flyspell-correct"
-        "jupyter"
-
-        "rcs"
-        "darcs"
-
-        "dovecot"
-        ;; "postfix"
-        ;; "myconkeror"
-        ;; "next"
-
-        "font-adobe-source-code-pro"
-        "font-terminus"
-        "font-dejavu"
-        "font-hack"
-        "font-awesome"
-        "fribidi"
-
-        "p4"
-        "pavucontrol"
-        "pulsemixer"
-
-        "patchelf"
-        "gdb"
-        "tree"
-
-        "time"
-
-        "xmodmap"
-        ;; at
-        "curl"
-        "perl"
-        "python"
-        "ruby"
-        "autocutsel"
-        "xcompmgr"
-        "wget"
-        "xmlstarlet"
-        "xwininfo"
-        "xmlstarlet"
-        "imagemagick"))
 
 (define %lotus-mail-packages
   (list "mailutils"
