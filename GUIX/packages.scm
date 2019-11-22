@@ -24,6 +24,7 @@
         "font-hack"
         "font-awesome"
         "fribidi"
+        ;; "bicon"
 
         ;; "p4"
         "pavucontrol"
@@ -49,12 +50,33 @@
         "xmlstarlet"
         "imagemagick"
 
+	"twm"
+	"herbstluftwm"
+	"wmctrl"
+	;; https://sourceforge.net/p/cdesktopenv/wiki/LinuxBuild/
+	;; "cdesktopenv"
+
         ;; "bsdmainutils"
+	"rdup"
         "git-annex"
         "git-remote-gcrypt"
 
+	"ledger"
+	"emacs-ledger-mode"
+	"sbcl-cl-ledger"
 
+        "lsh"
 
+	"enscript"
+
+        "gnupg"
+        "gpgme"
+        "qgpgme"
+        "pinentry"
+        "pinentry-tty"
+        "pinentry-gtk2"
+	"emacs-pinentry"
+	"signing-party"
 
         ))
 
@@ -163,7 +185,7 @@
         "emacs-stumpwm-mode"
         "keynav"
         "conky"
-        "surf"
+        ;; "surf"
         "xprop"
         "xwininfo"
         "xautolock"

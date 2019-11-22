@@ -86,9 +86,9 @@ Each entry is either:
     :config
     (progn
       (progn
+        (setq ispell-aspell-dict-dir "/run/current-system/profile/lib/aspell/")
         ;; https://emacs.stackexchange.com/questions/38162/ispell-cant-find-my-dictionary
-        (setq ispell-aspell-data-dir "/gnu/store/4xck8jrf3r7ciwabzlqfrs1lm1qqrlx4-aspell-0.60.6.1/lib/aspell-0.60"
-              ispell-aspell-dict-dir "/gnu/store/4xck8jrf3r7ciwabzlqfrs1lm1qqrlx4-aspell-0.60.6.1/lib/aspell-0.60")))))
+        (setq ispell-aspell-data-dir ispell-aspell-dict-dir)))))
 
 (defun lotus-lang/post-init-geiser ()
   (use-package geiser-impl

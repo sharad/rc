@@ -338,7 +338,7 @@
                                          (simple-service 'config-file etc-service-type
                                                          `(("config.scm" ,this-file)))))
 
-(define %lotus-simple-services (list (service gnome-desktop-service-type)
+(define %lotus-many-services (list (service gnome-desktop-service-type)
                                      (service xfce-desktop-service-type)
                                      (service mate-desktop-service-type)
                                      (service enlightenment-desktop-service-type)
@@ -347,6 +347,16 @@
                                      (set-xorg-configuration
                                       (xorg-configuration
                                        (keyboard-layout %lotus-keyboard-layout)))))
+
+(define %lotus-few-services    (list (service gnome-desktop-service-type)
+                                     (service xfce-desktop-service-type)
+                                     (service openssh-service-type)
+                                     (service tor-service-type)
+                                     (set-xorg-configuration
+                                      (xorg-configuration
+                                       (keyboard-layout %lotus-keyboard-layout)))))
+
+(define %lotus-simple-services %lotus-few-services)
 
 (define %lotus-simple-and-desktop-services (append %lotus-simple-services
                                                    %desktop-services))

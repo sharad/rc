@@ -24,7 +24,11 @@
 
 ;;; Code:
 
-
+(progn
+  ;; (setq ispell-aspell-dict-dir "/mnt/lib/aspell/")
+  (setq ispell-aspell-dict-dir "/run/current-system/profile/lib/aspell/")
+  ;; https://emacs.stackexchange.com/questions/38162/ispell-cant-find-my-dictionary
+  (setq ispell-aspell-data-dir ispell-aspell-dict-dir))
 
 ;; (provide 'config)
 ;;; config.el ends here
