@@ -176,6 +176,7 @@
 
 (define %lotus-text-packages
   (list "aspell"
+        "aspell-dict-en"
         "fortune-mod"
         "xmlstarlet"
         "libxslt"
