@@ -25,7 +25,7 @@
         "font-awesome"
         "fribidi"
 
-        "p4"
+        ;; "p4"
         "pavucontrol"
         "pulsemixer"
 
@@ -49,7 +49,7 @@
         "xmlstarlet"
         "imagemagick"
 
-        "bsdmainutils"
+        ;; "bsdmainutils"
         "git-annex"
         "git-remote-gcrypt"
 
@@ -177,6 +177,7 @@
 (define %lotus-text-packages
   (list "aspell"
         "aspell-dict-en"
+        "aspell-dict-hi"
         "fortune-mod"
         "xmlstarlet"
         "libxslt"

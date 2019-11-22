@@ -472,7 +472,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
         fi
     fi
 
-    if whence -p ncal > /dev/null 2>&1
+    if whence -p cal > /dev/null 2>&1
     then
     	# ncal -3 -w
     	  # ncal -3
