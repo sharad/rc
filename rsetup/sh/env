@@ -24,12 +24,12 @@ export GUIX_PROFILE
 
 
 # default values
-if [ "x" ! "x$OFFLINEIMAPACCOUNT" ]
+if [ "x" != "x$OFFLINEIMAPACCOUNT" ]
 then
     OFFLINEIMAPACCOUNT=Gmail
     export OFFLINEIMAPACCOUNT
 fi
-if [ "x" ! "x$WORKPLACE" ]
+if [ "x" != "x$WORKPLACE" ]
 then
     WORKPLACE=merunetworks.com
     export WORKPLACE
@@ -264,6 +264,7 @@ function emacs_daemon_start()
                 pkill emacs
                 sleep 2s
                 pkill -9 emacs
+                sleep 1s
 
                 EMACS_STARTUP_LOG_DIR=~/.emacs.d/.cache/startup/$server/
                 mkdir -p $EMACS_STARTUP_LOG_DIR
@@ -291,8 +292,6 @@ function emacs_daemon_start()
     fi # if whence -p emacs >& /dev/null || ! pgrep emacs >& /dev/null
 }
 
-
-
 function ssh_agent_use_run_keychain()
 {
     if [ "x${SSH_AUTH_SOCK}" = "x" ]
@@ -307,6 +306,9 @@ function ssh_agent_use_run_keychain()
     fi
 }
 
+
+
+## 
 ssh_agent_use_run_keychain
 
 if [ "x${HOST}" = "x" ]

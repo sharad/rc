@@ -40,9 +40,7 @@ XINITRC_WM_SESSION=${1:-$XINITRC_DEFAULT_WM_SESSION}
 # tpb -d
 # xv -quit -root -rmode 5 -max ~/36275-emerge.jpg
 # #xpenguins & # This and conky do _NOT_ get along as both like the root window (xpenguins destroys parts of conky until it refreshes)
-# conky -d
 # evilXINITRC_WM_SESSION -snap 10 &
-# xautolock
 
 for src in sh x
 do
