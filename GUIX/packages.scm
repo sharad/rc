@@ -53,6 +53,7 @@
 	"twm"
 	"herbstluftwm"
 	"wmctrl"
+	;; https://sourceforge.net/p/motif/code/ci/master/tree/INSTALL.configure
 	;; https://sourceforge.net/p/cdesktopenv/wiki/LinuxBuild/
 	;; "cdesktopenv"
 
