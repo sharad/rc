@@ -3,23 +3,34 @@
 #
 # last modified:
 
-if [ -e /usr/local/bin/x-session-stumpwm ]
+
+XINITRC_DEFAULT_WM_SESSION="twm"
+XINITRC_DEFAULT_WM_SESSION_CMD="twm"
+
+
+if [ "x" != "x$DESKTOP_SESSION" ]
 then
-    XINITRC_DEFAULT_WM=/usr/local/bin/x-session-stumpwm
+    XINITRC_WM_SESSION="$DESKTOP_SESSION"
+elif [ "x" != "x$XDG_SESSION_DESKTOP" ]
+then
+    XINITRC_WM_SESSION="$XDG_SESSION_DESKTOP"
+elif [ "x" != "x$GDMSESSION" ]
+then
+    XINITRC_WM_SESSION="$GDMSESSION"
 else
-    XINITRC_DEFAULT_WM=stumpwm
+    XINITRC_WM_SESSION="$XINITRC_DEFAULT_WM_SESSION"
 fi
 
-WM=${1:-$XINITRC_DEFAULT_WM}
+XINITRC_WM_SESSION=${1:-$XINITRC_DEFAULT_WM_SESSION}
 
 # ~/bin/xhook
 
 # ## Start the window manager and give it time to initialize.
 # ##
 # sleep 15 &  pid=$!
-# olvwm -syncpid $pid &
+# olvXINITRC_WM_SESSION -syncpid $pid &
 # #/opt/kde/bin/kde
-# wait $pid			# pause until olvwm inits
+# wait $pid			# pause until olvXINITRC_WM_SESSION inits
 
 # . $HOME/.openwin-init		# start up all the xterms and standard apps.
 # exec xterm -name leftXTerm -C	# put the console in the foreground
@@ -30,20 +41,57 @@ WM=${1:-$XINITRC_DEFAULT_WM}
 # xv -quit -root -rmode 5 -max ~/36275-emerge.jpg
 # #xpenguins & # This and conky do _NOT_ get along as both like the root window (xpenguins destroys parts of conky until it refreshes)
 # conky -d
-# evilwm -snap 10 &
+# evilXINITRC_WM_SESSION -snap 10 &
 # xautolock
 
-source ~/.rsetup/sh/env
-source ~/.rsetup/x/env
+for src in sh x
+do
+    source ~/.rsetup/$src/env
+done
 source ~/.xprofile
 
 
-if which $WM ; then
-    exec $WM
-    if [ $WM  -eq "gnome" ] ; then
-        exec gnome-session
-    fi
-elif which gnome-session ; then
-    exec gnome-session
+# env
+
+
+
+if which "$XINITRC_WM_SESSION" > /dev/null 2>&1
+then
+    XINITRC_WM_SESSION_CMD="$XINITRC_WM_SESSION"
+else
+    case $XINITRC_WM_SESSION in
+	(gnome)       XINITRC_WM_SESSION_CMD="gnome-session";;
+	(windowmaker) XINITRC_WM_SESSION_CMD="wmaker";;
+	(stumwpm)     XINITRC_WM_SESSION_CMD="stumpwm";;
+	(twm)         XINITRC_WM_SESSION_CMD="twm";;
+	# (*)           XINITRC_WM_SESSION_CMD="$XINITRC_DEFAULT_WM_SESSION_CMD";;
+    esac
 fi
 
+
+if [ "x" = "x$XINITRC_WM_SESSION_CMD" ]
+then
+  if [ -e /usr/local/bin/x-session-stumpwm ]
+  then
+      XINITRC_WM_SESSION_CMD="/usr/local/bin/x-session-stumpwm"
+  elif which stumpwm > /dev/null 2>&1
+  then
+      XINITRC_WM_SESSION_CMD="stumpwm"
+  elif which wmaker > /dev/null 2>&1
+  then
+    XINITRC_WM_SESSION_CMD="wmaker"
+  elif which gnome-session > /dev/null 2>&1
+  then
+    XINITRC_WM_SESSION_CMD="gnome-session" > /dev/null 2>&1
+  else
+    XINITRC_WM_SESSION_CMD="$XINITRC_DEFAULT_WM_SESSION_CMD"
+  fi
+fi
+
+
+
+# echo $XINITRC_WM_SESSION_CMD
+# exec $XINITRC_WM_SESSION_CMD
+exec $XINITRC_WM_SESSION_CMD
+
+exit 

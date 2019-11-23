@@ -7,11 +7,13 @@ then
 fi
 
 ## GUIX
+#
 # Source the system-wide file.
-if [ -r /etc/profile ]
-then
-    source /etc/profile
-fi
+# if [ -r /etc/profile ]
+# then
+#     # preventing gnome-sesion to start from gdm
+#     . /etc/profile
+# fi
 GUIX_PROFILE="$HOME/.guix-profile"
 if [ -r $GUIX_PROFILE/etc/profile ]
 then

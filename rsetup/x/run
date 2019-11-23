@@ -69,7 +69,7 @@ then
     xterm \
         -fullscreen \
         -hold -maximized \
-        -e "$HOME/bin/ish -s bash -- timeout -k 120 70 tail --retry -n 100 -f $HOME/.xsession-errors $HOME/.stumpwm.d/debug-output.log $HOME/.emacs.d/.cache/startup/$EMACS_SERVER_NAME/startup.log" >> $HOME/.xsession-errors 2>&1 &!
+        -e "$HOME/bin/ish -s bash -- timeout -k 120 70 tail --retry -n 100 -f $HOME/.xsession-errors $HOME/.stumpwm.d/debug-output.log $HOME/.emacs.d/.cache/startup/$EMACS_SERVER_NAME/startup.log $HOME/.cache/gdm/sesion.log" >> $HOME/.xsession-errors 2>&1 &!
 fi
 
 if whence -p xte >& /dev/null
