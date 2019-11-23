@@ -49,29 +49,32 @@
         "xwininfo"
         "xmlstarlet"
         "imagemagick"
+        "setxkbmap"
 
-	"twm"
-	"herbstluftwm"
-	"wmctrl"
-	;; https://sourceforge.net/p/motif/code/ci/master/tree/INSTALL.configure
-	;; https://sourceforge.net/p/cdesktopenv/wiki/LinuxBuild/
-	;; "cdesktopenv"
+        "fasd"
+
+        "twm"
+        "herbstluftwm"
+        "wmctrl"
+        ;; https://sourceforge.net/p/motif/code/ci/master/tree/INSTALL.configure
+        ;; https://sourceforge.net/p/cdesktopenv/wiki/LinuxBuild/
+        ;; "cdesktopenv"
 
         ;; "bsdmainutils"
-	"rdup"
+        "rdup"
         "git-annex"
         "git-remote-gcrypt"
 
-	"ledger"
-	"emacs-ledger-mode"
-	"sbcl-cl-ledger"
+        "ledger"
+        "emacs-ledger-mode"
+        "sbcl-cl-ledger"
 
         "lsh"
 
-	"enscript"
+        "enscript"
 
-	"agda"
-	"emacs-agda2-mode"
+        "agda"
+        "emacs-agda2-mode"
 
         "gnupg"
         "gpgme"
@@ -79,8 +82,8 @@
         "pinentry"
         "pinentry-tty"
         "pinentry-gtk2"
-	"emacs-pinentry"
-	"signing-party"
+        "emacs-pinentry"
+        "signing-party"
 
         ))
 
