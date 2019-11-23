@@ -88,10 +88,24 @@ then
   fi
 fi
 
+# echo going to run $XINITRC_WM_SESSION_CMD
+if ssh_agent_call_p
+then
+    if dbus_call_p
+    then
+        exec dbus-launch --autolaunch=$MY_DBUS_SESSION $XINITRC_WM_SESSION_CMD "$@"
+    else
+        exec $XINITRC_WM_SESSION_CMD "$@"
+    fi
+else
+    if dbus_call_p
+    then
+        exec dbus-launch --autolaunch=$MY_DBUS_SESSION ssh-agent $XINITRC_WM_SESSION_CMD "$@"
+    else
+        exec ssh-agent $XINITRC_WM_SESSION_CMD "$@"
+    fi
+fi
 
 
-# echo $XINITRC_WM_SESSION_CMD
-# exec $XINITRC_WM_SESSION_CMD
-exec $XINITRC_WM_SESSION_CMD
+exit 0
 
-exit 

@@ -35,38 +35,40 @@ export GNUSTEP_USER_ROOT=~/.GNUstep/
 
 #{{ from: http://fragglet.livejournal.com/9666.html
 # eval "`gnome-keyring-daemon`"
-export GNOME_KEYRING_PID
-export GNOME_KEYRING_SOCKET
-[ -r ~/.rsetup/x/env.d/${HOST} ] && . ~/.rsetup/x/env.d/${HOST} >> ~/.xsession-errors 2>&1
+
+if [ "x" != "x$GNOME_KEYRING_PID" ]
+then
+    export GNOME_KEYRING_PID
+fi
+if [ "x" != "x$GNOME_KEYRING_SOCKET" ]
+then
+    export GNOME_KEYRING_SOCKET
+fi
+if [ -r ~/.rsetup/x/env.d/${HOST} ]
+then
+    . ~/.rsetup/x/env.d/${HOST} >> ~/.xsession-errors 2>&1
+fi
 #}}
 
-EDITOR=general-xeditor
-VISUAL=general-xeditor
 
+EDITOR=general-xeditor
 if [ "x${REMOTEEDITORHOST}" != "x" ] ; then
     EDITOR=$HOME/bin/rgeneral-xeditor
 else
     EDITOR=$HOME/bin/general-xeditor
 fi
-
 VISUAL=$EDITOR
-
 BROWSER="conkeror"
 XBPROFILE="Y"
-
 export EDITOR
 export VISUAL
 export BROWSER
 export XBPROFILE
 
-# https://bugzilla.gnome.org/show_bug.cgi?id=85715
-# https://bugzilla.gnome.org/show_bug.cgi?id=723740
-# https://bugzilla.gnome.org/show_bug.cgi?id=724067
-# https://bugzilla.gnome.org/show_bug.cgi?id=630217#c15
 GDK_RGBA=0
 export GDK_RGBA
 
-if false ## GUIX not works
+if true
 then
   ## https://www.juev.org/2009/09/27/stumpwm/
   # D-bus
@@ -79,33 +81,37 @@ then
   echo rsetup/x/env before >> $DBUS_LOG
   date >> $DBUS_LOG
 
-  if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"
+  if false  ## GUIX not works
   then
-      eval $(dbus-launch --sh-syntax --exit-with-session)
-      date >> $DBUS_LOG
-      echo rsetup/x/env after >> $DBUS_LOG
-      echo DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS >> $DBUS_LOG
-      echo DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID >> $DBUS_LOG
-      echo DBUS_SESSION_BUS_WINDOWID=$DBUS_SESSION_BUS_WINDOWID >> $DBUS_LOG
-      echo rsetup/x/env after >> $DBUS_LOG
-      date >> $DBUS_LOG
+      if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"
+      then
+          eval $(dbus-launch --sh-syntax --exit-with-session)
+          date >> $DBUS_LOG
+          echo rsetup/x/env after >> $DBUS_LOG
+          echo DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS >> $DBUS_LOG
+          echo DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID >> $DBUS_LOG
+          echo DBUS_SESSION_BUS_WINDOWID=$DBUS_SESSION_BUS_WINDOWID >> $DBUS_LOG
+          echo rsetup/x/env after >> $DBUS_LOG
+          date >> $DBUS_LOG
+      fi
   fi
 fi
 
 
 
-if whence -p autocutsel
+if whence -p autocutsel 2>&1 > /dev/null
 then
-  if ! pgrep autocutsel
-  then
-    autocutsel -f &!
-  fi
+    if ! pgrep autocutsel 2>&1 > /dev/null
+    then
+        autocutsel -f 2>&1 > /dev/null &!
+    fi
 fi
 
-if whence -p xcompmgr
+if whence -p xcompmgr 2>&1 > /dev/null
 then
-  if ! pgrep xcompmgr
-  then
-    xcompmgr -a &!
-  fi
+    if ! pgrep xcompmgr 2>&1 > /dev/null
+    then
+        xcompmgr -a 2>&1 > /dev/null &!
+    fi
 fi
+

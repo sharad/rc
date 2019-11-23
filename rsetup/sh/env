@@ -24,20 +24,16 @@ export GUIX_PROFILE
 
 
 # default values
-OFFLINEIMAPACCOUNT=Gmail
-WORKPLACE=merunetworks.com
-
-EDITOR='emacsclient -t -c -f ~/.emacs.d/server/general '
-VISUAL='emacsclient -t -c -f ~/.emacs.d/server/general '
-
-if [ "x${REMOTEEDITORHOST}" != "x" ] ; then
-    EDITOR=$HOME/bin/rgeneral-editor
-else
-    EDITOR=$HOME/bin/general-editor
+if [ "x" ! "x$OFFLINEIMAPACCOUNT" ]
+then
+    OFFLINEIMAPACCOUNT=Gmail
+    export OFFLINEIMAPACCOUNT
 fi
-
-VISUAL=$EDITOR
-BROWSER=w3m
+if [ "x" ! "x$WORKPLACE" ]
+then
+    WORKPLACE=merunetworks.com
+    export WORKPLACE
+fi
 
 if [ "x$EMACS_SERVER_NAME" = "x" ]
 then
@@ -50,6 +46,24 @@ then
     EMACS_DIST_DIR=.xemacs
     export EMACS_DIST_DIR
 fi
+
+if [ "z" != "z$EMACS_SERVER_NAME" ]
+then
+    EDITOR="emacsclient -t -c -f ~/.emacs.d/server/$EMACS_SERVER_NAME "
+    export EDITOR
+    VISUAL="$EDITOR"
+    export VISUAL
+fi
+
+if [ "x${REMOTEEDITORHOST}" != "x" ] ; then
+    EDITOR=$HOME/bin/rgeneral-editor
+else
+    EDITOR=$HOME/bin/general-editor
+fi
+export EDITOR
+
+BROWSER=w3m
+export BROWSER
 
 
 ## PATH
@@ -76,6 +90,7 @@ export PATH
 if [ "x${HOST}" = "x" ]
 then
     HOST=$HOSTNAME
+    export HOST
 fi
 
 if [ "x${HOST}" != "x" ]
@@ -100,13 +115,6 @@ then
 else
     echo env var HOST is not set $HOST
 fi
-
-
-
-
-
-
-
 
 export EDITOR
 export VISUAL
@@ -134,21 +142,90 @@ fi
 unset MACHINE_ID
 
 
-if [ "x" != "x$WORKPLACE" ] ; then
-    if [  -d ~/.opt/p/$WORKPLACE ] ; then
+if [ "x" != "x$WORKPLACE" ]
+then
+    if [  -d ~/.opt/p/$WORKPLACE ]
+    then
         . ~/.opt/p/$WORKPLACE/env
         # ~/.opt/p/$WORKPLACE/run
     else
         echo ~/.opt/p/$WORKPLACE directory  do not exits, so setup ~/.opt/ directory. >&2
     fi
 else
-    if [ ! $SUDO_USER ] && [ "$TERM" != "dumb" ] ; then
+    if [ ! $SUDO_USER ] && [ "$TERM" != "dumb" ]
+    then
         echo WORKPLACE is not set. >&2
     fi
 fi
 
+function ssh_agent_present_p()
+{
+    if whence -p ssh-agent >/dev/null 2>&1
+    then
+        true
+    else
+        false
+    fi
+}
 
+function ssh_agent_alive_p()
+{
+    if whence -p ssh-agent >/dev/null 2>&1
+    then
+        if [ "x${SSH_AUTH_SOCK}" != "x" ]
+        then
+            if [ -e ${SSH_AUTH_SOCK} ]
+            then
+                if [ "x${SSH_AGENT_PID}" = "x" ]
+                then
+                    true
+                else
+                    if ps ${SSH_AGENT_PID} 2>&1 > /dev/null
+                    then
+                        true
+                    else
+                        false
+                    fi
+                fi
+            else
+                false
+            fi
+        else
+            false
+        fi
+    else
+        false
+    fi
+}
+function ssh_agent_call_p()
+{
+    ! ssh_agent_present_p || ! ssh_agent_alive_p
+}
 
+function dbus_present_p()
+{
+    whence -p dbus-launch >& /dev/null && [ "x$MY_DBUS_SESSION" != "x" ]
+}
+
+function dbus_alive_p()
+{
+    if dbus_present_p
+    then
+        if [ "x" != "x$DBUS_SESSION_BUS_ADDRESS" ]
+        then
+            true
+        else
+            false
+        fi
+    else
+        false
+    fi
+}
+
+function dbus_call_p()
+{
+    ! dbus_present_p || ! dbus_alive_p
+}
 
 function emacs_daemon_start()
 {
@@ -178,20 +255,17 @@ function emacs_daemon_start()
         for server in $EMACS_SERVER_NAME
         do
             if [ ! -e ~/.emacs.d/server/${server} ] ||
-       	           ! { # bundler command is not here for timeout it only for zsh
-                       # do not delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
-                       timeout 7 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")' > /dev/null 2>&1
-                       # timeout 10 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")'
-
-                       # timeout 16 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")';
-                   }
+                   # bundler command is not here for timeout it only for zsh
+                   # do not delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
+                   ! timeout 7 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")' > /dev/null 2>&1
             then
                 # blow one is not allow gnus to read its ~/.gnus file automatically.
 	              # rm -f   \#.ido.last\#
                 pkill emacs
+                sleep 2s
+                pkill -9 emacs
 
                 EMACS_STARTUP_LOG_DIR=~/.emacs.d/.cache/startup/$server/
-
                 mkdir -p $EMACS_STARTUP_LOG_DIR
 
                 # export GDK_RGBA=0
@@ -204,8 +278,7 @@ function emacs_daemon_start()
                     SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=${DISPLAY-:0.0} timeout 240s emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
                 fi
 
-                print "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> $EMACS_STARTUP_LOG_DIR/startup.log
-
+                echo "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> $EMACS_STARTUP_LOG_DIR/startup.log
                 unset EMACS_STARTUP_LOG_DIR
 
                 # disown %emacs
