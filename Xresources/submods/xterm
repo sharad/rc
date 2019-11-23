@@ -53,8 +53,19 @@ XTerm_color*foreground: light grey
 XTerm_color*cursorColor: Orchid
 XTerm*fullCursor: true
 XTerm*jumpScroll: on
-XTerm*pointerColor: Black
+!
+!! http://shallowsky.com/linux/x-cursor-themes.html
+!! XTerm*pointerColor: Black
+!! XTerm*pointerColor: blue
+XTerm*pointerColor: white
+!! XTerm*pointerColorBackground: red
+XTerm*pointerColorBackground: orange
+!! XTerm*pointerShape: XTerm
 XTerm*pointerShape: XTerm
+!! https://www.oreilly.com/library/view/x-window-system/9780937175149/ChapterD.html
+!! XTerm*pointerShape: double_arrow
+XTerm*pointerShape: left_ptr
+
 XTerm*reverseVideo: false
 XTerm*reverseWrap: false
 XTerm*autoWrap: true

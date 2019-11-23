@@ -71,8 +71,8 @@ XTerm*fontMenu.Label:	VT Fonts
 XTerm*foreground:	light grey
 XTerm*fullCursor:	true
 XTerm*jumpScroll:	on
-XTerm*pointerColor:	Black
-XTerm*pointerShape:	XTerm
+! XTerm*pointerColor:	Black
+! XTerm*pointerShape:	XTerm
 XTerm*reverseVideo:	false
 XTerm*reverseWrap:	false
 XTerm*saveLines:	4096
