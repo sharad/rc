@@ -70,6 +70,9 @@
 
 	"enscript"
 
+	"agda"
+	"emacs-agda2-mode"
+
         "gnupg"
         "gpgme"
         "qgpgme"
