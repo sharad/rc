@@ -1,1 +1,1 @@
-.xinitrc
+.setup/xsession
