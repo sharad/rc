@@ -130,6 +130,10 @@
    "polkit"
    "polkit-gnome"
    "redshift"
+   "xcursor-themes"
+   "unclutter"
+
+   "dconf"
 
    "stapler"
    "gcc-toolchain"
