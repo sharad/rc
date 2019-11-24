@@ -106,6 +106,7 @@
    "git-remote-gcrypt"
    "guile-colorized"
    "file"
+   "macchanger"
    "font-lohit"
    "screen"
    "tmux"
@@ -168,7 +169,8 @@
         "mpg321"))
 
 (define %lotus-gui-packages
-  (list "i3status"
+  (list "xinit"
+        "i3status"
         "dmenu"
         "st"
         "xrdb"
@@ -181,6 +183,7 @@
         "rxvt-unicode"
         "sakura"
         "seahorse"
+        "libsecret"
         "libxft"
         "scsh"
         "openbox"

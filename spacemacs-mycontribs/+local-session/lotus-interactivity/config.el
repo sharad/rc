@@ -192,194 +192,194 @@
                 ("Buffer" bs--get-name-length 30 left bs--get-name)))))
 
 
-(defun lotus-interactivity/init-ibuffer-config ()
-(global-set-key (kbd "C-x C-b") 'ibuffer) ;force
-;; (autoload 'ibuffer "ibuffer" "List buffers." t)
+(defun lotus-interactivity/post-init-ibuffer-config ()
+  (global-set-key (kbd "C-x C-b") 'ibuffer) ;force
+  ;; (autoload 'ibuffer "ibuffer" "List buffers." t)
 
 
 
-;; It looks as though the default filterings are as follows:
-;;
-;;     predicate
-;;     content
-;;     size-lt
-;;     size-gt
-;;     filename
-;;     name
-;;     used-mode
-;;     mode
-;;
-;; Since filename can work for any part of the path, if you filter
-;; on a partial (or complete) directory, anything you have open from
-;; the directory is now grouped:
-;;
-;;     ("journal" (filename . "/personal/journal/"))
+  ;; It looks as though the default filterings are as follows:
+  ;;
+  ;;     predicate
+  ;;     content
+  ;;     size-lt
+  ;;     size-gt
+  ;;     filename
+  ;;     name
+  ;;     used-mode
+  ;;     mode
+  ;;
+  ;; Since filename can work for any part of the path, if you filter
+  ;; on a partial (or complete) directory, anything you have open from
+  ;; the directory is now grouped:
+  ;;
+  ;;     ("journal" (filename . "/personal/journal/"))
 
 
-(setq ibuffer-saved-filter-groups
-      `(("default"
-         ("scratches" (or
-                       (name . "^\\*.*\-scratch\\*$")))
-         ("Config"
-          (or
-           (name . "^config$")
-           (name . "^conf$")
-           (name . "^cfg$")
-           (name . "^\\.cfg$")
-           (name . "^\\.conf$")
-           (name . "^\\.config$")))
-         ;; (name . "^\\rc$")
+  (setq ibuffer-saved-filter-groups
+        `(("default"
+           ("scratches" (or
+                         (name . "^\\*.*\-scratch\\*$")))
+           ("Config"
+            (or
+             (name . "^config$")
+             (name . "^conf$")
+             (name . "^cfg$")
+             (name . "^\\.cfg$")
+             (name . "^\\.conf$")
+             (name . "^\\.config$")))
+           ;; (name . "^\\rc$")
 
-         ("Logs"
-          (or
-           (name . "^\\.log$")))
-         ("dired" (mode . dired-mode))
-         ("perl" (mode . cperl-mode))
-         ("erc" (mode . erc-mode))
-         ,@(when (featurep 'planner)
-             `(("planner" (or
-                           (name . "^\\*Calendar\\*$")
-                           (name . "^diary$")
-                           (name . "planner-cyclic-diary-file")
-                           (name . "private")
-                           (name . "public")
-                           (name . ,(concat planner-date-regexp ".muse"))
-                           (mode . planner-mode)))))
-         ("wiki" (or
-                  (name . "^\\.muse$")
-                  (mode . muse-mode)))
-         ("org" (or
-                 (name . "^\\.org$")
-                 (name . "^\\.org")
-                 (name . "^\\.rem$")
-                 (mode . org-mode)))
-         ("emacs" (or
-                   (name . "^\\*scratch\\*$")
-                   (name . "^\\*Messages\\*$")))
-         ("gnus" (or
-                  (mode . message-mode)
-                  (mode . bbdb-mode)
-                  (mode . mail-mode)
-                  (mode . gnus-group-mode)
-                  (mode . gnus-summary-mode)
-                  (mode . gnus-article-mode)
-                  (name . "^\\.bbdb$")
-                  (name . "^\\.newsrc-dribble")))
-         ("emacs-lisp" (or
-                        (name . "^\\.el$")
-                        (mode . emacs-lisp-mode)))
-         ("C" (or
-               (name . "^\\.c$")
-               (name . "^\\.cpp$")
-               (name . "^\\.cxx$")
-               (name . "^\\.C$")
-               (name . "^\\.h$")
-               (mode . cpp-mode)
-               (mode . c++-mode)
-               (mode . c-mode)))
-         ("Javascript" (or
-                        (name . "^\\.js$")
-                        (mode . js-mode)
-                        (mode . espresso-mode)
-                        (mode . js2-mode)))
-         ("Lisp" (or
-                  (name . "^\\.lisp$")
-                  (mode . lisp-mode)
-                  (mode . slime-mode)))
-         ("XML" (or
-                 (name . "^\\.xml$")
-                 (name . "^\\.xql$")
-                 (name . "^\\.xq$")
-                 (name . "^\\.xsl$")
-                 (mode . nxml-mode)
-                 (mode . xml-mode)
-                 (mode . xslt-mode)
-                 (mode . xql-mode)
-                 (mode . xquery-mode)))
-         ("Shell" (or
-                   (name . "^\\.sh$")
-                   (name . "^\\.zsh$")
-                   (mode . sh-mode)
-                   (mode . shell-script-mode)))
-         ("programming" (or
-                         (mode . emacs-lisp-mode)
-                         (mode . cperl-mode)
-                         (mode . c-mode)
-                         (mode . java-mode)
-                         (mode . idl-mode)
-                         (mode . lisp-mode)))
-         ("other" (or
-                   (name . "^\\*.+\\*$")))
-         ("debug" (or
-                   (name . " .+debug.+$"))))))
-
-
-
-;; nomaclature for `ibuffer-saved-filter-groups'
-
-'(("groups1"
-   ("group1.1" filterset = (or filters))
-   ("group1.2" filterset = (filter)))
-
-  ("groups2"
-   ("group2.1" filterset = (or filters))
-   ("group2.2" filterset = (filter))))
+           ("Logs"
+            (or
+             (name . "^\\.log$")))
+           ("dired" (mode . dired-mode))
+           ("perl" (mode . cperl-mode))
+           ("erc" (mode . erc-mode))
+           ,@(when (featurep 'planner)
+               `(("planner" (or
+                             (name . "^\\*Calendar\\*$")
+                             (name . "^diary$")
+                             (name . "planner-cyclic-diary-file")
+                             (name . "private")
+                             (name . "public")
+                             (name . ,(concat planner-date-regexp ".muse"))
+                             (mode . planner-mode)))))
+           ("wiki" (or
+                    (name . "^\\.muse$")
+                    (mode . muse-mode)))
+           ("org" (or
+                   (name . "^\\.org$")
+                   (name . "^\\.org")
+                   (name . "^\\.rem$")
+                   (mode . org-mode)))
+           ("emacs" (or
+                     (name . "^\\*scratch\\*$")
+                     (name . "^\\*Messages\\*$")))
+           ("gnus" (or
+                    (mode . message-mode)
+                    (mode . bbdb-mode)
+                    (mode . mail-mode)
+                    (mode . gnus-group-mode)
+                    (mode . gnus-summary-mode)
+                    (mode . gnus-article-mode)
+                    (name . "^\\.bbdb$")
+                    (name . "^\\.newsrc-dribble")))
+           ("emacs-lisp" (or
+                          (name . "^\\.el$")
+                          (mode . emacs-lisp-mode)))
+           ("C" (or
+                 (name . "^\\.c$")
+                 (name . "^\\.cpp$")
+                 (name . "^\\.cxx$")
+                 (name . "^\\.C$")
+                 (name . "^\\.h$")
+                 (mode . cpp-mode)
+                 (mode . c++-mode)
+                 (mode . c-mode)))
+           ("Javascript" (or
+                          (name . "^\\.js$")
+                          (mode . js-mode)
+                          (mode . espresso-mode)
+                          (mode . js2-mode)))
+           ("Lisp" (or
+                    (name . "^\\.lisp$")
+                    (mode . lisp-mode)
+                    (mode . slime-mode)))
+           ("XML" (or
+                   (name . "^\\.xml$")
+                   (name . "^\\.xql$")
+                   (name . "^\\.xq$")
+                   (name . "^\\.xsl$")
+                   (mode . nxml-mode)
+                   (mode . xml-mode)
+                   (mode . xslt-mode)
+                   (mode . xql-mode)
+                   (mode . xquery-mode)))
+           ("Shell" (or
+                     (name . "^\\.sh$")
+                     (name . "^\\.zsh$")
+                     (mode . sh-mode)
+                     (mode . shell-script-mode)))
+           ("programming" (or
+                           (mode . emacs-lisp-mode)
+                           (mode . cperl-mode)
+                           (mode . c-mode)
+                           (mode . java-mode)
+                           (mode . idl-mode)
+                           (mode . lisp-mode)))
+           ("other" (or
+                     (name . "^\\*.+\\*$")))
+           ("debug" (or
+                     (name . " .+debug.+$"))))))
 
 
 
-(add-hook 'ibuffer-mode-hook
-          #'(lambda ()
-              (ibuffer-switch-to-saved-filter-groups "default")))
+  ;; nomaclature for `ibuffer-saved-filter-groups'
+
+  '(("groups1"
+     ("group1.1" filterset = (or filters))
+     ("group1.2" filterset = (filter)))
+
+    ("groups2"
+     ("group2.1" filterset = (or filters))
+     ("group2.2" filterset = (filter))))
 
 
-;; http://www.emacswiki.org/emacs/IbufferMode
-;;When used with ElScreen, Ibuffer tends to remove it’s header line with tabs.
-;;To prevent it, set ibuffer-use-header-line to nil and use the following:
 
-(defadvice ibuffer-update (around ibuffer-preserve-prev-header activate)
-  "Preserve line-header used before Ibuffer if it doesn't set one"
-  (let ((prev-line-header header-line-format))
-    ad-do-it
-    (unless header-line-format
-      (setq header-line-format prev-line-header))))
+  (add-hook 'ibuffer-mode-hook
+            #'(lambda ()
+                (ibuffer-switch-to-saved-filter-groups "default")))
 
-
 
-(defvar lotus-context-ignore-buffer t "Allow to enable context-ignore-buffer")
+  ;; http://www.emacswiki.org/emacs/IbufferMode
+  ;;When used with ElScreen, Ibuffer tends to remove it’s header line with tabs.
+  ;;To prevent it, set ibuffer-use-header-line to nil and use the following:
 
-(defun toggle-context-ignore-buffer ()
-  (interactive)
-  (setq lotus-context-ignore-buffer (not lotus-context-ignore-buffer)))
+  (defadvice ibuffer-update (around ibuffer-preserve-prev-header activate)
+    "Preserve line-header used before Ibuffer if it doesn't set one"
+    (let ((prev-line-header header-line-format))
+      ad-do-it
+      (unless header-line-format
+        (setq header-line-format prev-line-header))))
 
-(defun lotus-context-ignore-buffer (name)
-  (interactive "P")
-  (let ((group (lotus-ibuffer-containing-group-of-buffer (current-buffer) t))
-        (buff (get-buffer name)))
-    (if (and lotus-context-ignore-buffer buff)
-        (not (lotus-ibuffer-included-in-group-p buff group))
-      t)))
+  
 
-(defun lotus-context-switch-other-buffer (buffer)
-  (let ((group (lotus-ibuffer-containing-group-of-buffer buffer t)))
-    (find-if
-     (lambda (buff)
-       (if (lotus-ibuffer-included-in-group-p buff group)
-           (not (eq buff buffer))))
-     (buffer-list))))
+  (defvar lotus-context-ignore-buffer t "Allow to enable context-ignore-buffer")
 
-(setq ido-ignore-buffers '(lotus-context-ignore-buffer "\\` "))
+  (defun toggle-context-ignore-buffer ()
+    (interactive)
+    (setq lotus-context-ignore-buffer (not lotus-context-ignore-buffer)))
 
-(defadvice other-buffer (around context-buffer (&optional buffer visible-ok frame) activate)
-  (let* ((buffer (or buffer (current-buffer)))
-         (group (lotus-ibuffer-containing-group-of-buffer buffer t))
-         (obuff (get-buffer ad-do-it)))
-    (setq
-     ad-return-value
-     (if (and lotus-context-ignore-buffer
-              (lotus-ibuffer-included-in-group-p obuff group))
-         obuff
-       (let ((cbuff (lotus-context-switch-other-buffer buffer)))
-         (or cbuff obuff)))))))
+  (defun lotus-context-ignore-buffer (name)
+    (interactive "P")
+    (let ((group (lotus-ibuffer-containing-group-of-buffer (current-buffer) t))
+          (buff (get-buffer name)))
+      (if (and lotus-context-ignore-buffer buff)
+          (not (lotus-ibuffer-included-in-group-p buff group))
+        t)))
+
+  (defun lotus-context-switch-other-buffer (buffer)
+    (let ((group (lotus-ibuffer-containing-group-of-buffer buffer t)))
+      (find-if
+       (lambda (buff)
+         (if (lotus-ibuffer-included-in-group-p buff group)
+             (not (eq buff buffer))))
+       (buffer-list))))
+
+  (setq ido-ignore-buffers '(lotus-context-ignore-buffer "\\` "))
+
+  (defadvice other-buffer (around context-buffer (&optional buffer visible-ok frame) activate)
+    (let* ((buffer (or buffer (current-buffer)))
+           (group (lotus-ibuffer-containing-group-of-buffer buffer t))
+           (obuff (get-buffer ad-do-it)))
+      (setq
+       ad-return-value
+       (if (and lotus-context-ignore-buffer
+                (lotus-ibuffer-included-in-group-p obuff group))
+           obuff
+         (let ((cbuff (lotus-context-switch-other-buffer buffer)))
+           (or cbuff obuff)))))))
 
 (defun lotus-interactivity/init-ibuffer-vc-config ())
 

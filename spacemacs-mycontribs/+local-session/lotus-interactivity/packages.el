@@ -629,11 +629,11 @@ Each entry is either:
     :config
     (progn)))
 
-(defun lotus-interactivity/init-ibuffer ()
+(defun lotus-interactivity/post-init-ibuffer ()
   (use-package ibuffer
     :defer t
     :config
-    (lotus-interactivity/init-ibuffer-config)))
+    (lotus-interactivity/post-init-ibuffer-config)))
 
 (defun lotus-interactivity/init-ibuffer-vc ()
   (use-package ibuffer-vc
