@@ -404,11 +404,10 @@
 (define %lotus-initrd     %lotus-metal-initrd)
 
 
-(define %lotus-setuid-programs (cons*
-                                #~(string-append #$ecryptfs-utils "/sbin/mount.ecryptfs_private")
-                                %setuid-programs))
+(define %lotus-setuid-programs (cons* #~(string-append #$ecryptfs-utils "/sbin/mount.ecryptfs_private")
+                                      %setuid-programs))
 
-(define %lotus-setuid-programs %setuid-programs)
+;; (define %lotus-setuid-programs %setuid-programs)
 
 
 (define %lotus-kernel linux)

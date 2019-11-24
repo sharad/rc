@@ -1,4 +1,5 @@
-#!/usr/bin/env zsh-beta -f
+#!/usr/bin/env zsh -f
+#
 # -*- mode: shell-script; -*-
 
 [[ -o interactive ]] && {

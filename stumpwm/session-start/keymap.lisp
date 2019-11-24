@@ -108,7 +108,11 @@
 (set-prefix-key (kbd "C-quoteleft"))
 (setf *mouse-focus-policy* :ignore)
 ;;When not in Stumpwm mode, we want Insert to be bound to enter Stumpwm mode
-(define-key *top-map* (kbd "Menu") 'stumpwm:*root-map*)
+
+
+(when nil                               ;need menu for zkbd
+  (define-key *top-map* (kbd "Menu") 'stumpwm:*root-map*))
+
 ;;When in Stumpwm mode, act like hitting the prefix again would.
 (define-key stumpwm:*root-map* (kbd "Menu") "next")
 (define-key stumpwm:*root-map* (kbd "]") "next")
