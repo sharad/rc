@@ -183,6 +183,7 @@
         "xrandr-invert-colors"
         "rxvt-unicode"
         "sakura"
+        "gcr"
         "seahorse"
         "libsecret"
         "libxft"
