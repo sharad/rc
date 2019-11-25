@@ -23,7 +23,7 @@
         "font-hack"
         "font-awesome"
         "fribidi"
-        ;; "bicon"
+        "bicon"
 
         ;; "p4"
         "conkeror-firefox"
@@ -85,6 +85,9 @@
         "pinentry-gtk2"
         "emacs-pinentry"
         "signing-party"
+        "pius"
+        "gpa"
+        "jetring"
 
         ))
 

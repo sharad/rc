@@ -252,6 +252,8 @@ function emacs_daemon_start()
             cd ~/../paradise
         fi
 
+        if false
+           then
         for server in $EMACS_SERVER_NAME
         do
             if [ ! -e ~/.emacs.d/server/${server} ] ||
@@ -286,6 +288,7 @@ function emacs_daemon_start()
             fi
         done
 	      echo emacs1 >& /dev/null
+        fi
 
         cd $__cwd
         unset __cwd
