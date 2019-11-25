@@ -252,42 +252,42 @@ function emacs_daemon_start()
             cd ~/../paradise
         fi
 
-        if false
+        if true
            then
-        for server in $EMACS_SERVER_NAME
-        do
-            if [ ! -e ~/.emacs.d/server/${server} ] ||
-                   # bundler command is not here for timeout it only for zsh
-                   # do not delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
-                   ! timeout 7 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")' > /dev/null 2>&1
-            then
-                # blow one is not allow gnus to read its ~/.gnus file automatically.
-	              # rm -f   \#.ido.last\#
-                pkill emacs
-                sleep 2s
-                pkill -9 emacs
-                sleep 1s
+               for server in $EMACS_SERVER_NAME
+               do
+                   if [ ! -e ~/.emacs.d/server/${server} ] ||
+                          # bundler command is not here for timeout it only for zsh
+                          # do not delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
+                          ! timeout 7 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")' > /dev/null 2>&1
+                   then
+                       # blow one is not allow gnus to read its ~/.gnus file automatically.
+	                     # rm -f   \#.ido.last\#
+                       pkill emacs
+                       sleep 2s
+                       pkill -9 emacs
+                       sleep 1s
 
-                EMACS_STARTUP_LOG_DIR=~/.emacs.d/.cache/startup/$server/
-                mkdir -p $EMACS_STARTUP_LOG_DIR
+                       EMACS_STARTUP_LOG_DIR=~/.emacs.d/.cache/startup/$server/
+                       mkdir -p $EMACS_STARTUP_LOG_DIR
 
-                # export GDK_RGBA=0
-                # EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
-                # GDK_RGBA=0 EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
-                if [ "x$MY_DBUS_SESSION" != "x" ] && whence -p dbus-launch >& /dev/null
-                then
-                    SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=${DISPLAY-:0.0} timeout 240s dbus-launch --autolaunch=$MY_DBUS_SESSION emacs --daemon=$server 2>&1 | tee $EMACS_STARTUP_LOG_DIR/startup.log
-                else
-                    SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=${DISPLAY-:0.0} timeout 240s emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
-                fi
+                       # export GDK_RGBA=0
+                       # EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
+                       # GDK_RGBA=0 EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
+                       if [ "x$MY_DBUS_SESSION" != "x" ] && whence -p dbus-launch >& /dev/null
+                       then
+                           SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=${DISPLAY-:0.0} timeout 240s dbus-launch --autolaunch=$MY_DBUS_SESSION emacs --daemon=$server 2>&1 | tee $EMACS_STARTUP_LOG_DIR/startup.log
+                       else
+                           SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=${DISPLAY-:0.0} timeout 240s emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
+                       fi
 
-                echo "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> $EMACS_STARTUP_LOG_DIR/startup.log
-                unset EMACS_STARTUP_LOG_DIR
+                       echo "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> $EMACS_STARTUP_LOG_DIR/startup.log
+                       unset EMACS_STARTUP_LOG_DIR
 
-                # disown %emacs
-            fi
-        done
-	      echo emacs1 >& /dev/null
+                       # disown %emacs
+                   fi
+               done
+	             echo emacs1 >& /dev/null
         fi
 
         cd $__cwd
