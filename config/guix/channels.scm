@@ -1,5 +1,5 @@
 
-(define %local-use-guix-official-mirror #f)
+(define %local-use-guix-official-mirror #t)
 
 (define %backup-default-channels
   ;; Default list of channels.
