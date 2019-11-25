@@ -15,7 +15,6 @@
 
         "dovecot"
         ;; "postfix"
-        ;; "myconkeror"
         ;; "next"
 
         "font-adobe-source-code-pro"
@@ -27,6 +26,8 @@
         ;; "bicon"
 
         ;; "p4"
+        "conkeror-firefox"
+
         "pavucontrol"
         "pulsemixer"
 
