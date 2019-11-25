@@ -26,7 +26,9 @@
         "bicon"
 
         ;; "p4"
-        "conkeror-firefox"
+
+        ;; "firefox"
+        ;; "conkeror-firefox"
 
         "pavucontrol"
         "pulsemixer"
@@ -87,9 +89,9 @@
         "signing-party"
         "pius"
         "gpa"
-        "jetring"
+        "jetring"))
 
-        ))
+        
 
 (define %lotus-system-selected-package-names
   (list
