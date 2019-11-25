@@ -25,10 +25,12 @@
         "fribidi"
         "bicon"
 
-        ;; "p4"
+        "global"
 
-        ;; "firefox"
-        ;; "conkeror-firefox"
+        "p4"
+
+        "firefox"
+        "conkeror-firefox"
 
         "pavucontrol"
         "pulsemixer"
@@ -53,6 +55,7 @@
         "xmlstarlet"
         "imagemagick"
         "setxkbmap"
+        "xkeyboard-config"
 
         "fasd"
 

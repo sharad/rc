@@ -68,21 +68,25 @@
 
   (defun set-dbus-session ()
     (interactive)
-    (when t
-      (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
-                              ":0.0"))
-             (dismajor-str (if (>= (length display-str) 2)
-                               (substring display-str 1 2)
-                               "0"))
-             (dbus-file
-              (concat "~/.dbus/session-bus/" (trim-string (lotus-read-file "/var/lib/dbus/machine-id")) "-" dismajor-str)))
-        (ignore-errors
-          (dbus-setenv :system "DISPLAY" display-str))
-        (ignore-errors
-          (dbus-setenv :session "DISPLAY" display-str))
-        (setenv-from-file
-         dbus-file
-         '(:system :session)))))
+    (flet ((get-string-from-file (filePath)
+                                 "Return filePath's file content."
+                                 (with-temp-buffer
+                                   (insert-file-contents filePath)
+                                   (buffer-string))))
+      (let ((machine-id-file
+             (find-if #'file-exists-p  '("/etc/machine-id" "/var/lib/dbus/machine-id"))))
+       (let* ((display-str  (or (getenv "DISPLAY" (selected-frame)) ":0.0"))
+              (dismajor-str (if (>= (length display-str) 2)
+                                (substring display-str 1 2)
+                              "0"))
+              (dbus-file    (concat "~/.dbus/session-bus/" (string-trim (lotus-read-file machine-id-file)) "-" dismajor-str)))
+          (ignore-errors
+            (dbus-setenv :system "DISPLAY" display-str))
+          (ignore-errors
+            (dbus-setenv :session "DISPLAY" display-str))
+          (setenv-from-file
+           dbus-file
+           '(:system :session))))))
 
   (set-dbus-session))
 
