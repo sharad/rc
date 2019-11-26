@@ -980,3 +980,43 @@ function runwmaker ()
 }
 
 ##}
+
+
+##{ Language
+
+#   133972  ls /run/current-system/locale/
+#   133973  ls /run/current-system/locale/2.29/
+#   134153  less /etc/default/locale
+#   134160  locale -a
+# > 134161  sudo locale-gen ar_DZ
+#   134162  sudo locale-gen ar_DZ.UTF-8
+#   134163  sudo update-locale
+#   134169  locale -a
+#   134171  locale -a
+#   134212  locale -a
+
+function locale_hindi ()
+{
+    LANG=hi_IN.UTF-8
+    LANGUAGE=hi_IN.UTF-8
+    export LANG
+    export LANGUAGE
+}
+
+function locale_urdu ()
+{
+    LANG=ur_PK.UTF-8
+    LANGUAGE=ur_PK.UTF-8
+    export LANG
+    export LANGUAGE
+}
+
+function locale_language ()
+{
+    LANG=$1_$2.UTF-8
+    LANGUAGE=$LANuG
+    export LANG
+    export LANGUAGE
+}
+
+##}
