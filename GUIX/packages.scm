@@ -24,6 +24,7 @@
         "font-awesome"
         "fribidi"
         "bicon"
+        "font-arabic-misc"
 
         "global"
 

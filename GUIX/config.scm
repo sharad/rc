@@ -383,8 +383,20 @@
 
 (define %lotus-locale "en_US.utf8")
 
-(define %lotus-locale-definitions (list (locale-definition (source "en_US")
-                                                           (name   "en_US.utf8"))))
+(define %lotus-en-locale-definition (locale-definition (source "en_US")
+                                                       (name   "en_US.utf8")))
+
+(define %lotus-hi-locale-definition (locale-definition (source "hi_IN")
+                                                       (name   "hi_IN.utf8")))
+
+(define %lotus-sa-locale-definition (locale-definition (source "ar_SA")
+                                                       (name   "ar_SA.utf8")))
+
+(define %lotus-locale-definitions (list %lotus-en-locale-definition
+                                        %lotus-hi-locale-definition
+                                        %lotus-sa-locale-definition))
+
+
 ;; (locale-definition (source "ru_RU")
 ;;                    (name "ru_RU.utf8"))
 
