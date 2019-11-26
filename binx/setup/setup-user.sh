@@ -120,6 +120,11 @@ DEB_PKG_LANG_HASKELL="ghc alex happy haddock hlint"
 DEB_PKG_LANG_ERLANG="elixir esl-erlang"
 # https://askubuntu.com/questions/77657/how-to-enable-arabic-support-in-gnome-terminal
 DEB_PKG_LANGUAGE="dict dict-freedict-eng-hin bicon libfribidi0 libfribidi-dev"
+DEB_PKG_NATURAL_LANG="libfribidi-bin bidiv"
+DEB_PKG_NATURAL_LANG_INDIC="fonts-indic fonts-deva font-lohit-deva"
+DEB_PKG_NATURAL_LANG_URDU="apertium-urd apertium-urd-hin firefox-locale-ur fonts-paktype fonts-nafees"
+DEB_PKG_NATURAL_LANG_PERSIAN="firefox-locale-fa fonts-freefarsi fonts-farsiweb"
+DEB_PKG_NATURAL_LANG_ARABIC="fonts-arabeyes fonts-hosny-amiri fonts-kacst-one fonts-sil-lateef xfonts-intl-arabic"
 DEB_PKG_CLOUD_VM_TOOLS="cloud-init cloud-utils"
 
 PY_PIP_PKG="termdown "
@@ -745,6 +750,11 @@ function setup_apt_packages()
         DEB_PKG_LANG_SMALLTALK
         DEB_PKG_LANG_SCHEME
 	      DEB_PKG_LANGUAGE
+        DEB_PKG_NATURAL_LANG
+        DEB_PKG_NATURAL_LANG_INDIC
+        DEB_PKG_NATURAL_LANG_URDU
+        DEB_PKG_NATURAL_LANG_PERSIAN
+        DEB_PKG_NATURAL_LANG_ARABIC
         DEB_PKG_CLOUD_VM_TOOLS
     )
 
