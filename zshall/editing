@@ -7,45 +7,86 @@ my_extended_wordchars='*?_-+./[]~=&;!#$%^(){}<>:@,\\';
 
 
 
-if [ -r ~/.zkbd/$HOST/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE} ] ; then
+if [ -r ~/.zkbd/$HOST/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE} ]
+then
     termzdef=~/.zkbd/$HOST/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE}
-elif [ -r ~/.zkbd/$HOST/$TERM ] ;  then
+elif [ -r ~/.zkbd/$HOST/$TERM ]
+then
     termzdef=~/.zkbd/$HOST/$TERM
-elif [ -r ~/.zkbd/_general/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE} ] ; then
+elif [ -r ~/.zkbd/_general/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE} ]
+then
     termzdef=~/.zkbd/_general/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE}
-elif [ -r ~/.zkbd/_general/$TERM ] ; then
+elif [ -r ~/.zkbd/_general/$TERM ]
+then
     termzdef=~/.zkbd/_general/$TERM
-elif [ -r ~/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE} ] ; then
+elif [ -r ~/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE} ]
+then
     termzdef=~/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE}
-elif [ -r ~/.zkbd/$TERM ] ; then
+elif [ -r ~/.zkbd/$TERM ]
+then
     termzdef=~/.zkbd/$TERM
 fi
 
 function bindaykey_if_define() {
     local keycord="$1"
+    local keyvalue=${key[$keycord]}
     local keycommand="$2"
-    if (( ${+keycord} && ${+keycommand} ))
+    if [ ! -z "${keyvalue}" ] && [ ! -z "${keycommand}" ]
     then
-        bindkey	$keycord $keycommand
+        # echo setting up $keycord="$keyvalue" to $keycommand >&2
+        bindkey	$keyvalue $keycommand
+    else
+        echo bindaykey: $keycord not define not setting to $keycommand >&2
     fi
 }
 
 function bindaykey_map_if_define() {
     local keycord="$1"
+    local keyvalue=${key[$keycord]}
     local keycommand="$2"
-
-    if (( ${+keycord} && ${+keycommand} ))
+    if [ ! -z "${keyvalue}" ] && [ ! -z "${keycommand}" ]
     then
-        bindkey	-M mymap	$keycord $keycommand
+        # echo setting up $keycord="$keyvalue" to $keycommand >&2
+        bindkey	-M mymap	$keyvalue $keycommand
+    else
+        echo bindaykey_map:  $keycord not define not setting to $keycommand >&2
     fi
 }
 
-# echo Helloooo termzdef $termzdef termzdef
-# [ $termzdef ] && source $termzdef && unset termzdef
-[ $termzdef ] && source $termzdef
+function bindaykey_if_define_raw() {
+    local keycord="$1"
+    local keyvalue=${keycord}
+    local keycommand="$2"
+    if [ ! -z "${keyvalue}" ] && [ ! -z "${keycommand}" ]
+    then
+        # echo setting up $keycord="$keyvalue" to $keycommand >&2
+        bindkey	$keyvalue $keycommand
+    else
+        echo bindaykey_raw: $keycord not define not setting to $keycommand >&2
+    fi
+}
 
-[[ -n ${key[Left]} ]] && bindaykey_if_define "${key[Left]}" backward-char
-[[ -n ${key[Right]} ]] && bindaykey_if_define "${key[Right]}" forward-char
+function bindaykey_map_if_define_raw() {
+    local keycord="$1"
+    local keyvalue=${keycord}
+    local keycommand="$2"
+    if [ ! -z "${keyvalue}" ] && [ ! -z "${keycommand}" ]
+    then
+        # echo setting up $keycord="$keyvalue" to $keycommand >&2
+        bindkey	-M mymap	$keyvalue $keycommand
+    else
+        echo bindaykey_map_raw: $keycord not define not setting to $keycommand >&2
+    fi
+}
+
+if [ $termzdef -a -r $termzdef  ]
+then
+    : echo using $termzdef >&2
+    source $termzdef
+fi
+
+[[ -n ${key[Left]} ]] && bindaykey_if_define "Left" backward-char
+[[ -n ${key[Right]} ]] && bindaykey_if_define "Right" forward-char
 
 # is the current position \-quoted ?
 
@@ -253,100 +294,124 @@ bindkey	-N	mymap	emacs
 
 # bindkey -M mymap
 
-#bindaykey_map_if_define	'\eb'	custom_bash-backward-word
-#bindaykey_map_if_define	'\ef'	custom_bash-forward-word
-#bindaykey_map_if_define	'\ed'	custom_bash-kill-word
-#bindaykey_map_if_define	'\eD'	custom_bash-kill-word
-#bindaykey_map_if_define	'\e'	custom_bash-backward-kill-word
-bindaykey_map_if_define		'\e'	backward-kill-word
-#bindaykey_map_if_define	'\et'		custom_bash-transpose-words
-#bindaykey_map_if_define	'\eT'		custom_bash-transpose-words
-#bindaykey_map_if_define	'\C-x'	custom_bash-backward-delete-to-sol
-#bindaykey_map_if_define	'\C-x\C-h'	custom_bash-backward-delete-to-sol
+#bindaykey_map_if_define_raw	'\eb'	custom_bash-backward-word
+#bindaykey_map_if_define_raw	'\ef'	custom_bash-forward-word
+#bindaykey_map_if_define_raw	'\ed'	custom_bash-kill-word
+#bindaykey_map_if_define_raw	'\eD'	custom_bash-kill-word
+#bindaykey_map_if_define_raw	'\e'	custom_bash-backward-kill-word
+bindaykey_map_if_define_raw		'\e'	backward-kill-word
+#bindaykey_map_if_define_raw	'\et'		custom_bash-transpose-words
+#bindaykey_map_if_define_raw	'\eT'		custom_bash-transpose-words
+#bindaykey_map_if_define_raw	'\C-x'	custom_bash-backward-delete-to-sol
+#bindaykey_map_if_define_raw	'\C-x\C-h'	custom_bash-backward-delete-to-sol
 
 # history !!
-bindaykey_map_if_define	'\C-xs'	history-incremental-search-forward
-bindaykey_map_if_define	'\en'	history-search-forward
-bindaykey_map_if_define	'\ep'	history-search-backword
-bindaykey_map_if_define	'\C-xp'	history-beginning-search-backward
-bindaykey_map_if_define	'\C-xn'	history-beginning-search-forward
+bindaykey_map_if_define_raw	'\C-xs'	history-incremental-search-forward
+bindaykey_map_if_define_raw	'\en'	history-search-forward
+bindaykey_map_if_define_raw	'\ep'	history-search-backword
+bindaykey_map_if_define_raw	'\C-xp'	history-beginning-search-backward
+bindaykey_map_if_define_raw	'\C-xn'	history-beginning-search-forward
 
 # Delete and Kill !!
-bindaykey_map_if_define	'\e\C-b'	backward-to-space
-bindaykey_map_if_define	'\e\C-f'	forward-to-space
+bindaykey_map_if_define_raw	'\e\C-b'	backward-to-space
+bindaykey_map_if_define_raw	'\e\C-f'	forward-to-space
 # ensuring it always work in any case.
-# bindaykey_map_if_define	'\C-w'		kill-region
-bindaykey_map_if_define	'\C-w'		backward-kill-to-space
-bindaykey_map_if_define	'\C-xw'		kill-region
+# bindaykey_map_if_define_raw	'\C-w'		kill-region
+bindaykey_map_if_define_raw	'\C-w'		backward-kill-to-space
+bindaykey_map_if_define_raw	'\C-xw'		kill-region
 
-bindaykey_map_if_define	'\C-x'	custom_bash-backward-kill-to-sol
-bindaykey_map_if_define	'\C-x\C-h'	custom_bash-backward-kill-to-sol
-bindaykey_map_if_define	'\e[3~'		delete-char
-bindaykey_map_if_define	'\e[3;3~'	delete-word
+bindaykey_map_if_define_raw	'\C-x'	custom_bash-backward-kill-to-sol
+bindaykey_map_if_define_raw	'\C-x\C-h'	custom_bash-backward-kill-to-sol
+bindaykey_map_if_define_raw	'\e[3~'		delete-char
+bindaykey_map_if_define_raw	'\e[3;3~'	delete-word
 
 # Copy
-bindaykey_map_if_define	'\ew'	        copy-region-as-kill
+bindaykey_map_if_define_raw	'\ew'	        copy-region-as-kill
 
-bindaykey_map_if_define	'\C-x\e\C-m'	accept-line-enable-xtrace
-bindaykey_map_if_define	'\C-x\C-m'	accept-line-disable-xtrace
+bindaykey_map_if_define_raw	'\C-x\e\C-m'	accept-line-enable-xtrace
+bindaykey_map_if_define_raw	'\C-x\C-m'	accept-line-disable-xtrace
 
-bindaykey_map_if_define	"\C-x\e'"	x-set-selection
+bindaykey_map_if_define_raw	"\C-x\e'"	x-set-selection
 
 # Move  # used for _most_recent_history widget
-# bindaykey_map_if_define	'\e/'	        forward-to-/
-# bindaykey_map_if_define	'\e\\'	        backward-to-/
+# bindaykey_map_if_define_raw	'\e/'	        forward-to-/
+# bindaykey_map_if_define_raw	'\e\\'	        backward-to-/
 
 # the convention where the `[' is replaced by an `O' (uppercase letter `O').
-# bindaykey_map_if_define	'\e[A'	        up-line-or-history             # up arrow
-# bindaykey_map_if_define	'\e[B'	        down-line-or-history           # down arrow
-# bindkey -M	mymap	'\e[C'	        forward-char                   # right arrow
-# bindaykey_map_if_define	'\e[D'	        backward-char                  # left arrow
-# bindaykey_map_if_define   '\e[5~'		beginning-of-buffer-or-history # page up
-# bindaykey_map_if_define   '\e[6~'		end-of-buffer-or-history       # page down
+# bindaykey_map_if_define_raw	'\e[A'	        up-line-or-history             # up arrow
+# bindaykey_map_if_define_raw	'\e[B'	        down-line-or-history           # down arrow
+# bindaykey_map_if_define_raw	'\e[C'	        forward-char                   # right arrow
+# bindaykey_map_if_define_raw	'\e[D'	        backward-char                  # left arrow
+# bindaykey_map_if_define_raw   '\e[5~'		beginning-of-buffer-or-history # page up
+# bindaykey_map_if_define_raw   '\e[6~'		end-of-buffer-or-history       # page down
 
 
 # [[ -n ${key[Up]} ]]         &&  bindaykey_map_if_define   'C-x'$key[Up]         up-line-history
 # [[ -n ${key[Down]} ]]       &&  bindaykey_map_if_define   'C-x'$key[Down]       down-line-history
-[[ -n ${key[Up]} ]]         &&  bindaykey_map_if_define	"${key[Up]}"         up-line-or-history             # up arrow
-[[ -n ${key[Down]} ]]       &&  bindaykey_map_if_define	"${key[Down]}"       down-line-or-history           # down arrow
-[[ -n ${key[Shift-Up]} ]]   &&  bindaykey_map_if_define "${key[Shift-Up]}"   up-line-or-search              # cursor up
-[[ -n ${key[Shift-Down]} ]] &&  bindaykey_map_if_define "${key[Shift-Down]}" down-line-or-search            # <ESC>-
-[[ -n ${key[Right]} ]]      &&  bindaykey_map_if_define "${key[Right]}"      forward-char                   # right arrow
-[[ -n ${key[Left]} ]]       &&  bindaykey_map_if_define	"${key[Left]}"       backward-char                  # left arrow
-[[ -n ${key[PageUp]} ]]     &&  bindaykey_map_if_define "${key[PageUp]}"	   beginning-of-buffer-or-history # page up
-[[ -n ${key[PageDown]} ]]   &&  bindaykey_map_if_define "${key[PageDown]}"	 end-of-buffer-or-history       # page down
+[[ -n ${key[Up]} ]]         &&  bindaykey_map_if_define	"Up"         up-line-or-history             # up arrow
+[[ -n ${key[Down]} ]]       &&  bindaykey_map_if_define	"Down"       down-line-or-history           # down arrow
+[[ -n ${key[Shift-Up]} ]]   &&  bindaykey_map_if_define "Shift-Up"   up-line-or-search              # cursor up
+[[ -n ${key[Shift-Down]} ]] &&  bindaykey_map_if_define "Shift-Down" down-line-or-search            # <ESC>-
+[[ -n ${key[Right]} ]]      &&  bindaykey_map_if_define "Right"      forward-char                   # right arrow
+[[ -n ${key[Left]} ]]       &&  bindaykey_map_if_define	"Left"       backward-char                  # left arrow
+[[ -n ${key[PageUp]} ]]     &&  bindaykey_map_if_define "PageUp"	   beginning-of-buffer-or-history # page up
+[[ -n ${key[PageDown]} ]]   &&  bindaykey_map_if_define "PageDown"	 end-of-buffer-or-history       # page down
 
-[[ -n ${key[Control-Left]} ]]  &&  [ "$key[Control-Left]"  != "$key[Left]" ]  && bindaykey_map_if_define   $key[Control-Left]  backward-word
-[[ -n ${key[Control-Right]} ]] &&  [ "$key[Control-Right]" != "$key[Right]" ] && bindaykey_map_if_define   $key[Control-Right] forward-word
-[[ -n ${key[Control-Up]} ]]    &&  [ "$key[Control-Up]"    != "$key[Up]" ]    && bindaykey_map_if_define   $key[Control-Up]    up-line-or-search
-[[ -n ${key[Control-Down]} ]]  &&  [ "$key[Control-Down]"  != "$key[Down]" ]  && bindaykey_map_if_define   $key[Control-Down]  down-line-or-search
+[[ -n ${key[Control-Left]} ]]  &&  [ "$key[Control-Left]"  != "$key[Left]" ]  && bindaykey_map_if_define   "Control-Left"  backward-word
+[[ -n ${key[Control-Right]} ]] &&  [ "$key[Control-Right]" != "$key[Right]" ] && bindaykey_map_if_define   "Control-Right" forward-word
+[[ -n ${key[Control-Up]} ]]    &&  [ "$key[Control-Up]"    != "$key[Up]" ]    && bindaykey_map_if_define   "Control-Up"    up-line-or-search
+[[ -n ${key[Control-Down]} ]]  &&  [ "$key[Control-Down]"  != "$key[Down]" ]  && bindaykey_map_if_define   "Control-Down"  down-line-or-search
 
 
 # Copy
-bindaykey_map_if_define	'\e\C-_'        copy-prev-shell-word
-bindaykey_map_if_define	'\e='		copy-prev-word
+bindaykey_map_if_define_raw	'\e\C-_'        copy-prev-shell-word
+bindaykey_map_if_define_raw	'\e='		copy-prev-word
 
 # Multi-line editing
-bindaykey_map_if_define	'\eq'		push-line-or-edit
-bindaykey_map_if_define	'\eQ'		push-line-or-edit
-bindaykey_map_if_define	'\C-xq'		push-line
+bindaykey_map_if_define_raw	'\eq'		push-line-or-edit
+bindaykey_map_if_define_raw	'\eQ'		push-line-or-edit
+bindaykey_map_if_define_raw	'\C-xq'		push-line
 
 # Completion
-bindaykey_map_if_define	'\C-i'		complete-word
-bindaykey_map_if_define	'\e\C-i'	expand-or-complete
+bindaykey_map_if_define_raw	'\C-i'		complete-word
+bindaykey_map_if_define_raw	'\e\C-i'	expand-or-complete
 
 
 
 # games
-bindaykey_map_if_define	'\e\C-g'	tetris
+bindaykey_map_if_define_raw	'\e\C-g'	tetris
 
 
 # describe key
-bindaykey_map_if_define	'\C-[k'		describe-key-briefly
+bindaykey_map_if_define_raw	'\C-[k'		describe-key-briefly
 
 ## grml https://github.com/grml/grml-etc-core/blob/master/etc/zsh/zshrc
-bindaykey_map_if_define '^xM' inplaceMkDirs
+bindaykey_map_if_define_raw '^xM' inplaceMkDirs
 ## grml https://github.com/grml/grml-etc-core/blob/master/etc/zsh/zshrc
+
+
+#######################################################3
+#if [[ "$TERM" == screen ]] ; then
+bindaykey_if_define_raw '\e[1~' beginning-of-line       # home
+bindaykey_if_define_raw '\e[4~' end-of-line             # end
+
+bindaykey_if_define_raw '^xp'   history-beginning-search-backward
+bindaykey_if_define_raw '^xP'   history-beginning-search-forward
+# bindkey -s '^L' "|less\n"             # ctrl-L pipes to less
+# bindkey -s '^B' " &\n"                # ctrl-B runs it in the background
+# if terminal type is set to 'rxvt':
+bindaykey_if_define_raw '\e[7~' beginning-of-line       # home
+bindaykey_if_define_raw '\e[8~' end-of-line             # end
+#fi
+
+
+#### TIMESTAMP ####
+#### GRML ####
+insert-datestamp() { LBUFFER+=${(%):-'%D{'${FTIMESTAMPFMT:-%Y-%m-%d-%H%M}'}'}; }
+zle -N insert-datestamp
+bindaykey_if_define_raw '^Ed' insert-datestamp
+#### GRML ####
+
 
 
 # use it
@@ -364,27 +429,6 @@ bindkey -M menuselect '^o' accept-and-infer-next-history
 
 
 
-#######################################################3
-#if [[ "$TERM" == screen ]] ; then
-bindaykey_if_define '\e[1~' beginning-of-line       # home
-bindaykey_if_define '\e[4~' end-of-line             # end
-
-bindaykey_if_define '^xp'   history-beginning-search-backward
-bindaykey_if_define '^xP'   history-beginning-search-forward
-# bindkey -s '^L' "|less\n"             # ctrl-L pipes to less
-# bindkey -s '^B' " &\n"                # ctrl-B runs it in the background
-# if terminal type is set to 'rxvt':
-bindaykey_if_define '\e[7~' beginning-of-line       # home
-bindaykey_if_define '\e[8~' end-of-line             # end
-#fi
-
-
-#### TIMESTAMP ####
-#### GRML ####
-insert-datestamp() { LBUFFER+=${(%):-'%D{'${FTIMESTAMPFMT:-%Y-%m-%d-%H%M}'}'}; }
-zle -N insert-datestamp
-bindaykey_if_define '^Ed' insert-datestamp
-#### GRML ####
 
 
 

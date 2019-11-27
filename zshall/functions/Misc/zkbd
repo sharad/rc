@@ -20,15 +20,20 @@ zkbd=${ZDOTDIR:-$HOME}/.zkbd
 trap 'unfunction getmbkey getseq; command cp ${ZDOTDIR:-$HOME}/.zkbd/$TERM.tmp ${ZDOTDIR:-$HOME}/.zkbd/$TERM.trans ; command rm -f ${ZDOTDIR:-$HOME}/.zkbd/$TERM.tmp' 0
 trap "return 1" 1 2 15
 
+zkbdtimeout=21
+
 getmbkey () {
     local k='' i
-    for ((i=10; i>0; --i))
+    for ((i=$zkbdtimeout; i>0; --i))
     do
-	read -t -k 1 k && break
-	sleep 1
+	      read -t -k 1 k && break
+	      sleep 1
     done
+
     [[ -n $k ]] || return 1
+
     [[ $k = $'\012' || $k = $'\015' || $k = ' ' ]] && return 0
+
     # We might not be done yet, thanks to multibyte characters
     local mbk=$k
     while read -t -k 1 k
@@ -42,13 +47,16 @@ getseq () {
     trap "stty ${$(stty -g 2>/dev/null):-echo -raw}" 0 1 2 15
     stty raw -echo
     local k='' seq='' i
-    for ((i=10; i>0; --i))
+    for ((i=$zkbdtimeout; i>0; --i))
     do
-	read -t -k 1 k && break
-	sleep 1
+	      read -t -k 1 k && break
+	      sleep 1
     done
+
     [[ -n $k ]] || return 1
+
     [[ $k = $'\012' || $k = $'\015' || $k = ' ' ]] && return 0
+
     seq=$k
     while read -t -k 1 k
     do
@@ -65,7 +73,7 @@ cat <<\EOF
 
 We will now test some features of your keyboard and terminal.
 
-If you do not press the requested keys within 10 seconds, key reading will
+If you do not press the requested keys within $zkbdtimeout seconds, key reading will
 abort.  If your keyboard does not have a requested key, press Space to
 skip to the next key.
 
@@ -189,7 +197,7 @@ read -k 1 key"?Press a key when ready to begin: "
 
 cat <<\EOF
 
-If you do not press a key within 10 seconds, key reading will abort.
+If you do not press a key within $zkbdtimeout seconds, key reading will abort.
 If you make a mistake, stop typing and wait, then run this program again.
 
 EOF
@@ -263,21 +271,30 @@ for xkey in $pckeys $^modifiers$^pckeys # $sunkeys $^modifiers$^sunkeys
 do
 
     bypass=no
-    foreach ak ($avoidkeys) {
-        if [ $ak = $xkey ] ; then
-            bypass=yes
-        elif (( $+meta == 0 )) && [[ $xkey =~ "Meta" ]]
-        then
-            bypass=yes
-        fi
-    }
-
-    if [ "$key[$xkey]" ]
+    if (( $+alt == 0 )) && [[ $xkey =~ "Alt" ]]
     then
-       print -u3 -R ${xkey} $key[$xkey] already defined
-       print "key[$xkey]='${(q)seq}'"
-       continue;
-    elif [ $bypass = no ]
+        bypass=yes
+    elif (( $+meta == 0 )) && [[ $xkey =~ "Meta" ]]
+    then
+        bypass=yes
+    elif [[ $alt == $meta ]] && [[ $xkey =~ "Meta" ]]
+    then
+        bypass=yes
+    elif [ "$key[$xkey]" ]
+    then
+        echo $key[$xkey] already defined >&2
+        bypass=yes
+    else
+        foreach ak ($avoidkeys) {
+            if [ $ak = $xkey ]
+            then
+                bypass=yes
+                break
+            fi
+        }
+    fi
+
+    if [ $bypass = no ]
     then
         print -u3 -Rn "Press $xkey: "
         # seq="$(getseq)" || return 1
@@ -285,10 +302,8 @@ do
         print "key[$xkey]='${(q)seq}'"
         print -u3 -R $seq
     else
+        echo ignoring key $xkey >&2
         continue;
-        print -u3 -Rn "Press $xkey (But it will not work): "
-        seq="$(getseq)" || return 1
-        print -u3 -R $seq
     fi
 done >> $zkbd/$TERM.tmp
 
