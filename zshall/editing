@@ -31,7 +31,7 @@ function bindaykey_if_define() {
     local keycord="$1"
     local keyvalue=${key[$keycord]}
     local keycommand="$2"
-    if [ ! -z "${keyvalue}" ] && [ ! -z "${keycommand}" ]
+    if [ -n "${keyvalue}" ] && [ -n "${keycommand}" ]
     then
         # echo setting up $keycord="$keyvalue" to $keycommand >&2
         bindkey	$keyvalue $keycommand
@@ -44,7 +44,7 @@ function bindaykey_map_if_define() {
     local keycord="$1"
     local keyvalue=${key[$keycord]}
     local keycommand="$2"
-    if [ ! -z "${keyvalue}" ] && [ ! -z "${keycommand}" ]
+    if [ -n "${keyvalue}" ] && [ -n "${keycommand}" ]
     then
         # echo setting up $keycord="$keyvalue" to $keycommand >&2
         bindkey	-M mymap	$keyvalue $keycommand
@@ -57,7 +57,7 @@ function bindaykey_if_define_raw() {
     local keycord="$1"
     local keyvalue=${keycord}
     local keycommand="$2"
-    if [ ! -z "${keyvalue}" ] && [ ! -z "${keycommand}" ]
+    if [ -n "${keyvalue}" ] && [ -n "${keycommand}" ]
     then
         # echo setting up $keycord="$keyvalue" to $keycommand >&2
         bindkey	$keyvalue $keycommand
@@ -70,7 +70,7 @@ function bindaykey_map_if_define_raw() {
     local keycord="$1"
     local keyvalue=${keycord}
     local keycommand="$2"
-    if [ ! -z "${keyvalue}" ] && [ ! -z "${keycommand}" ]
+    if [ -n "${keyvalue}" ] && [ -n "${keycommand}" ]
     then
         # echo setting up $keycord="$keyvalue" to $keycommand >&2
         bindkey	-M mymap	$keyvalue $keycommand
@@ -348,19 +348,19 @@ bindaykey_map_if_define_raw	"\C-x\e'"	x-set-selection
 
 # [[ -n ${key[Up]} ]]         &&  bindaykey_map_if_define   'C-x'$key[Up]         up-line-history
 # [[ -n ${key[Down]} ]]       &&  bindaykey_map_if_define   'C-x'$key[Down]       down-line-history
-[[ -n ${key[Up]} ]]         &&  bindaykey_map_if_define	"Up"         up-line-or-history             # up arrow
-[[ -n ${key[Down]} ]]       &&  bindaykey_map_if_define	"Down"       down-line-or-history           # down arrow
-[[ -n ${key[Shift-Up]} ]]   &&  bindaykey_map_if_define "Shift-Up"   up-line-or-search              # cursor up
-[[ -n ${key[Shift-Down]} ]] &&  bindaykey_map_if_define "Shift-Down" down-line-or-search            # <ESC>-
-[[ -n ${key[Right]} ]]      &&  bindaykey_map_if_define "Right"      forward-char                   # right arrow
-[[ -n ${key[Left]} ]]       &&  bindaykey_map_if_define	"Left"       backward-char                  # left arrow
-[[ -n ${key[PageUp]} ]]     &&  bindaykey_map_if_define "PageUp"	   beginning-of-buffer-or-history # page up
-[[ -n ${key[PageDown]} ]]   &&  bindaykey_map_if_define "PageDown"	 end-of-buffer-or-history       # page down
+bindaykey_map_if_define	"Up"         up-line-or-history             # up arrow
+bindaykey_map_if_define	"Down"       down-line-or-history           # down arrow
+bindaykey_map_if_define "Shift-Up"   up-line-or-search              # cursor up
+bindaykey_map_if_define "Shift-Down" down-line-or-search            # <ESC>-
+bindaykey_map_if_define "Right"      forward-char                   # right arrow
+bindaykey_map_if_define	"Left"       backward-char                  # left arrow
+bindaykey_map_if_define "PageUp"	   beginning-of-buffer-or-history # page up
+bindaykey_map_if_define "PageDown"	 end-of-buffer-or-history       # page down
 
-[[ -n ${key[Control-Left]} ]]  &&  [ "$key[Control-Left]"  != "$key[Left]" ]  && bindaykey_map_if_define   "Control-Left"  backward-word
-[[ -n ${key[Control-Right]} ]] &&  [ "$key[Control-Right]" != "$key[Right]" ] && bindaykey_map_if_define   "Control-Right" forward-word
-[[ -n ${key[Control-Up]} ]]    &&  [ "$key[Control-Up]"    != "$key[Up]" ]    && bindaykey_map_if_define   "Control-Up"    up-line-or-search
-[[ -n ${key[Control-Down]} ]]  &&  [ "$key[Control-Down]"  != "$key[Down]" ]  && bindaykey_map_if_define   "Control-Down"  down-line-or-search
+[ "$key[Control-Left]"  != "$key[Left]" ]  && bindaykey_map_if_define   "Control-Left"  backward-word
+[ "$key[Control-Right]" != "$key[Right]" ] && bindaykey_map_if_define   "Control-Right" forward-word
+[ "$key[Control-Up]"    != "$key[Up]" ]    && bindaykey_map_if_define   "Control-Up"    up-line-or-search
+[ "$key[Control-Down]"  != "$key[Down]" ]  && bindaykey_map_if_define   "Control-Down"  down-line-or-search
 
 
 # Copy
