@@ -17,7 +17,7 @@ zkbd=${ZDOTDIR:-$HOME}/.zkbd
 [[ -d $zkbd ]] || mkdir $zkbd || return 1
 
 # trap 'unfunction getmbkey getseq; command rm -f $zkbd/$TERM.tmp' 0
-trap 'unfunction getmbkey getseq; command cp $zkbd/$TERM.tmp $zkbd/$TERM.trans ; command rm -f $zkbd/$TERM.tmp' 0
+trap 'unfunction getmbkey getseq; command cp ${ZDOTDIR:-$HOME}/.zkbd/$TERM.tmp ${ZDOTDIR:-$HOME}/.zkbd/$TERM.trans ; command rm -f ${ZDOTDIR:-$HOME}/.zkbd/$TERM.tmp' 0
 trap "return 1" 1 2 15
 
 getmbkey () {
@@ -217,21 +217,22 @@ sunkeys=(Stop  Again
          Front Copy
          Open  Paste
          Find  Cut
-            Help
+         Help
         )
-modifiers=(Shift-
+modifiers=(Meta-
+           Shift-
            Control-
            Alt-
-           # Meta-
            Control-Shift-
            Alt-Shift-
-           # Meta-Shift-
+           Meta-Shift-
            Control-Alt-
-           # Control-Meta-
-           # Alt-Meta-
+           Control-Meta-
+           Alt-Meta-
            Control-Alt-Shift-
-           # Control-Meta-Shift-
-           # Alt-Meta-Shift- Control-Alt-Meta-Shift-
+           Control-Meta-Shift-
+           Alt-Meta-Shift-
+           Control-Alt-Meta-Shift-
           )
 
 avoidkeys=(
@@ -247,7 +248,12 @@ avoidkeys=(
     Control-Alt-Shift-Insert
     Control-Alt-Shift-PageUp
     Control-Alt-Shift-PageDown
-    Control-Alt-F{1,2,3,4,5,6,7,8,9,10,11,12})
+    Control-Alt-F{1,2,3,4,5,6,7,8,9,10,11,12}
+    Alt-Shift-F1
+    Alt-Shift-PageUp
+    Alt-Shift-PageDown
+    Control-Alt-Shift-F1
+    Control-Alt-Meta-Shift-F1)
 
 exec 3>/dev/tty
 
@@ -260,14 +266,19 @@ do
     foreach ak ($avoidkeys) {
         if [ $ak = $xkey ] ; then
             bypass=yes
+        elif (( $+meta == 0 )) && [[ $xkey =~ "Meta" ]]
+        then
+            bypass=yes
         fi
     }
 
-    if [ "$key[$xkey]" ] ; then
+    if [ "$key[$xkey]" ]
+    then
        print -u3 -R ${xkey} $key[$xkey] already defined
        print "key[$xkey]='${(q)seq}'"
        continue;
-    elif [ $bypass = no ] ; then
+    elif [ $bypass = no ]
+    then
         print -u3 -Rn "Press $xkey: "
         # seq="$(getseq)" || return 1
         seq="$(getseq)" || break

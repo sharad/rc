@@ -1,4 +1,12 @@
 # -*- Mode: shell-script; indent-tabs-mode: nil -*-
+if [ -d ~/.zshall/functions/Misc ]
+then
+    fpath=(~/.zshall/functions/Misc $fpath)
+fi
+if [ -d ~/.zshall/functions/Prompts ]
+then
+    fpath=(~/.zshall/functions/Prompts $fpath)
+fi
 
 # My Custom Functions	     #
 
