@@ -129,25 +129,38 @@ function setcursor {
 if [ -x /usr/games/fortune ]
 then
     qf () {
-	      tput clear;
-	      tput cup 9 0;
-	      /usr/games/fortune $*;
-	      tput cup 37 0
+        if whence -p tput >/dev/null 2>&1
+        then
+	          tput clear;
+	          tput cup 9 0;
+	          /usr/games/fortune "$@";
+	          tput cup 37 0
+        else
+            /usr/games/fortune "$@";
+        fi
 	      whence setcursor >/dev/null 2>&1 && setcursor
 
     }
 elif which fortune > /dev/null 2>&1
 then
     qf () {
-	      tput clear;
-	      tput cup 9 0;
-	      fortune $*;
-	      tput cup 37 0
+        if whence -p tput >/dev/null 2>&1
+        then
+	          tput clear
+	          tput cup 9 0
+	          fortune "$@"
+	          tput cup 37 0
+        else
+            fortune "$@"
+        fi
 	      whence setcursor >/dev/null 2>&1 && setcursor
     }
 else
     qf () {
-	      tput clear;
+        if whence -p tput >/dev/null 2>&1
+        then
+	          tput clear;
+        fi
 	      whence setcursor >/dev/null 2>&1 && setcursor
     }
 fi
