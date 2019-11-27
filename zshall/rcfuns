@@ -82,13 +82,14 @@ function setcursor {
 
     findex=$(shuf -i1-$#console_fonts -n1)
 
-    if [[ $TERM == xterm || $TERM == screen ]] ; then
+    if [[ "$TERM" = "xterm" || "$TERM" = "screen" ]]
+    then
         :
         	# echo -ne "\033]12;ivory\007"
         	# echo -ne "\033]12;cyan\007"
         	# echo -ne "\033]12;LightCoral\007"
         	# echo -ne "\033]12;Coral\007"
-    elif [[ $TERM == screen.linux ]] ; then
+    elif [[ $TERM == "screen.linux" ]] ; then
                 echo -n \\033\[\?17\;0\;60c ;		# for zshell
     elif [[ $TERM == linux ]] ; then
         if [ -r /usr/share/consolefonts/t850b.psf.gz ] ; then
