@@ -82,16 +82,18 @@ function setcursor {
 
     findex=$(shuf -i1-$#console_fonts -n1)
 
-    if [[ "$TERM" = "xterm" || "$TERM" = "screen" ]]
+    if [[ "$TERM" == "xterm" || "$TERM" == "screen" ]]
     then
         :
         	# echo -ne "\033]12;ivory\007"
         	# echo -ne "\033]12;cyan\007"
         	# echo -ne "\033]12;LightCoral\007"
         	# echo -ne "\033]12;Coral\007"
-    elif [[ $TERM == "screen.linux" ]] ; then
+    elif [[ "$TERM" = "screen.linux" ]]
+    then
                 echo -n \\033\[\?17\;0\;60c ;		# for zshell
-    elif [[ $TERM == linux ]] ; then
+    elif [[ "$TERM" == "linux" ]]
+    then
         if [ -r /usr/share/consolefonts/t850b.psf.gz ] ; then
             if which consolechars > /dev/null 2>&1
             then
@@ -214,7 +216,7 @@ function scrmkcd () {
 
     scratchdir=$(mktemp -d -u -p  IIIIIII  --tmpdir=${TMP:-/tmp} --suffix=${1:-SCRATCH} XXXXXXXXXXXXXXXX)
 
-    [[ -n $rcdebug ]] && echo $scratchdir >&2
+    [[ -n "$rcdebug" ]] && echo $scratchdir >&2
 
     if mkdir -p ${scratchdir} && cd ${scratchdir}
     then
@@ -236,8 +238,9 @@ function cl () {
 
 # smart cd function, allows switching to /etc when running 'cd /etc/fstab'
 function cd () {
-    if (( ${#argv} == 1 )) && [[ -f ${1} ]]; then
-        [[ ! -e ${1:h} ]] && return 1
+    if (( ${#argv} == 1 )) && [[ -f "${1}" ]]
+    then
+        [[ ! -e  "${1:h}"  ]] && return 1
         print "Correcting ${1} to ${1:h}"
         builtin cd ${1:h}
     else
@@ -251,7 +254,8 @@ function mkcd () {
         printf 'usage: mkcd <new-directory>\n'
         return 1;
     fi
-    if [[ ! -d "$1" ]]; then
+    if [[ ! -d "$1" ]]
+    then
         command mkdir -p "$1"
     else
         printf '`%s'\'' already exists: cd-ing.\n' "$1"
@@ -937,7 +941,7 @@ function chain()
 {
     export chain
     local link target
-    if [[ -z $chain ]]
+    if [[ -z "$chain" ]]
     then
         chain="$1"
     fi
@@ -963,11 +967,13 @@ function chain ()
 {
     export chain;
     local target;
-    if [[ -z $chain ]]; then
+    if [[ -z "$chain" ]]
+    then
         chain="$1";
     fi;
     target=$(readlink "$1");
-    while [[ $target ]]; do
+    while [[ "$target" ]]
+    do
         chain+=" -> $target";
         if [[ ! "$target" =~ "/" && "$1" =~ "/" ]]
         then
