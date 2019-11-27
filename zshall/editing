@@ -334,16 +334,13 @@ bindaykey_map_if_define_raw	'\C-x\C-m'	accept-line-disable-xtrace
 bindaykey_map_if_define_raw	"\C-x\e'"	x-set-selection
 
 # Move  # used for _most_recent_history widget
+## used for undo
 # bindaykey_map_if_define_raw	'\e/'	        forward-to-/
-# bindaykey_map_if_define_raw	'\e\\'	        backward-to-/
+
+# backward-to-/ function not working
+# bindaykey_map_if_define_raw	'\e\\'	      backward-to-/
 
 # the convention where the `[' is replaced by an `O' (uppercase letter `O').
-# bindaykey_map_if_define_raw	'\e[A'	        up-line-or-history             # up arrow
-# bindaykey_map_if_define_raw	'\e[B'	        down-line-or-history           # down arrow
-# bindaykey_map_if_define_raw	'\e[C'	        forward-char                   # right arrow
-# bindaykey_map_if_define_raw	'\e[D'	        backward-char                  # left arrow
-# bindaykey_map_if_define_raw   '\e[5~'		beginning-of-buffer-or-history # page up
-# bindaykey_map_if_define_raw   '\e[6~'		end-of-buffer-or-history       # page down
 
 
 # [[ -n ${key[Up]} ]]         &&  bindaykey_map_if_define   'C-x'$key[Up]         up-line-history
@@ -384,6 +381,7 @@ bindaykey_map_if_define_raw	'\e\C-g'	tetris
 
 # describe key
 bindaykey_map_if_define_raw	'\C-[k'		describe-key-briefly
+bindaykey_map_if_define_raw	'\C-[C-k'		describe-key-briefly
 
 ## grml https://github.com/grml/grml-etc-core/blob/master/etc/zsh/zshrc
 bindaykey_map_if_define_raw '^xM' inplaceMkDirs
