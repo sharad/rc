@@ -356,49 +356,48 @@ function screenssh {
         then
 
             # if [ "$sessionarg" ] && ! ${=prefixcmd} screen -x ${session} -ls 2>/dev/null 1>&2 > /dev/null
-then
-    if [ "$sessionarg" ] && ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | grep 'No Sockets' 1>&2 > /dev/null
-    then
-        trap 'print Interrupted >&2 ; return 1' SIGINT
-        sessionorg=${session}
-        # ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }'
-        session=$( ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }' )
-        local retval=$?
-        if (( $retval == 255 ))
-        then
-            print not able to run ${=prefixcmd} 'screen -x' ${session} '-ls'  \? $retval >&2
-            trap - SIGINT
-            return $retval
-            # else
-            #     session=$( ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }' )
-        fi
-        trap - SIGINT
-    fi
+            if [ "$sessionarg" ] && ${=prefixcmd} screen -x "${session}" -ls 2>/dev/null | grep 'No Sockets' > /dev/null  1>&2
+            then
+                trap 'print Interrupted >&2 ; return 1' SIGINT
+                sessionorg=${session}
+                # ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }'
+                session=$( ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }' )
+                local retval=$?
+                if (( $retval == 255 ))
+                then
+                    print not able to run ${=prefixcmd} 'screen -x' ${session} '-ls'  \? $retval >&2
+                    trap - SIGINT
+                    return $retval
+                    # else
+                    #     session=$( ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }' )
+                fi
+                trap - SIGINT
+            fi
 
-    # print sessionexists ${session} >&2
+            # print sessionexists ${session} >&2
 
-    if [ "${session}" ]
-	  then
-        print ${=prefixcmdintractive} screen -x ${session} >&2
-        ${=prefixcmdintractive} screen -x "$session"
-        if (( $? == 255 ))
-        then
-            print some problem happened in ssh to $machine, will try after 7 seconds >&2
-            sleep 7s
-            screenssh $machine ${session}
+            if [ "${session}" ]
+	          then
+                print ${=prefixcmdintractive} screen -x ${session} >&2
+                ${=prefixcmdintractive} screen -x "$session"
+                if (( $? == 255 ))
+                then
+                    print some problem happened in ssh to $machine, will try after 7 seconds >&2
+                    sleep 7s
+                    screenssh $machine ${session}
+                fi
+            else
+                print ${=prefixcmdintractive} screen -S "${sessionorg}" >&2
+                ${=prefixcmdintractive} screen -S "${sessionorg}"
+            fi
+        else
+            print Not able to set the private in ssh-agent. >&2
         fi
-    else
-        print ${=prefixcmdintractive} screen -S "${sessionorg}" >&2
-        ${=prefixcmdintractive} screen -S "${sessionorg}"
-    fi
-    else
-        print Not able to set the private in ssh-agent. >&2
-fi
 
 
     else
         print no server name >&2
-fi
+    fi
 }
 
 function lsscreenssh {
