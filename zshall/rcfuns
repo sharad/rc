@@ -1,4 +1,4 @@
-# -*- Mode: shell-script; indent-tabs-mode: nil -*-
+# -*- Mode: shell-script; indent-tabs-mode: nil; sh-shell: zsh; -*-
 
 if [ -d ~/.zshall/functions/Misc ]
 then
@@ -23,7 +23,8 @@ chome () {
 if [ $HOME:t = "hell" ]
 then
     foreach subdir ( ~/../* ) {
-        if [ -r $subdir -a -d $subdir ] ; then
+        if [ -r $subdir -a -d $subdir ]
+	      then
             vsubdir=$(basename $subdir | tr '[[:upper:]]' '[[:lower:]]' | tr -d '+')
             eval $vsubdir=$subdir;
             eval : ~"$vsubdir"
@@ -31,29 +32,37 @@ then
     }
 fi
 
-if [ -d ~/SCRATCH ] ; then
+if [ -d ~/SCRATCH ]
+then
     scratch=~/SCRATCH
-elif [ -d ~/SCRATCHES/main ] ; then
+elif [ -d ~/SCRATCHES/main ]
+then
     scratch=~/SCRATCHES/main
-elif [ -d ~/SCRATCHES/small ] ; then
+elif [ -d ~/SCRATCHES/small ]
+then
     scratch=~/SCRATCHES/small
 fi
 
 
-if [ $scratch ] ; then
-    if [ -d ~/SCRATCH/shortlive/ ] ; then
+if [ $scratch ]
+then
+    if [ -d ~/SCRATCH/shortlive/ ]
+	  then
         short=~/SCRATCH/shortlive ; : ~short
     fi
-    if [ -d ~/SCRATCH/internet/download/ ] ; then
+    if [ -d ~/SCRATCH/internet/download/ ]
+	  then
         download=~/SCRATCH/internet/download/ ; : ~download
     fi
     : ~scratch
 fi
 
 
-if [ -d ~/Documents/ ] ; then
+if [ -d ~/Documents/ ]
+then
     doc=~/Documents ; : ~doc
-    if [ -d ~/Documents/pdfs/ ] ; then
+    if [ -d ~/Documents/pdfs/ ]
+	  then
         pdfs=~/pdfs ; : ~pdfs
     fi
 fi
@@ -86,16 +95,17 @@ function setcursor {
     if [[ "$TERM" == "xterm" || "$TERM" == "screen" ]]
     then
         :
-        	# echo -ne "\033]12;ivory\007"
-        	# echo -ne "\033]12;cyan\007"
-        	# echo -ne "\033]12;LightCoral\007"
-        	# echo -ne "\033]12;Coral\007"
+        # echo -ne "\033]12;ivory\007"
+        # echo -ne "\033]12;cyan\007"
+        # echo -ne "\033]12;LightCoral\007"
+        # echo -ne "\033]12;Coral\007"
     elif [[ "$TERM" = "screen.linux" ]]
     then
-                echo -n \\033\[\?17\;0\;60c ;		# for zshell
+        echo -n \\033\[\?17\;0\;60c ;		# for zshell
     elif [[ "$TERM" == "linux" ]]
     then
-        if [ -r /usr/share/consolefonts/t850b.psf.gz ] ; then
+        if [ -r /usr/share/consolefonts/t850b.psf.gz ]
+	      then
             if which consolechars > /dev/null 2>&1
             then
                 consolechars -f $console_fonts[$findex]
@@ -112,32 +122,35 @@ function setcursor {
 }
 
 # defining q
-if [ -x /usr/games/fortune ] ; then
+if [ -x /usr/games/fortune ]
+then
     qf () {
-	tput clear;
-	tput cup 9 0;
-	/usr/games/fortune $*;
-	tput cup 37 0
-	whence setcursor >/dev/null 2>&1 && setcursor
+	      tput clear;
+	      tput cup 9 0;
+	      /usr/games/fortune $*;
+	      tput cup 37 0
+	      whence setcursor >/dev/null 2>&1 && setcursor
 
     }
-elif which fortune > /dev/null 2>&1 ; then
+elif which fortune > /dev/null 2>&1
+then
     qf () {
-	tput clear;
-	tput cup 9 0;
-	fortune $*;
-	tput cup 37 0
-	whence setcursor >/dev/null 2>&1 && setcursor
+	      tput clear;
+	      tput cup 9 0;
+	      fortune $*;
+	      tput cup 37 0
+	      whence setcursor >/dev/null 2>&1 && setcursor
     }
 else
     qf () {
-	tput clear;
-	whence setcursor >/dev/null 2>&1 && setcursor
+	      tput clear;
+	      whence setcursor >/dev/null 2>&1 && setcursor
     }
 fi
 
 function vacation () {
-    if [ $# != 1 ] || [ $1 != "on" -a $1 != "off" ] ; then
+    if [ $# != 1 ] || [ $1 != "on" -a $1 != "off" ]
+	  then
         echo "Error not doing any thing" >&2
         cat <<EOF
 $0: usage
@@ -176,11 +189,14 @@ function pstreeo {
 function adsearch () {
     objectClass=(person group)
     objectClassQ="(|(objectClass=person)(objectClass=group))"
-    if [ "$1" -a "$1" = "all" ] ; then
+    if [ "$1" -a "$1" = "all" ]
+	  then
         query="(objectClass=*)"
         shift
-    elif [ "$1" ] ; then
-        if [ "$1" = "person" -o "$1" = "group"  ] ; then
+    elif [ "$1" ]
+	  then
+        if [ "$1" = "person" -o "$1" = "group"  ]
+	      then
             objectClass=$1
             objectClassQ="(objectClass=$1)"
             shift
@@ -193,7 +209,8 @@ function adsearch () {
     shift
 
     attrs=("givenName" "cn" "mobile" "sn" "physicalDeliveryOfficeName" "homePhone" "mail" "ipPhone" "mailNickname" "department" "telephoneNumber" "title" "whenCreated")
-    if [ "$1" -a "$1" = "all" ] ; then
+    if [ "$1" -a "$1" = "all" ]
+	  then
         ldapsearch    ${query} | egrep -v '^#|,DC=com'
     else
         ldapsearch    ${query} $attrs $@ | egrep -v '^#|,DC=com'
@@ -222,7 +239,8 @@ function scrmkcd () {
     if mkdir -p ${scratchdir} && cd ${scratchdir}
     then
         cat <<-EOF > ${DIRLEAVEHOOKFILE:-.dirleavehook}
-        if read -q resp"?Should I delete ${scratchdir}: [n] " ; then
+        if read -q resp"?Should I delete ${scratchdir}: [n] "
+then
          sched -o +60:0 rm -rf ${scratchdir} && echo && echo will removed ${scratchdir} after 1 hour. >&2
         fi
 EOF
@@ -273,7 +291,8 @@ function cdt () {
 
 function backupsshkeys() {
     #from: http://codeblogging.net/blogs/1/16/creating-password-protected-targz-file-command-line
-    if (( ${+1} )) ; then
+    if (( ${+1} ))
+    then
         tar czf - --xform s@${HOME##/}/.setup/osetup/@@g ~/.setup/osetup/{secure/ssh/pubkeys.d,nosecure.d/ssh/keys.d} | openssl enc -aes-256-cbc -e > $1
     else
         echo no file name
@@ -283,7 +302,8 @@ function backupsshkeys() {
 
 function restoresshkeys() {
     #from: http://codeblogging.net/blogs/1/16/creating-password-protected-targz-file-command-line
-    if (( $# == 2 )) ; then
+    if (( $# == 2 ))
+    then
         openssl enc -in $1 -aes-256-cbc -d | tar -zxvf - -C $2
     else
         echo no file name
@@ -293,7 +313,8 @@ function restoresshkeys() {
 
 function cryptdir() {
     #from: http://codeblogging.net/blogs/1/16/creating-password-protected-targz-file-command-line
-    if (( ${+2} )) ; then
+    if (( ${+2} ))
+    then
         tar czf - $2 | openssl enc -aes-256-cbc -e > $1
     else
         echo no file name
@@ -303,7 +324,8 @@ function cryptdir() {
 
 function decryptdir() {
     #from: http://codeblogging.net/blogs/1/16/creating-password-protected-targz-file-command-line
-    if (( $# == 1 )) ; then
+    if (( $# == 1 ))
+    then
         openssl enc -in $1 -aes-256-cbc -d | tar -zxvf -
     else
         echo no file name
@@ -312,13 +334,15 @@ function decryptdir() {
 
 
 function screenssh {
-    if (( $# >= 1 )) ; then
+    if (( $# >= 1 ))
+    then
         local machine
         local prefixcmd
         local sessionarg
         local session
         local prefixcmdintractive
-        if (( $# == 2 )) ; then
+        if (( $# == 2 ))
+        then
             machine=$1
             shift
             prefixcmd="ssh -X  -o VisualHostKey=no $machine"
@@ -328,57 +352,65 @@ function screenssh {
         session=${sessionarg:-default}
 
 
-        if ssh-add -l > /dev/null  || ssh-add ~/.ssh/login-keys.d/*~*.pub ; then
+        if ssh-add -l > /dev/null  || ssh-add ~/.ssh/login-keys.d/*~*.pub
+        then
 
-            # if [ "$sessionarg" ] && ! ${=prefixcmd} screen -x ${session} -ls 2>/dev/null 1>&2 > /dev/null ; then
-            if [ "$sessionarg" ] && ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | grep 'No Sockets' 1>&2 > /dev/null ; then
-                trap 'print Interrupted >&2 ; return 1' SIGINT
-                sessionorg=${session}
-                # ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }'
-                session=$( ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }' )
-                local retval=$?
-                if (( $retval == 255 )) ; then
-                    print not able to run ${=prefixcmd} 'screen -x' ${session} '-ls'  \? $retval >&2
-                    trap - SIGINT
-                    return $retval
-                # else
-                #     session=$( ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }' )
-                fi
-                trap - SIGINT
-            fi
-
-            # print sessionexists ${session} >&2
-
-            if [ "${session}" ] ; then
-                print ${=prefixcmdintractive} screen -x ${session} >&2
-                ${=prefixcmdintractive} screen -x "$session"
-                if (( $? == 255 )) ; then
-                    print some problem happened in ssh to $machine, will try after 7 seconds >&2
-                    sleep 7s
-                    screenssh $machine ${session}
-                fi
-            else
-                print ${=prefixcmdintractive} screen -S "${sessionorg}" >&2
-                ${=prefixcmdintractive} screen -S "${sessionorg}"
-            fi
-        else
-            print Not able to set the private in ssh-agent. >&2
+            # if [ "$sessionarg" ] && ! ${=prefixcmd} screen -x ${session} -ls 2>/dev/null 1>&2 > /dev/null
+then
+    if [ "$sessionarg" ] && ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | grep 'No Sockets' 1>&2 > /dev/null
+    then
+        trap 'print Interrupted >&2 ; return 1' SIGINT
+        sessionorg=${session}
+        # ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }'
+        session=$( ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }' )
+        local retval=$?
+        if (( $retval == 255 ))
+        then
+            print not able to run ${=prefixcmd} 'screen -x' ${session} '-ls'  \? $retval >&2
+            trap - SIGINT
+            return $retval
+            # else
+            #     session=$( ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }' )
         fi
+        trap - SIGINT
+    fi
+
+    # print sessionexists ${session} >&2
+
+    if [ "${session}" ]
+	  then
+        print ${=prefixcmdintractive} screen -x ${session} >&2
+        ${=prefixcmdintractive} screen -x "$session"
+        if (( $? == 255 ))
+        then
+            print some problem happened in ssh to $machine, will try after 7 seconds >&2
+            sleep 7s
+            screenssh $machine ${session}
+        fi
+    else
+        print ${=prefixcmdintractive} screen -S "${sessionorg}" >&2
+        ${=prefixcmdintractive} screen -S "${sessionorg}"
+    fi
+    else
+        print Not able to set the private in ssh-agent. >&2
+fi
 
 
     else
         print no server name >&2
-    fi
+fi
 }
 
 function lsscreenssh {
-    if (( $# == 1 )) ; then
+    if (( $# == 1 ))
+    then
         machine=$1
         shift
         prefixcmdintractive="ssh -t  -o VisualHostKey=no $machine"
     fi
 
-    if ssh-add -l > /dev/null  || ssh-add ~/.ssh/login-keys.d/*~*.pub ; then
+    if ssh-add -l > /dev/null  || ssh-add ~/.ssh/login-keys.d/*~*.pub
+    then
         ${=prefixcmdintractive} screen -ls 2>/dev/null
     else
         print else
@@ -399,7 +431,8 @@ zshexit_functions=(${chpwd_functions[@]} "_checkscheduls")
 
 
 function mkrsetupdir () {
-    if (( $# == 1 )) ; then
+    if (( $# == 1 ))
+    then
         dir=$1
         mkdir -p ~/.rsetup/$dir/{env,run}.d
         cat > ~/.rsetup/$dir/run <<EOF
@@ -418,7 +451,8 @@ EOF
 
 #{{ Debug.
 function standoutmsg () {
-    if (( ${+STANDOUTMSGFILE} )) ; then
+    if (( ${+STANDOUTMSGFILE} ))
+    then
         print "\n\n\n" sharad: $@ "\n\n\n" >> $STANDOUTMSGFILE
     else
         print STANDOUTMSGFILE is not set to file
@@ -446,12 +480,14 @@ function mkstandoutmsg () {
         shift
     done
 
-    if ! (( ${+_xlfile} )) ; then
+    if ! (( ${+_xlfile} ))
+    then
         echo bye >&2
         return -1
     fi
 
-    if ! (( ${+_xluser} )) ; then
+    if ! (( ${+_xluser} ))
+    then
         echo bye >&2
         return -1
     fi
@@ -459,44 +495,47 @@ function mkstandoutmsg () {
     singleq="'"
     doubleq='"'
 
-    if [ "${_xlmachine}" ]  ; then
+    if [ "${_xlmachine}" ] 
+    then
         _fundefined="standoutmsg-${_xlmachine}-$(basename $_xlfile)"
         eval "function ${_fundefined}" \
-            '() { ' \
-            'if [ "$STANDOUTMSGnonl" = "yes" ] ; then ;' \
-            "   nls=$singleq$singleq    ;" \
-            'else ;' \
-            "   nls=$singleq\\\n\\\n\\\n$singleq    ;" \
-            'fi ;' \
-            'ssh ' \
-            "${_xlmachine}" \
-            $doubleq \
-            "  echo -e \$nls" \
-            '$(date +%d%h%Y-%H:%M:%S)' \
-            "${_xluser}:" \
-            "${singleq}" \
-            '"$@" ' \
-            "${singleq}" \
-            "\$nls" \
-            ' >>  ' \
-            ${_xlfile} \
-            $doubleq \
-            '}'
+             '() { ' \
+             'if [ "$STANDOUTMSGnonl" = "yes" ]
+	then ;' \
+             "   nls=$singleq$singleq    ;" \
+             'else ;' \
+             "   nls=$singleq\\\n\\\n\\\n$singleq    ;" \
+             'fi ;' \
+             'ssh ' \
+             "${_xlmachine}" \
+             $doubleq \
+             "  echo -e \$nls" \
+             '$(date +%d%h%Y-%H:%M:%S)' \
+             "${_xluser}:" \
+             "${singleq}" \
+             '"$@" ' \
+             "${singleq}" \
+             "\$nls" \
+             ' >>  ' \
+             ${_xlfile} \
+             $doubleq \
+             '}'
     else
         _fundefined="standoutmsg-$(basename $_xlfile)"
         eval "function ${_fundefined}" \
-            '() { ' \
-            'if [ "$STANDOUTMSGnonl" = "yes" ] ; then ;' \
-            "   nls=$singleq$singleq    ;" \
-            'else ;' \
-            "   nls=$singleq\\n\\n\\n$singleq    ;" \
-            'fi ;' \
-            'print $nls' \
-            '$(date +%d%h%Y-%H:%M:%S)' \
-            "${_xluser}:" \
-            '"$@" $nls >>  ' \
-            ${_xlfile} \
-            '}'
+             '() { ' \
+             'if [ "$STANDOUTMSGnonl" = "yes" ]
+	then ;' \
+             "   nls=$singleq$singleq    ;" \
+             'else ;' \
+             "   nls=$singleq\\n\\n\\n$singleq    ;" \
+             'fi ;' \
+             'print $nls' \
+             '$(date +%d%h%Y-%H:%M:%S)' \
+             "${_xluser}:" \
+             '"$@" $nls >>  ' \
+             ${_xlfile} \
+             '}'
     fi
 
 
@@ -509,9 +548,9 @@ function mkstandoutmsg () {
 
 function STANDOUTMSG_standoutmsgAll () {
     foreach fn (${(u)STANDOUTMSG_standoutmsgfns})
-    do
-        $fn "$@"
-    done
+do
+    $fn "$@"
+done
 
     print "$@"
 }
@@ -523,7 +562,8 @@ function waitmsg () {
 
 ## hashing ##
 function getmd5hash () {
-    if (( $# == 1 )) ; then
+    if (( $# == 1 ))
+    then
         local hash
         hash=$(md5sum $1 | cut -f1 -d' ')
         print ${hash[1,4]}${hash[-4,-1]}
@@ -531,7 +571,8 @@ function getmd5hash () {
 }
 
 function mvhash () {
-    if (( $# == 1 )) ; then
+    if (( $# == 1 ))
+    then
         local hname=$1-$(getmd5hash $1)
         mv $1 $hname
         print mv $1 $hname
@@ -555,10 +596,12 @@ function running()
 #{{ ## hashing ##
 
 ## images
-if whence -c w3m >& /dev/null && [ -x /usr/lib/w3m/w3mimgdisplay ] ; then
+if whence -c w3m >& /dev/null && [ -x /usr/lib/w3m/w3mimgdisplay ]
+then
 
     function w3mimg() {
-        if [ $# -gt 0 ] ; then
+        if [ $# -gt 0 ]
+	      then
             w3m  ${=2:+ -o image_scale=$2} -o imgdisplay=/usr/lib/w3m/w3mimgdisplay -o confirm_qq=N $1
         else
             print No image file >&2
@@ -611,7 +654,7 @@ function gitspull () {
 
             if [ -d ${superepo}/$gdir ] &&
                    ! ( git -C ${superepo}/$gdir diff -s ${gdir:+--ignore-submodules=all} --exit-code &&
-                             git -C ${superepo}/$gdir diff -s ${gdir:+--ignore-submodules=all} --exit-code $remotebranch )
+                           git -C ${superepo}/$gdir diff -s ${gdir:+--ignore-submodules=all} --exit-code $remotebranch )
             then
                 print start $gdir
                 git -C ${superepo}/$gdir status
@@ -683,7 +726,7 @@ function gitssync () {
 
             if [ -d ${superepo}/$gdir ] &&
                    ! ( git -C ${superepo}/$gdir diff -s ${gdir:+--ignore-submodules=all} --exit-code &&
-                             git -C ${superepo}/$gdir diff -s ${gdir:+--ignore-submodules=all} --exit-code $remotebranch )
+                           git -C ${superepo}/$gdir diff -s ${gdir:+--ignore-submodules=all} --exit-code $remotebranch )
             then
                 print start $gdir
                 git -C ${superepo}/$gdir status
@@ -748,12 +791,13 @@ function sshaddkey() {
     KEYCHAINDIR=$HOME/.keychain-screen
 
     if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is not set
-        ps ${SSH_AGENT_PID} 2>&1 > /dev/null                        # if pid is set and working alive ssh-agent process.
+           ps ${SSH_AGENT_PID} 2>&1 > /dev/null                        # if pid is set and working alive ssh-agent process.
     then
 
         if ! ssh-add -l 2>&1 > /dev/null
         then
-            if [ -t ] ; then
+            if [ -t ]
+	          then
                 ssh-add ~/.ssh/login-keys.d/*~*.pub
             else
                 ssh-add ~/.ssh/login-keys.d/*~*.pub < /dev/null
@@ -767,7 +811,7 @@ function sshaddkey() {
             . ${KEYCHAINDIR}/${HOST}-sh
 
             if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
-                ps ${SSH_AGENT_PID} 2>&1 > /dev/null                            # if pid is set and working alive ssh-agent process.
+                    ps ${SSH_AGENT_PID} 2>&1 > /dev/null                            # if pid is set and working alive ssh-agent process.
             then
                 if ! ssh-add -l 2>&1 > /dev/null                                # key is not added
                 then
@@ -862,7 +906,7 @@ ecf() {
 }
 ecd() {
     echo ${(Q)~$(emacsclient -f ~/.emacs.d/server/$EMACS_SERVER_NAME \
-                 -e '(with-current-buffer
+                             -e '(with-current-buffer
                        (window-buffer (selected-window))
                          default-directory) ' | sed -e '1!b' -e '/emacsclient: connected to remote socket at/d')}
 }
@@ -872,16 +916,16 @@ cde () { cd `ecd` }
 ##{{ symlink
 function symlink-final ()
 {
-  if [ "$1" ]
-  then
-    symlink="$1"
-    if [ -L "$symlink" ]
+    if [ "$1" ]
     then
-      readsymlink="$(readlink -m $symlink)"
-      rm -f $symlink
-      ln -s "$readsymlink" $symlink
+        symlink="$1"
+        if [ -L "$symlink" ]
+        then
+            readsymlink="$(readlink -m $symlink)"
+            rm -f $symlink
+            ln -s "$readsymlink" $symlink
+        fi
     fi
-  fi
 }
 
 ##}}

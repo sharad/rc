@@ -1,4 +1,4 @@
-# -*- Mode: shell-script; indent-tabs-mode: nil -*-
+# -*- Mode: shell-script; indent-tabs-mode: nil; sh-shell: zsh; -*-
 # $Id
 # ~/.zshrc: executed by zsh(1) for interactive shells.
 
@@ -36,18 +36,26 @@
 # {{{ for running ssh-agent and adding key to it.
 SCREEN4KEYCHAIN=keychain
 if [ "$STY" -o "$TERM" = "screen" ] && [[ "$STY" = *.${SCREEN4KEYCHAIN} ]] ; then
-    [  -r ~/.rsetup/screen/env  ] &&
-    source ~/.rsetup/screen/env
-    [  -r ~/.rsetup/screen/run ] &&
-    ~/.rsetup/screen/run
+    if [  -r ~/.rsetup/screen/env  ]
+    then
+        source ~/.rsetup/screen/env
+    fi
+    if [  -r ~/.rsetup/screen/run ]
+    then
+        ~/.rsetup/screen/run
+    fi
 fi
 # }}}
 
 # {{{
-[  -r ~/.rsetup/rc/env  ] &&
-source ~/.rsetup/rc/env
-[  -r ~/.rsetup/rc/run ] &&
-~/.rsetup/rc/run
+if [  -r ~/.rsetup/rc/env  ]
+then
+    source ~/.rsetup/rc/env
+fi
+if [  -r ~/.rsetup/rc/run ]
+then
+    ~/.rsetup/rc/run
+fi
 # }}}
 
 # {{{ # For Ruby
@@ -62,10 +70,14 @@ source ~/.rsetup/rc/env
 emulate zsh
 
 # {{{
-[  -r ~/.rsetup/zsh/env  ] &&
-source ~/.rsetup/zsh/env
-[  -r ~/.rsetup/zsh/run ] &&
-~/.rsetup/zsh/run
+if [  -r ~/.rsetup/zsh/env  ]
+then
+    source ~/.rsetup/zsh/env
+fi
+if [  -r ~/.rsetup/zsh/run ]
+then
+    ~/.rsetup/zsh/run
+fi
 # }}}
 
 # {{{
@@ -83,7 +95,7 @@ source ~/.rsetup/zsh/env
 # update the values of LINES and COLUMNS.
 if [ `uname -s` != "SunOS" ] ; then
     if which shopt > /dev/null 2>&1 ; then
-	shopt -s checkwinsize
+	      shopt -s checkwinsize
     fi
 fi
 
