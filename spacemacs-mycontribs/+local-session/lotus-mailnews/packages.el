@@ -63,7 +63,9 @@
     (common-info   :location local)
     (host-info     :location local)
     (common-info   :location local)
-    (passwds       :location local))
+    (passwds       :location local)
+    (mu4e-message  :location local)
+    (mu4e-view     :location local))
   "The list of Lisp packages required by the lotus-mailnews layer.
 
 Each entry is either:
@@ -273,5 +275,19 @@ Each entry is either:
     :defer t
     :config
     (lotus-mailnews/init-passwds-config)))
+
+(defun lotus-mailnews/init-mu4e-message ()
+  (use-package mu4e-message
+    :commands (mu4e-message-at-point)
+    :defer t
+    :config
+    (lotus-mailnews/init-mu4e-message-config)))
+
+(defun lotus-mailnews/init-mu4e-view ()
+  (use-package mu4e-view
+    :commands (mu4e~view-message)
+    :defer t
+    :config
+    (lotus-mailnews/init-mu4e-view-config)))
 
 ;;; packages.el ends here

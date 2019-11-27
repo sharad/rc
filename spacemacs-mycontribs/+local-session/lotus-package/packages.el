@@ -248,26 +248,26 @@ Each entry is either:
 
 (defun lotus-package/init-package ()
   (use-package package
-      :defer t
-      :config
+    :defer t
+    :config
+    (progn
+      ;; (progn
+      ;;   (push
+      ;;    '("local" . "~/.xemacs/elpa/upload")
+      ;;    package-archives))
+
       (progn
-        ;; (progn
-        ;;   (push
-        ;;    '("local" . "~/.xemacs/elpa/upload")
-        ;;    package-archives))
 
-        (progn
+        (setq
+         package-source-path "~/../paradise/Projects/Emacs/elpa-pkgs/lotus"
+         package-local-dev-archive "local"
+         package-archive-upload-base "~/.xemacs/elpa/upload")
 
-          (setq
-           package-source-path "~/.xemacs/elpa/pkgs"
-           package-local-dev-archive "local"
-           package-archive-upload-base "~/.xemacs/elpa/upload")
-
-          (when package-archive-upload-base
-            (unless (assoc package-local-dev-archive package-archives)
-              (push
-               (cons package-local-dev-archive package-archive-upload-base)
-               package-archives)))))))
+        (when package-archive-upload-base
+          (unless (assoc package-local-dev-archive package-archives)
+            (push
+             (cons package-local-dev-archive package-archive-upload-base)
+             package-archives)))))))
 
 (defun lotus-package/init-package-x ()
   (use-package package-x

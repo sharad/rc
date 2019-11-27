@@ -37,10 +37,9 @@
 (defconst lotus-lang-packages
   '(
     (elisp-mode :location local)
-    (ispelll    :locaion local)
+    (ispell    :locaion local)
     geiser)
-    ;; (geiser-impl :location local)
-    
+
 
   "The list of Lisp packages required by the lotus-lang layer.
 
@@ -85,10 +84,10 @@ Each entry is either:
     :defer t
     :config
     (progn
-      (progn
-        (setq ispell-aspell-dict-dir "/run/current-system/profile/lib/aspell/")
-        ;; https://emacs.stackexchange.com/questions/38162/ispell-cant-find-my-dictionary
-        (setq ispell-aspell-data-dir ispell-aspell-dict-dir)))))
+      (progn))))
+        ;; (setq ispell-aspell-dict-dir "/run/current-system/profile/lib/aspell/")
+        ;; ;; https://emacs.stackexchange.com/questions/38162/ispell-cant-find-my-dictionary
+        ;; (setq ispell-aspell-data-dir ispell-aspell-dict-dir)
 
 (defun lotus-lang/post-init-geiser ()
   (use-package geiser-impl

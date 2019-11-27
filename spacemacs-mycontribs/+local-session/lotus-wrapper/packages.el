@@ -36,7 +36,7 @@
 
 (defconst lotus-wrapper-packages
   '(
-    (PACKAGE :location local)
+    lotus-wrapper
     )
   "The list of Lisp packages required by the lotus-wrapper layer.
 
@@ -65,11 +65,13 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-wrapper/init-PACKAGE ()
-  (use-package PACKAGE
-      :defer t
-      :config
-      (progn
-        )))
+(defun lotus-wrapper/init-lotus-wrapper ()
+  (use-package lotus-wrapper
+    :init
+    (lotus-wrapper-insinuate)
+    :defer t
+    :config
+    (progn
+      )))
 
 ;;; packages.el ends here

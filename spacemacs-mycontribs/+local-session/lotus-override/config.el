@@ -77,9 +77,8 @@
     (defun git-gutter+-reenable-buffers ()
       ;; (message "test")
       (dolist (buf git-gutter+-buffers-to-reenable)
-        (if (and
-             (bufferp buf)
-             (buffer-live-p buf))
+        (if (and (bufferp buf)
+                 (buffer-live-p buf))
             (with-current-buffer buf
               (git-gutter+-turn-on))
           (message "buffer %s is not buffer or already killed" buf)))

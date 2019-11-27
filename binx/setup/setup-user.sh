@@ -71,7 +71,7 @@ DEB_EXTRA_PKG2="homesick yadm numlockx macchanger xautolock suckless-tools xtrlo
 DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macchanger lm-sensors tidy xmlstarlet libxml-compile-perl network-manager-openvpn-gnome duc xmldiff"
 DEB_EXTRA_SEC_PKG1="systemd-ui realmd sssd sssd-tools samba-common krb5-user packagekit samba-common-bin samba-libs adcli ntp winbind krb5-kdc krb5-config" # policykit-1 policykit-1-gnome , #  chrony (conflict with ntp)
 DEB_EXTRA_SEC_PKG2="pass pasaffe pass-extension-tail pass-git-helper passwdqc password-gorilla passwordmaker-cli passwordsafe"
-DEB_DEV_PKG1="python-pip python3-pip silversearcher-ag silversearcher-ag-el global cscope codequery seascope xcscope-el s-el ack-grep doxygen doxymacs libjson-glib-dev npm cmake uncrustify pasystray spacefm-gtk3 thunar thunar-volman pcmanfm xfce4-powermanager xfce4-notifyd ycmd fasd agda opam plsense yad"
+DEB_DEV_PKG1="cutils python-pip python3-pip silversearcher-ag silversearcher-ag-el global cscope codequery seascope xcscope-el s-el ack-grep doxygen doxymacs libjson-glib-dev npm cmake uncrustify pasystray spacefm-gtk3 thunar thunar-volman pcmanfm xfce4-powermanager xfce4-notifyd ycmd fasd agda opam plsense yad"
 DEB_DEV_PYTHON="elpa-pyvenv python3-venv"
 DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject adcli partclone gpodder parallel libpam-fprintd fprint-demo"
 # https://www.cyberciti.biz/faq/removing-password-from-pdf-on-linux/
@@ -85,7 +85,7 @@ DEB_SYS_MAIL="dovecot-core dovecot-imapd mail-stack-delivery ntpdate postfix aug
 DEB_DEV_GTD="tomboy zim anki mnemosyne mnemosyne-blog sqlitebrowser"
 DEB_PKG_LEARNING="gpodder"
 DEB_PKG_TOOL_TERM="jq recutils"
-DEB_PKG_TOOL_GUI="lightdm osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin python-osd gpointing-device-settings touchfreeze bash-completion libinput-tools keynav feh geeqie wmaker xserver-xephyr xrootconsole tilda eterm" # xserver-xorg-input-synaptics
+DEB_PKG_TOOL_GUI="lightdm osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin python-osd gpointing-device-settings touchfreeze bash-completion libinput-tools keynav feh geeqie wmaker libmotif-dev libxss-dev mwm xserver-xephyr xrootconsole tilda eterm" # xserver-xorg-input-synaptics
 DEB_PKG2_TOOL_GUI="unclutter xscreensaver xscreensaver-gl xss-lock rss-glx xssproxy xscreensaver-data-extra xscreensaver-gl-extra" # event
 DEB_PKG3_TOOL_GUI="synenergy quicksynenergy xserver-xorg-input-synaptics" # xserver-xorg-core-hwe-18.04 xserver-xorg-input-synaptics-hwe-18.04 # event
 DEB_PKG1_TOOL_GUI_XORG="python-osd python-gtk2 afnix python-gconf nitrogen"
