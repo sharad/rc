@@ -75,14 +75,16 @@
     (message "Fixed error \"Selecting deleted buffer\" in git-gutter+ package")
 
     (defun git-gutter+-reenable-buffers ()
-      ;; (message "test")
+      (message "start git-gutter+-reenable-buffers")
       (dolist (buf git-gutter+-buffers-to-reenable)
-        (if (and (bufferp buf)
+        (if (and buf
+                 (bufferp buf)
                  (buffer-live-p buf))
-            (with-current-buffer buf
-              (git-gutter+-turn-on))
+            (with-current-buffer buf (git-gutter+-turn-on))
           (message "buffer %s is not buffer or already killed" buf)))
-      (setq git-gutter+-buffers-to-reenable nil))))
+      (prog1
+          (setq git-gutter+-buffers-to-reenable nil)
+        (message "stop git-gutter+-reenable-buffers")))))
 
 (defun lotus-override/post-init-git-link-config ()
   (progn
@@ -110,19 +112,27 @@ or active region. The URL will be added to the kill ring. If
 
 With a prefix argument prompt for the remote's name.
 Defaults to \"origin\"."
-      (interactive (let* ((remote (git-link--select-remote))
-                          (region (when (or buffer-file-name (git-link--using-magit-blob-mode))
-                                    (git-link--get-region))))
-                     (list remote (car region) (cadr region))))
-      (let (filename branch commit handler remote-info (remote-url (git-link--remote-url remote)))
+      (interactive
+       (let* ((remote (git-link--select-remote))
+              (region (when (or buffer-file-name (git-link--using-magit-blob-mode))
+                        (git-link--get-region))))
+         (list remote (car region) (cadr region))))
+
+      (let (filename
+            branch
+            commit handler
+            remote-info
+            (remote-url (git-link--remote-url remote)))
         (if (null remote-url)
             (message "Remote `%s' not found" remote)
 
           (setq remote-info (git-link--parse-remote remote-url)
                 filename    (git-link--relative-filename)
-                branch      (or (git-link--branch-remote-merge) (git-link--branch))
+                branch      (or (git-link--branch-remote-merge)
+                                (git-link--branch))
                 commit      (git-link--commit)
-                handler     (git-link--handler git-link-remote-alist (car remote-info)))
+                handler     (git-link--handler git-link-remote-alist
+                                               (car remote-info)))
 
           (cond ((null filename)
                  (message "Can't figure out what to link to"))
@@ -151,6 +161,22 @@ Defaults to \"origin\"."
                              commit
                              start
                              end))))))))))
+
+(defun lotus-override/post-init-org-agenda-config ()
+  (progn
+    (defun org-agenda-new-marker (&optional pos)
+      "Return a new agenda marker.
+Maker is at point, or at POS if non-nil.  Org mode keeps a list of
+these markers and resets them when they are no longer in use."
+      (let ((m (copy-marker (or pos (point)) t)))
+        (setq org-agenda-last-marker-time (float-time))
+        (if (and org-agenda-buffer
+                 (bufferp org-agenda-buffer)
+                 (buffer-live-p org-agenda-buffer))
+            (with-current-buffer org-agenda-buffer
+              (push m org-agenda-markers))
+          (push m org-agenda-markers))
+        m))))
 
 (defun override-vc-registered ()
   (progn
@@ -188,10 +214,10 @@ backend is tried first."
             (vc-file-setprop file 'vc-backend 'none)
             nil)))))))
 
-(defun lotus-override/post-init-vc-hooks-config ()
+(defun lotus-override/post-init-vc-config ()
   (override-vc-registered))
 
-(defun lotus-override/init-vc-config ()
+(defun lotus-override/post-init-vc-hooks-config ()
   (override-vc-registered))
 
 ;;; config.el ends here

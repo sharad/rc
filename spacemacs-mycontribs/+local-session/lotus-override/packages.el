@@ -39,6 +39,7 @@
     (lsdb    :location local)
     git-gutter+
     git-link
+    org-agenda
     vc
     vc-hooks
     )
@@ -93,11 +94,17 @@ Each entry is either:
       (progn
         (lotus-override/post-init-git-link-config)))))
 
+(defun lotus-override/post-init-org-agenda ()
+  (use-package org-agenda-hooks
+    :defer t
+    :config
+    (lotus-override/post-init-org-agenda-config)))
+
 (defun lotus-override/post-init-vc ()
   (use-package vc-hooks
     :defer t
     :config
-    (lotus-override/init-vc-config)))
+    (lotus-override/post-init-vc-config)))
 
 (defun lotus-override/post-init-vc-hooks ()
   (use-package vc-hooks

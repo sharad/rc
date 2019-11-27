@@ -22,7 +22,8 @@
 (use-modules (gnu system locale))
 
 (define this-file
-  (local-file (basename (assoc-ref (current-source-location) 'filename))
+  (local-file (basename (assoc-ref (current-source-location)
+                                   'filename))
               "config.scm"))
 
 ;; non-guix

@@ -35,9 +35,9 @@
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-wrapper-packages
-  '(
-    lotus-wrapper
-    )
+  '()
+    ;; lotus-wrapper ;; moved in lotus basic startup
+    
   "The list of Lisp packages required by the lotus-wrapper layer.
 
 Each entry is either:
@@ -65,13 +65,13 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-wrapper/init-lotus-wrapper ()
-  (use-package lotus-wrapper
-    :init
-    (lotus-wrapper-insinuate)
-    :defer t
-    :config
-    (progn
-      )))
+;; (defun lotus-wrapper/init-lotus-wrapper ()
+;;   (use-package lotus-wrapper
+;;     :init
+;;     (lotus-wrapper-insinuate)
+;;     :defer t
+;;     :config
+;;     (progn
+;;       )))
 
 ;;; packages.el ends here

@@ -267,18 +267,21 @@ Each entry is either:
   (progn
     (progn
       (use-package lotus-wrapper
-          :defer t
-          :config
+        :init
+        (lotus-wrapper-insinuate)
+        :defer t
+        :config
+        (progn
           (progn
-            (progn
-              ))))
+            ))))
     (progn
       (progn
         (use-package startup-hooks
-            :defer t
-            :config
-            (progn
-              (add-to-enable-startup-interrupting-feature-hook #'lotus-wrapper-insinuate))))
+          :defer t
+          :config
+          (progn
+            (add-to-enable-startup-interrupting-feature-hook
+             #'lotus-wrapper-insinuate))))
       (progn ;; Need it.
         ;; (warn  "running lotus-wrapper-insinuate")
         ;; (add-hook 'after-init-hook #'lotus-wrapper-insinuate)
