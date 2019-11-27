@@ -2,11 +2,11 @@
 
 if [ -d ~/.zshall/functions/Misc ]
 then
-    fpath=( ~/.zshall/functions/Misc $fpath)
+    fpath=( $HOME/.zshall/functions/Misc $fpath)
 fi
 if [ -d ~/.zshall/functions/Prompts ]
 then
-    fpath=( ~/.zshall/functions/Prompts $fpath )
+    fpath=( $HOME/.zshall/functions/Prompts $fpath )
 fi
 
 # My Custom Functions	     #
@@ -20,7 +20,8 @@ chome () {
     unset my_homes MYHINDX
 }
 
-if [ $HOME:t = hell ] ; then
+if [ $HOME:t = "hell" ]
+then
     foreach subdir ( ~/../* ) {
         if [ -r $subdir -a -d $subdir ] ; then
             vsubdir=$(basename $subdir | tr '[[:upper:]]' '[[:lower:]]' | tr -d '+')
