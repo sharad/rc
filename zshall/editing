@@ -427,9 +427,4 @@ bindkey	-A	mymap	main
 
 bindkey -M menuselect '^o' accept-and-infer-next-history
 
-
-
-
-
-
 exec 2> /dev/tty

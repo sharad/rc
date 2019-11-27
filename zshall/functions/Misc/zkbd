@@ -213,6 +213,7 @@ EOF
 # you should fix the introductory text above.
 
 local -a pckeys sunkeys modifiers
+pcFnkeys=(F{1..12})
 pckeys=(F{1..12}
         Backspace  Insert  Home   PageUp
                    Delete  End   PageDown
@@ -227,10 +228,10 @@ sunkeys=(Stop  Again
          Find  Cut
          Help
         )
-modifiers=(Meta-
-           Shift-
+modifiers=(Shift-
            Control-
            Alt-
+           Meta-
            Control-Shift-
            Alt-Shift-
            Meta-Shift-
@@ -267,10 +268,11 @@ exec 3>/dev/tty
 
 [  -r $zkbd/$TERM.trans ] && source $zkbd/$TERM.trans
 
-for xkey in $pckeys $^modifiers$^pckeys # $sunkeys $^modifiers$^sunkeys
-do
 
+function set_keyvalue()
+{
     bypass=no
+    showwait=no
     if (( $+alt == 0 )) && [[ $xkey =~ "Alt" ]]
     then
         bypass=yes
@@ -283,12 +285,14 @@ do
     elif [ "$key[$xkey]" ]
     then
         echo $key[$xkey] already defined >&2
+        showwait=yes
         bypass=yes
     else
         foreach ak ($avoidkeys) {
             if [ $ak = $xkey ]
             then
                 bypass=yes
+                showwait=yes
                 break
             fi
         }
@@ -302,9 +306,71 @@ do
         print "key[$xkey]='${(q)seq}'"
         print -u3 -R $seq
     else
-        echo ignoring key $xkey >&2
-        continue;
-    fi
+        if [ $showwait = yes ]
+        then
+            echo ignoring key "(wait 2 secs) Not Press $xkey: " >&2
+            sleep 2
+        else
+            echo ignoring key $xkey >&2
+        fi
+     fi
+}
+
+# for xkey in $pckeys $^modifiers$^pckeys # $sunkeys $^modifiers$^sunkeys
+for xmod in "" $modifiers
+do
+    echo going to for modifier $xmod   >&2
+    echo take some rest for 5 seconds  >&2
+    echo                               >&2
+    sleep 5s
+    echo                               >&2
+    for xkey in $^xmod$^pckeys # $sunkeys $^modifiers$^sunkeys
+    do
+        set_keyvalue $xkey
+        # bypass=no
+        # showwait=no
+        # if (( $+alt == 0 )) && [[ $xkey =~ "Alt" ]]
+        # then
+        #     bypass=yes
+        # elif (( $+meta == 0 )) && [[ $xkey =~ "Meta" ]]
+        # then
+        #     bypass=yes
+        # elif [[ $alt == $meta ]] && [[ $xkey =~ "Meta" ]]
+        # then
+        #     bypass=yes
+        # elif [ "$key[$xkey]" ]
+        # then
+        #     echo $key[$xkey] already defined >&2
+        #     showwait=yes
+        #     bypass=yes
+        # else
+        #     foreach ak ($avoidkeys) {
+        #         if [ $ak = $xkey ]
+        #         then
+        #             bypass=yes
+        #             showwait=yes
+        #         fi
+        #     }
+        # fi
+
+        # if [ $bypass = no ]
+        # then
+        #     print -u3 -Rn "Press $xkey: "
+        #     # seq="$(getseq)" || return 1
+        #     seq="$(getseq)" || break
+        #     print "key[$xkey]='${(q)seq}'"
+        #     print -u3 -R $seq
+        # else
+        #     if [ $showwait = yes ]
+        #     then
+        #         echo ignoring key "(wait 2 secs) Not Press $xkey: " >&2
+        #         sleep 2
+        #     else
+        #         echo ignoring key $xkey >&2
+        #     fi
+        #     continue;
+        # fi
+    done
 done >> $zkbd/$TERM.tmp
 
 command cp $zkbd/$TERM.tmp $zkbd/$TERM.trans
