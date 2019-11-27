@@ -468,7 +468,7 @@ fi
 # "$TERM" = "dumb" for emacs tramp
 if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let emacs tramp work.
 {
-    if [[ $(cat ~/.logs/stderr/zshall/* 2>&1 | head -2 ) ]]
+    if [[ "$(command cat ~/.logs/stderr/zshall/* 2>&1 | head -2 )" ]]
     then
         cat ~/.logs/stderr/zshall/*
         echo Could see all messages in '~/.logs/stderr/zshall/*'
@@ -476,7 +476,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
 
     if [ -d ~/Sink/ ]
     then
-        if [ $(command ls -1 ~/Sink | tr -d '\n') != localPublic ]
+        if [[ $(command ls -1 ~/Sink | tr -d '\n') != localPublic ]]
         then
             print 'ls ~/Sink'
             ls --color=always -F -C ~/Sink/
