@@ -1,7 +1,10 @@
 #!/usr/bin/env zsh
 
 
-[ -x /usr/libexec/at-spi-registryd ] && pkill at-spi-registry
+if pgrep at-spi-registry >/dev/null 2>&1  # && [ -x /usr/libexec/at-spi-registryd ]
+then
+    pkill at-spi-registry
+fi
 
 # whence -p gnome-screensaver &&
 # pgrep gnome-screensaver ||

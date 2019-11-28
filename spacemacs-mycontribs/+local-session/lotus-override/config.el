@@ -75,7 +75,7 @@
     (message "Fixed error \"Selecting deleted buffer\" in git-gutter+ package")
 
     (defun git-gutter+-reenable-buffers ()
-      (message "start git-gutter+-reenable-buffers")
+      ;; (message "start git-gutter+-reenable-buffers")
       (dolist (buf git-gutter+-buffers-to-reenable)
         (if (and buf
                  (bufferp buf)
@@ -83,8 +83,24 @@
             (with-current-buffer buf (git-gutter+-turn-on))
           (message "buffer %s is not buffer or already killed" buf)))
       (prog1
-          (setq git-gutter+-buffers-to-reenable nil)
-        (message "stop git-gutter+-reenable-buffers")))))
+          (setq git-gutter+-buffers-to-reenable nil)))
+
+    (defun git-gutter+-diff (curfile)
+      (let ((args (git-gutter+-diff-args curfile))
+            (file (buffer-file-name))) ;; for tramp
+        (with-temp-buffer
+          (if (git-gutter+-insert-git-output args file)
+              (progn (goto-char (point-min))
+                     (let ((diff-header (git-gutter+-get-diff-header))
+                           (diffinfos   (git-gutter+-get-diffinfos)))
+                       (when (and diff-header
+                                  diffinfos)
+                        (list diff-header diffinfos))))
+            (let ((git-gutter+-output (buffer-string)))
+              (prog1
+                  nil
+                ;; (message "Error callling git diff:\n%s" (buffer-string))
+                (message "Error callling git diff %s:\n%s" curfile git-gutter+-output)))))))))
 
 (defun lotus-override/post-init-git-link-config ()
   (progn

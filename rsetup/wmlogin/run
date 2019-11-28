@@ -151,13 +151,9 @@ fi
 
 emacs_daemon_start              # in case it were not started in x/run
 
-# pgrep xautolock >& /dev/null && xautolock -locknow &!
-if whence -p xautolock >& /dev/null
+if whence -p xautolock >& /dev/null && pgrep xautolock >& /dev/null
 then
-  if ! pgrep xautolock >& /dev/null
-  then
-      xautolock -locknow >> ~/.logs/wmlogin.log 2>&1 &!
-  fi
+    xautolock -locknow >> ~/.logs/wmlogin.log 2>&1 &!
 fi
 
 foreach prog (
@@ -179,19 +175,19 @@ foreach prog (
         $prog &!
         # echo started $prog >&2
 	      pgrep $prog[0,15] >> ~/.logs/wmlogin.log 2>&1
-        sleep 1s;
+        # sleep 1s;
     else
         print Not starting $prog >> ~/.logs/wmlogin.log 2>&1
     fi
 }
 
-if [ -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ]
+if [ -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ] && ! pgrep polkit-gnome-au >& /dev/null
 then
-    pgrep polkit-gnome-au >& /dev/null || /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &!
+    /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &!
 fi
 
 
-if whence -p keynav >& /dev/null  &&
+if whence -p keynav >& /dev/null &&
        ! pgrep keynav >& /dev/null
 then
     keynav >> ~/.logs/wmlogin.log 2>&1  &!
@@ -227,20 +223,14 @@ then
     fi
 fi
 
-if whence -p autocutsel >& /dev/null
+if whence -p autocutsel >& /dev/null && ! pgrep autocutsel >& /dev/null
 then
-    if ! pgrep autocutsel >& /dev/null
-    then
         autocutsel -f &!
-    fi
 fi
 
-if whence -p xcompmgr >& /dev/null
+if whence -p xcompmgr >& /dev/null && ! pgrep xcompmgr >& /dev/null
 then
-    if ! pgrep xcompmgr >& /dev/null
-    then
-  xcompmgr -a &!
-  fi
+    xcompmgr -a &!
 fi
 
 ### fonts start
@@ -281,11 +271,12 @@ fi
 
 
 # xterm -e "ish -s bash -- echo Completed wmlogin/run " >> ~/.logs/wmlogin.log 2>&1 &!
-
-if whence -p notify-send >& /dev/null
+if false
 then
-  notify-send test test &!
-  echo notify-send test test >>& ~/.logs/wmlogin.log &!
+    if whence -p notify-send >& /dev/null
+    then
+        notify-send test test &!
+        echo notify-send test test >>& ~/.logs/wmlogin.log &!
+    fi
 fi
-
 # cat ~/.logs/wmlogin.log 
