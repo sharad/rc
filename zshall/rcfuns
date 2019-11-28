@@ -88,13 +88,8 @@ fi
 # defining setcursor
 function setcursor {
 
-    console_fonts=(/usr/share/consolefonts/t850b.psf.gz /usr/share/consolefonts/Lat15-Terminus14.psf.gz)
-
-    findex=1
-    if whence -p shuf >/dev/null 2>&1
-    then
-        findex=$(shuf -i1-$#console_fonts -n1)
-    fi
+    console_fonts=(/usr/share/consolefonts/t850b.psf.gz
+                   /usr/share/consolefonts/Lat15-Terminus14.psf.gz)
 
     if [[ "$TERM" == "xterm" || "$TERM" == "screen" ]]
     then
@@ -115,6 +110,13 @@ function setcursor {
                 consolechars -f $console_fonts[$findex]
             elif which -p setfont > /dev/null 2>&1
             then
+
+                findex=1
+                if whence -p shuf >/dev/null 2>&1
+                then
+                    findex=$(shuf -i1-$#console_fonts -n1)
+                fi
+
                 setfont $console_fonts[$findex]
                 # setfont /usr/share/consolefonts/t850b.psf.gz -u xyz
                 # setfont /usr/share/consolefonts/Lat15-Terminus14.psf.gz
