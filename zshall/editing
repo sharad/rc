@@ -79,7 +79,7 @@ function bindaykey_map_if_define_raw() {
     fi
 }
 
-if [ $termzdef -a -r $termzdef  ]
+if [ "$termzdef" -a -r "$termzdef"  ]
 then
     : echo using $termzdef >&2
     source $termzdef

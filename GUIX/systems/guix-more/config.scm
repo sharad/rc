@@ -134,16 +134,6 @@
                                          (target "house-home")
                                          (type lvm-device-mapping)))
 
-(define %lotus-mapped-device-ubuntu-local (mapped-device
-                                         (source "/dev/sda10")
-                                         (target "ubuntu-local")
-                                         (type lvm-device-mapping)))
-
-(define %lotus-mapped-device-ubuntu-opt (mapped-device
-                                         (source "/dev/sda10")
-                                         (target "ubuntu-opt")
-                                         (type lvm-device-mapping)))
-
 (define %lotus-mapped-devices
   (list
    %lotus-mapped-device-guix-root
@@ -152,13 +142,14 @@
    %lotus-mapped-device-vg02-lv01
    %lotus-mapped-device-vgres01-lvres01
    %lotus-mapped-device-house-home
-   %lotus-mapped-device-ubuntu-local
-   %lotus-mapped-device-ubuntu-opt
    %lotus-mapped-device-guix-swap))
 
 
 ;; (define %lotus-swap-devices '("/dev/mapper/guix-swap"))
-(define %lotus-swap-devices '("/dev/guix/swap"))
+;; (define %lotus-swap-devices '("/dev/guix/swap"))
+(define device-mapping-guix-swap %lotus-mapped-device-guix-swap)
+(define %lotus-swap-devices '("/dev/mapper/guix-swap"))
+(define %lotus-swap-devices '("/dev/mapper/guix-swap"))
 
 
 (define %lotus-file-system-guix-root (file-system
@@ -219,24 +210,6 @@
                                        (create-mount-point? #f)
                                        (needed-for-boot? #f)))
 
-(define %lotus-file-system-ubuntu-local (file-system
-                                         (mount-point "/usr/local")
-                                         (device "/dev/mapper/ubuntu-local")
-                                         (type "ext4")
-                                         (check? #f)
-                                         (mount? #t)
-                                         (create-mount-point? #f)
-                                         (needed-for-boot? #f)))
-
-(define %lotus-file-system-ubuntu-opt (file-system
-                                       (mount-point "/opt")
-                                       (device "/dev/mapper/ubuntu-opt")
-                                       (type "ext4")
-                                       (check? #f)
-                                       (mount? #t)
-                                       (create-mount-point? #f)
-                                       (needed-for-boot? #f)))
-
 (define %lotus-lvm-file-systems
   (list
    ;; %lotus-file-system-guix-swap
@@ -246,8 +219,6 @@
    %lotus-file-system-vg02-lv01
    %lotus-file-system-vgres01-lvres01
    %lotus-file-system-house-home
-   ;; %lotus-file-system-ubuntu-local
-   ;; %lotus-file-system-ubuntu-opt
    ))
 
 (define %lotus-file-system-boot-efi (file-system
@@ -444,7 +415,7 @@
  (mapped-devices     %lotus-mapped-devices)
  (users              %lotus-users)
  (file-systems       %lotus-file-systems)
- (swap-devices       %lotus-swap-devices)
+ ;; (swap-devices       %lotus-swap-devices)
  (bootloader         %lotus-bootloader)
  (packages           %lotus-packages)
  (services           %lotus-services)

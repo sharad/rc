@@ -62,14 +62,17 @@ then
     xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >> ~/.xsession-errors 2>&1
 fi
 
-if whence -p xterm >& /dev/null
+if false
 then
-    # show me what is happening...
-    ## http://askubuntu.com/a/481529
-    xterm \
-        -fullscreen \
-        -hold -maximized \
-        -e "$HOME/bin/ish -s bash -- timeout -k 120 70 tail --retry -n 100 -f $HOME/.xsession-errors $HOME/.stumpwm.d/debug-output.log $HOME/.emacs.d/.cache/startup/$EMACS_SERVER_NAME/startup.log $HOME/.cache/gdm/sesion.log" >> $HOME/.xsession-errors 2>&1 &!
+  if whence -p xterm >& /dev/null
+  then
+      # show me what is happening...
+      ## http://askubuntu.com/a/481529
+      xterm \
+          -fullscreen \
+          -hold -maximized \
+          -e "$HOME/bin/ish -s bash -- timeout -k 120 70 tail --retry -n 100 -f $HOME/.xsession-errors $HOME/.stumpwm.d/debug-output.log $HOME/.emacs.d/.cache/startup/$EMACS_SERVER_NAME/startup.log $HOME/.cache/gdm/sesion.log" >> $HOME/.xsession-errors 2>&1 &!
+  fi
 fi
 
 if whence -p xte >& /dev/null
@@ -134,7 +137,7 @@ then
     if whence -p python >& /dev/null
     then
       # unset Caps Lock
-      python -c 'from ctypes import *; X11 = cdll.LoadLibrary("libX11.so.6"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'  >> ~/.xsession-errors 2>&1
+      : python -c 'from ctypes import *; X11 = cdll.LoadLibrary("libX11.so.6"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'  >> ~/.xsession-errors 2>&1
     fi
 
     if whence -p xmodmap >& /dev/null

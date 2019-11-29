@@ -74,6 +74,7 @@
 
         "time"
 
+	"xclip"
         "xmodmap"
         ;; at
         "curl"
@@ -138,7 +139,7 @@
    "xdg-user-dirs"
    "xdg-utils"
    "shroud"
-   ;; "gdm"
+   "gdm"
    ;; "gpm"
    "git"
    "git-remote-gcrypt"
@@ -166,8 +167,8 @@
    "ncurses-with-gpm"
    "ncurses"
 
-   ;; "polkit"
-   ;; "polkit-gnome"
+   "polkit"
+   "polkit-gnome"
    "redshift"
    "xcursor-themes"
    "unclutter"
@@ -226,7 +227,7 @@
         "libsecret"
         "libxft"
         "scsh"
-        ;; "stumpwm"
+        "stumpwm"
         ;; "guile-wm"
         ;; "stumpwm-with-slynk"
         ;; "cl-stumpwm"
@@ -289,7 +290,7 @@
   (map specification->package
        %lotus-package-names-for-installation))
 
-(define %lotus-system-packages (append %lotus-system-desktop-packages
+(define %lotus-system-packages (append ;; %lotus-system-desktop-packages
                                        %lotus-system-selected-packages))
 
 (define %lotus-packages (append %lotus-system-packages
