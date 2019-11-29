@@ -29,11 +29,11 @@
 ;; non-guix
 
 ;; Import nonfree linux module.
-(use-modules (nongnu packages linux))
+;; (use-modules (nongnu packages linux))
 
 ;; my packages
 
-(use-modules (lotus packages perforce))
+;; (use-modules (lotus packages perforce))
 
 
 (use-modules (gnu packages linux))
@@ -158,7 +158,7 @@
 
 
 ;; (define %lotus-swap-devices '("/dev/mapper/guix-swap"))
-(define %lotus-swap-devices '("/dev/ubuntu/swap"))
+(define %lotus-swap-devices '("/dev/guix/swap"))
 
 
 (define %lotus-file-system-guix-root (file-system
@@ -281,7 +281,7 @@
 
 
 ;; packages
-(load "packages.scm")
+(load "../packages.scm")
 
 
 (define %lotus-keyboard-layout (keyboard-layout "us" "altgr-intl"))
@@ -345,7 +345,7 @@
                                          (simple-service 'config-file etc-service-type
                                                          `(("config.scm" ,this-config-file)))))
 
-(define %lotus-many-services (list (service gnome-desktop-service-type)
+(define %lotus-many-services (list ;; (service gnome-desktop-service-type)
                                    ;; (service xfce-desktop-service-type)
                                    ;; (service mate-desktop-service-type)
                                    ;; (service enlightenment-desktop-service-type)
@@ -355,8 +355,7 @@
                                     (xorg-configuration
                                      (keyboard-layout %lotus-keyboard-layout)))))
 
-(define %lotus-few-services    (list (service gnome-desktop-service-type)
-                                     (service xfce-desktop-service-type)
+(define %lotus-few-services    (list ;; (service gnome-desktop-service-type)
                                      (service openssh-service-type)
                                      (service tor-service-type)
                                      (set-xorg-configuration
@@ -382,7 +381,7 @@
 (define %lotus-services  %lotus-simple-and-desktop-services)
 
 
-(define %lotus-firmware (list linux-firmware))
+;; (define %lotus-firmware (list linux-firmware))
 
 
 ;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
@@ -428,12 +427,12 @@
                                       %setuid-programs))
 
 
-(define %lotus-kernel linux)
+;; (define %lotus-kernel linux)
 
 
 (operating-system
- (kernel             %lotus-kernel)
- (firmware           %lotus-firmware)
+ ;; (kernel             %lotus-kernel)
+ ;; (firmware           %lotus-firmware)
  (initrd             %lotus-initrd)
  (locale             %lotus-locale)
  (locale-definitions %lotus-locale-definitions)

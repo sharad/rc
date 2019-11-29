@@ -1,8 +1,29 @@
 
 
 
-(define %lotus-system-selected-package-names (list "zsh"
-                                                   "ecryptfs-utils"))
+(define %lotus-system-selected-package-names (list "glibc-utf8-locales"
+                                                   "polkit"
+                                                   "polkit-gnome"
+
+                                                   "gpm"
+                                                   "font-adobe-source-code-pro"
+                                                   "font-terminus"
+                                                   "font-dejavu"
+                                                   "font-hack"
+                                                   "font-awesome"
+                                                   "font-arabic-misc"
+
+                                                   "zsh"
+                                                   "cl-fad"
+                                                   "cl-slime-swank"
+                                                   "stumpwm"
+                                                   "guile-wm"
+                                                   ;; "windowmaker"
+                                                   ;; "twm"
+                                                   ;; "herbstluftwm"
+
+                                                   "ecryptfs-utils"
+                                                   "dconf"))
 
 (define %lotus-package-names-for-installation 
   (append %lotus-system-selected-package-names

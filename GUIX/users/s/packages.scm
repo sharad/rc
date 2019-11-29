@@ -1,4 +1,32 @@
+;; https://wingolog.org/archives/2015/08/04/developing-v8-with-guix
+(use-package-modules  base gcc llvm base python version-control less ccache pkg-config glib gnome cmake messaging autotools flex bison m4 gawk xorg onc-rpc commencement)
 
+
+(use-modules (gnu packages linux))
+
+(use-modules (guix utils))
+(use-modules (guix packages))
+(use-modules (gnu services networking))
+(use-modules (gnu) (gnu system nss))
+(use-service-modules networking ssh)
+(use-package-modules bootloaders certs suckless wm)
+
+(use-service-modules desktop networking ssh xorg)
+(use-package-modules certs gnome)
+
+(use-modules (gnu packages shells))
+
+(use-modules (gnu))
+(use-package-modules screen)
+
+
+;; other guix
+
+(use-modules (gnu system locale))
+
+
+
+
 
 
 (define %lotus-other-packages
@@ -15,7 +43,7 @@
         "rcs"
         "darcs"
 
-        "dovecot"
+        ;; "dovecot"
         ;; "postfix"
         ;; "next"
 
@@ -24,9 +52,11 @@
         "font-dejavu"
         "font-hack"
         "font-awesome"
+        "font-arabic-misc"
+
         "fribidi"
         "bicon"
-        "font-arabic-misc"
+        
 
         "global"
 
@@ -62,8 +92,6 @@
 
         "fasd"
 
-        "twm"
-        "herbstluftwm"
         "wmctrl"
         ;; https://sourceforge.net/p/motif/code/ci/master/tree/INSTALL.configure
         ;; https://sourceforge.net/p/cdesktopenv/wiki/LinuxBuild/
@@ -110,20 +138,20 @@
    "xdg-user-dirs"
    "xdg-utils"
    "shroud"
-   "gdm"
-   "gpm"
+   ;; "gdm"
+   ;; "gpm"
    "git"
    "git-remote-gcrypt"
    "guile-colorized"
    "file"
-   "macchanger"
+   ; "macchanger"
    "font-lohit"
    "screen"
    "tmux"
    "kitty"
    "lxqt-openssh-askpass"
    "gettext"
-   "ecryptfs-utils"
+   ;; "ecryptfs-utils"
    "zsh"
    "zsh-autosuggestions"
    "hstr"
@@ -133,29 +161,31 @@
    "emacs-ag"
    "emacs-helm-ag"
    "emacs"
-   "gparted"
-   "parted"
+   ;; "gparted"
+   ;; "parted"
    "ncurses-with-gpm"
    "ncurses"
 
-   "polkit"
-   "polkit-gnome"
+   ;; "polkit"
+   ;; "polkit-gnome"
    "redshift"
    "xcursor-themes"
    "unclutter"
 
-   "dconf"
+   ;; "dconf"
+
+   ;; "sbcl"
+   ;; "cl-fad"
+   ;; "cl-slime-swank"
+
+   ;; "glibc-utf8-locales"
 
    "stapler"
-   "gcc-toolchain"
+   ;; "gcc-toolchain"
    "strace"
-   "guile-readline"
+   "guile-readline"))
 
-   "sbcl"
-   "cl-fad"
-   "cl-slime-swank"
-
-   "glibc-utf8-locales"))
+   
 
 (define %lotus-mail-packages
   (list "mailutils"
@@ -196,16 +226,18 @@
         "libsecret"
         "libxft"
         "scsh"
-        "openbox"
-        "awesome"
-        "i3-wm"
-        "windowmaker"
-        "wmnd"
-        "menumaker"
-        "stumpwm"
-        "guile-wm"
+        ;; "stumpwm"
+        ;; "guile-wm"
         ;; "stumpwm-with-slynk"
         ;; "cl-stumpwm"
+        ;; "openbox"
+        ;; "awesome"
+        ;; "i3-wm"
+        ;; "windowmaker"
+        ;; "twm"
+        ;; "herbstluftwm"
+        "wmnd"
+        "menumaker"
         "emacs-stumpwm-mode"
         "keynav"
         "conky"
@@ -262,3 +294,6 @@
 
 (define %lotus-packages (append %lotus-system-packages
                                 %base-packages))
+
+(packages->manifest %lotus-packages)
+
