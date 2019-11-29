@@ -44,23 +44,23 @@
 'lvm'."
   (with-imported-modules (source-module-closure
                           '((gnu build file-systems)))
-    #~(let ((source #$source))
-        ;; Use 'lvm2-static', not 'lvm2', to avoid pulling the
-        ;; whole world inside the initrd (for when we're in an initrd).
-        (begin
-          (system* #$(file-append lvm2-static "/sbin/lvm")
-                   "vgscan" "--mknodes")
-          (sleep 3)
-          (system* #$(file-append lvm2-static "/sbin/lvm")
-                   "vgscan" "--mknodes")
-          (sleep 1)
-          (system* #$(file-append lvm2-static "/sbin/lvm")
-                   "vgchange" "-ay" 
-	           (car (string-split #$target #\-)))
-          (sleep 1)
-          (zero? (system* #$(file-append lvm2-static "/sbin/lvm")
-                          "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
-                          (string-join (string-split #$target #\-) "/")))))))
+                         #~(let ((source #$source))
+                             ;; Use 'lvm2-static', not 'lvm2', to avoid pulling the
+                             ;; whole world inside the initrd (for when we're in an initrd).
+                             (begin
+                               (system* #$(file-append lvm2-static "/sbin/lvm")
+                                        "vgscan" "--mknodes")
+                               (sleep 1)
+                               (system* #$(file-append lvm2-static "/sbin/lvm")
+                                        "vgscan" "--mknodes")
+                               (sleep 1)
+                               (system* #$(file-append lvm2-static "/sbin/lvm")
+                                        "vgchange" "-ay" 
+                                        (car (string-split #$target #\-)))
+                               (sleep 1)
+                               (zero? (system* #$(file-append lvm2-static "/sbin/lvm")
+                                               "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
+                                               (string-join (string-split #$target #\-) "/")))))))
 
 (define (close-lvm-device sources target)
   "Return a gexp that closes TARGET, a LVM device."
@@ -99,9 +99,9 @@
    ))
 
 
-(define %lotus-mapped-device-guix-store (mapped-device
+(define %lotus-mapped-device-guix-gnu (mapped-device
                                          (source "/dev/sda31")
-                                         (target "guix-store")
+                                         (target "guix-gnu")
                                          (type lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-root (mapped-device
@@ -109,10 +109,15 @@
                                           (target "guix-root")
                                           (type lvm-device-mapping)))
 
+(define %lotus-mapped-device-guix-swap (mapped-device
+                                          (source "/dev/sda31")
+                                          (target "guix-swap")
+                                          (type lvm-device-mapping)))
+
 (define %lotus-mapped-device-vg01-lv01 (mapped-device
-                                         (source "/dev/test")
-                                         (target "vg01-lv01")
-                                         (type lvm-device-mapping)))
+                                        (source "/dev/test")
+                                        (target "vg01-lv01")
+                                        (type lvm-device-mapping)))
 
 (define %lotus-mapped-device-vg02-lv01 (mapped-device
                                          (source "/dev/test")
@@ -139,24 +144,20 @@
                                          (target "ubuntu-opt")
                                          (type lvm-device-mapping)))
 
-(define %lotus-mapped-device-ubuntu-swap (mapped-device
-                                          (source "/dev/sda10")
-                                          (target "ubuntu-swap")
-                                          (type lvm-device-mapping)))
 (define %lotus-mapped-devices
   (list
    %lotus-mapped-device-guix-root
-   %lotus-mapped-device-guix-store
+   %lotus-mapped-device-guix-gnu
    %lotus-mapped-device-vg01-lv01
    %lotus-mapped-device-vg02-lv01
    %lotus-mapped-device-vgres01-lvres01
    %lotus-mapped-device-house-home
    %lotus-mapped-device-ubuntu-local
    %lotus-mapped-device-ubuntu-opt
-   %lotus-mapped-device-ubuntu-swap))
+   %lotus-mapped-device-guix-swap))
 
 
-;; (define %lotus-swap-devices '("/dev/mapper/ubuntu-swap"))
+;; (define %lotus-swap-devices '("/dev/mapper/guix-swap"))
 (define %lotus-swap-devices '("/dev/ubuntu/swap"))
 
 
@@ -170,9 +171,9 @@
                                        (needed-for-boot? #t)
                                        (dependencies %lotus-mapped-devices)))
 
-(define %lotus-file-system-guix-store (file-system
+(define %lotus-file-system-guix-gnu (file-system
                                         (mount-point "/gnu")
-                                        (device "/dev/mapper/guix-store")
+                                        (device "/dev/mapper/guix-gnu")
                                         (type "ext4")
                                         (check? #f)
                                         (mount? #t)
@@ -238,15 +239,15 @@
 
 (define %lotus-lvm-file-systems
   (list
-    ;; %lotus-file-system-ubuntu-swap
-    %lotus-file-system-guix-root
-    %lotus-file-system-guix-store
-    %lotus-file-system-vg01-lv01
-    %lotus-file-system-vg02-lv01
-    %lotus-file-system-vgres01-lvres01
-    %lotus-file-system-house-home
-    ;; %lotus-file-system-ubuntu-local
-    %lotus-file-system-ubuntu-opt))
+   ;; %lotus-file-system-guix-swap
+   %lotus-file-system-guix-root
+   %lotus-file-system-guix-gnu
+   %lotus-file-system-vg01-lv01
+   %lotus-file-system-vg02-lv01
+   %lotus-file-system-vgres01-lvres01
+   %lotus-file-system-house-home
+   ;; %lotus-file-system-ubuntu-local
+   %lotus-file-system-ubuntu-opt))
 
 (define %lotus-file-system-boot-efi (file-system
                                      (mount-point "/boot/efi")
@@ -312,22 +313,27 @@
 (define %lotus-metal-initrd base-initrd)
 
 
-(define %lotus-simple-users (list
-                             (user-account
-                              (name "s")
-                              (comment "sharad")
-                              (group "users")
-                              (home-directory "/home/s/hell")
-                              (shell #~(string-append #$zsh "/bin/zsh"))
-                              (supplementary-groups
-                               '("wheel" "netdev" "audio" "video")))
-                             (user-account
-                              (name "j")
-                              (comment "Jam")
-                              (group "users")
-                              (home-directory "/home/j")
-                              (supplementary-groups
-                               '("wheel" "netdev" "audio" "video")))))
+;; (define %lotus-simple-group (list (user-group
+;;                                    (id 1000)
+;;                                    (name "users"))))
+
+(define %lotus-simple-users (list (user-account
+                                   (uid 1000)
+                                   (name "s")
+                                   (comment "sharad")
+                                   (group "users")
+                                   (home-directory "/home/s/hell")
+                                   (shell #~(string-append #$zsh "/bin/zsh"))
+                                   (supplementary-groups
+                                    '("wheel" "netdev" "audio" "video")))
+                                  (user-account
+                                   (uid 1002)
+                                   (name "j")
+                                   (comment "Jam")
+                                   (group "users")
+                                   (home-directory "/home/j")
+                                   (supplementary-groups
+                                    '("wheel" "netdev" "audio" "video")))))
 
 (define %lotus-users (append %lotus-simple-users
                              %base-user-accounts))
@@ -340,11 +346,11 @@
                                                          `(("config.scm" ,this-file)))))
 
 (define %lotus-many-services (list (service gnome-desktop-service-type)
-                                   (service xfce-desktop-service-type)
+                                   ;; (service xfce-desktop-service-type)
                                    ;; (service mate-desktop-service-type)
                                    ;; (service enlightenment-desktop-service-type)
                                    (service openssh-service-type)
-                                   (service tor-service-type)
+                                   ;; (service tor-service-type)
                                    (set-xorg-configuration
                                     (xorg-configuration
                                      (keyboard-layout %lotus-keyboard-layout)))))
@@ -379,8 +385,6 @@
 (define %lotus-firmware (list linux-firmware))
 
 
-;; (define %lotus-locale "en_US.utf8")
-
 ;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
 
 (define %lotus-locale "en_US.utf8")
@@ -404,15 +408,8 @@
                                         %lotus-hi-in-locale-definition
                                         %lotus-ur-pk-locale-definition
                                         %lotus-ar-sa-locale-definition))
-
-
-;; (locale-definition (source "ru_RU")
-;;                    (name "ru_RU.utf8"))
-
-
 
 
-;; (define %lotus-timezone "Europe/Berlin")
 (define %lotus-timezone "Asia/Kolkata")
 
 
@@ -425,10 +422,10 @@
 (define %lotus-initrd     %lotus-metal-initrd)
 
 
+;; (define %lotus-setuid-programs %setuid-programs)
+
 (define %lotus-setuid-programs (cons* #~(string-append #$ecryptfs-utils "/sbin/mount.ecryptfs_private")
                                       %setuid-programs))
-
-;; (define %lotus-setuid-programs %setuid-programs)
 
 
 (define %lotus-kernel linux)
