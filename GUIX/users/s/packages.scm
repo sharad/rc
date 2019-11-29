@@ -20,6 +20,7 @@
 (use-package-modules screen)
 
 
+
 ;; other guix
 
 (use-modules (gnu system locale))
@@ -74,6 +75,7 @@
 
         "xclip"
         "xmodmap"
+        "xinput"
         ;; at
         "curl"
         "perl"
