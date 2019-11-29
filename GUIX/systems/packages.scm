@@ -15,6 +15,7 @@
                                                    "font-hack"
                                                    "font-awesome"
                                                    "font-arabic-misc"
+                                                   "font-lohit"
 
                                                    "zsh"
                                                    "cl-fad"

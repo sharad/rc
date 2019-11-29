@@ -40,6 +40,7 @@
         "emacs-el-mock"
         "emacs-flyspell-correct"
         "jupyter"
+        "python-git-review"
 
         "rcs"
         "darcs"
@@ -187,8 +188,8 @@
         "mu"))
 
 (define %lotus-font-packages
-  (list
-   "font-lohit"))
+  (list))
+   
         ;; "font-indic"
 
 (define %lotus-media-packages
