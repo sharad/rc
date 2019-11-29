@@ -1,51 +1,62 @@
 
 
+(use-modules (gnu packages glib))
+
 
+
+(define %lotus-other-packages (list "polkit"
+                                    "polkit-gnome"
+                                    "autorandr"
+
+                                    ;; "dconf"
+
+                                    "xf86-input-evdev"
+                                    "cl-fad"
+                                    "cl-slime-swank"
+                                    ))
 (define %lotus-system-selected-package-names (list "glibc-utf8-locales"
-                                                   "polkit"
-                                                   "polkit-gnome"
-                                                   "autorandr"
-
-                                                   ;; "dconf"
-
                                                    "gdm"
                                                    "gpm"
                                                    "slock" ; need suid
-
-                                                   ;; "font-adobe-source-code-pro"
-                                                   ;; "font-terminus"
-                                                   ;; "font-dejavu"
-                                                   ;; "font-hack"
-                                                   ;; "font-awesome"
-                                                   ;; "font-arabic-misc"
-                                                   ;; "font-lohit"
-
                                                    "zsh"
-                                                   "cl-fad"
-                                                   "cl-slime-swank"
                                                    "stumpwm"
                                                    "guile-wm"
                                                    "windowmaker"
                                                    ;; "twm"
                                                    ;; "herbstluftwm"
-
                                                    "ecryptfs-utils"))
 
-(define %lotus-package-names-for-installation 
-  (append %lotus-system-selected-package-names
-          ;; %lotus-other-packages
-          ;; %lotus-mail-packages
-          ;; %lotus-font-packages
-          ;; %lotus-media-packages
-          ;; %lotus-gui-packages
-          ;; %lotus-text-packages
-          ;; %lotus-notification-packages
-          ))
+(define %lotus-font-packages (list "font-adobe-source-code-pro"
+                                   "font-terminus"
+                                   "font-dejavu"
+                                   "font-hack"
+                                   "font-awesome"
+                                   "font-arabic-misc"
+                                   "font-lohit"))
+
+(define %lotus-mail-packages (list))
+(define %lotus-font-packages (list))
+(define %lotus-media-packages (list))
+(define %lotus-gui-packages (list))
+(define %lotus-text-packages (list))
+(define %lotus-notification-packages (list))
+
+
+(define %lotus-package-names-for-installation
+  (append %lotus-other-packages
+          %lotus-system-selected-package-names
+          %lotus-mail-packages
+          %lotus-font-packages
+          %lotus-media-packages
+          %lotus-gui-packages
+          %lotus-text-packages
+          %lotus-notification-packages))
 
 (define %lotus-system-desktop-packages
   (list lvm2
         ;; for HTTPS access
         nss-certs
+        (list glib "bin")
         ;; for user mounts
         gvfs))
 

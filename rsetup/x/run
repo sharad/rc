@@ -59,7 +59,7 @@ fi
 
 if whence -p xmodmap >& /dev/null
 then
-    xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >> ~/.xsession-errors 2>&1
+    : xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >> ~/.xsession-errors 2>&1
 fi
 
 if true
@@ -132,7 +132,7 @@ if [ $DISPLAY ]
 then
     if whence -p xdotool >& /dev/null
     then
-        xdotool key Caps_Lock  >> ~/.xsession-errors 2>&1
+        : xdotool key Caps_Lock  >> ~/.xsession-errors 2>&1
     elif whence -p python >& /dev/null
     then
       # unset Caps Lock
@@ -143,9 +143,9 @@ then
     then
         if [ -e ~/.xmodmaprc  ]
         then
-            xmodmap ~/.xmodmaprc >&/dev/null >> ~/.xsession-errors 2>&1
+            : xmodmap ~/.xmodmaprc >&/dev/null >> ~/.xsession-errors 2>&1
         else
-            xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >&/dev/null >> ~/.xsession-errors 2>&1
+            : xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >&/dev/null >> ~/.xsession-errors 2>&1
         fi
     fi
 
@@ -172,9 +172,6 @@ then
     then
         synclient  TapButton1=1 >> ~/.xsession-errors 2>&1
     fi
-
-    # whence -p xmodmap &&
-    # xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
 
     # stop this bell.
     if whence -p xset >& /dev/null

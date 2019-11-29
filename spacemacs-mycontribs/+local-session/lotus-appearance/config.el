@@ -430,10 +430,19 @@
         ("DejaVu Sans Mono:size=8:antialias=true" :size 9 :weight normal :width normal :powerline-scale 0.8 :powerline-text-scale-factor 0.5 :powerline-default-separator 'curve)
         ("DejaVu Sans Mono" :size 9 :weight normal :width normal :powerline-scale 1.1)
         ("Source Code Pro:antialias=true" :size 9 :weight normal :width normal :powerline-scale 1.1)
-        ("Source Code Pro" :size 9 :weight normal :width normal :powerline-scale 1.1)))
-(setq
- dotspacemacs-default-font (car lotus-dotspacemacs-default-font-list))
+        ("Source Code Pro" :size 10 :weight normal :width normal :powerline-scale 1.1)))
+
+
+(setq dotspacemacs-default-font (car lotus-dotspacemacs-default-font-list))
 (spacemacs/set-default-font dotspacemacs-default-font)
+
+;; (spacemacs/set-default-font (reverse lotus-dotspacemacs-default-font-list))
+;; (find-font (font-spec :name (car dotspacemacs-default-font)))
+;; (fontspec (apply 'font-spec :name font font-props))
+(defun lotus-test-font-install ()
+  (interactive)
+  (set-frame-font (apply 'font-spec :name (car dotspacemacs-default-font)
+                         (cdr dotspacemacs-default-font)) nil t))
 
 (defun lotus-set-default-face (font)
   (interactive

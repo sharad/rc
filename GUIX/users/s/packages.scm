@@ -43,16 +43,21 @@
         "jupyter"
         "python-git-review"
 
+        ;; "glib"
+        "dconf"
+        ;; "gsettings-desktop-schemas"
+
         "rcs"
         "darcs"
 
-        "font-adobe-source-code-pro"
-        "font-terminus"
-        "font-dejavu"
-        "font-hack"
-        "font-awesome"
-        "font-arabic-misc"
-        "font-lohit"
+        ;; "font-adobe-source-code-pro"
+        ;; "font-terminus"
+        ;; "font-dejavu"
+        ;; "font-hack"
+        ;; "font-awesome"
+        ;; "font-arabic-misc"
+        ;; "font-lohit"
+        "xlsfonts"
 
         ;; "fribidi"
         ;; "bicon"
@@ -127,65 +132,59 @@
         "jetring"))
 
 (define %lotus-system-selected-package-names
-  (list
-   "m4"
-   "binutils"
-   ;; "coreutils"
-   ;; "diffutils"
-   ;; "findutils"
-   ;; "gnu-make"
-   ;; "patch"
-   "libxdg-basedir"
-   "xdg-user-dirs"
-   "xdg-utils"
-   "shroud"
-   "git"
-   "git-remote-gcrypt"
-   "guile-colorized"
-   "file"
-   ;; "macchanger"
-   ;; "font-lohit"
-   "screen"
-   "tmux"
-   "kitty"
-   "lxqt-openssh-askpass"
-   "gettext"
-   ;; "ecryptfs-utils"
-   "zsh"
-   "zsh-autosuggestions"
-   "hstr"
-   "shflags"
-   "the-silver-searcher"
-   "emacs-ag"
-   "emacs-helm-ag"
-   "emacs"
-   ;; "gparted"
-   ;; "parted"
-   "ncurses-with-gpm"
-   "ncurses"
+   (list   "m4"
+           "binutils"
+           ;; "coreutils"
+           ;; "diffutils"
+           ;; "findutils"
+           ;; "gnu-make"
+           ;; "patch"
+           "libxdg-basedir"
+           "xdg-user-dirs"
+           "xdg-utils"
+           "shroud"
+           "git"
+           "git-remote-gcrypt"
+           "guile-colorized"
+           "file"
+           ;; "macchanger"
+           ;; "font-lohit"
+           "screen"
+           "tmux"
+           "kitty"
+           "lxqt-openssh-askpass"
+           "gettext"
+           ;; "ecryptfs-utils"
+           "zsh"
+           "zsh-autosuggestions"
+           "hstr"
+           "shflags"
+           "the-silver-searcher"
+           "emacs-ag"
+           "emacs-helm-ag"
+           "emacs"
+           ;; "gparted"
+           ;; "parted"
+           "ncurses-with-gpm"
+           "ncurses"
 
-   "dconf"
-   ;; "gsettings-desktop-schemas"
+           ;; "polkit"
+           ;; "polkit-gnome"
 
-   ;; "dconf"
-   ;; "polkit"
-   ;; "polkit-gnome"
+           "redshift"
+           "xcursor-themes"
+           "unclutter"
 
-   "redshift"
-   "xcursor-themes"
-   "unclutter"
+           ;; "sbcl"
+           ;; "cl-fad"
+           ;; "cl-slime-swank"
 
+           ;; "glibc-utf8-locales"
 
-   ;; "sbcl"
-   ;; "cl-fad"
-   ;; "cl-slime-swank"
-
-   ;; "glibc-utf8-locales"
-
-   "stapler"
-   ;; "gcc-toolchain"
-   "strace"
-   "guile-readline"))
+           "stapler"
+           ;; "gcc-toolchain"
+           "strace"
+           "guile-readline"))
 
 (define %lotus-mail-packages
   (list "mailutils"
@@ -195,7 +194,6 @@
 
 (define %lotus-font-packages
   (list))
-   
         ;; "font-indic"
 
 (define %lotus-media-packages
@@ -294,8 +292,8 @@
 (define %lotus-system-packages (append ;; %lotus-system-desktop-packages
                                        %lotus-system-selected-packages))
 
-(define %lotus-packages (append %lotus-system-packages
-                                %base-packages))
+(define %lotus-packages (append ;; %base-packages
+                                %lotus-system-packages))
 
 (packages->manifest %lotus-packages)
 
