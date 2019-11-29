@@ -5,7 +5,9 @@
                                                    "polkit"
                                                    "polkit-gnome"
 
+                                                   "gdm"
                                                    "gpm"
+
                                                    "font-adobe-source-code-pro"
                                                    "font-terminus"
                                                    "font-dejavu"
@@ -18,7 +20,7 @@
                                                    "cl-slime-swank"
                                                    "stumpwm"
                                                    "guile-wm"
-                                                   ;; "windowmaker"
+                                                   "windowmaker"
                                                    ;; "twm"
                                                    ;; "herbstluftwm"
 

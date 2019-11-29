@@ -43,10 +43,6 @@
         "rcs"
         "darcs"
 
-        ;; "dovecot"
-        ;; "postfix"
-        ;; "next"
-
         "font-adobe-source-code-pro"
         "font-terminus"
         "font-dejavu"
@@ -54,9 +50,8 @@
         "font-awesome"
         "font-arabic-misc"
 
-        "fribidi"
-        "bicon"
-        
+        ;; "fribidi"
+        ;; "bicon"
 
         "global"
 
@@ -74,7 +69,7 @@
 
         "time"
 
-	"xclip"
+        "xclip"
         "xmodmap"
         ;; at
         "curl"
@@ -139,13 +134,13 @@
    "xdg-user-dirs"
    "xdg-utils"
    "shroud"
-   "gdm"
+   ;; "gdm"
    ;; "gpm"
    "git"
    "git-remote-gcrypt"
    "guile-colorized"
    "file"
-   ; "macchanger"
+   ;; "macchanger"
    "font-lohit"
    "screen"
    "tmux"
@@ -167,13 +162,14 @@
    "ncurses-with-gpm"
    "ncurses"
 
-   "polkit"
-   "polkit-gnome"
+   ;; "dconf"
+   ;; "polkit"
+   ;; "polkit-gnome"
+
    "redshift"
    "xcursor-themes"
    "unclutter"
 
-   ;; "dconf"
 
    ;; "sbcl"
    ;; "cl-fad"
@@ -185,8 +181,6 @@
    ;; "gcc-toolchain"
    "strace"
    "guile-readline"))
-
-   
 
 (define %lotus-mail-packages
   (list "mailutils"
@@ -227,7 +221,7 @@
         "libsecret"
         "libxft"
         "scsh"
-        "stumpwm"
+        ;; "stumpwm"
         ;; "guile-wm"
         ;; "stumpwm-with-slynk"
         ;; "cl-stumpwm"
@@ -279,12 +273,12 @@
           %lotus-text-packages
           %lotus-notification-packages))
 
-(define %lotus-system-desktop-packages
-  (list lvm2
-        ;; for HTTPS access
-        nss-certs
-        ;; for user mounts
-        gvfs))
+;; (define %lotus-system-desktop-packages
+;;   (list lvm2
+;;         ;; for HTTPS access
+;;         nss-certs
+;;         ;; for user mounts
+;;         gvfs))
 
 (define %lotus-system-selected-packages
   (map specification->package

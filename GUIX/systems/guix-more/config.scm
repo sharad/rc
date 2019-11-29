@@ -312,35 +312,43 @@
 
 
 (define %lotus-copy-current-config-file-in-etc (list
-                                         ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
-                                         ;; Copy current config to /etc/config.scm
-                                         (simple-service 'config-file etc-service-type
-                                                         `(("config.scm" ,this-config-file)))))
+                                                ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
+                                                ;; Copy current config to /etc/config.scm
+                                                (simple-service 'config-file etc-service-type
+                                                                `(("config.scm" ,this-config-file)))))
+
+
+;; (define lotus-display-manager-service (list
+;;                                        (service gdm-service-type
+;;                                                 (
+;;                                                  (auto-login?)))))
 
 (define %lotus-many-services (list ;; (service gnome-desktop-service-type)
-                                   ;; (service xfce-desktop-service-type)
-                                   ;; (service mate-desktop-service-type)
-                                   ;; (service enlightenment-desktop-service-type)
-                                   (service openssh-service-type)
-                                   ;; (service tor-service-type)
-                                   (set-xorg-configuration
-                                    (xorg-configuration
-                                     (keyboard-layout %lotus-keyboard-layout)))))
+                              ;; (service xfce-desktop-service-type)
+                              ;; (service mate-desktop-service-type)
+                              ;; (service enlightenment-desktop-service-type)
+                              (service openssh-service-type)
+                              ;; (service tor-service-type)
+                              (set-xorg-configuration
+                               (xorg-configuration
+                                (keyboard-layout %lotus-keyboard-layout)))))
 
 (define %lotus-few-services    (list ;; (service gnome-desktop-service-type)
                                      (service openssh-service-type)
-                                     (service tor-service-type)
+                                     ;; (service tor-service-type)
                                      (set-xorg-configuration
                                       (xorg-configuration
                                        (keyboard-layout %lotus-keyboard-layout)))))
 
 (define %lotus-simple-services %lotus-few-services)
 
-(define %lotus-simple-and-desktop-services (append %lotus-copy-current-config-file-in-etc
-                                                   %lotus-simple-services
+(define %lotus-simple-and-desktop-services (append %lotus-simple-services
                                                    %desktop-services))
+
 
 (define %lotus-desktop-services (append %desktop-services))
+
+
 (define %lotus-base-with-dhcp-services
   (append (list (service dhcp-client-service-type)
                 (service openssh-service-type
@@ -349,8 +357,10 @@
           %base-services))
 
 (define %lotus-base-services %base-services)
+
 
-(define %lotus-services  %lotus-simple-and-desktop-services)
+(define %lotus-services      (append %lotus-copy-current-config-file-in-etc
+                                     %lotus-simple-and-desktop-services))
 
 
 (define %lotus-firmware (list linux-firmware))
