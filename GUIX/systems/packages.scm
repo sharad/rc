@@ -4,6 +4,7 @@
 (define %lotus-system-selected-package-names (list "glibc-utf8-locales"
                                                    "polkit"
                                                    "polkit-gnome"
+                                                   "autorandr"
 
                                                    "gdm"
                                                    "gpm"

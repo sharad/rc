@@ -30,7 +30,8 @@
 
 
 (define %lotus-other-packages
-  (list "emacs-geiser"
+  (list "vim"
+        "emacs-geiser"
         "emacs-sesman"
         "guile-studio"
         "emacs-guix"
@@ -43,12 +44,12 @@
         "rcs"
         "darcs"
 
-        "font-adobe-source-code-pro"
-        "font-terminus"
-        "font-dejavu"
-        "font-hack"
-        "font-awesome"
-        "font-arabic-misc"
+        ;; "font-adobe-source-code-pro"
+        ;; "font-terminus"
+        ;; "font-dejavu"
+        ;; "font-hack"
+        ;; "font-awesome"
+        ;; "font-arabic-misc"
 
         ;; "fribidi"
         ;; "bicon"
@@ -134,14 +135,12 @@
    "xdg-user-dirs"
    "xdg-utils"
    "shroud"
-   ;; "gdm"
-   ;; "gpm"
    "git"
    "git-remote-gcrypt"
    "guile-colorized"
    "file"
    ;; "macchanger"
-   "font-lohit"
+   ;; "font-lohit"
    "screen"
    "tmux"
    "kitty"
@@ -152,7 +151,6 @@
    "zsh-autosuggestions"
    "hstr"
    "shflags"
-   "vim"
    "the-silver-searcher"
    "emacs-ag"
    "emacs-helm-ag"
@@ -189,7 +187,8 @@
         "mu"))
 
 (define %lotus-font-packages
-  (list "font-lohit"))
+  (list
+   "font-lohit"))
         ;; "font-indic"
 
 (define %lotus-media-packages
@@ -203,7 +202,7 @@
         "mpg321"))
 
 (define %lotus-gui-packages
-  (list "xinit"
+  (list ;; "xinit"
         "i3status"
         "dmenu"
         "st"
@@ -216,6 +215,7 @@
         "xrandr-invert-colors"
         "rxvt-unicode"
         "sakura"
+        "gnome-keyring"
         "gcr"
         "seahorse"
         "libsecret"
@@ -267,7 +267,7 @@
   (append %lotus-system-selected-package-names
           %lotus-other-packages
           %lotus-mail-packages
-          %lotus-font-packages
+          ;; %lotus-font-packages
           %lotus-media-packages
           %lotus-gui-packages
           %lotus-text-packages
