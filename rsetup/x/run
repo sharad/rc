@@ -62,7 +62,7 @@ then
     xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >> ~/.xsession-errors 2>&1
 fi
 
-if false
+if true
 then
   if whence -p xterm >& /dev/null
   then
@@ -130,14 +130,13 @@ fi
 
 if [ $DISPLAY ]
 then
-
-    # which  gnubiff &&  gnubiff  -n &
-    # xmodmap ~/.xmodmaprc	# excellent, why i was not knowing it before.
-
-    if whence -p python >& /dev/null
+    if whence -p xdotool >& /dev/null
+    then
+        xdotool key Caps_Lock  >> ~/.xsession-errors 2>&1
+    elif whence -p python >& /dev/null
     then
       # unset Caps Lock
-      : python -c 'from ctypes import *; X11 = cdll.LoadLibrary("libX11.so.6"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'  >> ~/.xsession-errors 2>&1
+      python -c 'from ctypes import *; X11 = cdll.LoadLibrary("libX11.so.6"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'  >> ~/.xsession-errors 2>&1
     fi
 
     if whence -p xmodmap >& /dev/null

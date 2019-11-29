@@ -6,16 +6,19 @@
                                                    "polkit-gnome"
                                                    "autorandr"
 
+                                                   ;; "dconf"
+
                                                    "gdm"
                                                    "gpm"
+                                                   "slock" ; need suid
 
-                                                   "font-adobe-source-code-pro"
-                                                   "font-terminus"
-                                                   "font-dejavu"
-                                                   "font-hack"
-                                                   "font-awesome"
-                                                   "font-arabic-misc"
-                                                   "font-lohit"
+                                                   ;; "font-adobe-source-code-pro"
+                                                   ;; "font-terminus"
+                                                   ;; "font-dejavu"
+                                                   ;; "font-hack"
+                                                   ;; "font-awesome"
+                                                   ;; "font-arabic-misc"
+                                                   ;; "font-lohit"
 
                                                    "zsh"
                                                    "cl-fad"
@@ -26,8 +29,7 @@
                                                    ;; "twm"
                                                    ;; "herbstluftwm"
 
-                                                   "ecryptfs-utils"
-                                                   "dconf"))
+                                                   "ecryptfs-utils"))
 
 (define %lotus-package-names-for-installation 
   (append %lotus-system-selected-package-names

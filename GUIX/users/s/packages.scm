@@ -45,12 +45,13 @@
         "rcs"
         "darcs"
 
-        ;; "font-adobe-source-code-pro"
-        ;; "font-terminus"
-        ;; "font-dejavu"
-        ;; "font-hack"
-        ;; "font-awesome"
-        ;; "font-arabic-misc"
+        "font-adobe-source-code-pro"
+        "font-terminus"
+        "font-dejavu"
+        "font-hack"
+        "font-awesome"
+        "font-arabic-misc"
+        "font-lohit"
 
         ;; "fribidi"
         ;; "bicon"
@@ -161,6 +162,9 @@
    "ncurses-with-gpm"
    "ncurses"
 
+   "dconf"
+   ;; "gsettings-desktop-schemas"
+
    ;; "dconf"
    ;; "polkit"
    ;; "polkit-gnome"
@@ -241,7 +245,7 @@
         "xprop"
         "xwininfo"
         "xautolock"
-        "slock"
+        ;; "slock" -- need suid
         "xset"
         "xsetroot"
         "pidgin"
