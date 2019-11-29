@@ -1,4 +1,6 @@
 
+
+
 (define %lotus-system-selected-package-names (list "zsh"
                                                    "ecryptfs-utils"))
 
@@ -29,3 +31,16 @@
 
 (define %lotus-packages (append %lotus-system-packages
                                 %base-packages))
+
+
+(define this-package-file
+  (local-file (basename (assoc-ref (current-source-location)
+                                   'filename))
+              "package.scm"))
+
+(define %lotus-copy-current-package-file-in-etc (list
+                                                 ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
+                                                 ;; Copy current config to /etc/config.scm
+                                                 (simple-service 'package-file etc-service-type
+                                                                 `(("config.scm" ,this-package-file)))))
+

@@ -21,7 +21,7 @@
 
 (use-modules (gnu system locale))
 
-(define this-file
+(define this-config-file
   (local-file (basename (assoc-ref (current-source-location)
                                    'filename))
               "config.scm"))
@@ -339,11 +339,11 @@
                              %base-user-accounts))
 
 
-(define %lotus-copy-current-file-in-etc (list
+(define %lotus-copy-current-config-file-in-etc (list
                                          ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
                                          ;; Copy current config to /etc/config.scm
                                          (simple-service 'config-file etc-service-type
-                                                         `(("config.scm" ,this-file)))))
+                                                         `(("config.scm" ,this-config-file)))))
 
 (define %lotus-many-services (list (service gnome-desktop-service-type)
                                    ;; (service xfce-desktop-service-type)
@@ -365,7 +365,7 @@
 
 (define %lotus-simple-services %lotus-few-services)
 
-(define %lotus-simple-and-desktop-services (append %lotus-copy-current-file-in-etc
+(define %lotus-simple-and-desktop-services (append %lotus-copy-current-config-file-in-etc
                                                    %lotus-simple-services
                                                    %desktop-services))
 
