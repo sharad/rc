@@ -1,6 +1,6 @@
 
 ;; https://wingolog.org/archives/2015/08/04/developing-v8-with-guix
-(use-package-modules base gcc llvm base python version-control less ccache pkg-config glib gnome cmake messaging autotools flex bison m4 gawk xorg onc-rpc gsasl kerberos commencement)
+(use-package-modules base gcc llvm base python version-control less ccache pkg-config glib gnome cmake messaging autotools flex bison compression m4 gawk xorg onc-rpc gsasl kerberos image commencement fontutils shells)
 
 (use-modules (lotus packages cdesktopenv))
 
@@ -69,20 +69,31 @@
        less
        which
        glib
-       json-glib
+       ;; json-glib
        gcc
        gnu-make
+       loksh
+       mkfontdir
        ;; pidgin
-       cmake
+       ;; cmake
+
+       bdftopcf
+       rpcsvc-proto ;; ac
 
        ;; libtirpc
        libtirpc-gh
-       rpcsvc-proto
-       gss
-       mit-krb5
-
+       freetype
+       bzip2
+       libjpeg
+       motif                            ;pkg-config missing
+       libx11
+       libxmu
+       libxext
+       libxft
        libxinerama
-       libx11))
+       libxscrnsaver
+       libxt
+       xbitmaps))
 
 
 
