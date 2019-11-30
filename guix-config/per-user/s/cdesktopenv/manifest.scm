@@ -1,6 +1,8 @@
 
 ;; https://wingolog.org/archives/2015/08/04/developing-v8-with-guix
-(use-package-modules base gcc llvm base python version-control less ccache pkg-config glib gnome cmake messaging autotools flex bison m4 gawk xorg onc-rpc commencement)
+(use-package-modules base gcc llvm base python version-control less ccache pkg-config glib gnome cmake messaging autotools flex bison m4 gawk xorg onc-rpc gsasl kerberos commencement)
+
+(use-modules (lotus packages cdesktopenv))
 
 (define %lotus-dev-cdesktop-package-names
   (list "glibc"
@@ -70,12 +72,14 @@
        json-glib
        gcc
        gnu-make
-       pidgin
+       ;; pidgin
        cmake
 
        ;; libtirpc
        libtirpc-gh
        rpcsvc-proto
+       gss
+       mit-krb5
 
        libxinerama
        libx11))

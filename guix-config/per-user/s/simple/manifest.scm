@@ -43,8 +43,10 @@
         "jupyter"
         "python-git-review"
 
+        "atool"
+
         ;; "glib"
-        "dconf"
+        ;; "dconf"
         ;; "gsettings-desktop-schemas"
 
         "rcs"
