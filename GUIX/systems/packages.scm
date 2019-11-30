@@ -26,13 +26,15 @@
                                                    ;; "herbstluftwm"
                                                    "ecryptfs-utils"))
 
-(define %lotus-font-packages (list "font-adobe-source-code-pro"
-                                   "font-terminus"
-                                   "font-dejavu"
-                                   "font-hack"
-                                   "font-awesome"
-                                   "font-arabic-misc"
-                                   "font-lohit"))
+;; (define %lotus-font-packages (list "gs-fonts"
+;;                                    "font-gnu-freefont-ttf"
+;;                                    "font-adobe-source-code-pro"
+;;                                    "font-terminus"
+;;                                    "font-dejavu"
+;;                                    "font-hack"
+;;                                    "font-awesome"
+;;                                    "font-arabic-misc"
+;;                                    "font-lohit"))
 
 (define %lotus-mail-packages (list))
 (define %lotus-font-packages (list))
@@ -56,7 +58,6 @@
   (list lvm2
         ;; for HTTPS access
         nss-certs
-        (list glib "bin")
         ;; for user mounts
         gvfs))
 

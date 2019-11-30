@@ -50,13 +50,17 @@
         "rcs"
         "darcs"
 
-        ;; "font-adobe-source-code-pro"
-        ;; "font-terminus"
-        ;; "font-dejavu"
-        ;; "font-hack"
-        ;; "font-awesome"
-        ;; "font-arabic-misc"
-        ;; "font-lohit"
+        "gs-fonts"
+        "font-gnu-freefont-ttf"
+        "font-adobe-source-code-pro"
+        "font-terminus"
+        "font-dejavu"
+        "font-hack"
+        "font-awesome"
+        "font-arabic-misc"
+        "font-lohit"
+
+
         "xlsfonts"
 
         ;; "fribidi"
@@ -131,7 +135,7 @@
         "gpa"
         "jetring"))
 
-(define %lotus-system-selected-package-names
+(define %lotus-user-selected-package-names
    (list   "m4"
            "binutils"
            ;; "coreutils"
@@ -269,7 +273,7 @@
         "dunst"))
 
 (define %lotus-package-names-for-installation 
-  (append %lotus-system-selected-package-names
+  (append %lotus-user-selected-package-names
           %lotus-other-packages
           %lotus-mail-packages
           ;; %lotus-font-packages
@@ -278,22 +282,20 @@
           %lotus-text-packages
           %lotus-notification-packages))
 
-;; (define %lotus-system-desktop-packages
-;;   (list lvm2
-;;         ;; for HTTPS access
-;;         nss-certs
-;;         ;; for user mounts
-;;         gvfs))
+(define %lotus-user-desktop-packages
+  (list ;; lvm2
+        ;; for user mounts
+        ;; gvfs
+        (list glib "bin")))
 
-(define %lotus-system-selected-packages
+(define %lotus-user-selected-packages
   (map specification->package
        %lotus-package-names-for-installation))
 
-(define %lotus-system-packages (append ;; %lotus-system-desktop-packages
-                                       %lotus-system-selected-packages))
+(define %lotus-user-packages (append %lotus-user-desktop-packages
+                                     %lotus-user-selected-packages))
 
-(define %lotus-packages (append ;; %base-packages
-                                %lotus-system-packages))
+(define %lotus-packages (append %lotus-user-packages))
 
 (packages->manifest %lotus-packages)
 
