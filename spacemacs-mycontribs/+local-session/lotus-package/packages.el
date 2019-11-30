@@ -258,10 +258,9 @@ Each entry is either:
 
       (progn
 
-        (setq
-         package-source-path "~/../paradise/Projects/Emacs/elpa-pkgs/lotus"
-         package-local-dev-archive "local"
-         package-archive-upload-base "~/.xemacs/elpa/upload")
+        (setq package-source-path         "~/../paradise/Projects/Emacs/elpa-pkgs/lotus"
+              package-local-dev-archive   "local"
+              package-archive-upload-base "~/.xemacs/elpa/upload")
 
         (when package-archive-upload-base
           (unless (assoc package-local-dev-archive package-archives)
@@ -282,19 +281,18 @@ Each entry is either:
 
 (defun lotus-package/init-package-dev-utils-lotus ()
   (use-package package-dev-utils-lotus
-      :defer t
-      ;; :commands (package-upload-file package-upload-buffer)
-      :config
-      (progn
-        (setq
-         package-source-path "~/.xemacs/elpa/pkgs"
-         package-local-dev-archive "local"
-         package-archive-upload-base "~/.xemacs/elpa/upload")
+    :defer t
+    ;; :commands (package-upload-file package-upload-buffer)
+    :config
+    (progn
+      (setq package-source-path         "~/../paradise/Projects/Emacs/elpa-pkgs/lotus"
+            package-local-dev-archive   "local"
+            package-archive-upload-base "~/.xemacs/elpa/upload")
 
-        (when package-archive-upload-base
-          (unless (assoc package-local-dev-archive package-archives)
-            (push
-             (cons package-local-dev-archive package-archive-upload-base)
-             package-archives))))))
+      (when package-archive-upload-base
+        (unless (assoc package-local-dev-archive package-archives)
+          (push
+           (cons package-local-dev-archive package-archive-upload-base)
+           package-archives))))))
 
 ;;; packages.el ends here

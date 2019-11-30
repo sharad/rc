@@ -74,6 +74,7 @@
 
         "firefox"
         "conkeror-firefox"
+        "epihany"
 
         "pavucontrol"
         "pulsemixer"

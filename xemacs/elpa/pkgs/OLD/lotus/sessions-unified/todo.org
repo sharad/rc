@@ -1,3 +1,0 @@
-
-* Divide sessions-unified.el into multiple file, peek into some multifile package how it were managged.
-e.g. cperl, org etc
