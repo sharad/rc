@@ -74,7 +74,7 @@
 
         "firefox"
         "conkeror-firefox"
-        "epihany"
+        ;; "epiphany"
 
         "pavucontrol"
         "pulsemixer"
@@ -170,10 +170,13 @@
            "emacs-ag"
            "emacs-helm-ag"
            "emacs"
+
+           "cdesktopenv"
+
            ;; "gparted"
            ;; "parted"
            "ncurses-with-gpm"
-           "ncurses"
+           ;; "ncurses"
 
            ;; "polkit"
            ;; "polkit-gnome"
@@ -257,6 +260,7 @@
         "xsetroot"
         "pidgin"
         "pidgin-otr"
+        "telegram-purple"
         "telegram-purple"))
 
 (define %lotus-text-packages
