@@ -232,6 +232,6 @@ if [ -r $GUIX_PROFILE/etc/profile ]
 then
   . $GUIX_PROFILE/etc/profile
 fi
-
+# export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 ## GUIX
 

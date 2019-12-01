@@ -186,7 +186,7 @@
            ;; "cl-fad"
            ;; "cl-slime-swank"
 
-           ;; "glibc-utf8-locales"
+           "glibc-utf8-locales" ;; guix guile showing some error even it is part of system configuration
 
            "stapler"
            ;; "gcc-toolchain"

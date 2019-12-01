@@ -20,6 +20,7 @@ then
   . $GUIX_PROFILE/etc/profile
 fi
 export GUIX_PROFILE
+export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 ## GUIX
 
 
