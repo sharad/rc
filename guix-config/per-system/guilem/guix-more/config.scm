@@ -20,6 +20,7 @@
 ;; other guix
 
 (use-modules (gnu system locale))
+(use-service-modules dns)
 
 ;; (define this-config-file
 ;;   (local-file (basename (assoc-ref (current-source-location)
@@ -318,6 +319,16 @@
 ;;                                                                 `(("config.scm" ,this-config-file)))))
 
 
+;; https://notabug.org/thomassgn/guixsd-configuration/src/master/config.scm
+;; https://guix.gnu.org/manual/en/html_node/Networking-Services.html
+;; https://jonathansblog.co.uk/using-dnsmasq-as-an-internal-dns-server-to-block-online-adverts
+(define %lotus-dnsmasq-services (list (service dnsmasq-service-type
+                                               (dnsmasq-configuration (local-service? #t)))))
+                                        ;(no-resolv? #f)
+                                        ;(servers '("82.196.9.45"
+                                        ;           "51.255.48.78"
+                                        ;           "51.15.98.97"))
+
 ;; (define lotus-display-manager-service (list
 ;;                                        (service gdm-service-type
 ;;                                                 (
@@ -343,6 +354,7 @@
 (define %lotus-simple-services %lotus-few-services)
 
 (define %lotus-simple-and-desktop-services (append %lotus-simple-services
+                                                   %lotus-dnsmasq-services
                                                    %desktop-services))
 
 
