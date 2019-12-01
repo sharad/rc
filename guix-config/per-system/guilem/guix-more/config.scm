@@ -21,10 +21,10 @@
 
 (use-modules (gnu system locale))
 
-(define this-config-file
-  (local-file (basename (assoc-ref (current-source-location)
-                                   'filename))
-              "config.scm"))
+;; (define this-config-file
+;;   (local-file (basename (assoc-ref (current-source-location)
+;;                                    'filename))
+;;               "config.scm"))
 
 ;; non-guix
 
@@ -311,11 +311,11 @@
                              %base-user-accounts))
 
 
-(define %lotus-copy-current-config-file-in-etc (list
-                                                ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
-                                                ;; Copy current config to /etc/config.scm
-                                                (simple-service 'config-file etc-service-type
-                                                                `(("config.scm" ,this-config-file)))))
+;; (define %lotus-copy-current-config-file-in-etc (list
+;;                                                 ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
+;;                                                 ;; Copy current config to /etc/config.scm
+;;                                                 (simple-service 'config-file etc-service-type
+;;                                                                 `(("config.scm" ,this-config-file)))))
 
 
 ;; (define lotus-display-manager-service (list
@@ -359,7 +359,7 @@
 (define %lotus-base-services %base-services)
 
 
-(define %lotus-services      (append %lotus-copy-current-config-file-in-etc
+(define %lotus-services      (append ;; %lotus-copy-current-config-file-in-etc
                                      %lotus-simple-and-desktop-services))
 
 
@@ -413,22 +413,27 @@
 
 
 (operating-system
- (kernel             %lotus-kernel)
- (firmware           %lotus-firmware)
- (initrd             %lotus-initrd)
- (locale             %lotus-locale)
- (locale-definitions %lotus-locale-definitions)
- (timezone           %lotus-timezone)
- (keyboard-layout    %lotus-keyboard-layout)
- (host-name          %lotus-host-name)
- (setuid-programs    %lotus-setuid-programs)
- (mapped-devices     %lotus-mapped-devices)
- (users              %lotus-users)
- (file-systems       %lotus-file-systems)
- ;; (swap-devices       %lotus-swap-devices)
- (bootloader         %lotus-bootloader)
- (packages           %lotus-packages)
- (services           %lotus-services)
- ;; Allow resolution of '.local' host names with mDNS.
- (name-service-switch %mdns-host-lookup-nss))
+  (kernel             %lotus-kernel)
+  (firmware           %lotus-firmware)
+  (initrd             %lotus-initrd)
+  (locale             %lotus-locale)
+  (locale-definitions %lotus-locale-definitions)
+  (timezone           %lotus-timezone)
+  (keyboard-layout    %lotus-keyboard-layout)
+  (host-name          %lotus-host-name)
+  (setuid-programs    %lotus-setuid-programs)
+  (mapped-devices     %lotus-mapped-devices)
+  (users              %lotus-users)
+  (file-systems       %lotus-file-systems)
+  ;; (swap-devices       %lotus-swap-devices)
+  (bootloader         %lotus-bootloader)
+  (packages           %lotus-packages)
+  (services           %lotus-services)
+  ;; Allow resolution of '.local' host names with mDNS.
+  (name-service-switch %mdns-host-lookup-nss))
+
+
+;; TO SEE host-file
+;; https://guix.gnu.org/manual/en/html_node/Networking-Services.html
+
 

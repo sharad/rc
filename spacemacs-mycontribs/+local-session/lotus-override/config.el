@@ -24,6 +24,23 @@
 
 ;;; Code:
 
+(defun lotus-override/init-emacsql-sqlite-config ()
+  (interactive)
+  (unless (boundp 'emacsql-sqlite-executable)
+    (defvar emacsql-sqlite-executable
+      (expand-file-name emacsql-sqlite-executable-path
+                        (if (or (file-writable-p emacsql-sqlite-data-root)
+                                (file-exists-p (expand-file-name
+                                                emacsql-sqlite-executable-path
+                                                emacsql-sqlite-data-root)))
+                            emacsql-sqlite-data-root
+                          (expand-file-name
+                           (concat "emacsql/" emacsql-version)
+                           user-emacs-directory))
+                        "Path to the EmacSQL backend (this is not the sqlite3 shell).")))
+  (if emacsql-sqlite-executable
+      (setq emacsql-sqlite-executable (concat emacsql-sqlite-executable "-guix"))))
+
 (defun lotus-override/init-lsdb-config ()
   (progn
     (defun lsdb-gnus-update-record ()
@@ -86,6 +103,7 @@
           (setq git-gutter+-buffers-to-reenable nil)))
 
     (defun git-gutter+-diff (curfile)
+      ;; (debug)
       (let ((args (git-gutter+-diff-args curfile))
             (file (buffer-file-name))) ;; for tramp
         (with-temp-buffer

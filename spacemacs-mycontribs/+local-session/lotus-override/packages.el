@@ -36,6 +36,7 @@
 
 (defconst lotus-override-packages
   '(
+    emacsql-sqlite
     (lsdb    :location local)
     git-gutter+
     git-link
@@ -69,6 +70,12 @@ Each entry is either:
 
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
+
+(defun lotus-override/init-emacsql-sqlite ()
+  (use-package emacsql-sqlite
+    :defer t
+    :config
+    (lotus-override/init-emacsql-sqlite-config)))
 
 (defun lotus-override/init-lsdb ()
   (use-package lsdb

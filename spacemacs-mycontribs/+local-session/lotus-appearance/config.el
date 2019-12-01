@@ -73,8 +73,7 @@
   (let ((text-scale-factor (/ (* (float (face-attribute 'mode-line :height)) 1.0002)
                               (float (face-attribute 'default :height)))))
     (when (numberp text-scale-factor)
-      (setq
-       powerline-text-scale-factor text-scale-factor))))
+      (setq powerline-text-scale-factor text-scale-factor))))
 
 (defun lotus-powerline-attrib-setup ()
   (interactive)
@@ -452,6 +451,12 @@
   (message "Setting font: %s" font)
   (setq dotspacemacs-default-font font)
   (spacemacs/set-default-font font))
+
+
+;; mode-line
+
+;; (set-face-font 'mode-line (car dotspacemacs-default-font))
+;; (set-face-attribute 'mode-line nil :inherit 'default)
 
 
 (defun lotus-appearance-setup ()
