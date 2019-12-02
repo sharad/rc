@@ -39,7 +39,10 @@
                            user-emacs-directory)))))
   (if emacsql-sqlite-executable
       (setq emacsql-sqlite-executable
-            (concat emacsql-sqlite-executable "-guix"))))
+            (concat emacsql-sqlite-executable "-"
+                    (if (file-exists-p "/run/current-system/profile/bin/guix")
+                        "guix"
+                      "ubuntu")))))
 
 (defun lotus-override/init-lsdb-config ()
   (progn

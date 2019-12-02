@@ -52,6 +52,9 @@
         "rcs"
         "darcs"
 
+        "recutils"
+        "emacs-recutils"
+
         "gs-fonts"
         "font-gnu-freefont-ttf"
         "font-adobe-source-code-pro"

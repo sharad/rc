@@ -9,7 +9,7 @@
 (use-service-modules networking ssh)
 (use-package-modules bootloaders certs suckless wm)
 
-(use-service-modules desktop networking ssh xorg)
+(use-service-modules desktop networking ssh xorg avahi mail)
 (use-package-modules certs gnome)
 
 (use-modules (gnu packages shells))
@@ -319,6 +319,15 @@
 ;;                                                                 `(("config.scm" ,this-config-file)))))
 
 
+(define %lotus-bitlbee-services (list (service bitlbee-service-type)))
+
+
+;; https://guix.gnu.org/manual/en/html_node/Mail-Services.html
+(define %lotus-mail-aliases-services (list (service mail-aliases-service-type
+                                                    '(("postmaster" "bob")
+                                                      ("bob" "bob@example.com" "bob@example2.com")))))
+
+
 ;; https://lists.nongnu.org/archive/html/help-guix/2016-08/msg00061.html
 ;; https://wingolog.org/pub/alt-os-config.scm
 (define %lotus-dovecot-services (list (dovecot-service
@@ -331,27 +340,27 @@
 ;; https://jonathansblog.co.uk/using-dnsmasq-as-an-internal-dns-server-to-block-online-adverts
 ;; https://stackoverflow.com/questions/48644841/multiple-addn-hosts-conf-in-dnsmasq
 (define %lotus-dnsmasq-services (list (service dnsmasq-service-type
-                                               (dnsmasq-configuration
-                                                ;; (resolv-file)
-                                                ;; (no-resolv? #f)
-                                                ;; (servers '("82.196.9.45"
-                                                ;;            "51.255.48.78"
-                                                ;;            "51.15.98.97"))
-                                                (local-service? #t)))))
+                                               (dnsmasq-configuration ;; (resolv-file)
+                                                                      ;; (no-resolv? #f)
+                                                                      ;; (servers '("82.196.9.45"
+                                                                      ;;            "51.255.48.78"
+                                                                      ;;            "51.15.98.97"))
+                                                                      (local-service? #t)))))
 
 ;; https://guix.gnu.org/manual/en/html_node/Networking-Services.html
 (define %lotus-network-manager-services (list (service network-manager-service-type
-                                                       (network-manager-configuration
-                                                        (dns 'dnsmasq)))))
+                                                       (network-manager-configuration (dns 'dnsmasq)))))
 
 (define %lotus-avahi-services (list (service avahi-service-type)))
 
-;; (define lotus-display-manager-service (list
-;;                                        (service gdm-service-type
-;;                                                 (
-;;                                                  (auto-login?)))))
 
-(define %lotus-many-services (list ;; (service gnome-desktop-service-type)
+(define %lotus-display-manager-service (list (service gdm-service-type
+                                                      (gdm-configuration (auto-login? #t)
+                                                                         (default-user "s")))))
+
+
+(define %lotus-many-services (list
+                              ;; (service gnome-desktop-service-type)
                               ;; (service xfce-desktop-service-type)
                               ;; (service mate-desktop-service-type)
                               ;; (service enlightenment-desktop-service-type)
@@ -371,10 +380,12 @@
 (define %lotus-simple-services %lotus-few-services)
 
 (define %lotus-simple-and-desktop-services (append %lotus-simple-services
-                                                   %lotus-avahi-services
+                                                   ;; %lotus-avahi-services
                                                    %lotus-dnsmasq-services
                                                    ;; %lotus-network-manager-services
+                                                   ;; %lotus-mail-aliases-services
                                                    %lotus-dovecot-services
+                                                   ;; %lotus-display-manager-service
                                                    %desktop-services))
 
 
