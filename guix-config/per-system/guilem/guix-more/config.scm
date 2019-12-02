@@ -322,6 +322,7 @@
 ;; https://notabug.org/thomassgn/guixsd-configuration/src/master/config.scm
 ;; https://guix.gnu.org/manual/en/html_node/Networking-Services.html
 ;; https://jonathansblog.co.uk/using-dnsmasq-as-an-internal-dns-server-to-block-online-adverts
+;; https://stackoverflow.com/questions/48644841/multiple-addn-hosts-conf-in-dnsmasq
 (define %lotus-dnsmasq-services (list (service dnsmasq-service-type
                                                (dnsmasq-configuration (local-service? #t)))))
                                         ;(no-resolv? #f)
