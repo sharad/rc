@@ -315,6 +315,10 @@ function ssh_agent_use_run_keychain()
 
 function eval_guix_profiles()
 {
+    # https://guix.gnu.org/blog/2019/guix-profiles-in-practice/
+    # https://guix.gnu.org/cookbook/en/
+    # https://guix.gnu.org/cookbook/en/html_node/
+    # https://guix.gnu.org/cookbook/en/html_node/Advanced-package-management.html#Advanced-package-management
     # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
     LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER"
     # LOCAL_GUIX_EXTRA_PROFILES=( $LOCAL_GUIX_EXTRA_PROFILES )
