@@ -1,5 +1,5 @@
 ;; https://wingolog.org/archives/2015/08/04/developing-v8-with-guix
-(use-package-modules  base gcc llvm base python version-control less ccache pkg-config glib gnome cmake messaging autotools flex bison m4 gawk xorg onc-rpc commencement)
+(use-package-modules  base gcc llvm base python version-control less ccache pkg-config glib gnome cmake messaging autotools flex bison m4 gawk xorg onc-rpc commencement fonts)
 
 
 (use-modules (gnu packages linux))
@@ -29,7 +29,6 @@
 
 
 
-
 (define %lotus-other-packages
   (list "vim"
         "emacs-geiser"
@@ -40,6 +39,9 @@
         "emacs-pretty-mode"
         "emacs-el-mock"
         "emacs-flyspell-correct"
+        "emacs-powerline"
+        "emacs-spaceline"
+        "emacs-emojify"
         "jupyter"
         "python-git-review"
 
@@ -55,15 +57,15 @@
         "recutils"
         "emacs-recutils"
 
-        "gs-fonts"
-        "font-gnu-freefont-ttf"
-        "font-adobe-source-code-pro"
-        "font-terminus"
-        "font-dejavu"
-        "font-hack"
-        "font-awesome"
-        "font-arabic-misc"
-        "font-lohit"
+        ;; "font-gnu-freefont-ttf"
+        ;; "font-adobe-source-code-pro"
+        ;; "font-terminus"
+        ;; "font-dejavu"
+        ;; "font-hack"
+        ;; "font-awesome"
+        ;; "font-arabic-misc"
+        ;; "font-lohit"
+        ;; "font-tamzen"
 
 
         "xlsfonts"
@@ -206,8 +208,59 @@
         "mu"))
 
 (define %lotus-font-packages
-  (list))
+  (list "gs-fonts"
+        "font-ibm-plex"
+        "font-inconsolata"
+        "font-ubuntu"
+        "font-dejavu"
+        "font-bitstream-vera"
+        "font-abattis-cantarell"
+        "font-lato"
+        "font-gnu-freefont-ttf"
+        "font-liberation"
+        "font-linuxlibertine"
+        "font-terminus"
+        "font-adobe-source-han-sans"
+        "font-cns11643"
+        "font-cns11643-swjz"
+        "font-wqy-zenhei"
+        "font-wqy-microhei"
+        "font-rachana"
+        "font-tex-gyre"
+        "font-anonymous-pro"
+        "font-anonymous-pro-minus"
+        "font-gnu-unifont"
+        "font-google-noto"
+        "font-google-roboto"
+        "font-un"
+        "font-fantasque-sans"
+        "font-hack"
+        "font-adobe-source-code-pro"
+        "font-adobe-source-sans-pro"
+        "font-adobe-source-serif-pro"
+        "font-fira-mono"
+        "font-fira-sans"
+        "font-fira-code"
+        "font-awesome"
+        "font-tamzen"
+        "font-comic-neue"
+        "font-iosevka"
+        "font-iosevka-slab"
+        "font-go"
+        "font-google-material-design-icons"
+        "font-open-dyslexic"
+        "font-dosis"
+        "font-culmus"
         ;; "font-indic"
+        "font-lohit"
+        "font-blackfoundry-inria"
+        "font-sil-gentium"
+        "font-sil-andika"
+        "font-sil-charis"
+        "font-mononoki"
+        "font-public-sans"
+        "font-hermit"
+        "font-dseg"))
 
 (define %lotus-media-packages
   (list "libva"
@@ -286,7 +339,7 @@
   (append %lotus-user-selected-package-names
           %lotus-other-packages
           %lotus-mail-packages
-          ;; %lotus-font-packages
+          %lotus-font-packages
           %lotus-media-packages
           %lotus-gui-packages
           %lotus-text-packages

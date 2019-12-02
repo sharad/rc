@@ -24,6 +24,7 @@ export GUIX_PROFILE
 
 # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
 LOCAL_GUIX_EXTRA_PROFILES=("normal")
+export LOCAL_GUIX_EXTRA_PROFILES
 ## GUIX
 
 

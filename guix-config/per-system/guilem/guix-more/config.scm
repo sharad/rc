@@ -20,12 +20,12 @@
 ;; other guix
 
 (use-modules (gnu system locale))
-(use-service-modules dns)
+;; (use-modules (guix) (gnu) (gnu services mcron))
+(use-package-modules base idutils)
+(use-service-modules dns mcron messaging)
 
-;; (define this-config-file
-;;   (local-file (basename (assoc-ref (current-source-location)
-;;                                    'filename))
-;;               "config.scm"))
+(define this-config-file
+  (local-file (assoc-ref (current-source-location) 'filename)))
 
 ;; non-guix
 
@@ -219,8 +219,7 @@
    %lotus-file-system-vg01-lv01
    %lotus-file-system-vg02-lv01
    %lotus-file-system-vgres01-lvres01
-   %lotus-file-system-house-home
-   ))
+   %lotus-file-system-house-home))
 
 (define %lotus-file-system-boot-efi (file-system
                                      (mount-point "/boot/efi")
@@ -254,7 +253,7 @@
 
 
 ;; packages
-(load "../packages.scm")
+(load "packages.scm")
 
 
 (define %lotus-keyboard-layout (keyboard-layout "us" "altgr-intl"))
@@ -312,11 +311,43 @@
                              %base-user-accounts))
 
 
-;; (define %lotus-copy-current-config-file-in-etc (list
-;;                                                 ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
-;;                                                 ;; Copy current config to /etc/config.scm
-;;                                                 (simple-service 'config-file etc-service-type
-;;                                                                 `(("config.scm" ,this-config-file)))))
+(define %lotus-copy-current-config-file-in-etc (list (simple-service 'config-file etc-service-type
+                                                                     ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
+                                                                     ;; Copy current config to /etc/config.scm
+                                                                     `(("config/config.scm"  ,this-config-file)
+                                                                       ("config/package.scm" ,this-package-file)))))
+
+
+;; Vixie cron schedular
+(define updatedb-job
+  ;; Run 'updatedb' at 3AM every day.  Here we write the
+  ;; job's action as a Scheme procedure.
+  #~(job '(next-hour '(3))
+         (lambda ()
+           (execl (string-append #$findutils "/bin/updatedb")
+                  "updatedb"
+                  "--prunepaths=/tmp /var/tmp /gnu/store"))))
+
+(define garbage-collector-job
+  ;; Collect garbage 5 minutes after midnight every day.
+  ;; The job's action is a shell command.
+  #~(job "5 0 * * *"            ;Vixie cron syntax
+         "guix gc -F 1G"))
+
+(define idutils-job
+  ;; Update the index database as user "charlie" at 12:15PM
+  ;; and 19:15PM.  This runs from the user's home directory.
+  #~(job '(next-minute-from (next-hour '(12 19)) '(15))
+         (string-append #$idutils "/bin/mkid src")
+         #:user "charlie"))
+
+
+;; https://guix.gnu.org/manual/en/html_node/Scheduled-Job-Execution.html
+(define %lotus-mcron-services (list (service mcron-service-type
+                                             (mcron-configuration
+                                              (jobs (list garbage-collector-job
+                                                          updatedb-job
+                                                          idutils-job))))))
 
 
 (define %lotus-bitlbee-services (list (service bitlbee-service-type)))
@@ -354,25 +385,27 @@
 (define %lotus-avahi-services (list (service avahi-service-type)))
 
 
-(define %lotus-display-manager-service (list (service gdm-service-type
-                                                      (gdm-configuration (auto-login? #t)
-                                                                         (default-user "s")))))
-
+(define %lotus-desktop-services (modify-services %desktop-services
+                                  (gdm-service-type config =>
+                                                    (gdm-configuration (inherit config)
+                                                                       (xorg-configuration
+                                                                        (xorg-configuration
+                                                                         (keyboard-layout keyboard-layout)))
+                                                                       (auto-login? #t)
+                                                                       (default-user "s")))))
 
-(define %lotus-many-services (list
-                              ;; (service gnome-desktop-service-type)
-                              ;; (service xfce-desktop-service-type)
-                              ;; (service mate-desktop-service-type)
-                              ;; (service enlightenment-desktop-service-type)
-                              (service openssh-service-type)
-                              ;; (service tor-service-type)
-                              (set-xorg-configuration
-                               (xorg-configuration
-                                (keyboard-layout %lotus-keyboard-layout)))))
+(define %lotus-many-services (list (service openssh-service-type)
+                                   ;; (service gnome-desktop-service-type)
+                                   ;; (service xfce-desktop-service-type)
+                                   ;; (service mate-desktop-service-type)
+                                   ;; (service enlightenment-desktop-service-type)
+                                   (service tor-service-type)
+                                   (set-xorg-configuration
+                                    (xorg-configuration
+                                     (keyboard-layout %lotus-keyboard-layout)))))
 
-(define %lotus-few-services    (list ;; (service gnome-desktop-service-type)
-                                     (service openssh-service-type)
-                                     ;; (service tor-service-type)
+(define %lotus-few-services    (list (service openssh-service-type)
+                                     (service tor-service-type)
                                      (set-xorg-configuration
                                       (xorg-configuration
                                        (keyboard-layout %lotus-keyboard-layout)))))
@@ -383,13 +416,10 @@
                                                    ;; %lotus-avahi-services
                                                    %lotus-dnsmasq-services
                                                    ;; %lotus-network-manager-services
-                                                   ;; %lotus-mail-aliases-services
+                                                   %lotus-mail-aliases-services
                                                    %lotus-dovecot-services
-                                                   ;; %lotus-display-manager-service
-                                                   %desktop-services))
-
-
-(define %lotus-desktop-services (append %desktop-services))
+                                                   %lotus-mcron-services
+                                                   %lotus-desktop-services))
 
 
 (define %lotus-base-with-dhcp-services
@@ -402,7 +432,7 @@
 (define %lotus-base-services %base-services)
 
 
-(define %lotus-services      (append ;; %lotus-copy-current-config-file-in-etc
+(define %lotus-services      (append %lotus-copy-current-config-file-in-etc
                                      %lotus-simple-and-desktop-services))
 
 

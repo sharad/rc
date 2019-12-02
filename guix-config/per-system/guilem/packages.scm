@@ -73,13 +73,11 @@
 
 
 (define this-package-file
-  (local-file (basename (assoc-ref (current-source-location)
-                                   'filename))
-              "package.scm"))
+  (local-file (assoc-ref (current-source-location) 'filename)))
 
-(define %lotus-copy-current-package-file-in-etc (list
-                                                 ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
-                                                 ;; Copy current config to /etc/config.scm
-                                                 (simple-service 'package-file etc-service-type
-                                                                 `(("config.scm" ,this-package-file)))))
+;; (define %lotus-copy-current-package-file-in-etc (list
+;;                                                  ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
+;;                                                  ;; Copy current config to /etc/config.scm
+;;                                                  (simple-service 'package-file etc-service-type
+;;                                                                  `(("config.scm" ,this-package-file)))))
 
