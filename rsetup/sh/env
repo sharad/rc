@@ -20,7 +20,10 @@ then
   . $GUIX_PROFILE/etc/profile
 fi
 export GUIX_PROFILE
-export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
+# export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
+
+# https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
+LOCAL_GUIX_EXTRA_PROFILES=("normal")
 ## GUIX
 
 
@@ -310,7 +313,22 @@ function ssh_agent_use_run_keychain()
     fi
 }
 
-
+function eval_guix_profiles()
+{
+    # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
+    LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER"
+    # LOCAL_GUIX_EXTRA_PROFILES=( $LOCAL_GUIX_EXTRA_PROFILES )
+    for profile in $LOCAL_GUIX_EXTRA_PROFILES
+    do
+        profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles/"$(basename $profile)"
+        if [ -f "$profile_path"/etc/profile ]
+        then
+            . "$profile_path"/etc/profile
+        fi
+        unset profile_path
+        unset profile
+    done
+}
 
 ## 
 ssh_agent_use_run_keychain
@@ -344,3 +362,8 @@ else
 fi
 
 unset MACHINE_ID
+
+
+## GUIX
+eval_guix_profiles
+## GUIX
