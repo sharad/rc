@@ -332,13 +332,12 @@
 ;; https://stackoverflow.com/questions/48644841/multiple-addn-hosts-conf-in-dnsmasq
 (define %lotus-dnsmasq-services (list (service dnsmasq-service-type
                                                (dnsmasq-configuration
-                                                (local-service? #t)
                                                 ;; (resolv-file)
-                                                ))))
-                                        ;(no-resolv? #f)
-                                        ;(servers '("82.196.9.45"
-                                        ;           "51.255.48.78"
-                                        ;           "51.15.98.97"))
+                                                ;; (no-resolv? #f)
+                                                ;; (servers '("82.196.9.45"
+                                                ;;            "51.255.48.78"
+                                                ;;            "51.15.98.97"))
+                                                (local-service? #t)))))
 
 ;; https://guix.gnu.org/manual/en/html_node/Networking-Services.html
 (define %lotus-network-manager-services (list (service network-manager-service-type

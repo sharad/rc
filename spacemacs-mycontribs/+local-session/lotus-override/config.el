@@ -26,7 +26,7 @@
 
 (defun lotus-override/init-emacsql-sqlite-config ()
   (interactive)
-  (unless (boundp 'emacsql-sqlite-executable)
+  (when t ;; unless (boundp 'emacsql-sqlite-executable)
     (setq emacsql-sqlite-executable
       (expand-file-name emacsql-sqlite-executable-path
                         (if (or (file-writable-p emacsql-sqlite-data-root)
@@ -39,7 +39,7 @@
                            user-emacs-directory)))))
   (if emacsql-sqlite-executable
       (setq emacsql-sqlite-executable
-            (concat emacsql-sqlite-executable "-ubuntu"))))
+            (concat emacsql-sqlite-executable "-guix"))))
 
 (defun lotus-override/init-lsdb-config ()
   (progn
