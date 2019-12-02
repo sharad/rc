@@ -213,6 +213,13 @@ then
     xsetroot -cursor_name left_ptr
 fi
 
+if whence -p wmsetbg >& /dev/null
+then
+    if [ -f ~/.GNUstep/Library/WindowMaker/Backgrounds/Aqua_Strawberries_Abstract_3d_226.jpg ]
+    then
+        wmsetbg ~/.GNUstep/Library/WindowMaker/Backgrounds/Aqua_Strawberries_Abstract_3d_226.jpg &!
+    fi
+fi
 
 if [ "x${HOST}" != "x" ]
 then

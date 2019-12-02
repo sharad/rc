@@ -371,7 +371,8 @@
 ;; https://jonathansblog.co.uk/using-dnsmasq-as-an-internal-dns-server-to-block-online-adverts
 ;; https://stackoverflow.com/questions/48644841/multiple-addn-hosts-conf-in-dnsmasq
 (define %lotus-dnsmasq-services (list (service dnsmasq-service-type
-                                               (dnsmasq-configuration ;; (resolv-file)
+                                               (dnsmasq-configuration (no-resolv? #t)
+                                                                      ;; (resolv-file)
                                                                       ;; (no-resolv? #f)
                                                                       ;; (servers '("82.196.9.45"
                                                                       ;;            "51.255.48.78"
@@ -380,19 +381,25 @@
 
 ;; https://guix.gnu.org/manual/en/html_node/Networking-Services.html
 (define %lotus-network-manager-services (list (service network-manager-service-type
-                                                       (network-manager-configuration (dns 'dnsmasq)))))
+                                                       (network-manager-configuration (dns "dnsmasq")))))
 
 (define %lotus-avahi-services (list (service avahi-service-type)))
 
 
 (define %lotus-desktop-services (modify-services %desktop-services
-                                  (gdm-service-type config =>
-                                                    (gdm-configuration (inherit config)
-                                                                       (xorg-configuration
-                                                                        (xorg-configuration
-                                                                         (keyboard-layout keyboard-layout)))
-                                                                       (auto-login? #t)
-                                                                       (default-user "s")))))
+                                  ;; (gdm-service-type config =>
+                                  ;;                   (gdm-configuration (inherit config)
+                                  ;;                                      ;; (xorg-configuration
+                                  ;;                                      ;;  (xorg-configuration
+                                  ;;                                      ;;   (keyboard-layout keyboard-layout)))
+                                  ;;                                      (auto-login? #t)
+                                  ;;                                      (default-user "s")))
+                                  (network-manager-service-type config =>
+                                                                (network-manager-configuration
+                                                                 (inherit config)
+                                                                 ;; (vpn-plugins '("network-manager-openconnect"))
+                                                                 (dns "dnsmasq")))))
+
 
 (define %lotus-many-services (list (service openssh-service-type)
                                    ;; (service gnome-desktop-service-type)
@@ -419,6 +426,7 @@
                                                    %lotus-mail-aliases-services
                                                    %lotus-dovecot-services
                                                    %lotus-mcron-services
+                                                   ;; %desktop-services
                                                    %lotus-desktop-services))
 
 
