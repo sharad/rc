@@ -365,19 +365,21 @@
 (define %lotus-avahi-services (list (service avahi-service-type)))
 
 
+;; (gdm-service-type config =>
+;;                   (gdm-configuration (inherit config)
+;;                                      ;; (xorg-configuration
+;;                                      ;;  (xorg-configuration
+;;                                      ;;   (keyboard-layout keyboard-layout)))
+;;                                      ;; (auto-login? #t)
+;;                                      ;; (default-user "s")
+;;                                      ))
+
+
 (define %lotus-desktop-services (modify-services %desktop-services
-                                  ;; (gdm-service-type config =>
-                                  ;;                   (gdm-configuration (inherit config)
-                                  ;;                                      ;; (xorg-configuration
-                                  ;;                                      ;;  (xorg-configuration
-                                  ;;                                      ;;   (keyboard-layout keyboard-layout)))
-                                  ;;                                      (auto-login? #t)
-                                  ;;                                      (default-user "s")))
                                   (network-manager-service-type config =>
                                                                 (network-manager-configuration (inherit config)
                                                                                                ;; (vpn-plugins '("network-manager-openconnect"))
                                                                                                (dns "dnsmasq")))))
-
 
 (define %lotus-many-services (list (service openssh-service-type)
                                    ;; (service gnome-desktop-service-type)
@@ -399,7 +401,7 @@
 
 (define %lotus-simple-and-desktop-services (append %lotus-simple-services
                                                    ;; %lotus-avahi-services
-                                                   %lotus-dnsmasq-services
+                                                   ;; %lotus-dnsmasq-services
                                                    ;; %lotus-network-manager-services
                                                    %lotus-mail-aliases-services
                                                    %lotus-dovecot-services
