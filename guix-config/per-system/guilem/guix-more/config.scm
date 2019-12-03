@@ -370,43 +370,47 @@
 ;;                                      ;; (xorg-configuration
 ;;                                      ;;  (xorg-configuration
 ;;                                      ;;   (keyboard-layout keyboard-layout)))
-;;                                      ;; (auto-login? #t)
-;;                                      ;; (default-user "s")
-;;                                      ))
+;;                                      (auto-login? #t)
+;;                                      (default-user "s")))
+
 
+(define %lotus-xorg-configuration-serivces (list (set-xorg-configuration
+                                                 (xorg-configuration
+                                                  (keyboard-layout %lotus-keyboard-layout)))))
 
 (define %lotus-desktop-services (modify-services %desktop-services
                                   (network-manager-service-type config =>
                                                                 (network-manager-configuration (inherit config)
                                                                                                ;; (vpn-plugins '("network-manager-openconnect"))
-                                                                                               (dns "dnsmasq")))))
+                                                                                               (dns "dnsmasq")))
+                                  ;; (gdm-service-type config =>
+                                  ;;                   (gdm-configuration (inherit config)
+                                  ;;                                      (xorg-configuration
+                                  ;;                                        (xorg-configuration
+                                  ;;                                         (keyboard-layout %lotus-keyboard-layout)))
+                                  ;;                                      (auto-login? #t)
+                                  ;;                                      (default-user "s")))
+                                  ))
+
+
 
 (define %lotus-many-services (list (service openssh-service-type)
                                    ;; (service gnome-desktop-service-type)
                                    ;; (service xfce-desktop-service-type)
                                    ;; (service mate-desktop-service-type)
                                    ;; (service enlightenment-desktop-service-type)
-                                   (service tor-service-type)
-                                   (set-xorg-configuration
-                                    (xorg-configuration
-                                     (keyboard-layout %lotus-keyboard-layout)))))
+                                   (service tor-service-type)))
 
 (define %lotus-few-services    (list (service openssh-service-type)
-                                     (service tor-service-type)
-                                     (set-xorg-configuration
-                                      (xorg-configuration
-                                       (keyboard-layout %lotus-keyboard-layout)))))
+                                     (service tor-service-type)))
 
 (define %lotus-simple-services %lotus-few-services)
 
 (define %lotus-simple-and-desktop-services (append %lotus-simple-services
-                                                   ;; %lotus-avahi-services
-                                                   ;; %lotus-dnsmasq-services
-                                                   ;; %lotus-network-manager-services
+                                                   %lotus-xorg-configuration-serivces
                                                    %lotus-mail-aliases-services
                                                    %lotus-dovecot-services
                                                    %lotus-mcron-services
-                                                   ;; %desktop-services
                                                    %lotus-desktop-services))
 
 
