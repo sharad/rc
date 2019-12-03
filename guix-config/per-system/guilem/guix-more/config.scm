@@ -93,57 +93,47 @@
 
 (define lvm-device-mapping
   ;; The type of LVM mapped devices.
-  (mapped-device-kind
-   (open open-lvm-device)
-   (close close-lvm-device)
-   ;; (check check-lvm-device)
-   ))
+  (mapped-device-kind (open open-lvm-device)
+                      ;; (check check-lvm-device)
+                      (close close-lvm-device)))
 
 
-(define %lotus-mapped-device-guix-gnu (mapped-device
-                                         (source "/dev/sda31")
-                                         (target "guix-gnu")
-                                         (type lvm-device-mapping)))
+(define %lotus-mapped-device-guix-gnu (mapped-device (source "/dev/sda31")
+                                                     (target "guix-gnu")
+                                                     (type lvm-device-mapping)))
 
-(define %lotus-mapped-device-guix-root (mapped-device
-                                          (source "/dev/sda31")
-                                          (target "guix-root")
-                                          (type lvm-device-mapping)))
+(define %lotus-mapped-device-guix-root (mapped-device (source "/dev/sda31")
+                                                      (target "guix-root")
+                                                      (type lvm-device-mapping)))
 
-(define %lotus-mapped-device-guix-swap (mapped-device
-                                          (source "/dev/sda31")
-                                          (target "guix-swap")
-                                          (type lvm-device-mapping)))
+(define %lotus-mapped-device-guix-swap (mapped-device (source "/dev/sda31")
+                                                      (target "guix-swap")
+                                                      (type lvm-device-mapping)))
 
-(define %lotus-mapped-device-vg01-lv01 (mapped-device
-                                        (source "/dev/test")
-                                        (target "vg01-lv01")
-                                        (type lvm-device-mapping)))
+(define %lotus-mapped-device-vg01-lv01 (mapped-device (source "/dev/test")
+                                                      (target "vg01-lv01")
+                                                      (type lvm-device-mapping)))
 
-(define %lotus-mapped-device-vg02-lv01 (mapped-device
-                                         (source "/dev/test")
-                                         (target "vg02-lv01")
-                                         (type lvm-device-mapping)))
+(define %lotus-mapped-device-vg02-lv01 (mapped-device (source "/dev/test")
+                                                      (target "vg02-lv01")
+                                                      (type lvm-device-mapping)))
 
-(define %lotus-mapped-device-vgres01-lvres01 (mapped-device
-                                              (source "/dev/test")
-                                              (target "vgres01-lvres01")
-                                              (type lvm-device-mapping)))
+(define %lotus-mapped-device-vgres01-lvres01 (mapped-device (source "/dev/test")
+                                                            (target "vgres01-lvres01")
+                                                            (type lvm-device-mapping)))
 
-(define %lotus-mapped-device-house-home (mapped-device
-                                         (source "/dev/sda8")
-                                         (target "house-home")
-                                         (type lvm-device-mapping)))
+(define %lotus-mapped-device-house-home (mapped-device (source "/dev/sda8")
+                                                       (target "house-home")
+                                                       (type lvm-device-mapping)))
 
 (define %lotus-mapped-devices
-  (list
-   %lotus-mapped-device-guix-root
-   %lotus-mapped-device-guix-gnu
-   %lotus-mapped-device-vg01-lv01
-   %lotus-mapped-device-vg02-lv01
-   %lotus-mapped-device-vgres01-lvres01
-   %lotus-mapped-device-house-home
-   %lotus-mapped-device-guix-swap))
+  (list %lotus-mapped-device-guix-root
+        %lotus-mapped-device-guix-gnu
+        %lotus-mapped-device-vg01-lv01
+        %lotus-mapped-device-vg02-lv01
+        %lotus-mapped-device-vgres01-lvres01
+        %lotus-mapped-device-house-home
+        %lotus-mapped-device-guix-swap))
 
 
 ;; (define %lotus-swap-devices '("/dev/mapper/guix-swap"))
@@ -153,63 +143,57 @@
 (define %lotus-swap-devices '("/dev/mapper/guix-swap"))
 
 
-(define %lotus-file-system-guix-root (file-system
-                                       (mount-point "/")
-                                       (device "/dev/mapper/guix-root")
-                                       (type "ext4")
-                                       (check? #f)
-                                       (mount? #t)
-                                       (create-mount-point? #t)
-                                       (needed-for-boot? #t)
-                                       (dependencies %lotus-mapped-devices)))
+(define %lotus-file-system-guix-root (file-system (mount-point "/")
+                                                  (device "/dev/mapper/guix-root")
+                                                  (type "ext4")
+                                                  (check? #f)
+                                                  (mount? #t)
+                                                  (create-mount-point? #t)
+                                                  (needed-for-boot? #t)
+                                                  (dependencies %lotus-mapped-devices)))
 
-(define %lotus-file-system-guix-gnu (file-system
-                                        (mount-point "/gnu")
-                                        (device "/dev/mapper/guix-gnu")
-                                        (type "ext4")
-                                        (check? #f)
-                                        (mount? #t)
-                                        (create-mount-point? #t)
-                                        (needed-for-boot? #t)
-                                        (dependencies (append
-                                                        (list %lotus-file-system-guix-root)
-                                                        %lotus-mapped-devices))))
+(define %lotus-file-system-guix-gnu (file-system (mount-point "/gnu")
+                                                 (device "/dev/mapper/guix-gnu")
+                                                 (type "ext4")
+                                                 (check? #f)
+                                                 (mount? #t)
+                                                 (create-mount-point? #t)
+                                                 (needed-for-boot? #t)
+                                                 (dependencies (append
+                                                                (list %lotus-file-system-guix-root)
+                                                                %lotus-mapped-devices))))
 
-(define %lotus-file-system-vg01-lv01 (file-system
-                                      (mount-point "/srv/volumes/local/vg01/lv01")
-                                      (device "/dev/mapper/vg01-lv01")
-                                      (type "ext4")
-                                      (check? #f)
-                                      (mount? #t)
-                                      (create-mount-point? #f)
-                                      (needed-for-boot? #f)))
+(define %lotus-file-system-vg01-lv01 (file-system (mount-point "/srv/volumes/local/vg01/lv01")
+                                                  (device "/dev/mapper/vg01-lv01")
+                                                  (type "ext4")
+                                                  (check? #f)
+                                                  (mount? #t)
+                                                  (create-mount-point? #f)
+                                                  (needed-for-boot? #f)))
 
-(define %lotus-file-system-vg02-lv01 (file-system
-                                      (mount-point "/srv/volumes/local/vg02/lv01")
-                                      (device "/dev/mapper/vg02-lv01")
-                                      (type "ext4")
-                                      (check? #f)
-                                      (mount? #t)
-                                      (create-mount-point? #f)
-                                      (needed-for-boot? #f)))
+(define %lotus-file-system-vg02-lv01 (file-system (mount-point "/srv/volumes/local/vg02/lv01")
+                                                  (device "/dev/mapper/vg02-lv01")
+                                                  (type "ext4")
+                                                  (check? #f)
+                                                  (mount? #t)
+                                                  (create-mount-point? #f)
+                                                  (needed-for-boot? #f)))
 
-(define %lotus-file-system-vgres01-lvres01 (file-system
-                                            (mount-point "/srv/volumes/local/vgres01/lvres01")
-                                            (device "/dev/mapper/vgres01-lvres01")
-                                            (type "reiserfs")
-                                            (check? #f)
-                                            (mount? #t)
-                                            (create-mount-point? #f)
-                                            (needed-for-boot? #f)))
+(define %lotus-file-system-vgres01-lvres01 (file-system (mount-point "/srv/volumes/local/vgres01/lvres01")
+                                                        (device "/dev/mapper/vgres01-lvres01")
+                                                        (type "reiserfs")
+                                                        (check? #f)
+                                                        (mount? #t)
+                                                        (create-mount-point? #f)
+                                                        (needed-for-boot? #f)))
 
-(define %lotus-file-system-house-home (file-system
-                                       (mount-point "/home")
-                                       (device "/dev/mapper/house-home")
-                                       (type "ext4")
-                                       (check? #f)
-                                       (mount? #t)
-                                       (create-mount-point? #f)
-                                       (needed-for-boot? #f)))
+(define %lotus-file-system-house-home (file-system (mount-point "/home")
+                                                   (device "/dev/mapper/house-home")
+                                                   (type "ext4")
+                                                   (check? #f)
+                                                   (mount? #t)
+                                                   (create-mount-point? #f)
+                                                   (needed-for-boot? #f)))
 
 (define %lotus-lvm-file-systems
   (list
@@ -233,12 +217,10 @@
                                                     (list %lotus-file-system-guix-root)
                                                     %lotus-mapped-devices))))
 
-(define %lotus-file-system-guix-other (file-system
-                                        (mount-point "/srv/misc/guix-other")
-                                        (device
-                                         (uuid "d913fd98-61b6-43e0-a5dc-504b14ad9aee"
-                                               'ext4))
-                                        (type "ext4")))
+(define %lotus-file-system-guix-other (file-system (mount-point "/srv/misc/guix-other")
+                                                   (device (uuid "d913fd98-61b6-43e0-a5dc-504b14ad9aee"
+                                                                 'ext4))
+                                                   (type "ext4")))
 
 (define %lotus-other-file-systems
   (list %lotus-file-system-boot-efi))
@@ -289,23 +271,21 @@
 ;;                                    (id 1000)
 ;;                                    (name "users"))))
 
-(define %lotus-simple-users (list (user-account
-                                   (uid 1000)
-                                   (name "s")
-                                   (comment "sharad")
-                                   (group "users")
-                                   (home-directory "/home/s/hell")
-                                   (shell #~(string-append #$zsh "/bin/zsh"))
-                                   (supplementary-groups
-                                    '("wheel" "netdev" "audio" "video")))
-                                  (user-account
-                                   (uid 1002)
-                                   (name "j")
-                                   (comment "Jam")
-                                   (group "users")
-                                   (home-directory "/home/j")
-                                   (supplementary-groups
-                                    '("wheel" "netdev" "audio" "video")))))
+(define %lotus-simple-users (list (user-account (uid 1000)
+                                                (name "s")
+                                                (comment "sharad")
+                                                (group "users")
+                                                (home-directory "/home/s/hell")
+                                                (shell #~(string-append #$zsh "/bin/zsh"))
+                                                (supplementary-groups
+                                                 '("wheel" "netdev" "audio" "video")))
+                                  (user-account (uid 1002)
+                                                (name "j")
+                                                (comment "Jam")
+                                                (group "users")
+                                                (home-directory "/home/j")
+                                                (supplementary-groups
+                                                 '("wheel" "netdev" "audio" "video")))))
 
 (define %lotus-users (append %lotus-simple-users
                              %base-user-accounts))
@@ -344,10 +324,9 @@
 
 ;; https://guix.gnu.org/manual/en/html_node/Scheduled-Job-Execution.html
 (define %lotus-mcron-services (list (service mcron-service-type
-                                             (mcron-configuration
-                                              (jobs (list garbage-collector-job
-                                                          updatedb-job
-                                                          idutils-job))))))
+                                             (mcron-configuration (jobs (list garbage-collector-job
+                                                                              updatedb-job
+                                                                              idutils-job))))))
 
 
 (define %lotus-bitlbee-services (list (service bitlbee-service-type)))
@@ -361,10 +340,10 @@
 
 ;; https://lists.nongnu.org/archive/html/help-guix/2016-08/msg00061.html
 ;; https://wingolog.org/pub/alt-os-config.scm
-(define %lotus-dovecot-services (list (dovecot-service
-                                       #:config (dovecot-configuration
-                                                 (mail-location "maildir:~/.maildir")
-                                                 (listen '("127.0.0.1"))))))
+(define %lotus-dovecot-services (list (dovecot-service #:config
+                                                       (dovecot-configuration
+                                                        (mail-location "maildir:~/.maildir")
+                                                        (listen '("127.0.0.1"))))))
 
 ;; https://notabug.org/thomassgn/guixsd-configuration/src/master/config.scm
 ;; https://guix.gnu.org/manual/en/html_node/Networking-Services.html
@@ -395,10 +374,9 @@
                                   ;;                                      (auto-login? #t)
                                   ;;                                      (default-user "s")))
                                   (network-manager-service-type config =>
-                                                                (network-manager-configuration
-                                                                 (inherit config)
-                                                                 ;; (vpn-plugins '("network-manager-openconnect"))
-                                                                 (dns "dnsmasq")))))
+                                                                (network-manager-configuration (inherit config)
+                                                                                               ;; (vpn-plugins '("network-manager-openconnect"))
+                                                                                               (dns "dnsmasq")))))
 
 
 (define %lotus-many-services (list (service openssh-service-type)
