@@ -139,8 +139,7 @@
 ;; (define %lotus-swap-devices '("/dev/mapper/guix-swap"))
 ;; (define %lotus-swap-devices '("/dev/guix/swap"))
 (define device-mapping-guix-swap %lotus-mapped-device-guix-swap)
-(define %lotus-swap-devices '("/dev/mapper/guix-swap"))
-(define %lotus-swap-devices '("/dev/mapper/guix-swap"))
+(define %lotus-swap-devices      '("/dev/mapper/guix-swap"))
 
 
 (define %lotus-file-system-guix-root (file-system (mount-point "/")

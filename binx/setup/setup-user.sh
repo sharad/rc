@@ -92,6 +92,7 @@ DEB_PKG1_TOOL_GUI_XORG="python-osd python-gtk2 afnix python-gconf nitrogen"
 DEB_PKG_XWM="compton xcompmgr autocutsel sakura wmctrl sawfish"
 DEB_PKG_XML="libxml2-utils xsltproc docbook5-xml docbook-xsl-ns"
 DEB_PKG_UTILS="gcalcli newsbeuter liblz4-tool tracker gtimelog d-feet linuxbrew-wrapper zsync"
+DEB_PKG_TOOL_SUCKLESS="stterm"
 # DEB_PKG_GUI_DEV_UTILS="libglib2.0-dev-bin" gdbus-codegen
 DEB_PKG_MEDIA="libavcodec-extra pulseeffects pavucontrol pulseaudio-module-gconf pulseaudio-equalizer vokoscreen pulseaudio-utils pulsemixer kodi sox mpg123 mpg321 vlc"
 DEB_PKG_WINDOW="smbclient python3-smbc python-smbc awesome awesome-extra"
