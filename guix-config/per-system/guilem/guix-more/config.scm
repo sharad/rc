@@ -373,25 +373,25 @@
 ;;                                      (default-user "s")))
 
 
-(define %lotus-xorg-configuration-serivces (list (set-xorg-configuration
+(define %lotus-xorg-configuration-serivces (list (set-xorg-configuration)
                                                  (xorg-configuration
-                                                  (keyboard-layout %lotus-keyboard-layout)))))
+                                                  (keyboard-layout %lotus-keyboard-layout))))
 
-(define %lotus-desktop-services (modify-services %desktop-services
-                                  (network-manager-service-type config =>
-                                                                (network-manager-configuration (inherit config)
-                                                                                               ;; (vpn-plugins '("network-manager-openconnect"))
-                                                                                               (dns "dnsmasq")))
-                                  ;; (gdm-service-type config =>
-                                  ;;                   (gdm-configuration (inherit config)
-                                  ;;                                      (xorg-configuration
-                                  ;;                                        (xorg-configuration
-                                  ;;                                         (keyboard-layout %lotus-keyboard-layout)))
-                                  ;;                                      (auto-login? #t)
-                                  ;;                                      (default-user "s")))
-                                  ))
+(define %lotus-desktop-services-nm (modify-services %desktop-services
+                                     (network-manager-service-type config =>
+                                                                   (network-manager-configuration (inherit config)
+                                                                                                  ;; (vpn-plugins '("network-manager-openconnect"))
+                                                                                                  (dns "dnsmasq")))))
 
-
+;; https://issues.guix.info/issue/35674
+(define %lotus-desktop-services (modify-services %desktop-services-nm
+                                  (gdm-service-type config =>
+                                                    (gdm-configuration (inherit config)
+                                                                       (xorg-configuration
+                                                                        (xorg-configuration
+                                                                         (keyboard-layout %lotus-keyboard-layout)))
+                                                                       (auto-login? #t)
+                                                                       (default-user "s")))))
 
 (define %lotus-many-services (list (service openssh-service-type)
                                    ;; (service gnome-desktop-service-type)
@@ -406,7 +406,7 @@
 (define %lotus-simple-services %lotus-few-services)
 
 (define %lotus-simple-and-desktop-services (append %lotus-simple-services
-                                                   %lotus-xorg-configuration-serivces
+                                                   ;; %lotus-xorg-configuration-serivces
                                                    %lotus-mail-aliases-services
                                                    %lotus-dovecot-services
                                                    %lotus-mcron-services

@@ -1099,3 +1099,29 @@ function locale_language ()
 }
 
 ##}
+
+
+##{{ wctrl xproto
+# https://superuser.com/questions/142945/bash-command-to-focus-a-specific-window
+# https://www.google.com/search?q=term%20focus%20window
+# https://stackoverflow.com/questions/2250757/is-there-a-linux-command-to-determine-the-window-ids-associated-with-a-given-pro
+# https://stackoverflow.com/questions/20580897/get-x-window-id-from-process-in-bash?lq=1
+
+function focus-ctrl-term()
+{
+    ## Focus controling terminal of shell
+    if [ "$PPID" ]
+    then
+        PWIN="$(xdotool search --pid $PPID)"
+        if [ "$PWIN" ]
+        then
+            wmctrl -i -a "$PWIN"
+        else
+            echo Can nit get window associated with parent pid $PPID >&2
+        fi
+    else
+        echo can not get shell parent PID >&2
+    fi
+}
+
+##}}
