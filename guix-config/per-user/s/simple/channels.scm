@@ -11,18 +11,21 @@
 
 (define %guix-official-channels %default-channels)
 
+(define %guix-lotus-channels (list (channel
+                                    (name 'lotus)
+                                    (url "https://github.com/sharad/guix"))))
+
+(define %nonguix-channels (list (channel
+                                 (name 'nonguix)
+                                 (url "https://gitlab.com/nonguix/nonguix"))))
+
 (define %local-default-channels
   (if %local-use-guix-official-mirror
       %guix-official-channels
       %backup-default-channels))
 
-(define %local-channels
-  (cons* (channel
-          (name 'nonguix)
-          (url "https://gitlab.com/nonguix/nonguix"))
-         (channel
-          (name 'lotus)
-          (url "https://github.com/sharad/guix"))
-         %local-default-channels))
+(define %local-channels (append %nonguix-channels
+                                %guix-lotus-channels
+                                %local-default-channels))
 
 %local-channels

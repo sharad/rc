@@ -250,3 +250,12 @@ alias tabula='java -Dfile.encoding=UTF8 -Dorg.slf4j.simpleLogger.defaultLogLevel
 
 # music
 alias xmms="promoe"
+
+
+##{{ wctrl xproto
+alias fct=focus-ctrl-term
+##}}
+
+##{{
+alias scndetach='screen -X detach'
+##}}

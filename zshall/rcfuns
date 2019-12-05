@@ -1123,5 +1123,5 @@ function focus-ctrl-term()
         echo can not get shell parent PID >&2
     fi
 }
-
 ##}}
+

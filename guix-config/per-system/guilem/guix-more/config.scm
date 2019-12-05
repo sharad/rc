@@ -9,8 +9,8 @@
 (use-service-modules networking ssh)
 (use-package-modules bootloaders certs suckless wm)
 
-(use-service-modules desktop networking ssh xorg avahi mail)
-(use-package-modules certs gnome)
+(use-service-modules desktop networking cups ssh xorg avahi mail)
+(use-package-modules certs gnome cups)
 
 (use-modules (gnu packages shells))
 
@@ -20,6 +20,7 @@
 ;; other guix
 
 (use-modules (gnu system locale))
+(use-modules (rnrs lists))
 ;; (use-modules (guix) (gnu) (gnu services mcron))
 (use-package-modules base idutils)
 (use-service-modules dns mcron messaging)
@@ -96,6 +97,10 @@
   (mapped-device-kind (open open-lvm-device)
                       ;; (check check-lvm-device)
                       (close close-lvm-device)))
+
+
+(define %lotus-user-name "s")
+(define %lotus-group-name "users")
 
 
 (define %lotus-mapped-device-guix-gnu (mapped-device (source "/dev/sda31")
@@ -268,12 +273,12 @@
 
 ;; (define %lotus-simple-group (list (user-group
 ;;                                    (id 1000)
-;;                                    (name "users"))))
+;;                                    (name %lotus-group-name))))
 
 (define %lotus-simple-users (list (user-account (uid 1000)
-                                                (name "s")
+                                                (name %lotus-user-name)
                                                 (comment "sharad")
-                                                (group "users")
+                                                (group %lotus-group-name)
                                                 (home-directory "/home/s/hell")
                                                 (shell #~(string-append #$zsh "/bin/zsh"))
                                                 (supplementary-groups
@@ -281,7 +286,7 @@
                                   (user-account (uid 1002)
                                                 (name "j")
                                                 (comment "Jam")
-                                                (group "users")
+                                                (group %lotus-group-name)
                                                 (home-directory "/home/j")
                                                 (supplementary-groups
                                                  '("wheel" "netdev" "audio" "video")))))
@@ -319,6 +324,14 @@
   #~(job '(next-minute-from (next-hour '(12 19)) '(15))
          (string-append #$idutils "/bin/mkid src")
          #:user "charlie"))
+
+
+(define (remove-services types services)
+  (remove (lambda (service)
+            (any (lambda (type)
+                   (eq? (service-kind service) type))
+                 types))
+          services))
 
 
 ;; https://guix.gnu.org/manual/en/html_node/Scheduled-Job-Execution.html
@@ -364,34 +377,59 @@
 (define %lotus-avahi-services (list (service avahi-service-type)))
 
 
-;; (gdm-service-type config =>
-;;                   (gdm-configuration (inherit config)
-;;                                      ;; (xorg-configuration
-;;                                      ;;  (xorg-configuration
-;;                                      ;;   (keyboard-layout keyboard-layout)))
-;;                                      (auto-login? #t)
-;;                                      (default-user "s")))
-
+(define %lotus-xorg-configuration-serivces (list (set-xorg-configuration
+                                                  (xorg-configuration
+                                                   (keyboard-layout %lotus-keyboard-layout)))))
 
-(define %lotus-xorg-configuration-serivces (list (set-xorg-configuration)
-                                                 (xorg-configuration
-                                                  (keyboard-layout %lotus-keyboard-layout))))
-
-(define %lotus-desktop-services-nm (modify-services %desktop-services
+(define %lotus-desktop-nm-services (modify-services %desktop-services
                                      (network-manager-service-type config =>
                                                                    (network-manager-configuration (inherit config)
                                                                                                   ;; (vpn-plugins '("network-manager-openconnect"))
-                                                                                                  (dns "dnsmasq")))))
+                                                                                                  (dns "dnsmasq")))
+                                     (guix-service-type config =>
+                                                        (guix-configuration (inherit config)
+                                                                            (use-substitutes? #f)
+                                                                            (authorized-keys '())
+                                                                            (substitute-urls '())
+                                                                            (extra-options '("--gc-keep-derivations=yes"
+                                                                                             "--gc-keep-outputs=yes"))))))
 
 ;; https://issues.guix.info/issue/35674
-(define %lotus-desktop-services (modify-services %desktop-services-nm
-                                  (gdm-service-type config =>
+(define %lotus-desktop-nm-gdm-services (modify-services %lotus-desktop-nm-services
+                                         (gdm-service-type config =>
                                                     (gdm-configuration (inherit config)
                                                                        (xorg-configuration
                                                                         (xorg-configuration
                                                                          (keyboard-layout %lotus-keyboard-layout)))
                                                                        (auto-login? #t)
-                                                                       (default-user "s")))))
+                                                                       (default-user %lotus-user-name)))))
+
+
+;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
+(define %lotus-mingetty-services (list (service mingetty-service-type
+                                                (mingetty-configuration (tty "tty1")
+                                                                        (auto-login %lotus-user-name)))
+                                       (service mingetty-service-type
+                                                (mingetty-configuration (tty "tty2")))
+                                       (service mingetty-service-type
+                                                (mingetty-configuration (tty "tty3")))
+                                       (service mingetty-service-type
+                                                (mingetty-configuration (tty "tty4")))
+                                       (service mingetty-service-type
+                                                (mingetty-configuration (tty "tty5")))
+                                       (service mingetty-service-type
+                                                (mingetty-configuration (tty "tty6")))))
+
+
+;; (define %lotus-desktop-services (remove-services (list mingetty-service-type) %lotus-desktop-nm-services))
+(define %lotus-desktop-services %lotus-desktop-nm-services)
+
+(define %lotus-cups-services (list (service cups-service-type
+                                            (cups-configuration (web-interface? #f)
+                                                                (default-paper-size "A4")
+                                                                (extensions (list cups-filters
+                                                                                  hplip-minimal))))))
+
 
 (define %lotus-many-services (list (service openssh-service-type)
                                    ;; (service gnome-desktop-service-type)
@@ -400,8 +438,8 @@
                                    ;; (service enlightenment-desktop-service-type)
                                    (service tor-service-type)))
 
-(define %lotus-few-services    (list (service openssh-service-type)
-                                     (service tor-service-type)))
+(define %lotus-few-services  (list (service openssh-service-type)
+                                   (service tor-service-type)))
 
 (define %lotus-simple-services %lotus-few-services)
 
@@ -410,6 +448,8 @@
                                                    %lotus-mail-aliases-services
                                                    %lotus-dovecot-services
                                                    %lotus-mcron-services
+                                                   %lotus-cups-services
+                                                   ;; %lotus-mingetty-services
                                                    %lotus-desktop-services))
 
 
@@ -449,10 +489,13 @@
 (define %lotus-ar-sa-locale-definition (locale-definition (source "ar_SA")
                                                           (name   "ar_SA.utf8")))
 
-(define %lotus-locale-definitions (list %lotus-en-us-locale-definition
+(define %lotus-all-locale-definitions (list %lotus-en-us-locale-definition
                                         %lotus-hi-in-locale-definition
                                         %lotus-ur-pk-locale-definition
                                         %lotus-ar-sa-locale-definition))
+
+(define %lotus-locale-definitions (append %lotus-all-locale-definitions
+                                          %default-locale-definitions))
 
 
 (define %lotus-timezone "Asia/Kolkata")

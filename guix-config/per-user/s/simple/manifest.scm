@@ -47,6 +47,9 @@
 
         "atool"
 
+        "mosh"
+        "eternalterminal"
+
         ;; "glib"
         ;; "dconf"
         ;; "gsettings-desktop-schemas"

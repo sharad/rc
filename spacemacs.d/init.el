@@ -556,7 +556,8 @@ This function is called at the very end of Spacemacs initialization."
  '(psc-ide-rebuild-on-save nil t)
  '(safe-local-variable-values
    (quote
-    ((mangle-whitespace . t)
+    ((default-tab-width . 3)
+     (mangle-whitespace . t)
      (eval modify-syntax-entry 43 "'")
      (eval modify-syntax-entry 36 "'")
      (eval modify-syntax-entry 126 "'")
