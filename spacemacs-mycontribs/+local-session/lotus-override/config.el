@@ -200,6 +200,7 @@ Defaults to \"origin\"."
                              end))))))))))
 
 (defun lotus-override/post-init-org-agenda-config ()
+  (interactive)
   (progn
     (defun org-agenda-new-marker (&optional pos)
       "Return a new agenda marker.

@@ -21,6 +21,7 @@
 
 (use-modules (gnu system locale))
 (use-modules (rnrs lists))
+(use-modules (srfi srfi-1))
 ;; (use-modules (guix) (gnu) (gnu services mcron))
 (use-package-modules base idutils)
 (use-service-modules dns mcron messaging)
@@ -302,6 +303,14 @@
                                                                        ("config/package.scm" ,this-package-file)))))
 
 
+(define (remove-services types services)
+  (remove! (lambda (service)
+             (any (lambda (type)
+                    (eq? (service-kind service) type))
+                  types))
+           services))
+
+
 ;; Vixie cron schedular
 (define updatedb-job
   ;; Run 'updatedb' at 3AM every day.  Here we write the
@@ -324,14 +333,6 @@
   #~(job '(next-minute-from (next-hour '(12 19)) '(15))
          (string-append #$idutils "/bin/mkid src")
          #:user "charlie"))
-
-
-(define (remove-services types services)
-  (remove (lambda (service)
-            (any (lambda (type)
-                   (eq? (service-kind service) type))
-                 types))
-          services))
 
 
 ;; https://guix.gnu.org/manual/en/html_node/Scheduled-Job-Execution.html
@@ -380,29 +381,6 @@
 (define %lotus-xorg-configuration-serivces (list (set-xorg-configuration
                                                   (xorg-configuration
                                                    (keyboard-layout %lotus-keyboard-layout)))))
-
-(define %lotus-desktop-nm-services (modify-services %desktop-services
-                                     (network-manager-service-type config =>
-                                                                   (network-manager-configuration (inherit config)
-                                                                                                  ;; (vpn-plugins '("network-manager-openconnect"))
-                                                                                                  (dns "dnsmasq")))
-                                     (guix-service-type config =>
-                                                        (guix-configuration (inherit config)
-                                                                            (use-substitutes? #f)
-                                                                            (authorized-keys '())
-                                                                            (substitute-urls '())
-                                                                            (extra-options '("--gc-keep-derivations=yes"
-                                                                                             "--gc-keep-outputs=yes"))))))
-
-;; https://issues.guix.info/issue/35674
-(define %lotus-desktop-nm-gdm-services (modify-services %lotus-desktop-nm-services
-                                         (gdm-service-type config =>
-                                                    (gdm-configuration (inherit config)
-                                                                       (xorg-configuration
-                                                                        (xorg-configuration
-                                                                         (keyboard-layout %lotus-keyboard-layout)))
-                                                                       (auto-login? #t)
-                                                                       (default-user %lotus-user-name)))))
 
 
 ;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
@@ -421,14 +399,51 @@
                                                 (mingetty-configuration (tty "tty6")))))
 
 
-;; (define %lotus-desktop-services (remove-services (list mingetty-service-type) %lotus-desktop-nm-services))
-(define %lotus-desktop-services %lotus-desktop-nm-services)
-
 (define %lotus-cups-services (list (service cups-service-type
                                             (cups-configuration (web-interface? #f)
                                                                 (default-paper-size "A4")
                                                                 (extensions (list cups-filters
                                                                                   hplip-minimal))))))
+
+
+(define %lotus-desktop-nm-services (modify-services %desktop-services
+                                     (network-manager-service-type config =>
+                                                                   (network-manager-configuration (inherit config)
+                                                                                                  ;; (vpn-plugins '("network-manager-openconnect"))
+                                                                                                  (dns "dnsmasq")))
+                                     ;; https://gitlab.com/Efraim/guix-config/blob/master/macbook41_config.scm
+                                     (guix-service-type config =>
+                                                        (guix-configuration (inherit config)
+                                                                            ;; (use-substitutes? #f)
+                                                                            ;; (authorized-keys '())
+                                                                            (substitute-urls (cons*
+                                                                                              "https://ci.guix.gnu.org"
+                                                                                              "https://bayfront.guixsd.org"
+                                                                                              "http://guix.genenetwork.org"
+                                                                                              "https://guix.tobias.gr"
+                                                                                              "https://ci.guix.info/"
+                                                                                              "https://berlin.guixsd.org"
+                                                                                              %default-substitute-urls))
+                                                                            (extra-options '(
+                                                                                             ;; "--max-jobs=2"
+                                                                                             ;; "--cores=1"
+                                                                                             "--gc-keep-derivations=yes"
+                                                                                             "--gc-keep-outputs=yes"))))))
+
+;; https://issues.guix.info/issue/35674
+(set! %lotus-desktop-nm-services (modify-services %lotus-desktop-nm-services
+                                   (gdm-service-type config =>
+                                                     (gdm-configuration (inherit config)
+                                                                        (xorg-configuration
+                                                                         (xorg-configuration
+                                                                          (keyboard-layout %lotus-keyboard-layout)))
+                                                                        (allow-empty-passwords? #t)
+                                                                        (auto-login?            #t)
+                                                                        (default-user           %lotus-user-name)))))
+
+
+(define %lotus-desktop-services (remove-services (list mingetty-service-type)
+                                                 %lotus-desktop-nm-services))
 
 
 (define %lotus-many-services (list (service openssh-service-type)
@@ -448,8 +463,8 @@
                                                    %lotus-mail-aliases-services
                                                    %lotus-dovecot-services
                                                    %lotus-mcron-services
-                                                   %lotus-cups-services
-                                                   ;; %lotus-mingetty-services
+                                                   ;; %lotus-cups-services
+                                                   %lotus-mingetty-services
                                                    %lotus-desktop-services))
 
 
