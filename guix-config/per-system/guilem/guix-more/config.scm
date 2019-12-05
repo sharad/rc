@@ -52,6 +52,9 @@
                                       ;; "--cores=1"
                                       "--gc-keep-derivations=yes"
                                       "--gc-keep-outputs=yes"))
+(define %lotus-guix-use-substitutes #t) ;always true
+
+(define %lotus-network-manager-dns "dnsmasq")
 
 
 (use-modules (gnu packages linux))
@@ -246,11 +249,11 @@
 
 (define %lotus-vm-bootloader
   (bootloader-configuration (bootloader grub-bootloader)
-                            (target "/dev/vda")))
+                            (target     "/dev/vda")))
 
 (define %lotus-efi-bootloader
-  (bootloader-configuration (bootloader grub-efi-bootloader)
-                            (target "/boot/efi")
+  (bootloader-configuration (bootloader      grub-efi-bootloader)
+                            (target          "/boot/efi")
                             (keyboard-layout %lotus-keyboard-layout)))
 
 
@@ -364,7 +367,7 @@
 
 ;; https://guix.gnu.org/manual/en/html_node/Networking-Services.html
 (define %lotus-network-manager-services (list (service network-manager-service-type
-                                                       (network-manager-configuration (dns "dnsmasq")))))
+                                                       (network-manager-configuration (dns %lotus-network-manager-dns)))))
 
 (define %lotus-avahi-services (list (service avahi-service-type)))
 
@@ -405,7 +408,7 @@
                                      ;; https://gitlab.com/Efraim/guix-config/blob/master/macbook41_config.scm
                                      (guix-service-type config =>
                                                         (guix-configuration (inherit config)
-                                                                            ;; (use-substitutes? #t)
+                                                                            ;; (use-substitutes? %lotus-guix-use-substitutes)
                                                                             ;; (authorized-keys '())
                                                                             (substitute-urls (append %lotus-guix-substitute-urls
                                                                                                      %default-substitute-urls))
