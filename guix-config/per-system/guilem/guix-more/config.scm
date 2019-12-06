@@ -149,14 +149,13 @@
                                                             (type   lvm-device-mapping)))
 
 
-(define %lotus-mapped-devices
-  (list %lotus-mapped-device-guix-root
-        %lotus-mapped-device-guix-gnu
-        %lotus-mapped-device-vg01-lv01
-        %lotus-mapped-device-vg02-lv01
-        %lotus-mapped-device-vgres01-lvres01
-        %lotus-mapped-device-house-home
-        %lotus-mapped-device-guix-swap))
+(define %lotus-mapped-devices (list %lotus-mapped-device-guix-root
+                                    %lotus-mapped-device-guix-gnu
+                                    %lotus-mapped-device-vg01-lv01
+                                    %lotus-mapped-device-vg02-lv01
+                                    %lotus-mapped-device-vgres01-lvres01
+                                    %lotus-mapped-device-house-home
+                                    %lotus-mapped-device-guix-swap))
 
 
 ;; (define %lotus-swap-devices '("/dev/mapper/guix-swap"))
@@ -227,14 +226,13 @@
                                                                                      %lotus-mapped-devices))))
 
 
-(define %lotus-lvm-file-systems
-  (list %lotus-file-system-guix-root
-        ;; %lotus-file-system-guix-swap
-        %lotus-file-system-guix-gnu
-        %lotus-file-system-vg01-lv01
-        %lotus-file-system-vg02-lv01
-        %lotus-file-system-vgres01-lvres01
-        %lotus-file-system-house-home))
+(define %lotus-lvm-file-systems (list %lotus-file-system-guix-root
+                                      ;; %lotus-file-system-guix-swap
+                                      %lotus-file-system-guix-gnu
+                                      %lotus-file-system-vg01-lv01
+                                      %lotus-file-system-vg02-lv01
+                                      %lotus-file-system-vgres01-lvres01
+                                      %lotus-file-system-house-home))
 
 (define %lotus-other-file-systems (list %lotus-file-system-boot-efi))
 
@@ -356,6 +354,18 @@
                                                         (mail-location "maildir:~/.maildir")
                                                         (listen        '("127.0.0.1"))))))
 
+(define %lotus-exim-services (list (service exim-service-type
+                                            (exim-configuration
+                                             (config-file #f)))))
+
+;; (define %lotus-opensmtpd-services (list (service opensmtpd-service-type
+;;                                                  (opensmtpd-configuration
+;;                                                   (config-file (local-file "./my-smtpd.conf"))))))
+
+;; (define %lotus-opensmtpd-services (list (service opensmtpd-service-type)))
+
+
+
 ;; https://notabug.org/thomassgn/guixsd-configuration/src/master/config.scm
 ;; https://guix.gnu.org/manual/en/html_node/Networking-Services.html
 ;; https://jonathansblog.co.uk/using-dnsmasq-as-an-internal-dns-server-to-block-online-adverts
@@ -369,25 +379,11 @@
                                                                       ;;            "51.15.98.97"))
                                                                       (local-service? #t)))))
 
-
-(define %lotus-exmin-services (list (service exim-service-type
-                                             (exim-configuration
-                                              (config-file (local-file "./my-exim.conf"))))))
-
-(define %lotus-opensmtpd-services (list (service opensmtpd-service-type
-                                                 (opensmtpd-configuration
-                                                  (config-file (local-file "./my-smtpd.conf"))))))
-
 ;; https://guix.gnu.org/manual/en/html_node/Networking-Services.html
 (define %lotus-network-manager-services (list (service network-manager-service-type
                                                        (network-manager-configuration (dns %lotus-network-manager-dns)))))
 
 (define %lotus-avahi-services (list (service avahi-service-type)))
-
-
-;; (define %lotus-xorg-configuration-serivces (list (set-xorg-configuration
-;;                                                   (xorg-configuration
-;;                                                    (keyboard-layout %lotus-keyboard-layout)))))
 
 
 ;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
@@ -404,6 +400,11 @@
                                                 (mingetty-configuration (tty "tty5")))
                                        (service mingetty-service-type
                                                 (mingetty-configuration (tty "tty6")))))
+
+
+;; (define %lotus-xorg-configuration-serivces (list (set-xorg-configuration
+;;                                                   (xorg-configuration
+;;                                                    (keyboard-layout %lotus-keyboard-layout)))))
 
 
 ;; (when #f
@@ -472,6 +473,7 @@
                                                    ;; %lotus-xorg-configuration-serivces
                                                    %lotus-mail-aliases-services
                                                    %lotus-dovecot-services
+                                                   %lotus-exim-services
                                                    %lotus-mcron-services
                                                    ;; %lotus-cups-services
                                                    ;; %lotus-xdm-services

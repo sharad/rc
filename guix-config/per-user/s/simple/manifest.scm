@@ -60,6 +60,10 @@
         "recutils"
         "emacs-recutils"
 
+        ;; https://unix.stackexchange.com/questions/20784/how-can-i-resolve-a-hostname-to-an-ip-address-in-a-bash-script
+        "dnsutils" ;; host command
+        ;; getent hosts localhost
+
         ;; "font-gnu-freefont-ttf"
         ;; "font-adobe-source-code-pro"
         ;; "font-terminus"
