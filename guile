@@ -1,6 +1,5 @@
 ;; -*- major-mode: scheme-mode; -*-
 
-
 ;; https://github.com/pjotrp/guix-notes/blob/master/HACKING.org#in-progress-using-guile-in-emacs-geiser
 
 ;;; read-line support
@@ -35,3 +34,7 @@ for a colorful Guile experience.\n\n"))))
 
 (use-modules (srfi srfi-1))
 
+
+;; Local Variables:
+;; major-mode: fundamental-mode
+;; End:

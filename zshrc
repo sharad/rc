@@ -248,19 +248,47 @@ fi
 
 # {{{ *Aliases*
 ###################
-[ -r ~/.zshall/aliases ] && source ~/.zshall/aliases
+if [ -r ~/.zshall/aliases ]
+then
+    source ~/.zshall/aliases
+fi
 # }}}
 
 # {{{ *Functions*
-[ -r ~/.zshall/rcfuns ] && source ~/.zshall/rcfuns
+if [ -r ~/.zshall/rcfuns ]
+then
+    source ~/.zshall/rcfuns
+fi
 # }}}
 
 # {{{ *Variables for Zsh*
-[ -r ~/.zshall/prompt ] &&
-source ~/.zshall/prompt # set prompt.
+if [ -r ~/.zshall/prompt ]
+then
+    source ~/.zshall/prompt # set prompt.
+fi
 
 # {{{ *Zstyle*
-[ -r ~/.zshall/zstyle ] && source ~/.zshall/zstyle
+if [ -r ~/.zshall/zstyle ]
+then
+    source ~/.zshall/zstyle
+fi
+# }}}
+
+# {{{ *Zstyle*
+if [ -r ~/.zshall/misc ]
+then
+    source ~/.zshall/misc
+fi
+# }}}
+
+# {{{ *Zstyle*
+for fp ( ~/.zshall/envfuns ~/.zshall/monitor ~/.zshall/gtd  )
+do
+    if [ -r $fp ]
+    then
+        source $fp
+    fi
+done
 # }}}
 
 # Lines configured by zsh-newuser-install

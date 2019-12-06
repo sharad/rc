@@ -43,6 +43,7 @@
     org-agenda
     vc
     vc-hooks
+    vc-git
     )
   "The list of Lisp packages required by the lotus-override layer.
 
@@ -108,7 +109,7 @@ Each entry is either:
     (lotus-override/post-init-org-agenda-config)))
 
 (defun lotus-override/post-init-vc ()
-  (use-package vc-hooks
+  (use-package vc
     :defer t
     :config
     (lotus-override/post-init-vc-config)))
@@ -118,3 +119,10 @@ Each entry is either:
     :defer t
     :config
     (lotus-override/post-init-vc-hooks-config)))
+
+(defun lotus-override/post-init-vc-git ()
+  (use-package vc-git
+    :defer t
+    :config
+    (lotus-override/post-init-vc-git-config)))
+

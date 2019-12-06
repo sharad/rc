@@ -4,16 +4,16 @@
 # http://grml.org/zsh-pony/#sec-10-3
 
 autoload -Uz vcs_info
-precmd() {
-  psvar=()
-  vcs_info
-  [[ -n $vcs_info_msg_0_ ]] && psvar[1]="$vcs_info_msg_0_"
-}
-
+if false
+then
+    precmd() {
+        psvar=()
+        vcs_info
+        [[ -n $vcs_info_msg_0_ ]] && psvar[1]="$vcs_info_msg_0_"
+    }
+fi
 
 # PS1="%m%(1v.%F{green}%1v%f.)%# "
-
-
 
 # {{ http://emacswiki.org/emacs/BookMarks#toc8
 # Syncing Bookmarks with zsh
@@ -24,4 +24,19 @@ precmd() {
 
 setopt cd_able_vars
 [[ -r ~/.zsh.bmk ]] && source ~/.zsh.bmk
+# }}
+
+# {{
+if [ -r ~/.guix-profile/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]
+then
+    source ~/.guix-profile/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+for  dir in ~/.guix-profile/share/zsh/{5.6.2/functions,functions,site-functions}
+do
+    if [ -f $dir ]
+    then
+        fpath=($dir $fpath)
+    fi
+done
 # }}

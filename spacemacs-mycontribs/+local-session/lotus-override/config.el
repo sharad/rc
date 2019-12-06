@@ -258,4 +258,17 @@ backend is tried first."
 (defun lotus-override/post-init-vc-hooks-config ()
   (override-vc-registered))
 
+(defun lotus-override/post-init-vc-git-config ()
+  (defun vc-git-mode-line-string (file)
+    "Return a string for `vc-mode-line' to put in the mode line for FILE."
+    (let* ((rev (vc-working-revision file 'Git))
+           (disp-rev (or (vc-git--symbolic-ref file)
+                         (when rev (substring rev 0 7))))
+           (def-ml (vc-default-mode-line-string 'Git file))
+           (help-echo (when def-ml (get-text-property 0 'help-echo def-ml)))
+           (face   (when def-ml (get-text-property 0 'face def-ml))))
+      (propertize (concat (substring def-ml 0 4) disp-rev)
+                  'face face
+                  'help-echo (concat help-echo "\nCurrent revision: " rev)))))
+
 ;;; config.el ends here

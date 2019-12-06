@@ -28,6 +28,9 @@
 
 (define this-config-file
   (local-file (assoc-ref (current-source-location) 'filename)))
+;; (define nm-dnsmasq-file
+;;   (plain-file "cache.conf"
+;;               "cache-size=1000\n"))
 
 ;; non-guix
 
@@ -293,8 +296,9 @@
 (define %lotus-copy-current-config-file-in-etc (list (simple-service 'config-file etc-service-type
                                                                      ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
                                                                      ;; Copy current config to /etc/config.scm
-                                                                     `(("config/config.scm"  ,this-config-file)
-                                                                       ("config/package.scm" ,this-package-file)))))
+                                                                     `(("config/config.scm"                   ,this-config-file)
+                                                                       ;; ("dnsmasq.d/cache.conf" ,nm-dnsmasq-file)
+                                                                       ("config/package.scm"                  ,this-package-file)))))
 
 
 (define (remove-services types services)
@@ -364,7 +368,16 @@
                                                                       ;;            "51.255.48.78"
                                                                       ;;            "51.15.98.97"))
                                                                       (local-service? #t)))))
+
 
+(define %lotus-exmin-services (list (service exim-service-type
+                                             (exim-configuration
+                                              (config-file (local-file "./my-exim.conf"))))))
+
+(define %lotus-opensmtpd-services (list (service opensmtpd-service-type
+                                                 (opensmtpd-configuration
+                                                  (config-file (local-file "./my-smtpd.conf"))))))
+
 ;; https://guix.gnu.org/manual/en/html_node/Networking-Services.html
 (define %lotus-network-manager-services (list (service network-manager-service-type
                                                        (network-manager-configuration (dns %lotus-network-manager-dns)))))
@@ -372,9 +385,9 @@
 (define %lotus-avahi-services (list (service avahi-service-type)))
 
 
-(define %lotus-xorg-configuration-serivces (list (set-xorg-configuration
-                                                  (xorg-configuration
-                                                   (keyboard-layout %lotus-keyboard-layout)))))
+;; (define %lotus-xorg-configuration-serivces (list (set-xorg-configuration
+;;                                                   (xorg-configuration
+;;                                                    (keyboard-layout %lotus-keyboard-layout)))))
 
 
 ;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
@@ -393,6 +406,16 @@
                                                 (mingetty-configuration (tty "tty6")))))
 
 
+;; (when #f
+;;  (define %lotus-xdm-services (list (service gdm-service-type
+;;                                           (gdm-configuration (xorg-configuration
+;;                                                               (xorg-configuration
+;;                                                                (keyboard-layout %lotus-keyboard-layout)))
+;;                                                              (allow-empty-passwords? #t)
+;;                                                              (auto-login?            #t)
+;;                                                              (default-user           %lotus-user-name))))))
+
+
 (define %lotus-cups-services (list (service cups-service-type
                                             (cups-configuration (web-interface? #f)
                                                                 (default-paper-size "A4")
@@ -400,6 +423,7 @@
                                                                                   hplip-minimal))))))
 
 
+
 (define %lotus-desktop-nm-services (modify-services %desktop-services
                                      (network-manager-service-type config =>
                                                                    (network-manager-configuration (inherit config)
@@ -415,18 +439,20 @@
                                                                             (extra-options %lotus-guix-extra-options)))))
 
 ;; https://issues.guix.info/issue/35674
-(set! %lotus-desktop-nm-services (modify-services %lotus-desktop-nm-services
-                                   (gdm-service-type config =>
-                                                     (gdm-configuration (inherit config)
-                                                                        (xorg-configuration
-                                                                         (xorg-configuration
-                                                                          (keyboard-layout %lotus-keyboard-layout)))
-                                                                        (allow-empty-passwords? #t)
-                                                                        (auto-login?            #t)
-                                                                        (default-user           %lotus-user-name)))))
+(when #t
+  (set! %lotus-desktop-nm-services (modify-services %lotus-desktop-nm-services
+                                     (gdm-service-type config =>
+                                                       (gdm-configuration (inherit config)
+                                                                          ;; (xorg-configuration
+                                                                          ;;  (xorg-configuration
+                                                                          ;;   (keyboard-layout %lotus-keyboard-layout)))
+                                                                          ;; (allow-empty-passwords? #t)
+                                                                          ;; (auto-login?            #t)
+                                                                          ;; (default-user           %lotus-user-name)
+                                                                          )))))
 
 
-(define %lotus-desktop-services (remove-services (list mingetty-service-type)
+(define %lotus-desktop-services (remove-services (list mingetty-service-type) ;; gdm-service-type
                                                  %lotus-desktop-nm-services))
 
 
@@ -448,6 +474,7 @@
                                                    %lotus-dovecot-services
                                                    %lotus-mcron-services
                                                    ;; %lotus-cups-services
+                                                   ;; %lotus-xdm-services
                                                    %lotus-mingetty-services
                                                    %lotus-desktop-services))
 
