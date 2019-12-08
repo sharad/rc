@@ -50,6 +50,8 @@
         "mosh"
         "eternalterminal"
 
+        "openldap"
+
         ;; "glib"
         ;; "dconf"
         ;; "gsettings-desktop-schemas"
