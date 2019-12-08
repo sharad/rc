@@ -501,25 +501,16 @@
 
 (define %lotus-locale "en_US.utf8")
 
-(define %lotus-en-us-locale-definition (locale-definition (source "en_US")
-                                                          (name   "en_US.utf8")))
+(define %lotus-locate-names (list "en_US"
+                                  "hi_IN"
+                                  "ur_PK"
+                                  "fa_IR"
+                                  "ar_SA"))
 
-(define %lotus-hi-in-locale-definition (locale-definition (source "hi_IN")
-                                                          (name   "hi_IN.utf8")))
-
-(define %lotus-ur-pk-locale-definition (locale-definition (source "ur_PK")
-                                                          (name   "ur_PK.utf8")))
-
-(define %lotus-fa-ir-locale-definition (locale-definition (source "fa_IR")
-                                                          (name   "fa_IR.utf8")))
-
-(define %lotus-ar-sa-locale-definition (locale-definition (source "ar_SA")
-                                                          (name   "ar_SA.utf8")))
-
-(define %lotus-all-locale-definitions  (list %lotus-en-us-locale-definition
-                                             %lotus-hi-in-locale-definition
-                                             %lotus-ur-pk-locale-definition
-                                             %lotus-ar-sa-locale-definition))
+(define %lotus-all-locale-definitions  (map (lambda (locale)
+                                              (locale-definition (source locale)
+                                                                 (name   (string-append locale "." "utf8"))))
+                                            %lotus-locate-names))
 
 (define %lotus-locale-definitions      (append %lotus-all-locale-definitions
                                                %default-locale-definitions))
