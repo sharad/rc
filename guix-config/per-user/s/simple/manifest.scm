@@ -1,5 +1,5 @@
 ;; https://wingolog.org/archives/2015/08/04/developing-v8-with-guix
-(use-package-modules  base gcc llvm base python version-control less ccache pkg-config glib gnome cmake messaging autotools flex bison m4 gawk xorg onc-rpc commencement fonts)
+(use-package-modules  base gcc llvm base python version-control less ccache pkg-config glib gnome cmake messaging autotools flex bison m4 gawk xorg onc-rpc commencement fonts dns)
 
 
 (use-modules (gnu packages linux))
@@ -57,11 +57,13 @@
         "rcs"
         "darcs"
 
+        ;; "bind:utils"
+
         "recutils"
         "emacs-recutils"
 
         ;; https://unix.stackexchange.com/questions/20784/how-can-i-resolve-a-hostname-to-an-ip-address-in-a-bash-script
-        "dnsutils" ;; host command
+        ;; "dnsutils" ;; host command
         ;; getent hosts localhost
 
         ;; "font-gnu-freefont-ttf"
@@ -132,6 +134,8 @@
         "sbcl-cl-ledger"
 
         "lsh"
+
+        "esmtp"
 
         "enscript"
 
@@ -353,10 +357,12 @@
           %lotus-notification-packages))
 
 (define %lotus-user-desktop-packages
-  (list ;; lvm2
+  (list (list glib     "bin")
+        (list isc-bind "utils")))
+        ;; lvm2
         ;; for user mounts
         ;; gvfs
-        (list glib "bin")))
+        ;; (list bind "utils")
 
 (define %lotus-user-selected-packages
   (map specification->package

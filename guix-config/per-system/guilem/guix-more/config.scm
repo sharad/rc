@@ -328,14 +328,14 @@
   ;; and 19:15PM.  This runs from the user's home directory.
   #~(job '(next-minute-from (next-hour '(12 19)) '(15))
          (string-append #$idutils "/bin/mkid src")
-         #:user "charlie"))
+         #:user "s"))
 
 
 ;; https://guix.gnu.org/manual/en/html_node/Scheduled-Job-Execution.html
 (define %lotus-mcron-services (list (service mcron-service-type
                                              (mcron-configuration (jobs (list garbage-collector-job
-                                                                              updatedb-job
-                                                                              idutils-job))))))
+                                                                              ;; idutils-job
+                                                                              updatedb-job))))))
 
 
 (define %lotus-bitlbee-services (list (service bitlbee-service-type)))
@@ -444,12 +444,12 @@
   (set! %lotus-desktop-nm-services (modify-services %lotus-desktop-nm-services
                                      (gdm-service-type config =>
                                                        (gdm-configuration (inherit config)
-                                                                          ;; (xorg-configuration
-                                                                          ;;  (xorg-configuration
-                                                                          ;;   (keyboard-layout %lotus-keyboard-layout)))
+                                                                          (xorg-configuration
+                                                                           (xorg-configuration
+                                                                            (keyboard-layout %lotus-keyboard-layout)))
                                                                           ;; (allow-empty-passwords? #t)
-                                                                          ;; (auto-login?            #t)
-                                                                          ;; (default-user           %lotus-user-name)
+                                                                          (auto-login?            #f)
+                                                                          (default-user           %lotus-user-name)
                                                                           )))))
 
 
