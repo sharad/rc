@@ -157,6 +157,10 @@
         "gpa"
         "jetring"))
 
+(define %lotus-lang-packages (list "ocaml"
+                                   "opam"
+                                   "ocaml-merlin"))
+
 (define %lotus-user-selected-package-names
    (list   "m4"
            "binutils"
@@ -351,6 +355,7 @@
 
 (define %lotus-package-names-for-installation 
   (append %lotus-user-selected-package-names
+          %lotus-lang-packages
           %lotus-other-packages
           %lotus-mail-packages
           %lotus-font-packages
