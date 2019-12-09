@@ -51,6 +51,7 @@
         "eternalterminal"
 
         "openldap"
+        "emacs-ebdb"
 
         ;; "glib"
         ;; "dconf"

@@ -314,8 +314,8 @@
   #~(job '(next-hour '(3))
          (lambda ()
            (execl (string-append #$findutils "/bin/updatedb")
-                  "updatedb"
-                  "--prunepaths=/tmp /var/tmp /gnu/store"))))
+                  ;; "updatedb"
+                  "--prunepaths=/tmp /var/tmp /gnu/store /run"))))
 
 (define garbage-collector-job
   ;; Collect garbage 5 minutes after midnight every day.
@@ -473,7 +473,7 @@
                                                    ;; %lotus-xorg-configuration-serivces
                                                    %lotus-mail-aliases-services
                                                    %lotus-dovecot-services
-                                                   %lotus-exim-services
+                                                   ;; %lotus-exim-services
                                                    %lotus-mcron-services
                                                    ;; %lotus-cups-services
                                                    ;; %lotus-xdm-services
