@@ -177,6 +177,10 @@
            "git-remote-gcrypt"
            "guile-colorized"
            "file"
+
+           "lesspipe"
+           "python-organize-tool"
+
            ;; "macchanger"
            ;; "font-lohit"
            "screen"
