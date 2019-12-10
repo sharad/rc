@@ -54,6 +54,7 @@
         "atool"
         "sshpass"
         "virt-manager"
+        "libvirt"
 
         "lesspipe"
         "python-organize-tool"

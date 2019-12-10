@@ -1721,8 +1721,11 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     ;; Initialize the Gnus daemon, check new mail every six minutes.
     ;; (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news 1 nil))
     ;; (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news-now 2 nil)
-    (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news-now 10 10)
-    (gnus-demon-add-handler '(lambda () (gnus-demon-scan-mail-and-news-now 6)) 22 20)))
+    (gnus-demon-add-handler #'gnus-demon-scan-mail-and-news-now 10 10)
+    (gnus-demon-add-handler #'(lambda ()
+                                (message "running gnus demon")
+                                (gnus-demon-scan-mail-and-news-now 6))
+                            22 20)))
 
 (defun lotus-mailnews/init-message-config ()
   (progn
