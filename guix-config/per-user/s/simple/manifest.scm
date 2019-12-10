@@ -21,16 +21,15 @@
 
 
 
+
 ;; other guix
-
 (use-modules (gnu system locale))
-
-
-
 
 
 (define %lotus-other-packages
   (list "vim"
+
+        "emacs-ebdb"
         "emacs-geiser"
         "emacs-sesman"
         "guile-studio"
@@ -42,16 +41,26 @@
         "emacs-powerline"
         "emacs-spaceline"
         "emacs-emojify"
+        "emacs-org-noter" ;; https://github.com/weirdNox/org-noter
+
         "jupyter"
         "python-git-review"
 
+        "xmlstarlet"
+        "libxml2"
+        "libxslt"
+
         "atool"
+
+        "lesspipe"
+        "python-organize-tool"
+
+        "evince"
 
         "mosh"
         "eternalterminal"
 
         "openldap"
-        "emacs-ebdb"
 
         ;; "glib"
         ;; "dconf"
@@ -66,7 +75,6 @@
         "emacs-recutils"
 
         ;; https://unix.stackexchange.com/questions/20784/how-can-i-resolve-a-hostname-to-an-ip-address-in-a-bash-script
-        ;; "dnsutils" ;; host command
         ;; getent hosts localhost
 
         ;; "font-gnu-freefont-ttf"
@@ -178,8 +186,6 @@
            "guile-colorized"
            "file"
 
-           "lesspipe"
-           "python-organize-tool"
 
            ;; "macchanger"
            ;; "font-lohit"

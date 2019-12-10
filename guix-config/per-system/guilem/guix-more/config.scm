@@ -418,7 +418,7 @@
 
 
 (define %lotus-cups-services (list (service cups-service-type
-                                            (cups-configuration (web-interface? #f)
+                                            (cups-configuration (web-interface? #t)
                                                                 (default-paper-size "A4")
                                                                 (extensions (list cups-filters
                                                                                   hplip-minimal))))))
@@ -475,7 +475,7 @@
                                                    %lotus-dovecot-services
                                                    ;; %lotus-exim-services
                                                    %lotus-mcron-services
-                                                   ;; %lotus-cups-services
+                                                   %lotus-cups-services
                                                    ;; %lotus-xdm-services
                                                    %lotus-mingetty-services
                                                    %lotus-desktop-services))
