@@ -819,7 +819,8 @@ always hide."
 ;; (defun gnus-demon-scan-mail-and-news ()
 ;;   (cancel-timer
 ;;    (run-with-idle-timer 6 nil 'gnus-demon-scan-mail-and-news-now)))
-
+(defvar gnus-demon-scan-mail-and-news-now-min-idle-time 3) ;; 7
+(defvar gnus-demon-scan-mail-and-news-now-max-run-time  10) ;; 3
 (defun gnus-demon-scan-mail-and-news-now (&optional level)
   "Scan for new mail/news and update the *Group* buffer."
   (let ((level (or level 3))
@@ -834,8 +835,9 @@ always hide."
           (with-current-buffer gnus-group-buffer
             ;; (set-buffer gnus-group-buffer)
             (let ((idle-time (current-idle-time)))
-              (if (> (float-time idle-time) 7)
-                  (with-timeout (3 (message "gnus demon timeout"))
+              (if (> (float-time idle-time) gnus-demon-scan-mail-and-news-now-min-idle-time)
+                  (with-timeout (gnus-demon-scan-mail-and-news-now-max-run-time
+                                 (message "gnus demon timeout"))
                     (gnus-group-get-new-news level))
                 (message "not running gnus demon")))
             (message nil)))))))
@@ -1713,11 +1715,13 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)))
 
 (defun lotus-mailnews/init-gnus-demon-init ()
-  (setq gnus-use-demon t))
+  (setq gnus-use-demon t)
+  (setq gnus-demon-timestep 10))
 
 (defun lotus-mailnews/init-gnus-demon-config ()
   (progn
-    (setq gnus-use-demon t)
+    (setq gnus-use-demon      t)
+    (setq gnus-demon-timestep 10)
     ;; Initialize the Gnus daemon, check new mail every six minutes.
     ;; (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news 1 nil))
     ;; (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news-now 2 nil)

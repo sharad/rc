@@ -237,6 +237,7 @@
   (list "mailutils"
         "offlineimap"
         "notmuch"
+        "notifymuch"
         "mu"))
 
 (define %lotus-font-packages
