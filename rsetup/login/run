@@ -99,6 +99,20 @@ fi
 
 
 
+if whence -p mcron >/dev/null 2>&1 &&
+       ! pgrep  -u $(id -u ) mcron >/dev/null 2>&1
+then
+    mcron &!
+fi
+
+if whence -p shepherd >/dev/null 2>&1 &&
+       ! pgrep  -u $(id -u ) shepherd >/dev/null 2>&1
+then
+    shepherd &!
+fi
+
+
+
 __comp=login
 __subcomp=run
 

@@ -1,0 +1,14 @@
+;; -*- major-mode: scheme-mode; -*-
+
+(use-modules (shepherd service))
+(use-modules (guix utils))
+(use-modules (gnu))
+;; (use-service-modules mcron)
+(use-modules (gnu services mcron))
+
+(define offline-syncimap
+  ;; offline-syncimap evry minutes
+  ;; The job's action is a shell command.
+  (job '(next-minute) "~/bin/syncimap"))
+
+

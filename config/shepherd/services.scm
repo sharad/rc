@@ -10,18 +10,7 @@
 (define redshift
   (make <service>
     #:provides '(redshift)
-    #:start    (make-forkexec-constructor '("xterm")) ; to make it more obvious
+    #:start    (make-forkexec-constructor '("redshift" "-t" "6500:5000" "-b" "1.0 0.8")) ; to make it more obvious
     #:stop     (make-kill-destructor)
     #:respawn? #t))
-
-(define offline-syncimap
-  ;; offline-syncimap 5 minutes after midnight every day.
-  ;; The job's action is a shell command.
-  ;; Vixie cron syntax
-  #~(job "*/3 * * * *" "~/bin/syncimap "))
-
-(define mcron-task (service mcron-service-type
-                            (mcron-configuration
-                             (jobs (list offline-syncimap)))))
-
 

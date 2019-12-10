@@ -14,7 +14,6 @@
                    ;; gpg-agent
                    ;; ibus-daemon
                    ;; jackd
-                   mcron-task
                    redshift)
 
 ;; Send shepherd into the background
@@ -23,6 +22,6 @@
 ;; Services to start when shepherd starts:
 ;; Add the name of each service that should be started to the list
 ;; below passed to 'for-each'.
-(for-each start (list redshift mcron-task)) ; services to start automatically
+(for-each start (list redshift)) ; services to start automatically
 
 

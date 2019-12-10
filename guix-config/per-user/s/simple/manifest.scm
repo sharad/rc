@@ -8,6 +8,7 @@
 (use-modules (guix packages))
 (use-modules (gnu services networking))
 (use-modules (gnu) (gnu system nss))
+
 (use-service-modules networking ssh)
 (use-package-modules bootloaders certs suckless wm)
 
@@ -51,6 +52,8 @@
         "libxslt"
 
         "atool"
+        "sshpass"
+        "virt-manager"
 
         "lesspipe"
         "python-organize-tool"
