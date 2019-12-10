@@ -36,6 +36,8 @@
 
 (defconst lotus-mailnews-packages
   '(
+    outlook
+    org-outlook
     (gnus          :location local)
     (nndraft       :location local)
     (gnus-gravatar :location local)
@@ -92,6 +94,24 @@ Each entry is either:
 
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
+
+(defun lotus-mailnews/init-outlook ()
+  (interactive)
+  (use-package outlook
+    :init
+    (lotus-mailnews/init-outlook-init)
+    :defer t
+    :config
+    (lotus-mailnews/init-outlook-config)))
+
+(defun lotus-mailnews/init-org-outlook ()
+  (interactive)
+  (use-package org-outlook
+    :init
+    (lotus-mailnews/init-org-outlook-init)
+    :defer t
+    :config
+    (lotus-mailnews/init-org-outlook-config)))
 
 (defun lotus-mailnews/post-init-gnus ()
   (interactive)

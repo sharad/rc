@@ -1219,6 +1219,14 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 
 
+(defun lotus-mailnews/init-outlook-init ())
+
+(defun lotus-mailnews/init-outlook-config ())
+
+(defun lotus-mailnews/init-org-outlook-init ())
+
+(defun lotus-mailnews/init-org-outlook-config ())
+
 (defun lotus-mailnews/common-init-gnus ()
   (interactive)
   ;; (debug)
