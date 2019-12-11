@@ -35,7 +35,8 @@
 
 # {{{ for running ssh-agent and adding key to it.
 SCREEN4KEYCHAIN=keychain
-if [ "$STY" -o "$TERM" = "screen" ] && [[ "$STY" = *.${SCREEN4KEYCHAIN} ]] ; then
+if [ "$STY" -o "$TERM" = "screen" ] && [[ "$STY" = *.${SCREEN4KEYCHAIN} ]]
+then
     if [  -r ~/.rsetup/screen/env  ]
     then
         source ~/.rsetup/screen/env
@@ -92,12 +93,17 @@ fi
 
 
 # If not running interactively, don't do anything:
-[ -z "$PS1" ] && return
+if [ -z "$PS1" ]
+then
+    return
+fi
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
-if [ `uname -s` != "SunOS" ] ; then
-    if which shopt > /dev/null 2>&1 ; then
+if [ `uname -s` != "SunOS" ]
+then
+    if which shopt > /dev/null 2>&1
+    then
 	      shopt -s checkwinsize
     fi
 fi
@@ -108,7 +114,8 @@ fi
 # }}}
 
 # {{{ *Autoload*
-if [ `uname -s` != "SunOS" ] ; then
+if [ `uname -s` != "SunOS" ]
+then
     autoload -U colors && colors
     autoload -Uz compinit && compinit
     autoload -U select-word-style && select-word-style bash
@@ -244,7 +251,8 @@ setopt appendhistory autocd beep extendedglob nomatch notify
 bindkey -e
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
-if [ `uname -s` != "SunOS" ] ; then
+if [ `uname -s` != "SunOS" ]
+then
     zstyle :compinstall filename '/home/s/hell/.zshrc'
 fi
 # End of lines added by compinstall
@@ -335,7 +343,8 @@ WATCHFMT="%n from %M has %a tty%l at %T %W"
 ## DONE in .zshenv
 # export ALTERNATE_EDITOR='echo bye'
 # unset EDITOR BROWSER
-# if [ $DISPLAY ] ; then
+# if [ $DISPLAY ]
+# then
 #     export EDITOR=${EDITOR:-"emacsclient -d $DISPLAY -c -f ~/.emacs.d/server/general "}
 #     export VISUAL=$EDITOR
 #     export BROWSER=${BROWSER:-"conkeror"}
@@ -345,8 +354,10 @@ WATCHFMT="%n from %M has %a tty%l at %T %W"
 #     export BROWSER=${BROWSER:-"w3m"}
 # fi
 
-if [ $DISPLAY ] ; then
-    if [ "x${REMOTEEDITORHOST}" != "x" ] ; then
+if [ $DISPLAY ]
+then
+    if [ "x${REMOTEEDITORHOST}" != "x" ]
+    then
         EDITOR=$HOME/bin/rgeneral-xeditor
     else
         EDITOR=$HOME/bin/general-xeditor
@@ -354,7 +365,8 @@ if [ $DISPLAY ] ; then
     export VISUAL=$EDITOR
     export BROWSER="conkeror"
 else
-    if [ "x${REMOTEEDITORHOST}" != "x" ] ; then
+    if [ "x${REMOTEEDITORHOST}" != "x" ]
+    then
         EDITOR=$HOME/bin/rgeneral-editor
     else
         EDITOR=$HOME/bin/general-editor
@@ -370,12 +382,13 @@ export LESS='-R'                           #XE
 export MAILCHECK=1
 export TDL_DATABASE=~/.tdldb
 
-if [ -r ~/.LESS_TERMCAP ] ; then
+if [ -r ~/.LESS_TERMCAP ]
+then
     source ~/.LESS_TERMCAP
 fi
 
 # take mailbox from ~/.mutt/muttrc
-[ -r ~/.mutt/muttrc ] &&
+# [ -r ~/.mutt/muttrc ] &&
 # mailp ath=( ${(f)"$(sed -n \
 #     's@^[[:space:]]*mailboxes[[:space:]]\+\(.*\)[[:space:]]*$@\1?new mail in ${fg_no_bold[cyan]}${_:t}${reset_color}@p'\
 #     ~/.mutt/muttrc | sed  s@\^\~@$HOME@)"} )
@@ -383,8 +396,9 @@ fi
 
 
 # If console, change some keymaps
-if [ $TERM = 'linux' -a -x /usr/bin/loadkeys -a -f .keymap ] ; then
-    loadkeys .keymap 2> /dev/null
+if [ $TERM = 'linux' -a -x /usr/bin/loadkeys -a -f ~/.keymap ]
+then
+    loadkeys ~/.keymap 2> /dev/null
 fi
 # }}}
 
@@ -487,7 +501,8 @@ foreach f ( ~/.zshall/rc.d/*.zsh ) {
 # }}}
 
 # {{{ For changing cursor to cyan still block.	  #
-if [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
+if [[ "$TERM" != "dumb" ]]
+then # let emacs tramp work.
 #echo \[\?17\;0\;60c		# for bash
     echo -n \\033\[\?17\;0\;60c	# for zshell
 fi
