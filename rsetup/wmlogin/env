@@ -32,7 +32,7 @@ fi
 export GNUSTEP_USER_ROOT=~/.GNUstep/
 #}}
 
-if ! pgrep gnome-keyring-d >> ~/.logs/wmlogin.log 2>&1
+if ! pgrep -u "$(id -u)" gnome-keyring-d >> ~/.logs/wmlogin.log 2>&1
 then
  	  # eval $(gnome-keyring-daemon --start)
     eval $(gnome-keyring-daemon --start --daemonize) >> ~/.logs/wmlogin.log 2>&1
@@ -42,7 +42,7 @@ then
 fi
 
 
-# if ! pgrep gnome-keyring-d >& /dev/null ; then
+# if ! pgrep -u "$(id -u)" gnome-keyring-d >& /dev/null ; then
 # 	eval $(/usr/bin/gnome-keyring-daemon --start --foreground --components=secrets)
 # if
 
@@ -56,11 +56,11 @@ function xsession_intrusive_run()
     for prog in mail-notification
     do
         if whence -p $prog >& /dev/null &&
-               ! pgrep $prog >> /dev/null 2>&1
+               ! pgrep -u "$(id -u)" $prog >> /dev/null 2>&1
         then
             $prog &!
             # echo started $prog >&2
-	          pgrep $prog  >> /dev/null 2>&1
+	          pgrep -u "$(id -u)" $prog  >> /dev/null 2>&1
             sleep 1s;
         else
             print Not starting $prog  >> /dev/null 2>&1

@@ -55,7 +55,7 @@ fi
 
 ## ssh-agent access needed.
 if whence -p xautolock >& /dev/null &&
-       ! pgrep xautolock >& /dev/null
+       ! pgrep -u "$(id -u)" xautolock >& /dev/null
 then
     xautolock -detectsleep -locker "alarm -l" >>& ~/.logs/wmlogin.log &!
 fi
@@ -80,7 +80,7 @@ fi
 ##}}
 
 if whence -p conky >& /dev/null &&
-       ! pgrep conky >& /dev/null
+       ! pgrep -u "$(id -u)" conky >& /dev/null
 then
     conky -d -c ~/.conkyrc/main/conkyrc >& /dev/null &!
     ## NOTE watch need attached terminal to work.
@@ -110,7 +110,7 @@ then
 fi
 
 if whence -p redshift >& /dev/null &&
-       ! pgrep redshift >& /dev/null
+       ! pgrep -u "$(id -u)" redshift >& /dev/null
 then
     redshift -t 6500:5000 -b 1.0:0.8  >>& ~/.logs/wmlogin.log &!
     ## NOTE watch need attached terminal to work.
@@ -151,7 +151,7 @@ fi
 
 emacs_daemon_start              # in case it were not started in x/run
 
-if whence -p xautolock >& /dev/null && pgrep xautolock >& /dev/null
+if whence -p xautolock >& /dev/null && pgrep -u "$(id -u)" xautolock >& /dev/null
 then
     xautolock -locknow >> ~/.logs/wmlogin.log 2>&1 &!
 fi
@@ -170,32 +170,32 @@ foreach prog (
     synergys
 ) {
     if whence -p $prog >> ~/.logs/wmlogin.log 2>&1  &&
-           ! pgrep $prog[0,15] >> ~/.logs/wmlogin.log 2>&1
+           ! pgrep -u "$(id -u)" $prog[0,15] >> ~/.logs/wmlogin.log 2>&1
     then
         $prog &!
         # echo started $prog >&2
-	      pgrep $prog[0,15] >> ~/.logs/wmlogin.log 2>&1
+	      pgrep -u "$(id -u)" $prog[0,15] >> ~/.logs/wmlogin.log 2>&1
         # sleep 1s;
     else
         print Not starting $prog >> ~/.logs/wmlogin.log 2>&1
     fi
 }
 
-if [ -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ] && ! pgrep polkit-gnome-au >& /dev/null
+if [ -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ] && ! pgrep -u "$(id -u)" polkit-gnome-au >& /dev/null
 then
     /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &!
 fi
 
 
 if whence -p keynav >& /dev/null &&
-       ! pgrep keynav >& /dev/null
+       ! pgrep -u "$(id -u)" keynav >& /dev/null
 then
     keynav >> ~/.logs/wmlogin.log 2>&1  &!
 fi
 
 # Android LinConnect
 if [ -x ~/.linconnect/LinConnectServer/update.sh ] &&
-       ! pgrep linconnect_serv >> ~/.logs/wmlogin.log 2>&1
+       ! pgrep -u "$(id -u)" linconnect_serv >> ~/.logs/wmlogin.log 2>&1
 then
     # https://github.com/hauckwill/linconnect-server
     # https://play.google.com/store/apps/details?id=com.willhauck.linconnectclient
@@ -215,7 +215,7 @@ fi
 if [ "x" != "x$EMACS_SERVER_NAME" ]
 then
     echo Trying to run emacsclient
-    if pgrep stumpwm >& /dev/null && whence -p stumpish >& /dev/null
+    if pgrep -u "$(id -u)" stumpwm >& /dev/null && whence -p stumpish >& /dev/null
     then
         ( sleep 30s; stumpish emacsclient ) &!
     else
@@ -223,12 +223,12 @@ then
     fi
 fi
 
-if whence -p autocutsel >& /dev/null && ! pgrep autocutsel >& /dev/null
+if whence -p autocutsel >& /dev/null && ! pgrep -u "$(id -u)" autocutsel >& /dev/null
 then
         autocutsel -f &!
 fi
 
-if whence -p xcompmgr >& /dev/null && ! pgrep xcompmgr >& /dev/null
+if whence -p xcompmgr >& /dev/null && ! pgrep -u "$(id -u)" xcompmgr >& /dev/null
 then
     xcompmgr -a &!
 fi
@@ -252,8 +252,8 @@ fi
  then
      if false
      then
-       echo pkill gnome-keyr
-       pkill gnome-keyr
+       echo pkill -u "$(id -u)" gnome-keyr
+       pkill -u "$(id -u)" gnome-keyr
        echo sleep 1s
        sleep 1s
        echo gnome-keyring-daemon --daemonize
@@ -261,8 +261,8 @@ fi
        echo timeout 7s ~/bin/get-imap-pass -u localhost
        if timeout 7s ~/bin/get-imap-pass -u localhost
        then
-           echo pkill gnome-keyr
-           : pkill gnome-keyr
+           echo pkill -u "$(id -u)" gnome-keyr
+           : pkill -u "$(id -u)" gnome-keyr
        fi
      fi
  fi

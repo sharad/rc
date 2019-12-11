@@ -163,7 +163,7 @@ then
         #  && ! ps -u $USER $SSH_AGENT_PID 2>&1 > /dev/null
         # export SSH_AUTH_SOCK=""
 
-        # pkill ssh-agent
+        # pkill -u "$(id -u)" ssh-agent
         [  -d $HOME/.ssh ] || mkdir -p $HOME/.ssh
 
 

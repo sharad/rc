@@ -1,29 +1,31 @@
 #!/usr/bin/env zsh
 
 
-if pgrep at-spi-registry >/dev/null 2>&1  # && [ -x /usr/libexec/at-spi-registryd ]
+if pgrep -u "$(id -u)" at-spi-registry >/dev/null 2>&1  # && [ -x /usr/libexec/at-spi-registryd ]
 then
-    pkill at-spi-registry
+    pkill -u "$(id -u)" at-spi-registry
 fi
 
 # whence -p gnome-screensaver &&
-# pgrep gnome-screensaver ||
+# pgrep -u "$(id -u)" gnome-screensaver ||
 # gnome-screensaver &!
 
-if [ -x /usr/libexec/gnome-settings-daemon ] ; then
-    pgrep gnome-settings && pkill gnome-settings
+if [ -x /usr/libexec/gnome-settings-daemon ]
+then
+    pgrep -u "$(id -u)" gnome-settings && pkill -u "$(id -u)" gnome-settings
 else
     whence -p gnome-settings-daemon &&
-    pgrep gnome-settings && pkill gnome-settings-daemon
+    pgrep -u "$(id -u)" gnome-settings && pkill -u "$(id -u)" gnome-settings-daemon
 fi
 
-pgrep nm-applet && pkill nm-applet
+pgrep -u "$(id -u)" nm-applet && pkill -u "$(id -u)" nm-applet
 
 
 
-if pgrep gnome-keyring-d >& /dev/null ; then
-    pkill gnome-keyring-d >& /dev/null
-    pkill -9 gnome-keyring-d >& /dev/null
+if pgrep -u "$(id -u)" gnome-keyring-d >& /dev/null
+then
+    pkill -u "$(id -u)" gnome-keyring-d >& /dev/null
+    pkill -u "$(id -u)" -9 gnome-keyring-d >& /dev/null
 fi
 
 foreach prog (
@@ -39,55 +41,56 @@ foreach prog (
     nm-applet
     ) {
         echo A DBUS >&2
-        pgrep -l dbus-daemon >&2
+        pgrep -u "$(id -u)" -l dbus-daemon >&2
 
         echo $prog
         if whence -p $prog &&
-            pgrep $prog[0,15] ; then
-            pkill $prog[0,15]
+                pgrep -u "$(id -u)" $prog[0,15]
+        then
+            pkill -u "$(id -u)" $prog[0,15]
         fi
 
         echo B DBUS >&2
-        pgrep -l dbus-daemon >&2
+        pgrep -u "$(id -u)" -l dbus-daemon >&2
 
     }
 
 
 if whence -p dbus-daemon >& /dev/null
 then
-    if pgrep dbus-daemon >& /dev/null
+    if pgrep -u "$(id -u)" dbus-daemon >& /dev/null
     then
-        pkill dbus-daemon
+        pkill -u "$(id -u)" dbus-daemon
     fi
 fi
 
 if whence -p xautolock >& /dev/null
 then
-    if pgrep xautolock >& /dev/null
+    if pgrep -u "$(id -u)" xautolock >& /dev/null
     then
-        pkill xautolock
+        pkill -u "$(id -u)" xautolock
     fi
 fi
 
 if whence -p keynav >& /dev/null  &&
-       pgrep keynav >& /dev/null
+       pgrep -u "$(id -u)" keynav >& /dev/null
 then
-    pkill keynav
+    pkill -u "$(id -u)" keynav
 fi
 
 if whence -p autocutsel >& /dev/null
 then
-    if pgrep autocutsel >& /dev/null
+    if pgrep -u "$(id -u)" autocutsel >& /dev/null
     then
-        pkill autocutsel
+        pkill -u "$(id -u)" autocutsel
     fi
 fi
 
 if whence -p xcompmgr >& /dev/null
 then
-    if pgrep xcompmgr >& /dev/null
+    if pgrep -u "$(id -u)" xcompmgr >& /dev/null
     then
-        pkill xcompmgr
+        pkill -u "$(id -u)" xcompmgr
     fi
 fi
 
@@ -99,10 +102,11 @@ fi
 ~/.rsetup/xlogout/run
 
 # Android LinConnect
-if pgrep linconnect_serv >& /dev/null ; then
-    pkill linconnect_serv
+if pgrep -u "$(id -u)" linconnect_serv >& /dev/null
+then
+    pkill -u "$(id -u)" linconnect_serv
     sleep 1s;
-    pkill -9 linconnect_serv
+    pkill -u "$(id -u)" -9 linconnect_serv
 fi
 
 

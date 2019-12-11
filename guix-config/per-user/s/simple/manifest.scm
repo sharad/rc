@@ -64,6 +64,9 @@
         "mosh"
         "eternalterminal"
 
+        "eog"
+        "feh"
+
         "openldap"
 
         ;; "glib"

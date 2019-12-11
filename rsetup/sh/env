@@ -149,7 +149,6 @@ then
 fi
 unset MACHINE_ID
 
-
 if [ "x" != "x$WORKPLACE" ]
 then
     if [  -d ~/.opt/p/$WORKPLACE ]
@@ -237,7 +236,7 @@ function dbus_call_p()
 
 function emacs_daemon_start()
 {
-    if whence -p emacs >& /dev/null || ! pgrep emacs >& /dev/null
+    if whence -p emacs >& /dev/null || ! pgrep -u "$(id -u)" emacs >& /dev/null
     then
 	      echo emacs >& /dev/null
 
@@ -271,9 +270,9 @@ function emacs_daemon_start()
                    then
                        # blow one is not allow gnus to read its ~/.gnus file automatically.
 	                     # rm -f   \#.ido.last\#
-                       pkill emacs
+                       pkill -u "$(id -u)" emacs
                        sleep 2s
-                       pkill -9 emacs
+                       pkill -u "$(id -u)" -9 emacs
                        sleep 1s
 
                        EMACS_STARTUP_LOG_DIR=~/.emacs.d/.cache/startup/$server/
@@ -300,7 +299,7 @@ function emacs_daemon_start()
 
         cd $__cwd
         unset __cwd
-    fi # if whence -p emacs >& /dev/null || ! pgrep emacs >& /dev/null
+    fi # if whence -p emacs >& /dev/null || ! pgrep -u "$(id -u)" emacs >& /dev/null
 }
 
 function ssh_agent_use_run_keychain()

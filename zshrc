@@ -48,14 +48,17 @@ fi
 # }}}
 
 # {{{
-if [  -r ~/.rsetup/rc/env  ]
-then
-    source ~/.rsetup/rc/env
-fi
-if [  -r ~/.rsetup/rc/run ]
-then
-    ~/.rsetup/rc/run
-fi
+for r in sh zsh rc
+do
+    if [  -r ~/.rsetup/$r/env  ]
+    then
+        source ~/.rsetup/$r/env
+    fi
+    if [  -r ~/.rsetup/$r/run ]
+    then
+        ~/.rsetup/$r/run
+    fi
+done
 # }}}
 
 # {{{ # For Ruby

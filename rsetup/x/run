@@ -150,7 +150,7 @@ then
     fi
 
     # if whence -p urxvtd >& /dev/null &&
-    #     ! pgrep urxvtd >& /dev/null
+    #     ! pgrep -u "$(id -u)" urxvtd >& /dev/null
     # then
     #     urxvtd \
     #         --quiet \
@@ -162,13 +162,13 @@ then
 
     # present in wmlogin
     # if whence -p conky >& /dev/null &&
-    #        ! pgrep conky >& /dev/null 2>&1
+    #        ! pgrep -u "$(id -u)" conky >& /dev/null 2>&1
     # then
     #     conky -d -c ~/.conkyrc/main/conkyrc >> ~/.xsession-errors 2>&1 &!
     # fi
 
     if whence synclient >& /dev/null &&
-           ! pgrep synclient >& /dev/null
+           ! pgrep -u "$(id -u)" synclient >& /dev/null
     then
         synclient  TapButton1=1 >> ~/.xsession-errors 2>&1
     fi
@@ -188,7 +188,7 @@ then
 
 
     if whence -p osdsh >& /dev/null &&
-           ! pgrep osdsh >& /dev/null 2>&1
+           ! pgrep -u "$(id -u)" osdsh >& /dev/null 2>&1
     then
         osdsh -n 10 >> ~/.xsession-errors 2>&1 &!
     fi

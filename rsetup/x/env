@@ -101,7 +101,7 @@ fi
 
 if whence -p autocutsel 2>&1 > /dev/null
 then
-    if ! pgrep autocutsel 2>&1 > /dev/null
+    if ! pgrep -u "$(id -u)" autocutsel 2>&1 > /dev/null
     then
         autocutsel -f 2>&1 > /dev/null &!
     fi
@@ -109,7 +109,7 @@ fi
 
 if whence -p xcompmgr 2>&1 > /dev/null
 then
-    if ! pgrep xcompmgr 2>&1 > /dev/null
+    if ! pgrep -u "$(id -u)" xcompmgr 2>&1 > /dev/null
     then
         xcompmgr -a 2>&1 > /dev/null &!
     fi

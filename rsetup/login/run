@@ -36,7 +36,7 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
 
 
     if whence -p remind >& /dev/null &&
-       ! pgrep remind   >& /dev/null
+       ! pgrep -u "$(id -u)" remind   >& /dev/null
     then
     # remind -z1 \
     #     -k"~/bin/popremind %s &" \
@@ -64,11 +64,11 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
     #         # do notr delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
     #    	    ! timeout 7 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")'; then
     #         # blow one is not allow gnus to read its ~/.gnus file automatically.
-    #         pkill emacs ; EMACS_SERVER_NAME=$server command emacs --daemon=$server
+    #         pkill -u "$(id -u)" emacs ; EMACS_SERVER_NAME=$server command emacs --daemon=$server
     #     fi
     # }
 
-    if whence leave  >& /dev/null && pgrep leave >& /dev/null
+    if whence leave  >& /dev/null && pgrep -u "$(id -u)" leave >& /dev/null
     then
         leave +0800
     fi
@@ -100,13 +100,13 @@ fi
 
 
 if whence -p mcron >/dev/null 2>&1 &&
-       ! pgrep  -u $(id -u ) mcron >/dev/null 2>&1
+       ! pgrep -u "$(id -u)"  -u $(id -u ) mcron >/dev/null 2>&1
 then
     mcron &!
 fi
 
 if whence -p shepherd >/dev/null 2>&1 &&
-       ! pgrep  -u $(id -u ) shepherd >/dev/null 2>&1
+       ! pgrep -u "$(id -u)"  -u $(id -u ) shepherd >/dev/null 2>&1
 then
     shepherd &!
 fi

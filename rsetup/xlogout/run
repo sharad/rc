@@ -6,9 +6,9 @@
 
 
 
-pkill gnome-keyring
+pkill -u "$(id -u)" gnome-keyring
 
-# pkill dbus-daemon
+# pkill -u "$(id -u)" dbus-daemon
 
 nlogin=$(w -h $LOGNAME | grep -cv pts)
 if [ ${SSH_AGENT_PID+1} == 1 ]; then
@@ -20,13 +20,13 @@ if [ ${SSH_AGENT_PID+1} == 1 ]; then
         # ssh-agent -k > /dev/null 2>&1
         # # it kill all other login's ssh-agent
         # kill $SSH_AGENT_PID
-        # pkill ssh-agent
+        # pkill -u "$(id -u)" ssh-agent
         # unset SSH_AGENT_PID
         # unset SSH_AUTH_SOCK
     fi
 elif (( $nlogin == 1 )) ; then
     # it kill all other login's ssh-agent
-    #pkill ssh-agent
+    #pkill -u "$(id -u)" ssh-agent
 fi
 
 
@@ -38,14 +38,14 @@ foreach prog (
     xautolock
     ) {
         echo A DBUS >&2
-        pgrep -l dbus-daemon >&2
+        pgrep -u "$(id -u)" -l dbus-daemon >&2
 
         echo $prog
         whence -p $prog &&
-        pgrep $prog[0,15] && pkill $prog[0,15]
+        pgrep -u "$(id -u)" $prog[0,15] && pkill -u "$(id -u)" $prog[0,15]
 
         echo B DBUS >&2
-        pgrep -l dbus-daemon >&2
+        pgrep -u "$(id -u)" -l dbus-daemon >&2
 
     }
 

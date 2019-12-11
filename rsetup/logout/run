@@ -47,16 +47,16 @@ if [ ${SSH_AGENT_PID+1} == 1 ]; then
     # ssh-agent -k > /dev/null 2>&1
     # ssh-agent -k
     # # it kill all other login's ssh-agent
-    # pkill ssh-agent
+    # pkill -u "$(id -u)" ssh-agent
     # ssh-agent -k
     # kill $SSH_AGENT_PID
     unset SSH_AGENT_PID
     unset SSH_AUTH_SOCK
 fi
 
-if pgrep leave >& /dev/null ; then
-    pkill leave >& /dev/null
-    pkill -9 leave >& /dev/null
+if pgrep -u "$(id -u)" leave >& /dev/null ; then
+    pkill -u "$(id -u)" leave >& /dev/null
+    pkill -u "$(id -u)" -9 leave >& /dev/null
 fi
 
 ## updae git if no current change present.

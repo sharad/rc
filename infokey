@@ -1,0 +1,17 @@
+
+#https://www.gnu.org/software/texinfo/manual/info-stnd/info-stnd.html#Colors-and-Styles
+
+#var
+#link-style=yellow
+#active-link-style=yellow,bold
+#match-style=underline,bold,nocolor
+
+
+#link-style=green
+#active-link-style=green,bold
+#match-style=underline,bold,nocolor
+
+
+link-style=cyan
+active-link-style=cyan,bold
+match-style=underline,bold,nocolor
