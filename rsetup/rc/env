@@ -32,6 +32,12 @@ export SCREEN4KEYCHAIN=keychain
 # this is for interactive shell, not for login shell which could be invoke ssh-agent already.
 export KEYCHAINDIR=$HOME/.keychain-screen
 
+if [ -r ~/.LESS_TERMCAP ]
+then
+    source ~/.LESS_TERMCAP
+fi
+
+
 MACHINE_ID=/var/lib/dbus/machine-id
 if test -z "$DBUS_SESSION_BUS_ADDRESS"
 then

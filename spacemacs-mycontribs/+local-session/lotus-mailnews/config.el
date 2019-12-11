@@ -1514,7 +1514,9 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
             ((gnus-seconds-year) . "%b %d") ;durant l'année = mai 28
             (t . "%b %d '%y"))))
   (progn
-    (defun lotus-gnus-summary-order ()
+    (defvar lotus-gnus-summary-order 'down)
+
+    (defun lotus-gnus-summary-applied-order ()
       (if (member 'gnus-thread-sort-by-most-recent-date
                   gnus-thread-sort-functions)
           'top
@@ -1528,7 +1530,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     (add-hook 'gnus-summary-prepare-hook
               #'(lambda ()
                   (unless (gnus-summary-first-subject t)
-                    (if (eq (lotus-gnus-summary-order) 'top)
+                    (if (eq (lotus-gnus-summary-applied-order) 'top)
                         (beginning-of-buffer)
                       (progn (end-of-buffer)
                              (forward-line -1))))))
@@ -1536,14 +1538,10 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     (add-hook 'gnus-summary-prepared-hook
               #'(lambda ()
                   (unless (gnus-summary-first-subject t)
-                    (if (eq (lotus-gnus-summary-order) 'top)
+                    (if (eq (lotus-gnus-summary-applied-order) 'top)
                         (beginning-of-buffer)
                       (progn (end-of-buffer)
                              (forward-line -1))))))
-
-    ;; (setq gnus-thread-sort-functions
-    ;;       '(gnus-thread-sort-by-number
-    ;;         gnus-thread-sort-by-most-recent-date))
 
     (setq gnus-summary-thread-gathering-function
           'gnus-gather-threads-by-references)
@@ -1574,9 +1572,13 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     ;;         gnus-thread-sort-by-number
     ;;         gnus-thread-sort-by-subject
     ;;         (not gnus-thread-sort-by-total-score)))
-    (setq gnus-thread-sort-functions
-          '(gnus-thread-sort-by-date
-            gnus-thread-sort-by-number)))
+    (if (eq 'down lotus-gnus-summary-order)
+        (setq gnus-thread-sort-functions
+              '(gnus-thread-sort-by-date
+                gnus-thread-sort-by-number))
+      (setq gnus-thread-sort-functions
+            '(gnus-thread-sort-by-number
+              gnus-thread-sort-by-most-recent-date))))
 
   (progn
     (use-package gnus-win

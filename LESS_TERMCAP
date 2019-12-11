@@ -1,5 +1,25 @@
 # -*- major-mode: sh-mode; -*-
 
+# https://superuser.com/questions/71588/how-to-syntax-highlight-via-less/71593#71593
+# https://unix.stackexchange.com/questions/90990/less-command-and-syntax-highlighting
+
+#{{{
+if [ -r "/usr/bin/lesspipe" ]
+then
+    eval "$(lesspipe)"
+elif [ -r "/home/s/hell/.guix-profile/bin/lesspipe.sh" ]
+then
+    eval "$(/home/s/hell/.guix-profile/bin/lesspipe.sh)"
+elif [ -r "/run/current-system/profile/bin/lesspipe.sh" ]
+then
+    eval "$(/run/current-system/profile/bin/lesspipe.sh)"
+fi
+
+COLORTERM=1
+LESSQUIET=1
+export COLORTERM
+export LESSQUIET
+#}}}
 
 #{{{ http://superuser.com/questions/146182/colorizing-your-terminal-and-shell-environment
 export LESS_TERMCAP_mb=$(tput bold; tput setaf 2) # green
@@ -16,11 +36,6 @@ export LESS_TERMCAP_ZV=$(tput rsubm)
 export LESS_TERMCAP_ZO=$(tput ssupm)
 export LESS_TERMCAP_ZW=$(tput rsupm)
 export LESS=-R
-if [ -x /usr/bin/lesspipe ]
-then
- eval "$(lesspipe)"
-fi
-COLORTERM=1
 #}}}
 
 #{{{ http://linuxtidbits.wordpress.com/2009/03/23/less-colors-for-man-pages/

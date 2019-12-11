@@ -121,13 +121,15 @@ else
     echo env var HOST is not set $HOST
 fi
 
-LESSOPEN="|lesspipe.sh %s"
+if [ -r ~/.LESS_TERMCAP ]
+then
+    source ~/.LESS_TERMCAP
+fi
 
 export EDITOR
 export VISUAL
 export BROWSER
 export EMACS_DIST_DIR
-export LESSOPEN
 
 GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 export GIT_DISCOVERY_ACROSS_FILESYSTEM
