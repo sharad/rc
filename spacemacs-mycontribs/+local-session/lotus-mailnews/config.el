@@ -1514,13 +1514,21 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
             ((gnus-seconds-year) . "%b %d") ;durant l'année = mai 28
             (t . "%b %d '%y"))))
   (progn
+    (defun lotus-gnus-summary-order ()
+      (if (member 'gnus-thread-sort-by-most-recent-date
+                  gnus-thread-sort-functions)
+          'top
+        (if (some #'(lambda (e)
+                      (when (consp e)
+                        (eq 'not (car e))))
+                  gnus-thread-sort-functions)
+            'top
+          'down)))
+
     (add-hook 'gnus-summary-prepare-hook
               #'(lambda ()
                   (unless (gnus-summary-first-subject t)
-                    (if (some #'(lambda (e)
-                                  (when (consp e)
-                                    (eq 'not (car e))))
-                              gnus-thread-sort-functions)
+                    (if (eq (lotus-gnus-summary-order) 'top)
                         (beginning-of-buffer)
                       (progn (end-of-buffer)
                              (forward-line -1))))))
@@ -1528,10 +1536,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     (add-hook 'gnus-summary-prepared-hook
               #'(lambda ()
                   (unless (gnus-summary-first-subject t)
-                    (if (some #'(lambda (e)
-                                  (when (consp e)
-                                    (eq 'not (car e))))
-                              gnus-thread-sort-functions)
+                    (if (eq (lotus-gnus-summary-order) 'top)
                         (beginning-of-buffer)
                       (progn (end-of-buffer)
                              (forward-line -1))))))
@@ -1572,7 +1577,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     (setq gnus-thread-sort-functions
           '(gnus-thread-sort-by-date
             gnus-thread-sort-by-number)))
-  
+
   (progn
     (use-package gnus-win
       :defer t
