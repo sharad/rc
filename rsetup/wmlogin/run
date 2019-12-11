@@ -142,12 +142,23 @@ then
     xsetroot -cursor_name left_ptr >>& ~/.logs/wmlogin.log &!
 fi
 
-if whence -p ~/bin/wallpaper-setup >& /dev/null
+##{{{ Wallpaper
+if whence -p wmsetbg >& /dev/null
+then
+    if [ -f ~/.GNUstep/Library/WindowMaker/Backgrounds/Aqua_Strawberries_Abstract_3d_226.jpg ]
+    then
+        wmsetbg ~/.GNUstep/Library/WindowMaker/Backgrounds/Aqua_Strawberries_Abstract_3d_226.jpg &!
+    fi
+elif whence -p ~/bin/wallpaper-setup >& /dev/null
 then
     # WM specific setup
     ~/bin/wallpaper-setup >>& ~/.logs/wmlogin.log &!
     # ~/bin/stumpwm-setup &!
+elif whence -c bingwallpaper >& /dev/null
+then
+    bingwallpaper -d 0 >> ~/.xsession-errors 2>&1 &!
 fi
+##}}} Wallpaper
 
 emacs_daemon_start              # in case it were not started in x/run
 
