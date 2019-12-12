@@ -258,6 +258,7 @@
   (list "mailutils"
         "offlineimap"
         "notmuch"
+	"notmuch-addrlookup-c"
         "notifymuch"
         "mu"))
 
