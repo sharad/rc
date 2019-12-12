@@ -54,6 +54,15 @@ fi
 # sudo fc-cache -f
 ##}}
 
+##{{ compositor
+if whence -p compton >& /dev/null && ! pgrep -u "$(id -u)" compton >& /dev/null
+then
+    compton &!
+elif whence -p xcompmgr >& /dev/null && ! pgrep -u "$(id -u)" xcompmgr >& /dev/null
+then
+    xcompmgr -a &!
+fi
+##}}
 
 if [ -e ~/.stumpwm.d/debug-output.log ]
 then

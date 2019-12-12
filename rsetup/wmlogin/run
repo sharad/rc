@@ -239,7 +239,11 @@ then
         autocutsel -f &!
 fi
 
-if whence -p xcompmgr >& /dev/null && ! pgrep -u "$(id -u)" xcompmgr >& /dev/null
+## compositor
+if whence -p compton >& /dev/null && ! pgrep -u "$(id -u)" compton >& /dev/null
+then
+    compton &!
+elif whence -p xcompmgr >& /dev/null && ! pgrep -u "$(id -u)" xcompmgr >& /dev/null
 then
     xcompmgr -a &!
 fi

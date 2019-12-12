@@ -55,6 +55,11 @@
         "emacs-dashboard"
         "emacs-typo"
 
+        ;; X gl
+        "compton"
+        "compton-conf"
+        "xcompmgr"
+
         "enscript"
 
         "jupyter"
