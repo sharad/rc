@@ -43,6 +43,19 @@
         "emacs-spaceline"
         "emacs-emojify"
         "emacs-org-noter" ;; https://github.com/weirdNox/org-noter
+        "emacs-closql"
+        "emacs-diminish"
+        "emacs-diminish"
+        "emacs-direnv"
+        "emacs-editorconfig"
+        "emacs-el-x"
+        "emacs-default-encrypt"
+        "emacs-default-text-scale"
+        "emacs-deft"
+        "emacs-dashboard"
+        "emacs-typo"
+
+        "enscript"
 
         "jupyter"
         "python-git-review"

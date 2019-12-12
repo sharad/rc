@@ -271,4 +271,15 @@ backend is tried first."
                   'face face
                   'help-echo (concat help-echo "\nCurrent revision: " rev)))))
 
+(defun lotus-override/all-functions ()
+  (interactive)
+  (lotus-override/init-emacsql-sqlite-config)
+  (lotus-override/init-lsdb-config)
+  (lotus-override/post-init-git-gutter+-config)
+  (lotus-override/post-init-git-link-config)
+  (lotus-override/post-init-org-agenda-config)
+  (lotus-override/post-init-vc-config)
+  (lotus-override/post-init-vc-hooks-config)
+  (lotus-override/post-init-vc-git-config))
+
 ;;; config.el ends here

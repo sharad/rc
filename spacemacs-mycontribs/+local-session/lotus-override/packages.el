@@ -86,7 +86,7 @@ Each entry is either:
       (progn
         (lotus-override/init-lsdb-config)))))
 
-(defun lotus-override/post-init-git-gutter+ ()
+(defun lotus-override/init-git-gutter+ ()
   (use-package git-gutter+
     :defer t
     :config
@@ -94,7 +94,7 @@ Each entry is either:
       (progn
         (lotus-override/post-init-git-gutter+-config)))))
 
-(defun lotus-override/post-init-git-link ()
+(defun lotus-override/init-git-link ()
   (use-package git-link
     :defer t
     :config
@@ -102,25 +102,25 @@ Each entry is either:
       (progn
         (lotus-override/post-init-git-link-config)))))
 
-(defun lotus-override/post-init-org-agenda ()
+(defun lotus-override/init-org-agenda ()
   (use-package org-agenda-hooks
     :defer t
     :config
     (lotus-override/post-init-org-agenda-config)))
 
-(defun lotus-override/post-init-vc ()
+(defun lotus-override/init-vc ()
   (use-package vc
     :defer t
     :config
     (lotus-override/post-init-vc-config)))
 
-(defun lotus-override/post-init-vc-hooks ()
+(defun lotus-override/init-vc-hooks ()
   (use-package vc-hooks
     :defer t
     :config
     (lotus-override/post-init-vc-hooks-config)))
 
-(defun lotus-override/post-init-vc-git ()
+(defun lotus-override/init-vc-git ()
   (use-package vc-git
     :defer t
     :config
