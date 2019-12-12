@@ -257,7 +257,11 @@
         "mu"))
 
 (define %lotus-font-packages
-  (list "gs-fonts"
+  (list "freetype"
+        ;; ftview
+        ;; https://wiki.debian.org/Fonts#Infinality_for_Debian
+        "ttfautohint"
+         "gs-fonts"
         "font-ibm-plex"
         "font-inconsolata"
         "font-ubuntu"

@@ -39,6 +39,22 @@ else
 fi
 
 
+##{{
+LOTUS_FONTDIR=~/.guix-profile/share/fonts
+if [ -d "$LOTUS_FONTDIR" ]
+then
+    for fdir in $LOTUS_FONTDIR/*/fonts.dir
+    do
+        fontdir=$fdir
+        # ls $fontdir
+        xset +fp $(dirname $(readlink -f $fontdir))
+    done
+fi
+# fc-cache -f
+# sudo fc-cache -f
+##}}
+
+
 if [ -e ~/.stumpwm.d/debug-output.log ]
 then
     # command rm -f ~/.stumpwm.d/debug-output.log
