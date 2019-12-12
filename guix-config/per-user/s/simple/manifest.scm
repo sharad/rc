@@ -59,6 +59,7 @@
         "compton"
         "compton-conf"
         "xcompmgr"
+        "xdpyinfo"
 
         "enscript"
 
