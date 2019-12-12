@@ -32,6 +32,24 @@ fi
 
 ~/bin/syncimap -d               # it only get secinfo from x keyring; disable
 
+
+if whence -p compton >& /dev/null
+then
+    if pgrep -u "$(id -u)" compton >& /dev/null
+    then
+        pkill -u "$(id -u)" compton
+    fi
+fi
+
+if whence -p xcompmgr >& /dev/null
+then
+    if pgrep -u "$(id -u)" xcompmgr >& /dev/null
+    then
+        pkill -u "$(id -u)" xcompmgr
+    fi
+fi
+
+
 foreach prog (
     ## it is automatically started by gdm, so no need to start it.
     # gnome-keyring-daemon

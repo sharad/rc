@@ -64,6 +64,16 @@ then
 fi
 ##}}
 
+
+if whence -p autocutsel 2>&1 > /dev/null
+then
+    if ! pgrep -u "$(id -u)" autocutsel 2>&1 > /dev/null
+    then
+        autocutsel -f 2>&1 > /dev/null &!
+    fi
+fi
+
+
 if [ -e ~/.stumpwm.d/debug-output.log ]
 then
     # command rm -f ~/.stumpwm.d/debug-output.log

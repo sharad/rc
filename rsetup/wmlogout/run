@@ -86,6 +86,14 @@ then
     fi
 fi
 
+if whence -p compton >& /dev/null
+then
+    if pgrep -u "$(id -u)" compton >& /dev/null
+    then
+        pkill -u "$(id -u)" compton
+    fi
+fi
+
 if whence -p xcompmgr >& /dev/null
 then
     if pgrep -u "$(id -u)" xcompmgr >& /dev/null
