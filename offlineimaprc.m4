@@ -27,7 +27,7 @@ statuschar = .
 [[Account Gmail]]
 localrepository = GmailLocal
 remoterepository = GmailRemote
-postsynchook = notmuch new
+postsynchook = ~/.config/offlineimap/postsync.sh
 maxage = 10
 
 [[Repository GmailLocal]]
@@ -56,12 +56,12 @@ sslcacertfile = /etc/ssl/certs/ca-certificates.crt
 [[Account Office-Meru-Plain]]
 localrepository =  Office-Meru-Local
 remoterepository = Office-Meru-RemotePlain
-postsynchook = notmuch new
+postsynchook = ~/.config/offlineimap/postsync.sh
 
 [[Account Office-Meru]]
 localrepository =  Office-Meru-Local
 remoterepository = Office-Meru-RemoteSSL
-postsynchook = notmuch new
+postsynchook = ~/.config/offlineimap/postsync.sh
 
 
 [[Repository Office-Meru-Local]]
@@ -131,12 +131,12 @@ nametrans = lambda foldername: \
 [[Account Office-Fortinet-Plain]]
 localrepository =  Office-Fortinet-Local
 remoterepository = Office-Fortinet-RemotePlain
-postsynchook = notmuch new
+postsynchook = ~/.config/offlineimap/postsync.sh
 
 [[Account Office-Fortinet]]
 localrepository =  Office-Fortinet-Local
 remoterepository = Office-Fortinet-RemoteSSL
-postsynchook = notmuch new
+postsynchook = ~/.config/offlineimap/postsync.sh
 
 
 [[Repository Office-Fortinet-Local]]
