@@ -20,7 +20,7 @@ shadow-exclude  = [ "name = 'Polybar tray window'" ]; # Exclude conditions for s
 menu-opacity              = 1.0;			# Opacity for menus					(default 1.0)
 inactive-opacity          = 1.0;			# Opacity for inactive windows				(0.1 - 1.0)
 inactive-opacity-override = true;	# Overrides overall opacity rules
-opacity-rule              = [ "90:class_g *= 'kitty'", "90:class_g *= 'Emacs'", "90:class_g *= 'Conkeror'"];
+opacity-rule              = [ "90:class_g *= 'kitty'", "69:class_g *= 'Pidgin'", "90:class_g *= 'Conkeror'"];
 
 # Fading
 fading              = true;				# Fade windows during opacity changes

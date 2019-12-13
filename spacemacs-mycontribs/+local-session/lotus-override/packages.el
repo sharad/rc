@@ -37,13 +37,13 @@
 (defconst lotus-override-packages
   '(
     emacsql-sqlite
-    (lsdb    :location local)
+    (lsdb     :location local)
     git-gutter+
     git-link
     org-agenda
-    vc
-    vc-hooks
-    vc-git
+    (vc       :location local)
+    (vc-hooks :location local)
+    (vc-git   :location local)
     )
   "The list of Lisp packages required by the lotus-override layer.
 
@@ -86,7 +86,7 @@ Each entry is either:
       (progn
         (lotus-override/init-lsdb-config)))))
 
-(defun lotus-override/init-git-gutter+ ()
+(defun lotus-override/post-init-git-gutter+ ()
   (use-package git-gutter+
     :defer t
     :config
@@ -94,21 +94,21 @@ Each entry is either:
       (progn
         (lotus-override/post-init-git-gutter+-config)))))
 
-(defun lotus-override/init-git-link ()
+(defun lotus-override/post-init-git-link ()
   (use-package git-link
     :defer t
     :config
-    (progn
-      (progn
-        (lotus-override/post-init-git-link-config)))))
+    n    (progn
+           (progn
+             (lotus-override/post-init-git-link-config)))))
 
-(defun lotus-override/init-org-agenda ()
+(defun lotus-override/post-init-org-agenda ()
   (use-package org-agenda-hooks
     :defer t
     :config
     (lotus-override/post-init-org-agenda-config)))
 
-(defun lotus-override/init-vc ()
+(defun lotus-override/post-init-vc ()
   (use-package vc
     :defer t
     :config

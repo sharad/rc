@@ -67,6 +67,9 @@ export XBPROFILE
 
 GDK_RGBA=0
 export GDK_RGBA
+# https://github.com/stumpwm/stumpwm/issues/668#issuecomment-565375928 [Cannot scroll in VTE based terminals #668]
+GDK_CORE_DEVICE_EVENTS=1
+export GDK_CORE_DEVICE_EVENTS
 
 if true
 then

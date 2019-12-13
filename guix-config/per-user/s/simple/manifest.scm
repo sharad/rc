@@ -29,7 +29,6 @@
 
 (define %lotus-other-packages
   (list "vim"
-
         "emacs-ebdb"
         "emacs-geiser"
         "emacs-sesman"
@@ -73,6 +72,7 @@
         "atool"
         "sshpass"
         "virt-manager"
+        "virt-viewer"
         "libvirt"
 
         "lesspipe"
@@ -127,6 +127,8 @@
         "conkeror-firefox"
         ;; "epiphany"
 
+        "alsa-utils"
+        "aumix"
         "pavucontrol"
         "pulsemixer"
 
