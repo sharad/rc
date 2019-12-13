@@ -236,6 +236,39 @@ function adsearch () {
     fi
 }
 
+function adsearch-dbg () {
+    objectClass=(person group)
+    objectClassQ="(|(objectClass=person)(objectClass=group))"
+    if [ "$1" -a "$1" = "all" ]
+	  then
+        query="(objectClass=*)"
+        shift
+    elif [ "$1" ]
+	  then
+        if [ "$1" = "person" -o "$1" = "group"  ]
+	      then
+            objectClass=$1
+            objectClassQ="(objectClass=$1)"
+            shift
+        fi
+    fi
+    arg=$1
+    # print $objectClassQ
+    query="(&(|(cn=*"${arg}"*)(sn=*"${arg}"*)(givenName=*"${arg}"*)(physicalDeliveryOfficeName=*"${arg}"*)(telephoneNumber=*"${arg}"*))${objectClassQ})"
+    # print $query
+    shift
+
+    attrs=("givenName" "cn" "mobile" "sn" "physicalDeliveryOfficeName" "homePhone" "mail" "ipPhone" "mailNickname" "department" "telephoneNumber" "title" "whenCreated")
+    if [ "$1" -a "$1" = "all" ]
+	  then
+        echo ldapsearch    ${query} | egrep -v '^#|,DC=com'
+        ldapsearch    ${query} | egrep -v '^#|,DC=com'
+    else
+        echo ldapsearch    ${query} $attrs $@ | egrep -v '^#|,DC=com'
+        ldapsearch    ${query} $attrs $@ | egrep -v '^#|,DC=com'
+    fi
+}
+
 
 DIRLEAVEHOOKFILE=.dirleavehook
 DIRENTERHOOKFILE=.direnterhook

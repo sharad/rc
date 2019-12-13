@@ -29,6 +29,7 @@
 
 (define %lotus-other-packages
   (list "vim"
+        "bbdb"
         "emacs-ebdb"
         "emacs-geiser"
         "emacs-sesman"

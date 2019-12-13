@@ -27,6 +27,11 @@ LOCAL_GUIX_EXTRA_PROFILES=("normal")
 export LOCAL_GUIX_EXTRA_PROFILES
 ## GUIX
 
+if [ "x" != "x$SSL_CERT_FILE" ]
+then
+    LDAPTLS_CACERT=$SSL_CERT_FILE
+    export LDAPTLS_CACERT
+fi
 
 # default values
 if [ "x" != "x$OFFLINEIMAPACCOUNT" ]
