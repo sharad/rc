@@ -222,6 +222,8 @@
           "python-pycryptodome"
           "opencv"
           "jq"
+          "python-xq"
+          "python-yq"
 
           ;; "macchanger"
           ;; "font-lohit"
