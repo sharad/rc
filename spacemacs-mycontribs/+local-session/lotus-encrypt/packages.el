@@ -78,25 +78,28 @@ Each entry is either:
 
 (defun lotus-encrypt/init-lotus-crypt-utils ()
   (use-package lotus-crypt-utils
-      :defer t
-      :config
+    :defer t
+    :config
+    (progn
       (progn
-        (progn
-          (epa-file-disable))
-        (progn
-          (epa-passphrase-cleanup-start)
-          (epa-add-exception-for "~/.authinfo.gpg" 100000)
-          (setq epa-file-cache-passphrase-for-symmetric-encryption t))
-        (progn
-          (setq
-           ;; https://colinxy.github.io/software-installation/2016/09/24/emacs25-easypg-issue.html
-           epa-pinentry-mode 'loopback)
-          (setq vc-follow-symlinks nil))))
+        (add-to-list 'auto-mode-alist
+                     '("\\.asc\\(~\\|\\.~[0-9]+~\\)?\\'" nil epa-file)))
+      (progn
+        (epa-file-disable))
+      (progn
+        (epa-passphrase-cleanup-start)
+        (epa-add-exception-for "~/.authinfo.gpg" 100000)
+        (setq epa-file-cache-passphrase-for-symmetric-encryption t))
+      (progn
+        (setq
+         ;; https://colinxy.github.io/software-installation/2016/09/24/emacs25-easypg-issue.html
+         epa-pinentry-mode 'loopback)
+        (setq vc-follow-symlinks nil))))
 
   (use-package startup-hooks
-      :defer t
-      :config
-      (progn
-        (epa-passphrase-cleanup-start))))
+    :defer t
+    :config
+    (progn
+      (epa-passphrase-cleanup-start))))
 
 ;;; packages.el ends here
