@@ -98,9 +98,7 @@ Each entry is either:
   (use-package git-link
     :defer t
     :config
-    n    (progn
-           (progn
-             (lotus-override/post-init-git-link-config)))))
+    (lotus-override/post-init-git-link-config)))
 
 (defun lotus-override/post-init-org-agenda ()
   (use-package org-agenda-hooks
