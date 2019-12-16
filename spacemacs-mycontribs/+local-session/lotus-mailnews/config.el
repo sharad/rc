@@ -729,7 +729,7 @@ always hide."
                   "Office.Fortinet.Sent Items"
                   "Office.Meru.Sent Items"))))
 
-    ("Office.Fortinet.*\\|nnvirtual:Inbox-Sent\\|nnvirtual:Incoming"
+    ("Office.Fortinet.*\\|nnvirtual:Inbox\\|nnvirtual:Inbox-Sent\\|nnvirtual:Incoming"
      (name ,myname)
      (signature "Regards,\n-sharad")
      (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")

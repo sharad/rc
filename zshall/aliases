@@ -55,6 +55,8 @@ alias psuee='command ps -o pid,tty,stat,time,lstart,etime,ruser=RealUser  -o com
 alias ups='command   ps -u $USER f'
 alias upse='command  ps -o pid,tty,stat,time,stime,etime,ruser=RealUser  -o command  -u $USER f'
 alias upsee='command ps -o pid,tty,stat,time,lstart,etime,ruser=RealUser  -o command  -u $USER f'
+# https://www.redhat.com/sysadmin/decluttering-process-management
+alias pscgroup='command ps xawf -eo pid,user,cgroup,args'
 alias pstreeu='command pstree -u $USER'
 alias pgrep='command pgrep -u $(id -u) -l'
 alias pkill='command pkill -u $(id -u)'
