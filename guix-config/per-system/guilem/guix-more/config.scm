@@ -388,8 +388,7 @@
 
 ;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
 (define %lotus-mingetty-services (list (service mingetty-service-type
-                                                (mingetty-configuration (tty "tty1")
-                                                                        (auto-login %lotus-user-name)))
+                                                (mingetty-configuration (tty "tty1")))
                                        (service mingetty-service-type
                                                 (mingetty-configuration (tty "tty2")))
                                        (service mingetty-service-type
@@ -453,8 +452,10 @@
                                                                           )))))
 
 
-(define %lotus-desktop-services (remove-services (list mingetty-service-type) ;; gdm-service-type
-                                                 %lotus-desktop-nm-services))
+;; (define %lotus-desktop-services (remove-services (list mingetty-service-type) ;; gdm-service-type
+;;                                                  %lotus-desktop-nm-services))
+
+(define %lotus-desktop-services %lotus-desktop-nm-services)
 
 
 (define %lotus-many-services (list (service openssh-service-type)
@@ -477,7 +478,7 @@
                                                    %lotus-mcron-services
                                                    %lotus-cups-services
                                                    ;; %lotus-xdm-services
-                                                   %lotus-mingetty-services
+                                                   ;; %lotus-mingetty-services
                                                    %lotus-desktop-services))
 
 
