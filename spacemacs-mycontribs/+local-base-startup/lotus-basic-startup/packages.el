@@ -175,26 +175,26 @@ Each entry is either:
                     (with-temp-buffer
                       (spacemacs-buffer/goto-buffer))))))
 
-      (when t
-        (progn
-          (add-to-disable-desktop-restore-interrupting-feature-hook
-           '(lambda ()
-              (setq
-               tags-add-tables nil)
-              (setq vc-handled-backends (remove 'P4 vc-handled-backends))
-              (when (fboundp 'spacemacs/check-large-file)
-                (remove-hook
-                 'find-file-hook
-                 'spacemacs/check-large-file))))
-          (add-to-enable-desktop-restore-interrupting-feature-hook
-           '(lambda ()
-              (setq
-               tags-add-tables (default-value 'tags-add-tables))
-              (add-to-list 'vc-handled-backends 'P4)
-              (when (fboundp 'spacemacs/check-large-file)
-                (add-hook
-                 'find-file-hook
-                 'spacemacs/check-large-file))))))
+      (progn
+        (defun lotus-desktop-session-enable-p4 ()
+          (progn
+            (add-to-disable-desktop-restore-interrupting-feature-hook
+             #'(lambda ()
+                 (setq tags-add-tables nil)
+                 (setq vc-handled-backends (remove 'P4 vc-handled-backends))
+                 (when (fboundp 'spacemacs/check-large-file)
+                   (remove-hook 'find-file-hook
+                                'spacemacs/check-large-file))))
+            (add-to-enable-desktop-restore-interrupting-feature-hook
+             #'(lambda ()
+                 (setq tags-add-tables (default-value 'tags-add-tables))
+                 (add-to-list 'vc-handled-backends 'P4)
+                 (when (fboundp 'spacemacs/check-large-file)
+                   (add-hook 'find-file-hook
+                             'spacemacs/check-large-file)))))))
+
+      (when nil                         ;not required perforce
+        (lotus-desktop-session-enable-p4))
 
       (when t
         (progn

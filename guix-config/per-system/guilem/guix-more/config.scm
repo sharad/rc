@@ -68,23 +68,19 @@
 'lvm'."
   (with-imported-modules (source-module-closure
                           '((gnu build file-systems)))
-                         #~(let ((source #$source))
-                             ;; Use 'lvm2-static', not 'lvm2', to avoid pulling the
-                             ;; whole world inside the initrd (for when we're in an initrd).
-                             (begin
-                               (system* #$(file-append lvm2-static "/sbin/lvm")
-                                        "vgscan" "--mknodes")
-                               (sleep 1)
-                               (system* #$(file-append lvm2-static "/sbin/lvm")
-                                        "vgscan" "--mknodes")
-                               (sleep 1)
-                               (system* #$(file-append lvm2-static "/sbin/lvm")
-                                        "vgchange" "-ay" 
-                                        (car (string-split #$target #\-)))
-                               (sleep 1)
-                               (zero? (system* #$(file-append lvm2-static "/sbin/lvm")
-                                               "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
-                                               (string-join (string-split #$target #\-) "/")))))))
+    #~(let ((source  #$source)
+            (lvm-bin #$(file-append lvm2-static "/sbin/lvm")))
+        ;; Use 'lvm2-static', not 'lvm2', to avoid pulling the
+        ;; whole world inside the initrd (for when we're in an initrd).
+        (begin
+          (system* lvm-bin "vgscan" "--mknodes")
+          (sleep 1)
+          (system* lvm-bin "vgscan" "--mknodes")
+          (sleep 1)
+          (system* lvm-bin "vgchange" "-ay" (car (string-split #$target #\-)))
+          (sleep 1)
+          (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
+                          (string-join (string-split #$target #\-) "/")))))))
 
 (define (close-lvm-device sources target)
   "Return a gexp that closes TARGET, a LVM device."
