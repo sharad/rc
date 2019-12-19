@@ -1,8 +1,6 @@
 
 (defun dotspacemacs/reinit ()
-  (setq-default
-   dotspacemacs-which-key-delay 3.0)    ;BUG not working
-  )
+  (setq-default dotspacemacs-which-key-delay 3.0))    ;BUG not working
 
 ;; bibtex -- org-ref is not available
 ;; ;; .spacemacs-mycontribution
@@ -231,8 +229,8 @@
     restclient
     salt
     (shell :variables
-     shell-default-height 30
-     shell-default-position 'bottom)
+           shell-default-height 30
+           shell-default-position 'bottom)
     sphinx
     systemd
     tern
@@ -275,15 +273,12 @@
     vim-empty-lines
     vinegar
     wakatime
-    window-purpose
-    ))
+    window-purpose))
 
 (defun spacemacs-dist-layers-include ()
-  '(
-    (shell :variables
-     shell-default-height 30
-     shell-default-position 'bottom)
-    ))
+  '( (shell :variables
+            shell-default-height   30
+            shell-default-position 'bottom)))
 
 
 (defun lotus-dist-layers-group-dirs (&optional layers-group-top-dir)
@@ -292,20 +287,17 @@
 
 (defun lotus-dist-layers-select (layer-dir &optional match)
   (when (file-directory-p layer-dir)
-    (mapcar
-     #'(lambda (f)
-         (intern f))
-     (remove-if
-      'file-directory-p
-      (directory-files layer-dir nil match)))))
+    (mapcar #'(lambda (f) (intern f))
+            (remove-if
+             'file-directory-p
+             (directory-files layer-dir nil match)))))
 
 (defun lotus-dist-layers-group-dirs-layers-select (&optional layers-group-top-dir match)
   (let ((layers-group-top-dir (or layers-group-top-dir (expand-file-name "layers" spacemacs-start-directory))))
     (apply #'append
-           (mapcar
-            #'(lambda (path)
-                (lotus-dist-layers-select path match))
-            (lotus-dist-layers-group-dirs layers-group-top-dir)))))
+           (mapcar #'(lambda (path)
+                       (lotus-dist-layers-select path match))
+                   (lotus-dist-layers-group-dirs layers-group-top-dir)))))
 
 ;; (require 'cl-seq)
 
@@ -739,6 +731,8 @@
 
     ;; do not want it.
     ;; (setq yas/trigger-key "")
+
+    (unicode-fonts-setup)
 
 
     (when nil                           ; FROM where this came.
