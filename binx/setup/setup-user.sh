@@ -1942,10 +1942,10 @@ function setup_deps_view_volumes_dirs()
 
 
                 print  >> $todopath
-                print ls ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/control.d/${sysdatasdirname}/ >> $todopath
-                ls ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/control.d/${sysdatasdirname}/      >> $todopath
+                print ls "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/control.d/${sysdatasdirname}/" >> $todopath
+                ls "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/control.d/${sysdatasdirname}/"      >> $todopath
                 print  >> $todopath
-                for sysdatadir in ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/control.d/${sysdatasdirname}/*
+                for sysdatadir in "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/control.d/${sysdatasdirname}"/*
                 do
                     volsysdatadirbase=$(basename ${sysdatadir})
                     print ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir" >> $todopath
@@ -1966,14 +1966,14 @@ function setup_deps_view_volumes_dirs()
 
             done
 
-            running setup_add_to_version_control "${BASE_DIR}/${LOCALDIRS_DIR}" ${volumedir}/${viewdirname}/.gitignore
+            running setup_add_to_version_control "${BASE_DIR}/${LOCALDIRS_DIR}" "${volumedir}/${viewdirname}/.gitignore"
 
         else                    # if [ -d ${hostdir} ]
-            error Please prepare ${hostdir} for your machine >&2
+            error Please prepare "${hostdir}" for your machine >&2
             exit -1
         fi                      # if [ -d ${hostdir} ]
     else
-        error ${BASE_DIR}/${LOCALDIRS_DIR} or ${BASE_DIR}/${LOCALDIRS_DIR}/${machinedir} not exists
+        error "${BASE_DIR}/${LOCALDIRS_DIR}" or "${BASE_DIR}/${LOCALDIRS_DIR}/${machinedir}" not exists
         exit -1
     fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
 }                               # function setup_deps_view_volumes_dirs()
@@ -2009,66 +2009,63 @@ function setup_org_resource_dirs()
     # org/resource.d/control.d/class/data/storage/local/container/scratches.d/Public/
 	  # org/resource.d/control.d/class/data/storage/local/container/scratches.d/local
 
-    running setup_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
-    running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup dirs.d/org/resource.d
+    running setup_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" "osetup/dirs.d/org/resource.d"
+    running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" "osetup" "dirs.d/org/resource.d"
 
     # TODO: add support for git add
-    running setup_recursive_links_container_dirs                        ${LOCALDIRS_DIR}/org deps.d/control.d/machine.d/default/volumes.d/model.d resource.d/model.d
-    running setup_add_to_version_control_recursive_links_container_dirs ${LOCALDIRS_DIR} org/resource.d/model.d
+    running setup_recursive_links_container_dirs                        "${LOCALDIRS_DIR}/org deps.d/control.d/machine.d/default/volumes.d/model.d" "resource.d/model.d"
+    running setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR} org/resource.d/model.d"
 
-    running setup_recursive_links_container_dirs                        ${LOCALDIRS_DIR}/org deps.d/control.d/machine.d/default/volumes.d/control.d resource.d/control.d
-    running setup_add_to_version_control_recursive_links_container_dirs ${LOCALDIRS_DIR} org/resource.d/control.d
+    running setup_recursive_links_container_dirs                        "${LOCALDIRS_DIR}/org deps.d/control.d/machine.d/default/volumes.d/control.d" "resource.d/control.d"
+    running setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR}" "org/resource.d/control.d"
 
-    running setup_make_relative_link     ${LOCALDIRS_DIR}/org deps.d/control.d/machine.d/default/volumes.d/view.d resource.d/view.d
-    running setup_add_to_version_control ${LOCALDIRS_DIR} org/resource.d/view.d
-
-    # running setup_add_to_version_control_recursive_links ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d  .. org/resource.d
-    # running setup_add_to_version_control_recursive_links ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/$HOST/volumes.d  .. org/resource.d
+    running setup_make_relative_link                                    "${LOCALDIRS_DIR}/org deps.d/control.d/machine.d/default/volumes.d/view.d" "resource.d/view.d"
+    running setup_add_to_version_control                                "${LOCALDIRS_DIR}" "org/resource.d/view.d"
 }
 
 # home/portable
 function setup_org_home_portable_local_dirs()
 {
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
-    local LOCALDIRS_DIR=${USERDIR}/localdirs
-    local relhomeprotabledir=org/home.d/portable.d
+    local LOCALDIRS_DIR="${USERDIR}/localdirs"
+    local relhomeprotabledir="org/home.d/portable.d"
 
-    running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} local.d
+    running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "${relhomeprotabledir}" "local.d"
 
     # for folder in Desktop Documents Downloads Library Music Pictures Scratches Templates tmp Videos
     # for folder in Desktop Documents Downloads Library Music Pictures Templates tmp Videos
     for folder in Desktop Downloads Music Pictures Templates tmp Videos Sink
     do
-        running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir}/local.d ${folder}
-        running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d local.d/${folder} portable.d/${folder}/local
-        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/${folder}/local
+        running setup_vc_mkdirpath_ensure    "${LOCALDIRS_DIR}" "${relhomeprotabledir}/local.d" "${folder}"
+        running setup_make_relative_link     "${LOCALDIRS_DIR}/org/home.d" "local.d/${folder}" "portable.d/${folder}/local"
+        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/${folder}/local"
     done
 }
 
 function setup_org_home_portable_public_dirs()
 {
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
-    local LOCALDIRS_DIR=${USERDIR}/localdirs
-    local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
-    local relhomeprotabledir=org/home.d/portable.d
+    local LOCALDIRS_DIR="${USERDIR}/localdirs"
+    local homeprotabledir="${LOCALDIRS_DIR}/org/home.d/portable.d"
+    local relhomeprotabledir="org/home.d/portable.d"
 
-    running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} Public/Publish/html
+    running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "${relhomeprotabledir}" "Public/Publish/html"
 
-    echo 'Options -Indexes' > ${LOCALDIRS_DIR}/${relhomeprotabledir}/Public/Publish/html/.htaccess
-    running setup_add_to_version_control ${LOCALDIRS_DIR} ${relhomeprotabledir}/Public/Publish/html/.htaccess
-    echo '' > ${LOCALDIRS_DIR}/${relhomeprotabledir}/Public/Publish/html/index.html
-    running setup_add_to_version_control ${LOCALDIRS_DIR} ${relhomeprotabledir}/Public/Publish/html/index.html
+    echo 'Options -Indexes' > "${LOCALDIRS_DIR}/${relhomeprotabledir}/Public/Publish/html/.htaccess"
+    running setup_add_to_version_control "${LOCALDIRS_DIR}" "${relhomeprotabledir}/Public/Publish/html/.htaccess"
+    echo '' > "${LOCALDIRS_DIR}/${relhomeprotabledir}/Public/Publish/html/index.html"
+    running setup_add_to_version_control "${LOCALDIRS_DIR}" "${relhomeprotabledir}/Public/Publish/html/index.html"
 
     for folder in local
     do
-        running mkdir -p ${LOCALDIRS_DIR}/org/home.d/portable.d/${folder}.d/Public/Publish/html
-        running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d/portable.d/ ${folder}.d/Public              Public/$folder
-        running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d/portable.d/ ${folder}.d/Public/Publish      Public/Publish/$folder
-        running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d/portable.d/ ${folder}.d/Public/Publish/html Public/Publish/html/$folder
+        running mkdir -p "${LOCALDIRS_DIR}/org/home.d/portable.d/${folder}.d/Public/Publish/html"
+        running setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d/portable.d/" "${folder}.d/Public"              "Public/$folder"
+        running setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d/portable.d/" "${folder}.d/Public/Publish"      "Public/Publish/$folder"
+        running setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d/portable.d/" "${folder}.d/Public/Publish/html" "Public/Publish/html/$folder"
 
-        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/$folder
-        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/Publish/$folder
-        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/Publish/html/$folder
+        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/$folder"
+        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/$folder"
+        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/html/$folder"
 
         # setup_add_to_version_control
     done
@@ -2079,42 +2076,42 @@ function setup_org_home_portable_public_dirs()
     # for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
     for folder in ${plaindirs[*]}
     do
-        running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} ${folder}/Public/Publish/html ignoreall
+        running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "${relhomeprotabledir}" "${folder}/Public/Publish/html" "ignoreall"
 
-        running setup_make_relative_link ${homeprotabledir} ${folder}/Public              Public/${folder}
-        running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish      Public/Publish/${folder}
-        running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish/html Public/Publish/html/${folder}
+        running setup_make_relative_link "${homeprotabledir}" "${folder}/Public"              "Public/${folder}"
+        running setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish"      "Public/Publish/${folder}"
+        running setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish/html" "Public/Publish/html/${folder}"
 
 
-        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/$folder
-        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/Publish/$folder
-        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/Publish/html/$folder
+        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/$folder"
+        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/$folder"
+        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/html/$folder"
 
     done
     for folder in ${linkdirs[*]}
     do
         # running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} ${folder}/Public/Publish/html
 
-        running setup_make_relative_link ${homeprotabledir} ${folder}/Public              Public/$folder
-        running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish      Public/Publish/$folder
-        running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish/html Public/Publish/html/$folder
+        running setup_make_relative_link "${homeprotabledir}" "${folder}/Public"              "Public/$folder"
+        running setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish"      "Public/Publish/$folder"
+        running setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish/html" "Public/Publish/html/$folder"
 
 
-        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/$folder
-        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/Publish/$folder
-        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/Public/Publish/html/$folder
+        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/$folder"
+        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/$folder"
+        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/html/$folder"
     done
 
-    echo '*' > ${LOCALDIRS_DIR}/${relhomeprotabledir}/tmp/.gitignore
-    running setup_add_to_version_control ~/.fa/localdirs ${relhomeprotabledir}/tmp/.gitignore
+    echo '*' > "${LOCALDIRS_DIR}/${relhomeprotabledir}/tmp/.gitignore"
+    running setup_add_to_version_control ~/.fa/localdirs "${relhomeprotabledir}/tmp/.gitignore"
 
     # private
     # Music Videos Pictures
     collection=private
     for folder in Music Videos Pictures
     do
-        running setup_make_relative_link     ${RESOURCEPATH}  data/multimedia/orgs/$collection/media/collection/$folder ${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/$collection
-        running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/$folder/$collection
+        running setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/orgs/$collection/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/$collection"
+        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/$collection"
     done
 
 }
@@ -2122,56 +2119,45 @@ function setup_org_home_portable_public_dirs()
 function setup_org_home_portable_dirs()
 {
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
-    local LOCALDIRS_DIR=${USERDIR}/localdirs
-    local rel_homeprotabledir=org/home.d/portable.d
+    local LOCALDIRS_DIR="${USERDIR}/localdirs"
+    local rel_homeprotabledir="org/home.d/portable.d"
 
-    running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} "" ${rel_homeprotabledir}
+    running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "" "${rel_homeprotabledir}"
 
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d portable.d default
+    running setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d" "portable.d" "default"
 
-    running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/default
+    running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/default"
 
-    cat <<'EOF' > ${LOCALDIRS_DIR}/org/home.d/portable.d/README
+    cat <<'EOF' > "${LOCALDIRS_DIR}/org/home.d/portable.d/README"
 portable.d is for required dir trees while
 
 local.d is to rearrange according to space needs
 EOF
 
-    running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/README
+    running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/README"
 
 
-    echo 'add in script' > ${LOCALDIRS_DIR}/org/home.d/portable.d/TODO
-    running setup_add_to_version_control ${LOCALDIRS_DIR} org/home.d/portable.d/TODO
+    echo 'add in script' > "${LOCALDIRS_DIR}/org/home.d/portable.d/TODO"
+    running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/TODO"
 
-    # # dirs
-    # for folder in Desktop Downloads Music Pictures Scratches Templates tmp Volumes VolRes
-    # do
-    #     running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${rel_homeprotabledir} ${folder}/Public/Publish/html
-    # done
+    running setup_make_relative_link "${USERDIR}" "doc" "localdirs/${rel_homeprotabledir}/Documents"
 
+    running setup_make_relative_link ~/"${RESOURCEPATH}/${USERORGMAIN}/readwrite/" "private/user/noenc/Private" "localdirs/${rel_homeprotabledir}/Private"
 
+    running setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Public/Publish/html" "public_html"
+    running setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Documents/Library"   "Library"
 
-    running setup_make_relative_link ${USERDIR} doc localdirs/${rel_homeprotabledir}/Documents
-
-    running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/ private/user/noenc/Private localdirs/${rel_homeprotabledir}/Private
-
-    running setup_make_relative_link ${LOCALDIRS_DIR}/${rel_homeprotabledir}     Public/Publish/html public_html
-    running setup_make_relative_link ${LOCALDIRS_DIR}/${rel_homeprotabledir}     Documents/Library   Library
-
-    running setup_recursive_links    ${LOCALDIRS_DIR}/org                        resource.d/control.d/class/data/storage/local/container/scratches.d home.d/portable.d/Scratches
-    running setup_recursive_links    ${LOCALDIRS_DIR}/org                        resource.d/model.d                                                  home.d/portable.d/Volumes
-
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/model.d                                                  home.d/portable.d/VolRes/model
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/control.d                                                home.d/portable.d/VolRes/control
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/view.d                                                   home.d/portable.d/VolRes/view
-
-
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org                        resource.d/view.d/maildata/mail-and-metadata/maildir                home.d/portable.d/Maildir
+    running setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/control.d/class/data/storage/local/container/scratches.d" "home.d/portable.d/Scratches"
+    running setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/model.d"                                                  "home.d/portable.d/Volumes"
+    running setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/model.d"                                                  "home.d/portable.d/VolRes/model"
+    running setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/control.d"                                                "home.d/portable.d/VolRes/control"
+    running setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/view.d"                                                   "home.d/portable.d/VolRes/view"
+    running setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/maildata/mail-and-metadata/maildir"                "home.d/portable.d/Maildir"
 
     # links
-    for lnk in org/home.d/portable.d/Documents org/home.d/portable.d/Private org/home.d/portable.d/Library org/home.d/portable.d/public_html org/home.d/portable.d/Maildir
+    for lnk in org/home.d/portable.d/{Documents,Private,Library,public_html,Maildir}
     do
-        running setup_add_to_version_control ~/.fa/localdirs $lnk
+        running setup_add_to_version_control ~/.fa/localdirs "$lnk"
     done
 
     running setup_org_home_portable_public_dirs
@@ -2182,22 +2168,22 @@ EOF
 function setup_org_misc_dirs()
 {
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
-    local LOCALDIRS_DIR=${USERDIR}/localdirs
+    local LOCALDIRS_DIR="${USERDIR}/localdirs"
     # TODO?
     # org/misc.d% ls -1l
     # total 4.0K
     # lrwxrwxrwx 1 s s 72 Dec  4 03:37 offlineimap -> ../../resource.d/view.d/maildata/mail-and-metadata/offlineimap
     :
 
-    running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} org misc.d
+    running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "org" "misc.d"
 
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/maildata/mail-and-metadata/offlineimap misc.d/offlineimap
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/preserved/mailattachments              misc.d/mailattachments
+    running setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/view.d/maildata/mail-and-metadata/offlineimap" "misc.d/offlineimap"
+    running setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/view.d/preserved/mailattachments"              "misc.d/mailattachments"
 
     # links
-    for lnk in org/misc.d/offlineimap org/misc.d/mailattachments
+    for lnk in org/misc.d/{offlineimap,mailattachments}
     do
-        running setup_add_to_version_control ~/.fa/localdirs $lnk
+        running setup_add_to_version_control ~/.fa/localdirs "$lnk"
     done
 
 } # function setup_org_misc_dirs()
@@ -2206,24 +2192,24 @@ function setup_org_misc_dirs()
 function setup_org_rc_dirs()
 {
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
-    local LOCALDIRS_DIR=${USERDIR}/localdirs
+    local LOCALDIRS_DIR="${USERDIR}/localdirs"
 
-    running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} org/rc.d
+    running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "org/rc.d"
 
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org deps.d/view.d/home rc.d/HOME
+    running setup_make_relative_link "${LOCALDIRS_DIR}/org" "deps.d/view.d/home" "rc.d/HOME"
 
     # sharad ?? fixed
-    running setup_make_relative_link ~/.repos "" git/main/resource/${USERORGMAIN}/readwrite/public/user/localdirs/org/rc.d/repos
+    running setup_make_relative_link ~/.repos "" "git/main/resource/${USERORGMAIN}/readwrite/public/user/localdirs/org/rc.d/repos"
 
 
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d repos/git/main/resource/userorg/main/readwrite/public/user/opt       opt
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d repos/git/main/resource/userorg/main/readwrite/public/user/localdirs localdirs
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d repos/git/main/resource/userorg/main/readwrite/public/user/osetup    osetup
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d repos/git/main/resource/userorg/main/readwrite/public/user/rc        setup
+    running setup_make_relative_link "${LOCALDIRS_DIR}/org/rc.d" "repos/git/main/resource/userorg/main/readwrite/public/user/opt"       "opt"
+    running setup_make_relative_link "${LOCALDIRS_DIR}/org/rc.d" "repos/git/main/resource/userorg/main/readwrite/public/user/localdirs" "localdirs"
+    running setup_make_relative_link "${LOCALDIRS_DIR}/org/rc.d" "repos/git/main/resource/userorg/main/readwrite/public/user/osetup"    "osetup"
+    running setup_make_relative_link "${LOCALDIRS_DIR}/org/rc.d" "repos/git/main/resource/userorg/main/readwrite/public/user/rc"        "setup"
 
-    for lnk in org/rc.d/repos org/rc.d/opt org/rc.d/localdirs org/rc.d/osetup org/rc.d/setup org/rc.d/HOME
+    for lnk in org/rc.d/{repos,opt,localdirs,osetup,setup,HOME}
     do
-        running setup_add_to_version_control ~/.fa/localdirs $lnk
+        running setup_add_to_version_control ~/.fa/localdirs "$lnk"
     done
 } # function setup_org_rc_dirs()
 
@@ -2242,18 +2228,18 @@ function setup_org_dirs()
 function setup_manual_dirs()
 {
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
-    local LOCALDIRS_DIR=${USERDIR}/localdirs
+    local LOCALDIRS_DIR="${USERDIR}/localdirs"
 
-    running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} manual.d
+    running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "manual.d"
 
     # debug SHARAD TEST
-    running setup_make_relative_link ${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default/volumes.d/model.d   manual.d/model
-    running setup_make_relative_link ${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default/volumes.d/control.d manual.d/control
-    running setup_make_relative_link ${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default/volumes.d/view.d    manual.d/view
+    running setup_make_relative_link "${LOCALDIRS_DIR}" "org/deps.d/control.d/machine.d/default/volumes.d/model.d"   "manual.d/model"
+    running setup_make_relative_link "${LOCALDIRS_DIR}" "org/deps.d/control.d/machine.d/default/volumes.d/control.d" "manual.d/control"
+    running setup_make_relative_link "${LOCALDIRS_DIR}" "org/deps.d/control.d/machine.d/default/volumes.d/view.d"    "manual.d/view"
 
-    running setup_add_to_version_control ${LOCALDIRS_DIR} manual.d/model
-    running setup_add_to_version_control ${LOCALDIRS_DIR} manual.d/control
-    running setup_add_to_version_control ${LOCALDIRS_DIR} manual.d/view
+    running setup_add_to_version_control "${LOCALDIRS_DIR}" "manual.d/model"
+    running setup_add_to_version_control "${LOCALDIRS_DIR}" "manual.d/control"
+    running setup_add_to_version_control "${LOCALDIRS_DIR}" "manual.d/view"
 
 }
 
@@ -2265,18 +2251,18 @@ function setup_osetup_org_resource_dirs()
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
     # TODO: add support for git add
-    running setup_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
-    running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup dirs.d/org/resource.d
+    running setup_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" "osetup/dirs.d/org/resource.d"
+    running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" "osetup" "dirs.d/org/resource.d"
 }
 
 function setup_osetup_org_home_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
-    for folder_link in Desktop Documents Downloads Library Maildir Music Pictures Private Public public_html Scratches Sink Templates tmp Videos Volumes VolRes
+    for folder_link in "Desktop" "Documents" "Downloads" "Library" "Maildir" "Music" "Pictures" "Private" "Public" "public_html" "Scratches" "Sink" "Templates" "tmp" "Videos" "Volumes" "VolRes"
     do
-        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/home.d/portable.d/${folder_link} osetup/dirs.d/org/home.d/${folder_link}
-        running setup_add_to_version_control ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup dirs.d/org/home.d/${folder_link}
+        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/home.d/portable.d/${folder_link}" "osetup/dirs.d/org/home.d/${folder_link}"
+        running setup_add_to_version_control ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/home.d/${folder_link}"
     done
 }
 
@@ -2284,10 +2270,10 @@ function setup_osetup_org_misc_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
-    for folder_link in offlineimap mailattachments
+    for folder_link in "offlineimap" "mailattachments"
     do
-        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/misc.d/${folder_link} osetup/dirs.d/org/misc.d/${folder_link}
-        running setup_add_to_version_control ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup dirs.d/org/misc.d/${folder_link}
+        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/misc.d/${folder_link}" "osetup/dirs.d/org/misc.d/${folder_link}"
+        running setup_add_to_version_control ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/misc.d/${folder_link}"
     done
 }
 
@@ -2297,10 +2283,10 @@ function setup_osetup_org_rc_dirs()
     # local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
     # local resourcedir=${LOCALDIRS_DIR}/org/resource.d
 
-    for folder_link in HOME localdirs opt osetup repos setup
+    for folder_link in "HOME" "localdirs" "opt" "osetup" "repos" "setup"
     do
-        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/rc.d/${folder_link} osetup/dirs.d/org/rc.d/${folder_link}
-        running setup_add_to_version_control ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup dirs.d/org/rc.d/${folder_link}
+        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/rc.d/${folder_link}" "osetup/dirs.d/org/rc.d/${folder_link}"
+        running setup_add_to_version_control ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/rc.d/${folder_link}"
     done
 }
 
@@ -2328,29 +2314,29 @@ function setup_osetup_dirs()
 function setup_rc_org_home_dirs()
 {
     local public_path=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public
-    local rcdir_rel_path=user/rc
+    local rcdir_rel_path="user/rc"
     local rcdirpath=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc
-    local rcorghomedir_rel_path=.config/dirs.d/org/home.d
+    local rcorghomedir_rel_path=".config/dirs.d/org/home.d"
 
-    running setup_make_relative_link ${public_path}/${rcdir_rel_path} _bin ${rcorghomedir_rel_path}/bin
-    running setup_add_to_version_control ${rcdirpath} ${rcorghomedir_rel_path}/bin
-    running setup_make_relative_link ${public_path} system/system/config/bin user/rc/${rcorghomedir_rel_path}/sbin
-    running setup_add_to_version_control ${rcdirpath} ${rcorghomedir_rel_path}/sbin
+    running setup_make_relative_link "${public_path}/${rcdir_rel_path}" "_bin" "${rcorghomedir_rel_path}/bin"
+    running setup_add_to_version_control "${rcdirpath}" "${rcorghomedir_rel_path}/bin"
+    running setup_make_relative_link "${public_path}" "system/system/config/bin" "user/rc/${rcorghomedir_rel_path}/sbin"
+    running setup_add_to_version_control "${rcdirpath}" "${rcorghomedir_rel_path}/sbin"
 }
 
 function setup_rc_org_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
-    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
+    local resourcedir="${LOCALDIRS_DIR}/org/resource.d"
 
     # TODO: add support for git add
-    running setup_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user osetup/dirs.d/org rc/.config/dirs.d/org
-    running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user osetup/dirs.d/org rc .config/dirs.d/org
+    running setup_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "osetup/dirs.d/org" "rc/.config/dirs.d/org"
+    running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "osetup/dirs.d/org" "rc" ".config/dirs.d/org"
 
     running setup_rc_org_home_dirs
 
-    running setup_add_to_version_control ~/.fa/rc .config/dirs.d/org
+    running setup_add_to_version_control ~/.fa/rc ".config/dirs.d/org"
 }
 
 function setup_dirs()
