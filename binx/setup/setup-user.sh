@@ -973,13 +973,28 @@ function setup_git_tree_repo()
         mkdir -p "$(dirname ${GITDIR_BASE} )"
         if [ ! -d "${GITDIR_BASE}/" ]
         then
-            running git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  ${GITURL} ${GITDIR_BASE}
+            if ! running git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  ${GITURL} ${GITDIR_BASE}
+            then
+                echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  ${GITURL} ${GITDIR_BASE} >&2
+            fi
         else
-            running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" status
-            running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
+            if ! running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" status
+            then
+                echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" status >&2
+            fi
+            if ! running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
+            then
+                echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase >&2
+            fi
             # running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} pull --rebase
-            running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} fetch
-            running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} status
+            if ! running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} fetch
+            then
+                echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} fetch >&2
+            fi
+            if ! running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} status
+            then
+                echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} status >&2
+            fi
         fi
     else
         error setup_git_tree_repo: Not two args giturl gittreedir_base not provided. >&2
