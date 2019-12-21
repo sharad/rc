@@ -690,7 +690,7 @@ function setup_apt_upgrade_system()
         fi
     else
         # sudo ${INSTALLER} ${INSTALLER_OPT} clean
-        sudo ${INSTALLER} ${INSTALLER_OPT}< autoremove
+        sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
         sudo ${INSTALLER} ${INSTALLER_OPT} autoclean
         sudo ${INSTALLER} ${INSTALLER_OPT} update
         sudo apt-file update
