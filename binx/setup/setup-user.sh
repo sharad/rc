@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+# set -e
 ## create a setup-disk.sh
 ## for creating lvm disk layout for different sizes of harddisk of 500GB 1T
 ## which can have option
@@ -1073,7 +1073,7 @@ function setup_user_config_setup()
 
     if [ -d "${RCHOME}" ]
     then
-	      if mkdir -p ~/_old_dot_filedirs
+	      if running mkdir -p ~/_old_dot_filedirs
         then
 	          # mv ~/.setup/.config/_home/.setup $TMPDIR/Xsetup
 	          cd "${RCHOME}"
