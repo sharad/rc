@@ -16,6 +16,16 @@
 # BUG: ~/.setup/.config/dirs.d/home.d/ is wrongly getting created.
 
 DEBUG=1
+
+if [ -d /run/current-system/profile ]
+then
+    INSTALLER="echo"
+    INSTALLER_OPT="-y"
+else
+    INSTALLER="apt"
+    INSTALLER_OPT="-y"
+fi
+
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 
 SSH_KEY_DUMP=$1
@@ -161,7 +171,10 @@ function main()
 
     running set_keyboard
 
-    running setup_sourcecode_pro_font
+    if [ ! -d /run/current-system/profile ]
+    then
+       running setup_sourcecode_pro_font
+    fi
 
     cd ~/
 
@@ -188,31 +201,40 @@ function main()
 
     running setup_download_misc
 
-    running setup_login_shell
+    if [ ! -d /run/current-system/profile ]
+    then
+        running setup_login_shell
 
-    running setup_advertisement_blocking
+        running setup_advertisement_blocking
+    fi
 
     running setup_dirs
 
-    running setup_apache_usermod
+    if [ ! -d /run/current-system/profile ]
+    then
+        running setup_apache_usermod
 
-    running setup_mail
+        running setup_mail
 
-    running setup_ldapsearch
+        running setup_ldapsearch
 
-    running setup_password
+        running setup_password
 
-    running setup_crontab
+        running setup_crontab
+    fi
 
     running setup_spacemacs
 
-    running setup_clib_installer
+    if [ ! -d /run/current-system/profile ]
+    then
+        running setup_clib_installer
 
-    running setup_clib_pkgs
+        running setup_clib_pkgs
 
-    running setup_bpkg_installler
+        running setup_bpkg_installler
 
-    running setup_bpkg_pkgs
+        running setup_bpkg_pkgs
+    fi
 
     running set_window_share
 
@@ -613,61 +635,75 @@ function set_keyboard()
 
 function setup_apt_repo()
 {
-    if [ -r /etc/os-release ]
+    if [ -d /run/current-system/profile ]
     then
-        . /etc/os-release
-        if [ ubuntu = "$ID" ]
-        then
-            UBUNTU_VERSION_NAME="$VERSION"
-            info "Running Ubuntu $UBUNTU_VERSION_NAME"
-        else
-            warn "Not running an Ubuntu distribution. ID=$ID, VERSION=$VERSION" >&2
-            exit -1
-        fi
+        echo setup_apt_repo
     else
-        error "Not running a distribution with /etc/os-release available" >&2
-    fi
-
-    for repo in "$APT_REPO_COMMPUNICATION" "$APT_REPO_UTILS"
-    do
-        # /etc/apt/sources.list.d/nilarimogard-ubuntu-webupd8-xenial.list
-        # debug repo=$repo
-        REPO_NAME1="$(print $repo | cut -d: -f2 | cut -d/ -f1)"
-        REPO_NAME2="$(print $repo | cut -d: -f2 | cut -d/ -f2)"
-
-        REPO_FILE_PATH=/etc/apt/sources.list.d/${REPO_NAME1}-${ID}-${REPO_NAME2}-${VERSION_CODENAME}.list
-
-        debug REPO_FILE_PATH=$REPO_FILE_PATH
-
-        if [ ! -f "$REPO_FILE_PATH" ]
+        if [ -r /etc/os-release ]
         then
-            sudo add-apt-repository "$repo"
+            . /etc/os-release
+            if [ ubuntu = "$ID" ]
+            then
+                UBUNTU_VERSION_NAME="$VERSION"
+                info "Running Ubuntu $UBUNTU_VERSION_NAME"
+            else
+                warn "Not running an Ubuntu distribution. ID=$ID, VERSION=$VERSION" >&2
+                exit -1
+            fi
         else
-            verbose "$REPO_FILE_PATH" already added.
+            error "Not running a distribution with /etc/os-release available" >&2
         fi
-    done
 
+        for repo in "$APT_REPO_COMMPUNICATION" "$APT_REPO_UTILS"
+        do
+            # /etc/apt/sources.list.d/nilarimogard-ubuntu-webupd8-xenial.list
+            # debug repo=$repo
+            REPO_NAME1="$(print $repo | cut -d: -f2 | cut -d/ -f1)"
+            REPO_NAME2="$(print $repo | cut -d: -f2 | cut -d/ -f2)"
+
+            REPO_FILE_PATH=/etc/apt/sources.list.d/${REPO_NAME1}-${ID}-${REPO_NAME2}-${VERSION_CODENAME}.list
+
+            debug REPO_FILE_PATH=$REPO_FILE_PATH
+
+            if [ ! -f "$REPO_FILE_PATH" ]
+            then
+                sudo add-apt-repository "$repo"
+            else
+                verbose "$REPO_FILE_PATH" already added.
+            fi
+        done
+    fi
 }
 
 function setup_apt_upgrade_system()
 {
-    # sudo apt -y clean
-    sudo apt -y autoremove
-    sudo apt -y autoclean
-    sudo apt -y update
-    sudo apt-file update
-    # sudo apt -y clean
-    sudo apt -y autoremove
-    sudo apt -y autoclean
-    sudo apt -y upgrade
-    # sudo apt -y clean
-    sudo apt -y autoremove
-    sudo apt -y autoclean
-    # sudo apt -y clean
-    sudo apt -y autoremove
-    sudo apt -y autoclean
+    if [ -d /run/current-system/profile ]
+    then
+        guix pull &&
+            guix pull --news &&
+            sudo guix system reconfigure ~/.setup/guix-config/per-system/guilem/guix-more/config.scm &&
+            guix upgrade &&
+            guix upgrade -p ~/.setup/guix-config/per-user/s/cdesktopenv/profiles/libtiprc
+    else
+        # sudo ${INSTALLER} ${INSTALLER_OPT} clean
+        sudo ${INSTALLER} ${INSTALLER_OPT}< autoremove
+        sudo ${INSTALLER} ${INSTALLER_OPT} autoclean
+        sudo ${INSTALLER} ${INSTALLER_OPT} update
+        sudo apt-file update
+        # sudo ${INSTALLER} ${INSTALLER_OPT} clean
+        sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
+        sudo ${INSTALLER} ${INSTALLER_OPT} autoclean
+        sudo ${INSTALLER} ${INSTALLER_OPT} upgrade
+        # sudo ${INSTALLER} ${INSTALLER_OPT} clean
+        sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
+        sudo ${INSTALLER} ${INSTALLER_OPT} autoclean
+        # sudo ${INSTALLER} ${INSTALLER_OPT} clean
+        sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
+        sudo ${INSTALLER} ${INSTALLER_OPT} autoclean
 
-    sudo apt -y clean
+        sudo ${INSTALLER} ${INSTALLER_OPT} clean
+        sudo ${INSTALLER} update
+    fi
 }
 
 function setup_apt_packages()
@@ -676,7 +712,6 @@ function setup_apt_packages()
 
     running setup_apt_upgrade_system
 
-    sudo apt update
 
 
     local deb_pkg_lists=(
@@ -762,24 +797,30 @@ function setup_apt_packages()
     for pkg in ${deb_pkg_lists[*]}
     do
         eval echo Intalling pkg list '\$'$pkg='\(' \${$pkg[*]} '\)'
-        if ! eval sudo apt -y install \$$pkg
+        if ! eval sudo ${INSTALLER} ${INSTALLER_OPT} install \$$pkg
         then
             for p in $(eval print \$$pkg)
             do
-                running sudo apt -y install ${p}
+                if [ ! -d /run/current-system/profile ]
+                then
+                    running sudo ${INSTALLER} ${INSTALLER_OPT} install ${p}
+                fi
             done
         fi
     done
 
-    for pkg in "$PY_PIP_PKG"
-    do
-        sudo pip install $pkg
-    done
+    if [ ! -d /run/current-system/profile ]
+    then
+        for pkg in "$PY_PIP_PKG"
+        do
+            sudo pip install $pkg
+        done
+    fi
 }
 
 function setup_ecrypt_private()
 {
-    sudo apt -y install ecryptfs-utils
+    sudo ${INSTALLER} ${INSTALLER_OPT} install ecryptfs-utils
 
     if ! mount | grep $HOME/.Private
     then
@@ -824,7 +865,7 @@ function setup_tmp_ssh_keys()
     fi                          # if ! ssh-add -l
     if ! ssh-add -l
     then
-        sudo apt -y install openssl
+        sudo ${INSTALLER} ${INSTALLER_OPT} install openssl
         if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
         then
             ## bring the ssh keys
@@ -856,7 +897,7 @@ function setup_ssh_keys()
     then
         if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
         then
-            sudo apt -y install openssl
+            sudo ${INSTALLER} ${INSTALLER_OPT} install openssl
 
             SSH_KEY_ENC_DUMP=$1
             SSH_DIR=$2
@@ -1137,7 +1178,7 @@ function setup_mail_and_metadata()
 function setup_mail()
 {
     local SYSTEM_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/system/system
-    sudo apt -y install dovecot-core dovecot-imapd ntpdate postfix
+    sudo ${INSTALLER} ${INSTALLER_OPT} install dovecot-core dovecot-imapd ntpdate postfix
     if [ -d ${SYSTEM_DIR}/ubuntu/etc/postfix ]
     then
         if [ ! -d /etc/postfix-ORG ]
@@ -1188,7 +1229,7 @@ function setup_login_shell()
     curshell="$(getent passwd $USER | cut -d: -f7)"
     if [ "$curshell" != "/bin/zsh" ]
     then
-        sudo apt -y install zsh
+        sudo ${INSTALLER} ${INSTALLER_OPT} install zsh
         chsh -s /bin/zsh
     fi
 }

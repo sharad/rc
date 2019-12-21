@@ -154,13 +154,13 @@ Each entry is either:
             (org-agenda-to-appt)))))))
 
 (defun lotus-orgmode/post-init-ob-tangle ()
-  (use-package org-notmuch
-      ;; http://notmuchmail.org/emacstips/
-      ;; (add-to-list 'load-path "/usr/share/org-mode/lisp")
-      :defer t
-      :config
-      (progn
-        (lotus-orgmode-config/post-init-ob-tangle))))
+  (use-package ob-tangle
+    ;; http://notmuchmail.org/emacstips/
+    ;; (add-to-list 'load-path "/usr/share/org-mode/lisp")
+    :defer t
+    :config
+    (progn
+      (lotus-orgmode-config/post-init-ob-tangle))))
 
 (defun lotus-orgmode/post-init-publishing ()
   (use-package publishing
@@ -205,8 +205,8 @@ Each entry is either:
     (progn
       (lotus-orgmode-config/init-org2rem))))
 
-(defun lotus-orgmode/init-org-notmuch ()
-  (use-package org-notmuch
+(defun lotus-orgmode/init-ol-notmuch ()
+  (use-package ol-notmuch
       ;; http://notmuchmail.org/emacstips/
       ;; (add-to-list 'load-path "/usr/share/org-mode/lisp")
       :defer t
