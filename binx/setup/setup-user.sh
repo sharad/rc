@@ -970,7 +970,9 @@ function setup_git_tree_repo()
         local GITURL=$1
         local GITDIR_BASE=$2
 
-        mkdir -p "$(dirname ${GITDIR_BASE} )"
+        verbose GITDIR_BASE=${GITDIR_BASE}
+
+        running mkdir -p "$(dirname ${GITDIR_BASE} )"
         if [ ! -d "${GITDIR_BASE}/" ]
         then
             if ! running git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  ${GITURL} ${GITDIR_BASE}
@@ -1004,8 +1006,9 @@ function setup_git_tree_repo()
 function setup_git_annex_repo()
 {
     # if .git is plain file than make it symlink
-    local modulepath=$1
-    running setup_git_tree_repo "${gittreeurl}" "${treedir}"
+    local gittreeurl="$1"
+    local modulepath="$2"
+    running setup_git_tree_repo "${gittreeurl}" "${modulepath}"
     if [ -e "${modulepath}/.git" ]
     then
         if [ ! -d ${modulepath}/.git ]
@@ -1030,7 +1033,7 @@ function setup_git_tree_annex_repo()
     running setup_git_tree_repo "${gittreeurl}" "${treedir}"
     if [ -d "${treedir}" ]
     then
-        running setup_git_annex_repo "${modulepath}"
+        running setup_git_annex_repo "${gittreeurl}" "${modulepath}"
     fi
 }
 
@@ -1041,15 +1044,14 @@ function setup_git_repos()
     # RESOURCEPATH=".repos/git/main/resource"
     # USERORGMAIN="userorg/main"
 
-    running setup_git_tree_repo git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
-    running setup_git_annex_repo ~/${RESOURCEPATH}/userorg/main/readwrite/public/user/doc/Library
+    running setup_git_tree_repo "git@github.com:sharad/userorg.git" ~/${RESOURCEPATH}/userorg
+    running setup_git_annex_repo "git@bitbucket.org:sh4r4d/doclibrary.git" ~/${RESOURCEPATH}/userorg/main/readwrite/public/user/doc/Library
 
     if true                    # decide through command line arguments
     then
-        running setup_git_tree_repo git@bitbucket.org:sh4r4d/docorg.git ~/${RESOURCEPATH}/info/doc/orgs/private/doc
-
-        running setup_git_tree_repo git@bitbucket.org:sh4r4d/mediaorg.git ~/${RESOURCEPATH}/data/multimedia/orgs/private/media/
-        running setup_git_annex_repo ~/${RESOURCEPATH}/data/multimedia/orgs/private/media/collection
+        running setup_git_tree_repo "git@bitbucket.org:sh4r4d/docorg.git" ~/${RESOURCEPATH}/info/doc/orgs/private/doc
+        running setup_git_tree_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ~/${RESOURCEPATH}/data/multimedia/orgs/private/media/
+        running setup_git_annex_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ~/${RESOURCEPATH}/data/multimedia/orgs/private/media/collection
     fi
 }
 
