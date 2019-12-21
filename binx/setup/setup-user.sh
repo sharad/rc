@@ -679,11 +679,15 @@ function setup_apt_upgrade_system()
 {
     if [ -d /run/current-system/profile ]
     then
-        guix pull &&
-            guix pull --news &&
-            sudo guix system reconfigure ~/.setup/guix-config/per-system/guilem/guix-more/config.scm &&
-            guix upgrade &&
-            guix upgrade -p ~/.setup/guix-config/per-user/s/cdesktopenv/profiles/libtiprc
+        if running guix pull &&
+                running guix pull --news
+        then
+            if running sudo guix system reconfigure ~/.setup/guix-config/per-system/guilem/guix-more/config.scm
+            then
+                running guix upgrade
+                running guix upgrade -p ~/.setup/guix-config/per-user/s/cdesktopenv/profiles/libtiprc
+            fi
+        fi
     else
         # sudo ${INSTALLER} ${INSTALLER_OPT} clean
         sudo ${INSTALLER} ${INSTALLER_OPT}< autoremove
@@ -1147,12 +1151,12 @@ function setup_sshkeys()
 
 function setup_Documentation()  # TODO
 {
-    setup_copy_link ~/.setup/.config/_home/Documents ~/Documents
+    running setup_copy_link ~/.setup/.config/_home/Documents ~/Documents
 }
 
 function setup_public_html()    # TODO
 {
-    setup_copy_link ~/.setup/.config/_home/public_html ~/public_html
+    running setup_copy_link ~/.setup/.config/_home/public_html ~/public_html
 }
 
 function setup_mail_and_metadata()
@@ -1183,18 +1187,18 @@ function setup_mail()
     then
         if [ ! -d /etc/postfix-ORG ]
         then
-            sudo cp -ar /etc/postfix /etc/postfix-ORG
+            running sudo cp -ar /etc/postfix /etc/postfix-ORG
             for f in ${SYSTEM_DIR}/ubuntu/etc/postfix/*
             do
                 b=$(basename $f)
-                cp $f /etc/postfix/
+                running cp $f /etc/postfix/
             done
         fi
 
         if [ ! -d /etc/dovecot-ORG ]
         then
-            sudo cp -ar /etc/dovecot /etc/dovecot-ORG
-            sudo cp ${SYSTEM_DIR}/ubuntu/etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
+            running sudo cp -ar /etc/dovecot /etc/dovecot-ORG
+            running sudo cp ${SYSTEM_DIR}/ubuntu/etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
         fi
     else
         error ${SYSTEM_DIR}/ubuntu/etc/postfix not exists >&2
@@ -1216,7 +1220,7 @@ function setup_gnomekeyring()
 
 function setup_password()
 {
-    echo ~/.ldappass /etc/postfix/sasl_passwd etc
+    running echo ~/.ldappass /etc/postfix/sasl_passwd etc
 }
 
 function setup_crontab()
@@ -1229,8 +1233,8 @@ function setup_login_shell()
     curshell="$(getent passwd $USER | cut -d: -f7)"
     if [ "$curshell" != "/bin/zsh" ]
     then
-        sudo ${INSTALLER} ${INSTALLER_OPT} install zsh
-        chsh -s /bin/zsh
+        running sudo ${INSTALLER} ${INSTALLER_OPT} install zsh
+        running chsh -s /bin/zsh
     fi
 }
 
@@ -1278,7 +1282,7 @@ function setup_mvc_dirs()
                     modelsymlink=1
                 fi
                 sdirbase=$(basename "$sdir")
-                setup_make_link ../model.d/${sdirbase} ${containerdir}/control.d/${sdirbase}
+                running setup_make_link ../model.d/${sdirbase} ${containerdir}/control.d/${sdirbase}
             done
             if [ "$modelsymlink" -eq 0 ]
             then
@@ -1297,7 +1301,7 @@ function setup_mvc_dirs()
                     modelsymlink=1
                 fi
                 sdirbase=$(basename "$sdir")
-                setup_make_link ../control.d/${sdirbase} ${containerdir}/view.d/${sdirbase}
+                running setup_make_link ../control.d/${sdirbase} ${containerdir}/view.d/${sdirbase}
             done
             if [ "$modelsymlink" -eq 0 ]
             then
@@ -1324,8 +1328,8 @@ function setup_machine_dir()
 
     if [ -d ${LOCALDIRS_DIR} ]
     then
-        mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
-        mkdir -p ${LOCALDIRS_DIR}/org/deps.d/control.d/machine.d
+        running mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
+        running mkdir -p ${LOCALDIRS_DIR}/org/deps.d/control.d/machine.d
     fi
 
     # check local home model.d directory
@@ -1333,7 +1337,7 @@ function setup_machine_dir()
     then
         if [ ! -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
         then
-            mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST
+            running mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST
             if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
             then
                 running  cp -ar ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/sample ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST
@@ -1421,7 +1425,7 @@ function setup_dep_control_storage_class_dir()
 
 
         # mkdir -p $classcontrol_dir_path/model.d
-        mkdir -p $classcontrol_dir_path
+        running mkdir -p $classcontrol_dir_path
         # mkdir -p $classcontrol_dir_path/view.d
         # TODO?STATS
         if [ -d ${hostdir}/volumes.d/model.d/${storage_path}/ ] && ls ${hostdir}/volumes.d/model.d/${storage_path}/* > /dev/null 2>&1
@@ -1496,7 +1500,7 @@ function setup_deps_control_class_dir()
         then
             if [ -d ${hostdir} ]
             then
-                mkdir -p ${hostdir}
+                running mkdir -p ${hostdir}
 
                 running setup_make_link $HOST ${machinedir}/default
 
@@ -1585,7 +1589,7 @@ function setup_deps_control_home_dirs()
 {
     local storage_path="${1-local}"
 
-    setup_deps_control_home_Downloads_dirs "$storage_path"
+    running setup_deps_control_home_Downloads_dirs "$storage_path"
 }
 
 
@@ -1660,7 +1664,7 @@ function setup_deps_model_storage_volumes_dir()
     deps_model_storageclass_path="${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/${storage_path}"
     rel_deps_model_storageclass_path="org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/${storage_path}"
 
-    mkdir -p "${deps_model_storageclass_path}"
+    running mkdir -p "${deps_model_storageclass_path}"
 
     if [ -d ${deps_model_storageclass_path} -a -d $storageclassdirpath ]
     then
@@ -1673,14 +1677,14 @@ function setup_deps_model_storage_volumes_dir()
                 local _location=$vld/users/$USER
                 if [ ! -d ${_location} ]
                 then
-                    sudo mkdir -p ${_location}
+                    running sudo mkdir -p ${_location}
                 fi
                 if [ -d ${_location} ]
                 then
-                    sudo chown root.root ${_location}
+                    running sudo chown root.root ${_location}
                 fi
 
-                setup_make_link ${_location} "${deps_model_storageclass_path}/$(basename $vgd)-$(basename $vld)"
+                running setup_make_link ${_location} "${deps_model_storageclass_path}/$(basename $vgd)-$(basename $vld)"
                 running setup_add_to_version_control ${LOCALDIRS_DIR} "${rel_deps_model_storageclass_path}/$(basename $vgd)-$(basename $vld)"
             done
         done
@@ -1702,9 +1706,9 @@ function setup_deps_model_volumes_dirs()
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     # check local home model.d directory
 
-    mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d
+    running mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d
 
-    setup_deps_model_storage_volumes_dir "$storage_path"
+    running setup_deps_model_storage_volumes_dir "$storage_path"
 }
 
 function setup_deps_mode_dir()
@@ -1723,14 +1727,14 @@ function setup_deps_mode_dir()
 
         if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
         then
-            mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST
+            running mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST
 
             running setup_make_link $HOST ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default
 
             running setup_make_relative_link ~/ "" ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/$HOST/home
             running setup_add_to_version_control ${LOCALDIRS_DIR} org/deps.d/model.d/machine.d/$HOST/home
 
-            mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d
+            running mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d
 
             running setup_deps_model_volumes_dirs "$storage_path"
 
@@ -1787,7 +1791,7 @@ function setup_deps_control_volumes_dirs()
                 do
                     # TODO? -sharad
                     volsysdatadirbase=$(basename ${sysdatadir})
-                    mkdir -p ${volumedir}/control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir
+                    running mkdir -p ${volumedir}/control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir
                 done
             fi
         fi
@@ -1857,7 +1861,7 @@ function setup_deps_view_volumes_dirs()
         if [ -d ${BASE_DIR}/${LOCALDIRS_DIR}/${hostdir} ]
         then
 
-            mkdir -p ${BASE_DIR}/${LOCALDIRS_DIR}/${hostdir}
+            running mkdir -p ${BASE_DIR}/${LOCALDIRS_DIR}/${hostdir}
 
             running setup_make_link $HOST ${BASE_DIR}/${LOCALDIRS_DIR}/${machinedir}/default
 
@@ -1907,11 +1911,11 @@ function setup_deps_view_volumes_dirs()
             local todopath="${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/TODO-${sysdatasdirname//\//_}"
             local missingpath="${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/MISSING_TODO-${sysdatasdirname//\//_}"
 
-            rm -f $todopath
-            rm -f $missingpath
+            running rm -f $todopath
+            running rm -f $missingpath
 
-            mkdir -p ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}
-            rm -f ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/.gitignore
+            running mkdir -p ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}
+            running rm -f ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/.gitignore
 
             for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
             do
@@ -2442,13 +2446,13 @@ function setup_sourcecode_pro_font()
 
     if [ ! -d /usr/share/fonts/truetype/$FONT_NAME/ ]
     then
-        mkdir /tmp/$FONT_NAME
+        running mkdir /tmp/$FONT_NAME
         cd /tmp/$FONT_NAME
-        wget $URL -O "`print $FONT_NAME`.tar.gz"
-        tar --extract --gzip --file ${FONT_NAME}.tar.gz
-        sudo mkdir /usr/share/fonts/truetype/$FONT_NAME
-        sudo cp -rf /tmp/$FONT_NAME/. /usr/share/fonts/truetype/$FONT_NAME/.
-        fc-cache -f -v
+        running wget $URL -O "`print $FONT_NAME`.tar.gz"
+        running tar --extract --gzip --file ${FONT_NAME}.tar.gz
+        running sudo mkdir /usr/share/fonts/truetype/$FONT_NAME
+        running sudo cp -rf /tmp/$FONT_NAME/. /usr/share/fonts/truetype/$FONT_NAME/.
+        running fc-cache -f -v
     fi
 }
 
@@ -2456,19 +2460,19 @@ function setup_apache_usermod()
 {
     local SYSTEM_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/system/system
 
-    sudo a2enmod userdir
+    running sudo a2enmod userdir
 
     if [ -r /etc/apache2/apache2.conf ]
     then
         if [ ! -d /usr/local/etc/apache ]
         then
-            mkdir -p /usr/local/etc/
-            cp -r ${SYSTEM_DIR}/ubuntu/usr/local/etc/apache /usr/local/etc/apache
+            running mkdir -p /usr/local/etc/
+            running cp -r ${SYSTEM_DIR}/ubuntu/usr/local/etc/apache /usr/local/etc/apache
         fi
 
         if ! grep /usr/local/etc/apache /etc/apache2/apache2.conf
         then
-            cp /etc/apache2/apache2.conf $TMP/apache2.conf
+            running cp /etc/apache2/apache2.conf $TMP/apache2.conf
             cat <<EOF >> $TMP/apache2.conf
 
 # Include the virtual host configurations:
@@ -2485,17 +2489,17 @@ EOF
 
 function setup_clib_installer()
 {
-    sudo apt-get -y install libcurl4-gnutls-dev -qq
+    running sudo ${INSTALLER} ${INSTALLER_OPT} install libcurl4-gnutls-dev -qq
     if [ ! -d /usr/local/stow/clib/ ]
     then
         if running git -c core.sshCommand="$GIT_SSH_OPTION" clone https://github.com/clibs/clib.git $TMPDIR/clib
         then
             cd $TMPDIR/clib
-            make PREFIX=/usr/local/stow/clib/
-            sudo make PREFIX=/usr/local/stow/clib/ install
+            running make PREFIX=/usr/local/stow/clib/
+            running sudo make PREFIX=/usr/local/stow/clib/ install
             cd /usr/local/stow && sudo stow clib
             cd - > /dev/null 2>&1
-            rm -rf $TMPDIR/clib
+            running rm -rf $TMPDIR/clib
         fi
     else
         verbose clib is already present. >&2
@@ -2508,7 +2512,7 @@ function install_clib_pkg()
     local pkg="$(basename $pkgfull)"
     if [ ! -d /usr/local/stow/$pkg ]
     then
-        sudo sh -c "PREFIX=/usr/local/stow/$pkg clib install $pkgfull -o /usr/local/stow/$pkg"
+        running sudo sh -c "PREFIX=/usr/local/stow/$pkg clib install $pkgfull -o /usr/local/stow/$pkg"
         cd /usr/local/stow && sudo stow $pkg
         cd - > /dev/null 2>&1
     else
@@ -2523,7 +2527,7 @@ function setup_clib_pkgs()
 
 function setup_bpkg_installler()
 {
-    install_clib_pkg bpkg/bpkg
+    running install_clib_pkg bpkg/bpkg
 }
 
 function install_bpkg_pkg()
@@ -2532,8 +2536,8 @@ function install_bpkg_pkg()
     local pkg="$(basename $pkgfull)"
     if [ ! -d /usr/local/stow/$pkg ]
     then
-        sudo mkdir -p "/usr/local/stow/$pkg/bin"
-        sudo sh -c "PREFIX=/usr/local/stow/$pkg bpkg install -g $pkgfull"
+        running sudo mkdir -p "/usr/local/stow/$pkg/bin"
+        running sudo sh -c "PREFIX=/usr/local/stow/$pkg bpkg install -g $pkgfull"
         cd /usr/local/stow/ && sudo stow $pkg
         cd - > /dev/null 2>&1
     else
@@ -2543,7 +2547,7 @@ function install_bpkg_pkg()
 
 function setup_bpkg_pkgs()
 {
-    install_bpkg_pkg sharad/gitwatch
+    running install_bpkg_pkg sharad/gitwatch
 }
 
 function setup_fzf()
