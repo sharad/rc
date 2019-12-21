@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -e
 ## create a setup-disk.sh
 ## for creating lvm disk layout for different sizes of harddisk of 500GB 1T
 ## which can have option
@@ -17,7 +18,7 @@
 
 DEBUG=1
 
-if [ -d /run/current-system/profile ]
+if [ -d "/run/current-system/profile" ]
 then
     INSTALLER="echo"
     INSTALLER_OPT="-y"
@@ -166,12 +167,10 @@ function main()
 
     running process_arg $@
     # process_arg $@
-
     running mkdir -p $TMPDIR
-
     running set_keyboard
 
-    if [ ! -d /run/current-system/profile ]
+    if [ ! -d "/run/current-system/profile" ]
     then
        running setup_sourcecode_pro_font
     fi
@@ -179,9 +178,7 @@ function main()
     cd ~/
 
     running setup_apt_packages
-
     running setup_ecrypt_private
-
     running setup_tmp_ssh_keys "$TMPDIR/ssh" "$SSH_KEY_DUMP"
 
     if ! ssh-add -l
@@ -192,52 +189,39 @@ function main()
 
     # will set the ~/.setup also
     running setup_git_repos
-
     running setup_config_dirs
-
     running setup_user_config_setup
-
     running setup_ssh_keys "$SSH_KEY_DUMP"
-
     running setup_download_misc
 
-    if [ ! -d /run/current-system/profile ]
+    if [ ! -d "/run/current-system/profile" ]
     then
         running setup_login_shell
-
         running setup_advertisement_blocking
     fi
 
     running setup_dirs
 
-    if [ ! -d /run/current-system/profile ]
+    if [ ! -d "/run/current-system/profile" ]
     then
         running setup_apache_usermod
-
         running setup_mail
-
         running setup_ldapsearch
-
         running setup_password
-
         running setup_crontab
     fi
 
     running setup_spacemacs
 
-    if [ ! -d /run/current-system/profile ]
+    if [ ! -d "/run/current-system/profile" ]
     then
         running setup_clib_installer
-
         running setup_clib_pkgs
-
         running setup_bpkg_installler
-
         running setup_bpkg_pkgs
     fi
 
     running set_window_share
-
     rm -rf $TMPDIR
 }
 
@@ -550,10 +534,6 @@ function setup_add_to_version_control_recursive_links_container_dirs() # NOT REQ
         # TODO? do something here
         for lnkdir in ${linkdirs[*]}
         do
-            # running setup_make_relative_link ${basepath} ${linktopdir}/${lnkdir} ${targetdir}/${lnkdir}
-            # git -C ${basepath}/${gitrelbase} rm ${targetdir}/${lnkdir}/*
-            # rm -f ${basepath}/${gitrelbase}/${targetdir}/${lnkdir}/*
-            # echo '*' > ${basepath}/${gitrelbase}/${targetdir}/${lnkdir}/.gitignore
             echo '*' > ${basepath}/${targetdir}/${lnkdir}/.gitignore
             running setup_add_to_version_control ${basepath} ${targetdir}/${lnkdir}/.gitignore
         done
@@ -579,23 +559,22 @@ function setup_add_to_version_control_recursive_links() # SHARAD
 
 
 
-    if [ -d ${linkbasepath} ]
+    if [ -d "${linkbasepath}" ]
     then
         cd ${linkbasepath}
         # debug SHARAD TEST
         local links=( $(find -type l | cut -c3- ) )
         cd - > /dev/null 2>&1
 
-        debug links=${links[*]}
+        debug links="${links[*]}"
 
         # TODO? do something here
-        for lnk in ${links[*]}
+        for lnk in "${links[*]}"
         do
-            # running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
-            running setup_add_to_version_control ${basepath}/${gitrelbase} ${targetdir}/${lnk}
+            running setup_add_to_version_control "${basepath}/${gitrelbase}" "${targetdir}/${lnk}"
         done
     else
-        error dir ${basepath}/${linkdir} not exists
+        error dir "${basepath}/${linkdir}" not exists
     fi
 
 }                               # function setup_add_to_version_control_recursive_links()
@@ -603,21 +582,21 @@ function setup_add_to_version_control_recursive_links() # SHARAD
 function setup_vc_mkdirpath_ensure()
 {
     local vcbase="$1"
-    local base="$2"
-    local path="$3"
-    local all=$4
+    local   base="$2"
+    local   path="$3"
+    local    all="$4"
 
     mkdir -p ${vcbase}/${base}/${path}
     local dirpath=$path
 
     while [ "$dirpath" != "." -a "x$dirpath" != "x" ]
     do
-        running touch ${vcbase}/${base}${base:+/}${dirpath}/.gitignore
+        running touch "${vcbase}/${base}${base:+/}${dirpath}/.gitignore"
         if [ "$all" ]
         then
-            echo '*' > ${vcbase}/${base}${base:+/}${dirpath}/.gitignore
+            echo '*' > "${vcbase}/${base}${base:+/}${dirpath}/.gitignore"
         fi
-        running setup_add_to_version_control ${vcbase} ${base}${base:+/}${dirpath}/.gitignore
+        running setup_add_to_version_control "${vcbase}" "${base}${base:+/}${dirpath}/.gitignore"
         dirpath="$(dirname $dirpath)"
     done
 
@@ -627,15 +606,15 @@ function set_keyboard()
 {
     if [ ! -f $TMPDIR/keymap ]
     then
-        mkdir -p $TMPDIR
-        wget 'https://raw.githubusercontent.com/sharad/rc/master/keymaps/Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt' -O $TMPDIR/keymap
+        running mkdir -p $TMPDIR
+        running wget -c 'https://raw.githubusercontent.com/sharad/rc/master/keymaps/Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt' -O "$TMPDIR/keymap"
     fi
-    xmodmap $TMPDIR/keymap
+    running xmodmap "$TMPDIR/keymap" || echo xmodmap returned $?
 }
 
 function setup_apt_repo()
 {
-    if [ -d /run/current-system/profile ]
+    if [ -d "/run/current-system/profile" ]
     then
         echo setup_apt_repo
     else
@@ -677,7 +656,7 @@ function setup_apt_repo()
 
 function setup_apt_upgrade_system()
 {
-    if [ -d /run/current-system/profile ]
+    if [ -d "/run/current-system/profile" ]
     then
         if running guix pull &&
                 running guix pull --news
@@ -805,7 +784,7 @@ function setup_apt_packages()
         then
             for p in $(eval print \$$pkg)
             do
-                if [ ! -d /run/current-system/profile ]
+                if [ ! -d "/run/current-system/profile" ]
                 then
                     running sudo ${INSTALLER} ${INSTALLER_OPT} install ${p}
                 fi
@@ -813,7 +792,7 @@ function setup_apt_packages()
         fi
     done
 
-    if [ ! -d /run/current-system/profile ]
+    if [ ! -d "/run/current-system/profile" ]
     then
         for pkg in "$PY_PIP_PKG"
         do
@@ -843,12 +822,12 @@ function setup_ecrypt_private()
         if [ ! -L ~/.ecryptfs ]
         then
             cp -ar ~/.ecryptfs ~/.ecryptfs-BAK
-            setup_copy_link ~/.setup/.config/_home/.ecryptfs ~/.ecryptfs
-            cp -f ~/.ecryptfs-BAK/Private.sig        ~/.ecryptfs/Private.sig
-            cp -f ~/.ecryptfs-BAK/wrapped-passphrase ~/.ecryptfs/wrapped-passphrase
-            cp -f ~/.ecryptfs-BAK/sedDxBKNi          ~/.ecryptfs/sedDxBKNi
+            setup_copy_link ~/.setup/.config/_home/.ecryptfs   ~/.ecryptfs
+            cp -f           ~/.ecryptfs-BAK/Private.sig        ~/.ecryptfs/Private.sig
+            cp -f           ~/.ecryptfs-BAK/wrapped-passphrase ~/.ecryptfs/wrapped-passphrase
+            cp -f           ~/.ecryptfs-BAK/sedDxBKNi          ~/.ecryptfs/sedDxBKNi
         else
-            setup_copy_link ~/.setup/.config/_home/.ecryptfs ~/.ecryptfs
+            setup_copy_link ~/.setup/.config/_home/.ecryptfs   ~/.ecryptfs
         fi
     fi
 
@@ -916,29 +895,29 @@ function setup_ssh_keys()
             then
                 if [ -d ${OSETUP_DIR} ]
                 then
-                    if [ -d ${OSETUP_DIR}/nosecure.d -a -L ${OSETUP_DIR}/secure -a -d ${OSETUP_DIR}/secure ]
+                    if [ -d "${OSETUP_DIR}/nosecure.d" -a -L "${OSETUP_DIR}/secure" -a -d "${OSETUP_DIR}/secure" ]
                     then
-                        if [ ! -e ${OSETUP_DIR}/nosecure.d/ssh/authorized_keys ]
+                        if [ ! -e "${OSETUP_DIR}/nosecure.d/ssh/authorized_keys" ]
                         then
-                            touch ${OSETUP_DIR}/nosecure.d/ssh/authorized_keys
+                            touch "${OSETUP_DIR}/nosecure.d/ssh/authorized_keys"
                         fi
 
-                        if [ ! -e ${OSETUP_DIR}/secure/ssh/known_hosts ]
+                        if [ ! -e "${OSETUP_DIR}/secure/ssh/known_hosts" ]
                         then
-                            touch ${OSETUP_DIR}/secure/ssh/known_hosts
+                            touch "${OSETUP_DIR}/secure/ssh/known_hosts"
                         fi
 
-                        if [ ! -e ${OSETUP_DIR}/secure/ssh/authorized_keys ]
+                        if [ ! -e "${OSETUP_DIR}/secure/ssh/authorized_keys" ]
                         then
-                            touch ${OSETUP_DIR}/secure/ssh/authorized_keys
+                            touch "${OSETUP_DIR}/secure/ssh/authorized_keys"
                         fi
 
                         openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C ${OSETUP_DIR}/
                     else        # if [ -d ${OSETUP_DIR}/nosecure.d -a -L ${OSETUP_DIR}/secure -a -d ${OSETUP_DIR}/secure ]
-                        error setup_ssh_keys: directories ${OSETUP_DIR}${OSETUP_DIR}/nosecure.d or ${OSETUP_DIR}/secure not exists.
+                        error setup_ssh_keys: directories "${OSETUP_DIR}${OSETUP_DIR}/nosecure.d" or "${OSETUP_DIR}/secure" not exists.
                     fi
                 else            # if [ -d ${OSETUP_DIR} ]
-                    error setup_ssh_keys: directory ${OSETUP_DIR} not exists.
+                    error setup_ssh_keys: directory "${OSETUP_DIR}" not exists.
                 fi
             else                # if ! mount | grep "$USER/.Private"
                 error setup_ssh_keys: "$USER/.Private" not mounted. >&2
@@ -950,7 +929,7 @@ function setup_ssh_keys()
 
     if ! ssh-add -l
     then
-	      ssh-add ${OSETUP_DIR}/nosecure.d/ssh/keys.d/github
+	      ssh-add "${OSETUP_DIR}/nosecure.d/ssh/keys.d/github"
     fi
 }
 
@@ -960,14 +939,14 @@ function setup_setup_dir()
     then
 	      rm -rf ~/.setup
     fi
-    setup_make_link ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc ~/.setup
+    setup_make_link "${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc" ~/.setup
 }
 
 function setup_pi_dir()
 {
     if [ ! -d ~/.pi -a -d ~/.setup/pi ]
     then
-	      setup_make_link  .setup/pi ~/.pi
+	      setup_make_link  ".setup/pi" ~/.pi
 	      setup_make_link  ../${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/orgp ~/.pi/org
     fi
 }
@@ -980,7 +959,7 @@ function setup_emacs_dir()
         then
             mv ~/.emacs.d ~/.emacs.d-old
         fi
-	      setup_make_link ${RESOURCEPATH}/${USERORGMAIN}/readonly/public/user/spacemacs ~/.emacs.d
+	      setup_make_link "${RESOURCEPATH}/${USERORGMAIN}/readonly/public/user/spacemacs" ~/.emacs.d
     fi
 }
 
@@ -1251,13 +1230,13 @@ function setup_paradise()
     curhomedir="$(getent passwd $USER | cut -d: -f6)"
     if [ "$(basename $curhomedir)" != hell ]
     then
-        sudo rm -rf $curhomedir/hell # if exists
+        running sudo rm -rf $curhomedir/hell # if exists
         newhomedir=$curhomedir/hell
-        sudo mv $curhomedir ${curhomedir}_tmp
-        sudo mkdir -p $curhomedir
-        sudo mv ${curhomedir}_tmp "$newhomedir"
+        running sudo mv $curhomedir ${curhomedir}_tmp
+        running sudo mkdir -p $curhomedir
+        running sudo mv ${curhomedir}_tmp "$newhomedir"
         # sudo mkdir -p "$newhomedir"
-        sudo usermod -d "$newhomedir" $USER
+        running sudo usermod -d "$newhomedir" $USER
         warn first change home dir to $newhomedir
         exit -1
         export HOME="$newhomedir"
@@ -1271,7 +1250,7 @@ function setup_mvc_dirs()
     then
         containerdir="$1"
 
-        mkdir -p ${containerdir}/model.d
+        running mkdir -p ${containerdir}/model.d
         if [ -d ${containerdir}/model.d ] && ls ${containerdir}/model.d/*
         then
             modelsymlink=0
@@ -1290,7 +1269,7 @@ function setup_mvc_dirs()
             fi
         fi              # if [ -d ${containerdir}/model.d ]
 
-        mkdir -p ${containerdir}/control.d
+        running mkdir -p ${containerdir}/control.d
         if [ -d ${containerdir}/control.d ] && ls ${containerdir}/control.d/*
         then
             modelsymlink=0
@@ -1328,29 +1307,29 @@ function setup_machine_dir()
 
     if [ -d ${LOCALDIRS_DIR} ]
     then
-        running mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
-        running mkdir -p ${LOCALDIRS_DIR}/org/deps.d/control.d/machine.d
+        running mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d"
+        running mkdir -p "${LOCALDIRS_DIR}/org/deps.d/control.d/machine.d"
     fi
 
     # check local home model.d directory
-    if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d ]
+    if [ -d "${LOCALDIRS_DIR}" -a -d "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d" ]
     then
-        if [ ! -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
+        if [ ! -d "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" ]
         then
-            running mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST
-            if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
+            running mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST"
+            if [ -d "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" ]
             then
-                running  cp -ar ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/sample ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST
-                info add ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST into git
+                running  cp -ar "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/sample" "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST"
+                info add "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" into git
             fi
         fi                      # if [ ! -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
     fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d ]
 
-    if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
+    if [ -d "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" ]
     then
-        running setup_make_link $HOST ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default
+        running setup_make_link "$HOST" "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default"
         # debug SHARAD TEST
-        debug running setup_make_relative_link ${LOCALDIRS_DIR}/org/deps.d  model.d/machine.d/default  control.d/machine.d/default
+        debug running setup_make_relative_link "${LOCALDIRS_DIR}/org/deps.d" " model.d/machine.d/default"  "control.d/machine.d/default"
     fi
 }
 
@@ -1368,12 +1347,12 @@ function setup_make_path_by_position()
         if [ "class/" != "x${classpath}" ]
         then
             case $position in
-                1) print ${classpath}/${storage_path}/${classcontainer};;
-                2) print ${storage_path}/${classpath}/${classcontainer};;
-                3) print ${storage_path}/${classcontainer}/${classpath};;
+                1) print "${classpath}/${storage_path}/${classcontainer}";;
+                2) print "${storage_path}/${classpath}/${classcontainer}";;
+                3) print "${storage_path}/${classcontainer}/${classpath}";;
             esac
         else
-            print ${storage_path}/${classcontainer}
+            print "${storage_path}/${classcontainer}"
         fi
     else
         error Need 4 arguments.
@@ -1400,12 +1379,12 @@ function setup_dep_control_storage_class_dir()
         fi
 
         local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-        local machinedir=${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
-        local hostdir=${machinedir}/$HOST
+        local machinedir="${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d"
+        local hostdir="${machinedir}/$HOST"
 
         # TODO?
         local classcontroldir_rel_path=$(setup_make_path_by_position "${classpath}" "${storage_path}" "${classcontainer}.d" "$position")
-        local classcontrol_dir_path=${hostdir}/volumes.d/control.d/${classcontroldir_rel_path}
+        local classcontrol_dir_path="${hostdir}/volumes.d/control.d/${classcontroldir_rel_path}"
 
         # # TODO?
         # local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
@@ -1425,13 +1404,13 @@ function setup_dep_control_storage_class_dir()
 
 
         # mkdir -p $classcontrol_dir_path/model.d
-        running mkdir -p $classcontrol_dir_path
+        running mkdir -p "$classcontrol_dir_path"
         # mkdir -p $classcontrol_dir_path/view.d
         # TODO?STATS
-        if [ -d ${hostdir}/volumes.d/model.d/${storage_path}/ ] && ls ${hostdir}/volumes.d/model.d/${storage_path}/* > /dev/null 2>&1
+        if [ -d "${hostdir}/volumes.d/model.d/${storage_path}/" ] && ls "${hostdir}/volumes.d/model.d/${storage_path}"/* > /dev/null 2>&1
         then
             modelsymlink=0
-            for mdir in ${hostdir}/volumes.d/model.d/${storage_path}/*
+            for mdir in "${hostdir}/volumes.d/model.d/${storage_path}"/*
             do
                 if [ -L "$mdir" ]
                 then
@@ -1441,23 +1420,23 @@ function setup_dep_control_storage_class_dir()
                 mdirbase=$(basename "$mdir")
                 volclasspathinstdir="model.d/${storage_path}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
 
-                running sudo mkdir -p ${hostdir}/volumes.d/${volclasspathinstdir}
-                running sudo chown "$USER.$(id -gn)" ${hostdir}/volumes.d/${volclasspathinstdir}
+                running sudo mkdir -p "${hostdir}/volumes.d/${volclasspathinstdir}"
+                running sudo chown "$USER.$(id -gn)" "${hostdir}/volumes.d/${volclasspathinstdir}"
 
 
                 debug fullupdirs=$fullupdirs
                 # running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/model.d/${mdirbase}
                 # debug running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
-                running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
+                running setup_make_link "${fullupdirs}/${volclasspathinstdir}" "$classcontrol_dir_path/${mdirbase}"
 
                 # SHARAD
-                running setup_add_to_version_control ${LOCALDIRS_DIR} $classcontrol_dir_path/${mdirbase}
+                running setup_add_to_version_control "${LOCALDIRS_DIR}" "${classcontrol_dir_path}/${mdirbase}"
 
             done
 
             if [ "$modelsymlink" -eq 0 ]
             then
-                error setup_dep_control_storage_class_dir: No symlink for model volume dirs exists in ${hostdir}/volumes.d/model.d/${storage_path}/ create it.
+                error setup_dep_control_storage_class_dir: No symlink for model volume dirs exists in "${hostdir}/volumes.d/model.d/${storage_path}/" create it.
             fi
         fi              # if [ -d ${hostdir}/volumes.d/model.d ]
 
@@ -1491,30 +1470,30 @@ function setup_deps_control_class_dir()
         fi
 
         local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-        local machinedir=${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
-        local hostdir=${machinedir}/$HOST
+        local machinedir="${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d"
+        local hostdir="${machinedir}/$HOST"
 
 
         # check local home model.d directory
-        if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
+        if [ -d "${LOCALDIRS_DIR}" -a -d "${machinedir}" ]
         then
-            if [ -d ${hostdir} ]
+            if [ -d "${hostdir}" ]
             then
-                running mkdir -p ${hostdir}
+                running mkdir -p "${hostdir}"
 
-                running setup_make_link $HOST ${machinedir}/default
+                running setup_make_link "$HOST" "${machinedir}/default"
 
                 # BACK
                 debug running setup_dep_control_storage_class_dir "$storage_path" "$class" "$classinstdir" "${position}"
                 running setup_dep_control_storage_class_dir "$storage_path" "$class" "$classinstdir" "${position}"
 
             else                # if [ -d ${hostdir} ]
-                info Please prepare ${hostdir} for your machine >&2
+                info Please prepare "${hostdir}" for your machine >&2
                 exit -1
             fi                  # if [ -d ${hostdir} ]
 
         else                    # if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
-            warn ${LOCALDIRS_DIR} or ${machinedir} not exists. >&2
+            warn "${LOCALDIRS_DIR}" or "${machinedir}" not exists. >&2
         fi                      # if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
     else
         error setup_deps_control_class_dir: Not correct number of arguments.
@@ -1548,25 +1527,25 @@ function setup_deps_control_data_usrdata_dirs()
 {
     storage_path="${1-local}"
 
-    running setup_deps_control_class_all_positions_dirs "$storage_path" ${dataclassname}/usrdatas usrdata
+    running setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/usrdatas" "usrdata"
 }
 function setup_deps_control_data_sysdata_dirs()
 {
     storage_path="${1-local}"
 
-    running setup_deps_control_class_all_positions_dirs "$storage_path" ${dataclassname}/sysdatas sysdata
+    running setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/sysdatas" "sysdata"
 }
 function setup_deps_control_data_scratches_dirs()
 {
     storage_path="${1-local}"
 
-    running setup_deps_control_class_all_positions_dirs "$storage_path" ${dataclassname}/scratches scratch
+    running setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/scratches" "scratch"
 }
 function setup_deps_control_data_main_dirs()
 {
     storage_path="${1-local}"
 
-    running setup_deps_control_class_all_positions_dirs "$storage_path" ${dataclassname}/main main
+    running setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/main" "main"
 }
 function setup_deps_control_data_dirs()
 {
@@ -1583,7 +1562,7 @@ function setup_deps_control_home_Downloads_dirs()
 
     # running setup_deps_model_volumes_dirs "${storage_path}"
     # running setup_deps_control_class_dir "$storage_path" ${homeclassname}/Downloads Downloads
-    running setup_deps_control_class_all_positions_dirs "$storage_path" ${homeclassname}/Downloads Downloads
+    running setup_deps_control_class_all_positions_dirs "$storage_path" "${homeclassname}/Downloads" "Downloads"
 }
 function setup_deps_control_home_dirs()
 {
@@ -1598,28 +1577,28 @@ function setup_deps_control_data_usrdata_dir()
     local storage_path="${1-local}"
     local position=${1-2}
 
-    running setup_deps_control_class_dir "$storage_path" ${dataclassname}/usrdatas usrdata "$position"
+    running setup_deps_control_class_dir "$storage_path" "${dataclassname}/usrdatas" "usrdata" "$position"
 }
 function setup_deps_control_data_sysdata_dir()
 {
     local storage_path="${1-local}"
     local position=${1-2}
 
-    running setup_deps_control_class_dir "$storage_path" ${dataclassname}/sysdatas sysdata "$position"
+    running setup_deps_control_class_dir "$storage_path" "${dataclassname}/sysdatas" "sysdata" "$position"
 }
 function setup_deps_control_data_scratches_dir()
 {
     local storage_path="${1-local}"
     local position=${1-2}
 
-    running setup_deps_control_class_dir "$storage_path" ${dataclassname}/scratches scratch "$position"
+    running setup_deps_control_class_dir "$storage_path" "${dataclassname}/scratches" "scratch" "$position"
 }
 function setup_deps_control_data_main_dir()
 {
     local storage_path="${1-local}"
     local position=${1-2}
 
-    running setup_deps_control_class_dir "$storage_path" ${dataclassname}/main main "$position"
+    running setup_deps_control_class_dir "$storage_path" "${dataclassname}/main" "main" "$position"
 }
 function setup_deps_control_data_dir()
 {
@@ -1638,7 +1617,7 @@ function setup_deps_control_home_Downloads_dir()
 
     # running setup_deps_model_volumes_dir "${storage_path}"
     # running setup_deps_control_class_dir "$storage_path" ${homeclassname}/Downloads Downloads
-    running setup_deps_control_class_dir "$storage_path" ${homeclassname}/Downloads Downloads "$position"
+    running setup_deps_control_class_dir "$storage_path" "${homeclassname}/Downloads" "Downloads" "$position"
 }
 function setup_deps_control_home_dir()
 {
@@ -1657,7 +1636,7 @@ function setup_deps_control_home_dir()
 function setup_deps_model_storage_volumes_dir()
 {
     local storage_path=${1-local}
-    local storageclassdirpath=/srv/volumes/$storage_path/
+    local storageclassdirpath="/srv/volumes/$storage_path/"
 
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
@@ -1669,32 +1648,32 @@ function setup_deps_model_storage_volumes_dir()
     if [ -d ${deps_model_storageclass_path} -a -d $storageclassdirpath ]
     then
         modelsymlink_present=0
-        for vgd in ${storageclassdirpath}/*
+        for vgd in "${storageclassdirpath}"/*
         do
             modelsymlink_present=1
             for vld in ${vgd}/*
             do
-                local _location=$vld/users/$USER
+                local _location="$vld/users/$USER"
                 if [ ! -d ${_location} ]
                 then
-                    running sudo mkdir -p ${_location}
+                    running sudo mkdir -p "${_location}"
                 fi
                 if [ -d ${_location} ]
                 then
-                    running sudo chown root.root ${_location}
+                    running sudo chown root.root "${_location}"
                 fi
 
-                running setup_make_link ${_location} "${deps_model_storageclass_path}/$(basename $vgd)-$(basename $vld)"
-                running setup_add_to_version_control ${LOCALDIRS_DIR} "${rel_deps_model_storageclass_path}/$(basename $vgd)-$(basename $vld)"
+                running setup_make_link "${_location}" "${deps_model_storageclass_path}/$(basename $vgd)-$(basename $vld)"
+                running setup_add_to_version_control "${LOCALDIRS_DIR}" "${rel_deps_model_storageclass_path}/$(basename $vgd)-$(basename $vld)"
             done
         done
 
         if [ "$modelsymlink_present" -eq 0 ]
         then
-            error No disk partition mount are present in ${storageclassdirpath} create them. >&2
+            error No disk partition mount are present in "${storageclassdirpath}" create them. >&2
         fi
     else
-        error No dir exists ${deps_model_storageclass_path}
+        error No dir exists "${deps_model_storageclass_path}"
     fi       # if [ -d ${deps_model_storageclass_path} -a -d /srv/volumes/local ]
 }
 
@@ -1706,7 +1685,7 @@ function setup_deps_model_volumes_dirs()
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     # check local home model.d directory
 
-    running mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d
+    running mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d"
 
     running setup_deps_model_storage_volumes_dir "$storage_path"
 }
@@ -1720,26 +1699,26 @@ function setup_deps_mode_dir()
     # use namei to track
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     # check local home model.d directory
-    if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d ]
+    if [ -d "${LOCALDIRS_DIR}" -a -d "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d" ]
     then
 
         # running setup_machine_dir
 
-        if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
+        if [ -d "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" ]
         then
-            running mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST
+            running mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST"
 
-            running setup_make_link $HOST ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default
+            running setup_make_link "$HOST" "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default"
 
-            running setup_make_relative_link ~/ "" ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/$HOST/home
-            running setup_add_to_version_control ${LOCALDIRS_DIR} org/deps.d/model.d/machine.d/$HOST/home
+            running setup_make_relative_link ~/ "" "${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/$HOST/home"
+            running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/deps.d/model.d/machine.d/$HOST/home"
 
-            running mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d
+            running mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d"
 
             running setup_deps_model_volumes_dirs "$storage_path"
 
         else                    # if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
-            error Please prepare ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST for your machine >&2
+            error Please prepare "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" for your machine >&2
             exit -1
         fi                      # if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
     fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d ]
@@ -1765,14 +1744,14 @@ function setup_deps_control_volumes_dirs()
     # logicaldirs=(config deletable longterm preserved shortterm maildata)
 
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local machinedir=${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
-    local hostdir=${machinedir}/$HOST
-    local volumedir=${hostdir}/volumes.d
+    local machinedir="${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d"
+    local hostdir="${machinedir}/$HOST"
+    local volumedir="${hostdir}/volumes.d"
 
     # running setup_deps_control_data_sysdata_dirs "$storage_path"
 
     # running setup_deps_control_data_sysdata_dir "$storage_path" $position
-    running setup_deps_control_class_dir "$storage_path" $sysdatascontinername $sysdataname $position
+    running setup_deps_control_class_dir "$storage_path" "$sysdatascontinername" "$sysdataname" "$position"
 
     for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
     do
@@ -1785,13 +1764,13 @@ function setup_deps_control_volumes_dirs()
             # ls ${volumedir}/control.d/${sysdatasdirname}/
 
             # TODO? STATS
-            if ls ${volumedir}/control.d/${sysdatasdirname}/* > /dev/null 2>&1
+            if ls "${volumedir}/control.d/${sysdatasdirname}"/* > /dev/null 2>&1
             then
-                for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/*
+                for sysdatadir in "${volumedir}/control.d/${sysdatasdirname}"/*
                 do
                     # TODO? -sharad
-                    volsysdatadirbase=$(basename ${sysdatadir})
-                    running mkdir -p ${volumedir}/control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir
+                    volsysdatadirbase="$(basename ${sysdatadir})"
+                    running mkdir -p "${volumedir}/control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir"
                 done
             fi
         fi
@@ -1831,16 +1810,16 @@ function setup_deps_view_volumes_dirs()
 
     # use namei to track
     local BASE_DIR=~
-    local LOCALDIRS_DIR=${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local machinedir=org/deps.d/model.d/machine.d
-    local hostdir=${machinedir}/$HOST
-    local volumedir=${hostdir}/volumes.d
-    local sysdataname=sysdata
+    local LOCALDIRS_DIR="${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs"
+    local machinedir="org/deps.d/model.d/machine.d"
+    local hostdir="${machinedir}/$HOST"
+    local volumedir="${hostdir}/volumes.d"
+    local sysdataname="sysdata"
     # TODO?
-    local sysdatascontinername=${dataclassname}/${sysdataname}s
+    local sysdatascontinername="${dataclassname}/${sysdataname}s"
     # TODO?
     # local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
-    local viewdirname=view.d
+    local viewdirname="view.d"
 
     # debug SHARAD TEST
 
