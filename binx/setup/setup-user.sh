@@ -223,6 +223,8 @@ function main()
 
     running set_window_share
     rm -rf $TMPDIR
+
+    echo Finished setup-user
 }
 
 function setup_finish()
@@ -383,21 +385,26 @@ function setup_make_relative_link()
 function setup_recursive_links_container_dirs()
 {
     # create all leaf dirs symlinks recursively.
-    basepath=$1
-    linktopdir=$2
-    targetdir=$3
+    basepath="$1"
+    linktopdir="$2"
+    targetdir="$3"
 
     debug basepath=$basepath
     debug linktopdir=$linktopdir
     debug targetdir=$targetdir
 
-    if [ -d ${basepath}/${linktopdir} ]
+    debug basepath/linktopdir="${basepath}/${linktopdir}"
+    info basepath/linktopdir="${basepath}/${linktopdir}"
+
+    if [ -d "$basepath" -a -d "${basepath}/${linktopdir}" ]
     then
-        cd ${basepath}/${linktopdir}
+        cd "${basepath}/${linktopdir}"
         # debug SHARAD TEST
         # https://stackoverflow.com/questions/4269798/use-gnu-find-to-show-only-the-leaf-directories
         # https://stackoverflow.com/a/4269862
         local linkdirs=( $(find -type d -links 2 | cut -c3- ) )
+        print linkdirs
+        print -l linkdirs
         cd - > /dev/null 2>&1
 
         debug linkdirs=${linkdirs[*]}
@@ -425,7 +432,7 @@ function setup_recursive_links()
     debug linkdir=$linkdir
     debug targetdir=$targetdir
 
-    if [ -d ${basepath}/${linkdir} ]
+    if [ -d "${basepath}/${linkdir}" ]
     then
         cd ${basepath}/${linkdir}
         # debug SHARAD TEST
@@ -489,12 +496,12 @@ function setup_add_to_version_control_ask()
 function setup_add_to_version_control()
 {
     local base="$1"
-    local relfile=$2
+    local relfile="$2"
 
     if ! git -C "${base}" ls-files --error-unmatch "${relfile}" >/dev/null 2>&1
     then
         info do   git -C "${base}" add -f "${relfile}"
-        if [ -d ${base}/${relfile} -a ! -L ${base}/${relfile}  ]
+        if [ -d "${base}/${relfile}" -a ! -L "${base}/${relfile}"  ]
         then
             info in ${base}
             info ${relfile} is directory so not adding it in git.
@@ -514,16 +521,19 @@ function setup_add_to_version_control_recursive_links_container_dirs() # NOT REQ
     basepath=$1
     targetdir=$2
 
-    targettopleafdir=${basepath}${basepath:+/}${targetdir}
+    targettopleafdir="${basepath}${basepath:+/}${targetdir}"
 
     debug basepath=$basepath
     debug targetdir=$targetdir
 
-
-
-    if [ -d ${targettopleafdir} ]
+    if [ ! "${targettopleafdir}" ]
     then
-        cd ${targettopleafdir}
+        error targettopleafdir=${targettopleafdir} value missing
+    fi
+
+    if [ -d "${targettopleafdir}" ]
+    then
+        cd "${targettopleafdir}"
         # debug SHARAD TEST
         # https://unix.stackexchange.com/questions/68577/find-directories-that-do-not-contain-subdirectories
         local linkdirs=( $(find -type d -links 2 | cut -c3- ) )
@@ -2009,18 +2019,33 @@ function setup_org_resource_dirs()
     # org/resource.d/control.d/class/data/storage/local/container/scratches.d/Public/
 	  # org/resource.d/control.d/class/data/storage/local/container/scratches.d/local
 
-    running setup_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" "osetup/dirs.d/org/resource.d"
-    running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" "osetup" "dirs.d/org/resource.d"
+    running setup_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" \
+                                                                                         "osetup/dirs.d/org/resource.d"
+    running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" \
+                                                                                                                "osetup" \
+                                                                                                                "dirs.d/org/resource.d"
 
     # TODO: add support for git add
-    running setup_recursive_links_container_dirs                        "${LOCALDIRS_DIR}/org deps.d/control.d/machine.d/default/volumes.d/model.d" "resource.d/model.d"
-    running setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR} org/resource.d/model.d"
+    running setup_recursive_links_container_dirs                        "${LOCALDIRS_DIR}/org" \
+                                                                        "deps.d/control.d/machine.d/default/volumes.d/model.d" \
+                                                                        "resource.d/model.d"
 
-    running setup_recursive_links_container_dirs                        "${LOCALDIRS_DIR}/org deps.d/control.d/machine.d/default/volumes.d/control.d" "resource.d/control.d"
-    running setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR}" "org/resource.d/control.d"
+    running setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR}" \
+                                                                        "org/resource.d/model.d"
 
-    running setup_make_relative_link                                    "${LOCALDIRS_DIR}/org deps.d/control.d/machine.d/default/volumes.d/view.d" "resource.d/view.d"
-    running setup_add_to_version_control                                "${LOCALDIRS_DIR}" "org/resource.d/view.d"
+    running setup_recursive_links_container_dirs                        "${LOCALDIRS_DIR}/org" \
+                                                                        "deps.d/control.d/machine.d/default/volumes.d/control.d" \
+                                                                        "resource.d/control.d"
+
+    running setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR}" \
+                                                                        "org/resource.d/control.d"
+
+    running setup_make_relative_link                                    "${LOCALDIRS_DIR}/org" \
+                                                                        "deps.d/control.d/machine.d/default/volumes.d/view.d" \
+                                                                        "resource.d/view.d"
+
+    running setup_add_to_version_control                                "${LOCALDIRS_DIR}" \
+                                                                        "org/resource.d/view.d"
 }
 
 # home/portable
@@ -2030,15 +2055,22 @@ function setup_org_home_portable_local_dirs()
     local LOCALDIRS_DIR="${USERDIR}/localdirs"
     local relhomeprotabledir="org/home.d/portable.d"
 
-    running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "${relhomeprotabledir}" "local.d"
+    running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" \
+                                      "${relhomeprotabledir}" \
+                                      "local.d"
 
     # for folder in Desktop Documents Downloads Library Music Pictures Scratches Templates tmp Videos
     # for folder in Desktop Documents Downloads Library Music Pictures Templates tmp Videos
     for folder in Desktop Downloads Music Pictures Templates tmp Videos Sink
     do
-        running setup_vc_mkdirpath_ensure    "${LOCALDIRS_DIR}" "${relhomeprotabledir}/local.d" "${folder}"
-        running setup_make_relative_link     "${LOCALDIRS_DIR}/org/home.d" "local.d/${folder}" "portable.d/${folder}/local"
-        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/${folder}/local"
+        running setup_vc_mkdirpath_ensure    "${LOCALDIRS_DIR}" \
+                                             "${relhomeprotabledir}/local.d" \
+                                             "${folder}"
+        running setup_make_relative_link     "${LOCALDIRS_DIR}/org/home.d" \
+                                             "local.d/${folder}" \
+                                             "portable.d/${folder}/local"
+        running setup_add_to_version_control "${LOCALDIRS_DIR}" \
+                                             "org/home.d/portable.d/${folder}/local"
     done
 }
 
@@ -2142,7 +2174,7 @@ EOF
 
     running setup_make_relative_link "${USERDIR}" "doc" "localdirs/${rel_homeprotabledir}/Documents"
 
-    running setup_make_relative_link ~/"${RESOURCEPATH}/${USERORGMAIN}/readwrite/" "private/user/noenc/Private" "localdirs/${rel_homeprotabledir}/Private"
+    running setup_make_relative_link ~/"${RESOURCEPATH}/${USERORGMAIN}/readwrite/" "private/user/noenc/Private" "public/user/localdirs/${rel_homeprotabledir}/Private"
 
     running setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Public/Publish/html" "public_html"
     running setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Documents/Library"   "Library"
@@ -2552,7 +2584,7 @@ function process_arg()
     warn=1
     error=1
 
-    if ! set -- $(getopt -n $pgm -o "rnsehvw" -- $@)
+    if ! set -- $(getopt -n $pgm -o "rnsehvdw" -- $@)
     then
         verbose Wrong command line.
     fi
