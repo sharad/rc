@@ -389,9 +389,9 @@ function setup_recursive_links_container_dirs()
     linktopdir="$2"
     targetdir="$3"
 
-    debug basepath=$basepath
-    debug linktopdir=$linktopdir
-    debug targetdir=$targetdir
+    debug basepath="$basepath"
+    debug linktopdir="$linktopdir"
+    debug targetdir="$targetdir"
 
     debug basepath/linktopdir="${basepath}/${linktopdir}"
     info basepath/linktopdir="${basepath}/${linktopdir}"
@@ -403,8 +403,9 @@ function setup_recursive_links_container_dirs()
         # https://stackoverflow.com/questions/4269798/use-gnu-find-to-show-only-the-leaf-directories
         # https://stackoverflow.com/a/4269862
         local linkdirs=( $(find -type d -links 2 | cut -c3- ) )
-        print linkdirs
-        print -l linkdirs
+        debug linkdirs
+        debug linkdirs=$linkdirs
+
         cd - > /dev/null 2>&1
 
         debug linkdirs=${linkdirs[*]}

@@ -84,8 +84,6 @@ function setup_packages()
     running setup_stumwpm_packages
     running setup_stumwpm_contrib_packages
     running setup_conkeror_package
-
-
     running setup_apache_usermod
 }
 
