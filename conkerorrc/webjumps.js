@@ -93,6 +93,7 @@ var bookmark_groups = {
         "http://www.telegraph.co.uk",
         "http://dunyanews.tv",
         "http://www.dawn.com",
+        "https://www.cgtn.com",
     ],
     "NewsOffBeats": [
         "http://www.bbc.com/future",

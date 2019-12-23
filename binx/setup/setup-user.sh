@@ -14,7 +14,7 @@
 ## parted
 
 
-# BUG: ~/.setup/.config/dirs.d/home.d/ is wrongly getting created.
+# BUG: ${HOME}/.setup/.config/dirs.d/home.d/ is wrongly getting created.
 
 DEBUG=1
 
@@ -30,17 +30,17 @@ fi
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 
 SSH_KEY_DUMP=$1
-TMPDIR=~/setuptmp
+TMPDIR="${HOME}/setuptmp"
 
 logicaldirs=(config deletable longterm preserved shortterm maildata)
 
 dataclassname=data
 homeclassname=home
 
-if [ -r ~/.ssh/authorized_keys ]
+if [ -r "${HOME}/.ssh/authorized_keys" ]
 then
-    # GIT_SSH_OPTION="ssh -o UserKnownHostsFile=~/.ssh/authorized_keys -o StrictHostKeyChecking=yes"
-    GIT_SSH_OPTION="ssh -o UserKnownHostsFile=~/.ssh/authorized_keys"
+    # GIT_SSH_OPTION="ssh -o UserKnownHostsFile=${HOME}/.ssh/authorized_keys -o StrictHostKeyChecking=yes"
+    GIT_SSH_OPTION="ssh -o UserKnownHostsFile=${HOME}/.ssh/authorized_keys"
 else
     GIT_SSH_OPTION="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 fi
@@ -175,7 +175,7 @@ function main()
        running setup_sourcecode_pro_font
     fi
 
-    cd ~/
+    cd "${HOME}/"
 
     running setup_apt_packages
     running setup_ecrypt_private
@@ -187,7 +187,7 @@ function main()
 	      exit -1
     fi
 
-    # will set the ~/.setup also
+    # will set the ${HOME}/.setup also
     running setup_git_repos
     running setup_config_dirs
     running setup_user_config_setup
@@ -672,10 +672,10 @@ function setup_apt_upgrade_system()
         if running guix pull &&
                 running guix pull --news
         then
-            if running sudo guix system reconfigure ~/.setup/guix-config/per-system/guilem/guix-more/config.scm
+            if running sudo guix system reconfigure "${HOME}/.setup/guix-config/per-system/guilem/guix-more/config.scm"
             then
                 running guix upgrade
-                running guix upgrade -p ~/.setup/guix-config/per-user/s/cdesktopenv/profiles/libtiprc
+                running guix upgrade -p "${HOME}/.setup/guix-config/per-user/s/cdesktopenv/profiles/libtiprc"
             fi
         fi
     else
@@ -818,31 +818,31 @@ function setup_ecrypt_private()
 
     if ! mount | grep $HOME/.Private
     then
-        if [ ! -f ~/.ecryptfs/wrapped-passphrase ]
+        if [ ! -f "${HOME}/.ecryptfs/wrapped-passphrase" ]
         then
 	          ecryptfs-setup-private
         fi
 
         # # TODO BUG check for changes in homedir
-        # # sed -i 's@/Private@/.Private@' ~/.ecryptfs/Private.mnt
-        # debug $HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/noenc/Private > ~/.ecryptfs/Private.mnt
+        # # sed -i 's@/Private@/.Private@' ${HOME}/.ecryptfs/Private.mnt
+        # debug $HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/noenc/Private > ${HOME}/.ecryptfs/Private.mnt
         # ecryptfs-mount-private
     fi
-    if [ ! -e ~/.ecryptfs -o -d ~/.ecryptfs ]
+    if [ ! -e "${HOME}/.ecryptfs" -o -d "${HOME}/.ecryptfs" ]
     then
-        if [ ! -L ~/.ecryptfs ]
+        if [ ! -L "${HOME}/.ecryptfs" ]
         then
-            cp -ar ~/.ecryptfs ~/.ecryptfs-BAK
-            setup_copy_link ~/.setup/.config/_home/.ecryptfs   ~/.ecryptfs
-            cp -f           ~/.ecryptfs-BAK/Private.sig        ~/.ecryptfs/Private.sig
-            cp -f           ~/.ecryptfs-BAK/wrapped-passphrase ~/.ecryptfs/wrapped-passphrase
-            cp -f           ~/.ecryptfs-BAK/sedDxBKNi          ~/.ecryptfs/sedDxBKNi
+            cp -ar          "${HOME}/.ecryptfs"                        "${HOME}/.ecryptfs-BAK"
+            setup_copy_link "${HOME}/.setup/.config/_home/.ecryptfs"   "${HOME}/.ecryptfs"
+            cp -f           "${HOME}/.ecryptfs-BAK/Private.sig"        "${HOME}/.ecryptfs/Private.sig"
+            cp -f           "${HOME}/.ecryptfs-BAK/wrapped-passphrase" "${HOME}/.ecryptfs/wrapped-passphrase"
+            cp -f           "${HOME}/.ecryptfs-BAK/sedDxBKNi"          "${HOME}/.ecryptfs/sedDxBKNi"
         else
-            setup_copy_link ~/.setup/.config/_home/.ecryptfs   ~/.ecryptfs
+            setup_copy_link "${HOME}/.setup/.config/_home/.ecryptfs"   "${HOME}/.ecryptfs"
         fi
     fi
 
-    # TODO resolve migration of ~/.ecryptfs/Private.mnt
+    # TODO resolve migration of ${HOME}/.ecryptfs/Private.mnt
     # from $HOME/.Private to $HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/noenc/Private
 }
 
@@ -852,9 +852,9 @@ function setup_tmp_ssh_keys()
     SSH_DIR=$1
     if ! ssh-add -l
     then
-        if [ -f ~/.ssh/login-keys.d/github -a -f ~/.ssh/login-keys.d/github.pub ]
+        if [ -f "${HOME}/.ssh/login-keys.d/github" -a -f "${HOME}/.ssh/login-keys.d/github.pub" ]
         then
-            ssh-add ~/.ssh/login-keys.d/github
+            ssh-add "${HOME}/.ssh/login-keys.d/github"
         fi
     fi                          # if ! ssh-add -l
     if ! ssh-add -l
@@ -885,7 +885,7 @@ function setup_ssh_keys()
 {
     SSH_KEY_ENC_DUMP=$1
 
-    local OSETUP_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup
+    local OSETUP_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup
     ## bring the ssh keys
     if [ ! -r ${OSETUP_DIR}/nosecure.d/ssh/keys.d/github ]
     then
@@ -946,31 +946,31 @@ function setup_ssh_keys()
 
 function setup_setup_dir()
 {
-    if [ ! -L ~/.setup ]
+    if [ ! -L ${HOME}/.setup ]
     then
-	      rm -rf ~/.setup
+	      rm -rf ${HOME}/.setup
     fi
-    setup_make_link "${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc" ~/.setup
+    setup_make_link "${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc" ${HOME}/.setup
 }
 
 function setup_pi_dir()
 {
-    if [ ! -d ~/.pi -a -d ~/.setup/pi ]
+    if [ ! -d ${HOME}/.pi -a -d ${HOME}/.setup/pi ]
     then
-	      setup_make_link  ".setup/pi" ~/.pi
-	      setup_make_link  ../${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/orgp ~/.pi/org
+	      setup_make_link  ".setup/pi" ${HOME}/.pi
+	      setup_make_link  ../${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/orgp ${HOME}/.pi/org
     fi
 }
 
 function setup_emacs_dir()
 {
-    if [ ! -d ~/.emacs.d/.git ]
+    if [ ! -d ${HOME}/.emacs.d/.git ]
     then
-	      if [ -d ~/.emacs.d ]
+	      if [ -d ${HOME}/.emacs.d ]
         then
-            mv ~/.emacs.d ~/.emacs.d-old
+            mv ${HOME}/.emacs.d ${HOME}/.emacs.d-old
         fi
-	      setup_make_link "${RESOURCEPATH}/${USERORGMAIN}/readonly/public/user/spacemacs" ~/.emacs.d
+	      setup_make_link "${RESOURCEPATH}/${USERORGMAIN}/readonly/public/user/spacemacs" ${HOME}/.emacs.d
     fi
 }
 
@@ -1055,14 +1055,14 @@ function setup_git_repos()
     # RESOURCEPATH=".repos/git/main/resource"
     # USERORGMAIN="userorg/main"
 
-    running setup_git_tree_repo "git@github.com:sharad/userorg.git" ~/${RESOURCEPATH}/userorg
-    running setup_git_annex_repo "git@bitbucket.org:sh4r4d/doclibrary.git" ~/${RESOURCEPATH}/userorg/main/readwrite/public/user/doc/Library
+    running setup_git_tree_repo "git@github.com:sharad/userorg.git" ${HOME}/${RESOURCEPATH}/userorg
+    running setup_git_annex_repo "git@bitbucket.org:sh4r4d/doclibrary.git" ${HOME}/${RESOURCEPATH}/userorg/main/readwrite/public/user/doc/Library
 
     if true                    # decide through command line arguments
     then
-        running setup_git_tree_repo "git@bitbucket.org:sh4r4d/docorg.git" ~/${RESOURCEPATH}/info/doc/orgs/private/doc
-        running setup_git_tree_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ~/${RESOURCEPATH}/data/multimedia/orgs/private/media/
-        running setup_git_annex_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ~/${RESOURCEPATH}/data/multimedia/orgs/private/media/collection
+        running setup_git_tree_repo "git@bitbucket.org:sh4r4d/docorg.git" ${HOME}/${RESOURCEPATH}/info/doc/orgs/private/doc
+        running setup_git_tree_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/orgs/private/media/
+        running setup_git_annex_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/orgs/private/media/collection
     fi
 }
 
@@ -1078,15 +1078,15 @@ function setup_user_config_setup()
 {
     RCHOME="$HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc/.config/_home/"
 
-    setup_copy_link ~/.setup/.config/_home/.dirs.d ~/.dirs.d
-    setup_copy_link ~/.setup/.config/_home/.fa     ~/.fa
+    setup_copy_link ${HOME}/.setup/.config/_home/.dirs.d ${HOME}/.dirs.d
+    setup_copy_link ${HOME}/.setup/.config/_home/.fa     ${HOME}/.fa
 
 
     if [ -d "${RCHOME}" ]
     then
-	      if running mkdir -p ~/_old_dot_filedirs
+	      if running mkdir -p ${HOME}/_old_dot_filedirs
         then
-	          # mv ~/.setup/.config/_home/.setup $TMPDIR/Xsetup
+	          # mv ${HOME}/.setup/.config/_home/.setup $TMPDIR/Xsetup
 	          cd "${RCHOME}"
 	          for c in .[a-zA-Z^.^..]* *
 	          do
@@ -1094,45 +1094,45 @@ function setup_user_config_setup()
                 clink=$(readlink $c)
 	              if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
 	              then
-                    # setup_copy_link $c ~/$c
-		                if [ -e ~/$c ]
+                    # setup_copy_link $c ${HOME}/$c
+		                if [ -e ${HOME}/$c ]
 		                then
-                        if [ ! -L ~/$c -o "$(readlink ~/$c)" != "$(readlink $c)" ]
+                        if [ ! -L ${HOME}/$c -o "$(readlink ${HOME}/$c)" != "$(readlink $c)" ]
                         then
 
-                            if [ ! -L ~/$c ] # backup
+                            if [ ! -L ${HOME}/$c ] # backup
                             then
-		                            running mv ~/$c ~/_old_dot_filedirs
+		                            running mv ${HOME}/$c ${HOME}/_old_dot_filedirs
                             fi
 
-                            if [ ! -e ~/$c ]
+                            if [ ! -e ${HOME}/$c ]
                             then
-		                            running cp -af $c ~/$c
+		                            running cp -af $c ${HOME}/$c
                                 # exit -1
-                            elif [ -L ~/$c ]
+                            elif [ -L ${HOME}/$c ]
                             then
-                                running rm -f ~/$c
-                                running cp -af $c ~/$c
+                                running rm -f ${HOME}/$c
+                                running cp -af $c ${HOME}/$c
                                 # exit -1
                                 # continue
                             fi
                             verbose done setting up $c
 
-                        else    # if [ ! -L ~/$c -o "$(readlink ~/$c)" != "$(readlink $c)" ]
-                            verbose not doing anything $c ~/$c
-                        fi      # if [ ! -L ~/$c -o "$(readlink ~/$c)" != "$(readlink $c)" ]
-                    else        # if [ -e ~/$c ]
-                        running cp -af $c ~/$c
+                        else    # if [ ! -L ${HOME}/$c -o "$(readlink ${HOME}/$c)" != "$(readlink $c)" ]
+                            verbose not doing anything $c ${HOME}/$c
+                        fi      # if [ ! -L ${HOME}/$c -o "$(readlink ${HOME}/$c)" != "$(readlink $c)" ]
+                    else        # if [ -e ${HOME}/$c ]
+                        running cp -af $c ${HOME}/$c
                         verbose done setting up $c
-		                fi          # if [ -e ~/$c ]
+		                fi          # if [ -e ${HOME}/$c ]
                 else            # if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
                     verbose not setting up $c
 	              fi              # if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
 	          done
-	          # mv $TMPDIR/Xsetup ~/.setup/.config/_home/.setup
+	          # mv $TMPDIR/Xsetup ${HOME}/.setup/.config/_home/.setup
 	          cd - > /dev/null 2>&1
-        fi                      # if mkdir -p ~/_old_dot_filedirs
-        rmdir ~/_old_dot_filedirs
+        fi                      # if mkdir -p ${HOME}/_old_dot_filedirs
+        rmdir ${HOME}/_old_dot_filedirs
     else                        # if [ -d "${RCHOME}" ]
         error "${RCHOME}" not exists >&2
     fi                          # if [ -d "${RCHOME}" ]
@@ -1158,17 +1158,17 @@ function setup_sshkeys()
 
 function setup_Documentation()  # TODO
 {
-    running setup_copy_link ~/.setup/.config/_home/Documents ~/Documents
+    running setup_copy_link ${HOME}/.setup/.config/_home/Documents ${HOME}/Documents
 }
 
 function setup_public_html()    # TODO
 {
-    running setup_copy_link ~/.setup/.config/_home/public_html ~/public_html
+    running setup_copy_link ${HOME}/.setup/.config/_home/public_html ${HOME}/public_html
 }
 
 function setup_mail_and_metadata()
 {
-    local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
+    local USERDIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR=${USERDIR}/localdirs
     local maildata_path="${LOCALDIRS_DIR}/org/resource.d/view.d/maildata"
     local preserved_path="${LOCALDIRS_DIR}/org/resource.d/view.d/preserved"
@@ -1188,7 +1188,7 @@ function setup_mail_and_metadata()
 
 function setup_mail()
 {
-    local SYSTEM_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/system/system
+    local SYSTEM_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/system/system
     sudo ${INSTALLER} ${INSTALLER_OPT} install dovecot-core dovecot-imapd ntpdate postfix
     if [ -d ${SYSTEM_DIR}/ubuntu/etc/postfix ]
     then
@@ -1227,12 +1227,12 @@ function setup_gnomekeyring()
 
 function setup_password()
 {
-    running echo ~/.ldappass /etc/postfix/sasl_passwd etc
+    running echo ${HOME}/.ldappass /etc/postfix/sasl_passwd etc
 }
 
 function setup_crontab()
 {
-    m4 ~/.setup/crontab.m4 2>/dev/null | tee ~/.setup/crontab | crontab
+    m4 ${HOME}/.setup/crontab.m4 2>/dev/null | tee ${HOME}/.setup/crontab | crontab
 }
 
 function setup_login_shell()
@@ -1326,12 +1326,12 @@ function setup_machine_dir()
     # use namei to track
     # running setup_paradise
 
-    local OSETUP_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local OSETUP_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup
+    local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
 
-    # setup_copy_link ~/.setup/.config/_home/.dirs.d ~/.dirs.d
-    # setup_copy_link ~/.setup/.config/_home/.fa     ~/.fa
+    # setup_copy_link ${HOME}/.setup/.config/_home/.dirs.d ${HOME}/.dirs.d
+    # setup_copy_link ${HOME}/.setup/.config/_home/.fa     ${HOME}/.fa
 
     if [ -d ${LOCALDIRS_DIR} ]
     then
@@ -1406,7 +1406,7 @@ function setup_dep_control_storage_class_dir()
             classpath=
         fi
 
-        local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+        local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
         local machinedir="${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d"
         local hostdir="${machinedir}/$HOST"
 
@@ -1478,8 +1478,8 @@ function setup_deps_control_class_dir()
 {
     # use namei to track
 
-    # ls ~/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
-    # ls ~/fa/localdirs/org/deps.d/model.d/machine.d/$HOST/${class}.d/
+    # ls ${HOME}/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
+    # ls ${HOME}/fa/localdirs/org/deps.d/model.d/machine.d/$HOST/${class}.d/
 
     debug setup_deps_control_class_dir \#=$#
 
@@ -1497,7 +1497,7 @@ function setup_deps_control_class_dir()
             classpath=
         fi
 
-        local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+        local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
         local machinedir="${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d"
         local hostdir="${machinedir}/$HOST"
 
@@ -1532,8 +1532,8 @@ function setup_deps_control_class_all_positions_dirs()
 {
     # use namei to track
 
-    # ls ~/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
-    # ls ~/fa/localdirs/org/deps.d/model.d/machine.d/$HOST/${class}.d/
+    # ls ${HOME}/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
+    # ls ${HOME}/fa/localdirs/org/deps.d/model.d/machine.d/$HOST/${class}.d/
     debug setup_deps_control_class_all_positions_dirs  \#=$#
 
     if [ $# -eq 3 ]
@@ -1666,7 +1666,7 @@ function setup_deps_model_storage_volumes_dir()
     local storage_path=${1-local}
     local storageclassdirpath="/srv/volumes/$storage_path/"
 
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
     deps_model_storageclass_path="${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/${storage_path}"
     rel_deps_model_storageclass_path="org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/${storage_path}"
@@ -1710,7 +1710,7 @@ function setup_deps_model_volumes_dirs()
     local storage_path="${1-local}"
 
     # use namei to track
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     # check local home model.d directory
 
     running mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d"
@@ -1725,7 +1725,7 @@ function setup_deps_mode_dir()
     running setup_machine_dir
 
     # use namei to track
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     # check local home model.d directory
     if [ -d "${LOCALDIRS_DIR}" -a -d "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d" ]
     then
@@ -1738,7 +1738,7 @@ function setup_deps_mode_dir()
 
             running setup_make_link "$HOST" "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default"
 
-            running setup_make_relative_link ~/ "" "${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/$HOST/home"
+            running setup_make_relative_link ${HOME}/ "" "${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/$HOST/home"
             running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/deps.d/model.d/machine.d/$HOST/home"
 
             running mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d"
@@ -1771,7 +1771,7 @@ function setup_deps_control_volumes_dirs()
     local sysdatasdirname="${classcontroldir_rel_path}"
     # logicaldirs=(config deletable longterm preserved shortterm maildata)
 
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     local machinedir="${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d"
     local hostdir="${machinedir}/$HOST"
     local volumedir="${hostdir}/volumes.d"
@@ -1832,7 +1832,7 @@ function setup_deps_view_volumes_dirs()
     local position=${2-2}
 
     # TODO?
-    # ls ~/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/control.d/
+    # ls ${HOME}/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/control.d/
 
     # logicaldirs=(config deletable longterm preserved shortterm maildata)
 
@@ -2014,15 +2014,15 @@ function setup_deps_dirs()
 function setup_org_resource_dirs()
 {
     # TODO: not getting added in version control
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
 
     # org/resource.d/control.d/class/data/storage/local/container/scratches.d/Public/
 	  # org/resource.d/control.d/class/data/storage/local/container/scratches.d/local
 
-    running setup_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" \
+    running setup_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" \
                                                                                          "osetup/dirs.d/org/resource.d"
-    running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" \
+    running setup_add_to_version_control_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" \
                                                                                                                 "osetup" \
                                                                                                                 "dirs.d/org/resource.d"
 
@@ -2052,7 +2052,7 @@ function setup_org_resource_dirs()
 # home/portable
 function setup_org_home_portable_local_dirs()
 {
-    local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
+    local USERDIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR="${USERDIR}/localdirs"
     local relhomeprotabledir="org/home.d/portable.d"
 
@@ -2077,7 +2077,7 @@ function setup_org_home_portable_local_dirs()
 
 function setup_org_home_portable_public_dirs()
 {
-    local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
+    local USERDIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR="${USERDIR}/localdirs"
     local homeprotabledir="${LOCALDIRS_DIR}/org/home.d/portable.d"
     local relhomeprotabledir="org/home.d/portable.d"
@@ -2136,7 +2136,7 @@ function setup_org_home_portable_public_dirs()
     done
 
     echo '*' > "${LOCALDIRS_DIR}/${relhomeprotabledir}/tmp/.gitignore"
-    running setup_add_to_version_control ~/.fa/localdirs "${relhomeprotabledir}/tmp/.gitignore"
+    running setup_add_to_version_control ${HOME}/.fa/localdirs "${relhomeprotabledir}/tmp/.gitignore"
 
     # private
     # Music Videos Pictures
@@ -2151,7 +2151,7 @@ function setup_org_home_portable_public_dirs()
 
 function setup_org_home_portable_dirs()
 {
-    local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
+    local USERDIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR="${USERDIR}/localdirs"
     local rel_homeprotabledir="org/home.d/portable.d"
 
@@ -2175,7 +2175,7 @@ EOF
 
     running setup_make_relative_link "${USERDIR}" "doc" "localdirs/${rel_homeprotabledir}/Documents"
 
-    running setup_make_relative_link ~/"${RESOURCEPATH}/${USERORGMAIN}/readwrite/" "private/user/noenc/Private" "public/user/localdirs/${rel_homeprotabledir}/Private"
+    running setup_make_relative_link ${HOME}/"${RESOURCEPATH}/${USERORGMAIN}/readwrite/" "private/user/noenc/Private" "public/user/localdirs/${rel_homeprotabledir}/Private"
 
     running setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Public/Publish/html" "public_html"
     running setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Documents/Library"   "Library"
@@ -2190,7 +2190,7 @@ EOF
     # links
     for lnk in org/home.d/portable.d/{Documents,Private,Library,public_html,Maildir}
     do
-        running setup_add_to_version_control ~/.fa/localdirs "$lnk"
+        running setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
     done
 
     running setup_org_home_portable_public_dirs
@@ -2200,7 +2200,7 @@ EOF
 # org/misc
 function setup_org_misc_dirs()
 {
-    local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
+    local USERDIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR="${USERDIR}/localdirs"
     # TODO?
     # org/misc.d% ls -1l
@@ -2216,7 +2216,7 @@ function setup_org_misc_dirs()
     # links
     for lnk in org/misc.d/{offlineimap,mailattachments}
     do
-        running setup_add_to_version_control ~/.fa/localdirs "$lnk"
+        running setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
     done
 
 } # function setup_org_misc_dirs()
@@ -2224,7 +2224,7 @@ function setup_org_misc_dirs()
 # org/rc
 function setup_org_rc_dirs()
 {
-    local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
+    local USERDIR="${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user"
     local LOCALDIRS_DIR="${USERDIR}/localdirs"
 
     running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "org/rc.d"
@@ -2232,7 +2232,7 @@ function setup_org_rc_dirs()
     running setup_make_relative_link "${LOCALDIRS_DIR}/org" "deps.d/view.d/home" "rc.d/HOME"
 
     # sharad ?? fixed
-    running setup_make_relative_link ~/.repos "" "git/main/resource/${USERORGMAIN}/readwrite/public/user/localdirs/org/rc.d/repos"
+    running setup_make_relative_link ${HOME}/.repos "" "git/main/resource/${USERORGMAIN}/readwrite/public/user/localdirs/org/rc.d/repos"
 
 
     running setup_make_relative_link "${LOCALDIRS_DIR}/org/rc.d" "repos/git/main/resource/userorg/main/readwrite/public/user/opt"       "opt"
@@ -2242,7 +2242,7 @@ function setup_org_rc_dirs()
 
     for lnk in org/rc.d/{repos,opt,localdirs,osetup,setup,HOME}
     do
-        running setup_add_to_version_control ~/.fa/localdirs "$lnk"
+        running setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
     done
 } # function setup_org_rc_dirs()
 
@@ -2260,7 +2260,7 @@ function setup_org_dirs()
 # manual
 function setup_manual_dirs()
 {
-    local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
+    local USERDIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR="${USERDIR}/localdirs"
 
     running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "manual.d"
@@ -2281,45 +2281,45 @@ function setup_manual_dirs()
 
 function setup_osetup_org_resource_dirs()
 {
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
     # TODO: add support for git add
-    running setup_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" "osetup/dirs.d/org/resource.d"
-    running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" "osetup" "dirs.d/org/resource.d"
+    running setup_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" "osetup/dirs.d/org/resource.d"
+    running setup_add_to_version_control_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" "osetup" "dirs.d/org/resource.d"
 }
 
 function setup_osetup_org_home_dirs()
 {
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
     for folder_link in "Desktop" "Documents" "Downloads" "Library" "Maildir" "Music" "Pictures" "Private" "Public" "public_html" "Scratches" "Sink" "Templates" "tmp" "Videos" "Volumes" "VolRes"
     do
-        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/home.d/portable.d/${folder_link}" "osetup/dirs.d/org/home.d/${folder_link}"
-        running setup_add_to_version_control ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/home.d/${folder_link}"
+        running setup_make_relative_link ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/home.d/portable.d/${folder_link}" "osetup/dirs.d/org/home.d/${folder_link}"
+        running setup_add_to_version_control ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/home.d/${folder_link}"
     done
 }
 
 function setup_osetup_org_misc_dirs()
 {
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
     for folder_link in "offlineimap" "mailattachments"
     do
-        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/misc.d/${folder_link}" "osetup/dirs.d/org/misc.d/${folder_link}"
-        running setup_add_to_version_control ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/misc.d/${folder_link}"
+        running setup_make_relative_link ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/misc.d/${folder_link}" "osetup/dirs.d/org/misc.d/${folder_link}"
+        running setup_add_to_version_control ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/misc.d/${folder_link}"
     done
 }
 
 function setup_osetup_org_rc_dirs()
 {
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    # local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
+    local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    # local osetupdir=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
     # local resourcedir=${LOCALDIRS_DIR}/org/resource.d
 
     for folder_link in "HOME" "localdirs" "opt" "osetup" "repos" "setup"
     do
-        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/rc.d/${folder_link}" "osetup/dirs.d/org/rc.d/${folder_link}"
-        running setup_add_to_version_control ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/rc.d/${folder_link}"
+        running setup_make_relative_link ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/rc.d/${folder_link}" "osetup/dirs.d/org/rc.d/${folder_link}"
+        running setup_add_to_version_control ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/rc.d/${folder_link}"
     done
 }
 
@@ -2346,9 +2346,9 @@ function setup_osetup_dirs()
 
 function setup_rc_org_home_dirs()
 {
-    local public_path=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public
+    local public_path=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public
     local rcdir_rel_path="user/rc"
-    local rcdirpath=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc
+    local rcdirpath=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc
     local rcorghomedir_rel_path=".config/dirs.d/org/home.d"
 
     running setup_make_relative_link "${public_path}/${rcdir_rel_path}" "_bin" "${rcorghomedir_rel_path}/bin"
@@ -2359,17 +2359,17 @@ function setup_rc_org_home_dirs()
 
 function setup_rc_org_dirs()
 {
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
+    local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local osetupdir=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
     local resourcedir="${LOCALDIRS_DIR}/org/resource.d"
 
     # TODO: add support for git add
-    running setup_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "osetup/dirs.d/org" "rc/.config/dirs.d/org"
-    running setup_add_to_version_control_recursive_links ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "osetup/dirs.d/org" "rc" ".config/dirs.d/org"
+    running setup_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "osetup/dirs.d/org" "rc/.config/dirs.d/org"
+    running setup_add_to_version_control_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "osetup/dirs.d/org" "rc" ".config/dirs.d/org"
 
     running setup_rc_org_home_dirs
 
-    running setup_add_to_version_control ~/.fa/rc ".config/dirs.d/org"
+    running setup_add_to_version_control ${HOME}/.fa/rc ".config/dirs.d/org"
 }
 
 function setup_dirs()
@@ -2422,8 +2422,8 @@ function setup_dirs_safely()
 
     running setup_dirs
 
-    if [ -e ~/.maildir -a -L ~/.maildir -a -d ~/.maildir ] &&
-           [ -e ~/.maildir/dovecot.index -a -e ~/.maildir/dovecot.index.cache -a -e ~/.maildir/dovecot-uidlist -a -e ~/.maildir/dovecot-uidvalidity ]
+    if [ -e ${HOME}/.maildir -a -L ${HOME}/.maildir -a -d ${HOME}/.maildir ] &&
+           [ -e ${HOME}/.maildir/dovecot.index -a -e ${HOME}/.maildir/dovecot.index.cache -a -e ${HOME}/.maildir/dovecot-uidlist -a -e ${HOME}/.maildir/dovecot-uidvalidity ]
     then
         running sudo systemctl start  postfix.service
         running sudo systemctl start  postfix.service
@@ -2434,7 +2434,7 @@ function setup_dirs_safely()
 
 function setup_spacemacs()
 {
-    login_env_dir=~/.rsetup/login/env.d
+    login_env_dir=${HOME}/.rsetup/login/env.d
     mkdir -p $login_env_dir
     if [ -f $login_env_dir/$HOST ]
     then
@@ -2473,7 +2473,7 @@ function setup_sourcecode_pro_font()
 
 function setup_apache_usermod()
 {
-    local SYSTEM_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/system/system
+    local SYSTEM_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/system/system
 
     running sudo a2enmod userdir
 
@@ -2567,10 +2567,10 @@ function setup_bpkg_pkgs()
 
 function setup_fzf()
 {
-    if [ ! -d ~/.setup/fzf ]
+    if [ ! -d ${HOME}/.setup/fzf ]
     then
-        running git clone --depth 1 https://github.com/junegunn/fzf.git ~/.setup/fzf
-        running ~/.setup/fzf/install
+        running git clone --depth 1 https://github.com/junegunn/fzf.git ${HOME}/.setup/fzf
+        running ${HOME}/.setup/fzf/install
     fi
 }
 

@@ -30,7 +30,7 @@
 
 (define %lotus-other-packages
   (list "vim"
-        "bbdb"
+        "emacs-bbdb"
         "emacs-ebdb"
         "emacs-geiser"
         "emacs-sesman"
@@ -55,6 +55,15 @@
         "emacs-deft"
         "emacs-dashboard"
         "emacs-typo"
+        ;; https://develop.spacemacs.org/layers/+lang/c-c++/README.html
+        "emacs-lsp-ui"
+        "emacs-lsp-ivy"
+        "emacs-helm-lsp"
+        "emacs-company-lsp"
+        ;; "clangd"
+        ;; "cquery"
+        "ccls"
+        "emacs-ccls"
 
         ;; X gl
         "compton"
