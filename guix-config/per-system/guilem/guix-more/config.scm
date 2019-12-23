@@ -361,7 +361,6 @@
 ;; (define %lotus-opensmtpd-services (list (service opensmtpd-service-type)))
 
 
-
 ;; https://notabug.org/thomassgn/guixsd-configuration/src/master/config.scm
 ;; https://guix.gnu.org/manual/en/html_node/Networking-Services.html
 ;; https://jonathansblog.co.uk/using-dnsmasq-as-an-internal-dns-server-to-block-online-adverts

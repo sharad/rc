@@ -32,6 +32,7 @@
   (list "vim"
         "emacs-bbdb"
         "emacs-ebdb"
+        "guile"
         "emacs-geiser"
         "emacs-sesman"
         "guile-studio"

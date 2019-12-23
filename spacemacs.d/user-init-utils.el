@@ -409,48 +409,6 @@
          default-local-lib)
        load-path)))
 
-  (when nil
-    (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
-    ;; remove this
-    (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
-    (push "~/.spacemacs-mycontribs/local" load-path)
-    (push "~/.xemacs/pkgrepos/mypkgs/testing" load-path)
-    ;; remove this
-    (push "~/.xemacs/pkgrepos/mypkgs/session-start" load-path)
-    ;; remove this
-    (push "~/.xemacs/pkgrepos/mypkgs/gnus-session-start" load-path)
-    (push "~/.xemacs/pkgrepos/world/misc/misc" load-path)
-    (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path)
-    (push "~/.xemacs/pkgrepos/mypkgs/pa-planner" load-path)
-    (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path))
-
-  ;; Old order
-  (when nil
-    (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
-    ;; remove this
-    (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
-    ;; (push "~/.spacemacs-mycontribs/local" load-path)
-    (push "~/.xemacs/pkgrepos/mypkgs/testing" load-path)
-    ;; remove this
-    ;; (push "~/.xemacs/pkgrepos/mypkgs/session-start" load-path)
-    ;; remove this
-    (push "~/.xemacs/pkgrepos/mypkgs/gnus-session-start" load-path)
-    (push "~/.xemacs/pkgrepos/world/misc/misc" load-path)
-    (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path))
-  ;; (push "~/.xemacs/pkgrepos/mypkgs/pa-planner" load-path)
-  ;; (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path)
-
-
-  ;; (push
-  ;;  '("local" . "~/.xemacs/elpa/upload")
-  ;;  package-archives)
-
-  ;; (require 'lotus-utils)
-
-
-  ;; New order
-  ;; (add-to-list 'load-path "~/.xemacs/pkgrepos/spacemacs/misc/world/uncatagegoriged")
-
   (progn
     (unless (assoc "gnu" configuration-layer-elpa-archives)
       (add-to-list 'configuration-layer-elpa-archives '("gnu" . "https://elpa.gnu.org/packages/")))

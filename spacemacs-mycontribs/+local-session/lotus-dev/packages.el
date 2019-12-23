@@ -77,7 +77,8 @@
     uncrustify-mode
     srefactor
     (srefactor-lisp :location local)
-    python)
+    python
+    (geiser-guile :location local))
   "The list of Lisp packages required by the lotus-dev layer.
 
 Each entry is either:
@@ -1080,6 +1081,20 @@ Add directory to search path for source files using the GDB command, dir."))
       (unless (fboundp 'python-shell-virtualenv-root)
         (defvar python-shell-virtualenv-root nil)))))
 
-
+(defun lotus-dev/init-geiser-guile ()
+  (use-package geiser-guile
+    :defer t
+    :config
+    (progn
+      (progn                            ;https://guix.gnu.org/manual/en/html_node/The-Perfect-Setup.html
+        (add-to-list 'geiser-guile-load-path "~/../paradise/Projects/guix-repos/guix")
+        (add-to-list 'geiser-guile-load-path "~/../paradise/Projects/guix-repos/my"))
+      (progn
+        (use-package yasnippet
+          :defer t
+          :config
+          (progn
+            (progn
+              (add-to-list 'yas-snippet-dirs "~/../paradise/Projects/guix-repos/guix/etc/snippets"))))))))
 
 ;;; packages.el ends here

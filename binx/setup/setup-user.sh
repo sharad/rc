@@ -677,6 +677,7 @@ function setup_apt_upgrade_system()
             then
                 running guix upgrade
                 running guix upgrade -p "${HOME}/.setup/guix-config/per-user/s/cdesktopenv/profiles/libtiprc"
+                running guix package -m "${HOME}/.setup/guix-config/per-user/s/simple/manifest.scm"
             else
                 warning guix system reconfigure -- Failed
             fi

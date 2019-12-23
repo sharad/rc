@@ -3,13 +3,22 @@
 ;; https://github.com/pjotrp/guix-notes/blob/master/HACKING.org#in-progress-using-guile-in-emacs-geiser
 
 ;;; read-line support
-(use-modules (ice-9 readline)
-             (activate-readline))
+(use-modules (ice-9 readline))
+
+
+(use-modules (srfi srfi-1))
+
 
 ;;; GNU Guix
-(use-modules (guix hash) (guix) (guix build-system))
+;; (use-modules (guix hash)
+;;              (guix)
+;;              (guix build-system))
+
 
-(setq-default geiser-guile-load-path '("~/../paradise/guix-repos/guix"))
+(activate-readline)
+
+
+;; (setq-default geiser-guile-load-path '("~/../paradise/guix-repos/guix"))
 
 (cond ((false-if-exception (resolve-interface '(ice-9 readline)))
        =>
@@ -32,9 +41,6 @@ for a colorful Guile experience.\n\n"))))
 
 
 
-(use-modules (srfi srfi-1))
-
-
 ;; Local Variables:
-;; major-mode: fundamental-mode
+;; major-mode: scheme-mode
 ;; End:
