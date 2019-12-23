@@ -877,6 +877,10 @@ variable."
 
   (setq warning-minimum-log-level :debug)
 
+  (progn                                ;https://emacs-guix.gitlab.io/website/manual/latest/emacs-guix.html
+    (when (fboundp 'global-guix-prettify-mode)
+      (add-hook 'after-init-hook 'global-guix-prettify-mode)))
+
   (lotus-unnecessary-functionality)
 
   (message "loading lotus-necessary-functionality finished"))

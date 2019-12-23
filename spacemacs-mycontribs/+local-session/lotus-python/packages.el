@@ -119,13 +119,13 @@ Each entry is either:
           (add-hook 'python-mode-hook
                     (lambda ()
                       (set-variable 'py-indent-offset 4)
-                                        ;(set-variable 'py-smart-indentation nil)
+                      ;(set-variable 'py-smart-indentation nil)
                       (set-variable 'indent-tabs-mode nil)
                       (define-key py-mode-map (kbd "RET") 'newline-and-indent)
-                                        ;(define-key py-mode-map [tab] 'yas/expand)
-                                        ;(setq yas/after-exit-snippet-hook 'indent-according-to-mode)
+                      ;(define-key py-mode-map [tab] 'yas/expand)
+                      ;(setq yas/after-exit-snippet-hook 'indent-according-to-mode)
                       (when (and (featurep 'smart-operator)
-                                 (functionp 'smart-operator-mode-on))
+                                 (fboundp  'smart-operator-mode-on))
                         (smart-operator-mode-on))))
 
           (global-unset-key (kbd "C-x pn")))
@@ -197,10 +197,10 @@ Each entry is either:
                         (set (make-local-variable 'ac-auto-start) nil)))
             ;;Ryan's python specific tab completion
             (defun ryan-python-tab ()
-                                        ; Try the following:
-                                        ; 1) Do a yasnippet expansion
-                                        ; 2) Do a Rope code completion
-                                        ; 3) Do an indent
+              ; Try the following:
+              ; 1) Do a yasnippet expansion
+              ; 2) Do a Rope code completion
+              ; 3) Do an indent
               (interactive)
               (if (eql (ac-start) 0)
                   (indent-for-tab-command)))
