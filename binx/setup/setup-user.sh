@@ -2689,5 +2689,5 @@ function logger()
 #verbose=1
 
 pgm="$(basename $0)"
-main $@
+main "$@"
 exit
