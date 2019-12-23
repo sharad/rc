@@ -49,6 +49,7 @@
         "emacs-diminish"
         "emacs-direnv"
         "emacs-editorconfig"
+        "emacs-develock"
         "emacs-el-x"
         "emacs-default-encrypt"
         "emacs-default-text-scale"
@@ -202,7 +203,14 @@
         "signing-party"
         "pius"
         "gpa"
-        "jetring"))
+        "jetring"
+
+
+
+        
+
+
+        "beep"))
 
 (define %lotus-lang-packages (list "ocaml"
                                    "opam"

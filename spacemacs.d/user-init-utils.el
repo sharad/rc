@@ -268,6 +268,7 @@
     perforce
     rebox ;; --- startup errors , (error "Style 371 defined more than once") signal(error ("Style 371 defined more than once"))
     shell
+    c-c++
     evil-commentary
     evil-snipe
     vim-empty-lines
@@ -276,9 +277,10 @@
     window-purpose))
 
 (defun spacemacs-dist-layers-include ()
-  '( (shell :variables
-            shell-default-height   30
-            shell-default-position 'bottom)))
+  '((shell :variables
+           shell-default-height   30
+           shell-default-position 'bottom)
+    (c-c++ :variables c-c++-backend 'lsp-clangd)))
 
 
 (defun lotus-dist-layers-group-dirs (&optional layers-group-top-dir)
