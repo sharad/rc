@@ -27,10 +27,11 @@ else
     INSTALLER_OPT="-y"
 fi
 
-export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
+SETUP_TMPDIR="${TMPDIR:-/tmp}/setuptmp"
 
+export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 SSH_KEY_DUMP=$1
-TMPDIR="${HOME}/setuptmp"
+
 
 logicaldirs=(config deletable longterm preserved shortterm maildata)
 
@@ -167,7 +168,7 @@ function main()
 
     running process_arg $@
     # process_arg $@
-    running mkdir -p $TMPDIR
+    running mkdir -p $SETUP_TMPDIR
     running set_keyboard
 
     if [ ! -d "/run/current-system/profile" ]
@@ -179,7 +180,7 @@ function main()
 
     running setup_apt_packages
     running setup_ecrypt_private
-    running setup_tmp_ssh_keys "$TMPDIR/ssh" "$SSH_KEY_DUMP"
+    running setup_tmp_ssh_keys "$SETUP_TMPDIR/ssh" "$SSH_KEY_DUMP"
 
     if ! ssh-add -l
     then
@@ -222,14 +223,14 @@ function main()
     fi
 
     running set_window_share
-    rm -rf $TMPDIR
+    rm -rf $SETUP_TMPDIR
 
     echo Finished setup-user
 }
 
 function setup_finish()
 {
-    rm -rf $TMPDIR
+    rm -rf $SETUP_TMPDIR
 }
 
 function setup_count_slash_in_path()
@@ -615,12 +616,12 @@ function setup_vc_mkdirpath_ensure()
 }
 function set_keyboard()
 {
-    if [ ! -f $TMPDIR/keymap ]
+    if [ ! -f $SETUP_TMPDIR/keymap ]
     then
-        running mkdir -p $TMPDIR
-        running wget -c 'https://raw.githubusercontent.com/sharad/rc/master/keymaps/Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt' -O "$TMPDIR/keymap"
+        running mkdir -p $SETUP_TMPDIR
+        running wget -c 'https://raw.githubusercontent.com/sharad/rc/master/keymaps/Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt' -O "$SETUP_TMPDIR/keymap"
     fi
-    running xmodmap "$TMPDIR/keymap" || echo xmodmap returned $?
+    running xmodmap "$SETUP_TMPDIR/keymap" || echo xmodmap returned $?
 }
 
 function setup_apt_repo()
@@ -676,7 +677,11 @@ function setup_apt_upgrade_system()
             then
                 running guix upgrade
                 running guix upgrade -p "${HOME}/.setup/guix-config/per-user/s/cdesktopenv/profiles/libtiprc"
+            else
+                warning guix system reconfigure -- Failed
             fi
+        else
+            warning guix pull -- Failed
         fi
     else
         # sudo ${INSTALLER} ${INSTALLER_OPT} clean
@@ -1086,7 +1091,7 @@ function setup_user_config_setup()
     then
 	      if running mkdir -p ${HOME}/_old_dot_filedirs
         then
-	          # mv ${HOME}/.setup/.config/_home/.setup $TMPDIR/Xsetup
+	          # mv ${HOME}/.setup/.config/_home/.setup $SETUP_TMPDIR/Xsetup
 	          cd "${RCHOME}"
 	          for c in .[a-zA-Z^.^..]* *
 	          do
@@ -1129,7 +1134,7 @@ function setup_user_config_setup()
                     verbose not setting up $c
 	              fi              # if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
 	          done
-	          # mv $TMPDIR/Xsetup ${HOME}/.setup/.config/_home/.setup
+	          # mv $SETUP_TMPDIR/Xsetup ${HOME}/.setup/.config/_home/.setup
 	          cd - > /dev/null 2>&1
         fi                      # if mkdir -p ${HOME}/_old_dot_filedirs
         rmdir ${HOME}/_old_dot_filedirs
@@ -1144,8 +1149,8 @@ function setup_download_misc()
     then
         if [ ! -f /usr/local/bin/p4 ]
         then
-	          wget 'https://www.perforce.com/downloads/free/p4' -O $TMPDIR/p4
-	          sudo cp $TMPDIR/p4 /usr/local/bin/p4
+	          wget 'https://www.perforce.com/downloads/free/p4' -O $SETUP_TMPDIR/p4
+	          sudo cp $SETUP_TMPDIR/p4 /usr/local/bin/p4
 	          sudo chmod +x /usr/local/bin/p4
         fi
     fi
@@ -2507,14 +2512,14 @@ function setup_clib_installer()
     running sudo ${INSTALLER} ${INSTALLER_OPT} install libcurl4-gnutls-dev -qq
     if [ ! -d /usr/local/stow/clib/ ]
     then
-        if running git -c core.sshCommand="$GIT_SSH_OPTION" clone https://github.com/clibs/clib.git $TMPDIR/clib
+        if running git -c core.sshCommand="$GIT_SSH_OPTION" clone https://github.com/clibs/clib.git $SETUP_TMPDIR/clib
         then
-            cd $TMPDIR/clib
+            cd $SETUP_TMPDIR/clib
             running make PREFIX=/usr/local/stow/clib/
             running sudo make PREFIX=/usr/local/stow/clib/ install
             cd /usr/local/stow && sudo stow clib
             cd - > /dev/null 2>&1
-            running rm -rf $TMPDIR/clib
+            running rm -rf $SETUP_TMPDIR/clib
         fi
     else
         verbose clib is already present. >&2
@@ -2683,7 +2688,6 @@ function logger()
 
 #verbose=1
 
-pgm=$(basename $0)
+pgm="$(basename $0)"
 main $@
-
 exit
