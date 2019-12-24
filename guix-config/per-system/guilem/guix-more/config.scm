@@ -116,16 +116,28 @@
                                                (close close-lvm-device)))
 
 
-(define %lotus-mapped-device-guix-gnu        (mapped-device (source "/dev/sda31")
-                                                            (target "guix-gnu")
-                                                            (type   lvm-device-mapping)))
-
 (define %lotus-mapped-device-guix-root       (mapped-device (source "/dev/sda31")
                                                             (target "guix-root")
                                                             (type   lvm-device-mapping)))
 
+(define %lotus-mapped-device-guix-boot       (mapped-device (source "/dev/sda31")
+                                                            (target "guix-boot")
+                                                            (type   lvm-device-mapping)))
+
+(define %lotus-mapped-device-guix-gnu        (mapped-device (source "/dev/sda31")
+                                                            (target "guix-gnu")
+                                                            (type   lvm-device-mapping)))
+
 (define %lotus-mapped-device-guix-swap       (mapped-device (source "/dev/sda31")
                                                             (target "guix-swap")
+                                                            (type   lvm-device-mapping)))
+
+(define %lotus-mapped-device-guix-tmp        (mapped-device (source "/dev/sda31")
+                                                            (target "guix-tmp")
+                                                            (type   lvm-device-mapping)))
+
+(define %lotus-mapped-device-guix-var        (mapped-device (source "/dev/sda31")
+                                                            (target "guix-var")
                                                             (type   lvm-device-mapping)))
 
 (define %lotus-mapped-device-vg01-lv01       (mapped-device (source "/dev/test")
@@ -146,12 +158,15 @@
 
 
 (define %lotus-mapped-devices (list %lotus-mapped-device-guix-root
+                                    %lotus-mapped-device-guix-boot
                                     %lotus-mapped-device-guix-gnu
+                                    %lotus-mapped-device-guix-swap
+                                    %lotus-mapped-device-guix-tmp
+                                    %lotus-mapped-device-guix-var
                                     %lotus-mapped-device-vg01-lv01
                                     %lotus-mapped-device-vg02-lv01
                                     %lotus-mapped-device-vgres01-lvres01
-                                    %lotus-mapped-device-house-home
-                                    %lotus-mapped-device-guix-swap))
+                                    %lotus-mapped-device-house-home))
 
 
 ;; (define %lotus-swap-devices '("/dev/mapper/guix-swap"))
@@ -169,6 +184,16 @@
                                                         (needed-for-boot?    #t)
                                                         (dependencies        %lotus-mapped-devices)))
 
+(define %lotus-file-system-guix-boot       (file-system (mount-point         "/boot")
+                                                        (device              "/dev/mapper/guix-boot")
+                                                        (type                "ext4")
+                                                        (check?              #f)
+                                                        (mount?              #t)
+                                                        (create-mount-point? #t)
+                                                        (needed-for-boot?    #t)
+                                                        (dependencies        (append (list %lotus-file-system-guix-root)
+                                                                                     %lotus-mapped-devices))))
+
 (define %lotus-file-system-guix-gnu        (file-system (mount-point         "/gnu")
                                                         (device              "/dev/mapper/guix-gnu")
                                                         (type                "ext4")
@@ -177,7 +202,27 @@
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #t)
                                                         (dependencies        (append (list %lotus-file-system-guix-root)
-                                                                                    %lotus-mapped-devices))))
+                                                                                     %lotus-mapped-devices))))
+
+(define %lotus-file-system-guix-tmp        (file-system (mount-point         "/tmp")
+                                                        (device              "/dev/mapper/guix-tmp")
+                                                        (type                "ext4")
+                                                        (check?              #f)
+                                                        (mount?              #t)
+                                                        (create-mount-point? #t)
+                                                        (needed-for-boot?    #t)
+                                                        (dependencies        (append (list %lotus-file-system-guix-root)
+                                                                                     %lotus-mapped-devices))))
+
+(define %lotus-file-system-guix-var        (file-system (mount-point         "/var")
+                                                        (device              "/dev/mapper/guix-var")
+                                                        (type                "ext4")
+                                                        (check?              #f)
+                                                        (mount?              #t)
+                                                        (create-mount-point? #t)
+                                                        (needed-for-boot?    #t)
+                                                        (dependencies        (append (list %lotus-file-system-guix-root)
+                                                                                     %lotus-mapped-devices))))
 
 (define %lotus-file-system-vg01-lv01       (file-system (mount-point         "/srv/volumes/local/vg01/lv01")
                                                         (device              "/dev/mapper/vg01-lv01")
@@ -224,7 +269,10 @@
 
 (define %lotus-lvm-file-systems (list %lotus-file-system-guix-root
                                       ;; %lotus-file-system-guix-swap
+                                      %lotus-file-system-guix-boot
                                       %lotus-file-system-guix-gnu
+                                      %lotus-file-system-guix-tmp
+                                      %lotus-file-system-guix-var
                                       %lotus-file-system-vg01-lv01
                                       %lotus-file-system-vg02-lv01
                                       %lotus-file-system-vgres01-lvres01
