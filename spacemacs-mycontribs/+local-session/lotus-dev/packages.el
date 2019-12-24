@@ -319,6 +319,9 @@ Each entry is either:
               (shell-command (concat dir "/devhelp-index.py"))))))))
 
 (defun lotus-dev/post-init-semantic ()
+  ;; TODO: First check http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+  ;; than check https://tuhdo.github.io/c-ide.html
+  ;; than https://www.google.com/search?q=emacs+semantic+scheme&oq=emacs+semantic+scheme
   (use-package semantic
     :defer t
     :config
@@ -328,9 +331,7 @@ Each entry is either:
          semantic-symref-tool "global"
          ;;https://emacs.stackexchange.com/questions/5886/setting-minimum-time-between-consecutive-reparses-by-semantic
          ;;https://emacs.stackexchange.com/a/5896
-         semantic-idle-scheduler-idle-time 10 ;1 is too less
-
-         ))
+         semantic-idle-scheduler-idle-time 10)) ;1 is too less
 
       (progn
         (use-package cedet
@@ -1047,31 +1048,18 @@ Add directory to search path for source files using the GDB command, dir."))
         )))
 
 (defun lotus-dev/init-srefactor-lisp ()
-  (use-package srefactor-lisp
+  (use-package srefactor
     :defer t
     :config
     (progn
-      ;; (setq srefactor--getter-prefix "get_"
-      ;;       srefactor--setter-prefix "set_"
-      ;;       srefactor--getter-setter-capitalize-p t)
-      ;; OPTIONAL: ADD IT ONLY IF YOU USE C/C++.
-      (semantic-mode 1) ;; -> this is optional for Lisp
-      )))
-
-(defun lotus-dev/init-PACKAGE ()
-  (use-package PACKAGE
-      :defer t
-      :config
       (progn
-        (progn
-          (setq
-           srefactor--getter-prefix "get"
-           srefactor--setter-prefix "set"
-           srefactor--getter-setter-capitalize-p t)
+        (setq
+         srefactor--getter-prefix "get"
+         srefactor--setter-prefix "set"
+         srefactor--getter-setter-capitalize-p t)
 
-          ;; OPTIONAL: ADD IT ONLY IF YOU USE C/C++.
-          (semantic-mode 1) ;; -> this is optional for Lisp
-          ))))
+        ;; OPTIONAL: ADD IT ONLY IF YOU USE C/C++.
+        (semantic-mode 1))))) ;; -> this is optional for Lisp
 
 (defun lotus-dev/post-init-python ()
   (use-package python
