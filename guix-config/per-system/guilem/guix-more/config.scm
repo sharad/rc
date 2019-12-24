@@ -1,5 +1,8 @@
 ;; This is an operating system configuration generated
 ;; by the graphical installer.
+
+;; TODO: debug emacs semantic (semantic-parse-region-default (point-min) (point-max) nil nil nil)
+
 
 (use-modules (guix utils))
 (use-modules (guix packages))
