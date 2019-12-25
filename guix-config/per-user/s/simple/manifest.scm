@@ -178,7 +178,7 @@
 
         ;; "bsdmainutils"
         "rdup"
-        "git-annex"
+        ;; "git-annex"
         "git-remote-gcrypt"
 
         "ledger"
@@ -239,7 +239,7 @@
           "python-numpy"
           "python-pandas"
           "python-pycryptodome"
-          "opencv"
+          "opencv" ;; -- put it in input depedency
           "jq"
           "python-xq"
           "python-yq"

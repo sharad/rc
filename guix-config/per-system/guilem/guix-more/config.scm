@@ -360,7 +360,8 @@
                                                 (comment                "Jam")
                                                 (group                  %lotus-account-group-name)
                                                 (home-directory         "/home/j")
-                                                (supplementary-groups   '("wheel" "netdev" "audio" "video")))))
+                                                (supplementary-groups   '("wheel" "netdev" "audio" "video"))
+						(create-home-directory? %lotus-account-create-home-directory))))
 
 (define %lotus-users (append %lotus-simple-users
                              %base-user-accounts))
