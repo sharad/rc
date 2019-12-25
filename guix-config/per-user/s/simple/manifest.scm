@@ -178,7 +178,7 @@
 
         ;; "bsdmainutils"
         "rdup"
-        ;; "git-annex"
+        "git-annex"
         "git-remote-gcrypt"
 
         "ledger"
@@ -268,16 +268,16 @@
           "ncurses-with-gpm"
           ;; "ncurses"
 
-          "polkit"
-          "polkit-gnome"
+          ;; "polkit"
+          ;; "polkit-gnome"
 
           "redshift"
           "xcursor-themes"
           "unclutter"
 
-          ;; "sbcl"
-          "cl-fad"
-          "cl-slime-swank"
+          "sbcl"
+          ;; "cl-fad"
+          ;; "cl-slime-swank"
 
           "glibc-utf8-locales" ;; guix guile showing some error even it is part of system configuration
 

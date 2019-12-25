@@ -54,7 +54,11 @@ set nospell
 " http://stackoverflow.com/questions/4236808/syntax-highlight-a-vimrc-file-in-emacs
 "}}}
 
-
+"{{{
+" Why doesn't the backspace key work in insert mode?
+" https://vi.stackexchange.com/questions/2162/why-doesnt-the-backspace-key-work-in-insert-mode
+set backspace=indent,eol,start
+"}}}
 
 
 

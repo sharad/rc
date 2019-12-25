@@ -322,6 +322,15 @@
 (define %lotus-keyboard-layout (keyboard-layout "us" "altgr-intl"))
 
 
+;; https://www.hubert-lombard.website/GuixSD/html/GuixSD-0.16_en-Dual-Boot-avec-Debian-Testing.html
+(define %lotus-grub-other-menuentries '(menu-entries
+	               				(list
+						  (menu-entry
+		        			  (label "Debian GNU/Linux")
+	                			  (linux "/boot/vmlinuz-4.19.0-1-amd64")
+	                			  (linux-arguments '("root=/dev/sda1"))
+	                			  (initrd "/boot/initrd.img-4.19.0-1-amd64")))))
+
 (define %lotus-vm-bootloader
   (bootloader-configuration (bootloader grub-bootloader)
                             (target     "/dev/vda")))
@@ -359,8 +368,8 @@
                                                 (name                   "j")
                                                 (comment                "Jam")
                                                 (group                  %lotus-account-group-name)
-                                                (home-directory         "/home/j")
-                                                (supplementary-groups   '("wheel" "netdev" "audio" "video"))
+                                                (home-directory         "/var/home/j")
+                                                (supplementary-groups   %lotus-account-supplementry-groups)
 						(create-home-directory? %lotus-account-create-home-directory))))
 
 (define %lotus-users (append %lotus-simple-users
