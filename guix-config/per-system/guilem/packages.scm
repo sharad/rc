@@ -12,7 +12,8 @@
 
                                     "xf86-input-evdev"
                                     "cl-fad"
-                                    "cl-slime-swank"))
+                                    ;; "cl-slime-swank"
+				    ))
 
 (define %lotus-system-selected-package-names (list "glibc-utf8-locales"
                                                    "gdm"
@@ -70,7 +71,7 @@
 (define %lotus-system-packages (append %lotus-system-desktop-packages
                                        %lotus-system-selected-packages))
 
-(define %lotus-packages (append %lotus-system-packages
+(define %lotus-reinit-packages (append %lotus-system-packages
                                 %base-packages))
 
 

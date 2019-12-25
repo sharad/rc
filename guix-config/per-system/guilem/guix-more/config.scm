@@ -4,6 +4,9 @@
 ;; TODO: debug emacs semantic (semantic-parse-region-default (point-min) (point-max) nil nil nil)
 
 
+(define %lotus-system-init #f)
+
+
 (use-modules (guix utils))
 (use-modules (guix packages))
 (use-modules (gnu services networking))
@@ -15,6 +18,7 @@
 (use-package-modules certs gnome cups)
 
 (use-modules (gnu packages shells))
+(use-modules (gnu packages vim))
 
 (use-modules (gnu))
 (use-package-modules screen)
@@ -25,7 +29,6 @@
 (use-modules (guix store))
 (use-modules (rnrs lists))
 (use-modules (srfi srfi-1))
-;; (use-modules (guix) (gnu) (gnu services mcron))
 (use-package-modules base idutils)
 (use-service-modules dns mcron messaging)
 
@@ -38,15 +41,18 @@
 ;; non-guix
 
 ;; Import nonfree linux module.
-(use-modules (nongnu packages linux))
-
-;; my packages
-
-(use-modules (lotus packages perforce))
+(if (not %lotus-system-init)
+  (use-modules (nongnu packages linux)))
 
 
-(define %lotus-user-name            "s")
-(define %lotus-group-name           "users")
+(define %lotus-account-uid                  1000)
+(define %lotus-account-user-name            "s")
+(define %lotus-account-comment              "sharad")
+(define %lotus-account-group-name           "users")
+(define %lotus-account-supplementry-groups  '("wheel" "netdev" "audio" "video"))
+(define %lotus-account-home-directory       "/home/s/hell")
+(define %lotus-account-shell                #~(string-append #$zsh "/bin/zsh"))
+(define %lotus-account-create-home-directory #f)
 (define %lotus-guix-substitute-urls '("https://ci.guix.gnu.org"
                                       "https://bayfront.guixsd.org"
                                       "http://guix.genenetwork.org"
@@ -118,6 +124,9 @@
                                                ;; (check check-lvm-device)
                                                (close close-lvm-device)))
 
+
+
+
 
 (define %lotus-mapped-device-guix-root       (mapped-device (source "/dev/sda31")
                                                             (target "guix-root")
@@ -258,6 +267,8 @@
                                                         (mount?              #t)
                                                         (create-mount-point? #f)
                                                         (needed-for-boot?    #f)))
+                                                        ;; (dependencies        (append (list)
+                                                        ;;                              %lotus-mapped-devices))))
 
 (define %lotus-file-system-boot-efi        (file-system (mount-point         "/boot/efi")
                                                         (device              (uuid "BAA8-1C0B" 'fat32))
@@ -266,20 +277,32 @@
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #t)
                                                         (type                "vfat")
-                                                        (dependencies        (append (list %lotus-file-system-guix-root)
-                                                                                     %lotus-mapped-devices))))
+                                                        (dependencies        (append (list %lotus-file-system-guix-boot
+											   %lotus-file-system-guix-root)
+                                                                                      %lotus-mapped-devices))))
 
 
-(define %lotus-lvm-file-systems (list %lotus-file-system-guix-root
-                                      ;; %lotus-file-system-guix-swap
-                                      %lotus-file-system-guix-boot
-                                      %lotus-file-system-guix-gnu
-                                      %lotus-file-system-guix-tmp
-                                      %lotus-file-system-guix-var
-                                      %lotus-file-system-vg01-lv01
-                                      %lotus-file-system-vg02-lv01
-                                      %lotus-file-system-vgres01-lvres01
-                                      %lotus-file-system-house-home))
+(define %lotus-lvm-home-file-systems (if %lotus-system-init
+					 (list ) 
+                                         (list 
+					   ;; %lotus-file-system-house-home
+					   )))
+
+(define %lotus-lvm-system-file-systems (list %lotus-file-system-guix-root
+                                             ;; %lotus-file-system-guix-swap
+                                             %lotus-file-system-guix-boot
+                                             %lotus-file-system-guix-gnu
+                                             %lotus-file-system-guix-tmp
+                                             %lotus-file-system-guix-var
+                                             %lotus-file-system-vg01-lv01
+                                             %lotus-file-system-vg02-lv01
+                                             %lotus-file-system-vgres01-lvres01
+
+                                             ;; %lotus-file-system-house-home
+    				         ))
+
+(define %lotus-lvm-file-systems (append %lotus-lvm-system-file-systems
+					%lotus-lvm-home-file-systems))
 
 (define %lotus-other-file-systems (list %lotus-file-system-boot-efi))
 
@@ -290,6 +313,10 @@
 
 ;; packages
 (load "packages.scm")
+(define %lotus-packages (if %lotus-system-init 
+    		          (cons* nss-certs lvm2 vim zsh %base-packages)
+    			   %lotus-reinit-packages
+			  ))
 
 
 (define %lotus-keyboard-layout (keyboard-layout "us" "altgr-intl"))
@@ -319,20 +346,21 @@
 (define %lotus-metal-initrd base-initrd)
 
 
-(define %lotus-simple-users (list (user-account (uid                  1000)
-                                                (name                 %lotus-user-name)
-                                                (comment              "sharad")
-                                                (group                %lotus-group-name)
-                                                (home-directory       "/home/s/hell")
-                                                (shell                #~(string-append #$zsh "/bin/zsh"))
-                                                (supplementary-groups '("wheel" "netdev" "audio" "video")))
+(define %lotus-simple-users (list (user-account (uid                    %lotus-account-uid)
+                                                (name                   %lotus-account-user-name)
+                                                (comment                %lotus-account-comment)
+                                                (group                  %lotus-account-group-name)
+                                                (home-directory         %lotus-account-home-directory)
+                                                (shell                  %lotus-account-shell)
+                                                (supplementary-groups   %lotus-account-supplementry-groups)
+						(create-home-directory? %lotus-account-create-home-directory))
 
-                                  (user-account (uid                  1002)
-                                                (name                 "j")
-                                                (comment              "Jam")
-                                                (group                %lotus-group-name)
-                                                (home-directory       "/home/j")
-                                                (supplementary-groups '("wheel" "netdev" "audio" "video")))))
+                                  (user-account (uid                    1002)
+                                                (name                   "j")
+                                                (comment                "Jam")
+                                                (group                  %lotus-account-group-name)
+                                                (home-directory         "/home/j")
+                                                (supplementary-groups   '("wheel" "netdev" "audio" "video")))))
 
 (define %lotus-users (append %lotus-simple-users
                              %base-user-accounts))
@@ -459,7 +487,7 @@
 ;;                                                                (keyboard-layout %lotus-keyboard-layout)))
 ;;                                                              (allow-empty-passwords? #t)
 ;;                                                              (auto-login?            #t)
-;;                                                              (default-user           %lotus-user-name))))))
+;;                                                              (default-user           %lotus-account-user-name))))))
 
 
 (define %lotus-cups-services (list (service cups-service-type
@@ -494,7 +522,7 @@
                                                                             (keyboard-layout %lotus-keyboard-layout)))
                                                                           ;; (allow-empty-passwords? #t)
                                                                           (auto-login?            #f)
-                                                                          (default-user           %lotus-user-name)
+                                                                          (default-user           %lotus-account-user-name)
                                                                           )))))
 
 
@@ -529,7 +557,9 @@
 
 
 (define %lotus-base-with-dhcp-services
-  (append (list (service dhcp-client-service-type)
+  (append (list 
+                ;; (service udev-service-type)
+	        (service dhcp-client-service-type)
                 (service openssh-service-type
                          (openssh-configuration (port-number 2222))))
           %base-services))
@@ -537,11 +567,19 @@
 (define %lotus-base-services %base-services)
 
 
+(define %lotus-final-services (if %lotus-system-init 
+			 	  %lotus-base-with-dhcp-services
+				  %lotus-simple-and-desktop-services 
+				 ))
+
 (define %lotus-services      (append %lotus-copy-current-config-file-in-etc
-                                     %lotus-simple-and-desktop-services))
+                                     %lotus-final-services))
 
 
-(define %lotus-firmware (list linux-firmware))
+(define %lotus-firmware 
+  (if %lotus-system-init 
+      %base-firmware
+     (list linux-firmware)))
 
 
 ;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
@@ -581,10 +619,13 @@
                                       %setuid-programs))
 
 
-(define %lotus-kernel linux)
+(define %lotus-kernel 
+  (if %lotus-system-init
+      linux-libre
+      linux))
 
 
-(operating-system
+(operating-system 
   (kernel              %lotus-kernel)
   (firmware            %lotus-firmware)
   (initrd              %lotus-initrd)
