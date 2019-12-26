@@ -45,13 +45,14 @@
   (use-modules (nongnu packages linux)))
 
 
-(define %lotus-account-uid                  1000)
-(define %lotus-account-user-name            "s")
-(define %lotus-account-comment              "sharad")
-(define %lotus-account-group-name           "users")
-(define %lotus-account-supplementry-groups  '("wheel" "netdev" "audio" "video"))
-(define %lotus-account-home-directory       "/home/s/hell")
-(define %lotus-account-shell                #~(string-append #$zsh "/bin/zsh"))
+(define %lotus-account-uid                   1000)
+(define %lotus-account-user-name             "s")
+(define %lotus-account-comment               "sharad")
+(define %lotus-account-group-name            "users")
+(define %lotus-account-supplementry-groups   '("wheel" "netdev" "audio" "video"))
+(define %lotus-account-home-parent-directory "/home")
+(define %lotus-account-home-directory        (string-append %lotus-account-home-parent-directory "s/hell"))
+(define %lotus-account-shell                 #~(string-append #$zsh "/bin/zsh"))
 (define %lotus-account-create-home-directory #f)
 (define %lotus-guix-substitute-urls '("https://ci.guix.gnu.org"
                                       "https://bayfront.guixsd.org"
@@ -175,14 +176,13 @@
 (define %lotus-mapped-devices (list %lotus-mapped-device-guix-root
                                     %lotus-mapped-device-guix-boot
                                     %lotus-mapped-device-guix-gnu
-                                    %lotus-mapped-device-house-home
                                     %lotus-mapped-device-guix-swap
                                     %lotus-mapped-device-guix-tmp
                                     %lotus-mapped-device-guix-var
+                                    %lotus-mapped-device-house-home
+                                    %lotus-mapped-device-vgres01-lvres01
                                     %lotus-mapped-device-vg01-lv01
-                                    ;; %lotus-mapped-device-vg02-lv01
-                                    ;; %lotus-mapped-device-vgres01-lvres01
-                                    ))
+                                    %lotus-mapped-device-vg02-lv01))
 
 
 ;; (define %lotus-swap-devices '("/dev/mapper/guix-swap"))
@@ -240,6 +240,14 @@
                                                         (dependencies        (append (list %lotus-file-system-guix-root)
                                                                                      %lotus-mapped-devices))))
 
+(define %lotus-file-system-house-home      (file-system (mount-point         "/home")
+                                                        (device              "/dev/mapper/house-home")
+                                                        (type                "ext4")
+                                                        (check?              #f)
+                                                        (mount?              #t)
+                                                        (create-mount-point? #t)
+                                                        (needed-for-boot?    #f)))
+
 (define %lotus-file-system-vg01-lv01       (file-system (mount-point         "/srv/volumes/local/vg01/lv01")
                                                         (device              "/dev/mapper/vg01-lv01")
                                                         (type                "ext4")
@@ -263,16 +271,7 @@
                                                         (mount?              #t)
                                                         (create-mount-point? #f)
                                                         (needed-for-boot?    #f)))
-
-(define %lotus-file-system-house-home      (file-system (mount-point         "/xhome")
-                                                        (device              "/dev/mapper/house-home")
-                                                        (type                "ext4")
-                                                        (check?              #f)
-                                                        (mount?              #t)
-                                                        (create-mount-point? #t)
-                                                        (needed-for-boot?    #f)))
-                                                        ;; (dependencies        (append (list)
-                                                        ;;                              %lotus-mapped-devices))))
+
 
 (define %lotus-file-system-boot-efi        (file-system (mount-point         "/boot/efi")
                                                         (device              (uuid "BAA8-1C0B" 'fat32))
@@ -283,33 +282,44 @@
                                                         (type                "vfat")
                                                         (dependencies        (append (list %lotus-file-system-guix-boot
                                                                                            %lotus-file-system-guix-root)
-                                                                                      %lotus-mapped-devices))))
+                                                                                     %lotus-mapped-devices))))
 
 
-(define %lotus-lvm-home-file-systems (if %lotus-system-init
-                                         (list )
-                                         (list %lotus-file-system-house-home)))
+(define %lotus-lvm-mount-home-file-systems (if %lotus-system-init
+                                               (list )
+                                               (list %lotus-file-system-house-home)))
 
-(define %lotus-lvm-system-file-systems (list %lotus-file-system-guix-root
-                                             ;; %lotus-file-system-guix-swap
-                                             %lotus-file-system-guix-boot
-                                             %lotus-file-system-guix-gnu
-                                             %lotus-file-system-guix-tmp
-                                             %lotus-file-system-guix-var
-                                             ;; %lotus-file-system-vg01-lv01
-                                             ;; %lotus-file-system-vg02-lv01
-                                             ;; %lotus-file-system-vgres01-lvres01
-                                             ))
+(define %lotus-lvm-unmount-home-file-systems (list))
 
-(define %lotus-lvm-file-systems (append %lotus-lvm-system-file-systems
-                                        %lotus-lvm-home-file-systems))
+(define %lotus-mount-lvm-system-file-systems (append (list %lotus-file-system-guix-root
+                                                           ;; %lotus-file-system-guix-swap
+                                                           %lotus-file-system-guix-boot
+                                                           %lotus-file-system-guix-gnu
+                                                           %lotus-file-system-guix-tmp
+                                                           %lotus-file-system-guix-var)
+                                                     %lotus-lvm-mount-home-file-systems))
+;; %lotus-file-system-vg01-lv01
+;; %lotus-file-system-vg02-lv01
+;; %lotus-file-system-vgres01-lvres01
+
 
-(define %lotus-other-file-systems (list))
-;; %lotus-file-system-boot-efi
+(define %lotus-unmount-lvm-system-file-systems (append (list ;; %lotus-file-system-vg01-lv01
+                                                        ;; %lotus-file-system-vg02-lv01
+                                                        )
+                                                       %lotus-lvm-unmount-home-file-systems))
 
-(define %lotus-file-systems (append %lotus-lvm-file-systems
-                                    %lotus-other-file-systems
-                                    %base-file-systems))
+(define %lotus-lvm-system-file-systems         (append %lotus-mount-lvm-system-file-systems
+                                                       %lotus-unmount-lvm-system-file-systems))
+
+(define %lotus-lvm-file-systems                (append %lotus-lvm-system-file-systems))
+
+
+(define %lotus-other-file-systems              (list %lotus-file-system-boot-efi))
+
+
+(define %lotus-file-systems                    (append %lotus-lvm-file-systems
+                                                       %lotus-other-file-systems
+                                                       %base-file-systems))
 
 
 ;; packages
@@ -359,20 +369,20 @@
                                                 (name                   %lotus-account-user-name)
                                                 (comment                %lotus-account-comment)
                                                 (group                  %lotus-account-group-name)
-                                                (home-directory         %lotus-account-home-directory)
+                                                (home-directory         (string-append %lotus-account-home-parent-directory "/" %lotus-account-user-name "/" "hell"))
                                                 (shell                  %lotus-account-shell)
                                                 (supplementary-groups   %lotus-account-supplementry-groups)
-						(create-home-directory? %lotus-account-create-home-directory))
+                                                (create-home-directory? %lotus-account-create-home-directory))
 
                                   (user-account (uid                    1002)
                                                 (name                   "j")
                                                 (comment                "Jam")
                                                 (group                  %lotus-account-group-name)
-                                                (home-directory         "/var/home/j")
+                                                ;; (home-directory         "/var/home/j")
+                                                (home-directory         (string-append %lotus-account-home-parent-directory "/" "j"))
                                                 (supplementary-groups   %lotus-account-supplementry-groups)
-						;; (create-home-directory? %lotus-account-create-home-directory)
-						(create-home-directory? #t)
-						)))
+                                                ;; (create-home-directory? #t)
+                                                (create-home-directory? %lotus-account-create-home-directory))))
 
 (define %lotus-users (append %lotus-simple-users
                              %base-user-accounts))
@@ -388,8 +398,7 @@
 
 (define (remove-services types services)
   (remove! (lambda (service)
-             (any (lambda (type)
-                    (eq? (service-kind service) type))
+             (any (lambda (type) (eq? (service-kind service) type))
                   types))
            services))
 
