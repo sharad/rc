@@ -475,6 +475,8 @@
                                                        (network-manager-configuration (dns %lotus-network-manager-dns)))))
 
 (define %lotus-avahi-services (list (service avahi-service-type)))
+
+(define %lotus-gpm-services  (list (service gpm-service-type)))
 
 
 ;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
@@ -539,12 +541,14 @@
 
 (define %lotus-few-services  (list (service openssh-service-type)
                                    (service tor-service-type)))
+
 
 (define %lotus-simple-services %lotus-few-services)
 
 (define %lotus-simple-and-desktop-services (append %lotus-simple-services
                                                    %lotus-mail-aliases-services
                                                    %lotus-dovecot-services
+                                                   %lotus-gpm-services
                                                    %lotus-mcron-services
                                                    %lotus-cups-services
                                                    %lotus-desktop-services))
