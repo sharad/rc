@@ -179,7 +179,7 @@
                                     %lotus-mapped-device-guix-swap
                                     %lotus-mapped-device-guix-tmp
                                     %lotus-mapped-device-guix-var
-                                    ;; %lotus-mapped-device-vg01-lv01
+                                    %lotus-mapped-device-vg01-lv01
                                     ;; %lotus-mapped-device-vg02-lv01
                                     ;; %lotus-mapped-device-vgres01-lvres01
                                     ))
@@ -296,9 +296,10 @@
                                              %lotus-file-system-guix-gnu
                                              %lotus-file-system-guix-tmp
                                              %lotus-file-system-guix-var
-                                             %lotus-file-system-vg01-lv01
-                                             %lotus-file-system-vg02-lv01
-                                             %lotus-file-system-vgres01-lvres01))
+                                             ;; %lotus-file-system-vg01-lv01
+                                             ;; %lotus-file-system-vg02-lv01
+                                             ;; %lotus-file-system-vgres01-lvres01
+                                             ))
 
 (define %lotus-lvm-file-systems (append %lotus-lvm-system-file-systems
                                         %lotus-lvm-home-file-systems))
@@ -568,9 +569,7 @@
 
 
 (define %lotus-base-with-dhcp-services
-  (append (list 
-                ;; (service udev-service-type)
-	        (service dhcp-client-service-type)
+  (append (list (service dhcp-client-service-type)
                 (service openssh-service-type
                          (openssh-configuration (port-number 2222))))
           %base-services))
@@ -578,19 +577,17 @@
 (define %lotus-base-services %base-services)
 
 
-(define %lotus-final-services (if %lotus-system-init 
-			 	  %lotus-base-with-dhcp-services
-				  %lotus-simple-and-desktop-services 
-				 ))
+(define %lotus-final-services (if %lotus-system-init
+                                  %lotus-base-with-dhcp-services
+                                  %lotus-simple-and-desktop-services))
 
-(define %lotus-services      (append %lotus-copy-current-config-file-in-etc
-                                     %lotus-final-services))
+(define %lotus-services       (append %lotus-copy-current-config-file-in-etc
+                                      %lotus-final-services))
 
 
-(define %lotus-firmware 
-  (if %lotus-system-init 
-      %base-firmware
-     (list linux-firmware)))
+(define %lotus-firmware (if %lotus-system-init
+                            %base-firmware
+                            (list linux-firmware)))
 
 
 ;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
@@ -630,13 +627,12 @@
                                       %setuid-programs))
 
 
-(define %lotus-kernel 
-  (if %lotus-system-init
-      linux-libre
-      linux))
+(define %lotus-kernel (if %lotus-system-init
+                          linux-libre
+                          linux))
 
 
-(operating-system 
+(operating-system
   (kernel              %lotus-kernel)
   (firmware            %lotus-firmware)
   (initrd              %lotus-initrd)
