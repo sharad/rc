@@ -83,6 +83,7 @@
         ;; whole world inside the initrd (for when we're in an initrd).
         (begin
           (format #t "Enabling ~a~%" #$target)
+          (sleep 3)
           (system* lvm-bin "vgscan" "--mknodes")
           (sleep 1)
           (system* lvm-bin "vgscan" "--mknodes")
@@ -456,12 +457,6 @@
 (define %lotus-exim-services (list (service exim-service-type
                                             (exim-configuration
                                              (config-file #f)))))
-
-;; (define %lotus-opensmtpd-services (list (service opensmtpd-service-type
-;;                                                  (opensmtpd-configuration
-;;                                                   (config-file (local-file "./my-smtpd.conf"))))))
-
-;; (define %lotus-opensmtpd-services (list (service opensmtpd-service-type)))
 
 
 ;; https://notabug.org/thomassgn/guixsd-configuration/src/master/config.scm
@@ -499,21 +494,6 @@
                                                 (mingetty-configuration (tty "tty6")))))
 
 
-;; (define %lotus-xorg-configuration-serivces (list (set-xorg-configuration
-;;                                                   (xorg-configuration
-;;                                                    (keyboard-layout %lotus-keyboard-layout)))))
-
-
-;; (when #f
-;;  (define %lotus-xdm-services (list (service gdm-service-type
-;;                                           (gdm-configuration (xorg-configuration
-;;                                                               (xorg-configuration
-;;                                                                (keyboard-layout %lotus-keyboard-layout)))
-;;                                                              (allow-empty-passwords? #t)
-;;                                                              (auto-login?            #t)
-;;                                                              (default-user           %lotus-account-user-name))))))
-
-
 (define %lotus-cups-services (list (service cups-service-type
                                             (cups-configuration (web-interface? #t)
                                                                 (default-paper-size "A4")
@@ -546,12 +526,8 @@
                                                                             (keyboard-layout %lotus-keyboard-layout)))
                                                                           ;; (allow-empty-passwords? #t)
                                                                           (auto-login?            #f)
-                                                                          (default-user           %lotus-account-user-name)
-                                                                          )))))
+                                                                          (default-user           %lotus-account-user-name))))))
 
-
-;; (define %lotus-desktop-services (remove-services (list mingetty-service-type) ;; gdm-service-type
-;;                                                  %lotus-desktop-nm-services))
 
 (define %lotus-desktop-services %lotus-desktop-nm-services)
 
@@ -569,14 +545,10 @@
 (define %lotus-simple-services %lotus-few-services)
 
 (define %lotus-simple-and-desktop-services (append %lotus-simple-services
-                                                   ;; %lotus-xorg-configuration-serivces
                                                    %lotus-mail-aliases-services
                                                    %lotus-dovecot-services
-                                                   ;; %lotus-exim-services
                                                    %lotus-mcron-services
                                                    %lotus-cups-services
-                                                   ;; %lotus-xdm-services
-                                                   ;; %lotus-mingetty-services
                                                    %lotus-desktop-services))
 
 
