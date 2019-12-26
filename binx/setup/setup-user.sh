@@ -668,6 +668,16 @@ function setup_apt_repo()
 
 function setup_apt_upgrade_system()
 {
+    # https://guix.gnu.org/blog/2019/guix-profiles-in-practice/
+    # https://guix.gnu.org/cookbook/en/
+    # https://guix.gnu.org/cookbook/en/html_node/
+    # https://guix.gnu.org/cookbook/en/html_node/Advanced-package-management.html#Advanced-package-management
+    # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
+    LOCAL_GUIX_EXTRA_PROFILES=("normal")
+    export LOCAL_GUIX_EXTRA_PROFILES
+    LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER"
+
+
     if [ -d "/run/current-system/profile" ]
     then
         if running guix pull &&
@@ -675,9 +685,32 @@ function setup_apt_upgrade_system()
         then
             if running sudo guix system reconfigure "${HOME}/.setup/guix-config/per-system/guilem/guix-more/config.scm"
             then
-                running guix upgrade
-                # running guix upgrade -p "${HOME}/.setup/guix-config/per-user/s/cdesktopenv/profiles/libtiprc"
-                running guix package -m "${HOME}/.setup/guix-config/per-user/s/simple/manifest.scm"
+                running guix upgrade # default
+                # running guix upgrade -p "${HOME}/.setup/guix-config/per-user/s/cdesktopenv/profiles/"
+                for profile in $LOCAL_GUIX_EXTRA_PROFILES
+                do
+                    profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles/"$(basename $profile)"
+                    if [ -f "${profile_path}"/etc/profile ]
+                    then
+                        running guix upgrade -p "${profile_path}"
+                    fi
+                    unset profile_path
+                    unset profile
+                done
+
+                running guix package -m "${HOME}/.setup/guix-config/per-user/s/simple/manifest.scm" # default
+
+                for profile in $LOCAL_GUIX_EXTRA_PROFILES
+                do
+                    manifest_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/manifest.scm
+                    profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles/"$(basename $profile)"
+                    if [ -f "${manifest_path}" -a -f "${profile_path}"/etc/profile ]
+                    then
+                        running guix package -p "${profile_path}" -m "${manifest_path}"
+                    fi
+                    unset profile_path
+                    unset profile
+                done
             else
                 warning guix system reconfigure -- Failed
             fi

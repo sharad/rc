@@ -32,8 +32,7 @@
 (use-package-modules base idutils)
 (use-service-modules dns mcron messaging)
 
-(define this-config-file
-  (local-file (assoc-ref (current-source-location) 'filename)))
+(define this-config-file (local-file (assoc-ref (current-source-location) 'filename)))
 ;; (define nm-dnsmasq-file
 ;;   (plain-file "cache.conf"
 ;;               "cache-size=1000\n"))
@@ -85,16 +84,18 @@
           (format #t "Enabling ~a~%" #$target)
           (sleep 3)
           (system* lvm-bin "vgscan" "--mknodes")
-          (sleep 1)
-          (system* lvm-bin "vgscan" "--mknodes")
-          (sleep 1)
-          (system* lvm-bin "vgchange" "-ay" (car (string-split #$target #\-)))
-          (sleep 1)
-          (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
-                          (string-join (string-split #$target #\-) "/")))
-          (sleep 1)
-          (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
-                          (string-join (string-split #$target #\-) "/")))))))
+(sleep 3)
+(system* lvm-bin "vgscan" "--mknodes")
+(sleep 1)
+(system* lvm-bin "vgscan" "--mknodes")
+(sleep 1)
+(system* lvm-bin "vgchange" "-ay" (car (string-split #$target #\-)))
+(sleep 1)
+(zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
+                (string-join (string-split #$target #\-) "/")))
+(sleep 1)
+(zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
+                (string-join (string-split #$target #\-) "/")))))))
 
 (define (close-lvm-device sources target)
   "Return a gexp that closes TARGET, a LVM device."
