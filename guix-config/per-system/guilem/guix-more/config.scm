@@ -84,18 +84,18 @@
           (format #t "Enabling ~a~%" #$target)
           (sleep 3)
           (system* lvm-bin "vgscan" "--mknodes")
-(sleep 3)
-(system* lvm-bin "vgscan" "--mknodes")
-(sleep 1)
-(system* lvm-bin "vgscan" "--mknodes")
-(sleep 1)
-(system* lvm-bin "vgchange" "-ay" (car (string-split #$target #\-)))
-(sleep 1)
-(zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
-                (string-join (string-split #$target #\-) "/")))
-(sleep 1)
-(zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
-                (string-join (string-split #$target #\-) "/")))))))
+          (sleep 3)
+          (system* lvm-bin "vgscan" "--mknodes")
+          (sleep 1)
+          (system* lvm-bin "vgscan" "--mknodes")
+          (sleep 1)
+          (system* lvm-bin "vgchange" "-ay" (car (string-split #$target #\-)))
+          (sleep 1)
+          (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
+                          (string-join (string-split #$target #\-) "/")))
+          (sleep 1)
+          (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
+                          (string-join (string-split #$target #\-) "/")))))))
 
 (define (close-lvm-device sources target)
   "Return a gexp that closes TARGET, a LVM device."
@@ -130,9 +130,6 @@
                                                ;; (check check-lvm-device)
                                                (close close-lvm-device)))
 
-
-
-
 
 (define %lotus-mapped-device-guix-root       (mapped-device (source "/dev/sda31")
                                                             (target "guix-root")
