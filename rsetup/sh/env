@@ -23,7 +23,7 @@ export GUIX_PROFILE
 # export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 
 # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
-LOCAL_GUIX_EXTRA_PROFILES=("normal")
+LOCAL_GUIX_EXTRA_PROFILES=("dev")
 export LOCAL_GUIX_EXTRA_PROFILES
 ## GUIX
 
@@ -332,12 +332,12 @@ function eval_guix_profiles()
     # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
     LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER"
     # LOCAL_GUIX_EXTRA_PROFILES=( $LOCAL_GUIX_EXTRA_PROFILES )
-    for profile in $LOCAL_GUIX_EXTRA_PROFILES
+    for profile in ${LOCAL_GUIX_EXTRA_PROFILES[*]}
     do
-        profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles/"$(basename $profile)"
+        profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"$(basename $profile)"
         if [ -f "$profile_path"/etc/profile ]
         then
-            . "$profile_path"/etc/profile
+            eval $(guix package  -p "$profile_path" --search-paths=suffix)
         fi
         unset profile_path
         unset profile

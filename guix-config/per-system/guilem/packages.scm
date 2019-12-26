@@ -10,10 +10,7 @@
 
                                     ;; "dconf"
 
-                                    "xf86-input-evdev"
-                                    "cl-fad"
-                                    "cl-slime-swank"
-				    ))
+                                    "xf86-input-evdev"))
 
 (define %lotus-system-selected-package-names (list "glibc-utf8-locales"
                                                    "gdm"

@@ -72,7 +72,7 @@
 (use-modules (gnu packages linux))
 (use-modules (guix modules))
 
-(define (open-lvm-device source target)
+(define (open-nonudev-lvm-device source target)
   "Return a gexp that maps SOURCES to TARGETS as a LVM device, using
 'lvm'."
   (with-imported-modules (source-module-closure '((gnu build file-systems)))
@@ -97,12 +97,12 @@
           (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
                           (string-join (string-split #$target #\-) "/")))))))
 
-(define (close-lvm-device sources target)
+(define (close-nonudev-lvm-device sources target)
   "Return a gexp that closes TARGET, a LVM device."
   #~(zero? (system* #$(file-append lvm2-static "/sbin/lvm")
                     "lvchange" "-an" "-y" (string-join (string-split #$target #\-) "/"))))
 
-;; (define* (check-lvm-device md #:key
+;; (define* (check-nonudev-lvm-device md #:key
 ;;                             needed-for-boot?
 ;;                             (initrd-modules '())
 ;;                             #:allow-other-keys
@@ -126,50 +126,100 @@
 ;;             (check-device-initrd-modules source initrd-modules location)))))
 
 ;; The type of LVM mapped devices.
-(define lvm-device-mapping (mapped-device-kind (open open-lvm-device)
-                                               ;; (check check-lvm-device)
-                                               (close close-lvm-device)))
+(define nonudev-lvm-device-mapping (mapped-device-kind (open open-nonudev-lvm-device)
+                                                       ;; (check check-nonudev-lvm-device)
+                                                       (close close-nonudev-lvm-device)))
+
+
+(define (open-udev-lvm-device source target)
+  "Return a gexp that maps SOURCES to TARGETS as a LVM device, using
+'lvm'."
+  (with-imported-modules (source-module-closure '((gnu build file-systems)))
+    #~(let ((source  #$source)
+            (lvm-bin #$(file-append lvm2-static "/sbin/lvm")))
+        ;; Use 'lvm2-static', not 'lvm2', to avoid pulling the
+        ;; whole world inside the initrd (for when we're in an initrd).
+        (begin
+          (format #t "Enabling ~a~%" #$target)
+          (sleep 3)
+          (system* lvm-bin "vgchange" "-ay" (car (string-split #$target #\-)))
+          (sleep 1)
+          (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
+                          (string-join (string-split #$target #\-) "/")))))))
+
+(define (close-udev-lvm-device sources target)
+  "Return a gexp that closes TARGET, a LVM device."
+  #~(zero? (system* #$(file-append lvm2-static "/sbin/lvm")
+                    "lvchange" "-an" "-y" (string-join (string-split #$target #\-) "/"))))
+
+;; (define* (check-udev-lvm-device md #:key
+;;                             needed-for-boot?
+;;                             (initrd-modules '())
+;;                             #:allow-other-keys
+;;                             #:rest rest)
+;;   "Ensure the source of MD is valid."
+;;   (let ((source   (mapped-device-source md))
+;;         (location (mapped-device-location md)))
+;;     (or (not (zero? (getuid)))
+;;         (if (uuid? source)
+;;             (match (find-partition-by-lvm-uuid (uuid-bytevector source))
+;;               (#f
+;;                (raise (condition
+;;                        (&message
+;;                         (message (format #f (G_ "no LVM partition with UUID '~a'")
+;;                                          (uuid->string source))))
+;;                        (&error-location
+;;                         (location (source-properties->location
+;;                                    (mapped-device-location md)))))))
+;;               ((? string? device)
+;;                (check-device-initrd-modules device initrd-modules location)))
+;;             (check-device-initrd-modules source initrd-modules location)))))
+
+;; The type of LVM mapped devices.
+(define udev-lvm-device-mapping (mapped-device-kind (open open-udev-lvm-device)
+                                               ;; (check check-udev-lvm-device)
+                                               (close close-udev-lvm-device)))
 
 
 (define %lotus-mapped-device-guix-root       (mapped-device (source "/dev/sda31")
                                                             (target "guix-root")
-                                                            (type   lvm-device-mapping)))
+                                                            (type   nonudev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-boot       (mapped-device (source "/dev/sda31")
                                                             (target "guix-boot")
-                                                            (type   lvm-device-mapping)))
+                                                            (type   nonudev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-gnu        (mapped-device (source "/dev/sda31")
                                                             (target "guix-gnu")
-                                                            (type   lvm-device-mapping)))
+                                                            (type   nonudev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-swap       (mapped-device (source "/dev/sda31")
                                                             (target "guix-swap")
-                                                            (type   lvm-device-mapping)))
+                                                            (type   nonudev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-tmp        (mapped-device (source "/dev/sda31")
                                                             (target "guix-tmp")
-                                                            (type   lvm-device-mapping)))
+                                                            (type   nonudev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-var        (mapped-device (source "/dev/sda31")
                                                             (target "guix-var")
-                                                            (type   lvm-device-mapping)))
+                                                            (type   nonudev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-vg01-lv01       (mapped-device (source "/dev/test")
                                                             (target "vg01-lv01")
-                                                            (type   lvm-device-mapping)))
+                                                            (type   nonudev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-vg02-lv01       (mapped-device (source "/dev/test")
                                                             (target "vg02-lv01")
-                                                            (type   lvm-device-mapping)))
+                                                            (type   udev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-vgres01-lvres01 (mapped-device (source "/dev/test")
                                                             (target "vgres01-lvres01")
-                                                            (type   lvm-device-mapping)))
+                                                            (type   nonudev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-house-home      (mapped-device (source "/dev/test")
                                                             (target "house-home")
-                                                            (type   lvm-device-mapping)))
+                                                            (type   nonudev-lvm-device-mapping)))
 
 
 (define %lotus-mapped-devices (list %lotus-mapped-device-guix-root
@@ -180,8 +230,10 @@
                                     %lotus-mapped-device-guix-tmp
                                     %lotus-mapped-device-house-home
                                     %lotus-mapped-device-vgres01-lvres01
-                                    %lotus-mapped-device-vg01-lv01
-                                    %lotus-mapped-device-vg02-lv01))
+                                    %lotus-mapped-device-vg01-lv01))
+
+
+(define %lotus-udev-lvm-mapped-devices (list %lotus-mapped-device-vg02-lv01))
 
 
 ;; (define %lotus-swap-devices '("/dev/mapper/guix-swap"))
@@ -251,7 +303,7 @@
                                                         (device              "/dev/mapper/vg01-lv01")
                                                         (type                "ext4")
                                                         (check?              #f)
-                                                        (mount?              #f)
+                                                        (mount?              #t)
                                                         (create-mount-point? #f)
                                                         (needed-for-boot?    #f)))
 
@@ -261,7 +313,9 @@
                                                         (check?              #f)
                                                         (mount?              #f)
                                                         (create-mount-point? #f)
-                                                        (needed-for-boot?    #f)))
+                                                        (needed-for-boot?    #f)
+                                                        (dependencies        (append (list %lotus-file-system-guix-root)
+                                                                                     %lotus-udev-lvm-mapped-devices))))
 
 (define %lotus-file-system-vgres01-lvres01 (file-system (mount-point         "/srv/volumes/local/vgres01/lvres01")
                                                         (device              "/dev/mapper/vgres01-lvres01")

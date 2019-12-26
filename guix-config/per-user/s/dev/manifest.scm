@@ -9,7 +9,6 @@
         "glibc-locales"
         "binutils"
         "pkg-config"
-        "less"
         "coreutils"
         "diffutils"
         "findutils"
@@ -23,26 +22,12 @@
         "make"
         "autoconf"
         "automake"
-        "libtool"
-
-
-        "libxft"
-        "libxt"
-        "zlib"
-        "libxext"
-        "bzip2"
-
-        "xorgproto"
-
-        "fontconfig"
-        "xbitmaps"
-        "freetype"))
+        "libtool"))
 
 (define %lotus-dev-cdesktop-packages
   (append
-   (list
-    gcc
-    (list gcc "lib"))
+   (list gcc
+         (list gcc "lib"))
    (map specification->package
         %lotus-dev-cdesktop-package-names)))
 
