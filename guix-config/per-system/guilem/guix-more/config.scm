@@ -75,18 +75,21 @@
 (define (open-lvm-device source target)
   "Return a gexp that maps SOURCES to TARGETS as a LVM device, using
 'lvm'."
-  (with-imported-modules (source-module-closure
-                          '((gnu build file-systems)))
+  (with-imported-modules (source-module-closure '((gnu build file-systems)))
     #~(let ((source  #$source)
             (lvm-bin #$(file-append lvm2-static "/sbin/lvm")))
         ;; Use 'lvm2-static', not 'lvm2', to avoid pulling the
         ;; whole world inside the initrd (for when we're in an initrd).
         (begin
+          (format t "Enabling ~a~%" $target)
           (system* lvm-bin "vgscan" "--mknodes")
           (sleep 1)
           (system* lvm-bin "vgscan" "--mknodes")
           (sleep 1)
           (system* lvm-bin "vgchange" "-ay" (car (string-split #$target #\-)))
+          (sleep 1)
+          (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
+                          (string-join (string-split #$target #\-) "/")))
           (sleep 1)
           (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
                           (string-join (string-split #$target #\-) "/")))))))
@@ -164,7 +167,7 @@
                                                             (target "vgres01-lvres01")
                                                             (type   lvm-device-mapping)))
 
-(define %lotus-mapped-device-house-home      (mapped-device (source "/dev/sda8")
+(define %lotus-mapped-device-house-home      (mapped-device (source "/dev/test")
                                                             (target "house-home")
                                                             (type   lvm-device-mapping)))
 
@@ -172,13 +175,14 @@
 (define %lotus-mapped-devices (list %lotus-mapped-device-guix-root
                                     %lotus-mapped-device-guix-boot
                                     %lotus-mapped-device-guix-gnu
+                                    %lotus-mapped-device-house-home
                                     %lotus-mapped-device-guix-swap
                                     %lotus-mapped-device-guix-tmp
                                     %lotus-mapped-device-guix-var
                                     %lotus-mapped-device-vg01-lv01
                                     %lotus-mapped-device-vg02-lv01
                                     %lotus-mapped-device-vgres01-lvres01
-                                    %lotus-mapped-device-house-home))
+                                    ))
 
 
 ;; (define %lotus-swap-devices '("/dev/mapper/guix-swap"))
@@ -260,12 +264,12 @@
                                                         (create-mount-point? #f)
                                                         (needed-for-boot?    #f)))
 
-(define %lotus-file-system-house-home      (file-system (mount-point         "/home")
+(define %lotus-file-system-house-home      (file-system (mount-point         "/xhome")
                                                         (device              "/dev/mapper/house-home")
                                                         (type                "ext4")
                                                         (check?              #f)
                                                         (mount?              #t)
-                                                        (create-mount-point? #f)
+                                                        (create-mount-point? #t)
                                                         (needed-for-boot?    #f)))
                                                         ;; (dependencies        (append (list)
                                                         ;;                              %lotus-mapped-devices))))
@@ -278,15 +282,13 @@
                                                         (needed-for-boot?    #t)
                                                         (type                "vfat")
                                                         (dependencies        (append (list %lotus-file-system-guix-boot
-											   %lotus-file-system-guix-root)
+                                                                                           %lotus-file-system-guix-root)
                                                                                       %lotus-mapped-devices))))
 
 
 (define %lotus-lvm-home-file-systems (if %lotus-system-init
-					 (list ) 
-                                         (list 
-					   ;; %lotus-file-system-house-home
-					   )))
+                                         (list )
+                                         (list %lotus-file-system-house-home)))
 
 (define %lotus-lvm-system-file-systems (list %lotus-file-system-guix-root
                                              ;; %lotus-file-system-guix-swap
@@ -296,15 +298,13 @@
                                              %lotus-file-system-guix-var
                                              %lotus-file-system-vg01-lv01
                                              %lotus-file-system-vg02-lv01
-                                             %lotus-file-system-vgres01-lvres01
-
-                                             ;; %lotus-file-system-house-home
-    				         ))
+                                             %lotus-file-system-vgres01-lvres01))
 
 (define %lotus-lvm-file-systems (append %lotus-lvm-system-file-systems
-					%lotus-lvm-home-file-systems))
+                                        %lotus-lvm-home-file-systems))
 
-(define %lotus-other-file-systems (list %lotus-file-system-boot-efi))
+(define %lotus-other-file-systems (list))
+;; %lotus-file-system-boot-efi
 
 (define %lotus-file-systems (append %lotus-lvm-file-systems
                                     %lotus-other-file-systems
@@ -313,10 +313,9 @@
 
 ;; packages
 (load "packages.scm")
-(define %lotus-packages (if %lotus-system-init 
-    		          (cons* nss-certs lvm2 vim zsh %base-packages)
-    			   %lotus-reinit-packages
-			  ))
+(define %lotus-packages (if %lotus-system-init
+                            (cons* nss-certs lvm2 vim zsh %base-packages)
+                            %lotus-reinit-packages))
 
 
 (define %lotus-keyboard-layout (keyboard-layout "us" "altgr-intl"))
@@ -370,7 +369,9 @@
                                                 (group                  %lotus-account-group-name)
                                                 (home-directory         "/var/home/j")
                                                 (supplementary-groups   %lotus-account-supplementry-groups)
-						(create-home-directory? %lotus-account-create-home-directory))))
+						;; (create-home-directory? %lotus-account-create-home-directory)
+						(create-home-directory? #t)
+						)))
 
 (define %lotus-users (append %lotus-simple-users
                              %base-user-accounts))

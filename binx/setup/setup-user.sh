@@ -676,7 +676,7 @@ function setup_apt_upgrade_system()
             if running sudo guix system reconfigure "${HOME}/.setup/guix-config/per-system/guilem/guix-more/config.scm"
             then
                 running guix upgrade
-                running guix upgrade -p "${HOME}/.setup/guix-config/per-user/s/cdesktopenv/profiles/libtiprc"
+                # running guix upgrade -p "${HOME}/.setup/guix-config/per-user/s/cdesktopenv/profiles/libtiprc"
                 running guix package -m "${HOME}/.setup/guix-config/per-user/s/simple/manifest.scm"
             else
                 warning guix system reconfigure -- Failed
