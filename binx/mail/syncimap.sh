@@ -6,6 +6,8 @@
 
 WM=stumpwm
 
+MAILDIR=~/.maildir
+
 
 function main() {
 
@@ -13,38 +15,43 @@ function main() {
 
     # gnome-keyring-attach
 
-    if [ -e $disable_file ] ; then
-        notify "Syncimap is disabled"
-        exit 0
-    fi
+    if [ -L ${MAILDIR} -a -d ${MAILDIR} ]
+    then
+        if [ -e $disable_file ] ; then
+            notify "Syncimap is disabled"
+            exit 0
+        fi
 
-    if [ ! -e ~/.offlineimaprc ] ; then
-        verbose no ~/.offlineimaprc do not exists.
-        exit -1
-    else
-        # pkill offlineimap
-        # if nm-tool | egrep -q 'DNS:[[:space:]]+[1-9]' ||
-        #   nm-tool | egrep -q 'State:[[:space:]]+connected' ||
-        #   true ; then
-	if true
-	then
-            if ! pgrep offlineimap 2>&1 > /dev/null ; then
-                foreach acc ( $(echo ${account:-$OFFLINEIMAPACCOUNT}  | tr , ' ' ) ) {
+        if [ ! -e ~/.offlineimaprc ] ; then
+            verbose no ~/.offlineimaprc do not exists.
+            exit -1
+        else
+            # pkill offlineimap
+            # if nm-tool | egrep -q 'DNS:[[:space:]]+[1-9]' ||
+            #   nm-tool | egrep -q 'State:[[:space:]]+connected' ||
+            #   true ; then
+	          if true             # test if  net connection is up
+	          then
+                if ! pgrep offlineimap 2>&1 > /dev/null ; then
+                    foreach acc ( $(echo ${account:-$OFFLINEIMAPACCOUNT}  | tr , ' ' ) ) {
 
-                    verbose timeout -s KILL $timeout offlineimap -1 -u $ui -a $acc
-                    timeout -s KILL $timeout offlineimap -1 -u $ui -a $acc
+                        verbose timeout -s KILL $timeout offlineimap -1 -u $ui -a $acc
+                        timeout -s KILL $timeout offlineimap -1 -u $ui -a $acc
 
-                }
+                    }
+                else
+                    notify already offline map running with pid $(pgrep offlineimap).
+                    exit 0;
+                fi
             else
-                # verbose already offline map running with pid $(pgrep offlineimap).
-                notify already offline map running with pid $(pgrep offlineimap).
+                verbose no network connectivity.
                 exit 0;
             fi
-        else
-            verbose no network connectivity.
-            exit 0;
         fi
-    fi
+    else                        # if [ -L ${MAILDIR} -a -d ${MAILDIR} ]
+        notify ${MAILDIR} do not exits, exiting...
+        exit -1;
+    fi                          # if [ -L ${MAILDIR} -a -d ${MAILDIR} ]
 }
 
 function process_arg() {
@@ -179,8 +186,16 @@ function gnome-keyring-attach() {
     fi
 
     local _DISPLAYMAJOR=$(echo ${DISPLAY} | cut -f2 -d: | cut -d. -f1)
+    local MACHINE_ID
+    if [ -r /var/lib/dbus/machine-id ]
+    then
+        MACHINE_ID=/var/lib/dbus/machine-id
+    elif [ -r /etc/machine-id ]
+    then
+        MACHINE_ID=/etc/machine-id
+    fi
 
-    source ~/.dbus/session-bus/$(< /var/lib/dbus/machine-id)-${_DISPLAYMAJOR}
+    source ~/.dbus/session-bus/$(< ${MACHINE_ID})-${_DISPLAYMAJOR}
 
 
     if ! timeout -s KILL 2 ~/bin/get-imap-pass localhost 2>&1 > /dev/null; then

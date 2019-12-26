@@ -81,7 +81,7 @@
         ;; Use 'lvm2-static', not 'lvm2', to avoid pulling the
         ;; whole world inside the initrd (for when we're in an initrd).
         (begin
-          (format t "Enabling ~a~%" $target)
+          (format #t "Enabling ~a~%" #$target)
           (system* lvm-bin "vgscan" "--mknodes")
           (sleep 1)
           (system* lvm-bin "vgscan" "--mknodes")
@@ -179,9 +179,9 @@
                                     %lotus-mapped-device-guix-swap
                                     %lotus-mapped-device-guix-tmp
                                     %lotus-mapped-device-guix-var
-                                    %lotus-mapped-device-vg01-lv01
-                                    %lotus-mapped-device-vg02-lv01
-                                    %lotus-mapped-device-vgres01-lvres01
+                                    ;; %lotus-mapped-device-vg01-lv01
+                                    ;; %lotus-mapped-device-vg02-lv01
+                                    ;; %lotus-mapped-device-vgres01-lvres01
                                     ))
 
 
