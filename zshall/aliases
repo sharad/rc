@@ -58,8 +58,10 @@ alias upsee='command ps -o pid,tty,stat,time,lstart,etime,ruser=RealUser  -o com
 # https://www.redhat.com/sysadmin/decluttering-process-management
 alias pscgroup='command ps xawf -eo pid,user,cgroup,args'
 alias pstreeu='command pstree -u $USER'
-alias pgrep='command pgrep -u $(id -u) -l'
-alias pkill='command pkill -u $(id -u)'
+alias pugrep='command pgrep -u $(id -u) -l'
+alias pukill='command pkill -u $(id -u)'
+alias pagrep='command pgrep -l'
+alias pakill='command pkill'
 alias aumix="( unset DISPLAY && aumix )"
 #alias comic='command consolechars -f /usr/share/consolefonts/t850b.psf.gz'
 #c /qutm/home/paradise/cflowgraph/c2vcg3

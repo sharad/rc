@@ -680,11 +680,12 @@ function setup_apt_upgrade_system()
 
     if [ -d "/run/current-system/profile" ]
     then
-        if running guix pull &&
-                running guix pull --news
+        if running guix pull
         then
+            running guix pull --news
             if running sudo guix system reconfigure "${HOME}/.setup/guix-config/per-system/guilem/guix-more/config.scm"
             then
+                info guix upgrading
                 running guix upgrade # default
                 # running guix upgrade -p "${HOME}/.setup/guix-config/per-user/s/cdesktopenv/profiles.d/"
                 for profile in $LOCAL_GUIX_EXTRA_PROFILES
@@ -698,8 +699,8 @@ function setup_apt_upgrade_system()
                     unset profile
                 done
 
+                info guix installing
                 running guix package -m "${HOME}/.setup/guix-config/per-user/s/simple/manifest.scm" # default
-
                 for profile in $LOCAL_GUIX_EXTRA_PROFILES
                 do
                     manifest_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/manifest.scm

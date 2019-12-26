@@ -82,17 +82,10 @@
         ;; whole world inside the initrd (for when we're in an initrd).
         (begin
           (format #t "Enabling ~a~%" #$target)
-          (sleep 3)
-          (system* lvm-bin "vgscan" "--mknodes")
-          (sleep 3)
-          (system* lvm-bin "vgscan" "--mknodes")
           (sleep 1)
           (system* lvm-bin "vgscan" "--mknodes")
           (sleep 1)
           (system* lvm-bin "vgchange" "-ay" (car (string-split #$target #\-)))
-          (sleep 1)
-          (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
-                          (string-join (string-split #$target #\-) "/")))
           (sleep 1)
           (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
                           (string-join (string-split #$target #\-) "/")))))))
@@ -141,7 +134,6 @@
         ;; whole world inside the initrd (for when we're in an initrd).
         (begin
           (format #t "Enabling ~a~%" #$target)
-          (sleep 3)
           (system* lvm-bin "vgchange" "-ay" (car (string-split #$target #\-)))
           (sleep 1)
           (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
@@ -177,8 +169,8 @@
 
 ;; The type of LVM mapped devices.
 (define udev-lvm-device-mapping (mapped-device-kind (open open-udev-lvm-device)
-                                               ;; (check check-udev-lvm-device)
-                                               (close close-udev-lvm-device)))
+                                                    ;; (check check-udev-lvm-device)
+                                                    (close close-udev-lvm-device)))
 
 
 (define %lotus-mapped-device-guix-root       (mapped-device (source "/dev/sda31")
@@ -303,7 +295,7 @@
                                                         (device              "/dev/mapper/vg01-lv01")
                                                         (type                "ext4")
                                                         (check?              #f)
-                                                        (mount?              #t)
+                                                        (mount?              #f)
                                                         (create-mount-point? #f)
                                                         (needed-for-boot?    #f)))
 
@@ -314,7 +306,7 @@
                                                         (mount?              #f)
                                                         (create-mount-point? #f)
                                                         (needed-for-boot?    #f)
-                                                        (dependencies        (append (list %lotus-file-system-guix-root)
+                                                        (dependencies        (append ;; (list %lotus-file-system-guix-root)
                                                                                      %lotus-udev-lvm-mapped-devices))))
 
 (define %lotus-file-system-vgres01-lvres01 (file-system (mount-point         "/srv/volumes/local/vgres01/lvres01")
