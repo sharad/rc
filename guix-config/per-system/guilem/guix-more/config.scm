@@ -244,7 +244,7 @@
                                                         (device              "/dev/mapper/vg01-lv01")
                                                         (type                "ext4")
                                                         (check?              #f)
-                                                        (mount?              #t)
+                                                        (mount?              #f)
                                                         (create-mount-point? #f)
                                                         (needed-for-boot?    #f)))
 
@@ -252,7 +252,7 @@
                                                         (device              "/dev/mapper/vg02-lv01")
                                                         (type                "ext4")
                                                         (check?              #f)
-                                                        (mount?              #t)
+                                                        (mount?              #f)
                                                         (create-mount-point? #f)
                                                         (needed-for-boot?    #f)))
 
