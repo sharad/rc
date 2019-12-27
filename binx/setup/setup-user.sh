@@ -673,7 +673,7 @@ function setup_apt_upgrade_system()
     # https://guix.gnu.org/cookbook/en/html_node/
     # https://guix.gnu.org/cookbook/en/html_node/Advanced-package-management.html#Advanced-package-management
     # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
-    LOCAL_GUIX_EXTRA_PROFILES=("normal")
+    LOCAL_GUIX_EXTRA_PROFILES=("dev")
     export LOCAL_GUIX_EXTRA_PROFILES
     LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER"
 
@@ -713,10 +713,10 @@ function setup_apt_upgrade_system()
                     unset profile
                 done
             else
-                warning guix system reconfigure -- Failed
+                warn guix system reconfigure -- Failed
             fi
         else
-            warning guix pull -- Failed
+            warn guix pull -- Failed
         fi
     else
         # sudo ${INSTALLER} ${INSTALLER_OPT} clean
@@ -1488,6 +1488,8 @@ function setup_dep_control_storage_class_dir()
                 mdirbase=$(basename "$mdir")
                 volclasspathinstdir="model.d/${storage_path}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
 
+                debug mdirbase=$mdirbase
+
                 running sudo mkdir -p "${hostdir}/volumes.d/${volclasspathinstdir}"
                 running sudo chown "$USER.$(id -gn)" "${hostdir}/volumes.d/${volclasspathinstdir}"
 
@@ -1731,8 +1733,15 @@ function setup_deps_model_storage_volumes_dir()
                     running sudo chown root.root "${_location}"
                 fi
 
-                running setup_make_link "${_location}" "${deps_model_storageclass_path}/$(basename $vgd)-$(basename $vld)"
-                running setup_add_to_version_control "${LOCALDIRS_DIR}" "${rel_deps_model_storageclass_path}/$(basename $vgd)-$(basename $vld)"
+                vgdbase=$(basename $vgd)
+                vldbase=$(basename $vld)
+                vgldirlink=${vgdbase}-${vldbase}
+                debug vgd=$vgd
+                debug vld=$vld
+                debug vgdbase=$vgdbase
+                debug vldbase=$vldbase
+                running setup_make_link              "${_location}"     "${deps_model_storageclass_path}/${vgldirlink}"
+                running setup_add_to_version_control "${LOCALDIRS_DIR}" "${rel_deps_model_storageclass_path}/${vgldirlink}"
             done
         done
 
@@ -1816,9 +1825,6 @@ function setup_deps_control_volumes_dirs()
     local hostdir="${machinedir}/$HOST"
     local volumedir="${hostdir}/volumes.d"
 
-    # running setup_deps_control_data_sysdata_dirs "$storage_path"
-
-    # running setup_deps_control_data_sysdata_dir "$storage_path" $position
     running setup_deps_control_class_dir "$storage_path" "$sysdatascontinername" "$sysdataname" "$position"
 
     for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
@@ -1827,10 +1833,6 @@ function setup_deps_control_volumes_dirs()
 
         if [ ! -L "${volumedir}/${viewdirname}/$cdir" -o ! -d "${volumedir}/${viewdirname}/$cdir" ]
         then
-            # for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/view.d/*
-            # debug SHARAD
-            # ls ${volumedir}/control.d/${sysdatasdirname}/
-
             # TODO? STATS
             if ls "${volumedir}/control.d/${sysdatasdirname}"/* > /dev/null 2>&1
             then
@@ -2468,7 +2470,7 @@ function setup_dirs_safely()
         running sudo systemctl start  postfix.service
         running sudo systemctl start  postfix.service
     else
-        warning Can not start postfix and dovecot
+        warn Can not start postfix and dovecot
     fi
 }
 
