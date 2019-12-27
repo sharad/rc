@@ -50,7 +50,7 @@
 (define %lotus-account-group-name            "users")
 (define %lotus-account-supplementry-groups   '("wheel" "netdev" "audio" "video"))
 (define %lotus-account-home-parent-directory "/home")
-(define %lotus-account-home-directory        (string-append %lotus-account-home-parent-directory "s/hell"))
+;; (define %lotus-account-home-directory        (string-append %lotus-account-home-parent-directory "/" %lotus-account-user-name "/" "hell"))
 (define %lotus-account-shell                 #~(string-append #$zsh "/bin/zsh"))
 (define %lotus-account-create-home-directory #f)
 (define %lotus-guix-substitute-urls '("https://ci.guix.gnu.org"
@@ -228,10 +228,10 @@
 (define %lotus-udev-lvm-mapped-devices (list %lotus-mapped-device-vg02-lv01))
 
 
-;; (define %lotus-swap-devices '("/dev/mapper/guix-swap"))
-;; (define %lotus-swap-devices '("/dev/guix/swap"))
-(define device-mapping-guix-swap %lotus-mapped-device-guix-swap)
-(define %lotus-swap-devices      '("/dev/mapper/guix-swap"))
+;; guix system: error: service 'swap-/dev/mapper/guix-swap' requires 'device-mapping-guix-swap', which is not provided by any service
+(define %lotus-swap-devices      (if #f
+                                     (list "/dev/mapper/guix-swap")
+                                     (list)))
 
 
 (define %lotus-file-system-guix-root       (file-system (mount-point         "/")
@@ -289,7 +289,10 @@
                                                         (check?              #f)
                                                         (mount?              #t)
                                                         (create-mount-point? #t)
-                                                        (needed-for-boot?    #f)))
+                                                        (needed-for-boot?    #f)
+                                                        (dependencies        (append (list ;; %lotus-file-system-guix-root
+                                                                                           )
+                                                                                     %lotus-mapped-devices))))
 
 (define %lotus-file-system-vg01-lv01       (file-system (mount-point         "/srv/volumes/local/vg01/lv01")
                                                         (device              "/dev/mapper/vg01-lv01")
@@ -298,8 +301,8 @@
                                                         (mount?              #f)
                                                         (create-mount-point? #f)
                                                         (needed-for-boot?    #f)
-                                                        (dependencies        (append  (list %lotus-file-system-guix-root)
-                                                                                      %lotus-udev-lvm-mapped-devices))))
+                                                        (dependencies        (append (list %lotus-file-system-guix-root)
+                                                                                     %lotus-udev-lvm-mapped-devices))))
 
 (define %lotus-file-system-vg02-lv01       (file-system (mount-point         "/srv/volumes/local/vg02/lv01")
                                                         (device              "/dev/mapper/vg02-lv01")
@@ -308,8 +311,8 @@
                                                         (mount?              #f)
                                                         (create-mount-point? #f)
                                                         (needed-for-boot?    #f)
-                                                        (dependencies        (append  (list %lotus-file-system-guix-root)
-                                                                                      %lotus-udev-lvm-mapped-devices))))
+                                                        (dependencies        (append (list %lotus-file-system-guix-root)
+                                                                                     %lotus-udev-lvm-mapped-devices))))
 
 (define %lotus-file-system-vgres01-lvres01 (file-system (mount-point         "/srv/volumes/local/vgres01/lvres01")
                                                         (device              "/dev/mapper/vgres01-lvres01")
@@ -434,8 +437,8 @@
                                                 (supplementary-groups   %lotus-account-supplementry-groups)
                                                 (create-home-directory? %lotus-account-create-home-directory))))
 
-(define %lotus-users (append %lotus-simple-users
-                             %base-user-accounts))
+(define %lotus-users        (append %lotus-simple-users
+                                    %base-user-accounts))
 
 
 (define %lotus-copy-current-config-file-in-etc (list (simple-service 'config-file etc-service-type
@@ -580,15 +583,19 @@
 (define %lotus-desktop-services %lotus-desktop-nm-services)
 
 
-(define %lotus-many-services (list (service openssh-service-type)
-                                   ;; (service gnome-desktop-service-type)
-                                   ;; (service xfce-desktop-service-type)
-                                   ;; (service mate-desktop-service-type)
-                                   ;; (service enlightenment-desktop-service-type)
-                                   (service tor-service-type)))
 
-(define %lotus-few-services  (list (service openssh-service-type)
-                                   (service tor-service-type)))
+(define %lotus-network-services  (list (service openssh-service-type)
+                                       (service tor-service-type)))
+
+(define %lotus-heavy-wm-services (list (service gnome-desktop-service-type)
+                                       (service xfce-desktop-service-type)
+                                       (service mate-desktop-service-type)
+                                       (service enlightenment-desktop-service-type)))
+
+(define %lotus-many-services (append %lotus-network-services
+                                     %lotus-heavy-wm-services))
+
+(define %lotus-few-services  (append %lotus-network-services))
 
 
 (define %lotus-simple-services %lotus-few-services)
@@ -679,7 +686,7 @@
   (mapped-devices      %lotus-mapped-devices)
   (users               %lotus-users)
   (file-systems        %lotus-file-systems)
-  ;; (swap-devices        %lotus-swap-devices)
+  (swap-devices        %lotus-swap-devices)
   (bootloader          %lotus-bootloader)
   (packages            %lotus-packages)
   (services            %lotus-services)
