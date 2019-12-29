@@ -222,7 +222,9 @@
                                     %lotus-mapped-device-guix-tmp
                                     %lotus-mapped-device-house-home
                                     %lotus-mapped-device-vgres01-lvres01
-                                    %lotus-mapped-device-vg01-lv01))
+                                    %lotus-mapped-device-vg01-lv01
+                                    ;; %lotus-mapped-device-vg02-lv01
+                                    ))
 
 
 (define %lotus-udev-lvm-mapped-devices (list %lotus-mapped-device-vg02-lv01))
@@ -318,7 +320,7 @@
                                                         (device              "/dev/mapper/vgres01-lvres01")
                                                         (type                "reiserfs")
                                                         (check?              #f)
-                                                        (mount?              #t)
+                                                        (mount?              #f)
                                                         (create-mount-point? #f)
                                                         (needed-for-boot?    #f)))
 
