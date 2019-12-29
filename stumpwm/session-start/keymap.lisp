@@ -2,7 +2,7 @@
 ;;
 
 (in-package :stumpwm)
-
+
 
 ;;;{{{ https://www.juev.org/2009/09/27/stumpwm/
 ;; define keys
@@ -32,7 +32,7 @@
 
 ;; (define-key *top-map* (kbd "C-M-Delete") "bye-with-confirmation")
 ;;;}}}
-
+
 
 ;;{{{ Additional keysyms
 (define-keysym #x1008ff31 "XF86AudioPause")
@@ -56,7 +56,7 @@
 (define-key *top-map* (kbd "S-XF86AudioMute")        "amixer-sense-toggle")
 
 ;;}}}
-
+
 
 (defmacro set-key (map mapping)
   `(loop for pair in ,mapping
@@ -82,6 +82,7 @@
 (define-key stumpwm:*root-map* (kbd "]")    "next")
 (define-key stumpwm:*root-map* (kbd "[")    "prev")
 ;;}}}
+
 
 ;;{{ When Other profile came in
 
@@ -93,7 +94,7 @@
 ;; TODO: make list of action also possible
 ;; (define-key *top-map* (kbd "M-`") '("set-profile myprofile"))
 ;;}}
-
+
 
 ;;Top map-----------------------------------------------------------------------
 (define-key *top-map* (kbd "XF86Video")      "mpd-connect")
@@ -106,19 +107,19 @@
 ;;Root map --------------------------------------------------------------------
 (define-key stumpwm:*root-map* (kbd "SPC") "scratchpad")
 ;;Terminals
-(define-key stumpwm:*root-map* (kbd "&")   "screen-to")
+(define-key stumpwm:*root-map* (kbd "&")      "screen-to")
 ;;Applications
-(define-key stumpwm:*root-map* (kbd "E")   "ebib")
-(define-key stumpwm:*root-map* (kbd "e")   "emacsclient")
-(define-key stumpwm:*root-map* (kbd "C-e") "emacsclient")
-(define-key stumpwm:*root-map* (kbd "m")   "xbrowser")
+(define-key stumpwm:*root-map* (kbd "E")      "ebib")
+(define-key stumpwm:*root-map* (kbd "e")      "emacsclient")
+(define-key stumpwm:*root-map* (kbd "C-e")    "emacsclient")
+(define-key stumpwm:*root-map* (kbd "m")      "xbrowser")
 
 ;; Controls
-(define-key stumpwm:*root-map* (kbd "T")   "toggle-touchpad")
-(define-key stumpwm:*root-map* (kbd "I")   "show-window-properties")
-(define-key stumpwm:*root-map* (kbd "S-r") "repack-window-number")
-(define-key stumpwm:*root-map* (kbd ")")   '*mpd-map*)
-(define-key stumpwm:*root-map* (kbd "x")   "exec xautolock -locknow")
+(define-key stumpwm:*root-map* (kbd "T")      "toggle-touchpad")
+(define-key stumpwm:*root-map* (kbd "I")      "show-window-properties")
+(define-key stumpwm:*root-map* (kbd "S-r")    "repack-window-number")
+(define-key stumpwm:*root-map* (kbd ")")      '*mpd-map*)
+(define-key stumpwm:*root-map* (kbd "x")      "exec xautolock -locknow")
 
 ;;Screen management
 (define-key stumpwm:*root-map* (kbd "*")      "snext")
@@ -172,70 +173,71 @@
 (define-key stumpwm:*root-map* (kbd "M-Left")  "move-window left")
 (define-key stumpwm:*root-map* (kbd "M-Right") "move-window right")
 
-(define-key stumpwm:*root-map* (kbd "RET") "fullscreen")
+(define-key stumpwm:*root-map* (kbd "RET")     "fullscreen")
 ;;Commands, evaluation, help ...
-(define-key stumpwm:*root-map* (kbd ";")   "colon")
-(define-key stumpwm:*root-map* (kbd ":")   "eval")
-(define-key stumpwm:*root-map* (kbd "C-h") "help")
-(define-key stumpwm:*root-map* (kbd "-")   "fclear")
-(define-key stumpwm:*root-map* (kbd "Q")   "only")
-(define-key stumpwm:*root-map* (kbd "v")   "version")
-;; (define-key stumpwm:*root-map* (kbd "?") "help")
-(define-key stumpwm:*root-map* (kbd "+")   "balance-frames")
-(define-key stumpwm:*root-map* (kbd "A")   "title")
-(define-key stumpwm:*root-map* (kbd "h")   '*help-map*)
-(define-key stumpwm:*root-map* (kbd "q")   '*web-jump-map*)
-(define-key stumpwm:*root-map* (kbd "C-m") "lastmsg")
-(define-key stumpwm:*root-map* (kbd "t")   "meta Menu")
-(define-key stumpwm:*root-map* (kbd "y")   "paste")
-(define-key stumpwm:*root-map* (kbd "B")   "mode-line")
+(define-key stumpwm:*root-map* (kbd ";")       "colon")
+(define-key stumpwm:*root-map* (kbd ":")       "eval")
+(define-key stumpwm:*root-map* (kbd "C-h")     "help")
+(define-key stumpwm:*root-map* (kbd "-")       "fclear")
+(define-key stumpwm:*root-map* (kbd "Q")       "only")
+(define-key stumpwm:*root-map* (kbd "v")       "version")
+;; (define-key stumpwm:*root-map* (kbd "?")     "help")
+(define-key stumpwm:*root-map* (kbd "+")       "balance-frames")
+(define-key stumpwm:*root-map* (kbd "A")       "title")
+(define-key stumpwm:*root-map* (kbd "h")       '*help-map*)
+(define-key stumpwm:*root-map* (kbd "q")       '*web-jump-map*)
+(define-key stumpwm:*root-map* (kbd "C-m")     "lastmsg")
+(define-key stumpwm:*root-map* (kbd "t")       "meta Menu")
+(define-key stumpwm:*root-map* (kbd "y")       "paste")
+(define-key stumpwm:*root-map* (kbd "B")       "mode-line")
 
 ;; ;;Groups
 ;;gcal
-(define-key stumpwm:*root-map* (kbd "F11") '*gcal-map*)
+(define-key stumpwm:*root-map* (kbd "F11")     '*gcal-map*)
 ;;Mails
-(define-key stumpwm:*root-map* (kbd "F12") '*mail-map*)
+(define-key stumpwm:*root-map* (kbd "F12")     '*mail-map*)
 ;;Group map----------------------------------------------
-(define-key stumpwm:*groups-map* (kbd "g") "groups")
-(define-key stumpwm:*groups-map* (kbd "G") "vgroup")
-(define-key stumpwm:*groups-map* (kbd "c") "gnew")
-(define-key stumpwm:*groups-map* (kbd "b") "gnewbg")
-(define-key stumpwm:*groups-map* (kbd "f") "gnew-float")
-(define-key stumpwm:*groups-map* (kbd "n") "gnext")
-(define-key stumpwm:*groups-map* (kbd "N") "gnext-with-window")
-(define-key stumpwm:*groups-map* (kbd "p") "gprev")
-(define-key stumpwm:*groups-map* (kbd "P") "gprev-with-window")
+(define-key stumpwm:*groups-map* (kbd "g")     "groups")
+(define-key stumpwm:*groups-map* (kbd "G")     "vgroup")
+(define-key stumpwm:*groups-map* (kbd "c")     "gnew")
+(define-key stumpwm:*groups-map* (kbd "b")     "gnewbg")
+(define-key stumpwm:*groups-map* (kbd "f")     "gnew-float")
+(define-key stumpwm:*groups-map* (kbd "n")     "gnext")
+(define-key stumpwm:*groups-map* (kbd "N")     "gnext-with-window")
+(define-key stumpwm:*groups-map* (kbd "p")     "gprev")
+(define-key stumpwm:*groups-map* (kbd "P")     "gprev-with-window")
 
-(define-key stumpwm:*root-map* (kbd ">"  )   "gnext")
-(define-key stumpwm:*root-map* (kbd "M->"  ) "gnext-with-window")
-(define-key stumpwm:*root-map* (kbd "."  )   "gnext-with-window")
-(define-key stumpwm:*root-map* (kbd "<"  )   "gprev")
-(define-key stumpwm:*root-map* (kbd "M-<"  ) "gprev-with-window")
+(define-key stumpwm:*root-map* (kbd ">"  )     "gnext")
+(define-key stumpwm:*root-map* (kbd "M->"  )   "gnext-with-window")
+(define-key stumpwm:*root-map* (kbd "."  )     "gnext-with-window")
+(define-key stumpwm:*root-map* (kbd "<"  )     "gprev")
+(define-key stumpwm:*root-map* (kbd "M-<"  )   "gprev-with-window")
 
-(define-key stumpwm:*root-map*   (kbd ","  ) "gprev-with-window")
-(define-key stumpwm:*groups-map* (kbd "'"  ) "gselect")
-(define-key stumpwm:*groups-map* (kbd "\"" ) "grouplist")
-(define-key stumpwm:*groups-map* (kbd "m"  ) "gmove")
-(define-key stumpwm:*groups-map* (kbd "C-m") "gmove-marked")
-(define-key stumpwm:*groups-map* (kbd "M"  ) "gmerge")
-(define-key stumpwm:*groups-map* (kbd "r"  ) "grename")
-(define-key stumpwm:*groups-map* (kbd "k"  ) "gkill")
-(define-key stumpwm:*groups-map* (kbd "o"  ) "gother")
-(define-key stumpwm:*groups-map* (kbd "s"  ) "gsshow")
-(define-key stumpwm:*groups-map* (kbd "O"  ) "gspop")
-(define-key stumpwm:*groups-map* (kbd "C"  ) "gsclear")
-(define-key stumpwm:*groups-map* (kbd "1"  ) "gselect 1")
-(define-key stumpwm:*groups-map* (kbd "2"  ) "gselect 2")
-(define-key stumpwm:*groups-map* (kbd "3"  ) "gselect 3")
-(define-key stumpwm:*groups-map* (kbd "4"  ) "gselect 4")
-(define-key stumpwm:*groups-map* (kbd "5"  ) "gselect 5")
-(define-key stumpwm:*groups-map* (kbd "6"  ) "gselect 6")
-(define-key stumpwm:*groups-map* (kbd "7"  ) "gselect 7")
-(define-key stumpwm:*groups-map* (kbd "8"  ) "gselect 8")
-(define-key stumpwm:*groups-map* (kbd "9"  ) "gselect 9")
-(define-key stumpwm:*groups-map* (kbd "0"  ) "gselect 10")
-(define-key stumpwm:*groups-map* (kbd ";"  ) "jump-to-new-window")
-(define-key stumpwm:*root-map*   (kbd "|"  ) "jump-to-new-window")
+(define-key stumpwm:*root-map*   (kbd ","  )   "gprev-with-window")
+(define-key stumpwm:*groups-map* (kbd "'"  )   "gselect")
+(define-key stumpwm:*groups-map* (kbd "\"" )   "grouplist")
+(define-key stumpwm:*groups-map* (kbd "m"  )   "gmove")
+(define-key stumpwm:*groups-map* (kbd "C-m")   "gmove-marked")
+(define-key stumpwm:*groups-map* (kbd "M"  )   "gmerge")
+(define-key stumpwm:*groups-map* (kbd "r"  )   "grename")
+(define-key stumpwm:*groups-map* (kbd "k"  )   "gkill")
+(define-key stumpwm:*groups-map* (kbd "o"  )   "gother")
+(define-key stumpwm:*groups-map* (kbd "s"  )   "gsshow")
+(define-key stumpwm:*groups-map* (kbd "O"  )   "gspop")
+(define-key stumpwm:*groups-map* (kbd "C"  )   "gsclear")
+(define-key stumpwm:*groups-map* (kbd "1"  )   "gselect 1")
+(define-key stumpwm:*groups-map* (kbd "2"  )   "gselect 2")
+(define-key stumpwm:*groups-map* (kbd "3"  )   "gselect 3")
+(define-key stumpwm:*groups-map* (kbd "4"  )   "gselect 4")
+(define-key stumpwm:*groups-map* (kbd "5"  )   "gselect 5")
+(define-key stumpwm:*groups-map* (kbd "6"  )   "gselect 6")
+(define-key stumpwm:*groups-map* (kbd "7"  )   "gselect 7")
+(define-key stumpwm:*groups-map* (kbd "8"  )   "gselect 8")
+(define-key stumpwm:*groups-map* (kbd "9"  )   "gselect 9")
+(define-key stumpwm:*groups-map* (kbd "0"  )   "gselect 10")
+(define-key stumpwm:*groups-map* (kbd ";"  )   "jump-to-new-window")
+(define-key stumpwm:*root-map*   (kbd "|"  )   "jump-to-new-window")
+
 
 ;;gcal map------------------------------------------------
 (setf *gcal-map*
@@ -272,6 +274,7 @@
 ;;      m))
 
 ;; (cl-ppcre:split "(\\w*): ?(\"?[\\w\\s\\.]*\"?)\\s|(\\w*): ?(\"?[\\w\s\\.]*\"?)|(\"[\\w\\s]*\")|([\\w]+)" "sdf dg ")
+
 
 (defvar *web-jump-map* nil
   "The keymap with net queries (e.g. IMDB)")
@@ -293,8 +296,6 @@
 (make-web-jump web-jump-search    "http://www.google.com/cse?cx=013269018370076798483:gg7jrrhpsy4&cof=FORID:1&q=~a&sa=Search" "s")
 (make-web-jump web-jump-wikipedia "http://en.wikipedia.org/wiki/Special:Search?fulltext=Search&search=~a" "w")
 ;; (macroexpand-1 '(make-web-jump imdb "http://www.imdb.com/find?q=~a" "i"))
-
-
 
 
 (setf stumpwm::*system-map*
@@ -382,14 +383,13 @@
 
 (define-key *top-map* (kbd "s-w") '*window-map*)
 (setf *window-map*
-  (let ((m (make-sparse-keymap)))
-     (define-key m (kbd "C-c") '*window-commands-map*)
-     (define-key m (kbd "c") '*window-commands-map*)
-     (define-key m (kbd "C-t") '*window-handling-map*)
-     (define-key m (kbd "t") '*window-handling-map*)
-     (define-key m (kbd "w") "meta s-w")
-     m))
-
+      (let ((m (make-sparse-keymap)))
+        (define-key m (kbd "C-c") '*window-commands-map*)
+        (define-key m (kbd "c") '*window-commands-map*)
+        (define-key m (kbd "C-t") '*window-handling-map*)
+        (define-key m (kbd "t") '*window-handling-map*)
+        (define-key m (kbd "w") "meta s-w")
+        m))
 
 ;; Imergency
 (define-key *top-map* (kbd "s-i")      '*imergency-map*)
@@ -404,6 +404,7 @@
              (kbd "KP_Enter") "toggle-profile")
 
 (undefine-key stumpwm:*top-map* (kbd "s-p"))
+
 
 ;;{{{ Notification
 #+notifications
@@ -411,7 +412,10 @@
   (define-key stumpwm:*root-map* (kbd "F10") 'notifications:*notifications-map*)
   (define-key stumpwm:*root-map* (kbd "N")   'notifications:*notifications-map*))
 ;;}}}
+
 
 ;;{{{ Coursor
 (define-key *root-map* (kbd "C-M-l")        "find-cousor")
 ;;}}}
+
+
