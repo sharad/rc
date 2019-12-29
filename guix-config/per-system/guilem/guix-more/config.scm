@@ -207,7 +207,7 @@
 
 (define %lotus-mapped-device-vgres01-lvres01 (mapped-device (source "/dev/test")
                                                             (target "vgres01-lvres01")
-                                                            (type   nonudev-lvm-device-mapping)))
+                                                            (type   udev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-house-home      (mapped-device (source "/dev/test")
                                                             (target "house-home")
@@ -221,13 +221,13 @@
                                     %lotus-mapped-device-guix-swap
                                     %lotus-mapped-device-guix-tmp
                                     %lotus-mapped-device-house-home
-                                    %lotus-mapped-device-vgres01-lvres01
-                                    %lotus-mapped-device-vg01-lv01
-                                    ;; %lotus-mapped-device-vg02-lv01
-                                    ))
+                                    %lotus-mapped-device-house-home
+                                    %lotus-mapped-device-house-home))
 
 
-(define %lotus-udev-lvm-mapped-devices (list %lotus-mapped-device-vg02-lv01))
+(define %lotus-udev-lvm-mapped-devices (list %lotus-mapped-device-vgres01-lvres01
+                                             %lotus-mapped-device-vg01-lv01
+                                             %lotus-mapped-device-vg02-lv01))
 
 
 ;; guix system: error: service 'swap-/dev/mapper/guix-swap' requires 'device-mapping-guix-swap', which is not provided by any service
