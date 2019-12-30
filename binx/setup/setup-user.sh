@@ -395,7 +395,6 @@ function setup_recursive_links_container_dirs()
     debug targetdir="$targetdir"
 
     debug basepath/linktopdir="${basepath}/${linktopdir}"
-    info basepath/linktopdir="${basepath}/${linktopdir}"
 
     if [ -d "$basepath" -a -d "${basepath}/${linktopdir}" ]
     then
@@ -502,11 +501,11 @@ function setup_add_to_version_control()
 
     if ! git -C "${base}" ls-files --error-unmatch "${relfile}" >/dev/null 2>&1
     then
-        info do   git -C "${base}" add -f "${relfile}"
+        debug do   git -C "${base}" add -f "${relfile}"
         if [ -d "${base}/${relfile}" -a ! -L "${base}/${relfile}"  ]
         then
-            info in ${base}
-            info ${relfile} is directory so not adding it in git.
+            debug in ${base}
+            debug ${relfile} is directory so not adding it in git.
         else
             if setup_add_to_version_control_ask "git -C ${base} add ${relfile} ? "
             then
@@ -636,7 +635,7 @@ function setup_apt_repo()
             if [ ubuntu = "$ID" ]
             then
                 UBUNTU_VERSION_NAME="$VERSION"
-                info "Running Ubuntu $UBUNTU_VERSION_NAME"
+                debug "Running Ubuntu $UBUNTU_VERSION_NAME"
             else
                 warn "Not running an Ubuntu distribution. ID=$ID, VERSION=$VERSION" >&2
                 exit -1
@@ -685,7 +684,7 @@ function setup_apt_upgrade_system()
             running guix pull --news
             if running sudo guix system reconfigure "${HOME}/.setup/guix-config/per-system/guilem/guix-more/config.scm"
             then
-                info guix upgrading
+                verbose guix upgrading
                 running guix upgrade # default
                 # running guix upgrade -p "${HOME}/.setup/guix-config/per-user/s/cdesktopenv/profiles.d/"
                 for profile in $LOCAL_GUIX_EXTRA_PROFILES
@@ -701,7 +700,7 @@ function setup_apt_upgrade_system()
                     unset profile
                 done
 
-                info guix installing
+                verbose guix installing
                 running guix package -m "${HOME}/.setup/guix-config/per-user/s/simple/manifest.scm" # default
                 for profile in $LOCAL_GUIX_EXTRA_PROFILES
                 do
@@ -1392,7 +1391,7 @@ function setup_machine_dir()
             if [ -d "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" ]
             then
                 running  cp -ar "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/sample" "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST"
-                info add "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" into git
+                debug add "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" into git
             fi
         fi                      # if [ ! -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
     fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d ]
@@ -1562,7 +1561,7 @@ function setup_deps_control_class_dir()
                 running setup_dep_control_storage_class_dir "$storage_path" "$class" "$classinstdir" "${position}"
 
             else                # if [ -d ${hostdir} ]
-                info Please prepare "${hostdir}" for your machine >&2
+                debug Please prepare "${hostdir}" for your machine >&2
                 exit -1
             fi                  # if [ -d ${hostdir} ]
 
@@ -1990,7 +1989,7 @@ function setup_deps_view_volumes_dirs()
                     for sysdatadir in ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/control.d/${sysdatasdirname}/*
                     do
                         volsysdatadirbase=$(basename ${sysdatadir})
-                        info ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir"
+                        debug ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir"
 
                     done
                 fi

@@ -107,7 +107,7 @@ Each entry is either:
     (lotus-override/post-init-git-link-config)))
 
 (defun lotus-override/post-init-org-agenda ()
-  (use-package org-agenda-hooks
+  (use-package org-agenda ;; org-agenda-hooks
     :defer t
     :commands (org-agenda-new-marker)
     :config
