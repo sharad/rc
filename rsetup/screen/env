@@ -70,92 +70,98 @@ then
         ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null                     ||   # check if ${KEYCHAINDIR}/${HOST}-sh's ssh-agent is alive or not, if pid is set and no working alive ssh-agent process.
         [ "$(basename $(\ps hc -ocmd $SSH_AGENT_PID  | cut -f1 -d' '  ))" != ssh-agent ]
     then
-
         if  [ "$UID" != "0" ]
-            then
+        then
+
+
             if which $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
             then
-
                 if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ]
                 then
                     timeout 7 $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
                 fi
+            fi                      # which $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
 
-                if [ -x /usr/bin/keychain -o -x ~/bin/keychain ]
+
+
+            if [ -x /usr/bin/keychain -o -x ~/bin/keychain ]
+            then
+                if [ -x /usr/bin/keychain ]
                 then
-                    if [ -x /usr/bin/keychain ]
+                    _keychain_script=/usr/bin/keychain
+                elif  [ -x ~/bin/keychain ]
+                then
+                    _keychain_script=~/bin/keychain
+                fi
+
+                #/usr/bin/keychain -q -Q --lockwait 1 id_rsa id_dsa
+
+                if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
+                then
+                    if mkdir -p ${KEYCHAINDIR}
                     then
-                        _keychain_script=/usr/bin/keychain
-                    elif  [ -x ~/bin/keychain ]
-                    then
-                        _keychain_script=~/bin/keychain
+                        $_keychain_script                                         \
+                            -q                                                    \
+                            --noask                                               \
+                            --ignore-missing                                      \
+                            --clear                                               \
+                            --lockwait 1                                          \
+                            --agents gpg,ssh                                      \
+                            --inherit local-once                                  \
+                            $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) \
+                            $SSH_KEYS_DIR/id_dsa                                  \
+                            $SSH_KEYS_DIR/id_rsa                                  \
+                            $SSH_KEYS_DIR/internet                                \
+                            070E69E5                                              \
+                            --dir ${KEYCHAINDIR}
+
+                        unset _keychain_script
+                    else
+                        echo can not make ${KEYCHAINDIR} directory
                     fi
 
-                    #/usr/bin/keychain -q -Q --lockwait 1 id_rsa id_dsa
-
-                    if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
+                    if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
                     then
-                        if mkdir -p ${KEYCHAINDIR}
-                        then
-                            $_keychain_script                                         \
-                                -q                                                    \
-                                --noask                                               \
-                                --ignore-missing                                      \
-                                --clear                                               \
-                                --lockwait 1                                          \
-                                --agents gpg,ssh                                      \
-                                --inherit local-once                                  \
-                                $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) \
-                                $SSH_KEYS_DIR/id_dsa                                  \
-                                $SSH_KEYS_DIR/id_rsa                                  \
-                                $SSH_KEYS_DIR/internet                                \
-                                070E69E5                                              \
-                                --dir ${KEYCHAINDIR}
-
-                            unset _keychain_script
-                        else
-                            echo can not make ${KEYCHAINDIR} directory
-                        fi
-
-                        if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
-                        then
-                            . ${KEYCHAINDIR}/${HOST}-sh
-                            # trap "echo KILLING $SSH_AGENT_PID; echo kill $SSH_AGENT_PID ; [ -f ${KEYCHAINDIR}/${HOST}-sh ] && echo rm -f ${KEYCHAINDIR}/* " EXIT
-                        fi              # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
-                    else
-                        echo no private key found
-                    fi          # if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
-
+                        . ${KEYCHAINDIR}/${HOST}-sh
+                        # trap "echo KILLING $SSH_AGENT_PID; echo kill $SSH_AGENT_PID ; [ -f ${KEYCHAINDIR}/${HOST}-sh ] && echo rm -f ${KEYCHAINDIR}/* " EXIT
+                    fi              # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
                 else
-                    echo can not find keychain script
-                fi                  # [ -x /usr/bin/keychain ]
+                    echo no private key found
+                fi          # if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
 
-                if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
-                then
-                    . ${KEYCHAINDIR}/${HOST}-sh
-                fi              # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
+            else
+                echo can not find keychain script
+            fi                  # [ -x /usr/bin/keychain ]
 
-                if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
+
+            if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
+            then
+                . ${KEYCHAINDIR}/${HOST}-sh
+            fi              # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
+
+            if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
                     ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
                     ! ssh-add -l 2>&1 > /dev/null                                   # key is not added
+            then
+                if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
                 then
-                    if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
+                    if [ -t ]
                     then
-                        if [ -t ]
-                        then
-                            echo ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
-                        else
-                            echo ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
-                        fi
+                        echo ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
+                    else
+                        echo ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
                     fi
-                fi                  # if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
-            fi                      # which $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
-        fi
-    fi                              # ! ssh-add -l 2>&1
-# fi
+                fi
+            fi                  # if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
 
-# If we have ssh-agent running, forward it to the next host,
-# otherwise dont try to use key authentication at all.
+
+
+        fi                      # if  [ "$UID" != "0" ]
+    fi                          # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
+
+
+    # If we have ssh-agent running, forward it to the next host,
+    # otherwise dont try to use key authentication at all.
     if [ "${SSH_AUTH_SOCK}x" = "x" ]
     then
         # if we dont have an auth sock, dont use pub key identification
@@ -167,8 +173,5 @@ then
 
     [ "$SHELL" = "zsh" ] && emulate zsh
 
-
     [ -r $HOME/.rsetup/screen/env.d/${HOST} ] && . $HOME/.rsetup/screen/env.d/${HOST}
-
-
 fi                              # [ "${LOGIN_ENV}x" = "x" ]

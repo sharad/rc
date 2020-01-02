@@ -138,6 +138,7 @@
 
         "firefox"
         "conkeror-firefox"
+        "deb-adobe-flashplugin"
         ;; "epiphany"
 
         "alsa-utils"
@@ -290,7 +291,7 @@
   (list "mailutils"
         "offlineimap"
         "notmuch"
-	"notmuch-addrlookup-c"
+        "notmuch-addrlookup-c"
         "notifymuch"
         "mu"))
 
