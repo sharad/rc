@@ -53,20 +53,20 @@
 ;; (define %lotus-account-home-directory        (string-append %lotus-account-home-parent-directory "/" %lotus-account-user-name "/" "hell"))
 (define %lotus-account-shell                 #~(string-append #$zsh "/bin/zsh"))
 (define %lotus-account-create-home-directory #f)
-(define %lotus-guix-substitute-urls '("https://ci.guix.gnu.org"
-                                      "https://bayfront.guixsd.org"
-                                      "http://guix.genenetwork.org"
-                                      "https://guix.tobias.gr"
-                                      "https://ci.guix.info/"
-                                      "https://berlin.guixsd.org"))
-(define %lotus-guix-extra-options   '(
-                                      ;; "--max-jobs=2"
-                                      ;; "--cores=1"
-                                      "--gc-keep-derivations=yes"
-                                      "--gc-keep-outputs=yes"))
-(define %lotus-guix-use-substitutes #t) ;always true
+(define %lotus-guix-substitute-urls          '("https://ci.guix.gnu.org"
+                                               "https://bayfront.guixsd.org"
+                                               "http://guix.genenetwork.org"
+                                               "https://guix.tobias.gr"
+                                               "https://ci.guix.info/"
+                                               "https://berlin.guixsd.org"))
+(define %lotus-guix-extra-options            '(
+                                               ;; "--max-jobs=2"
+                                               ;; "--cores=1"
+                                               "--gc-keep-derivations=yes"
+                                               "--gc-keep-outputs=yes"))
+(define %lotus-guix-use-substitutes          #t) ;always true
 
-(define %lotus-network-manager-dns "dnsmasq")
+(define %lotus-network-manager-dns           "dnsmasq")
 
 
 (use-modules (gnu packages linux))

@@ -1770,7 +1770,7 @@ function setup_deps_model_volumes_dirs()
     running setup_deps_model_storage_volumes_dir "$storage_path"
 }
 
-function setup_deps_mode_dir()
+function setup_deps_model_dir()
 {
     local storage_path="${1-local}"
 
@@ -1814,14 +1814,12 @@ function setup_deps_control_volumes_dirs()
     local storage_path="${1-local}"
     local position=${2-2}
 
-    local sysdataname=sysdata
+    local sysdataname=sysdata   # ${logicaldirs[*]}
     local viewdirname=view.d
     local sysdatascontinername="${dataclassname}/${sysdataname}s"
 
-    # local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
     local classcontroldir_rel_path=$(setup_make_path_by_position "${dataclassname}" "${storage_path}" "${sysdataname}s.d" "$position" )
     local sysdatasdirname="${classcontroldir_rel_path}"
-    # logicaldirs=(config deletable longterm preserved shortterm maildata)
 
     local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     local machinedir="${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d"
@@ -1848,9 +1846,6 @@ function setup_deps_control_volumes_dirs()
             fi
         fi
     done
-
-    # running running setup_deps_control_data_dir "$storage_path" $position
-    # running running setup_deps_control_home_dir "$storage_path" $position
 }
 
 function setup_deps_control_dir()
@@ -2049,11 +2044,9 @@ function setup_deps_dirs()
 {
     local storage_path="${1-local}"
 
-    running setup_deps_mode_dir "$storage_path"
-
+    running setup_deps_model_dir   "$storage_path"
     running setup_deps_control_dir "$storage_path"
-
-    running setup_deps_view_dir "$storage_path"
+    running setup_deps_view_dir    "$storage_path"
 }
 
 function setup_org_resource_dirs()
@@ -2200,11 +2193,9 @@ function setup_org_home_portable_dirs()
     local LOCALDIRS_DIR="${USERDIR}/localdirs"
     local rel_homeprotabledir="org/home.d/portable.d"
 
-    running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "" "${rel_homeprotabledir}"
-
-    running setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d" "portable.d" "default"
-
-    running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/default"
+    running setup_vc_mkdirpath_ensure    "${LOCALDIRS_DIR}"            ""                   "${rel_homeprotabledir}"
+    running setup_make_relative_link     "${LOCALDIRS_DIR}/org/home.d" "portable.d"         "default"
+    running setup_add_to_version_control "${LOCALDIRS_DIR}"            "org/home.d/default"
 
     cat <<'EOF' > "${LOCALDIRS_DIR}/org/home.d/portable.d/README"
 portable.d is for required dir trees while

@@ -9,46 +9,81 @@ function stop_loading_pages_browser () {
         window.alert("Now Running session_stop_loading_buffers.");
     }
 
-    function ABC_session_stop_loading_buffers (window) {
+    function timeout_session_stop_loading_buffers (window) {
         if (!window) window = get_recent_conkeror_window();
-        // window.alert("Now Running ABC_session_stop_loading_buffers.");
+        // window.alert("Now Running timeout_session_stop_loading_buffers.");
         for (var i = 0; i < window.buffers.count; i++)
         {
             stop_loading( window.buffers.get_buffer(i) );
         }
     };
 
-    let _ABC_session_stop_loading_buffers = function (window) {
-        remove_hook("window_initialize_hook", _ABC_session_stop_loading_buffers);
+    let _timeout_session_stop_loading_buffers = function (window) {
+        remove_hook("window_initialize_hook", _timeout_session_stop_loading_buffers);
         window = get_recent_conkeror_window();
         if (window) {
-            window.setTimeout(ABC_session_stop_loading_buffers, 800);
-            // window.alert("Will run ABC_session_stop_loading_buffers after 2 secs.");
+            window.setTimeout(timeout_session_stop_loading_buffers, 800);
+            // window.alert("Will run timeout_session_stop_loading_buffers after 2 secs.");
         }
     };
 
-    add_hook("window_initialize_hook", _ABC_session_stop_loading_buffers);
+    add_hook("window_initialize_hook", _timeout_session_stop_loading_buffers);
 
-    // ABC_session_stop_loading_buffers();
+    // timeout_session_stop_loading_buffers();
 };
 
 stop_loading_pages_browser();
 //}}
 
+/**
+//{{
+if (false)
+{
+    let _save_path = false;
+    for(dir in ["tmp" "Downloads"]) {
+        let download_dir = make_file(get_home_directory().path + "/" + dir);
+        var w = get_recent_conkeror_window();
+        w.alert(download_dir.path);
+        if (download_dir.exists())
+        {
+            _save_path = download_dir;
+            w.alert(_save_path.path);
+            break;
+        }
+    }
+    if (false == _save_path) _save_path = get_home_directory()
+
+    let finish_update_save_path = function (info)
+    {
+        _save_path.initWithPath( info.target_file.parent.path );
+    };
+    add_hook("download_finished_hook", finish_update_save_path);
+
+    suggest_save_path_from_file_name =
+        function (filename, buffer) {
+            var w = get_recent_conkeror_window();
+            w.alert(_save_path.path);
+
+            let file = make_file(_save_path.clone());
+            file.append(filename);
+            return file.path;
+        };
+}
+//}}
+*/
 
 //{{ Remember the last save directory for downloads
 // Add the following code to your rc:
+if (true)
 {
-    let _save_path = get_home_directory();
-    // let _save_path = make_file("/home/s");
+    let tmp       = make_file(get_home_directory().path + "/tmp");
+    let dowmnload = make_file(get_home_directory().path + "/Downloads");
+    let _save_path = 1;
 
-
-    let added_update_save_path = function (info)
-    {
-        // var w = get_recent_conkeror_window();
-        // w.alert(info.target_file.parent.path);
-        _save_path.initWithPath( info.target_file.parent.path );
-    };
+    if (tmp.exists())
+        _save_path = tmp;
+    else
+        _save_path = download;
 
     let finish_update_save_path = function (info)
     {
@@ -57,17 +92,7 @@ stop_loading_pages_browser();
         _save_path.initWithPath( info.target_file.parent.path );
     };
 
-    let state_change_update_save_path = function (info)
-    {
-        // var w = get_recent_conkeror_window();
-        // w.alert(info.target_file.parent.path);
-        _save_path.initWithPath( info.target_file.parent.path );
-    };
-
-    // add_hook("download_added_hook", added_update_save_path);
     add_hook("download_finished_hook", finish_update_save_path);
-    // add_hook("download_state_change_hook", state_change_update_save_path);
-
 
     suggest_save_path_from_file_name =
         function (filename, buffer) {
@@ -79,7 +104,6 @@ stop_loading_pages_browser();
             return file.path;
     };
 }
-
 //}}
 
 // {{ If you are using Conkeror with multiple profiles, you may find
@@ -149,7 +173,7 @@ function load_files()
                  "/home/s/hell/.conkerorrc/local/office.js"];
     for(f in files) {
         sec = make_file(files[f])
-        load(sec);
+        if (sec.exists()) load(sec);
     }
 }
 var delicious_api_token;
@@ -643,7 +667,6 @@ define_webjump("del", "http://delicious.com/search?p=%s&chk=&context=userposts%7
 // }}
 
 // {{ Posting to Bibsonomy
-
 // The following snippet lets you post easily to http://bibsonomy.org :
 
 interactive("bibsonomy-post-publication",
