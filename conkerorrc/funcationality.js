@@ -35,75 +35,40 @@ function stop_loading_pages_browser () {
 stop_loading_pages_browser();
 //}}
 
-/**
-//{{
-if (false)
-{
-    let _save_path = false;
-    for(dir in ["tmp" "Downloads"]) {
-        let download_dir = make_file(get_home_directory().path + "/" + dir);
-        var w = get_recent_conkeror_window();
-        w.alert(download_dir.path);
-        if (download_dir.exists())
-        {
-            _save_path = download_dir;
-            w.alert(_save_path.path);
-            break;
-        }
-    }
-    if (false == _save_path) _save_path = get_home_directory()
+//{{ Remember the last save directory for downloads
+// Add the following code to your rc:
+function setup_file_download_save_path () {
+    let _save_path = get_home_directory();
+    let download_dirs = {tmp:"tmp", Downloads:"Downloads"};
 
-    let finish_update_save_path = function (info)
-    {
-        _save_path.initWithPath( info.target_file.parent.path );
-    };
-    add_hook("download_finished_hook", finish_update_save_path);
+    // Add command to reset _save_path
+
+    add_hook("download_finished_hook",
+             function (info)
+             {
+                 // info.target_file.parent.path add into download_dirs if not present.
+                 _save_path.initWithPath( info.target_file.parent.path );
+             });
 
     suggest_save_path_from_file_name =
         function (filename, buffer) {
-            var w = get_recent_conkeror_window();
-            w.alert(_save_path.path);
-
+            if (!_save_path.exists() || get_home_directory().path == _save_path.path) {
+                for(dir in download_dirs) {
+                    var download_dir = make_file(get_home_directory().path + "/" + download_dirs[dir]);
+                    if (download_dir.exists())
+                    {
+                        _save_path = download_dir;
+                        break;
+                    }
+                }
+            }
             let file = make_file(_save_path.clone());
             file.append(filename);
             return file.path;
         };
 }
-//}}
-*/
 
-//{{ Remember the last save directory for downloads
-// Add the following code to your rc:
-if (true)
-{
-    let tmp       = make_file(get_home_directory().path + "/tmp");
-    let dowmnload = make_file(get_home_directory().path + "/Downloads");
-    let _save_path = 1;
-
-    if (tmp.exists())
-        _save_path = tmp;
-    else
-        _save_path = download;
-
-    let finish_update_save_path = function (info)
-    {
-        // var w = get_recent_conkeror_window();
-        // w.alert(info.target_file.parent.path);
-        _save_path.initWithPath( info.target_file.parent.path );
-    };
-
-    add_hook("download_finished_hook", finish_update_save_path);
-
-    suggest_save_path_from_file_name =
-        function (filename, buffer) {
-            // var w = get_recent_conkeror_window();
-            // w.alert(_save_path.path);
-
-            let file = make_file(_save_path.clone());
-            file.append(filename);
-            return file.path;
-    };
-}
+setup_file_download_save_path();
 //}}
 
 // {{ If you are using Conkeror with multiple profiles, you may find
