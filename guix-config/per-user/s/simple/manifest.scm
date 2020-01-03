@@ -138,7 +138,6 @@
 
         "firefox"
         "conkeror-firefox"
-        "deb-adobe-flashplugin"
         ;; "epiphany"
 
         "alsa-utils"
