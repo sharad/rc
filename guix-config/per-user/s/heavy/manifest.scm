@@ -4,96 +4,19 @@
 
 (use-modules (lotus packages cdesktopenv))
 
-(define %lotus-dev-cdesktop-package-names
-  (list "glibc"
-        "glibc-locales"
-        "binutils"
-        "pkg-config"
-        "less"
-        "coreutils"
-        "diffutils"
-        "findutils"
-        "tar"
-        "patch"
-        "sed"
-        "grep"
-        "gawk"
-        "flex"
-        "bison"
-        "make"
-        "autoconf"
-        "automake"
-        "libtool"
-
-
-        "libxft"
-        "libxt"
-        "zlib"
-        "libxext"
-        "bzip2"
-
-        "xorgproto"
-
-        "fontconfig"
-        "xbitmaps"
-        "freetype"))
+(define %lotus-dev-cdesktop-package-names (list))
+  
 
 (define %lotus-dev-cdesktop-packages
   (append
-   (list
-    gcc
-    (list gcc "lib"))
+   (list (list gcc "lib"))
    (map specification->package
         %lotus-dev-cdesktop-package-names)))
 
 ;; set LD_LIBRARY_PATH as some command built and used
 ;; (packages->manifest %lotus-dev-cdesktop-packages)
 
-(packages->manifest
- (list m4
-       grep
-       sed
-       gawk
-       autoconf
-       automake
-       libtool
-       flex
-       bison
-       pkg-config
-
-       glibc
-       glibc-locales
-       binutils
-       coreutils
-       findutils
-       less
-       which
-       glib
-       ;; json-glib
-       gcc
-       gnu-make
-       loksh
-       mkfontdir
-       ;; pidgin
-       ;; cmake
-
-       bdftopcf
-       rpcsvc-proto ;; ac
-
-       ;; libtirpc
-       libtirpc-gh
-       freetype
-       bzip2
-       libjpeg
-       motif                            ;pkg-config missing
-       libx11
-       libxmu
-       libxext
-       libxft
-       libxinerama
-       libxscrnsaver
-       libxt
-       xbitmaps))
+(packages->manifest %lotus-dev-cdesktop-packages)
 
 
 

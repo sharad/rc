@@ -88,7 +88,7 @@
         "virt-viewer"
         "libvirt"
 
-        "lesspipe"
+        ;; "lesspipe"
         "python-organize-tool"
 
         "evince"
@@ -206,11 +206,6 @@
         "gpa"
         "jetring"
 
-
-
-        
-
-
         "beep"))
 
 (define %lotus-lang-packages (list "ocaml"
@@ -220,11 +215,6 @@
 (define %lotus-user-selected-package-names
   (list   "m4"
           "binutils"
-          ;; "coreutils"
-          ;; "diffutils"
-          ;; "findutils"
-          ;; "gnu-make"
-          ;; "patch"
           "libxdg-basedir"
           "xdg-user-dirs"
           "xdg-utils"
@@ -426,6 +416,27 @@
         "libnotify"
         "dunst"))
 
+(define %lotus-test-packages
+  (list "vlc"
+        "ffmpeg"
+        "libvorbis"
+        "libvpx"
+        "pulseaudio"
+        "alsa-lib"
+        "libogg"
+        "ffmpeg"
+        "gst-plugins-base"
+        "gst-plugins-good"
+        "gst-plugins-bad"
+        "gst-plugins-ugly"
+        "gst-libav"
+        "gst123"
+        "gstreamer"
+        "openh264"
+        "libsmpeg"
+        "libmpeg2"
+        "icecat"))
+
 (define %lotus-package-names-for-installation 
   (append %lotus-user-selected-package-names
           %lotus-lang-packages
@@ -435,7 +446,8 @@
           %lotus-media-packages
           %lotus-gui-packages
           %lotus-text-packages
-          %lotus-notification-packages))
+          %lotus-notification-packages
+          %lotus-test-packages))
 
 (define %lotus-user-desktop-packages
   (list (list glib     "bin")

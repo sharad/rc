@@ -3,7 +3,7 @@
 # https://superuser.com/questions/71588/how-to-syntax-highlight-via-less/71593#71593
 # https://unix.stackexchange.com/questions/90990/less-command-and-syntax-highlighting
 
-if [ "x" != "x$TERM" ]
+if [ "x" != "x$TERM" ] && which tput >/dev/null 2>&1
 then
     #{{{
     if [ -r "/usr/bin/lesspipe" ]
