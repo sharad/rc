@@ -72,6 +72,7 @@
         "compton-conf"
         "xcompmgr"
         "xdpyinfo"
+        "rofi"
 
         "enscript"
 
@@ -325,8 +326,8 @@
         "font-awesome"
         "font-tamzen"
         "font-comic-neue"
-        "font-iosevka"
-        "font-iosevka-slab"
+        ;; "font-iosevka"
+        ;; "font-iosevka-slab"
         "font-go"
         "font-google-material-design-icons"
         "font-open-dyslexic"

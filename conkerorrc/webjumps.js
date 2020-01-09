@@ -94,6 +94,9 @@ var bookmark_groups = {
         "http://dunyanews.tv",
         "http://www.dawn.com",
         "https://www.cgtn.com",
+        "https://www.panapress.com",
+        "http://www.afrol.com",
+        "http://saharareporters.com",
     ],
     "NewsOffBeats": [
         "http://www.bbc.com/future",
