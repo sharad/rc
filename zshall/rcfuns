@@ -980,7 +980,7 @@ function symlink-final ()
 }
 
 ##}}
-
+"Something which every body want to give, nobody want to take is called advice. That is one thing second, in real world problems no advices, books, principles at one point nothing work, and many time this point is not far."
 ##{{
 function add2setup ()
 {
@@ -995,9 +995,9 @@ function add2setup ()
         then
             mv ~/.$addfile ~/.setup/$addfile
             ln -s .setup/$addfile ~/.$addfile
-            rm -f ~/.setup/_home/.$addfile
-            cp -a ~/.$addfile ~/.setup/_home
-            git -C ~/.setup/ add $addfile _home/.$addfile
+            rm -f ~/.setup/.config/_home/.$addfile
+            cp -a ~/.$addfile ~/.setup/.config/_home
+            git -C ~/.setup/ add $addfile .config/_home/.$addfile
         else
             echo No ~/.$addfile such file exists. >&2
         fi
