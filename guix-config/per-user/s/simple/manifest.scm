@@ -30,6 +30,12 @@
 
 (define %lotus-other-packages
   (list "vim"
+
+        "unzip"
+
+
+
+
         "emacs-bbdb"
         "emacs-ebdb"
         "guile"
