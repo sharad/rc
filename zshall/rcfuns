@@ -12,7 +12,7 @@ fi
 # My Custom Functions	     #
 
 # set c dir
-chome () {
+function chome () {
     my_homes=(`\ls -N ~/..`)
     read -s -t 5 -p "`\ls -Nm ~/..`
 	dir: " MYHINDX
@@ -130,7 +130,7 @@ function setcursor {
 # defining q
 if [ -x /usr/games/fortune ]
 then
-    qf () {
+    function qf () {
         if whence -p tput >/dev/null 2>&1
         then
 	          tput clear;
@@ -145,7 +145,7 @@ then
     }
 elif which fortune > /dev/null 2>&1
 then
-    qf () {
+    function qf () {
         if whence -p tput >/dev/null 2>&1
         then
 	          tput clear
@@ -158,7 +158,7 @@ then
 	      whence setcursor >/dev/null 2>&1 && setcursor
     }
 else
-    qf () {
+    function qf () {
         if whence -p tput >/dev/null 2>&1
         then
 	          tput clear;
@@ -943,7 +943,7 @@ function bk() {
 
 ##{{ emacs
 # from: https://jpace.wordpress.com/2016/12/01/current-file-and-directory-in-emacs-and-z-shell/
-cde () {
+function cde () {
     cd ${(Q)~$(emacsclient -f ~/.emacs.d/server/$EMACS_SERVER_NAME \
                            -e '(with-current-buffer
                                  (window-buffer (selected-window))
@@ -961,7 +961,7 @@ ecd() {
                        (window-buffer (selected-window))
                          default-directory) ' | sed -e '1!b' -e '/emacsclient: connected to remote socket at/d')}
 }
-cde () { cd `ecd` }
+function cde () { cd `ecd` }
 ##}}
 
 ##{{ symlink
