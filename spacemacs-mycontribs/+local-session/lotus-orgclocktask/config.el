@@ -122,8 +122,8 @@
         (add-hook
          'kill-emacs-hook
          #'(lambda ()
-             (if (and
-                  (org-clock-is-active))
+             (when (org-clock-is-active)
+	         (message "TODO: automatically save unnamed.org")
                   ;; (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil)
 
                  (org-with-clock-writeable
