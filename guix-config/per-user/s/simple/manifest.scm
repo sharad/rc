@@ -33,6 +33,7 @@
 
         "unzip"
 
+        "poppler"
 
 
 
