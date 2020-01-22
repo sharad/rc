@@ -34,6 +34,8 @@
         "unzip"
 
         "poppler"
+        "whois"
+        "pwgen"
 
 
 
@@ -443,7 +445,9 @@
         "openh264"
         "libsmpeg"
         "libmpeg2"
-        "icecat"))
+        ;; "icecat"
+        ))
+        
 
 (define %lotus-package-names-for-installation 
   (append %lotus-user-selected-package-names

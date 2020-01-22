@@ -29,7 +29,7 @@ Host *.merunetworks.com 10.* susengg-01
   UserKnownHostsFile ~/.ssh/known_hosts
   User spratap
 
-Host controller-* corvina-*
+Host controller-* corvina-* 10.33.*
   User admin
   Ciphers      aes256-cbc,3des-cbc,aes128-cbc,aes192-cbc,rijndael-cbc@lysator.liu.se,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
 
@@ -47,7 +47,7 @@ Host lispm.genera.net lispm
 
 # host that changes their host-key very offen
 # http://linuxcommando.blogspot.in/2008/10/how-to-disable-ssh-host-key-checking.html
-Host contoller-*
+Host contoller-* 10.*
    StrictHostKeyChecking no
    UserKnownHostsFile=/dev/null
    ServerAliveInterval 240

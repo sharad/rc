@@ -718,6 +718,29 @@ function setup_apt_upgrade_system()
             else
                 warn guix system reconfigure -- Failed
             fi
+
+
+
+            df
+            guix package  --delete-generations=24h
+            for profile in $LOCAL_GUIX_EXTRA_PROFILES
+            do
+                manifest_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/manifest.scm
+                profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"$profile"
+                if [ -f "${manifest_path}" -a -f "${profile_path}"/etc/profile ]
+                then
+                    running guix package -p "${profile_path}" --delete-generations=24h
+                else
+                    warn file "${profile_path}"/etc/profile not exist, for "${profile_path}"
+                fi
+                unset profile_path
+                unset profile
+            done
+
+            sudo guix system delete-generations 3d
+            guix gc -d 15h -C  15G
+            df
+
         else
             warn guix pull -- Failed
         fi

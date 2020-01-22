@@ -466,7 +466,7 @@
          (lambda ()
            (execl (string-append #$findutils "/bin/updatedb")
                   ;; "updatedb"
-                  "--prunepaths=/tmp /var/tmp /gnu/store /run"))))
+                  "--prunepaths=`/tmp /var/tmp /gnu/store /run'"))))
 
 (define garbage-collector-job
   ;; Collect garbage 5 minutes after midnight every day.
