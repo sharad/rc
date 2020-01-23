@@ -91,6 +91,7 @@
         "xmlstarlet"
         "libxml2"
         "libxslt"
+        "qtxmlpatterns"                 ;xquery
 
         "atool"
         "sshpass"

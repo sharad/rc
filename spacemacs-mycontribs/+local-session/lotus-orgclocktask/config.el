@@ -107,29 +107,32 @@
 (defun lotus-orgclocktask/init-lotus-utils-config ()
   (progn
 
-      (progn                          ;settings
-        (setq
-         ;; https://stackoverflow.com/questions/8281604/remove-done-tasks-from-agenda-view
-         org-agenda-skip-scheduled-if-done t))
+    (progn                          ;settings
+      (setq
+       ;; https://stackoverflow.com/questions/8281604/remove-done-tasks-from-agenda-view
+       org-agenda-skip-scheduled-if-done t))
 
-      (progn
-        (setq org-refile-targets
-              '((nil :maxlevel . 3)           ; only the current file
-                (org-agenda-files :maxlevel . 3) ; all agenda files, 1st/2nd level
-                (org-files-list :maxlevel . 4)   ; all agenda and all open files
-                (lotus-org-files-list :maxlevel . 4))))
-      (progn
-        (add-hook
-         'kill-emacs-hook
-         #'(lambda ()
-             (when (org-clock-is-active)
-	         (message "TODO: automatically save unnamed.org")
-                  ;; (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil)
+    (progn
+      (setq org-refile-targets
+            '((nil :maxlevel . 3)           ; only the current file
+              (org-agenda-files :maxlevel . 3) ; all agenda files, 1st/2nd level
+              (org-files-list :maxlevel . 4)   ; all agenda and all open files
+              (lotus-org-files-list :maxlevel . 4))))
+    (progn
 
-                 (org-with-clock-writeable
-                   (let (org-log-note-clock-out)
-                     (if (org-clock-is-active)
-                         (org-clock-out))))))))))
+      (defun kill-emacs-org-clock-out ()
+        (when (org-clock-is-active)
+          ;; (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil)
+          (org-with-clock-writeable
+            (let (org-log-note-clock-out)
+              (if (org-clock-is-active)
+                  (let* ((buff (marker-buffer org-clock-marker)))
+                    (org-clock-out)
+                    (when buff
+                      (with-current-buffer buff
+                        (save-buffer)))))))))
+
+      (add-hook 'kill-emacs-hook #'kill-emacs-org-clock-out))))
 
 (defun lotus-orgclocktask/init-org-clock-unnamed-task-init ()
   (progn))
