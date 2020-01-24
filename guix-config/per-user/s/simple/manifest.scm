@@ -99,7 +99,7 @@
         "virt-viewer"
         "libvirt"
 
-        ;; "lesspipe"
+        "lesspipe"
         "python-organize-tool"
 
         "evince"
@@ -283,6 +283,7 @@
           "glibc-utf8-locales" ;; guix guile showing some error even it is part of system configuration
 
           "stapler"
+          "qpdf"
           ;; "gcc-toolchain"
           "strace"
           "guile-readline"))
