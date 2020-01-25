@@ -58,8 +58,8 @@ define_key(content_buffer_normal_keymap, "g U", "root"); // FIXME
 
 define_key(content_buffer_normal_keymap, "o", "find-url");
 define_key(content_buffer_normal_keymap, "O", "find-alternate-url");
-define_key(content_buffer_normal_keymap, "t", "find-url-new-buffer");
-define_key(content_buffer_normal_keymap, "T", "find-alternate-url-new-buffer");
+define_key(content_buffer_normal_keymap, "T", "find-url-new-buffer");
+define_key(content_buffer_normal_keymap, "t", "find-alternate-url-new-buffer");
 // FIXME
 // [[gnus:gmane.comp.mozilla.conkeror#20100531163840.GA3463@hecubus][Email from John J. Foerch: Re: Bind key to other key]]
 // require("global-overlay-keymap");

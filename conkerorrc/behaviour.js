@@ -98,8 +98,8 @@ interactive("find-url-from-history-new-buffer",
             "find-url-new-buffer",
             $browser_object = browser_object_history_url);
 
-define_key(content_buffer_normal_keymap, "h", "find-url-from-history-new-buffer");
-define_key(content_buffer_normal_keymap, "H", "find-url-from-history");
+define_key(content_buffer_normal_keymap, "H", "find-url-from-history-new-buffer");
+define_key(content_buffer_normal_keymap, "h", "find-url-from-history");
 
 // Sorting
 
@@ -135,8 +135,8 @@ interactive("find-url-from-bookmark-new-buffer",
             "find-url-new-buffer",
             $browser_object = browser_object_bookmark_url);
 
-define_key(content_buffer_normal_keymap, "k", "find-url-from-bookmark-new-buffer");
-define_key(content_buffer_normal_keymap, "K", "find-url-from-bookmark");
+define_key(content_buffer_normal_keymap, "K", "find-url-from-bookmark-new-buffer");
+define_key(content_buffer_normal_keymap, "k", "find-url-from-bookmark");
 ///////////////// Similarly bookmark ///////////////////////
 
 
