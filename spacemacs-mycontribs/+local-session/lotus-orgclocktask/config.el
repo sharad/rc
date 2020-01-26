@@ -119,7 +119,6 @@
               (org-files-list :maxlevel . 4)   ; all agenda and all open files
               (lotus-org-files-list :maxlevel . 4))))
     (progn
-
       (add-hook 'kill-emacs-hook #'kill-emacs-org-clock-out))))
 
 (defun lotus-orgclocktask/init-org-clock-unnamed-task-init ()
