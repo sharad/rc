@@ -244,6 +244,7 @@
           "jq"
           "python-xq"
           "python-yq"
+          "csvkit"
 
           ;; "macchanger"
           ;; "font-lohit"
