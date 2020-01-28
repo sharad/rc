@@ -220,8 +220,9 @@
         "beep"))
 
 (define %lotus-lang-packages (list "ocaml"
+                                   ;; "ocaml-merlin"
                                    "opam"
-                                   "ocaml-merlin"))
+                                   ))
 
 (define %lotus-user-selected-package-names
   (list   "m4"
@@ -285,7 +286,6 @@
 
           "stapler"
           "qpdf"
-          ;; "gcc-toolchain"
           "strace"
           "guile-readline"))
 

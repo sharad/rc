@@ -721,7 +721,8 @@ function setup_apt_upgrade_system()
 
 
 
-            df
+            df -hx tmpfs -x devtmpfs
+
             guix package  --delete-generations=24h
             for profile in $LOCAL_GUIX_EXTRA_PROFILES
             do
@@ -739,7 +740,8 @@ function setup_apt_upgrade_system()
 
             sudo guix system delete-generations 3d
             guix gc -d 15h -C  15G
-            df
+
+            df -hx tmpfs -x devtmpfs
 
         else
             warn guix pull -- Failed
@@ -2672,7 +2674,8 @@ function process_arg()
 
 function running()
 {
-    verbose running "$@"
+    # verbose running "$@"
+    info running "$@"
     local _cmd=$1
     shift
     if [ ! $noaction ]
