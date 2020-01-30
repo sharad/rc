@@ -273,7 +273,8 @@ function emacs_daemon_start()
                    if [ ! -e ~/.emacs.d/server/${server} ] ||
                           # bundler command is not here for timeout it only for zsh
                           # do not delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
-                          ! timeout 7 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")' > /dev/null 2>&1
+                          # ! timeout 7 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")' > /dev/null 2>&1
+                       ! ps $(head -1 ~/.emacs.d/server/${server} | cut -d' ' -f2)
                    then
                        # blow one is not allow gnus to read its ~/.gnus file automatically.
 	                     # rm -f   \#.ido.last\#
