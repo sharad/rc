@@ -15,6 +15,7 @@ var bookmark_groups = {
         "https://www.ndtv.com/business",
         "https://economictimes.indiatimes.com",
         "https://moneyconrol.com",
+        "https://www.business-standard.com",
     ],
     "Crypto": [
         "http://news.mit.edu/topic/cryptography",

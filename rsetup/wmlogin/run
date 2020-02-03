@@ -195,6 +195,9 @@ foreach prog (
 if [ -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ] && ! pgrep -u "$(id -u)" polkit-gnome-au >& /dev/null
 then
     /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &!
+elif [ -x /run/current-system/profile/libexec/polkit-gnome-authentication-agent-1 ] && ! pgrep -u "$(id -u)" polkit-gnome-au >& /dev/null
+then
+    /run/current-system/profile/libexec/polkit-gnome-authentication-agent-1 &!
 fi
 
 

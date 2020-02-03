@@ -554,20 +554,23 @@
                                                                                   hplip-minimal))))))
 
 
+;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
+;; (define %lotus-polkit-services (list (service polkit-service-type)))
+(define %lotus-polkit-services (list ))
 
 (define %lotus-desktop-nm-services (modify-services %desktop-services
-                                     (network-manager-service-type config =>
-                                                                   (network-manager-configuration (inherit config)
-                                                                                                  ;; (vpn-plugins '("network-manager-openconnect"))
-                                                                                                  (dns "dnsmasq")))
-                                     ;; https://gitlab.com/Efraim/guix-config/blob/master/macbook41_config.scm
-                                     (guix-service-type config =>
-                                                        (guix-configuration (inherit config)
-                                                                            ;; (use-substitutes? %lotus-guix-use-substitutes)
-                                                                            ;; (authorized-keys '())
-                                                                            (substitute-urls (append %lotus-guix-substitute-urls
-                                                                                                     %default-substitute-urls))
-                                                                            (extra-options %lotus-guix-extra-options)))))
+                                                    (network-manager-service-type config =>
+                                                                                  (network-manager-configuration (inherit config)
+                                                                                                                 ;; (vpn-plugins '("network-manager-openconnect"))
+                                                                                                                 (dns "dnsmasq")))
+                                                    ;; https://gitlab.com/Efraim/guix-config/blob/master/macbook41_config.scm
+                                                    (guix-service-type config =>
+                                                                       (guix-configuration (inherit config)
+                                                                                           ;; (use-substitutes? %lotus-guix-use-substitutes)
+                                                                                           ;; (authorized-keys '())
+                                                                                           (substitute-urls (append %lotus-guix-substitute-urls
+                                                                                                                    %default-substitute-urls))
+                                                                                           (extra-options %lotus-guix-extra-options)))))
 
 ;; https://issues.guix.info/issue/35674
 (when #t
@@ -608,6 +611,7 @@
                                                    %lotus-gpm-services
                                                    %lotus-mcron-services
                                                    %lotus-cups-services
+                                                   %lotus-polkit-service
                                                    %lotus-desktop-services))
 
 

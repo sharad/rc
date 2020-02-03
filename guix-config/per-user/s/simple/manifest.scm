@@ -37,6 +37,7 @@
         "whois"
         "pwgen"
 
+        "net-snmp"
 
 
         "emacs-bbdb"
@@ -221,8 +222,8 @@
 
 (define %lotus-lang-packages (list "ocaml"
                                    ;; "ocaml-merlin"
-                                   "opam"
-                                   ))
+                                   "opam"))
+                                   
 
 (define %lotus-user-selected-package-names
   (list   "m4"
@@ -230,6 +231,10 @@
           "libxdg-basedir"
           "xdg-user-dirs"
           "xdg-utils"
+          ;; https://faq.i3wm.org/question/2155/how-can-i-use-autostart-desktop-files-in-i3.1.html
+          ;; https://github.com/jceb/dex
+          ;; http://e-jc.de/dex/
+          ;; dex
           "shroud"
           "git"
           "git-remote-gcrypt"

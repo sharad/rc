@@ -623,23 +623,38 @@
         (pull-hidden-other)))))
 
 (stumpwm:defcommand sys-halt () ()
-  (run-shell-command "systemctl poweroff"))
+  (cond ((= 1 (length (complete-program "systemctl")))
+         (run-shell-command "systemctl poweroff"))
+        ((= 1 (length (complete-program "herd")))
+         (run-shell-command "pkexec herd power-off shepherd"))))
 
 (stumpwm:defcommand sys-poweroff () ()
-  (run-shell-command "systemctl poweroff"))
+  (sys-halt))
 
 (stumpwm:defcommand sys-suspend () ()
-  (run-shell-command "systemctl suspend"))
+  (cond ((= 1 (length (complete-program "systemctl")))
+         (run-shell-command "systemctl suspend"))
+        ((= 1 (length (complete-program "herd")))
+         (run-shell-command "pkexec herd suspend shepherd"))))
 
 (stumpwm:defcommand sys-suspend-then-hibernate () ()
-  (run-shell-command "systemctl suspend-then-hibernate"))
+  (cond ((= 1 (length (complete-program "systemctl")))
+         (run-shell-command "systemctl suspend-then-hibernate"))
+        ((= 1 (length (complete-program "herd")))
+         (run-shell-command "pkexec herd suspend-then-hibernate shepherd"))))
 
 (stumpwm:defcommand sys-hibernate () ()
-  (run-shell-command "systemctl hibernate"))
+  (cond ((= 1 (length (complete-program "systemctl")))
+         (run-shell-command "systemctl hibernate"))
+        ((= 1 (length (complete-program "herd")))
+         (run-shell-command "pkexec herd hibernate shepherd"))))
 
 (stumpwm:defcommand sys-reboot () ()
   ;; (run-shell-command "reb00t")
-  (run-shell-command "systemctl reboot"))
+  (cond ((= 1 (length (complete-program "systemctl")))
+         (run-shell-command "systemctl reboot"))
+        ((= 1 (length (complete-program "herd")))
+         (run-shell-command "pkexec herd reboot shepherd"))))
 
 (defparameter *ctr-alt-del-menu*
   '(("Lock"                   "lock-stumpwm")
