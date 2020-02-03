@@ -305,7 +305,7 @@ Each entry is either:
 
 (defun lotus-mailnews/init-mu4e-view ()
   (use-package mu4e-view
-    :commands (org-mu4e-store-link)
+    :commands (mu4e-message-at-point)
     :defer t
     ;; :init
     ;; (defvar mu4e~view-message)
