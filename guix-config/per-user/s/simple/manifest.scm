@@ -247,7 +247,7 @@
           "python-pandas"
           "python-pycryptodome"
           "python-pdfminer"
-          "opencv" ;; -- put it in input depedency
+          ;; "opencv" ;; -- put it in input depedency
           "jq"
           "python-xq"
           "python-yq"
