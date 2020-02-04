@@ -611,7 +611,7 @@
                                                    %lotus-gpm-services
                                                    %lotus-mcron-services
                                                    %lotus-cups-services
-                                                   %lotus-polkit-service
+                                                   %lotus-polkit-services
                                                    %lotus-desktop-services))
 
 
