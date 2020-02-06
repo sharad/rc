@@ -166,21 +166,21 @@ function main()
 
     trap setup_finish EXIT SIGINT SIGTERM
 
-    running process_arg $@
+    running debug process_arg $@
     # process_arg $@
-    running mkdir -p $SETUP_TMPDIR
-    running set_keyboard
+    running debug mkdir -p $SETUP_TMPDIR
+    running info set_keyboard
 
     if [ ! -d "/run/current-system/profile" ]
     then
-       running setup_sourcecode_pro_font
+       running info setup_sourcecode_pro_font
     fi
 
     cd "${HOME}/"
 
-    running setup_apt_packages
-    running setup_ecrypt_private
-    running setup_tmp_ssh_keys "$SETUP_TMPDIR/ssh" "$SSH_KEY_DUMP"
+    running info setup_apt_packages
+    running info setup_ecrypt_private
+    running info setup_tmp_ssh_keys "$SETUP_TMPDIR/ssh" "$SSH_KEY_DUMP"
 
     if ! ssh-add -l
     then
@@ -189,40 +189,40 @@ function main()
     fi
 
     # will set the ${HOME}/.setup also
-    running setup_git_repos
-    running setup_config_dirs
-    running setup_user_config_setup
-    running setup_ssh_keys "$SSH_KEY_DUMP"
-    running setup_download_misc
+    running info setup_git_repos
+    running info setup_config_dirs
+    running info setup_user_config_setup
+    running info setup_ssh_keys "$SSH_KEY_DUMP"
+    running info setup_download_misc
 
     if [ ! -d "/run/current-system/profile" ]
     then
-        running setup_login_shell
-        running setup_advertisement_blocking
+        running info setup_login_shell
+        running info setup_advertisement_blocking
     fi
 
-    running setup_dirs
+    running info setup_dirs
 
     if [ ! -d "/run/current-system/profile" ]
     then
-        running setup_apache_usermod
-        running setup_mail
-        running setup_ldapsearch
-        running setup_password
-        running setup_crontab
+        running info setup_apache_usermod
+        running info setup_mail
+        running info setup_ldapsearch
+        running info setup_password
+        running info setup_crontab
     fi
 
-    running setup_spacemacs
+    running info setup_spacemacs
 
     if [ ! -d "/run/current-system/profile" ]
     then
-        running setup_clib_installer
-        running setup_clib_pkgs
-        running setup_bpkg_installler
-        running setup_bpkg_pkgs
+        running info setup_clib_installer
+        running info setup_clib_pkgs
+        running info setup_bpkg_installler
+        running info setup_bpkg_pkgs
     fi
 
-    running set_window_share
+    running info set_window_share
     rm -rf $SETUP_TMPDIR
 
     echo Finished setup-user
@@ -293,7 +293,7 @@ function setup_make_link()
                 warn while it should point to "$(readlink -m $rtarget )" >&2
             fi
             warn removing $link
-            running mv $link ${link}-BACKUP
+            running debug mv $link ${link}-BACKUP
         else
             verbose $link do not exists >&1
         fi
@@ -308,8 +308,8 @@ function setup_make_link()
             mkdir -p "$(dirname $link)"
         fi
 
-        running rm -f  $link
-        running ln -sf $target $link
+        running debug rm -f  $link
+        running debug ln -sf $target $link
     else
         verbose $link is correctly pointing to "$(readlink -m $rtarget )" is equal to $target
         rm -f  $link
@@ -341,11 +341,11 @@ function setup_copy_link()
                     warn while it should point to "$(readlink -m $link )" >&2
                 fi
                 warn removing $link
-                running mv $target ${target}-BACKUP
+                running debug mv $target ${target}-BACKUP
             else
                 verbose $target do not exists >&1
             fi
-            running cp -a $link $target
+            running debug cp -a $link $target
         else
             verbose $target is correctly pointing to "$(readlink -m $target )" is equal what $link is pointing to "$(readlink -m $link )"
         fi
@@ -368,19 +368,24 @@ function setup_make_relative_link()
     debug parents_link=$parents_link
     debug target=$target
 
-    # debug running setup_make_link ${parents_link}${target:+/}${target} $path/$link
-    # running setup_make_link ${parents_link}${target:+/}${target} $path/$link
+    # debug running debug setup_make_link ${parents_link}${target:+/}${target} $path/$link
+    # running debug setup_make_link ${parents_link}${target:+/}${target} $path/$link
 
-    local separator=
-    if [ "x" != "x$target" -a "x" != "x$parents_link" ]
+    if [ -d "${path}/${target}" ]
     then
+        local separator=
+        if [ "x" != "x$target" -a "x" != "x$parents_link" ]
+        then
             separator="/"
+        fi
+
+        # debug separator=$separator
+
+        debug running debug setup_make_link ${parents_link}${separator:+/}${target} $path/$link
+        running debug setup_make_link ${parents_link}${separator:+/}${target} $path/$link
+    else
+        warn running debug setup_make_link "${path}/${target}" is broken link not creating link ${parents_link}${separator:+/}${target} $path/$link
     fi
-
-    # debug separator=$separator
-
-    debug running setup_make_link ${parents_link}${separator:+/}${target} $path/$link
-    running setup_make_link ${parents_link}${separator:+/}${target} $path/$link
 }
 
 function setup_recursive_links_container_dirs()
@@ -411,10 +416,10 @@ function setup_recursive_links_container_dirs()
         debug linkdirs=${linkdirs[*]}
 
         # TODO? do something here
-        for lnkdir in ${linkdirs[*]}
+        for lnkdir in "${linkdirs[@]}"
         do
-            # debug running setup_make_relative_link ${basepath} ${linktopdir}/${lnk} ${targetdir}/${lnk}
-            running setup_make_relative_link ${basepath} ${linktopdir}/${lnkdir} ${targetdir}/${lnkdir}
+            # debug running debug setup_make_relative_link ${basepath} ${linktopdir}/${lnk} ${targetdir}/${lnk}
+            running debug setup_make_relative_link ${basepath} ${linktopdir}/${lnkdir} ${targetdir}/${lnkdir}
         done
     else
         error dir ${basepath}/${linktopdir} not exists
@@ -443,10 +448,10 @@ function setup_recursive_links()
         debug links=${links[*]}
 
         # TODO? do something here
-        for lnk in ${links[*]}
+        for lnk in "${links[@]}"
         do
-            # debug running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
-            running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
+            # debug running debug setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
+            running debug setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
         done
     else
         error dir ${basepath}/${linkdir} not exists
@@ -507,9 +512,9 @@ function setup_add_to_version_control()
             debug in ${base}
             debug ${relfile} is directory so not adding it in git.
         else
-            if setup_add_to_version_control_ask "git -C ${base} add ${relfile} ? "
+            if setup_add_to_version_control_ask "git -C ${base} add -f ${relfile} ? "
             then
-                running git -C "${base}" add -f "${relfile}"
+                running debug git -C "${base}" add -f "${relfile}"
             fi
         fi
     else
@@ -543,10 +548,15 @@ function setup_add_to_version_control_recursive_links_container_dirs() # NOT REQ
         debug linkdirs=${linkdirs[*]}
 
         # TODO? do something here
-        for lnkdir in ${linkdirs[*]}
+        for lnkdir in ${linkdirs[@]}
         do
-            echo '*' > ${basepath}/${targetdir}/${lnkdir}/.gitignore
-            running setup_add_to_version_control ${basepath} ${targetdir}/${lnkdir}/.gitignore
+            if [ -d "${basepath}/${targetdir}/${lnkdir}" ]
+            then
+                echo '*' > ${basepath}/${targetdir}/${lnkdir}/.gitignore
+                running debug setup_add_to_version_control ${basepath} ${targetdir}/${lnkdir}/.gitignore
+            else
+                warn setup_add_to_version_control_recursive_links_container_dirs: "${basepath}/${targetdir}/${lnkdir}" not exists not addign .gitignore in it
+            fi
         done
     else
         error dir ${targettopleafdir} not exists
@@ -580,9 +590,9 @@ function setup_add_to_version_control_recursive_links() # SHARAD
         debug links="${links[*]}"
 
         # TODO? do something here
-        for lnk in "${links[*]}"
+        for lnk in "${links[@]}"
         do
-            running setup_add_to_version_control "${basepath}/${gitrelbase}" "${targetdir}/${lnk}"
+            running debug setup_add_to_version_control "${basepath}/${gitrelbase}" "${targetdir}/${lnk}"
         done
     else
         error dir "${basepath}/${linkdir}" not exists
@@ -602,12 +612,12 @@ function setup_vc_mkdirpath_ensure()
 
     while [ "$dirpath" != "." -a "x$dirpath" != "x" ]
     do
-        running touch "${vcbase}/${base}${base:+/}${dirpath}/.gitignore"
+        running debug touch "${vcbase}/${base}${base:+/}${dirpath}/.gitignore"
         if [ "$all" ]
         then
             echo '*' > "${vcbase}/${base}${base:+/}${dirpath}/.gitignore"
         fi
-        running setup_add_to_version_control "${vcbase}" "${base}${base:+/}${dirpath}/.gitignore"
+        running debug setup_add_to_version_control "${vcbase}" "${base}${base:+/}${dirpath}/.gitignore"
         dirpath="$(dirname $dirpath)"
     done
 
@@ -617,10 +627,10 @@ function set_keyboard()
 {
     if [ ! -f $SETUP_TMPDIR/keymap ]
     then
-        running mkdir -p $SETUP_TMPDIR
-        running wget -c 'https://raw.githubusercontent.com/sharad/rc/master/keymaps/Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt' -O "$SETUP_TMPDIR/keymap"
+        running debug mkdir -p $SETUP_TMPDIR
+        running debug wget -c 'https://raw.githubusercontent.com/sharad/rc/master/keymaps/Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt' -O "$SETUP_TMPDIR/keymap"
     fi
-    running xmodmap "$SETUP_TMPDIR/keymap" || echo xmodmap returned $?
+    running debug xmodmap "$SETUP_TMPDIR/keymap" || echo xmodmap returned $?
 }
 
 function setup_apt_repo()
@@ -635,13 +645,13 @@ function setup_apt_repo()
             if [ ubuntu = "$ID" ]
             then
                 UBUNTU_VERSION_NAME="$VERSION"
-                debug "Running Ubuntu $UBUNTU_VERSION_NAME"
+                debug "Running Debug Ubuntu $UBUNTU_VERSION_NAME"
             else
-                warn "Not running an Ubuntu distribution. ID=$ID, VERSION=$VERSION" >&2
+                warn "Not running debug an Ubuntu distribution. ID=$ID, VERSION=$VERSION" >&2
                 exit -1
             fi
         else
-            error "Not running a distribution with /etc/os-release available" >&2
+            error "Not running debug a distribution with /etc/os-release available" >&2
         fi
 
         for repo in "$APT_REPO_COMMPUNICATION" "$APT_REPO_UTILS"
@@ -679,20 +689,20 @@ function setup_apt_upgrade_system()
 
     if [ -d "/run/current-system/profile" ]
     then
-        if running guix pull
+        if running info guix pull
         then
-            running guix pull --news
-            if running sudo guix system reconfigure "${HOME}/.setup/guix-config/per-system/guilem/guix-more/config.scm"
+            running info guix pull --news
+            if running info sudo guix system reconfigure "${HOME}/.setup/guix-config/per-system/guilem/guix-more/config.scm"
             then
-                verbose guix upgrading
-                running guix upgrade # default
-                # running guix upgrade -p "${HOME}/.setup/guix-config/per-user/s/cdesktopenv/profiles.d/"
+                # verbose guix upgrading
+                running info guix upgrade # default
+                # running debug guix upgrade -p "${HOME}/.setup/guix-config/per-user/s/cdesktopenv/profiles.d/"
                 for profile in $LOCAL_GUIX_EXTRA_PROFILES
                 do
                     profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"$profile"
                     if [ -f "${profile_path}"/etc/profile ]
                     then
-                        running guix upgrade -p "${profile_path}"
+                        running info guix upgrade -p "${profile_path}"
                     else
                         warn file "${profile_path}"/etc/profile not exist, for "${profile_path}"
                     fi
@@ -701,14 +711,14 @@ function setup_apt_upgrade_system()
                 done
 
                 verbose guix installing
-                running guix package -m "${HOME}/.setup/guix-config/per-user/s/simple/manifest.scm" # default
+                running info guix package -m "${HOME}/.setup/guix-config/per-user/s/simple/manifest.scm" # default
                 for profile in $LOCAL_GUIX_EXTRA_PROFILES
                 do
                     manifest_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/manifest.scm
                     profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"$profile"
                     if [ -f "${manifest_path}" -a -f "${profile_path}"/etc/profile ]
                     then
-                        running guix package -p "${profile_path}" -m "${manifest_path}"
+                        running info guix package -p "${profile_path}" -m "${manifest_path}"
                     else
                         warn file "${profile_path}"/etc/profile not exist, for "${profile_path}"
                     fi
@@ -730,7 +740,7 @@ function setup_apt_upgrade_system()
                 profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"$profile"
                 if [ -f "${manifest_path}" -a -f "${profile_path}"/etc/profile ]
                 then
-                    running guix package -p "${profile_path}" --delete-generations=24h
+                    running info guix package -p "${profile_path}" --delete-generations=24h
                 else
                     warn file "${profile_path}"/etc/profile not exist, for "${profile_path}"
                 fi
@@ -770,9 +780,9 @@ function setup_apt_upgrade_system()
 
 function setup_apt_packages()
 {
-    running setup_apt_repo
+    running info setup_apt_repo
 
-    running setup_apt_upgrade_system
+    running info setup_apt_upgrade_system
 
 
 
@@ -856,7 +866,7 @@ function setup_apt_packages()
         DEB_PKG_CLOUD_VM_TOOLS
     )
 
-    for pkg in ${deb_pkg_lists[*]}
+    for pkg in "${deb_pkg_lists[@]}"
     do
         eval echo Intalling pkg list '\$'$pkg='\(' \${$pkg[*]} '\)'
         if ! eval sudo ${INSTALLER} ${INSTALLER_OPT} install \$$pkg
@@ -865,7 +875,7 @@ function setup_apt_packages()
             do
                 if [ ! -d "/run/current-system/profile" ]
                 then
-                    running sudo ${INSTALLER} ${INSTALLER_OPT} install ${p}
+                    running info sudo ${INSTALLER} ${INSTALLER_OPT} install ${p}
                 fi
             done
         fi
@@ -966,8 +976,8 @@ function setup_ssh_keys()
 
             if ! mount | grep "$HOME/.Private"
             then
-                running setup_ecrypt_private
-                running /usr/bin/ecryptfs-mount-private
+                running info setup_ecrypt_private
+                running info /usr/bin/ecryptfs-mount-private
             fi
 
             if ! mount | grep "$USER/.Private"
@@ -1051,28 +1061,28 @@ function setup_git_tree_repo()
 
         verbose GITDIR_BASE=${GITDIR_BASE}
 
-        running mkdir -p "$(dirname ${GITDIR_BASE} )"
+        running debug mkdir -p "$(dirname ${GITDIR_BASE} )"
         if [ ! -d "${GITDIR_BASE}/" ]
         then
-            if ! running git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  ${GITURL} ${GITDIR_BASE}
+            if ! running info git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  ${GITURL} ${GITDIR_BASE}
             then
                 echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  ${GITURL} ${GITDIR_BASE} >&2
             fi
         else
-            if ! running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" status
+            if ! running info git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" status
             then
                 echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" status >&2
             fi
-            if ! running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
+            if ! running info git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
             then
                 echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase >&2
             fi
-            # running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} pull --rebase
-            if ! running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} fetch
+            # running info git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} pull --rebase
+            if ! running info git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} fetch
             then
                 echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} fetch >&2
             fi
-            if ! running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} status
+            if ! running info git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} status
             then
                 echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} status >&2
             fi
@@ -1087,7 +1097,7 @@ function setup_git_annex_repo()
     # if .git is plain file than make it symlink
     local gittreeurl="$1"
     local modulepath="$2"
-    running setup_git_tree_repo "${gittreeurl}" "${modulepath}"
+    running debug setup_git_tree_repo "${gittreeurl}" "${modulepath}"
     if [ -e "${modulepath}/.git" ]
     then
         if [ ! -d ${modulepath}/.git ]
@@ -1109,10 +1119,10 @@ function setup_git_tree_annex_repo()
     local treedir=$2
     local module=$3
     local modulepath=${treedir}/${module}
-    running setup_git_tree_repo "${gittreeurl}" "${treedir}"
+    running info setup_git_tree_repo "${gittreeurl}" "${treedir}"
     if [ -d "${treedir}" ]
     then
-        running setup_git_annex_repo "${gittreeurl}" "${modulepath}"
+        running info setup_git_annex_repo "${gittreeurl}" "${modulepath}"
     fi
 }
 
@@ -1123,23 +1133,23 @@ function setup_git_repos()
     # RESOURCEPATH=".repos/git/main/resource"
     # USERORGMAIN="userorg/main"
 
-    running setup_git_tree_repo "git@github.com:sharad/userorg.git" ${HOME}/${RESOURCEPATH}/userorg
-    running setup_git_annex_repo "git@bitbucket.org:sh4r4d/doclibrary.git" ${HOME}/${RESOURCEPATH}/userorg/main/readwrite/public/user/doc/Library
+    running info setup_git_tree_repo "git@github.com:sharad/userorg.git" ${HOME}/${RESOURCEPATH}/userorg
+    running info setup_git_annex_repo "git@bitbucket.org:sh4r4d/doclibrary.git" ${HOME}/${RESOURCEPATH}/userorg/main/readwrite/public/user/doc/Library
 
     if true                    # decide through command line arguments
     then
-        running setup_git_tree_repo "git@bitbucket.org:sh4r4d/docorg.git" ${HOME}/${RESOURCEPATH}/info/doc/orgs/private/doc
-        running setup_git_tree_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/orgs/private/media/
-        running setup_git_annex_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/orgs/private/media/collection
+        running info setup_git_tree_repo "git@bitbucket.org:sh4r4d/docorg.git" ${HOME}/${RESOURCEPATH}/info/doc/orgs/private/doc
+        running info setup_git_tree_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/orgs/private/media/
+        running info setup_git_annex_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/orgs/private/media/collection
     fi
 }
 
 function setup_config_dirs()
 {
-    running setup_ecrypt_private
-    running setup_setup_dir
-    running setup_pi_dir
-    running setup_emacs_dir
+    running info setup_ecrypt_private
+    running info setup_setup_dir
+    running info setup_pi_dir
+    running info setup_emacs_dir
 }
 
 function setup_user_config_setup()
@@ -1152,7 +1162,7 @@ function setup_user_config_setup()
 
     if [ -d "${RCHOME}" ]
     then
-	      if running mkdir -p ${HOME}/_old_dot_filedirs
+	      if running debug mkdir -p ${HOME}/_old_dot_filedirs
         then
 	          # mv ${HOME}/.setup/.config/_home/.setup $SETUP_TMPDIR/Xsetup
 	          cd "${RCHOME}"
@@ -1170,17 +1180,17 @@ function setup_user_config_setup()
 
                             if [ ! -L ${HOME}/$c ] # backup
                             then
-		                            running mv ${HOME}/$c ${HOME}/_old_dot_filedirs
+		                            running debug mv ${HOME}/$c ${HOME}/_old_dot_filedirs
                             fi
 
                             if [ ! -e ${HOME}/$c ]
                             then
-		                            running cp -af $c ${HOME}/$c
+		                            running debug cp -af $c ${HOME}/$c
                                 # exit -1
                             elif [ -L ${HOME}/$c ]
                             then
-                                running rm -f ${HOME}/$c
-                                running cp -af $c ${HOME}/$c
+                                running debug rm -f ${HOME}/$c
+                                running debug cp -af $c ${HOME}/$c
                                 # exit -1
                                 # continue
                             fi
@@ -1190,7 +1200,7 @@ function setup_user_config_setup()
                             verbose not doing anything $c ${HOME}/$c
                         fi      # if [ ! -L ${HOME}/$c -o "$(readlink ${HOME}/$c)" != "$(readlink $c)" ]
                     else        # if [ -e ${HOME}/$c ]
-                        running cp -af $c ${HOME}/$c
+                        running debug cp -af $c ${HOME}/$c
                         verbose done setting up $c
 		                fi          # if [ -e ${HOME}/$c ]
                 else            # if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
@@ -1226,12 +1236,12 @@ function setup_sshkeys()
 
 function setup_Documentation()  # TODO
 {
-    running setup_copy_link ${HOME}/.setup/.config/_home/Documents ${HOME}/Documents
+    running debug setup_copy_link ${HOME}/.setup/.config/_home/Documents ${HOME}/Documents
 }
 
 function setup_public_html()    # TODO
 {
-    running setup_copy_link ${HOME}/.setup/.config/_home/public_html ${HOME}/public_html
+    running debug setup_copy_link ${HOME}/.setup/.config/_home/public_html ${HOME}/public_html
 }
 
 function setup_mail_and_metadata()
@@ -1244,10 +1254,10 @@ function setup_mail_and_metadata()
 
     if [ -e "${maildata_path}" -a -L "${maildata_path}" -a -d "${maildata_path}" ]
     then
-        running readlink -m "${maildata_path}"
-        running mkdir -p  "${maildata_path}/mail-and-metadata/offlineimap"
-        running mkdir -p  "${maildata_path}/mail-and-metadata/maildir"
-        running mkdir -p  "${preserved_path}/mailattachments"
+        running debug readlink -m "${maildata_path}"
+        running debug mkdir -p  "${maildata_path}/mail-and-metadata/offlineimap"
+        running debug mkdir -p  "${maildata_path}/mail-and-metadata/maildir"
+        running debug mkdir -p  "${preserved_path}/mailattachments"
     else
         warn  mail data path "${maildata_path}" not present.
     fi
@@ -1262,18 +1272,18 @@ function setup_mail()
     then
         if [ ! -d /etc/postfix-ORG ]
         then
-            running sudo cp -ar /etc/postfix /etc/postfix-ORG
+            running info sudo cp -ar /etc/postfix /etc/postfix-ORG
             for f in ${SYSTEM_DIR}/ubuntu/etc/postfix/*
             do
                 b=$(basename $f)
-                running cp $f /etc/postfix/
+                running debug cp $f /etc/postfix/
             done
         fi
 
         if [ ! -d /etc/dovecot-ORG ]
         then
-            running sudo cp -ar /etc/dovecot /etc/dovecot-ORG
-            running sudo cp ${SYSTEM_DIR}/ubuntu/etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
+            running info sudo cp -ar /etc/dovecot /etc/dovecot-ORG
+            running info sudo cp ${SYSTEM_DIR}/ubuntu/etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
         fi
     else
         error ${SYSTEM_DIR}/ubuntu/etc/postfix not exists >&2
@@ -1295,7 +1305,7 @@ function setup_gnomekeyring()
 
 function setup_password()
 {
-    running echo ${HOME}/.ldappass /etc/postfix/sasl_passwd etc
+    running info echo ${HOME}/.ldappass /etc/postfix/sasl_passwd etc
 }
 
 function setup_crontab()
@@ -1308,8 +1318,8 @@ function setup_login_shell()
     curshell="$(getent passwd $USER | cut -d: -f7)"
     if [ "$curshell" != "/bin/zsh" ]
     then
-        running sudo ${INSTALLER} ${INSTALLER_OPT} install zsh
-        running chsh -s /bin/zsh
+        running info sudo ${INSTALLER} ${INSTALLER_OPT} install zsh
+        running info chsh -s /bin/zsh
     fi
 }
 
@@ -1326,13 +1336,13 @@ function setup_paradise()
     curhomedir="$(getent passwd $USER | cut -d: -f6)"
     if [ "$(basename $curhomedir)" != hell ]
     then
-        running sudo rm -rf $curhomedir/hell # if exists
+        running info sudo rm -rf $curhomedir/hell # if exists
         newhomedir=$curhomedir/hell
-        running sudo mv $curhomedir ${curhomedir}_tmp
-        running sudo mkdir -p $curhomedir
-        running sudo mv ${curhomedir}_tmp "$newhomedir"
+        running info sudo mv $curhomedir ${curhomedir}_tmp
+        running info sudo mkdir -p $curhomedir
+        running info sudo mv ${curhomedir}_tmp "$newhomedir"
         # sudo mkdir -p "$newhomedir"
-        running sudo usermod -d "$newhomedir" $USER
+        running info sudo usermod -d "$newhomedir" $USER
         warn first change home dir to $newhomedir
         exit -1
         export HOME="$newhomedir"
@@ -1346,7 +1356,7 @@ function setup_mvc_dirs()
     then
         containerdir="$1"
 
-        running mkdir -p ${containerdir}/model.d
+        running debug mkdir -p ${containerdir}/model.d
         if [ -d ${containerdir}/model.d ] && ls ${containerdir}/model.d/*
         then
             modelsymlink=0
@@ -1357,7 +1367,7 @@ function setup_mvc_dirs()
                     modelsymlink=1
                 fi
                 sdirbase=$(basename "$sdir")
-                running setup_make_link ../model.d/${sdirbase} ${containerdir}/control.d/${sdirbase}
+                running debug setup_make_link ../model.d/${sdirbase} ${containerdir}/control.d/${sdirbase}
             done
             if [ "$modelsymlink" -eq 0 ]
             then
@@ -1365,7 +1375,7 @@ function setup_mvc_dirs()
             fi
         fi              # if [ -d ${containerdir}/model.d ]
 
-        running mkdir -p ${containerdir}/control.d
+        running debug mkdir -p ${containerdir}/control.d
         if [ -d ${containerdir}/control.d ] && ls ${containerdir}/control.d/*
         then
             modelsymlink=0
@@ -1376,7 +1386,7 @@ function setup_mvc_dirs()
                     modelsymlink=1
                 fi
                 sdirbase=$(basename "$sdir")
-                running setup_make_link ../control.d/${sdirbase} ${containerdir}/view.d/${sdirbase}
+                running debug setup_make_link ../control.d/${sdirbase} ${containerdir}/view.d/${sdirbase}
             done
             if [ "$modelsymlink" -eq 0 ]
             then
@@ -1392,7 +1402,7 @@ function setup_mvc_dirs()
 function setup_machine_dir()
 {
     # use namei to track
-    # running setup_paradise
+    # running debug setup_paradise
 
     local OSETUP_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup
     local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
@@ -1403,8 +1413,8 @@ function setup_machine_dir()
 
     if [ -d ${LOCALDIRS_DIR} ]
     then
-        running mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d"
-        running mkdir -p "${LOCALDIRS_DIR}/org/deps.d/control.d/machine.d"
+        running debug mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d"
+        running debug mkdir -p "${LOCALDIRS_DIR}/org/deps.d/control.d/machine.d"
     fi
 
     # check local home model.d directory
@@ -1412,10 +1422,10 @@ function setup_machine_dir()
     then
         if [ ! -d "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" ]
         then
-            running mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST"
+            running debug mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST"
             if [ -d "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" ]
             then
-                running  cp -ar "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/sample" "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST"
+                running debug  cp -ar "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/sample" "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST"
                 debug add "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" into git
             fi
         fi                      # if [ ! -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
@@ -1423,9 +1433,9 @@ function setup_machine_dir()
 
     if [ -d "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" ]
     then
-        running setup_make_link "$HOST" "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default"
+        running debug setup_make_link "$HOST" "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default"
         # debug SHARAD TEST
-        debug running setup_make_relative_link "${LOCALDIRS_DIR}/org/deps.d" " model.d/machine.d/default"  "control.d/machine.d/default"
+        debug running debug setup_make_relative_link "${LOCALDIRS_DIR}/org/deps.d" " model.d/machine.d/default"  "control.d/machine.d/default"
     fi
 }
 
@@ -1496,11 +1506,11 @@ function setup_dep_control_storage_class_dir()
 
 
 
-        running setup_deps_model_volumes_dirs "${storage_path}"
+        running debug setup_deps_model_volumes_dirs "${storage_path}"
 
 
         # mkdir -p $classcontrol_dir_path/model.d
-        running mkdir -p "$classcontrol_dir_path"
+        running debug mkdir -p "$classcontrol_dir_path"
         # mkdir -p $classcontrol_dir_path/view.d
         # TODO?STATS
         if [ -d "${hostdir}/volumes.d/model.d/${storage_path}/" ] && ls "${hostdir}/volumes.d/model.d/${storage_path}"/* > /dev/null 2>&1
@@ -1518,17 +1528,17 @@ function setup_dep_control_storage_class_dir()
 
                 debug mdirbase=$mdirbase
 
-                running sudo mkdir -p "${hostdir}/volumes.d/${volclasspathinstdir}"
-                running sudo chown "$USER.$(id -gn)" "${hostdir}/volumes.d/${volclasspathinstdir}"
+                running debug sudo mkdir -p "${hostdir}/volumes.d/${volclasspathinstdir}"
+                running debug sudo chown "$USER.$(id -gn)" "${hostdir}/volumes.d/${volclasspathinstdir}"
 
 
                 debug fullupdirs=$fullupdirs
-                # running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/model.d/${mdirbase}
-                # debug running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
-                running setup_make_link "${fullupdirs}/${volclasspathinstdir}" "$classcontrol_dir_path/${mdirbase}"
+                # running debug setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/model.d/${mdirbase}
+                # debug running debug setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
+                running debug setup_make_link "${fullupdirs}/${volclasspathinstdir}" "$classcontrol_dir_path/${mdirbase}"
 
                 # SHARAD
-                running setup_add_to_version_control "${LOCALDIRS_DIR}" "${classcontrol_dir_path}/${mdirbase}"
+                running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${classcontrol_dir_path}/${mdirbase}"
 
             done
 
@@ -1538,7 +1548,7 @@ function setup_dep_control_storage_class_dir()
             fi
         fi              # if [ -d ${hostdir}/volumes.d/model.d ]
 
-        # running setup_mvc_dirs ${classcontrol_dir_path}/
+        # running debug setup_mvc_dirs ${classcontrol_dir_path}/
     else
         error setup_dep_control_storage_class_dir Not correct number of arguments.
     fi
@@ -1577,13 +1587,13 @@ function setup_deps_control_class_dir()
         then
             if [ -d "${hostdir}" ]
             then
-                running mkdir -p "${hostdir}"
+                running debug mkdir -p "${hostdir}"
 
-                running setup_make_link "$HOST" "${machinedir}/default"
+                running debug setup_make_link "$HOST" "${machinedir}/default"
 
                 # BACK
-                debug running setup_dep_control_storage_class_dir "$storage_path" "$class" "$classinstdir" "${position}"
-                running setup_dep_control_storage_class_dir "$storage_path" "$class" "$classinstdir" "${position}"
+                debug running debug setup_dep_control_storage_class_dir "$storage_path" "$class" "$classinstdir" "${position}"
+                running debug setup_dep_control_storage_class_dir "$storage_path" "$class" "$classinstdir" "${position}"
 
             else                # if [ -d ${hostdir} ]
                 debug Please prepare "${hostdir}" for your machine >&2
@@ -1613,8 +1623,8 @@ function setup_deps_control_class_all_positions_dirs()
         local classinstdir="$3"
         for pos in  1 2 3
         do
-            debug running setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
-            running setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
+            debug running debug setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
+            running debug setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
         done
     else
         error setup_deps_control_class_all_positions_dirs: Not correct number of arguments.
@@ -1625,48 +1635,48 @@ function setup_deps_control_data_usrdata_dirs()
 {
     storage_path="${1-local}"
 
-    running setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/usrdatas" "usrdata"
+    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/usrdatas" "usrdata"
 }
 function setup_deps_control_data_sysdata_dirs()
 {
     storage_path="${1-local}"
 
-    running setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/sysdatas" "sysdata"
+    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/sysdatas" "sysdata"
 }
 function setup_deps_control_data_scratches_dirs()
 {
     storage_path="${1-local}"
 
-    running setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/scratches" "scratch"
+    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/scratches" "scratch"
 }
 function setup_deps_control_data_main_dirs()
 {
     storage_path="${1-local}"
 
-    running setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/main" "main"
+    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/main" "main"
 }
 function setup_deps_control_data_dirs()
 {
     local storage_path="${1-local}"
 
-    running setup_deps_control_data_usrdata_dirs   "$storage_path"
-    running setup_deps_control_data_sysdata_dirs   "$storage_path"
-    running setup_deps_control_data_scratches_dirs "$storage_path"
-    running setup_deps_control_data_main_dirs      "$storage_path"
+    running debug setup_deps_control_data_usrdata_dirs   "$storage_path"
+    running debug setup_deps_control_data_sysdata_dirs   "$storage_path"
+    running debug setup_deps_control_data_scratches_dirs "$storage_path"
+    running debug setup_deps_control_data_main_dirs      "$storage_path"
 }
 function setup_deps_control_home_Downloads_dirs()
 {
     local storage_path="${1-local}"
 
-    # running setup_deps_model_volumes_dirs "${storage_path}"
-    # running setup_deps_control_class_dir "$storage_path" ${homeclassname}/Downloads Downloads
-    running setup_deps_control_class_all_positions_dirs "$storage_path" "${homeclassname}/Downloads" "Downloads"
+    # running debug setup_deps_model_volumes_dirs "${storage_path}"
+    # running debug setup_deps_control_class_dir "$storage_path" ${homeclassname}/Downloads Downloads
+    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${homeclassname}/Downloads" "Downloads"
 }
 function setup_deps_control_home_dirs()
 {
     local storage_path="${1-local}"
 
-    running setup_deps_control_home_Downloads_dirs "$storage_path"
+    running debug setup_deps_control_home_Downloads_dirs "$storage_path"
 }
 
 
@@ -1675,47 +1685,47 @@ function setup_deps_control_data_usrdata_dir()
     local storage_path="${1-local}"
     local position=${1-2}
 
-    running setup_deps_control_class_dir "$storage_path" "${dataclassname}/usrdatas" "usrdata" "$position"
+    running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/usrdatas" "usrdata" "$position"
 }
 function setup_deps_control_data_sysdata_dir()
 {
     local storage_path="${1-local}"
     local position=${1-2}
 
-    running setup_deps_control_class_dir "$storage_path" "${dataclassname}/sysdatas" "sysdata" "$position"
+    running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/sysdatas" "sysdata" "$position"
 }
 function setup_deps_control_data_scratches_dir()
 {
     local storage_path="${1-local}"
     local position=${1-2}
 
-    running setup_deps_control_class_dir "$storage_path" "${dataclassname}/scratches" "scratch" "$position"
+    running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/scratches" "scratch" "$position"
 }
 function setup_deps_control_data_main_dir()
 {
     local storage_path="${1-local}"
     local position=${1-2}
 
-    running setup_deps_control_class_dir "$storage_path" "${dataclassname}/main" "main" "$position"
+    running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/main" "main" "$position"
 }
 function setup_deps_control_data_dir()
 {
     local storage_path="${1-local}"
     local position=${1-2}
 
-    running setup_deps_control_data_usrdata_dir   "$storage_path" "$position"
-    running setup_deps_control_data_sysdata_dir   "$storage_path" "$position"
-    running setup_deps_control_data_scratches_dir "$storage_path" "$position"
-    running setup_deps_control_data_main_dir      "$storage_path" "$position"
+    running debug setup_deps_control_data_usrdata_dir   "$storage_path" "$position"
+    running debug setup_deps_control_data_sysdata_dir   "$storage_path" "$position"
+    running debug setup_deps_control_data_scratches_dir "$storage_path" "$position"
+    running debug setup_deps_control_data_main_dir      "$storage_path" "$position"
 }
 function setup_deps_control_home_Downloads_dir()
 {
     local storage_path="${1-local}"
     local position=${1-2}
 
-    # running setup_deps_model_volumes_dir "${storage_path}"
-    # running setup_deps_control_class_dir "$storage_path" ${homeclassname}/Downloads Downloads
-    running setup_deps_control_class_dir "$storage_path" "${homeclassname}/Downloads" "Downloads" "$position"
+    # running debug setup_deps_model_volumes_dir "${storage_path}"
+    # running debug setup_deps_control_class_dir "$storage_path" ${homeclassname}/Downloads Downloads
+    running debug setup_deps_control_class_dir "$storage_path" "${homeclassname}/Downloads" "Downloads" "$position"
 }
 function setup_deps_control_home_dir()
 {
@@ -1741,7 +1751,7 @@ function setup_deps_model_storage_volumes_dir()
     deps_model_storageclass_path="${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/${storage_path}"
     rel_deps_model_storageclass_path="org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/${storage_path}"
 
-    running mkdir -p "${deps_model_storageclass_path}"
+    running debug mkdir -p "${deps_model_storageclass_path}"
 
     if [ -d ${deps_model_storageclass_path} -a -d $storageclassdirpath ]
     then
@@ -1754,11 +1764,11 @@ function setup_deps_model_storage_volumes_dir()
                 local _location="$vld/users/$USER"
                 if [ ! -d ${_location} ]
                 then
-                    running sudo mkdir -p "${_location}"
+                    running debug sudo mkdir -p "${_location}"
                 fi
                 if [ -d ${_location} ]
                 then
-                    running sudo chown root.root "${_location}"
+                    running debug sudo chown root.root "${_location}"
                 fi
 
                 vgdbase=$(basename $vgd)
@@ -1768,8 +1778,8 @@ function setup_deps_model_storage_volumes_dir()
                 debug vld=$vld
                 debug vgdbase=$vgdbase
                 debug vldbase=$vldbase
-                running setup_make_link              "${_location}"     "${deps_model_storageclass_path}/${vgldirlink}"
-                running setup_add_to_version_control "${LOCALDIRS_DIR}" "${rel_deps_model_storageclass_path}/${vgldirlink}"
+                running debug setup_make_link              "${_location}"     "${deps_model_storageclass_path}/${vgldirlink}"
+                running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${rel_deps_model_storageclass_path}/${vgldirlink}"
             done
         done
 
@@ -1790,16 +1800,16 @@ function setup_deps_model_volumes_dirs()
     local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     # check local home model.d directory
 
-    running mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d"
+    running debug mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d"
 
-    running setup_deps_model_storage_volumes_dir "$storage_path"
+    running debug setup_deps_model_storage_volumes_dir "$storage_path"
 }
 
 function setup_deps_model_dir()
 {
     local storage_path="${1-local}"
 
-    running setup_machine_dir
+    running debug setup_machine_dir
 
     # use namei to track
     local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
@@ -1807,20 +1817,20 @@ function setup_deps_model_dir()
     if [ -d "${LOCALDIRS_DIR}" -a -d "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d" ]
     then
 
-        # running setup_machine_dir
+        # running debug setup_machine_dir
 
         if [ -d "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" ]
         then
-            running mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST"
+            running debug mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST"
 
-            running setup_make_link "$HOST" "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default"
+            running debug setup_make_link "$HOST" "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default"
 
-            running setup_make_relative_link ${HOME}/ "" "${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/$HOST/home"
-            running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/deps.d/model.d/machine.d/$HOST/home"
+            running debug setup_make_relative_link ${HOME}/ "" "${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/$HOST/home"
+            running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/deps.d/model.d/machine.d/$HOST/home"
 
-            running mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d"
+            running debug mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d"
 
-            running setup_deps_model_volumes_dirs "$storage_path"
+            running debug setup_deps_model_volumes_dirs "$storage_path"
 
         else                    # if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
             error Please prepare "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" for your machine >&2
@@ -1851,9 +1861,9 @@ function setup_deps_control_volumes_dirs()
     local hostdir="${machinedir}/$HOST"
     local volumedir="${hostdir}/volumes.d"
 
-    running setup_deps_control_class_dir "$storage_path" "$sysdatascontinername" "$sysdataname" "$position"
+    running debug setup_deps_control_class_dir "$storage_path" "$sysdatascontinername" "$sysdataname" "$position"
 
-    for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
+    for cdir in "${logicaldirs[@]}" # config deletable longterm preserved shortterm maildata
     do
         debug "${volumedir}/${viewdirname}/$cdir"
 
@@ -1866,7 +1876,7 @@ function setup_deps_control_volumes_dirs()
                 do
                     # TODO? -sharad
                     volsysdatadirbase="$(basename ${sysdatadir})"
-                    running mkdir -p "${volumedir}/control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir"
+                    running debug mkdir -p "${volumedir}/control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir"
                 done
             fi
         fi
@@ -1877,12 +1887,12 @@ function setup_deps_control_dir()
 {
     local storage_path="${1-local}"
 
-    running setup_deps_control_data_dirs "$storage_path"
-    running setup_deps_control_home_dirs "$storage_path"
+    running debug setup_deps_control_data_dirs "$storage_path"
+    running debug setup_deps_control_home_dirs "$storage_path"
 
     for pos in 1 2 3
     do
-        running setup_deps_control_volumes_dirs "$storage_path" "$pos"
+        running debug setup_deps_control_volumes_dirs "$storage_path" "$pos"
     done
 
 }
@@ -1920,10 +1930,10 @@ function setup_deps_view_volumes_dirs()
 
 
 
-    running setup_make_relative_link ${BASE_DIR}/${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/home       view.d/home
-    running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} org/deps.d/view.d/home
-    running setup_make_relative_link ${BASE_DIR}/${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/volumes.d  view.d/volumes.d
-    running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} org/deps.d/view.d/volumes.d
+    running debug setup_make_relative_link ${BASE_DIR}/${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/home       view.d/home
+    running debug setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} org/deps.d/view.d/home
+    running debug setup_make_relative_link ${BASE_DIR}/${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/volumes.d  view.d/volumes.d
+    running debug setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} org/deps.d/view.d/volumes.d
 
 
 
@@ -1933,9 +1943,9 @@ function setup_deps_view_volumes_dirs()
         if [ -d ${BASE_DIR}/${LOCALDIRS_DIR}/${hostdir} ]
         then
 
-            running mkdir -p ${BASE_DIR}/${LOCALDIRS_DIR}/${hostdir}
+            running debug mkdir -p ${BASE_DIR}/${LOCALDIRS_DIR}/${hostdir}
 
-            running setup_make_link $HOST ${BASE_DIR}/${LOCALDIRS_DIR}/${machinedir}/default
+            running debug setup_make_link $HOST ${BASE_DIR}/${LOCALDIRS_DIR}/${machinedir}/default
 
 
             if [ -d ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/model.d ]
@@ -1946,7 +1956,7 @@ function setup_deps_view_volumes_dirs()
                 cd - > /dev/null 2>&1
 
                 modelsymlink=0
-                for mdir in ${links[*]}
+                for mdir in "${links[@]}"
                 do
                     # debug $mdir
                     if [ -L "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/model.d/$mdir" ]
@@ -1964,17 +1974,17 @@ function setup_deps_view_volumes_dirs()
             fi                  # if [ -d ${volumedir}/model.d ]
 
 
-            # running setup_deps_control_data_sysdata_dirs
-            # running setup_deps_control_class_dir "$storage_path" $sysdatascontinername $sysdataname
-            running setup_deps_control_volumes_dirs "$storage_path" $position
+            # running debug setup_deps_control_data_sysdata_dirs
+            # running debug setup_deps_control_class_dir "$storage_path" $sysdatascontinername $sysdataname
+            running debug setup_deps_control_volumes_dirs "$storage_path" $position
             # TODO?
-            running setup_deps_control_class_dir "$storage_path" "$sysdatascontinername" "$sysdataname" "$position"
+            running debug setup_deps_control_class_dir "$storage_path" "$sysdatascontinername" "$sysdataname" "$position"
 
 
 
             # touch ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/.gitignore
-            # echo running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} ${volumedir}/${viewdirname}/.gitignore
-            # running setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} ${volumedir}/${viewdirname}/.gitignore
+            # echo running debug setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} ${volumedir}/${viewdirname}/.gitignore
+            # running debug setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} ${volumedir}/${viewdirname}/.gitignore
 
             # TODO? NOW
 
@@ -1983,13 +1993,13 @@ function setup_deps_view_volumes_dirs()
             local todopath="${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/TODO-${sysdatasdirname//\//_}"
             local missingpath="${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/MISSING_TODO-${sysdatasdirname//\//_}"
 
-            running rm -f $todopath
-            running rm -f $missingpath
+            running debug rm -f $todopath
+            running debug rm -f $missingpath
 
-            running mkdir -p ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}
-            running rm -f ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/.gitignore
+            running debug mkdir -p ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}
+            running debug rm -f ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/.gitignore
 
-            for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
+            for cdir in "${logicaldirs[@]}" # config deletable longterm preserved shortterm maildata
             do
                 debug "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir"
 
@@ -2042,7 +2052,7 @@ function setup_deps_view_volumes_dirs()
 
             done
 
-            running setup_add_to_version_control "${BASE_DIR}/${LOCALDIRS_DIR}" "${volumedir}/${viewdirname}/.gitignore"
+            running debug setup_add_to_version_control "${BASE_DIR}/${LOCALDIRS_DIR}" "${volumedir}/${viewdirname}/.gitignore"
 
         else                    # if [ -d ${hostdir} ]
             error Please prepare "${hostdir}" for your machine >&2
@@ -2060,7 +2070,7 @@ function setup_deps_view_dir()
 
     for pos in 1 2 3
     do
-        running setup_deps_view_volumes_dirs "$storage_path" "$pos"
+        running debug setup_deps_view_volumes_dirs "$storage_path" "$pos"
     done
 }
 
@@ -2069,9 +2079,9 @@ function setup_deps_dirs()
 {
     local storage_path="${1-local}"
 
-    running setup_deps_model_dir   "$storage_path"
-    running setup_deps_control_dir "$storage_path"
-    running setup_deps_view_dir    "$storage_path"
+    running debug setup_deps_model_dir   "$storage_path"
+    running debug setup_deps_control_dir "$storage_path"
+    running debug setup_deps_view_dir    "$storage_path"
 }
 
 function setup_org_resource_dirs()
@@ -2083,32 +2093,32 @@ function setup_org_resource_dirs()
     # org/resource.d/control.d/class/data/storage/local/container/scratches.d/Public/
 	  # org/resource.d/control.d/class/data/storage/local/container/scratches.d/local
 
-    running setup_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" \
+    running debug setup_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" \
                                                                                          "osetup/dirs.d/org/resource.d"
-    running setup_add_to_version_control_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" \
+    running debug setup_add_to_version_control_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" \
                                                                                                                 "osetup" \
                                                                                                                 "dirs.d/org/resource.d"
 
     # TODO: add support for git add
-    running setup_recursive_links_container_dirs                        "${LOCALDIRS_DIR}/org" \
+    running debug setup_recursive_links_container_dirs                        "${LOCALDIRS_DIR}/org" \
                                                                         "deps.d/control.d/machine.d/default/volumes.d/model.d" \
                                                                         "resource.d/model.d"
 
-    running setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR}" \
+    running debug setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR}" \
                                                                         "org/resource.d/model.d"
 
-    running setup_recursive_links_container_dirs                        "${LOCALDIRS_DIR}/org" \
+    running debug setup_recursive_links_container_dirs                        "${LOCALDIRS_DIR}/org" \
                                                                         "deps.d/control.d/machine.d/default/volumes.d/control.d" \
                                                                         "resource.d/control.d"
 
-    running setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR}" \
+    running debug setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR}" \
                                                                         "org/resource.d/control.d"
 
-    running setup_make_relative_link                                    "${LOCALDIRS_DIR}/org" \
+    running debug setup_make_relative_link                                    "${LOCALDIRS_DIR}/org" \
                                                                         "deps.d/control.d/machine.d/default/volumes.d/view.d" \
                                                                         "resource.d/view.d"
 
-    running setup_add_to_version_control                                "${LOCALDIRS_DIR}" \
+    running debug setup_add_to_version_control                                "${LOCALDIRS_DIR}" \
                                                                         "org/resource.d/view.d"
 }
 
@@ -2119,7 +2129,7 @@ function setup_org_home_portable_local_dirs()
     local LOCALDIRS_DIR="${USERDIR}/localdirs"
     local relhomeprotabledir="org/home.d/portable.d"
 
-    running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" \
+    running debug setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" \
                                       "${relhomeprotabledir}" \
                                       "local.d"
 
@@ -2127,13 +2137,13 @@ function setup_org_home_portable_local_dirs()
     # for folder in Desktop Documents Downloads Library Music Pictures Templates tmp Videos
     for folder in Desktop Downloads Music Pictures Templates tmp Videos Sink
     do
-        running setup_vc_mkdirpath_ensure    "${LOCALDIRS_DIR}" \
+        running debug setup_vc_mkdirpath_ensure    "${LOCALDIRS_DIR}" \
                                              "${relhomeprotabledir}/local.d" \
                                              "${folder}"
-        running setup_make_relative_link     "${LOCALDIRS_DIR}/org/home.d" \
+        running debug setup_make_relative_link     "${LOCALDIRS_DIR}/org/home.d" \
                                              "local.d/${folder}" \
                                              "portable.d/${folder}/local"
-        running setup_add_to_version_control "${LOCALDIRS_DIR}" \
+        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" \
                                              "org/home.d/portable.d/${folder}/local"
     done
 }
@@ -2145,23 +2155,23 @@ function setup_org_home_portable_public_dirs()
     local homeprotabledir="${LOCALDIRS_DIR}/org/home.d/portable.d"
     local relhomeprotabledir="org/home.d/portable.d"
 
-    running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "${relhomeprotabledir}" "Public/Publish/html"
+    running debug setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "${relhomeprotabledir}" "Public/Publish/html"
 
     echo 'Options -Indexes' > "${LOCALDIRS_DIR}/${relhomeprotabledir}/Public/Publish/html/.htaccess"
-    running setup_add_to_version_control "${LOCALDIRS_DIR}" "${relhomeprotabledir}/Public/Publish/html/.htaccess"
+    running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${relhomeprotabledir}/Public/Publish/html/.htaccess"
     echo '' > "${LOCALDIRS_DIR}/${relhomeprotabledir}/Public/Publish/html/index.html"
-    running setup_add_to_version_control "${LOCALDIRS_DIR}" "${relhomeprotabledir}/Public/Publish/html/index.html"
+    running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${relhomeprotabledir}/Public/Publish/html/index.html"
 
     for folder in local
     do
-        running mkdir -p "${LOCALDIRS_DIR}/org/home.d/portable.d/${folder}.d/Public/Publish/html"
-        running setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d/portable.d/" "${folder}.d/Public"              "Public/$folder"
-        running setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d/portable.d/" "${folder}.d/Public/Publish"      "Public/Publish/$folder"
-        running setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d/portable.d/" "${folder}.d/Public/Publish/html" "Public/Publish/html/$folder"
+        running debug mkdir -p "${LOCALDIRS_DIR}/org/home.d/portable.d/${folder}.d/Public/Publish/html"
+        running debug setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d/portable.d/" "${folder}.d/Public"              "Public/$folder"
+        running debug setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d/portable.d/" "${folder}.d/Public/Publish"      "Public/Publish/$folder"
+        running debug setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d/portable.d/" "${folder}.d/Public/Publish/html" "Public/Publish/html/$folder"
 
-        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/$folder"
-        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/$folder"
-        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/html/$folder"
+        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/$folder"
+        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/$folder"
+        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/html/$folder"
 
         # setup_add_to_version_control
     done
@@ -2170,44 +2180,44 @@ function setup_org_home_portable_public_dirs()
     local plaindirs=(Downloads Music Pictures Templates tmp Videos Scratches Sink VolRes)
 
     # for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
-    for folder in ${plaindirs[*]}
+    for folder in "${plaindirs[@]}"
     do
-        running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "${relhomeprotabledir}" "${folder}/Public/Publish/html" "ignoreall"
+        running debug setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "${relhomeprotabledir}" "${folder}/Public/Publish/html" "ignoreall"
 
-        running setup_make_relative_link "${homeprotabledir}" "${folder}/Public"              "Public/${folder}"
-        running setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish"      "Public/Publish/${folder}"
-        running setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish/html" "Public/Publish/html/${folder}"
+        running debug setup_make_relative_link "${homeprotabledir}" "${folder}/Public"              "Public/${folder}"
+        running debug setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish"      "Public/Publish/${folder}"
+        running debug setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish/html" "Public/Publish/html/${folder}"
 
 
-        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/$folder"
-        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/$folder"
-        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/html/$folder"
+        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/$folder"
+        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/$folder"
+        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/html/$folder"
 
     done
-    for folder in ${linkdirs[*]}
+    for folder in "${linkdirs[@]}"
     do
-        # running setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} ${folder}/Public/Publish/html
+        # running debug setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} ${folder}/Public/Publish/html
 
-        running setup_make_relative_link "${homeprotabledir}" "${folder}/Public"              "Public/$folder"
-        running setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish"      "Public/Publish/$folder"
-        running setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish/html" "Public/Publish/html/$folder"
+        running debug setup_make_relative_link "${homeprotabledir}" "${folder}/Public"              "Public/$folder"
+        running debug setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish"      "Public/Publish/$folder"
+        running debug setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish/html" "Public/Publish/html/$folder"
 
 
-        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/$folder"
-        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/$folder"
-        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/html/$folder"
+        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/$folder"
+        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/$folder"
+        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/html/$folder"
     done
 
     echo '*' > "${LOCALDIRS_DIR}/${relhomeprotabledir}/tmp/.gitignore"
-    running setup_add_to_version_control ${HOME}/.fa/localdirs "${relhomeprotabledir}/tmp/.gitignore"
+    running debug setup_add_to_version_control ${HOME}/.fa/localdirs "${relhomeprotabledir}/tmp/.gitignore"
 
     # private
     # Music Videos Pictures
     collection=private
     for folder in Music Videos Pictures
     do
-        running setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/orgs/$collection/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/$collection"
-        running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/$collection"
+        running debug setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/orgs/$collection/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/$collection"
+        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/$collection"
     done
 
 }
@@ -2218,9 +2228,9 @@ function setup_org_home_portable_dirs()
     local LOCALDIRS_DIR="${USERDIR}/localdirs"
     local rel_homeprotabledir="org/home.d/portable.d"
 
-    running setup_vc_mkdirpath_ensure    "${LOCALDIRS_DIR}"            ""                   "${rel_homeprotabledir}"
-    running setup_make_relative_link     "${LOCALDIRS_DIR}/org/home.d" "portable.d"         "default"
-    running setup_add_to_version_control "${LOCALDIRS_DIR}"            "org/home.d/default"
+    running debug setup_vc_mkdirpath_ensure    "${LOCALDIRS_DIR}"            ""                   "${rel_homeprotabledir}"
+    running debug setup_make_relative_link     "${LOCALDIRS_DIR}/org/home.d" "portable.d"         "default"
+    running debug setup_add_to_version_control "${LOCALDIRS_DIR}"            "org/home.d/default"
 
     cat <<'EOF' > "${LOCALDIRS_DIR}/org/home.d/portable.d/README"
 portable.d is for required dir trees while
@@ -2228,34 +2238,34 @@ portable.d is for required dir trees while
 local.d is to rearrange according to space needs
 EOF
 
-    running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/README"
+    running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/README"
 
 
     echo 'add in script' > "${LOCALDIRS_DIR}/org/home.d/portable.d/TODO"
-    running setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/TODO"
+    running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/TODO"
 
-    running setup_make_relative_link "${USERDIR}" "doc" "localdirs/${rel_homeprotabledir}/Documents"
+    running debug setup_make_relative_link "${USERDIR}" "doc" "localdirs/${rel_homeprotabledir}/Documents"
 
-    running setup_make_relative_link ${HOME}/"${RESOURCEPATH}/${USERORGMAIN}/readwrite/" "private/user/noenc/Private" "public/user/localdirs/${rel_homeprotabledir}/Private"
+    running debug setup_make_relative_link ${HOME}/"${RESOURCEPATH}/${USERORGMAIN}/readwrite/" "private/user/noenc/Private" "public/user/localdirs/${rel_homeprotabledir}/Private"
 
-    running setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Public/Publish/html" "public_html"
-    running setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Documents/Library"   "Library"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Public/Publish/html" "public_html"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Documents/Library"   "Library"
 
-    running setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/control.d/class/data/storage/local/container/scratches.d" "home.d/portable.d/Scratches"
-    running setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/model.d"                                                  "home.d/portable.d/Volumes"
-    running setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/model.d"                                                  "home.d/portable.d/VolRes/model"
-    running setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/control.d"                                                "home.d/portable.d/VolRes/control"
-    running setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/view.d"                                                   "home.d/portable.d/VolRes/view"
-    running setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/maildata/mail-and-metadata/maildir"                "home.d/portable.d/Maildir"
+    running debug setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/control.d/class/data/storage/local/container/scratches.d" "home.d/portable.d/Scratches"
+    running debug setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/model.d"                                                  "home.d/portable.d/Volumes"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/model.d"                                                  "home.d/portable.d/VolRes/model"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/control.d"                                                "home.d/portable.d/VolRes/control"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/view.d"                                                   "home.d/portable.d/VolRes/view"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/maildata/mail-and-metadata/maildir"                "home.d/portable.d/Maildir"
 
     # links
     for lnk in org/home.d/portable.d/{Documents,Private,Library,public_html,Maildir}
     do
-        running setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
+        running debug setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
     done
 
-    running setup_org_home_portable_public_dirs
-    running setup_org_home_portable_local_dirs
+    running debug setup_org_home_portable_public_dirs
+    running debug setup_org_home_portable_local_dirs
 } # function setup_org_home_portable_dirs()
 
 # org/misc
@@ -2269,15 +2279,15 @@ function setup_org_misc_dirs()
     # lrwxrwxrwx 1 s s 72 Dec  4 03:37 offlineimap -> ../../resource.d/view.d/maildata/mail-and-metadata/offlineimap
     :
 
-    running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "org" "misc.d"
+    running debug setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "org" "misc.d"
 
-    running setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/view.d/maildata/mail-and-metadata/offlineimap" "misc.d/offlineimap"
-    running setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/view.d/preserved/mailattachments"              "misc.d/mailattachments"
+    running debug setup_make_relative_link  "${LOCALDIRS_DIR}/org" "resource.d/view.d/maildata/mail-and-metadata/offlineimap" "misc.d/offlineimap"
+    running debug setup_make_relative_link  "${LOCALDIRS_DIR}/org" "resource.d/view.d/preserved/mailattachments"              "misc.d/mailattachments"
 
     # links
     for lnk in org/misc.d/{offlineimap,mailattachments}
     do
-        running setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
+        running debug setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
     done
 
 } # function setup_org_misc_dirs()
@@ -2288,33 +2298,33 @@ function setup_org_rc_dirs()
     local USERDIR="${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user"
     local LOCALDIRS_DIR="${USERDIR}/localdirs"
 
-    running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "org/rc.d"
+    running debug setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "org/rc.d"
 
-    running setup_make_relative_link "${LOCALDIRS_DIR}/org" "deps.d/view.d/home" "rc.d/HOME"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org" "deps.d/view.d/home" "rc.d/HOME"
 
     # sharad ?? fixed
-    running setup_make_relative_link ${HOME}/.repos "" "git/main/resource/${USERORGMAIN}/readwrite/public/user/localdirs/org/rc.d/repos"
+    running debug setup_make_relative_link ${HOME}/.repos "" "git/main/resource/${USERORGMAIN}/readwrite/public/user/localdirs/org/rc.d/repos"
 
 
-    running setup_make_relative_link "${LOCALDIRS_DIR}/org/rc.d" "repos/git/main/resource/userorg/main/readwrite/public/user/opt"       "opt"
-    running setup_make_relative_link "${LOCALDIRS_DIR}/org/rc.d" "repos/git/main/resource/userorg/main/readwrite/public/user/localdirs" "localdirs"
-    running setup_make_relative_link "${LOCALDIRS_DIR}/org/rc.d" "repos/git/main/resource/userorg/main/readwrite/public/user/osetup"    "osetup"
-    running setup_make_relative_link "${LOCALDIRS_DIR}/org/rc.d" "repos/git/main/resource/userorg/main/readwrite/public/user/rc"        "setup"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org/rc.d" "repos/git/main/resource/userorg/main/readwrite/public/user/opt"       "opt"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org/rc.d" "repos/git/main/resource/userorg/main/readwrite/public/user/localdirs" "localdirs"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org/rc.d" "repos/git/main/resource/userorg/main/readwrite/public/user/osetup"    "osetup"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org/rc.d" "repos/git/main/resource/userorg/main/readwrite/public/user/rc"        "setup"
 
     for lnk in org/rc.d/{repos,opt,localdirs,osetup,setup,HOME}
     do
-        running setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
+        running debug setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
     done
 } # function setup_org_rc_dirs()
 
 # org
 function setup_org_dirs()
 {
-    running setup_org_resource_dirs
-    running setup_org_home_portable_local_dirs
-    running setup_org_home_portable_dirs
-    running setup_org_misc_dirs
-    running setup_org_rc_dirs
+    running debug setup_org_resource_dirs
+    running debug setup_org_home_portable_local_dirs
+    running debug setup_org_home_portable_dirs
+    running debug setup_org_misc_dirs
+    running debug setup_org_rc_dirs
 }                               # function setup_org_dirs()
 
 
@@ -2324,16 +2334,16 @@ function setup_manual_dirs()
     local USERDIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR="${USERDIR}/localdirs"
 
-    running setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "manual.d"
+    running debug setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "manual.d"
 
     # debug SHARAD TEST
-    running setup_make_relative_link "${LOCALDIRS_DIR}" "org/deps.d/control.d/machine.d/default/volumes.d/model.d"   "manual.d/model"
-    running setup_make_relative_link "${LOCALDIRS_DIR}" "org/deps.d/control.d/machine.d/default/volumes.d/control.d" "manual.d/control"
-    running setup_make_relative_link "${LOCALDIRS_DIR}" "org/deps.d/control.d/machine.d/default/volumes.d/view.d"    "manual.d/view"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}" "org/deps.d/control.d/machine.d/default/volumes.d/model.d"   "manual.d/model"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}" "org/deps.d/control.d/machine.d/default/volumes.d/control.d" "manual.d/control"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}" "org/deps.d/control.d/machine.d/default/volumes.d/view.d"    "manual.d/view"
 
-    running setup_add_to_version_control "${LOCALDIRS_DIR}" "manual.d/model"
-    running setup_add_to_version_control "${LOCALDIRS_DIR}" "manual.d/control"
-    running setup_add_to_version_control "${LOCALDIRS_DIR}" "manual.d/view"
+    running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "manual.d/model"
+    running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "manual.d/control"
+    running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "manual.d/view"
 
 }
 
@@ -2345,8 +2355,8 @@ function setup_osetup_org_resource_dirs()
     local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
     # TODO: add support for git add
-    running setup_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" "osetup/dirs.d/org/resource.d"
-    running setup_add_to_version_control_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" "osetup" "dirs.d/org/resource.d"
+    running debug setup_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" "osetup/dirs.d/org/resource.d"
+    running debug setup_add_to_version_control_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" "osetup" "dirs.d/org/resource.d"
 }
 
 function setup_osetup_org_home_dirs()
@@ -2355,8 +2365,8 @@ function setup_osetup_org_home_dirs()
 
     for folder_link in "Desktop" "Documents" "Downloads" "Library" "Maildir" "Music" "Pictures" "Private" "Public" "public_html" "Scratches" "Sink" "Templates" "tmp" "Videos" "Volumes" "VolRes"
     do
-        running setup_make_relative_link ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/home.d/portable.d/${folder_link}" "osetup/dirs.d/org/home.d/${folder_link}"
-        running setup_add_to_version_control ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/home.d/${folder_link}"
+        running debug setup_make_relative_link ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/home.d/portable.d/${folder_link}" "osetup/dirs.d/org/home.d/${folder_link}"
+        running debug setup_add_to_version_control ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/home.d/${folder_link}"
     done
 }
 
@@ -2366,8 +2376,8 @@ function setup_osetup_org_misc_dirs()
 
     for folder_link in "offlineimap" "mailattachments"
     do
-        running setup_make_relative_link ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/misc.d/${folder_link}" "osetup/dirs.d/org/misc.d/${folder_link}"
-        running setup_add_to_version_control ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/misc.d/${folder_link}"
+        running debug setup_make_relative_link ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/misc.d/${folder_link}" "osetup/dirs.d/org/misc.d/${folder_link}"
+        running debug setup_add_to_version_control ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/misc.d/${folder_link}"
     done
 }
 
@@ -2379,17 +2389,17 @@ function setup_osetup_org_rc_dirs()
 
     for folder_link in "HOME" "localdirs" "opt" "osetup" "repos" "setup"
     do
-        running setup_make_relative_link ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/rc.d/${folder_link}" "osetup/dirs.d/org/rc.d/${folder_link}"
-        running setup_add_to_version_control ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/rc.d/${folder_link}"
+        running debug setup_make_relative_link ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/rc.d/${folder_link}" "osetup/dirs.d/org/rc.d/${folder_link}"
+        running debug setup_add_to_version_control ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/rc.d/${folder_link}"
     done
 }
 
 function setup_osetup_org_dirs()
 {
-    running setup_osetup_org_resource_dirs
-    running setup_osetup_org_home_dirs
-    running setup_osetup_org_misc_dirs
-    running setup_osetup_org_rc_dirs
+    running debug setup_osetup_org_resource_dirs
+    running debug setup_osetup_org_home_dirs
+    running debug setup_osetup_org_misc_dirs
+    running debug setup_osetup_org_rc_dirs
 }
 
 function setup_osetup_cache_dirs()
@@ -2401,8 +2411,8 @@ function setup_osetup_cache_dirs()
 
 function setup_osetup_dirs()
 {
-    running setup_osetup_org_dirs
-    running setup_osetup_cache_dirs
+    running debug setup_osetup_org_dirs
+    running debug setup_osetup_cache_dirs
 }
 
 function setup_rc_org_home_dirs()
@@ -2412,10 +2422,10 @@ function setup_rc_org_home_dirs()
     local rcdirpath=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc
     local rcorghomedir_rel_path=".config/dirs.d/org/home.d"
 
-    running setup_make_relative_link "${public_path}/${rcdir_rel_path}" "_bin" "${rcorghomedir_rel_path}/bin"
-    running setup_add_to_version_control "${rcdirpath}" "${rcorghomedir_rel_path}/bin"
-    running setup_make_relative_link "${public_path}" "system/system/config/bin" "user/rc/${rcorghomedir_rel_path}/sbin"
-    running setup_add_to_version_control "${rcdirpath}" "${rcorghomedir_rel_path}/sbin"
+    running debug setup_make_relative_link "${public_path}/${rcdir_rel_path}" "_bin" "${rcorghomedir_rel_path}/bin"
+    running debug setup_add_to_version_control "${rcdirpath}" "${rcorghomedir_rel_path}/bin"
+    running debug setup_make_relative_link "${public_path}" "system/system/config/bin" "user/rc/${rcorghomedir_rel_path}/sbin"
+    running debug setup_add_to_version_control "${rcdirpath}" "${rcorghomedir_rel_path}/sbin"
 }
 
 function setup_rc_org_dirs()
@@ -2425,18 +2435,18 @@ function setup_rc_org_dirs()
     local resourcedir="${LOCALDIRS_DIR}/org/resource.d"
 
     # TODO: add support for git add
-    running setup_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "osetup/dirs.d/org" "rc/.config/dirs.d/org"
-    running setup_add_to_version_control_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "osetup/dirs.d/org" "rc" ".config/dirs.d/org"
+    running debug setup_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "osetup/dirs.d/org" "rc/.config/dirs.d/org"
+    running debug setup_add_to_version_control_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "osetup/dirs.d/org" "rc" ".config/dirs.d/org"
 
-    running setup_rc_org_home_dirs
+    running debug setup_rc_org_home_dirs
 
-    running setup_add_to_version_control ${HOME}/.fa/rc ".config/dirs.d/org"
+    running debug setup_add_to_version_control ${HOME}/.fa/rc ".config/dirs.d/org"
 }
 
 function setup_dirs()
 {
 
-    running setup_machine_dir
+    running debug setup_machine_dir
 
     if true
     then
@@ -2449,45 +2459,45 @@ function setup_dirs()
         # /srv/volumes/local/vg01/lv01
         # /srv/volumes/local/vgres01/lvres01
 
-        for mntpnt in $(df --output=target | grep  '^/srv/volumes/' | cut -d/ -f4- | rev | cut -d/ -f3-  | rev)
+        for mntpnt in $(df --output=target | grep  '^/srv/volumes/' | cut -d/ -f4- | rev | cut -d/ -f3-  | rev | sort -u)
         do
-            running setup_deps_dirs "$mntpnt"
+            running debug setup_deps_dirs "$mntpnt"
         done
 
-        # running setup_deps_dirs "local"
+        # running debug setup_deps_dirs "local"
 
-        # running setup_deps_dirs "externdisk/mywd5hgb"
-        # running setup_deps_dirs "network/office"
-        # running setup_deps_dirs "network/cloud/droplet"
-        # running setup_deps_dirs "network/cloud/s3"
+        # running debug setup_deps_dirs "externdisk/mywd5hgb"
+        # running debug setup_deps_dirs "network/office"
+        # running debug setup_deps_dirs "network/cloud/droplet"
+        # running debug setup_deps_dirs "network/cloud/s3"
 
 
 
-        running setup_org_dirs
-        running setup_manual_dirs
+        running debug setup_org_dirs
+        running debug setup_manual_dirs
 
-        running setup_osetup_dirs
+        running debug setup_osetup_dirs
 
-        running setup_rc_org_dirs
+        running debug setup_rc_org_dirs
 
-        running setup_Documentation
-        running setup_public_html
-        running setup_mail_and_metadata
+        running debug setup_Documentation
+        running debug setup_public_html
+        running debug setup_mail_and_metadata
     fi
 }
 
 function setup_dirs_safely()
 {
-    running sudo systemctl stop  postfix.service
-    running sudo systemctl stop  postfix.service
+    running debug sudo systemctl stop  postfix.service
+    running debug sudo systemctl stop  postfix.service
 
-    running setup_dirs
+    running debug setup_dirs
 
     if [ -e ${HOME}/.maildir -a -L ${HOME}/.maildir -a -d ${HOME}/.maildir ] &&
            [ -e ${HOME}/.maildir/dovecot.index -a -e ${HOME}/.maildir/dovecot.index.cache -a -e ${HOME}/.maildir/dovecot-uidlist -a -e ${HOME}/.maildir/dovecot-uidvalidity ]
     then
-        running sudo systemctl start  postfix.service
-        running sudo systemctl start  postfix.service
+        running debug sudo systemctl start  postfix.service
+        running debug sudo systemctl start  postfix.service
     else
         warn Can not start postfix and dovecot
     fi
@@ -2522,13 +2532,13 @@ function setup_sourcecode_pro_font()
 
     if [ ! -d /usr/share/fonts/truetype/$FONT_NAME/ ]
     then
-        running mkdir /tmp/$FONT_NAME
+        running debug mkdir /tmp/$FONT_NAME
         cd /tmp/$FONT_NAME
-        running wget $URL -O "`print $FONT_NAME`.tar.gz"
-        running tar --extract --gzip --file ${FONT_NAME}.tar.gz
-        running sudo mkdir /usr/share/fonts/truetype/$FONT_NAME
-        running sudo cp -rf /tmp/$FONT_NAME/. /usr/share/fonts/truetype/$FONT_NAME/.
-        running fc-cache -f -v
+        running debug wget $URL -O "`print $FONT_NAME`.tar.gz"
+        running debug tar --extract --gzip --file ${FONT_NAME}.tar.gz
+        running debug sudo mkdir /usr/share/fonts/truetype/$FONT_NAME
+        running debug sudo cp -rf /tmp/$FONT_NAME/. /usr/share/fonts/truetype/$FONT_NAME/.
+        running debug fc-cache -f -v
     fi
 }
 
@@ -2536,19 +2546,19 @@ function setup_apache_usermod()
 {
     local SYSTEM_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/system/system
 
-    running sudo a2enmod userdir
+    running debug sudo a2enmod userdir
 
     if [ -r /etc/apache2/apache2.conf ]
     then
         if [ ! -d /usr/local/etc/apache ]
         then
-            running mkdir -p /usr/local/etc/
-            running cp -r ${SYSTEM_DIR}/ubuntu/usr/local/etc/apache /usr/local/etc/apache
+            running debug mkdir -p /usr/local/etc/
+            running debug cp -r ${SYSTEM_DIR}/ubuntu/usr/local/etc/apache /usr/local/etc/apache
         fi
 
         if ! grep /usr/local/etc/apache /etc/apache2/apache2.conf
         then
-            running cp /etc/apache2/apache2.conf $TMP/apache2.conf
+            running debug cp /etc/apache2/apache2.conf $TMP/apache2.conf
             cat <<EOF >> $TMP/apache2.conf
 
 # Include the virtual host configurations:
@@ -2565,17 +2575,17 @@ EOF
 
 function setup_clib_installer()
 {
-    running sudo ${INSTALLER} ${INSTALLER_OPT} install libcurl4-gnutls-dev -qq
+    running debug sudo ${INSTALLER} ${INSTALLER_OPT} install libcurl4-gnutls-dev -qq
     if [ ! -d /usr/local/stow/clib/ ]
     then
-        if running git -c core.sshCommand="$GIT_SSH_OPTION" clone https://github.com/clibs/clib.git $SETUP_TMPDIR/clib
+        if running debug git -c core.sshCommand="$GIT_SSH_OPTION" clone https://github.com/clibs/clib.git $SETUP_TMPDIR/clib
         then
             cd $SETUP_TMPDIR/clib
-            running make PREFIX=/usr/local/stow/clib/
-            running sudo make PREFIX=/usr/local/stow/clib/ install
+            running debug make PREFIX=/usr/local/stow/clib/
+            running debug sudo make PREFIX=/usr/local/stow/clib/ install
             cd /usr/local/stow && sudo stow clib
             cd - > /dev/null 2>&1
-            running rm -rf $SETUP_TMPDIR/clib
+            running debug rm -rf $SETUP_TMPDIR/clib
         fi
     else
         verbose clib is already present. >&2
@@ -2588,7 +2598,7 @@ function install_clib_pkg()
     local pkg="$(basename $pkgfull)"
     if [ ! -d /usr/local/stow/$pkg ]
     then
-        running sudo sh -c "PREFIX=/usr/local/stow/$pkg clib install $pkgfull -o /usr/local/stow/$pkg"
+        running debug sudo sh -c "PREFIX=/usr/local/stow/$pkg clib install $pkgfull -o /usr/local/stow/$pkg"
         cd /usr/local/stow && sudo stow $pkg
         cd - > /dev/null 2>&1
     else
@@ -2603,7 +2613,7 @@ function setup_clib_pkgs()
 
 function setup_bpkg_installler()
 {
-    running install_clib_pkg bpkg/bpkg
+    running debug install_clib_pkg bpkg/bpkg
 }
 
 function install_bpkg_pkg()
@@ -2612,8 +2622,8 @@ function install_bpkg_pkg()
     local pkg="$(basename $pkgfull)"
     if [ ! -d /usr/local/stow/$pkg ]
     then
-        running sudo mkdir -p "/usr/local/stow/$pkg/bin"
-        running sudo sh -c "PREFIX=/usr/local/stow/$pkg bpkg install -g $pkgfull"
+        running debug sudo mkdir -p "/usr/local/stow/$pkg/bin"
+        running debug sudo sh -c "PREFIX=/usr/local/stow/$pkg bpkg install -g $pkgfull"
         cd /usr/local/stow/ && sudo stow $pkg
         cd - > /dev/null 2>&1
     else
@@ -2623,15 +2633,15 @@ function install_bpkg_pkg()
 
 function setup_bpkg_pkgs()
 {
-    running install_bpkg_pkg sharad/gitwatch
+    running debug install_bpkg_pkg sharad/gitwatch
 }
 
 function setup_fzf()
 {
     if [ ! -d ${HOME}/.setup/fzf ]
     then
-        running git clone --depth 1 https://github.com/junegunn/fzf.git ${HOME}/.setup/fzf
-        running ${HOME}/.setup/fzf/install
+        running debug git clone --depth 1 https://github.com/junegunn/fzf.git ${HOME}/.setup/fzf
+        running debug ${HOME}/.setup/fzf/install
     fi
 }
 
@@ -2674,10 +2684,13 @@ function process_arg()
 
 function running()
 {
-    # verbose running "$@"
-    info running "$@"
-    local _cmd=$1
+    local  notifier=$1
+    local _cmd=$2
     shift
+    shift
+
+
+    $notifier $_cmd "$@"
     if [ ! $noaction ]
     then
         $_cmd "$@"

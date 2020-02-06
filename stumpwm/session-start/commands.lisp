@@ -789,7 +789,7 @@
 
 ;; no window command
 (stumpwm:defcommand cpy-pass () ()
-  (stumpwm:run-shell-command "secret-tool lookup server exch-cas.fortinet.com user 'fortinet-us\spratap' protocol imap  | xclip -i"))
+  (stumpwm:run-shell-command "secret-tool lookup server exch-cas.fortinet.com user 'fortinet-us\spratap' protocol imap  | xclip -i "))
 
 
 ;; TODO: universal menu for all KEYMAPS

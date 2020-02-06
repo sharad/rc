@@ -54,6 +54,7 @@
         "emacs-powerline"
         "emacs-spaceline"
         "emacs-emojify"
+        "emacs-org"
         "emacs-org-noter" ;; https://github.com/weirdNox/org-noter
         "emacs-closql"
         "emacs-diminish"
