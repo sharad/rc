@@ -409,7 +409,7 @@ function setup_recursive_links_container_dirs()
         # debug SHARAD TEST
         # https://stackoverflow.com/questions/4269798/use-gnu-find-to-show-only-the-leaf-directories
         # https://stackoverflow.com/a/4269862
-        local linkdirs=( $(find -type d -links 2 | cut -c3- ) )
+        local linkdirs=( $(find -type d -links 2 \( \! -name '*BACKUP*' \) | cut -c3- ) )
         debug linkdirs
         debug linkdirs=$linkdirs
 
@@ -444,7 +444,7 @@ function setup_recursive_links()
     then
         cd ${basepath}/${linkdir}
         # debug SHARAD TEST
-        local links=( $(find -type l | cut -c3- ) )
+        local links=( $(find -type l \( \! -name '*BACKUP*' \) | cut -c3- ) )
         cd - > /dev/null 2>&1
 
         debug links=${links[*]}
@@ -544,7 +544,7 @@ function setup_add_to_version_control_recursive_links_container_dirs() # NOT REQ
         cd "${targettopleafdir}"
         # debug SHARAD TEST
         # https://unix.stackexchange.com/questions/68577/find-directories-that-do-not-contain-subdirectories
-        local linkdirs=( $(find -type d -links 2 | cut -c3- ) )
+        local linkdirs=( $(find -type d -links 2 \( \! -name '*BACKUP*' \) | cut -c3- ) )
         cd - > /dev/null 2>&1
 
         debug linkdirs=${linkdirs[*]}
@@ -586,7 +586,7 @@ function setup_add_to_version_control_recursive_links() # SHARAD
     then
         cd ${linkbasepath}
         # debug SHARAD TEST
-        local links=( $(find -type l | cut -c3- ) )
+        local links=( $(find -type l \( \! -name '*BACKUP*' \) | cut -c3- ) )
         cd - > /dev/null 2>&1
 
         debug links="${links[*]}"
@@ -1954,7 +1954,7 @@ function setup_deps_view_volumes_dirs()
             then
 
                 cd ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/model.d/
-                local links=( $(find -type l | cut -c3- ) )
+                local links=( $(find -type l \( \! -name '*BACKUP*' \) | cut -c3- ) )
                 cd - > /dev/null 2>&1
 
                 modelsymlink=0
