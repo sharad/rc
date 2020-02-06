@@ -293,7 +293,8 @@ function setup_make_link()
                 warn while it should point to "$(readlink -m $rtarget )" >&2
             fi
             warn removing $link
-            running debug mv $link ${link}-BACKUP
+            warn taking $link backup in ${link}-BACKUP
+            running warn mv $link ${link}-BACKUP
         else
             verbose $link do not exists >&1
         fi
@@ -340,8 +341,9 @@ function setup_copy_link()
                     warn $target is pointing to  "$(readlink $target)" >&2
                     warn while it should point to "$(readlink -m $link )" >&2
                 fi
-                warn removing $link
-                running debug mv $target ${target}-BACKUP
+                warn removing $target
+                warn taking $target backup in ${target}-BACKUP
+                running warn mv $target ${target}-BACKUP
             else
                 verbose $target do not exists >&1
             fi
