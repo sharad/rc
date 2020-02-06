@@ -87,8 +87,8 @@
                      filename))
            filesize)
       (if pid
-          (message "Desktop grabbing process working with pid: ~a.~@[~&Outputting in ~a~]" pid file)
-          (message "No desktop grabbing is going on in my knowledge.~@[~&But previous recording could be found in ~a~]" file))))
+          (stumpwm:message "Desktop grabbing process working with pid: ~a.~@[~&Outputting in ~a~]" pid file)
+          (stumpwm:message "No desktop grabbing is going on in my knowledge.~@[~&But previous recording could be found in ~a~]" file))))
 
   (stumpwm:defcommand grab-desktop () ();(&optional filearg) ((:rest "Filename: "))
     (if (and video-pid (sb-ext:process-alive-p video-pid))
@@ -97,14 +97,14 @@
 
   (stumpwm:defcommand grab-desktop-start (&optional filearg) ((:rest "Filename: "))
     (if (and video-pid (sb-ext:process-alive-p video-pid))
-        (message
+        (stumpwm:message
          "Already desktop grabber is running with pid: ~a~&outputting into ~a"
          (remember-win:process-pid video-pid) filename)
         (let* ((filearg (or filearg "/tmp/out.mpeg"))
-                                        ;(width (run-shell-command "xrandr | grep 'Screen 0' | awk '{ printf \"%s\", $8 }'" t))
-                                        ;(hight (run-shell-command "xrandr | grep 'Screen 0' | awk '{ printf \"%s\", $10 }' | sed 's/,.*//'" t))
-               (geometry (run-shell-command "xwininfo -root | grep 'geometry' | awk '{printf \"%s\", $2;}'" t))
-               (depth    (run-shell-command "xwininfo -root | grep -i 'Depth' | awk '{printf \"%s\", $2;}'" t))
+                                        ;(width (stumpwm:run-shell-command "xrandr | grep 'Screen 0' | awk '{ printf \"%s\", $8 }'" t))
+                                        ;(hight (stumpwm:run-shell-command "xrandr | grep 'Screen 0' | awk '{ printf \"%s\", $10 }' | sed 's/,.*//'" t))
+               (geometry (stumpwm:run-shell-command "xwininfo -root | grep 'geometry' | awk '{printf \"%s\", $2;}'" t))
+               (depth    (stumpwm:run-shell-command "xwininfo -root | grep -i 'Depth' | awk '{printf \"%s\", $2;}'" t))
                (capture-cmd
                  (concatenate 'string
                                         ;"ffmpeg -y -f x11grab -s xga -r 24 -i "
@@ -117,9 +117,9 @@
               (create-backup filearg))
           (when (setf video-pid (remember-win:run-cli-command capture-cmd))
             (setf filename filearg)
-            (message "Your pid is ~a with cmd ~a" (remember-win:process-pid video-pid) capture-cmd)))))
+            (stumpwm:message "Your pid is ~a with cmd ~a" (remember-win:process-pid video-pid) capture-cmd)))))
 
-  ;;(message-no-timeout capture-cmd))))
+  ;;(stumpwm:message-no-timeout capture-cmd))))
 
   (stumpwm:defcommand grab-desktop-stop () ()
                                         ; shuld offer to play the last recordind, control it by user variable.
@@ -128,12 +128,12 @@
                                         ;(signal 'INT)))
         (let ((pid (remember-win:process-pid video-pid)))
           (when (sb-ext:process-kill video-pid 2)
-            (message (concatenate 'string
+            (stumpwm:message (concatenate 'string
                                   "Stopped the desktop grabbing from the pid ~a~%"
                                   "See the video in ~a file")
                      pid filename)
             (setf video-pid nil)))
-        (message "No desktop grabbing happenning to stop.")))
+        (stumpwm:message "No desktop grabbing happenning to stop.")))
 
   (stumpwm:defcommand grab-desktop-play () ()
     "Play video in last file"           ;I think it may be better to
@@ -142,7 +142,7 @@
     (if (and filename (probe-file filename))
         (remember-win:run-wcli-command (format nil "vlc --play-and-exit ~a" filename))
         (progn
-          (message "No output file present to play.")
+          (stumpwm:message "No output file present to play.")
           (setf filename nil))))
 
   (stumpwm:defcommand grab-desktop-reset-pid () ()
@@ -167,7 +167,7 @@
     (stumpwm:defcommand grab-desktop-post () ()
       "Post video to YouTube hosting site."
       (if (and filename (probe-file filename))
-          (run-shell-command
+          (stumpwm:run-shell-command
            (concatenate 'string "google youtube post --category Education ~a" filename)))))
 
   (setf *desktop-grab-map*
@@ -184,10 +184,10 @@
 ;;"ffmpeg -f x11grab -s " width "x" hight " -r 24 -i " (getenv "DISPLAY") ".0 -sameq " filename)))
 
 (stumpwm:defcommand display-groups () ()
-  (message "~a" (screen-groups (current-screen))))
+  (stumpwm:message "~a" (screen-groups (current-screen))))
 
 (stumpwm:defcommand display-urgent-windows () ()
-  (message "~a" (screen-urgent-windows (current-screen))))
+  (stumpwm:message "~a" (screen-urgent-windows (current-screen))))
 
 (stumpwm:defcommand display-screen-info () ()
   (notify (current-screen)))
@@ -199,7 +199,7 @@
   (notify (current-head)))
 
 (stumpwm:defcommand display-all-windows () ()
-            (message "~a" (all-windows)))
+            (stumpwm:message "~a" (all-windows)))
 
 (stumpwm:defcommand display-current-frames () ()
   (let ((group (screen-current-group (current-screen))))
@@ -227,11 +227,11 @@
 
 (defun wait-for-program (pgm)
   (dotimes (v 10 nil)
-    (let ((c (read-from-string (run-shell-command (concat "pgrep " pgm " | wc -l") t))))
+    (let ((c (read-from-string (stumpwm:run-shell-command (concat "pgrep " pgm " | wc -l") t))))
       (if (< c 1)
           (return t)
           (progn
-            (message "~a ~a ~a" c pgm v)
+            (stumpwm:message "~a ~a ~a" c pgm v)
             (sleep 2))))))
 
 (defun wait-for-nwprogram (pgm)
@@ -327,22 +327,22 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (stumpwm:defcommand gnome-quit () ()
-  (run-shell-command "gconftool-2 --type boolean --set /apps/nautilus/preferences/show_desktop true")
+  (stumpwm:run-shell-command "gconftool-2 --type boolean --set /apps/nautilus/preferences/show_desktop true")
   (remember-win:run-wcli-command
    (concat "gnome-session-save --gui --logout-dialog")))
 
 (stumpwm:defcommand mutt () ()
-  (run-or-raise
+  (stumpwm:run-or-raise
    "xterm -title mutt -e mutt -y"
    '(:title "mutt")))
 
 (stumpwm:defcommand ebib () ()
-  (run-or-raise
+  (stumpwm:run-or-raise
    "xterm -title ebib -e emacs -nw -f ebib"
    '(:title "ebib")))
 
 ;; (stumpwm:defcommand ebib () ()
-;;   (run-or-raise-cli
+;;   (stumpwm:run-or-raise-cli
 ;;    (if (emacs-server-running-p)
 ;;        "emacsclient -d ${DISPLAY} -e \"(open-ebib-in-new-frame)\""
 ;;        "emacs -d ${DISPLAY} -f \"(let ((ebib-layout 'full))
@@ -388,53 +388,53 @@
   (remember-win:run-wcli-command "virt-manager"))
 
 (stumpwm:defcommand w3m () ()
-   (run-or-raise
+   (stumpwm:run-or-raise
     "xterm -title w3m -tn xterm -e w3m -cookie -config /home/m0rg/.w3m/config -N http://www.google.fr"
     '(:title "w3m")))
 
 ;; (stumpwm:defcommand xbrowser () ()
-;;    (run-or-raise
+;;    (stumpwm:run-or-raise
 ;;     (getenv "XBROWSER")
 ;;     '(:class "Mozilla")))
 
 (stumpwm:defcommand slrn () ()
-   (run-or-raise
+   (stumpwm:run-or-raise
     "xterm -title slrn -e slrn -f /home/m0rg/.newsrc"
     '(:title "slrn")))
 
 (stumpwm:defcommand cmus () ()
-   (run-or-raise
+   (stumpwm:run-or-raise
     "xterm -title cmus -e cmus"
     '(:title "cmus 2.2.0")))
 
 (stumpwm:defcommand ssh-to-intranet () ()
-   (run-or-raise
+   (stumpwm:run-or-raise
     "xterm -title Intranet -e ssh $INTRANETSERVER"
     '(:title "Intranet")))
 
 (stumpwm:defcommand inkscape () ()
-   (run-or-raise
+   (stumpwm:run-or-raise
     "inkscape"
     '(:class "Inkscape")))
 
 (stumpwm:defcommand gimp () ()
-   (run-or-raise
+   (stumpwm:run-or-raise
     "gimp"
     '(:class "Gimp")))
 
 ;;fectchmail
 (stumpwm:defcommand fetchmail () ()
-  (run-shell-command "fetchmail -d0")
-  (message "Checking mails..."))
+  (stumpwm:run-shell-command "fetchmail -d0")
+  (stumpwm:message "Checking mails..."))
 (stumpwm:defcommand fetchmail-daemon () ()
-  (run-shell-command "fetchmail"))
+  (stumpwm:run-shell-command "fetchmail"))
 (stumpwm:defcommand fetchmail-kill-daemon () ()
-  (run-shell-command "fetchmail -q"))
+  (stumpwm:run-shell-command "fetchmail -q"))
 
 
 ;;unison synchronization
 (stumpwm:defcommand unison-synchronization (host) ((:rest "Synchro host: "))
-  (run-shell-command (concat *home-dir*
+  (stumpwm:run-shell-command (concat *home-dir*
                              "/bin/synchro "
                              host)))
 
@@ -446,14 +446,14 @@
 
 ;;screenshot-to-website
 (stumpwm:defcommand screenshot-to-website (filename) ((:rest "Filename: "))
-  (run-shell-command
+  (stumpwm:run-shell-command
    (format nil
            "import -window root /home/s/hell/code/html/patzy/screenshots/~a"
            filename)))
 
 ;;screenshot-to-file
 (stumpwm:defcommand screenshot-to-file (filename) ((:rest "Filename: "))
-  (run-shell-command
+  (stumpwm:run-shell-command
    (format nil "import -window root ~a" filename)))
 
 
@@ -500,8 +500,8 @@
 
 ;;Google calendar
 (stumpwm:defcommand gcal-week () ()
-  (message "~a"
-           (run-shell-command (concat "gcalcli calw 1  |"
+  (stumpwm:message "~a"
+           (stumpwm:run-shell-command (concat "gcalcli calw 1  |"
                                       " sed 's/\\[0;3\\([0-7]\\)"
                                       "m/\\^\\1\\*/g' |"
                                       " sed 's/\\[[0-9;]*m//g'"
@@ -510,8 +510,8 @@
                                       " -e notify")
                               nil)))
 (stumpwm:defcommand gcal-month () ()
-  (message "~a"
-           (run-shell-command (concat "gcalcli calm  |"
+  (stumpwm:message "~a"
+           (stumpwm:run-shell-command (concat "gcalcli calm  |"
                                       " sed 's/\\[0;3\\([0-7]\\)"
                                       "m/\\^\\1\\*/g' |"
                                       " sed 's/\\[[0-9;]*m//g'"
@@ -522,8 +522,8 @@
 
 
 (stumpwm:defcommand gcal-search (search-string) ((:rest "Search gcal: "))
-  (message "~a"
-           (run-shell-command (concat "gcalcli "
+  (stumpwm:message "~a"
+           (stumpwm:run-shell-command (concat "gcalcli "
                                       "--ignore-started --details search \""
                                       search-string
                                       "\""
@@ -537,28 +537,28 @@
                               nil)))
 
 (stumpwm:defcommand gcal-add-event (evt) ((:rest "Event:"))
-  (run-shell-command (format nil (concat "gcalcli quick '~a'~%")
+  (stumpwm:run-shell-command (format nil (concat "gcalcli quick '~a'~%")
                              evt))
-  (message "Added event: ~a" evt))
+  (stumpwm:message "Added event: ~a" evt))
 
 
 ;; cmus-remote control
 (stumpwm:defcommand cmus-play () ()
-  (run-shell-command "cmus-remote -p"))
+  (stumpwm:run-shell-command "cmus-remote -p"))
 (stumpwm:defcommand cmus-stop () ()
-  (run-shell-command "cmus-remote -s"))
+  (stumpwm:run-shell-command "cmus-remote -s"))
 (stumpwm:defcommand cmus-next () ()
-  (run-shell-command "cmus-remote -n"))
+  (stumpwm:run-shell-command "cmus-remote -n"))
 (stumpwm:defcommand cmus-prev () ()
-  (run-shell-command "cmus-remote -r"))
+  (stumpwm:run-shell-command "cmus-remote -r"))
 
 
 (stumpwm:defcommand restart-conky () ()
-   (run-shell-command
+   (stumpwm:run-shell-command
     "killall conky ; conky -d -c ~/.conkyrc/main/conkyrc 2>&1 >/dev/null"))
 
 (stumpwm:defcommand conky () ()
-  (run-shell-command
+  (stumpwm:run-shell-command
    "conky -d -c ~/.conkyrc/main/conkyrc"))
 
 
@@ -576,12 +576,12 @@
   "Toggle the laptop touchpad on/off.
    Need to have set 'Option SHMConfig' for Synaptics Touchpad
    device in xorg.conf."
-  (let ((state (run-shell-command
+  (let ((state (stumpwm:run-shell-command
                 "synclient -l | grep TouchpadOff | awk '{ print $3 }'" t)))
     (if (string= (subseq state 0 1) "1")
-        (run-shell-command "synclient TouchpadOff=0")
+        (stumpwm:run-shell-command "synclient TouchpadOff=0")
         (progn
-          (run-shell-command "synclient TouchpadOff=1")
+          (stumpwm:run-shell-command "synclient TouchpadOff=1")
           (banish-pointer)))))
 
 (stumpwm:defcommand refocus-conkeror () ()
@@ -606,7 +606,7 @@
   #+pa
   (in.net.sharad.pa-backend-emacs-planner::emacs-eval-nooutput "(close-all-frames)")
   (sleep 1)
-  (run-shell-command (concat (getenv "HOME")
+  (stumpwm:run-shell-command (concat (getenv "HOME")
                              "/.rsetup/wmlogout/run"))
   (quit))
 
@@ -624,50 +624,40 @@
 
 (stumpwm:defcommand sys-halt () ()
   (cond ((= 1 (length (complete-program "systemctl")))
-         (run-shell-command "systemctl poweroff"))
+         (stumpwm:run-shell-command "systemctl poweroff"))
         ((= 1 (length (complete-program "herd")))
-         (run-shell-command "pkexec herd power-off shepherd"))))
+         (stumpwm:run-shell-command "pkexec herd power-off shepherd"))))
 
 (stumpwm:defcommand sys-poweroff () ()
   (sys-halt))
 
 (stumpwm:defcommand sys-suspend () ()
   (cond ((= 1 (length (complete-program "systemctl")))
-         (run-shell-command "systemctl suspend"))
+         (stumpwm:run-shell-command "systemctl suspend"))
         ((= 1 (length (complete-program "herd")))
-         (run-shell-command "pkexec herd suspend shepherd"))))
+         (stumpwm:run-shell-command "pkexec herd suspend shepherd"))))
 
 (stumpwm:defcommand sys-suspend-then-hibernate () ()
   (cond ((= 1 (length (complete-program "systemctl")))
-         (run-shell-command "systemctl suspend-then-hibernate"))
+         (stumpwm:run-shell-command "systemctl suspend-then-hibernate"))
         ((= 1 (length (complete-program "herd")))
-         (run-shell-command "pkexec herd suspend-then-hibernate shepherd"))))
+         (stumpwm:run-shell-command "pkexec herd suspend-then-hibernate shepherd"))))
 
 (stumpwm:defcommand sys-hibernate () ()
   (cond ((= 1 (length (complete-program "systemctl")))
-         (run-shell-command "systemctl hibernate"))
+         (stumpwm:run-shell-command "systemctl hibernate"))
         ((= 1 (length (complete-program "herd")))
-         (run-shell-command "pkexec herd hibernate shepherd"))))
+         (stumpwm:run-shell-command "pkexec herd hibernate shepherd"))))
 
 (stumpwm:defcommand sys-reboot () ()
-  ;; (run-shell-command "reb00t")
+  ;; (stumpwm:run-shell-command "reb00t")
   (cond ((= 1 (length (complete-program "systemctl")))
-         (run-shell-command "systemctl reboot"))
+         (stumpwm:run-shell-command "systemctl reboot"))
         ((= 1 (length (complete-program "herd")))
-         (run-shell-command "pkexec herd reboot shepherd"))))
+         (stumpwm:run-shell-command "pkexec herd reboot shepherd"))))
+
 
-(defparameter *ctr-alt-del-menu*
-  '(("Lock"                   "lock-stumpwm")
-    ("Logout"                 "bye-with-confirmation")
-    ("Logout Now"             "bye")
-    ;; ("Halt"                   "sys-halt")
-    ("Poweroff"               "sys-poweroff")
-    ("Suspend"                "sys-suspend")
-    ("Suspend then hibernate" "sys-suspend-then-hibernate")
-    ("Hibernate"              "sys-hibernate")
-    ("Reboot"                 "sys-reboot")))
-
-(stumpwm:defcommand ctr-alt-del () ()
+(defun generate-menu (menu &key (fclear nil) (gravity :center))
   (labels ((pick (options)
              (let ((selection (stumpwm::select-from-menu (stumpwm::current-screen)
                                                          options
@@ -679,41 +669,52 @@
                   (second selection))
                  (t
                   (pick (cdr selection)))))))
-    (let ((*message-window-gravity* :center))
-      (fclear)
+    (let ((*message-window-gravity* gravity))
+      (when fclear
+        (fclear))
       (unwind-protect
-           (let* ((menu   (mapcar #'(lambda (item)
-                                      (let* ((item (if (consp item) item (cons item item)))
-                                             (heading (car  item))
-                                             (value   (cadr item)))
-                                        (list (concat "^5^B" heading "^b ^2")
-                                              value)))
-                                  *ctr-alt-del-menu*))
-                  (choice (pick menu))
-                  (cmd    choice))
+           (let* ((lmenu (mapcar #'(lambda (item)
+                                     (let* ((item    (if (consp item) item (cons item item)))
+                                            (heading (car  item))
+                                            (value   (cadr item)))
+                                       (list (concat "^5^B" heading "^b ^2") value)))
+                                 menu))
+                  (cmd   (pick lmenu)))
              (when (plusp (length cmd))
                (eval-command cmd t)))
-        (progn
+        (when fclear
           (pull-hidden-other))))))
+
 
-;; (debug-sleep)
+(stumpwm:defcommand ctr-alt-del () ()
+  (generate-menu '(("Lock"                   "lock-stumpwm")
+                   ("Logout"                 "bye-with-confirmation")
+                   ("Logout Now"             "bye")
+                   ;; ("Halt"                   "sys-halt")
+                   ("Poweroff"               "sys-poweroff")
+                   ("Suspend"                "sys-suspend")
+                   ("Suspend then hibernate" "sys-suspend-then-hibernate")
+                   ("Hibernate"              "sys-hibernate")
+                   ("Reboot"                 "sys-reboot"))
+                 :fclear  t
+                 :gravity :center))
 
 
 (stumpwm:defcommand start-wm-components () ()
-  (message "started start-wm-components")
+  (stumpwm:message "started start-wm-components")
   (prog1
-      ;; (run-shell-command
+      ;; (stumpwm:run-shell-command
       ;;  (concat (getenv "HOME") "/.rsetup/x/run"))
-      (run-shell-command
+      (stumpwm:run-shell-command
        (concat (getenv "HOME") "/.rsetup/wmlogin/run"))
-    (message "done start-wm-components")))
+    (stumpwm:message "done start-wm-components")))
 
 (stumpwm:defcommand start-wm-test-components () ()
-  (message "started start-wm-test-components")
+  (stumpwm:message "started start-wm-test-components")
   (prog1
-      (run-shell-command
+      (stumpwm:run-shell-command
        (concat (getenv "HOME") "/tmp/test.sh"))
-    (message "done start-wm-test-components")))
+    (stumpwm:message "done start-wm-test-components")))
 
 
 (stumpwm:defcommand display-top-map () ()
@@ -758,7 +759,7 @@
   (let ((var (if (string-equal "" var) t var)))
     (if (eq var t)
         (let ((env-vars (sb-ext:posix-environ)))
-          (message "Environment[ ~a ]:~%~:{~a: ~a~%~}"
+          (stumpwm:message "Environment[ ~a ]:~%~:{~a: ~a~%~}"
                    (length env-vars)
                    (let ((i 0))
                      (mapcar #'(lambda (e)
@@ -776,12 +777,20 @@
                    (apply #'string-equal
                           (mapcar #'(lambda (str) (string-trim '(#\Space #\Tab #\Newline) str))
                                   (list value changed-value))))
-              (message "env[~a] unchanged" var)
+              (stumpwm:message "env[~a] unchanged" var)
               (if (setf (getenv var) changed-value)
-                  (message "env[~a]: ~a" var changed-value)))))))
+                  (stumpwm:message "env[~a]: ~a" var changed-value)))))))
 
 
 (stumpwm:defcommand find-cousor () ()
-  (run-shell-command "~/bin/find-cursor --color black")
-  (run-shell-command "~/bin/find-cursor --color white"))
+  (stumpwm:run-shell-command "~/bin/find-cursor --color black")
+  (stumpwm:run-shell-command "~/bin/find-cursor --color white"))
+
+
+;; no window command
+(stumpwm:defcommand cpy-pass () ()
+  (stumpwm:run-shell-command "secret-tool lookup server exch-cas.fortinet.com user 'fortinet-us\spratap' protocol imap  | xclip -i"))
+
+
+;; TODO: universal menu for all KEYMAPS
 

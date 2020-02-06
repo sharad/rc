@@ -77,6 +77,8 @@
         "ccls"
         "emacs-ccls"
 
+        "xhost"
+        "xauth"
         ;; X gl
         "compton"
         "compton-conf"

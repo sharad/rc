@@ -5,11 +5,11 @@
 ;;{{ Pointer
 (setq *grab-pointer-timeout* 4
       ;; change window numbers
-      *frame-number-map* "1234567890"
-      *group-number-map* "123456789"
+      stumpwm:*frame-number-map* "1234567890"
+      stumpwm::*group-number-map* "123456789"
       ;;Run-or-raise work through multiple screens
-      *run-or-raise-all-screens* t
-      *run-or-raise-all-groups*  t
+      stumpwm:*run-or-raise-all-screens* t
+      stumpwm:*run-or-raise-all-groups*  t
       *disk-usage-paths* '("/" "/home" "/usr" "/pacific"))
 ;;}}
 
@@ -282,7 +282,7 @@
 ;; command handle that.
 
 
-(define-stumpwm-type :smart-direction (input prompt)
+(stumpwm:define-stumpwm-type :smart-direction (input prompt)
   (let ((valid-dirs
           (loop  ; gather all the directions in which there's a neighbouring frame
                  with values = '(("up" :up)
@@ -595,7 +595,8 @@
         (dformat 2 "client requests to go fullscreen~%")
         (add-wm-state (window-xwin window) :_NET_WM_STATE_FULLSCREEN)
         (setf (window-fullscreen window) t)
-        (focus-window window)
+        ;; why it should be already in this state
+        ;; (focus-window window)
         (update-mode-lines (current-screen)))))
 
   (defun deactivate-fullscreen-if-not (window)
@@ -621,9 +622,13 @@
   ;; but creates problem with conkeror.
   ;; (activate-fullscreen-if-not (current-window))
 
+  ;; sharad
+  (defun fullscreen-focus-frame (cframe lframe)
+    (activate-fullscreen-if-not   (frame-window cframe))
+    (deactivate-fullscreen-if-not (frame-window lframe)))
 
   (defun fullscreen-focus-window (cwin lwin)
-    (activate-fullscreen-if-not cwin)
+    (activate-fullscreen-if-not   cwin)
     (deactivate-fullscreen-if-not lwin))
 
   (defun fullscreen-curr-post-command (cmd)
@@ -635,11 +640,11 @@
   (progn
     (defun deactivate-full-screen-on-idle-timeout ()
       (when (> deactivate-fullscreen-idle-timeout 2)
-        (when (member 'fullscreen-focus-window *focus-window-hook*)
+        (when (member 'fullscreen-focus-frame *focus-frame-hook*)
           ;; (message "deactivate fs")
           (if (> (stumpwm::idle-time (stumpwm::current-screen)) deactivate-fullscreen-idle-timeout)
               (deactivate-fullscreen-if-not (stumpwm::current-window))
-              (activate-fullscreen-if-not (stumpwm::current-window))))))
+              (activate-fullscreen-if-not   (stumpwm::current-window))))))
 
     (defun deactivate-full-screen-on-idle-timer-stop ()
       "Stops the newmail timer."
@@ -665,20 +670,47 @@
       "Stops the newmail timer."
       (deactivate-full-screen-on-idle-timer-stop)))
 
+
+  ;; BUG1: when focus move from window frame to empty frame window not get unfullscreen
+  ;; BUG2: when color or eval command read input that time window again become full screen.
+
+  (when  nil
+    (progn
+      (defun test-focus-window (cwin lwin)
+        (message "*focus-frame-hook*: cwin: ~a, lwin: ~a" cwin lwin))
+      (add-hook *focus-frame-hook* 'test-focus-window)
+      (defun test-focus-frame (cframe lframe)
+        (message "*focus-frame-hook*: ~a ~a" cframe lframe))
+      (add-hook *focus-frame-hook* 'test-focus-frame)
+      (defun test-command-mode-start ()
+        (message "*command-mode-start-hook*:"))
+      (add-hook *command-mode-start-hook* 'test-command-mode-start)
+      (defun test-command-mode-end ()
+        (message "*command-mode-end-hook*:"))
+      (add-hook *command-mode-end-hook* 'test-command-mode-end)
+      (defun test-split-frame ()
+        (message "*split-frame-hook*:"))
+      (add-hook *split-frame-hook* 'test-split-frame)
+      (defun test-focus-group ()
+        (message "*focus-group-hook*:"))
+      (add-hook *focus-group-hook* 'test-focus-group)))
+
   (defcommand fullscreen-on-ungrabbed-pointer-enable () ()
     (add-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
+    (add-hook *focus-frame-hook* 'fullscreen-focus-frame)
     (add-hook *focus-window-hook* 'fullscreen-focus-window)
     (deactivate-full-screen-on-idle-timer-start)
     (activate-fullscreen-if-not (current-window)))
 
   (defcommand fullscreen-on-ungrabbed-pointer-disable () ()
     (remove-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
+    (remove-hook *focus-frame-hook* 'fullscreen-focus-frame)
     (remove-hook *focus-window-hook* 'fullscreen-focus-window)
     (deactivate-full-screen-on-idle-timer-stop)
     (deactivate-fullscreen-if-not (current-window)))
 
   (defcommand toggle-fullscreen-on-ungrabbed-pointer () ()
-    (if (member 'fullscreen-focus-window *focus-window-hook*)
+    (if (member 'fullscreen-focus-frame *focus-frame-hook*)
         (fullscreen-on-ungrabbed-pointer-disable)
         (fullscreen-on-ungrabbed-pointer-enable)))
 
