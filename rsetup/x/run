@@ -147,26 +147,19 @@ then
     # xhost +localhost
 fi
 
-if whence -p xauth >& /dev/null
-then
-    # https://www.biac.duke.edu/library/documentation/xwin32/Security.html
-    __HOSTDISPLAY="$HOST:$(echo $DISPLAY | cut -c2- | cut -d. -f1)"
-    __LOCALDISPLAY="localhost:$(echo $DISPLAY | cut -c2- | cut -d. -f1)"
-    __COOKY1="$(cat /dev/urandom | tr -dc 'a-f0-9' | fold -w 32 | head -1)"
-    __COOKY2="$(cat /dev/urandom | tr -dc 'a-f0-9' | fold -w 32 | head -1)"
-    xauth add $__HOSTDISPLAY . $__COOKY1
-    xauth add $__LOCALDISPLAY . $__COOKY2
-    unset __HOSTDIPLAY
-    unset __LOCALDIPLAY
-    unset __COOKY1
-    unset __COOKY2
-fi
 
 
 
 if [ $DISPLAY ]
 then
-    :
+
+    if whence -p xauth >& /dev/null
+    then
+        # https://www.biac.duke.edu/library/documentation/xwin32/Security.html
+        xauth add "localhost:$(echo $DISPLAY | cut -c2- | cut -d. -f1)"   .   "$(cat /dev/urandom | tr -dc 'a-f0-9' | fold -w 32 | head -1)"
+        xauth add "$HOST:$(echo $DISPLAY | cut -c2- | cut -d. -f1)"       .   "$(cat /dev/urandom | tr -dc 'a-f0-9' | fold -w 32 | head -1)"
+    fi
+:
     # Why don't the message windows disappear?
     # mit-clx, used with clisp, doesn't support timeouts. Use new-clx
     # instead. Alternatively, the problem can be worked around by

@@ -80,6 +80,7 @@
 
         "xhost"
         "xauth"
+        "xkill"
         ;; X gl
         "compton"
         "compton-conf"
