@@ -29,17 +29,20 @@
 ;; Command helpers
 (define-command (emacs) (shell-command "emacsclient -c"))
 (define-command (conkeror) (shell-command "conkeror"))
+(define-command (xterm) (shell-command "xterm"))
+(define-command (urxvt) (shell-command "urxvt"))
 
 ;; Multi-monitor setup.
-(set-resolution! "VGA-0" 1680 1050)
-(set-resolution! "DVI-0" 1920 1200)
-(set-offset! "DVI-0" 1680 0)
+;; (set-resolution! "VGA-0" 1680 1050)
+;; (set-resolution! "DVI-0" 1920 1200)
+;; (set-offset! "DVI-0" 1680 0)
 
 ;; Root key binding (I use xmodmap to map super key to F20. Maybe that
 ;; should be built into this as well.)
 
 ;;  Default root key is C-t
 ;; (set! (root-key) 'F20)
+(set! (root-key) 'C-backtick)
 
 ;; simple-focus simply draws a thin border around the focused window
 
@@ -52,13 +55,13 @@
 (set! (keymap-cursor) 'draped-box)
 
 ;; Set fonts
-(let ((proggy "-*-proggyclean-*-*-*-*-*-*-*-*-*-70-*-*"))
-  (set! minibuffer-font proggy)
-  (set! menu-font proggy)
-  (set! message-font proggy))
+;; (let ((proggy "-*-proggyclean-*-*-*-*-*-*-*-*-*-70-*-*"))
+;;   (set! minibuffer-font proggy)
+;;   (set! menu-font proggy)
+;;   (set! message-font proggy))
 
 ;; Start repl server on the default port
-(start-wm-repl)
+;; (start-wm-repl)
 
 ;; Root keymap
 (bind-key-commands root-keymap prompt-for-additional-arg
@@ -73,9 +76,14 @@
   (T "show-time")
   (n "window-cycle")
   (tab "visible-window-cycle")
-  (c "shell-command xterm -e telnet localhost 37146")
+  ;; (c "shell-command xterm -e telnet localhost 37146")
+  (c "xterm")
+  (u "urxvt")
   (t "shell-command xterm"))
 
 ;; Startup programs
 ;; (shell-command "emacs --daemon")
 ;; (shell-command (format #f "xterm -e 'tail /tmp/guile-wm.log -f'"))
+(shell-command (string-append "xmodmap" " " (getenv "HOME") "/.Xmodmaps/xmodmaprc"))
+(shell-command (string-append (getenv "HOME") "/.rsetup/wmlogin/run"))
+
