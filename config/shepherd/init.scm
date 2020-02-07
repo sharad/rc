@@ -1,3 +1,4 @@
+
 (use-modules (shepherd service))
 (use-modules (guix utils))
 (use-modules (gnu))
@@ -16,7 +17,11 @@
 
 (load "services.scm")
 
-(define unregistered-services (list gpg-agent ibus-daemon jackd))
+(define unregistered-services (list 
+				;; gpg-agent
+				;; ibus-daemon 
+				;; jackd
+				))
 (define unused-services       (list emacs))
 (define tty-services          (list pkttyagent))
 (define x-services            (list redshift polkit-gnome-agent osdsh autocutsel compton keynav conky xautolock))

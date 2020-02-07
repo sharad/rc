@@ -363,18 +363,21 @@
   (defun symb (&rest args)
     (values (intern (apply #'mkstr args))))
 
-  (defmacro gen-binary-option-commands (name)
-    (let* ((option  (symb name '-p))
+  (defmacro gen-binary-option-body (name &rest body)
+    (let* ((option      (symb name '-p))
            (enable-fun  (symb 'enable- name '-function))
            (disable-fun (symb 'disable- name '-function))
-           (enable  (symb 'enable- name))
-           (disable (symb 'disable- name))
-           (toggle  (symb 'toggle- name)))
-      `(let ((impl
+           (enable      (symb 'enable- name))
+           (disable     (symb 'disable- name))
+           (toggle      (symb 'toggle- name))
+           (get-map     (symb 'get- name '-map))
+           (map         (symb '* name '-map*)))
+      `(let (,option
+             (impl
                #'(lambda ()
                    (if ,option
                        (if (fboundp ',enable-fun) (funcall #',enable-fun))
-                       (if (fboundp ',disable-fun) (funcall #',disable-fun))))))                            ;autoselect-if-only-p
+                       (if (fboundp ',disable-fun) (funcall #',disable-fun))))))
          (stumpwm::defcommand ,enable () ()
            (setf ,option t)
            (funcall impl))
@@ -385,36 +388,22 @@
 
          (stumpwm::defcommand ,toggle () ()
            (setf ,option (not ,option))
-           (funcall impl)))))
+           (funcall impl))
 
+         (defun ,get-map ()
+           (let ((m (make-sparse-keymap)))
+             (define-key m (kbd "e") (string-downcase (symbol-name ',enable)))
+             (define-key m (kbd "d") (string-downcase (symbol-name ',disable)))
+             (define-key m (kbd "t") (string-downcase (symbol-name ',toggle)))
+             m))
 
-(defmacro gen-binary-option-body (name &rest body)
-  (let* ((option  (symb name '-p))
-         (enable-fun  (symb 'enable- name '-function))
-         (disable-fun (symb 'disable- name '-function))
-         (enable  (symb 'enable- name))
-         (disable (symb 'disable- name))
-         (toggle  (symb 'toggle- name)))
-    `(let (,option
-           (impl
-             #'(lambda ()
-                 (if ,option
-                     (if (fboundp ',enable-fun) (funcall #',enable-fun))
-                     (if (fboundp ',disable-fun) (funcall #',disable-fun))))))
-       (stumpwm::defcommand ,enable () ()
-         (setf ,option t)
-         (funcall impl))
+         (set ',map (,get-map))
 
-       (stumpwm::defcommand ,disable () ()
-         (setf ,option nil)
-         (funcall impl))
+         (progn
+           ,@body))))
 
-       (stumpwm::defcommand ,toggle () ()
-         (setf ,option (not ,option))
-         (funcall impl))
-
-       (progn
-         ,@body)))))
+  (defmacro gen-binary-option-commands (name)
+    `(gen-binary-option-body ,name)))
 
 
 ;;;{{{
@@ -695,14 +684,14 @@
         (message "*focus-group-hook*:"))
       (add-hook *focus-group-hook* 'test-focus-group)))
 
-  (defcommand fullscreen-on-ungrabbed-pointer-enable () ()
+  (defcommand enable-fullscreen-on-ungrabbed-pointer () ()
     (add-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
     (add-hook *focus-frame-hook* 'fullscreen-focus-frame)
     (add-hook *focus-window-hook* 'fullscreen-focus-window)
     (deactivate-full-screen-on-idle-timer-start)
     (activate-fullscreen-if-not (current-window)))
 
-  (defcommand fullscreen-on-ungrabbed-pointer-disable () ()
+  (defcommand disable-fullscreen-on-ungrabbed-pointer () ()
     (remove-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
     (remove-hook *focus-frame-hook* 'fullscreen-focus-frame)
     (remove-hook *focus-window-hook* 'fullscreen-focus-window)
@@ -711,8 +700,8 @@
 
   (defcommand toggle-fullscreen-on-ungrabbed-pointer () ()
     (if (member 'fullscreen-focus-frame *focus-frame-hook*)
-        (fullscreen-on-ungrabbed-pointer-disable)
-        (fullscreen-on-ungrabbed-pointer-enable)))
+        (disable-fullscreen-on-ungrabbed-pointer)
+        (enable-fullscreen-on-ungrabbed-pointer)))
 
   (defun toggle-fullscreen-on-ungrabbed-pointer-after-few-mins ()
     (when toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer
@@ -732,7 +721,14 @@
         (setf toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer
               (stumpwm::run-with-timer mins nil #'toggle-fullscreen-on-ungrabbed-pointer-after-few-mins)))))
 
+  (defun get-fullscreen-on-ungrabbed-pointer-map ()
+    (let ((m (make-sparse-keymap)))
+      (define-key m (kbd "e") (symbol-name 'enable-fullscreen-on-ungrabbed-pointer))
+      (define-key m (kbd "d") (symbol-name 'disable-fullscreen-on-ungrabbed-pointer))
+      (define-key m (kbd "t") (symbol-name 'toggle-fullscreen-on-ungrabbed-pointer))
+      m))
+
   ;; enable it.
-  (fullscreen-on-ungrabbed-pointer-enable))
+  (enable-fullscreen-on-ungrabbed-pointer))
 ;;;}}
 

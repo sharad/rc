@@ -415,9 +415,21 @@
 
 
 ;;{{{ Coursor
-(define-key *root-map* (kbd "C-M-l")        "find-cousor")
+(define-key *root-map* (kbd "C-M-l") "find-cousor")
 ;;}}}
+
+
+(setf *options-map*
+      (let ((m (make-sparse-keymap)))
+        (define-key m (kbd "k") '*show-key-binding-map*)
+        (define-key m (kbd "m") '*mode-line-on-key-press-map*)
+        (define-key m (kbd "r") '*focus-window-match-rules-map*)
+        (define-key m (kbd "p") '*show-win-prop-map*)
+        (define-key m (kbd "f") '*fullscreen-on-ungrabbed-pointer-map*)
+        m))
+(define-key stumpwm:*root-map* (kbd "O") '*options-map*)
 
 
 ;; *top-map*
 ;; TODO: universal menu for all KEYMAPS
+

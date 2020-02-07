@@ -22,11 +22,12 @@
     #:respawn? #t))
 
 (define pkttyagent
+  ;; TODO: need terminal
   (make <service>
     #:provides '(pkttyagent)
     #:start    (make-forkexec-constructor '("pkttyagent")) ; to make it more obvious
     #:stop     (make-kill-destructor)
-    #:respawn? #t))
+    #:respawn? #f))
 
 (define conky
   (make <service>
