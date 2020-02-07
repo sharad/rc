@@ -24,11 +24,11 @@
     ;; ("s-RET"      "exec sakura")
     ("s-p"        "dmenu")
     ("s-R"        "reinit")
-  ("s-Q"        "quit")
-  ("s-b"        "mode-line")
-  ;; ("C-M-Delete" "bye-with-confirmation")
-  ("C-M-Delete" "ctr-alt-del")
-  ("s-T"        "display-top-map"))
+    ("s-Q"        "quit")
+    ("s-b"        "mode-line")
+    ;; ("C-M-Delete" "bye-with-confirmation")
+    ("C-M-Delete" "ctr-alt-del")
+    ("s-T"        "display-top-map"))
 
 ;; (define-key *top-map* (kbd "C-M-Delete") "bye-with-confirmation")
 ;;;}}}
@@ -428,6 +428,13 @@
         (define-key m (kbd "f") '*fullscreen-on-ungrabbed-pointer-map*)
         m))
 (define-key stumpwm:*root-map* (kbd "O") '*options-map*)
+
+
+(setf *clip-map*
+      (let ((m (make-sparse-keymap)))
+        (define-key m (kbd "w") "cpy-pass")
+        m))
+(define-key stumpwm:*root-map* (kbd "C") '*clip-map*)
 
 
 ;; *top-map*

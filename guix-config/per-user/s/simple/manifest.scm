@@ -39,6 +39,10 @@
 
         "net-snmp"
 
+        ;; https://github.com/stumpwm/stumpwm/wiki/Tips-And-Tricks#mounting-storage-devices
+        ;; "udisks"
+        ;; "udisks-glue"
+
 
         "emacs-bbdb"
         "emacs-ebdb"
@@ -94,6 +98,7 @@
         "jupyter"
         "python-git-review"
 
+        "wget"
         "xmlstarlet"
         "libxml2"
         "libxslt"
@@ -178,8 +183,7 @@
         "ruby"
         "autocutsel"
         "xcompmgr"
-        "wget"
-        "xmlstarlet"
+        "xfd"
         "xwininfo"
         "xmlstarlet"
         "imagemagick"
@@ -379,7 +383,7 @@
         "mpg321"))
 
 (define %lotus-gui-packages
-  (list ;; "xinit"
+  (list "xinit"
         "i3status"
         "dmenu"
         "st"
@@ -392,6 +396,7 @@
         "xrandr-invert-colors"
         "rxvt-unicode"
         "sakura"
+        "nautilus"
         "gnome-keyring"
         "gcr"
         "seahorse"
@@ -422,7 +427,7 @@
         "xsetroot"
         "pidgin"
         "pidgin-otr"
-        "telegram-purple"
+        ;; "telegram-purple"
         "telegram-purple"))
 
 (define %lotus-text-packages
