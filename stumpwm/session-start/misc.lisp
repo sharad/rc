@@ -372,12 +372,11 @@
            (toggle      (symb 'toggle- name))
            (get-map     (symb 'get- name '-map))
            (map         (symb '* name '-map*)))
-      `(let (,option
-             (impl
-               #'(lambda ()
-                   (if ,option
-                       (if (fboundp ',enable-fun) (funcall #',enable-fun))
-                       (if (fboundp ',disable-fun) (funcall #',disable-fun))))))
+      `(let* ((,option nil)
+              (impl #'(lambda ()
+                        (if ,option
+                            (if (fboundp ',enable-fun) (funcall #',enable-fun))
+                            (if (fboundp ',disable-fun) (funcall #',disable-fun))))))
          (stumpwm::defcommand ,enable () ()
            (setf ,option t)
            (funcall impl))
@@ -407,7 +406,8 @@
 
 
 ;;;{{{
-(let ((show-key-binding-p nil))
+(progn
+  (gen-binary-option-commands show-key-binding)
 
   (defun show-key-binding-if-incomplete (key key-seq cmd)
     (declare (ignore key))
@@ -416,21 +416,19 @@
            (kmap-or-kmap-symbol-p cmd))
       (display-bindings-for-keymaps key-seq (symbol-value cmd))))
 
-  (progn
-    (gen-binary-option-commands show-key-binding)
+  (defun disable-show-key-binding-function ()
+    (remove-hook *key-press-hook* #'show-key-binding-if-incomplete))
 
-    (defun disable-show-key-binding-function ()
-      (remove-hook *key-press-hook* #'show-key-binding-if-incomplete))
-
-    (defun enable-show-key-binding-function ()
-      (add-hook *key-press-hook* #'show-key-binding-if-incomplete)))
+  (defun enable-show-key-binding-function ()
+    (add-hook *key-press-hook* #'show-key-binding-if-incomplete))
 
   (enable-show-key-binding))
 ;;;}}}
 
 
 ;;;{{{ mode-line-on-key-press
-(let ((mode-line-on-key-press-p nil))
+(progn
+  (gen-binary-option-commands mode-line-on-key-press)
 
   (defun mode-line-when-pointer-grabbed (key key-seq cmd)
     ;; (declare (ignore key key-seq cmd))
@@ -440,40 +438,21 @@
      (current-head)
      (kmap-or-kmap-symbol-p cmd)))
 
-  (progn
-    (gen-binary-option-commands mode-line-on-key-press)
+  (defun disable-mode-line-on-key-press-function ()
+    (remove-hook *key-press-hook* #'mode-line-when-pointer-grabbed))
 
-    (defun disable-mode-line-on-key-press-function ()
-      (remove-hook *key-press-hook* #'mode-line-when-pointer-grabbed))
-
-    (defun enable-mode-line-on-key-press-function ()
-      (add-hook *key-press-hook* #'mode-line-when-pointer-grabbed)))
+  (defun enable-mode-line-on-key-press-function ()
+    (add-hook *key-press-hook* #'mode-line-when-pointer-grabbed))
 
   (disable-mode-line-on-key-press))
-
-;; (defun toggle-mode-line-on-key-press (key key-seq cmd)
-;;   (declare (ignore key key-seq cmd))
-;;   (toggle-mode-line (current-screen) (current-head) (car *mode-line-fmts*)))
-;;
-;; (let ()
-;;   (defun mode-line-when-pointer-grabbed (key key-seq cmd)
-;;     ;; (declare (ignore key key-seq cmd))
-;;     (declare (ignore key key-seq))
-;;     (enable-mode-line
-;;      (current-screen)
-;;      (current-head)
-;;      (kmap-or-kmap-symbol-p cmd)))
-;;
-;;   (defcommand toggle-mode-line-enable () ()
-;;     (add-hook *key-press-hook* 'mode-line-when-pointer-grabbed))
-;;
-;;   (defcommand toggle-mode-line-disable () ()
-;;     (remove-hook *key-press-hook* 'mode-line-when-pointer-grabbed)))
 ;;;}}
 
 
 ;;;{{{ focus-window-match-rules
 (progn
+
+  (gen-binary-option-commands focus-window-match-rules)
+
   (defun local-window-matches-properties-p (window &key class instance type role title)
     "Returns T if window matches all the given properties"
     (and
@@ -485,19 +464,16 @@
 
   (let ((focus-window-match-rules-p t)
         (focus-window-match-rules '()))
-
     (defun define-focus-window-match-rule (name &rest rule)
       (push
        (cons name rule)
        focus-window-match-rules))
-
     (defun matche-window-on-rules (window)
       (let ((rules focus-window-match-rules))
         (some
          #'(lambda (rule)
              (apply #'window-matches-properties-p window (cdr rule)))
          rules)))
-
     (defun set-focus-on-matched-window (window &optional force)
       ;; TODO pending trying to add code to resolve case when wcli window not get focus
       ;; make it toggle-able.
@@ -507,22 +483,17 @@
         ;; TODO: how to detect if window did not get focus
         (let ((frame (stumpwm::window-frame window)))
           (stumpwm::focus-frame (stumpwm::window-group window) frame))))
-
     (defun focus-matched-window (&optional (window (current-window)))
       (when focus-window-match-rules-p
         (set-focus-on-matched-window window nil)))
-
     (defcommand test-focus-matched-window (&optional (win (current-window))) ()
       (when win
         (message "match ~a" (matche-window-on-rules win))))
 
-    (progn
-      (gen-binary-option-commands focus-window-match-rules)
-
-      (defun disable-focus-window-match-rules-function ()
-        (remove-hook *new-window-hook* #'focus-matched-window))
-      (defun enable-focus-window-match-rules-function ()
-        (add-hook *new-window-hook* #'focus-matched-window)))
+    (defun disable-focus-window-match-rules-function ()
+      (remove-hook *new-window-hook* #'focus-matched-window))
+    (defun enable-focus-window-match-rules-function ()
+      (add-hook *new-window-hook* #'focus-matched-window))
 
     (enable-focus-window-match-rules))
 
@@ -547,6 +518,9 @@
 
 ;;;{{{ show-win-prop
 (let ((show-win-prop-p t))
+
+  (gen-binary-option-commands show-win-prop)
+
   (defun show-win-prop (&optional (window (current-window)))
     (let ((w (or window (current-window))))
       (if (not w)
@@ -558,14 +532,12 @@
                               (window-role w)
                               (window-title w)))))
 
-  (progn
-    (gen-binary-option-commands show-win-prop)
-    (defun disable-show-win-prop-function ()
-      (remove-hook *new-window-hook* #'show-win-prop))
-    (defun enable-show-win-prop-function ()
-      (setf *new-window-hook*
-            (append *new-window-hook* (list #'show-win-prop)))))
-  (disable-show-win-prop)
+  (defun disable-show-win-prop-function ()
+    (remove-hook *new-window-hook* #'show-win-prop))
+  (defun enable-show-win-prop-function ()
+    (setf *new-window-hook*
+          (append *new-window-hook* (list #'show-win-prop))))
+
   (enable-show-win-prop))
 ;;;}}}
 
@@ -723,10 +695,12 @@
 
   (defun get-fullscreen-on-ungrabbed-pointer-map ()
     (let ((m (make-sparse-keymap)))
-      (define-key m (kbd "e") (symbol-name 'enable-fullscreen-on-ungrabbed-pointer))
-      (define-key m (kbd "d") (symbol-name 'disable-fullscreen-on-ungrabbed-pointer))
-      (define-key m (kbd "t") (symbol-name 'toggle-fullscreen-on-ungrabbed-pointer))
+      (define-key m (kbd "e") "enable-fullscreen-on-ungrabbed-pointer")
+      (define-key m (kbd "d") "disable-fullscreen-on-ungrabbed-pointer")
+      (define-key m (kbd "t") "toggle-fullscreen-on-ungrabbed-pointer")
       m))
+
+  (setf *fullscreen-on-ungrabbed-pointer-map* (get-fullscreen-on-ungrabbed-pointer-map))
 
   ;; enable it.
   (enable-fullscreen-on-ungrabbed-pointer))
