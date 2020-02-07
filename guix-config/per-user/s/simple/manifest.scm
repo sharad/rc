@@ -42,6 +42,7 @@
 
         "emacs-bbdb"
         "emacs-ebdb"
+        "emacs-gnus-harvest"
         "guile"
         "emacs-geiser"
         "emacs-sesman"
@@ -183,6 +184,7 @@
         "xmlstarlet"
         "imagemagick"
         "setxkbmap"
+        "kbd"                           ;kbdinfo gkbled
         "xkeyboard-config"
 
         "fasd"
