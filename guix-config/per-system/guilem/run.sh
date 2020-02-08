@@ -11,16 +11,16 @@ then
     if [ -e /dev/mapper/guix-root ]
     then
         mkfs.ext4 /dev/mapper/guix-root
-        if [ -e /dev/mapper/guix-store ]
+        if [ -e /dev/mapper/guix-gnu ]
         then
-            mkfs.ext4 /dev/mapper/guix-store
+            mkfs.ext4 /dev/mapper/guix-gnu
 
 
             if mount /dev/mapper/guix-root /mnt
             then
                 mkdir -p /mnt/gnu /mnt/etc
 
-                if mount /dev/mapper/guix-store /mnt/gnu
+                if mount /dev/mapper/guix-gnu /mnt/gnu
                 then
                     cp "$CONFIG" /mnt/etc/config.scm
 
@@ -36,15 +36,15 @@ then
 
                     guix system init /mnt/etc/config.scm /mnt/
 
-                else                # mount /dev/mapper/guix-store /mnt/gnu
-                    echo can not mount /dev/mapper/guix-store /mnt/gnu
-                fi                  # mount /dev/mapper/guix-store /mnt/gnu
+                else                # mount /dev/mapper/guix-gnu /mnt/gnu
+                    echo can not mount /dev/mapper/guix-gnu /mnt/gnu
+                fi                  # mount /dev/mapper/guix-gnu /mnt/gnu
             else
                 echo can not mount /dev/mapper/guix-root /mnt
             fi                      # if mount /dev/mapper/guix-root /mnt
         else
-            echo /dev/mapper/guix-store not exists
-        fi                          # if [ -e /dev/mapper/guix-store ]
+            echo /dev/mapper/guix-gnu not exists
+        fi                          # if [ -e /dev/mapper/guix-gnu ]
     else
         echo /dev/mapper/guix-root not exists
     fi                              # if [ -e /dev/mapper/guix-root ]
