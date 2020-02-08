@@ -21,6 +21,7 @@ then
         mkfs.ext4 /dev/mapper/guix-root
         if [ -e /dev/mapper/guix-gnu ]
         then
+            mkfs.ext4 /dev/mapper/guix-tmp
             mkfs.ext4 /dev/mapper/guix-gnu
 
 
