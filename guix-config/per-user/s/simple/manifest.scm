@@ -36,6 +36,7 @@
         "poppler"
         "whois"
         "pwgen"
+        "synergy"
 
         "net-snmp"
 
@@ -397,6 +398,8 @@
         "sakura"
         "nautilus"
         "tracker"
+        "emacs-pass"
+        ;; "keychain"
         "gnome-keyring"
         "gcr"
         "seahorse"
