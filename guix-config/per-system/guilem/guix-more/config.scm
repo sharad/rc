@@ -326,7 +326,8 @@
 
 
 (define %lotus-file-system-boot-efi        (file-system (mount-point         "/boot/efi")
-                                                        (device              (uuid "BAA8-1C0B" 'fat32))
+                                                        ;; (device              (uuid "BAA8-1C0B" 'fat32))
+                                                        (device              "/dev/sda1")
                                                         (mount?              #t)
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #t)
@@ -380,7 +381,9 @@
 
 
 ;; packages
-(load "packages.scm")
+(if (not %lotus-system-init)
+    (load "packages.scm"))
+
 (define %lotus-packages (if %lotus-system-init
                             (cons* nss-certs lvm2 vim zsh %base-packages)
                             %lotus-reinit-packages))
@@ -446,9 +449,12 @@
 (define %lotus-copy-current-config-file-in-etc (list (simple-service 'config-file etc-service-type
                                                                      ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
                                                                      ;; Copy current config to /etc/config.scm
-                                                                     `(("config/config.scm"                   ,this-config-file)
-                                                                       ;; ("dnsmasq.d/cache.conf" ,nm-dnsmasq-file)
-                                                                       ("config/package.scm"                  ,this-package-file)))))
+                                                                     (append
+                                                                      (list `("config/config.scm"                   ,this-config-file))
+                                                                      ;; ("dnsmasq.d/cache.conf" ,nm-dnsmasq-file)
+                                                                      (if (not %lotus-system-init)
+                                                                          (list `("config/package.scm"                  ,this-package-file))
+                                                                          (list))))))
 
 
 (define (remove-services types services)

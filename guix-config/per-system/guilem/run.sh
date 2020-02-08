@@ -28,7 +28,7 @@ then
             then
                 mkdir -p /mnt/gnu /mnt/etc
 
-                if mount /dev/mapper/guix-gnu /mnt/gnu
+                if mount /dev/mapper/guix-gnu /mnt/gnu && mount /dev/mapper/guix-tmp /mnt/tmp
                 then
                     cp "$CONFIG" /mnt/etc/config.scm
 
