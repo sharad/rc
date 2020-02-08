@@ -44,6 +44,10 @@
         ;; "udisks"
         ;; "udisks-glue"
 
+        baobab
+        ncdu
+        ;; xdiskusage 
+
 
         "emacs-bbdb"
         "emacs-ebdb"
