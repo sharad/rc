@@ -11,6 +11,7 @@ fi
 umount /mnt/boot/efi
 umount /mnt/boot/
 umount /mnt/tmp
+umount /mnt/var
 umount /mnt/gnu
 umount /mnt
 
@@ -22,31 +23,43 @@ if [ -r $CONFIG ]
 then
     if [ -e /dev/mapper/guix-root ]
     then
-        mkfs.ext4 /dev/mapper/guix-root
         if [ -e /dev/mapper/guix-gnu ]
         then
+
+            mkfs.ext4 /dev/mapper/guix-root
+            mkfs.ext4 /dev/mapper/guix-boot
+            mkfs.ext4 /dev/mapper/guix-var
             mkfs.ext4 /dev/mapper/guix-tmp
             mkfs.ext4 /dev/mapper/guix-gnu
 
 
             if mount /dev/mapper/guix-root /mnt
             then
-                mkdir -p /mnt/gnu /mnt/etc /mnt/tmp /mnt/boot/efi
+                mkdir -p /mnt/gnu /mnt/etc /mnt/tmp /mnt/boot/
 
-                if mount /dev/mapper/guix-gnu /mnt/gnu &&
-                        mount /dev/mapper/guix-tmp /mnt/tmp &&
+                if mount /dev/mapper/guix-gnu /mnt/gnu         &&
+                        mount /dev/mapper/guix-tmp /mnt/tmp    &&
                         mount /dev/mapper/guix-boot /mnt/boot/ &&
+                        mkdir -p /mnt/boot/efi                 &&
                         mount /dev/sda1 /mnt/boot/efi
                 then
+
+
+                    df -h
+
+                    echo sleep 60s
+                    sleeep 60
+
+
+
                     cp "$CONFIG" /mnt/etc/config.scm
 
                     echo herd start cow-store /mnt
 
                     herd start cow-store /mnt
 
-                    echo sleep 3
-
-                    sleep 3
+                    echo sleep 60s
+                    sleeep 60
 
                     echo guix system init /mnt/etc/config.scm /mnt/
 
