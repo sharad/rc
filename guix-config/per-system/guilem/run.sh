@@ -1,10 +1,28 @@
 #!/bin/sh
 
+function running()
+{
+    local _cmd=$2
+    shift
+
+    echo $_cmd "$@"
+    $_cmd "$@"
+}
+
+
 CONFIG=$1
 
 if [ x = "x$CONFIG" ]
 then
     echo config file not supplied as first argument >&2
+    exit -1
+fi
+
+SYSTEM_INIT="$(grep 'define %lotus-system-init' guix-more/config.scm | cut -d' ' -f3 | cut -c2)"
+
+if [ "$SYSTEM_INIT" = "f" ]
+then
+    echo %lotus-system-init is set false, set it to true >&2
     exit -1
 fi
 
