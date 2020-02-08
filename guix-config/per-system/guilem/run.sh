@@ -8,6 +8,7 @@ then
     exit -1
 fi
 
+umount /mnt
 
 vgchange -ay guix
 
