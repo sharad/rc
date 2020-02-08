@@ -233,7 +233,6 @@
 (define %lotus-lang-packages (list "ocaml"
                                    ;; "ocaml-merlin"
                                    "opam"))
-                                   
 
 (define %lotus-user-selected-package-names
   (list   "m4"
@@ -397,6 +396,7 @@
         "rxvt-unicode"
         "sakura"
         "nautilus"
+        "tracker"
         "gnome-keyring"
         "gcr"
         "seahorse"
@@ -467,7 +467,6 @@
         "libmpeg2"
         ;; "icecat"
         ))
-        
 
 (define %lotus-package-names-for-installation 
   (append %lotus-user-selected-package-names

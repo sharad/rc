@@ -362,29 +362,30 @@
     (concat "firefox -P tor")))
 
 (stumpwm:defcommand xbrowser () ()
-            (remember-win:run-wcli-command
-             (concat
-              (or (getenv "XBROWSER")
-                  (concat
-                   (getenv "HOME") "/bin/conkeror-redirected" " -P " (getenv "XBPROFILE"))))))
+  (remember-win:run-wcli-command
+   (concat (or (getenv "XBROWSER")
+               (concat (getenv "HOME")
+                       "/bin/conkeror-redirected"
+                       " -P "
+                       (getenv "XBPROFILE"))))))
 
 (stumpwm:defcommand xbrowser-tor () ()
-            (remember-win:run-wcli-command "conkeror -P tor"))
+  (remember-win:run-wcli-command "conkeror -P tor"))
 
 (stumpwm:defcommand seamonkey () ()
-   (remember-win:run-wcli-command
-    (concat "seamonkey -P " (getenv "XBPROFILE"))))
+  (remember-win:run-wcli-command (concat "seamonkey -P "
+                                         (getenv "XBPROFILE"))))
 
 (stumpwm:defcommand mozilla () ()
-   (remember-win:run-wcli-command
-    (concat "mozilla -P " (getenv "XBPROFILE"))))
+  (remember-win:run-wcli-command (concat "mozilla -P "
+                                         (getenv "XBPROFILE"))))
 
 (stumpwm:defcommand conkeror () ()
-   (remember-win:run-wcli-command
-    (concat "firefox -P " (getenv "XBPROFILE"))))
+  (remember-win:run-wcli-command (concat "firefox -P "
+                                         (getenv "XBPROFILE"))))
 
 (stumpwm:defcommand virt-manager () ()
-            "virt-manager"
+  "virt-manager"
   (remember-win:run-wcli-command "virt-manager"))
 
 (stumpwm:defcommand w3m () ()
@@ -554,30 +555,26 @@
 
 
 (stumpwm:defcommand restart-conky () ()
-   (stumpwm:run-shell-command
-    "killall conky ; conky -d -c ~/.conkyrc/main/conkyrc 2>&1 >/dev/null"))
+  (stumpwm:run-shell-command "killall conky ; conky -d -c ~/.conkyrc/main/conkyrc 2>&1 >/dev/null"))
 
 (stumpwm:defcommand conky () ()
-  (stumpwm:run-shell-command
-   "conky -d -c ~/.conkyrc/main/conkyrc"))
+  (stumpwm:run-shell-command "conky -d -c ~/.conkyrc/main/conkyrc"))
 
 
 (stumpwm:defcommand file-manager () ()
   ;; (format "nautilus --no-default-window --no-desktop %s" dir)
-  (stumpwm::run-wcli-command
-   "nautilus --no-default-window --no-desktop"))
+  ;; (remember-win:run-wcli-command "nautilus --no-default-window --no-desktop")
+  (remember-win:run-wcli-command "nautilus --no-default-window"))
 
 (stumpwm:defcommand file-manager-quit () ()
-  (stumpwm:run-shell-command
-   "nautilus -q"))
+  (stumpwm:run-shell-command "nautilus -q"))
 
 
 (stumpwm:defcommand toggle-touchpad () ()
   "Toggle the laptop touchpad on/off.
    Need to have set 'Option SHMConfig' for Synaptics Touchpad
    device in xorg.conf."
-  (let ((state (stumpwm:run-shell-command
-                "synclient -l | grep TouchpadOff | awk '{ print $3 }'" t)))
+  (let ((state (stumpwm:run-shell-command "synclient -l | grep TouchpadOff | awk '{ print $3 }'" t)))
     (if (string= (subseq state 0 1) "1")
         (stumpwm:run-shell-command "synclient TouchpadOff=0")
         (progn
@@ -606,8 +603,7 @@
   #+pa
   (in.net.sharad.pa-backend-emacs-planner::emacs-eval-nooutput "(close-all-frames)")
   (sleep 1)
-  (stumpwm:run-shell-command (concat (getenv "HOME")
-                             "/.rsetup/wmlogout/run"))
+  (stumpwm:run-shell-command (concat (getenv "HOME") "/.rsetup/wmlogout/run"))
   (quit))
 
 (stumpwm:defcommand bye-with-cleanup () ()
