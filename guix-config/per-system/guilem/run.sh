@@ -2,7 +2,7 @@
 
 CONFIG=$1
 
-if [ x = "x$$CONFIG" ]
+if [ x = "x$CONFIG" ]
 then
     echo config file not supplied as first argument >&2
     exit -1
