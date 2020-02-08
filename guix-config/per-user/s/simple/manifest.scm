@@ -37,6 +37,7 @@
         "whois"
         "pwgen"
         "synergy"
+        ;; "gettext"
 
         "net-snmp"
 
@@ -44,9 +45,10 @@
         ;; "udisks"
         ;; "udisks-glue"
 
-        baobab
-        ncdu
+        "baobab"
+        "ncdu"
         ;; xdiskusage 
+
 
 
         "emacs-bbdb"
