@@ -409,6 +409,11 @@
   (bootloader-configuration (bootloader      grub-efi-bootloader)
                             (target          "/boot/efi")
                             (keyboard-layout %lotus-keyboard-layout)))
+
+(define %lotus-nonefi-bootloader
+  (bootloader-configuration (bootloader      grub-bootloader)
+                            (target          "/dev/sda")
+                            (keyboard-layout %lotus-keyboard-layout)))
 
 
 (define %lotus-vm-initrd
@@ -450,10 +455,10 @@
                                                                      ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
                                                                      ;; Copy current config to /etc/config.scm
                                                                      (append
-                                                                      (list `("config/config.scm"                   ,this-config-file))
+                                                                      (list `("config/config.scm" ,this-config-file))
                                                                       ;; ("dnsmasq.d/cache.conf" ,nm-dnsmasq-file)
                                                                       (if (not %lotus-system-init)
-                                                                          (list `("config/package.scm"                  ,this-package-file))
+                                                                          (list `("config/package.scm" ,this-package-file))
                                                                           (list))))))
 
 

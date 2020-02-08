@@ -8,6 +8,10 @@ then
     exit -1
 fi
 
+umount /mnt/boot/efi
+umount /mnt/boot/
+umount /mnt/tmp
+umount /mnt/gnu
 umount /mnt
 
 vgchange -ay guix
@@ -27,9 +31,12 @@ then
 
             if mount /dev/mapper/guix-root /mnt
             then
-                mkdir -p /mnt/gnu /mnt/etc
+                mkdir -p /mnt/gnu /mnt/etc /mnt/tmp /mnt/boot/efi
 
-                if mount /dev/mapper/guix-gnu /mnt/gnu && mount /dev/mapper/guix-tmp /mnt/tmp
+                if mount /dev/mapper/guix-gnu /mnt/gnu &&
+                        mount /dev/mapper/guix-tmp /mnt/tmp &&
+                        mount /dev/mapper/guix-boot /mnt/boot/ &&
+                        mount /dev/sda1 /mnt/boot/efi
                 then
                     cp "$CONFIG" /mnt/etc/config.scm
 
