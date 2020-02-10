@@ -165,7 +165,7 @@
 
         "p4"
 
-        "firefox"
+        "patchelf-firefox"
         "conkeror-firefox"
         ;; "epiphany"
 
