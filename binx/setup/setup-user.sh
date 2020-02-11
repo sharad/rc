@@ -697,7 +697,7 @@ function setup_apt_upgrade_system()
         if running info guix pull
         then
             running info guix pull --news
-            if running info sudo guix system reconfigure "${HOME}/.setup/guix-config/per-system/guilem/guix-more/config.scm"
+            if running info sudo guix system reconfigure "${HOME}/.setup/guix-config/per-domain/desktop/config.scm"
             then
                 # verbose guix upgrading
                 running info guix upgrade # default
