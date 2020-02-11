@@ -47,7 +47,12 @@
 
         "baobab"
         "ncdu"
-        ;; xdiskusage 
+        "catdoc"
+        ;; xdiskusage
+
+        "bc"
+        "gnome-calculator"
+        "rlwrap"
 
 
 

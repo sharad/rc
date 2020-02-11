@@ -1244,7 +1244,9 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
         (setq nndraft-directory (expand-file-name "drafts/" gnus-directory)))))
   (progn
     (setq gnus-asynchronous t)
-    (setq gnus-select-method '(nntp "news.gmane.org"))))
+    ;; https://lars.ingebrigtsen.no/2020/01/15/news-gmane-org-is-now-news-gmane-io/
+    ;; (setq gnus-select-method '(nntp "news.gmane.org"))
+    (setq gnus-select-method '(nntp "news.gmane.io"))))
 
 (defun lotus-mailnews/common-config-gnus ()
   ;; (debug)

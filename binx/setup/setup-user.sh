@@ -786,10 +786,7 @@ function setup_apt_upgrade_system()
 function setup_apt_packages()
 {
     running info setup_apt_repo
-
     running info setup_apt_upgrade_system
-
-
 
     local deb_pkg_lists=(
         DEB_PKG_FIRST_INSTALL
@@ -873,16 +870,16 @@ function setup_apt_packages()
 
     for pkg in "${deb_pkg_lists[@]}"
     do
-        eval echo Intalling pkg list '\$'$pkg='\(' \${$pkg[*]} '\)'
-        if ! eval sudo ${INSTALLER} ${INSTALLER_OPT} install \$$pkg
+        if [ ! -d "/run/current-system/profile" ]
         then
-            for p in $(eval print \$$pkg)
-            do
-                if [ ! -d "/run/current-system/profile" ]
-                then
+            eval echo Intalling pkg list '\$'$pkg='\(' \${$pkg[*]} '\)'
+            if ! eval sudo ${INSTALLER} ${INSTALLER_OPT} install \$$pkg
+            then
+                for p in $(eval print \$$pkg)
+                do
                     running info sudo ${INSTALLER} ${INSTALLER_OPT} install ${p}
-                fi
-            done
+                done
+            fi
         fi
     done
 
