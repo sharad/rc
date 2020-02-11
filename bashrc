@@ -183,7 +183,9 @@ export CVSROOT=$LOCALCVSROOT
 
 [  -r ~/.status/rememberMe ] && cat ~/.status/rememberMe
 
-if which dates ; then
+if which dates >/dev/null 2>&1
+then
+
 cat <<EOF
 
 [31;1mScheduled Dates For[39;0m :

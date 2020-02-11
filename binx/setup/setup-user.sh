@@ -627,12 +627,15 @@ function setup_vc_mkdirpath_ensure()
 }
 function set_keyboard()
 {
-    if [ ! -f $SETUP_TMPDIR/keymap ]
+    if [ "$DISPLAY" ]
     then
-        running debug mkdir -p $SETUP_TMPDIR
-        running debug wget -c 'https://raw.githubusercontent.com/sharad/rc/master/keymaps/Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt' -O "$SETUP_TMPDIR/keymap"
+      if [ ! -f $SETUP_TMPDIR/keymap ]
+      then
+          running debug mkdir -p $SETUP_TMPDIR
+          running debug wget -c 'https://raw.githubusercontent.com/sharad/rc/master/keymaps/Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt' -O "$SETUP_TMPDIR/keymap"
+      fi
+      running debug xmodmap "$SETUP_TMPDIR/keymap" || echo xmodmap returned $?
     fi
-    running debug xmodmap "$SETUP_TMPDIR/keymap" || echo xmodmap returned $?
 }
 
 function setup_apt_repo()
