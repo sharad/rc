@@ -91,13 +91,13 @@ alias xedit='emacsclient -n -d $DISPLAY -f ~/.emacs.d/server/general'
 # alias onote='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp 1)'\'' '
 # alias mynote='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp 2)'\'''
 # alias agenda='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'\''org-agenda-mode-hook  '\''\'\'\''delete-other-windows)'\'' --eval '\''(org-agenda-list)'\''  --eval '\''(toggle-read-only)'\'''
-alias plan='emacsclient  -nw -t --eval '\''(oremp nil)'\'''
-alias noteit='emacsclient  -nw -t --eval '\''(oremp 4)'\'''
-alias onote='emacsclient  -nw -t --eval '\''(oremp 1)'\'' '
-alias mynote='emacsclient  -nw -t --eval '\''(oremp 2)'\'''
-alias agenda='emacsclient  -nw -t --eval '\''(org-agenda-list)'\''  --eval '\''(toggle-read-only)'\'''
-alias gnus='emacsclient  -nw -t --eval '\''(gnus)'\'''
-alias bbdb='emacsclient  -nw -t --eval '\''(bbdb)'\'''
+# alias plan='emacsclient  -nw -t --eval '\''(oremp nil)'\'''
+# alias noteit='emacsclient  -nw -t --eval '\''(oremp 4)'\'''
+# alias onote='emacsclient  -nw -t --eval '\''(oremp 1)'\'' '
+# alias mynote='emacsclient  -nw -t --eval '\''(oremp 2)'\'''
+# alias agenda='emacsclient  -nw -t --eval '\''(org-agenda-list)'\''  --eval '\''(toggle-read-only)'\'''
+# alias gnus='emacsclient  -nw -t --eval '\''(gnus)'\'''
+# alias bbdb='emacsclient  -nw -t --eval '\''(bbdb)'\'''
 alias vncviewer='vncviewer -shared'
 alias mancolor="TERMINFO=~/.terminfo/ LESS=C TERM=mostlike PAGER=less man"
 alias last='last -awFx'
@@ -246,9 +246,9 @@ alias spptview='soffice --view --show'
 
 # file manager
 alias filemgr-quit='nautilus -q'
-alias filemgr='nautilus --no-default-window --no-desktop'
-alias gfilemgr='nautilus --no-default-window --no-desktop'
-alias xfilemgr='nautilus --no-default-window --no-desktop'
+alias filemgr='nautilus --no-default-window'
+alias gfilemgr='nautilus --no-default-window'
+alias xfilemgr='nautilus --no-default-window'
 
 # tabula panda python PDF
 alias tabula='java -Dfile.encoding=UTF8 -Dorg.slf4j.simpleLogger.defaultLogLevel=off -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar /home/s/hell/.local/lib/python3.6/site-packages/tabula/tabula-1.0.3-jar-with-dependencies.jar'
@@ -266,8 +266,11 @@ alias scndetach='screen -X detach'
 ##}}
 
 
-##{{
-alias bc='rlwrap bc'
-alias gcalccmd='rlwrap gcalccmd'
+##{{ rlwrap
+if whence -p rlwrap >& /dev/null
+then
+    alias bc='rlwrap bc'
+    alias gcalccmd='rlwrap gcalccmd'
+fi
 ##}}
 
