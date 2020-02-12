@@ -264,3 +264,10 @@ alias fct=focus-ctrl-term
 ##{{
 alias scndetach='screen -X detach'
 ##}}
+
+
+##{{
+alias bc='rlwrap bc'
+alias gcalccmd='rlwrap gcalccmd'
+##}}
+
