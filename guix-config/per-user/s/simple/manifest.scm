@@ -75,7 +75,8 @@
         "emacs-org-noter" ;; https://github.com/weirdNox/org-noter
         "emacs-closql"
         "emacs-diminish"
-        "emacs-diminish"
+        ;; "emacs-diminish"
+        ;; "emacs-pass"
         "emacs-direnv"
         "emacs-editorconfig"
         "emacs-develock"
@@ -279,6 +280,7 @@
           ;; "font-lohit"
           "screen"
           "tmux"
+          "byobu"
           "kitty"
           "lxqt-openssh-askpass"
           "gettext"

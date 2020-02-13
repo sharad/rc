@@ -592,7 +592,7 @@
                                                                            (xorg-configuration
                                                                             (keyboard-layout %lotus-keyboard-layout)))
                                                                           ;; (allow-empty-passwords? #t)
-                                                                          (auto-login?            #f)
+                                                                          (auto-login?            #t)
                                                                           (default-user           %lotus-account-user-name))))))
 
 
