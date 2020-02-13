@@ -108,7 +108,7 @@ fi
 if whence -p shepherd >/dev/null 2>&1 &&
        ! pgrep -u "$(id -u)"  -u $(id -u ) shepherd >/dev/null 2>&1
 then
-    shepherd &!
+    shepherd --socket="$XDG_RUNTIME_DIR/shepherd/socket" &!
 fi
 
 

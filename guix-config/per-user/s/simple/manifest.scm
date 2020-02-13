@@ -98,6 +98,7 @@
         "xhost"
         "xauth"
         "xkill"
+        ;; "xprintidle"
         ;; X gl
         "compton"
         "compton-conf"
@@ -170,7 +171,7 @@
 
         "p4"
 
-        "patchelf-firefox"
+        "firefox"
         "conkeror-firefox"
         ;; "epiphany"
 

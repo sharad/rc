@@ -9,6 +9,7 @@
                                     "autorandr"
 
                                     ;; "dconf"
+                                    "glib-networking"
 
                                     "xf86-input-evdev"))
 

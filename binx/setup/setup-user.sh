@@ -629,12 +629,23 @@ function set_keyboard()
 {
     if [ "$DISPLAY" ]
     then
-      if [ ! -f $SETUP_TMPDIR/keymap ]
-      then
-          running debug mkdir -p $SETUP_TMPDIR
-          running debug wget -c 'https://raw.githubusercontent.com/sharad/rc/master/keymaps/Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt' -O "$SETUP_TMPDIR/keymap"
-      fi
-      running debug xmodmap "$SETUP_TMPDIR/keymap" || echo xmodmap returned $?
+        KEYMODMAP="$HOME/.Xmodmaps/xmodmaprc"
+        if [ ! -f "$KEYMODMAP" ]
+        then
+            KEYMODMAP=$SETUP_TMPDIR/keymap
+            if [ ! -f $KEYMODMAP ]
+            then
+                running debug mkdir -p $SETUP_TMPDIR
+                running debug wget -c 'https://raw.githubusercontent.com/sharad/rc/master/keymaps/Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt' -O "$SETUP_TMPDIR/keymap"
+            fi
+        fi
+
+        if [ "$KEYMODMAP" -a -f "$KEYMODMAP" ]
+        then
+            running debug xmodmap "$KEYMODMAP" || echo xmodmap returned $?
+        else
+            warn No KEYMODMAP=$KEYMODMAP exists
+        fi
     fi
 }
 
