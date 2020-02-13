@@ -204,7 +204,7 @@ Each entry is either:
         (progn
           (with-eval-after-load "startup-hooks"
             (add-to-enable-startup-interrupting-feature-hook
-             'frame-session-restore-hook-func
+             #'frame-session-restore-hook-func
              t)
             (add-to-enable-startup-interrupting-feature-hook
              '(lambda ()
