@@ -231,6 +231,13 @@
         "emacs-agda2-mode"
 
         "gnupg"
+        "paperkey"
+        "qrencode"
+        "gpgme"
+        "signing-party"
+        ;; "scdaemon"
+        ;; pcscd
+        ;; "ccid"
         "gpgme"
         "qgpgme"
         "pinentry"
@@ -443,6 +450,7 @@
         "xset"
         "xsetroot"
         "pidgin"
+        "python-dbus"
         "pidgin-otr"
         ;; "telegram-purple"
         "telegram-purple"))

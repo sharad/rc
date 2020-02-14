@@ -25,6 +25,7 @@
 echo "$@" >&2
 
 # defaults
+lock=1
 sleep_hours=7
 snooze=10
 queue_name=d

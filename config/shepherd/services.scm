@@ -46,7 +46,7 @@
 (define xautolock
   (make <service>
     #:provides '(xautolock)
-    #:start    (make-forkexec-constructor '("xautolock" "-detectsleep" "-locker" "'alarm -l'")) ; to make it more obvious
+    #:start    (make-forkexec-constructor '("xautolock" "-detectsleep" "-locker" "alarm")) ; to make it more obvious
     #:stop     (make-kill-destructor)
     #:respawn? #t))
 

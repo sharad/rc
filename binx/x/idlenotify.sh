@@ -40,14 +40,17 @@ timestep=1s
 function main() {
         process_arg $@
 
-        idlebegin=$(xprintidle)
+        if whence -p xprintidle >& /dev/null
+        then
+            idlebegin=$(xprintidle)
 
-        while [ $idlebegin -lt $(xprintidle) ]
-        do
-        done
+            while [ $idlebegin -lt $(xprintidle) ]
+            do
+            done
 
-        screen_lock
-        true
+            screen_lock
+            true
+        fi
 }
 
 function get_screens() {
