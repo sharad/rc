@@ -31,6 +31,9 @@
 (define %lotus-other-packages
   (list "vim"
 
+        "deb-forticlient-sslvpn"
+        "cups-minimal" ;; for lp lpr command
+
         "unzip"
 
         "poppler"
