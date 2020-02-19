@@ -1,16 +1,12 @@
 
-(define %local-use-guix-official-mirror #f)
+(define %local-use-guix-official-mirror #t)
 
 
 (define %backup-default-channels (list (channel
                                         ;; (name 'guix-github)
                                         (name 'guix)
-                                        ;; (branch "master")
-					(commit "d498aa8862f49c92e9d5af4e33ef075e8276c99f")
-                                        ;; (commit "c829faacefa2d80ff3229e95b7bb93d777ce3a5e")
-                                        ;; (url "https://github.com/guix-mirror/guix.git")
-                                        (url "https://git.savannah.gnu.org/git/guix.git")
-					)))
+                                        (branch "master")
+                                        (url "https://github.com/guix-mirror/guix.git"))))
 
 ;; Default list of channels.
 (define %guix-official-channels %default-channels)

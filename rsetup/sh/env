@@ -342,8 +342,8 @@ function eval_guix_profiles()
             if [ -f "$profile_path"/etc/profile ]
             then
                 eval $(guix package  -p "$profile_path" --search-paths=suffix)
-            else
-                echo file "${profile_path}"/etc/profile not exist, for "${profile_path}" >&2
+            # else
+            #    echo file "${profile_path}"/etc/profile not exist, for "${profile_path}" >&2
             fi
             unset profile_path
             unset profile

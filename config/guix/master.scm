@@ -1,0 +1,1 @@
+../../guix-config/per-user/s/current/channels.scm

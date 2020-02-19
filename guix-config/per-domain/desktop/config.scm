@@ -5,6 +5,7 @@
 
 
 (define %lotus-system-init #f)
+(define %lotus-use-nongnu  #f)
 
 
 (use-modules (guix utils))
@@ -645,7 +646,8 @@
                                       %lotus-final-services))
 
 
-(define %lotus-firmware (if %lotus-system-init
+(define %lotus-firmware (if (or %lotus-system-init
+				(not %lotus-use-nongnu))
                             %base-firmware
                             (list linux-firmware)))
 
@@ -687,7 +689,8 @@
                                       %setuid-programs))
 
 
-(define %lotus-kernel (if %lotus-system-init
+(define %lotus-kernel (if (or %lotus-system-init 
+			      (not %lotus-use-nongnu))
                           linux-libre
                           linux))
 

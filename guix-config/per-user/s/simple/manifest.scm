@@ -129,7 +129,7 @@
         ;; "virt-viewer"
         ;; "libvirt"
 
-        "lesspipe"
+        ;; "lesspipe"
         "python-organize-tool"
 
         "evince"
@@ -186,8 +186,8 @@
         "pavucontrol"
         "pulsemixer"
 
-        "patchelf"
-        "gdb"
+        ;; "patchelf"
+        ;; "gdb"
         "tree"
 
         "time"
@@ -219,8 +219,6 @@
 
         ;; "bsdmainutils"
         "rdup"
-        ;; "git-annex"
-        ;; "git-remote-gcrypt"
 
         "ledger"
         "emacs-ledger-mode"
@@ -232,7 +230,7 @@
 
         "enscript"
 
-        "agda"
+        ;; "agda"
         "emacs-agda2-mode"
 
         "gnupg"
@@ -278,12 +276,12 @@
           "file"
 
           "python"
-          "python-pypdf2"
-          "python-numpy"
-          "python-pandas"
-          "python-pycryptodome"
-          "python-pdfminer"
-          ;; "opencv" ;; -- put it in input depedency
+          ;; "python-pypdf2"
+          ;; "python-numpy"
+          ;; "python-pandas"
+          ;; "python-pycryptodome"
+          ;; "python-pdfminer"
+          ;; ;; "opencv" ;; -- put it in input depedency
           "jq"
           "python-xq"
           "python-yq"
@@ -358,8 +356,8 @@
         "font-linuxlibertine"
         "font-terminus"
 
-        "font-adobe-source-han-sans"
-        "font-cns11643"
+        ;; "font-adobe-source-han-sans"
+        ;; "font-cns11643"
 
         "font-cns11643-swjz"
         "font-wqy-zenhei"

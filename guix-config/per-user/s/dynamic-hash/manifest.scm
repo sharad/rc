@@ -4,7 +4,7 @@
 
 (use-modules (lotus packages cdesktopenv))
 
-(define %lotus-dev-cdesktop-package-names (list "firefox" "p4" ))
+(define %lotus-dev-cdesktop-package-names (list "firefox" "p4" "lesspipe"))
   
 
 (define %lotus-dev-cdesktop-packages
