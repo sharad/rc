@@ -22,7 +22,11 @@
         "make"
         "autoconf"
         "automake"
-        "libtool"))
+        "libtool"
+        "patchelf"
+        "gdb"
+
+))
 
 (define %lotus-dev-cdesktop-packages
   (append

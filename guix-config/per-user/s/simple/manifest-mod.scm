@@ -30,38 +30,8 @@
 
 (define %lotus-other-packages
   (list "vim"
-
-        "deb-forticlient-sslvpn"
-        "cups-minimal" ;; for lp lpr command
-
-        "unzip"
-
-        "poppler"
-        "whois"
-        "pwgen"
-        "synergy"
-        ;; "gettext"
-
-        "net-snmp"
-
-        ;; https://github.com/stumpwm/stumpwm/wiki/Tips-And-Tricks#mounting-storage-devices
-        ;; "udisks"
-        ;; "udisks-glue"
-
-        "baobab"
-        "ncdu"
-        "catdoc"
-        ;; xdiskusage
-
-        "bc"
-        "gnome-calculator"
-        "rlwrap"
-
-
-
         "emacs-bbdb"
         "emacs-ebdb"
-        "emacs-gnus-harvest"
         "guile"
         "emacs-geiser"
         "emacs-sesman"
@@ -74,15 +44,13 @@
         "emacs-powerline"
         "emacs-spaceline"
         "emacs-emojify"
-        "emacs-org"
         "emacs-org-noter" ;; https://github.com/weirdNox/org-noter
         "emacs-closql"
         "emacs-diminish"
-        ;; "emacs-diminish"
-        ;; "emacs-pass"
+        "emacs-diminish"
         "emacs-direnv"
         "emacs-editorconfig"
-        "emacs-develock"
+        ;; "emacs-develock"
         "emacs-el-x"
         "emacs-default-encrypt"
         "emacs-default-text-scale"
@@ -99,38 +67,29 @@
         "ccls"
         "emacs-ccls"
 
-        "xhost"
-        "xauth"
-        "xkill"
-        ;; "xprintidle"
         ;; X gl
         "compton"
         "compton-conf"
         "xcompmgr"
         "xdpyinfo"
-        "rofi"
 
         "enscript"
 
         "jupyter"
-        "python-git-review"
+        ;; "python-git-review"
 
-        "wget"
         "xmlstarlet"
         "libxml2"
         "libxslt"
-        "qtxmlpatterns"                 ;xquery
 
         "atool"
         "sshpass"
+        "virt-manager"
+        "virt-viewer"
+        "libvirt"
 
-        ;; ;; qemu
-        ;; "virt-manager"
-        ;; "virt-viewer"
-        ;; "libvirt"
-
-        "lesspipe"
-        "python-organize-tool"
+        ;; "lesspipe"
+        ;; "python-organize-tool"
 
         "evince"
 
@@ -202,12 +161,12 @@
         "ruby"
         "autocutsel"
         "xcompmgr"
-        "xfd"
+        "wget"
+        "xmlstarlet"
         "xwininfo"
         "xmlstarlet"
         "imagemagick"
         "setxkbmap"
-        "kbd"                           ;kbdinfo gkbled
         "xkeyboard-config"
 
         "fasd"
@@ -219,8 +178,8 @@
 
         ;; "bsdmainutils"
         "rdup"
-        ;; "git-annex"
-        ;; "git-remote-gcrypt"
+        "git-annex"
+        "git-remote-gcrypt"
 
         "ledger"
         "emacs-ledger-mode"
@@ -236,13 +195,6 @@
         "emacs-agda2-mode"
 
         "gnupg"
-        "paperkey"
-        "qrencode"
-        "gpgme"
-        "signing-party"
-        ;; "scdaemon"
-        ;; pcscd
-        ;; "ccid"
         "gpgme"
         "qgpgme"
         "pinentry"
@@ -254,23 +206,28 @@
         "gpa"
         "jetring"
 
+
+
+        
+
+
         "beep"))
 
-(define %lotus-lang-packages (list ;; "ocaml"
-                                   ;; ;; "ocaml-merlin"
-                                   ;; "opam"
-                              ))
+(define %lotus-lang-packages (list "ocaml"
+                                   "opam"
+                                   "ocaml-merlin"))
 
 (define %lotus-user-selected-package-names
   (list   "m4"
           "binutils"
+          ;; "coreutils"
+          ;; "diffutils"
+          ;; "findutils"
+          ;; "gnu-make"
+          ;; "patch"
           "libxdg-basedir"
           "xdg-user-dirs"
           "xdg-utils"
-          ;; https://faq.i3wm.org/question/2155/how-can-i-use-autostart-desktop-files-in-i3.1.html
-          ;; https://github.com/jceb/dex
-          ;; http://e-jc.de/dex/
-          ;; dex
           "shroud"
           "git"
           "git-remote-gcrypt"
@@ -281,19 +238,16 @@
           "python-pypdf2"
           "python-numpy"
           "python-pandas"
-          "python-pycryptodome"
-          "python-pdfminer"
-          ;; "opencv" ;; -- put it in input depedency
+          ;; "python-pycryptodome"
+          "opencv"
           "jq"
-          "python-xq"
-          "python-yq"
-          "csvkit"
+          ;; "python-xq"
+          ;; "python-yq"
 
           ;; "macchanger"
           ;; "font-lohit"
           "screen"
           "tmux"
-          "byobu"
           "kitty"
           "lxqt-openssh-askpass"
           "gettext"
@@ -321,14 +275,14 @@
           "xcursor-themes"
           "unclutter"
 
-          "sbcl"
-          "cl-fad"
-          "cl-slime-swank"
+          ;; "sbcl"
+          ;; "cl-fad"
+          ;; "cl-slime-swank"
 
           "glibc-utf8-locales" ;; guix guile showing some error even it is part of system configuration
 
           "stapler"
-          "qpdf"
+          ;; "gcc-toolchain"
           "strace"
           "guile-readline"))
 
@@ -336,7 +290,7 @@
   (list "mailutils"
         "offlineimap"
         "notmuch"
-        "notmuch-addrlookup-c"
+	"notmuch-addrlookup-c"
         "notifymuch"
         "mu"))
 
@@ -357,10 +311,8 @@
         "font-liberation"
         "font-linuxlibertine"
         "font-terminus"
-
         "font-adobe-source-han-sans"
         "font-cns11643"
-
         "font-cns11643-swjz"
         "font-wqy-zenhei"
         "font-wqy-microhei"
@@ -369,7 +321,7 @@
         "font-anonymous-pro"
         "font-anonymous-pro-minus"
         "font-gnu-unifont"
-        ;; "font-google-noto"
+        "font-google-noto"
         "font-google-roboto"
         "font-un"
         "font-fantasque-sans"
@@ -383,8 +335,8 @@
         "font-awesome"
         "font-tamzen"
         "font-comic-neue"
-        ;; "font-iosevka"
-        ;; "font-iosevka-slab"
+        "font-iosevka"
+        "font-iosevka-slab"
         "font-go"
         "font-google-material-design-icons"
         "font-open-dyslexic"
@@ -399,7 +351,8 @@
         "font-mononoki"
         "font-public-sans"
         "font-hermit"
-        "font-dseg"))
+        ;; "font-dseg"
+	))
 
 (define %lotus-media-packages
   (list "libva"
@@ -412,7 +365,7 @@
         "mpg321"))
 
 (define %lotus-gui-packages
-  (list "xinit"
+  (list ;; "xinit"
         "i3status"
         "dmenu"
         "st"
@@ -425,10 +378,6 @@
         "xrandr-invert-colors"
         "rxvt-unicode"
         "sakura"
-        "nautilus"
-        "tracker"
-        "emacs-pass"
-        ;; "keychain"
         "gnome-keyring"
         "gcr"
         "seahorse"
@@ -458,9 +407,8 @@
         "xset"
         "xsetroot"
         "pidgin"
-        "python-dbus"
         "pidgin-otr"
-        ;; "telegram-purple"
+        "telegram-purple"
         "telegram-purple"))
 
 (define %lotus-text-packages
@@ -479,28 +427,6 @@
         "libnotify"
         "dunst"))
 
-(define %lotus-test-packages
-  (list "vlc"
-        "ffmpeg"
-        "libvorbis"
-        "libvpx"
-        "pulseaudio"
-        "alsa-lib"
-        "libogg"
-        "ffmpeg"
-        "gst-plugins-base"
-        "gst-plugins-good"
-        "gst-plugins-bad"
-        "gst-plugins-ugly"
-        "gst-libav"
-        "gst123"
-        "gstreamer"
-        "openh264"
-        "libsmpeg"
-        "libmpeg2"
-        ;; "icecat"
-        ))
-
 (define %lotus-package-names-for-installation 
   (append %lotus-user-selected-package-names
           %lotus-lang-packages
@@ -510,8 +436,7 @@
           %lotus-media-packages
           %lotus-gui-packages
           %lotus-text-packages
-          %lotus-notification-packages
-          %lotus-test-packages))
+          %lotus-notification-packages))
 
 (define %lotus-user-desktop-packages
   (list (list glib     "bin")

@@ -341,7 +341,9 @@
                                                        (list)
                                                        (list %lotus-file-system-house-home)))
 
-(define %lotus-lvm-unmount-home-file-systems       (list))
+(define %lotus-lvm-unmount-home-file-systems       (if %lotus-system-init
+                                                       (list %lotus-file-system-house-home) 
+                                                       (list)))
 
 
 (define %lotus-mount-lvm-system-file-systems       (list %lotus-file-system-guix-root

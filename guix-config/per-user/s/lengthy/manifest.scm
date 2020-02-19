@@ -4,23 +4,20 @@
 
 (use-modules (lotus packages cdesktopenv))
 
-(define %lotus-dev-cdesktop-package-names (list "ocaml"
-                                   ;; "ocaml-merlin"
-                                   "opam"
+(define %lotus-dev-cdesktop-package-names (list "git-annex"
+                                                        "agda"
 
 
+          "python-pypdf2"
+          "python-numpy"
+          "python-pandas"
+          "python-pycryptodome"
+          "python-pdfminer"
+          ;; "opencv" ;; -- put it in input depedency
 
-        ;; qemu
-        "virt-manager"
-        "virt-viewer"
-        "libvirt"
 
-        "font-google-noto"
-        "font-adobe-source-han-sans"
-        "font-cns11643"
-
-))
-
+                                                ))
+  
 
 (define %lotus-dev-cdesktop-packages
   (append

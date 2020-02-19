@@ -4,23 +4,8 @@
 
 (use-modules (lotus packages cdesktopenv))
 
-(define %lotus-dev-cdesktop-package-names (list "ocaml"
-                                   ;; "ocaml-merlin"
-                                   "opam"
-
-
-
-        ;; qemu
-        "virt-manager"
-        "virt-viewer"
-        "libvirt"
-
-        "font-google-noto"
-        "font-adobe-source-han-sans"
-        "font-cns11643"
-
-))
-
+(define %lotus-dev-cdesktop-package-names (list "firefox" "p4" ))
+  
 
 (define %lotus-dev-cdesktop-packages
   (append

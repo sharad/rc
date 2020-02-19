@@ -749,14 +749,18 @@ function setup_apt_upgrade_system()
 
             df -hx tmpfs -x devtmpfs
 
-            guix package  --delete-generations=24h
+            if false
+            then
+	    CLEANUP_TIME=96h
+
+            guix package  --delete-generations=$CLEANUP_TIME
             for profile in $LOCAL_GUIX_EXTRA_PROFILES
             do
                 manifest_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/manifest.scm
                 profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"$profile"
                 if [ -f "${manifest_path}" -a -f "${profile_path}"/etc/profile ]
                 then
-                    running info guix package -p "${profile_path}" --delete-generations=24h
+                    running info guix package -p "${profile_path}" --delete-generations=$CLEANUP_TIME
                 else
                     warn file "${profile_path}"/etc/profile not exist, for "${profile_path}"
                 fi
@@ -764,8 +768,10 @@ function setup_apt_upgrade_system()
                 unset profile
             done
 
-            sudo guix system delete-generations 3d
+            # sudo guix system delete-generations 10m
             guix gc -d 15h -C  15G
+
+            fi
 
             df -hx tmpfs -x devtmpfs
 

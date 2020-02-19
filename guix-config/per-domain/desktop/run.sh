@@ -18,7 +18,7 @@ then
     exit -1
 fi
 
-SYSTEM_INIT="$(grep 'define %lotus-system-init' guix-more/config.scm | cut -d' ' -f3 | cut -c2)"
+SYSTEM_INIT="$(grep 'define %lotus-system-init' $CONFIG | cut -d' ' -f3 | cut -c2)"
 
 if [ "$SYSTEM_INIT" = "f" ]
 then
@@ -57,16 +57,23 @@ then
 
                 if mount /dev/mapper/guix-gnu /mnt/gnu         &&
                         mount /dev/mapper/guix-tmp /mnt/tmp    &&
+                        mount /dev/mapper/guix-var /mnt/var    &&
                         mount /dev/mapper/guix-boot /mnt/boot/ &&
                         mkdir -p /mnt/boot/efi                 &&
                         mount /dev/sda1 /mnt/boot/efi
+
                 then
 
+                        mount /dev/mapper/guix-boot /mnt/boot/
+                        mount /dev/mapper/guix-tmp /mnt/tmp
+                        mount /dev/mapper/guix-var /mnt/var
+                        mkdir -p /mnt/boot/efi
+                        mount /dev/sda1 /mnt/boot/efi
 
-                    df -h
+                    df -hT
 
                     echo sleep 60s
-                    sleeep 60
+                    sleep 60s
 
 
 
@@ -77,11 +84,11 @@ then
                     herd start cow-store /mnt
 
                     echo sleep 60s
-                    sleeep 60
+                    sleep 60s
 
-                    echo guix system init /mnt/etc/config.scm /mnt/
+                    echo guix system init $CONFIG /mnt/
 
-                    guix system init /mnt/etc/config.scm /mnt/
+                    guix system init $CONFIG /mnt/
 
                 else                # mount /dev/mapper/guix-gnu /mnt/gnu
                     echo can not mount /dev/mapper/guix-gnu /mnt/gnu

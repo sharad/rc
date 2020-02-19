@@ -4,27 +4,22 @@
 
 (use-modules (lotus packages cdesktopenv))
 
-(define %lotus-dev-cdesktop-package-names (list "ocaml"
-                                   ;; "ocaml-merlin"
-                                   "opam"
-
-
-
-        ;; qemu
-        "virt-manager"
-        "virt-viewer"
-        "libvirt"
-
-        "font-google-noto"
-        "font-adobe-source-han-sans"
-        "font-cns11643"
-
-))
+(define %lotus-dev-cdesktop-package-names
+  (list "gst-plugins-base"
+        "gst-plugins-good"
+        "gst-plugins-bad"
+        "gst-plugins-ugly"
+        "gst-libav"
+        "gst123"
+        "gstreamer"
+        "openh264"
+        "libsmpeg"
+        "libmpeg2"))
 
 
 (define %lotus-dev-cdesktop-packages
   (append
-   (list (list gcc "lib"))
+   (list)
    (map specification->package
         %lotus-dev-cdesktop-package-names)))
 
@@ -32,8 +27,6 @@
 ;; (packages->manifest %lotus-dev-cdesktop-packages)
 
 (packages->manifest %lotus-dev-cdesktop-packages)
-
-
 
 ;; https://sourceforge.net/p/cdesktopenv/wiki/LinuxBuild/#debian
 
