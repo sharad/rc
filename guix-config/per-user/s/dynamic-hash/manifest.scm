@@ -4,7 +4,7 @@
 
 (use-modules (lotus packages cdesktopenv))
 
-(define %lotusv-dev-cdesktop-package-names (list "firefox"
+(define %lotus-dev-cdesktop-package-names (list "firefox"
                                                 "conkeror-firefox"
                                                 "p4"
                                                 "lesspipe"))

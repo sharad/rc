@@ -23,7 +23,7 @@ export GUIX_PROFILE
 # export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 
 # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
-LOCAL_GUIX_EXTRA_PROFILES=("dev")
+LOCAL_GUIX_EXTRA_PROFILES=("dev" "dynamic-hash" "heavy")
 export LOCAL_GUIX_EXTRA_PROFILES
 ## GUIX
 
