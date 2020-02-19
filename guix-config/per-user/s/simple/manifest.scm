@@ -157,37 +157,19 @@
         ;; https://unix.stackexchange.com/questions/20784/how-can-i-resolve-a-hostname-to-an-ip-address-in-a-bash-script
         ;; getent hosts localhost
 
-        ;; "font-gnu-freefont-ttf"
-        ;; "font-adobe-source-code-pro"
-        ;; "font-terminus"
-        ;; "font-dejavu"
-        ;; "font-hack"
-        ;; "font-awesome"
-        ;; "font-arabic-misc"
-        ;; "font-lohit"
-        ;; "font-tamzen"
 
 
         "xlsfonts"
 
-        ;; "fribidi"
-        ;; "bicon"
 
         "global"
 
-        ;; "p4"
-
-        ;; "firefox"
-        ;; "conkeror-firefox"
-        ;; "epiphany"
 
         "alsa-utils"
         "aumix"
         "pavucontrol"
         "pulsemixer"
 
-        ;; "patchelf"
-        ;; "gdb"
         "tree"
 
         "time"
@@ -276,12 +258,6 @@
           "file"
 
           "python"
-          ;; "python-pypdf2"
-          ;; "python-numpy"
-          ;; "python-pandas"
-          ;; "python-pycryptodome"
-          ;; "python-pdfminer"
-          ;; ;; "opencv" ;; -- put it in input depedency
           "jq"
           "python-xq"
           "python-yq"
@@ -343,7 +319,7 @@
         ;; ftview
         ;; https://wiki.debian.org/Fonts#Infinality_for_Debian
         "ttfautohint"
-         "gs-fonts"
+        "gs-fonts"
         "font-ibm-plex"
         "font-inconsolata"
         "font-ubuntu"

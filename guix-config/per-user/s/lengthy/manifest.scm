@@ -5,19 +5,15 @@
 (use-modules (lotus packages cdesktopenv))
 
 (define %lotus-dev-cdesktop-package-names (list "git-annex"
-                                                        "agda"
-
-
-          "python-pypdf2"
-          "python-numpy"
-          "python-pandas"
-          "python-pycryptodome"
-          "python-pdfminer"
-          ;; "opencv" ;; -- put it in input depedency
-
-
+                                                "agda"
+                                                "python-pypdf2"
+                                                "python-numpy"
+                                                "python-pandas"
+                                                "python-pycryptodome"
+                                                "python-pdfminer"
+                                                ;; "opencv" ;; -- put it in input depedency
                                                 ))
-  
+
 
 (define %lotus-dev-cdesktop-packages
   (append

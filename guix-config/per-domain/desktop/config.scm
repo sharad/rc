@@ -41,7 +41,8 @@
 ;; non-guix
 
 ;; Import nonfree linux module.
-(if (not %lotus-system-init)
+(if (and %lotus-use-nongnu 
+	 (not %lotus-system-init))
   (use-modules (nongnu packages linux)))
 
 
@@ -290,7 +291,7 @@
                                                         (device              "/dev/mapper/house-home")
                                                         (type                "ext4")
                                                         (check?              #f)
-                                                        (mount?              #t)
+                                                        (mount?              (if %lotus-system-init #f #t))
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #f)
                                                         (dependencies        (append (list ;; %lotus-file-system-guix-root

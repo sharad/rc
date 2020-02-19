@@ -25,8 +25,9 @@
         "libtool"
         "patchelf"
         "gdb"
-
-))
+        ;; "fribidi"
+        ;; "bicon"
+        ))
 
 (define %lotus-dev-cdesktop-packages
   (append

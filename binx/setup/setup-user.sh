@@ -698,7 +698,7 @@ function setup_apt_upgrade_system()
     # https://guix.gnu.org/cookbook/en/html_node/
     # https://guix.gnu.org/cookbook/en/html_node/Advanced-package-management.html#Advanced-package-management
     # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
-    LOCAL_GUIX_EXTRA_PROFILES=("dev")
+    LOCAL_GUIX_EXTRA_PROFILES=("dev" "dynamic-hash" "heavy")
     export LOCAL_GUIX_EXTRA_PROFILES
     LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER"
 
@@ -732,11 +732,11 @@ function setup_apt_upgrade_system()
                 do
                     manifest_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/manifest.scm
                     profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"$profile"
-                    if [ -f "${manifest_path}" -a -f "${profile_path}"/etc/profile ]
+                    if [ -f "${manifest_path}" ]
                     then
                         running info guix package -p "${profile_path}" -m "${manifest_path}"
                     else
-                        warn file "${profile_path}"/etc/profile not exist, for "${profile_path}"
+                        warn file "${manifest_path}" not exist, for "${profile_path}"
                     fi
                     unset profile_path
                     unset profile
