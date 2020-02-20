@@ -6,6 +6,9 @@
 
 (define %lotus-system-init #f)
 (define %lotus-use-nongnu  #t)
+
+(define nongnu-desktop? (and %lotus-use-nongnu
+                             (not %lotus-system-init)))
 
 
 (use-modules (guix utils))
@@ -41,8 +44,7 @@
 ;; non-guix
 
 ;; Import nonfree linux module.
-(if (and %lotus-use-nongnu 
-         (not %lotus-system-init))
+(when  nongnu-desktop?
   (use-modules (nongnu packages linux)))
 
 
@@ -647,10 +649,9 @@
                                       %lotus-final-services))
 
 
-(define %lotus-firmware (if (or %lotus-system-init
-                                (not %lotus-use-nongnu))
-                            %base-firmware
-                            (list linux-firmware)))
+(define %lotus-firmware (if nongnu-desktop?
+                            (list linux-firmware)
+                            %base-firmware))
 
 
 ;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
@@ -690,10 +691,9 @@
                                       %setuid-programs))
 
 
-(define %lotus-kernel (if (or %lotus-system-init 
-                              (not %lotus-use-nongnu))
-                          linux-libre
-                          linux))
+(define %lotus-kernel (if nongnu-desktop?
+                          linux
+                          linux-libre))
 
 
 (operating-system

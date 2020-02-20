@@ -713,7 +713,7 @@ function setup_apt_upgrade_system()
                 # verbose guix upgrading
                 running info guix upgrade # default
                 # running debug guix upgrade -p "${HOME}/.setup/guix-config/per-user/s/cdesktopenv/profiles.d/"
-                for profile in $LOCAL_GUIX_EXTRA_PROFILES
+                for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
                 do
                     profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"$profile"
                     if [ -f "${profile_path}"/etc/profile ]
@@ -728,7 +728,7 @@ function setup_apt_upgrade_system()
 
                 verbose guix installing
                 running info guix package -m "${HOME}/.setup/guix-config/per-user/s/simple/manifest.scm" # default
-                for profile in $LOCAL_GUIX_EXTRA_PROFILES
+                for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
                 do
                     manifest_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/manifest.scm
                     profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"$profile"
