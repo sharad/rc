@@ -751,16 +751,19 @@ function setup_apt_upgrade_system()
 
             if false
             then
-	              CLEANUP_TIME=96h
+	              USER_GENERATION_CLEANUP_TIME=96h
+                SYSTEM_GENERATION_CLEANUP_TIME=10m # 10 months
+                SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=30d
+                SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=3G
 
-                guix package  --delete-generations=$CLEANUP_TIME
-                for profile in $LOCAL_GUIX_EXTRA_PROFILES
+                guix package  --delete-generations=${USER_GENERATION_CLEANUP_TIME}
+                for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
                 do
                     manifest_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/manifest.scm
                     profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"$profile"
                     if [ -f "${manifest_path}" -a -f "${profile_path}"/etc/profile ]
                     then
-                        running info guix package -p "${profile_path}" --delete-generations=$CLEANUP_TIME
+                        running info guix package -p "${profile_path}" --delete-generations=${USER_GENERATION_CLEANUP_TIME}
                     else
                         warn file "${profile_path}"/etc/profile not exist, for "${profile_path}"
                     fi
@@ -768,8 +771,8 @@ function setup_apt_upgrade_system()
                     unset profile
                 done
 
-                # sudo guix system delete-generations 10m
-                ## guix gc -d 15h -C  15G
+                # sudo guix system delete-generations ${SYSTEM_GENERATION_CLEANUP_TIME}
+                ## guix gc -d ${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME} -C  ${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE}
 
             fi
 
