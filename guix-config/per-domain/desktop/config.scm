@@ -5,7 +5,7 @@
 
 
 (define %lotus-system-init #f)
-(define %lotus-use-nongnu  #f)
+(define %lotus-use-nongnu  #t)
 
 
 (use-modules (guix utils))
@@ -42,7 +42,7 @@
 
 ;; Import nonfree linux module.
 (if (and %lotus-use-nongnu 
-	 (not %lotus-system-init))
+         (not %lotus-system-init))
   (use-modules (nongnu packages linux)))
 
 
@@ -648,7 +648,7 @@
 
 
 (define %lotus-firmware (if (or %lotus-system-init
-				(not %lotus-use-nongnu))
+                                (not %lotus-use-nongnu))
                             %base-firmware
                             (list linux-firmware)))
 
@@ -691,7 +691,7 @@
 
 
 (define %lotus-kernel (if (or %lotus-system-init 
-			      (not %lotus-use-nongnu))
+                              (not %lotus-use-nongnu))
                           linux-libre
                           linux))
 

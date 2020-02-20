@@ -698,7 +698,7 @@ function setup_apt_upgrade_system()
     # https://guix.gnu.org/cookbook/en/html_node/
     # https://guix.gnu.org/cookbook/en/html_node/Advanced-package-management.html#Advanced-package-management
     # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
-    LOCAL_GUIX_EXTRA_PROFILES=("dev" "dynamic-hash" "heavy")
+    LOCAL_GUIX_EXTRA_PROFILES=("dev" "dynamic-hash" "heavy" "lengthy")
     export LOCAL_GUIX_EXTRA_PROFILES
     LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER"
 
@@ -2559,6 +2559,18 @@ function setup_sourcecode_pro_font()
         running debug sudo cp -rf /tmp/$FONT_NAME/. /usr/share/fonts/truetype/$FONT_NAME/.
         running debug fc-cache -f -v
     fi
+
+    if [ -d "/run/current-system/profile" ]
+    then
+        for fdir in ~/.guix-profile/share/fonts/**/fonts.dir ~/.setup/guix-config/per-user/s/heavy/profiles.d/heavy/share/fonts/**/fonts.dir
+        do
+            fontdir=$fdir
+            ls $fontdir
+            xset +fp $(dirname $(readlink -f $fontdir))
+        done
+        fc-cache -f
+    fi
+
 }
 
 function setup_apache_usermod()
