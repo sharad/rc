@@ -21,7 +21,6 @@
 
 (define %lotus-dev-cdesktop-packages
   (append
-   (list (list gcc "lib"))
    (map specification->package
         %lotus-dev-cdesktop-package-names)))
 
