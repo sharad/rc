@@ -76,17 +76,6 @@ BROWSER=w3m
 export BROWSER
 
 
-## PATH
-for _path in ~/bin ~/.local/bin /bin /usr/bin  ~/.emacs.d/term-cmd /home/linuxbrew/.linuxbrew/bin
-do
-    if [ -d $_path ]
-    then
-        PATH=$PATH:$_path
-    fi
-done
-PATH=$PATH:
-export PATH
-# PATH
 
 # default values
 
@@ -387,3 +376,28 @@ unset MACHINE_ID
 ## GUIX
 eval_guix_profiles
 ## GUIX
+## PATH
+possible_path=( ~/bin
+                /usr/local/bin
+                /usr/local/sbin
+                ~/.local/bin
+                ~/.cask/bin
+                /bin
+                /sbin
+                /usr/bin
+                /usr/sbin
+                ~/.emacs.d/term-cmd
+                /home/linuxbrew/.linuxbrew/bin )
+
+for _path in "${possible_path[@]}"
+do
+    if [ -d $_path ]
+    then
+        PATH=$PATH:$_path
+    fi
+done
+unset _path
+unset possible_path
+PATH=$PATH:
+export PATH
+# PATH

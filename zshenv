@@ -43,20 +43,10 @@ then
 fi
 ## GUIX
 
-path=(
-    $path
-    # /home/linuxbrew/.linuxbrew/bin
-    ~/bin
-    ~/.local/bin
-    ~/.cask/bin
-    # /usr/local/bin
-    # /usr/local/sbin
-    /bin
-    /usr/bin
-    # /sbin
-    # /usr/sbin
-    ~/.emacs.d/term-cmd
-    )
+if [  -r ~/.rsetup/sh/env  ]
+then
+    source ~/.rsetup/sh/env
+fi
 
 infopath=(
     /usr/share/info
@@ -67,11 +57,6 @@ export DOTREMINDERS=~/Documents/CreatedContent/contents/misc/remind/Reminders/in
 export HOST
 # export WORKPLACE=
 # [ -r ~/.$WORKPLACE.zshenv ] && source ~/.$WORKPLACE.zshenv
-
-if [  -r ~/.rsetup/sh/env  ]
-then
-    source ~/.rsetup/sh/env
-fi
 
 export ALTERNATE_EDITOR='echo bye'
 if [ "x" != "x$DISPLAY" ]
