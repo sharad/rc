@@ -1,22 +1,28 @@
 #!/usr/bin/env bash
 
 
-USER_GENERATION_CLEANUP_TIME=96h
-SYSTEM_GENERATION_CLEANUP_TIME=10m # 10 months
-SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=30d
-SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=3G
+function main()
+{
+
+    trap setup_finish EXIT SIGINT SIGTERM
+
+    running debug process_arg $@
+    USER_GENERATION_CLEANUP_TIME=96h
+    SYSTEM_GENERATION_CLEANUP_TIME=10m # 10 months
+    SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=30d
+    SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=3G
 
 
-LOCAL_GUIX_EXTRA_PROFILES=("dev" "dynamic-hash" "heavy" "lengthy")
-export LOCAL_GUIX_EXTRA_PROFILES
-LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER"
+    LOCAL_GUIX_EXTRA_PROFILES=("dev" "dynamic-hash" "heavy" "lengthy")
+    export LOCAL_GUIX_EXTRA_PROFILES
+    LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER"
 
 
-if [ -d "/run/current-system/profile" ]
-then
-    if running info guix pull
+    if [ -d "/run/current-system/profile" ]
     then
-        running info guix pull --news
+        if running info guix pull
+        then
+            running info guix pull --news
 
             df -hx tmpfs -x devtmpfs
 
@@ -46,6 +52,150 @@ then
             df -hx tmpfs -x devtmpfs
 
 
+        fi
     fi
-fi
 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function process_arg()
+{
+    warn=1
+    error=1
+
+    if ! set -- $(getopt -n $pgm -o "rnsehvdw" -- $@)
+    then
+        verbose Wrong command line.
+    fi
+
+    while [ $# -gt 0 ]
+    do
+        echo option $1
+        case $1 in
+            (-r) recursive=1;;
+            (-s) stash=1;;
+            (-n) noaction="";;
+            (-d) debug=1;;
+            (-v) verbose=1;;
+            (-w) warn="";;
+            (-e) error="";;
+            (-h) help;
+                 exit;;
+            (--) shift; break;;
+            (-*) error "$0: error - unrecognized option $1" 1>&2; help; exit 1;;
+            (*)  break;;
+        esac
+        shift
+    done
+}
+
+function running()
+{
+    local  notifier=$1
+    local _cmd=$2
+    shift
+    shift
+
+
+    $notifier $_cmd "$@"
+    if [ ! $noaction ]
+    then
+        $_cmd "$@"
+    fi
+}
+
+function print()
+{
+    echo "$*"
+}
+
+function error()
+{
+    notify "Error $*"  >&2
+    logger "Error $*"
+}
+
+function warn()
+{
+    if [ $warn ] ; then
+        notify "Warning: $*" >&2
+    fi
+    logger "Warning: $*"
+}
+
+function debug()
+{
+    if [ $debug ] ; then
+        notify "Debug: $*" >&2
+    fi
+    logger "Debug: $*"
+}
+
+function verbose()
+{
+    if [ $verbose ] ; then
+        notify "Info: $*" >&2
+    fi
+    logger "Info: $*"
+}
+
+function info()
+{
+    notify "$*" >&2
+    : logger "$*"
+}
+
+function notify()
+{
+    print "${pgm}:" "$*"
+
+    if [ ! -t 1 ]
+    then
+        notify-send "${pgm}:" "$*"
+    fi
+}
+
+function logger()
+{
+    #creating prolem
+    command logger -p local1.notice -t ${pgm} -i - $USER : "$*"
+}
+
+#verbose=1
+
+pgm="$(basename $0)"
+main "$@"
+exit

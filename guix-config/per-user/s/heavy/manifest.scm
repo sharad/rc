@@ -6,6 +6,7 @@
 
 (define %lotus-dev-cdesktop-package-names (list "ocaml"
                                                 ;; "ocaml-merlin"
+                                                "ocaml4.07-merlin"
                                                 "opam"
                                                 ;; qemu
                                                 "virt-manager"
