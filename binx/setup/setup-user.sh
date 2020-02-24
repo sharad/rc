@@ -693,20 +693,10 @@ function setup_apt_repo()
 
 function setup_apt_upgrade_system()
 {
-    # https://guix.gnu.org/blog/2019/guix-profiles-in-practice/
-    # https://guix.gnu.org/cookbook/en/
-    # https://guix.gnu.org/cookbook/en/html_node/
-    # https://guix.gnu.org/cookbook/en/html_node/Advanced-package-management.html#Advanced-package-management
-    # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
-    LOCAL_GUIX_EXTRA_PROFILES=("dev" "dynamic-hash" "heavy" "lengthy")
-    export LOCAL_GUIX_EXTRA_PROFILES
-    LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER"
-
-
     if [ -d "/run/current-system/profile" ]
     then
-        ~/bin/guix-update
-        # ~/bin/guix-clear
+        running info ~/bin/guix-update
+        #running info ~/bin/guix-clear
     else
         # sudo ${INSTALLER} ${INSTALLER_OPT} clean
         sudo ${INSTALLER} ${INSTALLER_OPT} autoremove

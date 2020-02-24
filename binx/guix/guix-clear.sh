@@ -194,6 +194,11 @@ function logger()
     command logger -p local1.notice -t ${pgm} -i - $USER : "$*"
 }
 
+function setup_finish()
+{
+    rm -rf $SETUP_TMPDIR
+}
+
 #verbose=1
 
 pgm="$(basename $0)"

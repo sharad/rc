@@ -154,13 +154,15 @@ Each entry is either:
            t)
           (add-to-enable-startup-interrupting-feature-hook
            '(lambda ()
+              (spacemacs/load-default-theme)
               (run-at-time-or-now 7 'lotus-desktop-session-restore)))
           (add-to-enable-startup-interrupting-feature-hook
            '(lambda ()
               (run-at-time-or-now 70
                                   '(lambda ()
                                      (call-interactively
-                                      'lotus-check-session-saving))))))))
+                                      'lotus-check-session-saving)))))
+          (add-to-enable-startup-interrupting-feature-hook #'spacemacs/load-default-theme))))
     :commands (lotus-desktop-session-restore)
     :config
     (progn
@@ -208,20 +210,21 @@ Each entry is either:
              t)
             (add-to-enable-startup-interrupting-feature-hook
              '(lambda ()
+                (spacemacs/load-default-theme)
                 (run-at-time-or-now 7 'lotus-desktop-session-restore)))
-
             (add-to-enable-startup-interrupting-feature-hook
              '(lambda ()
                 (run-at-time-or-now 70
                                     '(lambda ()
                                        (call-interactively
-                                        'lotus-check-session-saving))))))))
+                                        'lotus-check-session-saving)))))
+            (add-to-enable-startup-interrupting-feature-hook #'spacemacs/load-default-theme))))
 
       (when t
         (progn
           (add-hook 'session-unified-save-all-sessions-before-hook' clean-buffer-list))))
 
-    (when t
+    (when nil                           ;TODO: init-setup.el not found so changes to NIL
       (use-package init-setup
         ;; :ensure t
         :defer t

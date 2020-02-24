@@ -28,6 +28,8 @@ Host *.merunetworks.com 10.* susengg-01
   IdentityFile ~/.ssh/login-keys.d/work
   UserKnownHostsFile ~/.ssh/known_hosts
   User spratap
+  KexAlgorithms +diffie-hellman-group1-sha1
+
 
 Host controller-* corvina-* 10.33.*
   User admin
