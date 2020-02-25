@@ -201,7 +201,7 @@ function logger()
 
 function setup_finish()
 {
-    rm -rf $SETUP_TMPDIR
+    echo
 }
 
 #verbose=1
