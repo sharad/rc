@@ -573,7 +573,25 @@
 
 ;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
 ;; (define %lotus-polkit-services (list (service polkit-service-type)))
-(define %lotus-polkit-services (list ))
+(define %lotus-polkit-services (list))
+
+
+(define %lotus-krb5-services(list (service krb5-service-type
+                                           (krb5-configuration
+                                            (default-realm %lotus-default-realm)
+                                            (allow-weak-crypto? #t)
+                                            ;; (realms (list
+                                            ;;          (krb5-realm
+                                            ;;           (name "EXAMPLE.COM")
+                                            ;;           (admin-server "groucho.example.com")
+                                            ;;           (kdc "karl.example.com"))
+                                            ;;          (krb5-realm
+                                            ;;           (name "ARGRX.EDU")
+                                            ;;           (admin-server "kerb-admin.argrx.edu")
+                                            ;;           (kdc "keys.argrx.edu"))))
+                                            ))))
+
+;; modifications
 
 (define %lotus-desktop-nm-services (modify-services %desktop-services
                                                     (network-manager-service-type config =>

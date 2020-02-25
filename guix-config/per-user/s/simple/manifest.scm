@@ -98,6 +98,7 @@
         ;; "cquery"
         "ccls"
         "emacs-ccls"
+        "emacs-slack"
 
         "xhost"
         "xauth"
