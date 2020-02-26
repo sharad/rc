@@ -701,270 +701,269 @@ If SERVER is non-nil, use that, rather than the current server."
 
 (defun lotus-erc/init-h4x0r-config ()
   (progn
-        (progn ;; "h4x0r"
-          ;; http://www.emacswiki.org/emacs/ErcHaxorCode
+    (progn ;; "h4x0r"
+      ;; http://www.emacswiki.org/emacs/ErcHaxorCode
 
-          ;; EliteSpeech (h4x0r!) has code to transform normal speech into
-          ;; elite (31337!) speech. We can use that for a little haxor output –
-          ;; useful when you are trapped with script kiddies on a
-          ;; channel. Remember to set the ‘h4x0r-unreadable’ variable to your
-          ;; favorite level. The default is 5.
+      ;; EliteSpeech (h4x0r!) has code to transform normal speech into
+      ;; elite (31337!) speech. We can use that for a little haxor output –
+      ;; useful when you are trapped with script kiddies on a
+      ;; channel. Remember to set the ‘h4x0r-unreadable’ variable to your
+      ;; favorite level. The default is 5.
 
-          (add-hook 'erc-send-pre-hook 'erc-maybe-h4x0r)
+      (add-hook 'erc-send-pre-hook 'erc-maybe-h4x0r)
 
-          (define-minor-mode erc-h4x0r-mode
-              "Toggle automatic usage of h4x0r code for everything you type in ERC.")
+      (define-minor-mode erc-h4x0r-mode
+        "Toggle automatic usage of h4x0r code for everything you type in ERC.")
 
-          (defun erc-maybe-h4x0r (ignore)
-            "Change the text to h4x0r code, if `erc-h4x0r-mode' is non-nil."
-            (when erc-h4x0r-mode
-              (with-temp-buffer
-                (insert str)
-                (erc-h4x0r)
-                (setq str (buffer-string)))))
+      (defun erc-maybe-h4x0r (ignore)
+        "Change the text to h4x0r code, if `erc-h4x0r-mode' is non-nil."
+        (when erc-h4x0r-mode
+          (with-temp-buffer
+            (insert str)
+            (erc-h4x0r)
+            (setq str (buffer-string)))))
 
-          (defun erc-h4x0r ()
-            "Transform the buffer into h4x0r code."
-            (h4x0r-region (point-min) (point-max)))
+      (defun erc-h4x0r ()
+        "Transform the buffer into h4x0r code."
+        (h4x0r-region (point-min) (point-max)))
 
-          (autoload 'h4x0r-region "h4x0r"))))
+      (autoload 'h4x0r-region "h4x0r"))))
 
 (defun lotus-erc/init-bitlbee-config ()
   (progn
-        (progn
+    (progn
+      (defun erc-bitlbee ()
+        (interactive)
+        ;; (if (and (bitlbee-start)
+        ;;          (bitlbee-running-p))
+        ;;     (erc :server "localhost" :port "6667")
+        ;;     (message "bitlbee is not running, install bitlbee and run it."))
 
-          (defun erc-bitlbee ()
-            (interactive)
-            ;; (if (and (bitlbee-start)
-            ;;          (bitlbee-running-p))
-            ;;     (erc :server "localhost" :port "6667")
-            ;;     (message "bitlbee is not running, install bitlbee and run it."))
-
-            (if (shell-command-no-output "pgrep bitlbee") ;with bitlbee system-wide service.
-                (erc :server "localhost" :port "6667")
-                (message "bitlbee is not running, install bitlbee and run it."))))
+        (if (shell-command "pgrep bitlbee") ;with bitlbee system-wide service.
+            (erc :server "localhost" :port "6667")
+          (message "bitlbee is not running, install bitlbee and run it."))))
                                         ; (sleep-for 0 500)
 
-            ;; (bitlbee-connect)
-            
+    ;; (bitlbee-connect)
+    
 
-        (progn
-          (defun lotus-erc-bnc4free-connect ()
-            (interactive)
-            (save-window-excursion
-              (when (get-buffer "Grape.bnc4free.com:1337")
-                (with-current-buffer "Grape.bnc4free.com:1337"
-                  ;; (erc-message "PRIVMSG" (concat (erc-default-target) " quote PASS " (concat bnc4free-username ":" bnc4free-password)))
-                  ;; (erc-send-input (concat "/quote PASS " bnc4free-username ":" bnc4free-password "\r\n"))
-                  (insert (concat "/quote PASS " bnc4free-username ":" bnc4free-password ""))))))
-
-
-          (defun erc-bnc4free ()
-            (interactive)
-            (erc :server "Grape.bnc4free.com" :port 1337)
-                 ;; :nick "sharad" :full-name "Sharad Pratap"
-                 ;; :password bnc4free-password
-                 
-
-            (sleep-for 0 500)
-            (lotus-erc-bnc4free-connect)))
-
-        (progn
-          ;; (concat bnc4free-username ":" bnc4free-password)
+    (progn
+      (defun lotus-erc-bnc4free-connect ()
+        (interactive)
+        (save-window-excursion
+          (when (get-buffer "Grape.bnc4free.com:1337")
+            (with-current-buffer "Grape.bnc4free.com:1337"
+              ;; (erc-message "PRIVMSG" (concat (erc-default-target) " quote PASS " (concat bnc4free-username ":" bnc4free-password)))
+              ;; (erc-send-input (concat "/quote PASS " bnc4free-username ":" bnc4free-password "\r\n"))
+              (insert (concat "/quote PASS " bnc4free-username ":" bnc4free-password ""))))))
 
 
+      (defun erc-bnc4free ()
+        (interactive)
+        (erc :server "Grape.bnc4free.com" :port 1337)
+        ;; :nick "sharad" :full-name "Sharad Pratap"
+        ;; :password bnc4free-password
+        
+
+        (sleep-for 0 500)
+        (lotus-erc-bnc4free-connect)))
+
+    (progn
+      ;; (concat bnc4free-username ":" bnc4free-password)
 
 
 
-          (defun erc-quit-bitlbee-maybe (process)
-            (when (and (get-buffer-process bitlbee-buffer-name)
-                       (equal (get-buffer-process bitlbee-buffer-name)
-                              (get-process "bitlbee")))
-              (bitlbee-stop)
-              (kill-buffer bitlbee-buffer-name)))
-
-          (add-hook 'erc-quit-hook
-                    'erc-quit-bitlbee-maybe))
-
-        (progn
-          
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-          ;; bitlbee stuff
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-          ;;http://nflath.com/tag/bitlbee/
-          (defface erc-header-line-disconnected
-              '((t (:foreground "black" :background "indianred")))
-            "Face to use when ERC has been disconnected.")
-
-          (defun erc-update-header-line-show-disconnected ()
-            "Use a different face in the header-line when disconnected."
-            (erc-with-server-buffer
-              (cond ((erc-server-process-alive) 'erc-header-line)
-                    (t 'erc-header-line-disconnected))))
-
-          ;; (setq erc-header-line-face-method 'erc-update-header-line-show-disconnected)
 
 
-          ;; bitlbee-password is defvarred in my private file.
+      (defun erc-quit-bitlbee-maybe (process)
+        (when (and (get-buffer-process bitlbee-buffer-name)
+                   (equal (get-buffer-process bitlbee-buffer-name)
+                          (get-process "bitlbee")))
+          (bitlbee-stop)
+          (kill-buffer bitlbee-buffer-name)))
 
-          (defun bitlbee-connect ()
-            (interactive)
-            (save-window-excursion
-              (when (get-buffer "&bitlbee")
-                (with-current-buffer "&bitlbee"
-                  (erc-message "PRIVMSG" (concat (erc-default-target) " identify " bitlbee-password))
-                  ;; (erc-message "PRIVMSG" (concat (erc-default-target) " account on"))
-                  (erc-message "PRIVMSG" (concat (erc-default-target) " account off"))
-                  (erc-message "PRIVMSG" (concat (erc-default-target) " blist all"))))))
+      (add-hook 'erc-quit-hook
+                'erc-quit-bitlbee-maybe))
 
-          ;; (setq bitlbee-reconnect-timer (run-with-timer 0 60 'bitlbee-connect))
+    (progn
+      
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      ;; bitlbee stuff
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      ;;http://nflath.com/tag/bitlbee/
+      (defface erc-header-line-disconnected
+        '((t (:foreground "black" :background "indianred")))
+        "Face to use when ERC has been disconnected.")
 
-          (defun bitlbee-identify ()
-            "If we're on the bitlbee server, send the identify command to the
+      (defun erc-update-header-line-show-disconnected ()
+        "Use a different face in the header-line when disconnected."
+        (erc-with-server-buffer
+          (cond ((erc-server-process-alive) 'erc-header-line)
+                (t 'erc-header-line-disconnected))))
+
+      ;; (setq erc-header-line-face-method 'erc-update-header-line-show-disconnected)
+
+
+      ;; bitlbee-password is defvarred in my private file.
+
+      (defun bitlbee-connect ()
+        (interactive)
+        (save-window-excursion
+          (when (get-buffer "&bitlbee")
+            (with-current-buffer "&bitlbee"
+              (erc-message "PRIVMSG" (concat (erc-default-target) " identify " bitlbee-password))
+              ;; (erc-message "PRIVMSG" (concat (erc-default-target) " account on"))
+              (erc-message "PRIVMSG" (concat (erc-default-target) " account off"))
+              (erc-message "PRIVMSG" (concat (erc-default-target) " blist all"))))))
+
+      ;; (setq bitlbee-reconnect-timer (run-with-timer 0 60 'bitlbee-connect))
+
+      (defun bitlbee-identify ()
+        "If we're on the bitlbee server, send the identify command to the
  &bitlbee channel."
-            (when (and (string= "localhost" erc-session-server)
-                       (string= "&bitlbee" (buffer-name)))
-              (erc-message "PRIVMSG" (format "%s identify %s"
-                                             (erc-default-target)
-                                             bitlbee-password))))
-          ;; (add-hook 'erc-join-hook 'bitlbee-identify)
+        (when (and (string= "localhost" erc-session-server)
+                   (string= "&bitlbee" (buffer-name)))
+          (erc-message "PRIVMSG" (format "%s identify %s"
+                                         (erc-default-target)
+                                         bitlbee-password))))
+      ;; (add-hook 'erc-join-hook 'bitlbee-identify)
 
-          (setq erc-keywords '((".*Online.*" (:foreground "green"))
-                               (".*Busy" (:foreground "red"))
-                               (".*Away" (:foreground "red"))
-                               (".*Do not" (:foreground "red"))
-                               (".*Idle" (:foreground "orange")))))
-          
+      (setq erc-keywords '((".*Online.*" (:foreground "green"))
+                           (".*Busy" (:foreground "red"))
+                           (".*Away" (:foreground "red"))
+                           (".*Do not" (:foreground "red"))
+                           (".*Idle" (:foreground "orange")))))
+    
 
-        (progn
-          
-          ;;--------------------------------------------------------------------------------
-          ;; Facebook-chat/bitlbee interaction stuff
-          ;;
-          ;; provides one extra erc command: /fbid, which will do absolutely
-          ;; crazy regexp matching of your facebook friends to rename them.
-          ;;
-          ;; There is also a function to add to erc-insert-pre-hook which
-          ;; maintains human names for new friends.
-          ;;
-          ;; first do /fbid in &bitlbee (warning, this took mee about 5 minutes
-          ;; with 100-ish friends. bitlbee messages are slow.)
-          ;;
-          ;; then do this:
-          ;;
-          ;; (add-hook 'erc-mode-hook
-          ;;      (lambda ()
-          ;;        (when (string= (buffer-name) "&bitlbee")
-          ;;          (add-hook 'erc-insert-pre-hook 'fb/maintain-human-names nil t))))
-          ;;
-          ;; with these three functions set, we will always automatically
-          ;; rename a person any time they log on to fb and they don't have a
-          ;; friendly nick.
-          ;;
-          ;; These hooks are basically one giant race condition though, so if
-          ;; you're not comfortable that it did the right thing, either don't
-          ;; save or do `info NICK' and you'll see if it did the right thing.
-          ;;
-          ;; Specifically, if two people sign on close-enough to simultaneously
-          ;; I can't think of any good way to guarantee that the ID I'm
-          ;; rename-ing is going to get their real name. (Because either
-          ;; bitlbee provides a multiline 'info' response, or erc converts it
-          ;; into a multiline response before erc-insert-pre-hook.) If you do
-          ;; /fbid before enabling these auto-id functions it really shouldn't
-          ;; be that big of a problem, though. I've got something like
-          ;; semaphores going on, but they're completely useless if the info
-          ;; responses do not arrive in a deterministic order.  Which, god
-          ;; knows.
-          ;;
-          ;; Another thing is that these do not save anything, because that
-          ;; could cause massively stupid errors. This is just a reminder: tell
-          ;; <root> to save if you want it to.
-          ;; --------------------------------------------------------------------------------
+    (progn
+      
+      ;;--------------------------------------------------------------------------------
+      ;; Facebook-chat/bitlbee interaction stuff
+      ;;
+      ;; provides one extra erc command: /fbid, which will do absolutely
+      ;; crazy regexp matching of your facebook friends to rename them.
+      ;;
+      ;; There is also a function to add to erc-insert-pre-hook which
+      ;; maintains human names for new friends.
+      ;;
+      ;; first do /fbid in &bitlbee (warning, this took mee about 5 minutes
+      ;; with 100-ish friends. bitlbee messages are slow.)
+      ;;
+      ;; then do this:
+      ;;
+      ;; (add-hook 'erc-mode-hook
+      ;;      (lambda ()
+      ;;        (when (string= (buffer-name) "&bitlbee")
+      ;;          (add-hook 'erc-insert-pre-hook 'fb/maintain-human-names nil t))))
+      ;;
+      ;; with these three functions set, we will always automatically
+      ;; rename a person any time they log on to fb and they don't have a
+      ;; friendly nick.
+      ;;
+      ;; These hooks are basically one giant race condition though, so if
+      ;; you're not comfortable that it did the right thing, either don't
+      ;; save or do `info NICK' and you'll see if it did the right thing.
+      ;;
+      ;; Specifically, if two people sign on close-enough to simultaneously
+      ;; I can't think of any good way to guarantee that the ID I'm
+      ;; rename-ing is going to get their real name. (Because either
+      ;; bitlbee provides a multiline 'info' response, or erc converts it
+      ;; into a multiline response before erc-insert-pre-hook.) If you do
+      ;; /fbid before enabling these auto-id functions it really shouldn't
+      ;; be that big of a problem, though. I've got something like
+      ;; semaphores going on, but they're completely useless if the info
+      ;; responses do not arrive in a deterministic order.  Which, god
+      ;; knows.
+      ;;
+      ;; Another thing is that these do not save anything, because that
+      ;; could cause massively stupid errors. This is just a reminder: tell
+      ;; <root> to save if you want it to.
+      ;; --------------------------------------------------------------------------------
 
-          (defvar fb/suffix "FB"
-            "What to append to facebook nicks to make sure they don't clash
+      (defvar fb/suffix "FB"
+        "What to append to facebook nicks to make sure they don't clash
   with the same person in other networks")
 
-          (defvar fb/last-info-request nil
-            "the last name requested by an explicit 'info NICK'")
-          (defvar fb/id nil
-            "shitty attempt at semaphores.
+      (defvar fb/last-info-request nil
+        "the last name requested by an explicit 'info NICK'")
+      (defvar fb/id nil
+        "shitty attempt at semaphores.
 Pretty sure these are guaranteed to not work, but they do
 *reduce* the race window")
-          (defvar fb/rename-in-progress nil
-            "other part of the semaphore made with `fb/id'")
+      (defvar fb/rename-in-progress nil
+        "other part of the semaphore made with `fb/id'")
 
-          (defun fb/maintain-human-names (msg)
-            (cond ((string-match "localhost.*\\+v \\([u-][0-9]\\{4,\\}\\)" msg)
-                   (let ((fbid (match-string 1 msg)))
-                     (erc-message "PRIVMSG" (concat (erc-default-target) " info " fbid))))
-                  ((and (string-match "vCard information for[[:blank:]\n]+\\([u-][0-9]\\{4,\\}\\)" msg)
-                        (not fb/id))
-                   (setq fb/id (match-string 1 msg)))
-                  ((and fb/id
-                        (not fb/rename-in-progress)
-                        (string-match "Name: \\([[:alpha:] \\.-]+[[:alpha:]]\\)" msg))
-                   (setq fb/rename-in-progress t)
-                   (let ((fbid fb/id)
-                         (name (concat (mapconcat 'identity (split-string (match-string 1 msg)) "") fb/suffix)))
-                     (erc-display-line (concat "<fbid> renaming " fbid " to " name))
-                     (erc-message "PRIVMSG" (concat (erc-default-target) " rename " fbid " " name)))
-                   (setq fb/rename-in-progress nil)
-                   (setq fb/id nil))))
+      (defun fb/maintain-human-names (msg)
+        (cond ((string-match "localhost.*\\+v \\([u-][0-9]\\{4,\\}\\)" msg)
+               (let ((fbid (match-string 1 msg)))
+                 (erc-message "PRIVMSG" (concat (erc-default-target) " info " fbid))))
+              ((and (string-match "vCard information for[[:blank:]\n]+\\([u-][0-9]\\{4,\\}\\)" msg)
+                    (not fb/id))
+               (setq fb/id (match-string 1 msg)))
+              ((and fb/id
+                    (not fb/rename-in-progress)
+                    (string-match "Name: \\([[:alpha:] \\.-]+[[:alpha:]]\\)" msg))
+               (setq fb/rename-in-progress t)
+               (let ((fbid fb/id)
+                     (name (concat (mapconcat 'identity (split-string (match-string 1 msg)) "") fb/suffix)))
+                 (erc-display-line (concat "<fbid> renaming " fbid " to " name))
+                 (erc-message "PRIVMSG" (concat (erc-default-target) " rename " fbid " " name)))
+               (setq fb/rename-in-progress nil)
+               (setq fb/id nil))))
 
-          (defun fb/all-user-rename (msg)
-            (when (string-match "Name: \\([[:alpha:] -]+[[:alpha:]]\\)" msg)
-              (let ((fbid fb/id)
-                    ;; (name (concat (mapconcat 'identity (split-string (match-string 1 msg)) "") fb/suffix))
-                    (name (concat fb/suffix "/" (mapconcat 'identity (split-string (match-string 1 msg)) ""))))
-                    
-                (erc-display-line (concat "<fbid> renaming " fbid " to " name))
-                (erc-message "PRIVMSG" (concat (erc-default-target) " rename " fbid " " name)))
-              (fb/get-info-all-names)))
+      (defun fb/all-user-rename (msg)
+        (when (string-match "Name: \\([[:alpha:] -]+[[:alpha:]]\\)" msg)
+          (let ((fbid fb/id)
+                ;; (name (concat (mapconcat 'identity (split-string (match-string 1 msg)) "") fb/suffix))
+                (name (concat fb/suffix "/" (mapconcat 'identity (split-string (match-string 1 msg)) ""))))
+            
+            (erc-display-line (concat "<fbid> renaming " fbid " to " name))
+            (erc-message "PRIVMSG" (concat (erc-default-target) " rename " fbid " " name)))
+          (fb/get-info-all-names)))
 
-          (defun fb/get-info-all-names ()
-            (setq fb/id (pop fb/all-ids))
-            (if fb/id
-                (progn
-                  (erc-display-line (concat "<fbid> requesting info for " fb/id))
-                  (erc-message "PRIVMSG" (concat (erc-default-target) " info " fb/id)))
-                (save-window-excursion
-                  (switch-to-buffer "&bitlbee")
-                  (setq erc-insert-pre-hook fb/old-erc-hooks)
-                  (erc-display-line "<fbid> Finished changing everyone's name. Don't forget to SAVE"))))
+      (defun fb/get-info-all-names ()
+        (setq fb/id (pop fb/all-ids))
+        (if fb/id
+            (progn
+              (erc-display-line (concat "<fbid> requesting info for " fb/id))
+              (erc-message "PRIVMSG" (concat (erc-default-target) " info " fb/id)))
+          (save-window-excursion
+            (switch-to-buffer "&bitlbee")
+            (setq erc-insert-pre-hook fb/old-erc-hooks)
+            (erc-display-line "<fbid> Finished changing everyone's name. Don't forget to SAVE"))))
 
-          (defun fb/grab-ids-from-blist (msg)
-            (if (string-match "^\<root\> \\([u-][[:digit:]]\\{4,\\}\\)" msg)
-                (push (match-string 1 msg) fb/all-ids)
-                (when (string-match "[0-9]+ buddies (.*)" msg)
-                  (remove-hook 'erc-insert-pre-hook 'fb/grab-ids-from-blist)
-                  (fb/get-info-all-names))))
+      (defun fb/grab-ids-from-blist (msg)
+        (if (string-match "^\<root\> \\([u-][[:digit:]]\\{4,\\}\\)" msg)
+            (push (match-string 1 msg) fb/all-ids)
+          (when (string-match "[0-9]+ buddies (.*)" msg)
+            (remove-hook 'erc-insert-pre-hook 'fb/grab-ids-from-blist)
+            (fb/get-info-all-names))))
 
-          (defun erc-cmd-FBID ()
-            "Create nice names for all of your facebook friends
+      (defun erc-cmd-FBID ()
+        "Create nice names for all of your facebook friends
 
 This takes a looong time, although basically just because of
 waiting for responses from the server"
-            (defvar fb/all-ids nil)
-            (defvar fb/old-erc-hooks)
-            (save-window-excursion
-              (switch-to-buffer "&bitlbee")
-              (setq fb/old-erc-hooks erc-insert-pre-hook)
-              (setq erc-insert-pre-hook nil)
-              (add-hook 'erc-insert-pre-hook 'fb/all-user-rename nil t)
-              (add-hook 'erc-insert-pre-hook 'fb/grab-ids-from-blist nil t)
-              (erc-message "PRIVMSG" (concat (erc-default-target) " blist all"))))
+        (defvar fb/all-ids nil)
+        (defvar fb/old-erc-hooks)
+        (save-window-excursion
+          (switch-to-buffer "&bitlbee")
+          (setq fb/old-erc-hooks erc-insert-pre-hook)
+          (setq erc-insert-pre-hook nil)
+          (add-hook 'erc-insert-pre-hook 'fb/all-user-rename nil t)
+          (add-hook 'erc-insert-pre-hook 'fb/grab-ids-from-blist nil t)
+          (erc-message "PRIVMSG" (concat (erc-default-target) " blist all"))))
 
 
-          ;; add all these hooks to only the &bitlbee channel
-          (add-hook 'erc-mode-hook
-                    (lambda ()
-                      (when (string= (buffer-name) "&bitlbee")
-                        (add-hook 'erc-insert-pre-hook 'erc-ignore-unimportant nil t)
-                        ;; (add-hook 'erc-insert-pre-hook 'erc-facebook-user-identify nil t)
-                        ;; (add-hook 'erc-insert-pre-hook 'erc-facebook-set-fbid nil t)
-                        ;; (add-hook 'erc-insert-pre-hook 'erc-facebook-user-rename nil t)
-                        (add-hook 'erc-insert-pre-hook 'fb/maintain-human-names nil t)))))))
+      ;; add all these hooks to only the &bitlbee channel
+      (add-hook 'erc-mode-hook
+                (lambda ()
+                  (when (string= (buffer-name) "&bitlbee")
+                    (add-hook 'erc-insert-pre-hook 'erc-ignore-unimportant nil t)
+                    ;; (add-hook 'erc-insert-pre-hook 'erc-facebook-user-identify nil t)
+                    ;; (add-hook 'erc-insert-pre-hook 'erc-facebook-set-fbid nil t)
+                    ;; (add-hook 'erc-insert-pre-hook 'erc-facebook-user-rename nil t)
+                    (add-hook 'erc-insert-pre-hook 'fb/maintain-human-names nil t)))))))
 
 (defun lotus-erc/post-init-passwds-config ()
   ())

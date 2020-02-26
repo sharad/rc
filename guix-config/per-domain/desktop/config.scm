@@ -71,6 +71,7 @@
 (define %lotus-guix-use-substitutes          #t) ;always true
 
 (define %lotus-network-manager-dns           "dnsmasq")
+(define %lotus-default-realm                 #f)
 
 
 (use-modules (gnu packages linux))
@@ -576,22 +577,17 @@
 (define %lotus-polkit-services (list))
 
 
-(define %lotus-krb5-services(list (service krb5-service-type
-                                           (krb5-configuration
-                                            (default-realm %lotus-default-realm)
-                                            (allow-weak-crypto? #t)
-                                            ;; (realms (list
-                                            ;;          (krb5-realm
-                                            ;;           (name "EXAMPLE.COM")
-                                            ;;           (admin-server "groucho.example.com")
-                                            ;;           (kdc "karl.example.com"))
-                                            ;;          (krb5-realm
-                                            ;;           (name "ARGRX.EDU")
-                                            ;;           (admin-server "kerb-admin.argrx.edu")
-                                            ;;           (kdc "keys.argrx.edu"))))
-                                            ))))
+(define %lotus-krb5-services (if %lotus-default-realm
+                                 (list (service krb5-service-type
+                                                (krb5-configuration
+                                                 (default-realm %lotus-default-realm)
+                                                 (allow-weak-crypto? #t))))
+                                 (list)))
 
-;; modifications
+
+(define %lotus-bitlbee-services (list (service bitlbee-service-type)))
+
+;; services modifications
 
 (define %lotus-desktop-nm-services (modify-services %desktop-services
                                                     (network-manager-service-type config =>
@@ -610,19 +606,20 @@
 ;; https://issues.guix.info/issue/35674
 (when #t
   (set! %lotus-desktop-nm-services (modify-services %lotus-desktop-nm-services
-                                     (gdm-service-type config =>
-                                                       (gdm-configuration (inherit config)
-                                                                          (xorg-configuration
-                                                                           (xorg-configuration
-                                                                            (keyboard-layout %lotus-keyboard-layout)))
-                                                                          ;; (allow-empty-passwords? #t)
-                                                                          (auto-login?            #f)
-                                                                          (default-user           %lotus-account-user-name))))))
+                                                    (gdm-service-type config =>
+                                                                      (gdm-configuration (inherit config)
+                                                                                         (xorg-configuration
+                                                                                          (xorg-configuration
+                                                                                           (keyboard-layout %lotus-keyboard-layout)))
+                                                                                         ;; (allow-empty-passwords? #t)
+                                                                                         (auto-login?            #f)
+                                                                                         (default-user           %lotus-account-user-name))))))
+
+;; services add
 
 
 (define %lotus-desktop-services %lotus-desktop-nm-services)
 
-
 
 (define %lotus-network-services  (list (service openssh-service-type)
                                        (service tor-service-type)))
@@ -647,6 +644,8 @@
                                                    %lotus-mcron-services
                                                    %lotus-cups-services
                                                    %lotus-polkit-services
+                                                   %lotus-krb5-services
+                                                   %lotus-bitlbee-services
                                                    %lotus-desktop-services))
 
 

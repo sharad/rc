@@ -74,6 +74,7 @@ Each entry is either:
 (defun lotus-erc/post-init-erc ()
   (use-package erc
     :defer t
+    :commands (lotus-erc-start-or-switch)
     :config
     (lotus-erc/post-init-erc-config)))
 

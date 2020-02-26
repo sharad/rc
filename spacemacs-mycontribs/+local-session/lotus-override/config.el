@@ -199,6 +199,29 @@ Defaults to \"origin\"."
                              start
                              end))))))))))
 
+(defun lotus-override/post-init-erc-identd-config ()
+  (defun erc-identd-start (&optional port)
+    "Start an identd server listening to port 8113.
+Port 113 (auth) will need to be redirected to port 8113 on your
+machine -- using iptables, or a program like redir which can be
+run from inetd.  The idea is to provide a simple identd server
+when you need one, without having to install one globally on your
+system."
+    (interactive (list (read-string "Serve identd requests on port: " "8113")))
+    (unless port (setq port erc-identd-port))
+    (when (stringp port)
+      (setq port (string-to-number port)))
+    (when erc-identd-process
+      (delete-process erc-identd-process))
+    (setq erc-identd-process
+          (make-network-process :name "identd"
+                                :buffer nil
+                                :host 'local :service port
+                                :server t :noquery t :nowait nil
+                                :filter 'erc-identd-filter))
+    (set-process-query-on-exit-flag erc-identd-process nil)))
+
+
 (defun lotus-override/post-init-org-agenda-config ()
   (interactive)
   (progn

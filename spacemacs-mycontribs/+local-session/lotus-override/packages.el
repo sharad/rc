@@ -40,6 +40,7 @@
     (lsdb     :location local)
     git-gutter+
     git-link
+    erc-identd
     org-agenda
     (vc       :location local)
     (vc-hooks :location local)
@@ -105,6 +106,13 @@ Each entry is either:
                git-link--branch-remote-merge)
     :config
     (lotus-override/post-init-git-link-config)))
+
+(defun lotus-override/post-init-erc-identd ()
+  (use-package erc-identd ;; erc-identd-hooks
+    :defer t
+    :commands (erc-identd-new-marker)
+    :config
+    (lotus-override/post-init-erc-identd-config)))
 
 (defun lotus-override/post-init-org-agenda ()
   (use-package org-agenda ;; org-agenda-hooks

@@ -24,6 +24,10 @@
 (define %nonguix-channels (list (channel
                                  (name 'nonguix)
                                  (url "https://gitlab.com/nonguix/nonguix"))))
+
+(define %wigust-channels (list (channel
+                                (name 'wigust)
+                                (url "https://notabug.org/wigust/guix-wigust.git"))))
 
 
 (define %local-channels (append %nonguix-channels
