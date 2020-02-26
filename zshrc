@@ -37,26 +37,35 @@
 SCREEN4KEYCHAIN=keychain
 if [ "$STY" -o "$TERM" = "screen" ] && [[ "$STY" = *.${SCREEN4KEYCHAIN} ]]
 then
+    # date
     if [  -r ~/.rsetup/screen/env  ]
     then
         source ~/.rsetup/screen/env
+        # echo source ~/.rsetup/screen/env
+        # date
     fi
     if [  -r ~/.rsetup/screen/run ]
     then
         ~/.rsetup/screen/run
+        # echo ~/.rsetup/screen/run
     fi
 fi
 # }}}
 
 # {{{
-for r in sh zsh rc
+# for r in sh zsh rc # called in ~/.zprofile
+for r in zsh rc
 do
+    # date
     if [  -r ~/.rsetup/$r/env  ]
     then
+        # echo source ~/.rsetup/$r/env
         source ~/.rsetup/$r/env
+        # date
     fi
     if [  -r ~/.rsetup/$r/run ]
     then
+        # echo ~/.rsetup/$r/run
         ~/.rsetup/$r/run
     fi
 done
@@ -515,7 +524,12 @@ fi
 if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] # Not emacs tramp, let emacs tramp work.
 then
     {
-        if [ -d ~/.logs/stderr/zshall/ ] && [[ "$(command cat ~/.logs/stderr/zshall/* 2>&1 | head -2 )" ]]
+        # echo Hello
+        # date
+
+        local nocheck=1
+
+        if [ -d ~/.logs/stderr/zshall/ ] && [[ $nocheck == 1 || "$(command cat ~/.logs/stderr/zshall/* 2>&1 | head -2 )" ]]
         then
             cat ~/.logs/stderr/zshall/*
             echo Could see all messages in '~/.logs/stderr/zshall/*'
@@ -523,7 +537,7 @@ then
 
         if [ -d ~/Sink/ ]
         then
-            if [[ $(command ls -1 ~/Sink | tr -d '\n') != localPublic ]]
+            if [[ $nocheck == 1 || $(command ls -1 ~/Sink | tr -d '\n') != localPublic ]]
             then
                 print 'ls ~/Sink'
                 ls --color=always -F -C ~/Sink/
@@ -535,7 +549,7 @@ then
         then
     	      # ncal -3 -w
     	      # ncal -3
-            if [[ $(cal -3 2>&1 | head -2 ) ]]
+            if [[ $nocheck == 1 || $(cal -3 2>&1 | head -2 ) ]]
             then
     	          cal -3
             fi
@@ -550,7 +564,7 @@ then
 
         if whence -p rem > /dev/null 2>&1
         then
-            if [[ $(command rem -ahq 2>&1 | head -2 ) ]]
+            if [[ $nocheck == 1 || $(command rem -ahq 2>&1 | head -2 ) ]]
             then
                 command rem -ahq >& /dev/null
             fi
@@ -558,7 +572,7 @@ then
         then
             if [ -r $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem ]
             then
-                if [[ $(command remind -ahq $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem 2>&1 | head -2 ) ]]
+                if [[ $nocheck == 1 || $(command remind -ahq $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem 2>&1 | head -2 ) ]]
                 then
                     command remind -ahq $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem # >& /dev/null
                 fi
@@ -566,7 +580,7 @@ then
         fi
         if whence -p bugz >& /dev/null
         then
-            if [[ $(bugz  search -a spratap 2>&1 | head -2 ) ]]
+            if [[ $nocheck == 1 || $(bugz  search -a spratap 2>&1 | head -2 ) ]]
             then
                 bugz  search -a spratap # -s new,open,reopen
             fi
@@ -575,7 +589,7 @@ then
         autoload ztodo
         if whence -f ztodo >&/dev/null
         then
-            if [[ $(ztodo list 2>&1 | head -2 ) ]]
+            if [[ $nocheck == 1 || $(ztodo list 2>&1 | head -2 ) ]]
             then
                 print ztodo:
                 ztodo list
@@ -583,7 +597,7 @@ then
         fi
         if whence -f sticky-note >&/dev/null
         then
-            if [[ $(sticky-note -l 2>&1 | head -2 ) ]]
+            if [[ $nocheck == 1 || $(sticky-note -l 2>&1 | head -2 ) ]]
             then
                 print sticky-note:
                 sticky-note -l
@@ -591,7 +605,7 @@ then
         fi
         if whence -f sched >&/dev/null
         then
-            if [[ $(sched 2>&1 | head -2 ) ]]
+            if [[ $nocheck == 1 || $(sched 2>&1 | head -2 ) ]]
             then
                 print sched:
                 sched
@@ -600,7 +614,7 @@ then
         if whence -f calendar >&/dev/null
         then
             autoload calendar
-            if [[ $(calendar -a 2>&1 | head -2 ) ]]
+            if [[ $nocheck == 1 || $(calendar -a 2>&1 | head -2 ) ]]
             then
                 print calendar:
                 calendar -a
@@ -608,12 +622,15 @@ then
         fi
         if whence -w calender | grep command >&/dev/null
         then
-            if [[ $(command calendar 2>&1 | head -2 ) ]]
+            if [[ $nocheck == 1 || $(command calendar 2>&1 | head -2 ) ]]
             then
                 print bsd calendar:
                 command calendar
             fi
         fi
+
+        # echo Hello
+        # date
 
     } |
 command less            \

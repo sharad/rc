@@ -31,6 +31,8 @@
 (define %lotus-other-packages
   (list "vim"
 
+        "man-pages"
+
         "deb-forticlient-sslvpn"
         "cups-minimal" ;; for lp lpr command
 
