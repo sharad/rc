@@ -7,13 +7,13 @@ function main()
     trap setup_finish EXIT SIGINT SIGTERM
 
     running debug process_arg $@
-    USER_GENERATION_CLEANUP_TIME=96h
-    SYSTEM_GENERATION_CLEANUP_TIME=10m # 10 months
-    SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=30d
-    SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=3G
+    USER_GENERATION_CLEANUP_TIME=${USER_GENERATION_CLEANUP_TIME:-96h}
+    SYSTEM_GENERATION_CLEANUP_TIME=${SYSTEM_GENERATION_CLEANUP_TIME:-10m} # 10 months
+    SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME:-30d}
+    SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE:-3G}
 
 
-    LOCAL_GUIX_EXTRA_PROFILES=("dev" "dynamic-hash" "heavy" "lengthy")
+    LOCAL_GUIX_EXTRA_PROFILES=${LOCAL_GUIX_EXTRA_PROFILES:-("dev" "dynamic-hash" "heavy" "lengthy")}
     export LOCAL_GUIX_EXTRA_PROFILES
     LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER"
 
@@ -24,12 +24,13 @@ function main()
         then
             running info guix pull --news
 
-            df -hx tmpfs -x devtmpfs
+            running info df -hx tmpfs -x devtmpfs
+            running info sleep 10s
 
             if true
             then
 
-                guix package  --delete-generations=${USER_GENERATION_CLEANUP_TIME}
+                running info guix package  --delete-generations=${USER_GENERATION_CLEANUP_TIME}
                 for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
                 do
                     manifest_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/manifest.scm
@@ -44,12 +45,12 @@ function main()
                     unset profile
                 done
 
-                sudo guix system delete-generations ${SYSTEM_GENERATION_CLEANUP_TIME}
-                guix gc -d ${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME} -C  ${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE}
+                running info sudo guix system delete-generations ${SYSTEM_GENERATION_CLEANUP_TIME}
+                running info guix gc -d ${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME} -C  ${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE}
 
             fi
 
-            df -hx tmpfs -x devtmpfs
+            running info df -hx tmpfs -x devtmpfs
 
 
         fi

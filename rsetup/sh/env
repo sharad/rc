@@ -313,6 +313,27 @@ function ssh_agent_use_run_keychain()
     fi
 }
 
+function __cmd_to_path()
+{
+    echo memoize_"$*" | tr \/ SLASH
+}
+
+function memoize_run()
+{
+    cmd=$1
+    MEMOIZE_DIR=~/.cache/memoize
+    MEMOIZE_FILE="$MEMOIZE_DIR/$cmd/$(__cmd_to_path $*)"
+    if [ -r "$MEMOIZE_FILE" ]
+    then
+        cat "$MEMOIZE_FILE"
+    else
+        mkdir -p "$(dirname $MEMOIZE_FILE)"
+        touch "$MEMOIZE_FILE"
+        shift
+        $cmd $@ | tee "$MEMOIZE_FILE"
+    fi
+}
+
 function eval_guix_profiles()
 {
     GUIX_PROFILE="$HOME/.guix-profile"
@@ -329,7 +350,7 @@ function eval_guix_profiles()
             profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"$profile"
             if [ -f "$profile_path"/etc/profile ]
             then
-                eval $(guix package  -p "$profile_path" --search-paths=suffix)
+                eval $(memoize_run guix package  -p "$profile_path" --search-paths=suffix)
             # else
             #    echo file "${profile_path}"/etc/profile not exist, for "${profile_path}" >&2
             fi
