@@ -147,8 +147,16 @@ function setup_dbus_vars() {
     fi
 
     local _DISPLAYMAJOR=$(echo ${DISPLAY} | cut -f2 -d: | cut -d. -f1)
+    local MACHINE_ID
+    if [ -r /var/lib/dbus/machine-id ]
+    then
+        MACHINE_ID=/var/lib/dbus/machine-id
+    elif [ -r /etc/machine-id ]
+    then
+        MACHINE_ID=/etc/machine-id
+    fi
 
-    source ~/.dbus/session-bus/$(< /var/lib/dbus/machine-id)-${_DISPLAYMAJOR}
+    source ~/.dbus/session-bus/$(< ${MACHINE_ID})-${_DISPLAYMAJOR}
 
 }
 

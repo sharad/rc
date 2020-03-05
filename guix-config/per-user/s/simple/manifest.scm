@@ -31,6 +31,10 @@
 (define %lotus-other-packages
   (list "vim"
 
+
+        "perl-yaml"
+        "perl-xml-compile"              ;xml2yaml
+
         "man-pages"
 
         "deb-forticlient-sslvpn"
