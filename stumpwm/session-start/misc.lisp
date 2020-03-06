@@ -99,7 +99,7 @@
 (progn
   ;; https://github.com/joelagnel/stumpwm-goodies/blob/master/mode-line/modeline-config.lisp
   (defun show-ip-address ()
-    (let ((ip (run-shell-command "ip addr show dev enp0s31f6  | grep 'inet' | head -1 | cut -d' ' -f6 | cut -d/ -f1" t)))
+    (let ((ip (run-shell-command "ip addr show dev enp0s31f6  | grep 'inet' | head -1 | cut -d' ' -f6 | cut -d/ -f1" t):))
       (substitute #\Space #\Newline ip)))
 
   (defun show-battery-charge ()
@@ -134,11 +134,11 @@
 
 
 (defvar *mode-line-fmts* '(
-                           ("^[^B^7*%h^]" "/"
+                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S"))
+                            " ^[^B^7*%h^]" "/"
                             (:eval (show-ip-address))
                             (:eval (show-kernel))
-                            (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S"))
-                            " %p - %c (%f) - %B - ^71%N^** [^B%n^71%u^**^b] %T %W - %m - %D - %I ")
+                            "%p - %c (%f) - %B - ^71%N^** [^B%n^71%u^**^b] %T %W - %m - %D - %I ")
 
                            ("^[^B^7*%h^] " (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^01%N^** [^B%n^01%u^**^b] %T %W - %m - %D - %I ")
                            ("^[^B^7*%h^] " (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^1*%N^** [^B%n^b ^B^1*%u^**^b ] %T %W - %m - %D - %I")
