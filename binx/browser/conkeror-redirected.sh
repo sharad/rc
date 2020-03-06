@@ -11,7 +11,12 @@ fi
 
 if [ "x" != "x$BIN" ]
 then
-    exec $BIN "$@" >/dev/null 2>&1
+    if which cpulimit >/dev/null 2>&1
+    then
+        exec cpulimit -l 90 $BIN "$@" >/dev/null 2>&1
+    else
+        exec $BIN "$@" >/dev/null 2>&1
+    fi
 else
     echo Not able to find conkeror >/dev/null 2>&1
 fi

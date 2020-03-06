@@ -31,6 +31,7 @@
 (define %lotus-other-packages
   (list "vim"
 
+        "cpulimit"
 
         "perl-yaml"
         "perl-xml-compile"              ;xml2yaml
