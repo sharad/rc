@@ -695,8 +695,8 @@ function setup_apt_upgrade_system()
 {
     if [ -d "/run/current-system/profile" ]
     then
-        running info ~/bin/guix-update
-        #running info ~/bin/guix-clear
+        running info ~/bin/lotus-update
+        #running info ~/bin/lotus-clear
     else
         # sudo ${INSTALLER} ${INSTALLER_OPT} clean
         sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
