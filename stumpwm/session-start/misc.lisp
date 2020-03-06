@@ -96,6 +96,8 @@
 ;; Default layout
 ;;{{{ mode-line
 
+(defmacro def-list-share ())
+
 (progn
 
   (defun cleanup-str (str)
@@ -144,12 +146,12 @@
       (concat "|" (cleanup-str uptime) "|"))))
 
 
-(defvar *mode-line-fmts* '(
-                           ((:eval (format-expand *time-format-string-alist*
+(defvar *mode-line-fmts* '(("^[^B^7*%h^]" "/"
+                            (:eval (show-ip-address)) " "
+                            (:eval (format-expand *time-format-string-alist*
                                                   ;; "%a %b %e %Y - %k:%M:%S"
                                                   "%a %k:%M:%S %b %e %Y"))
-                            " ^[^B^7*%h^]" "/"
-                            (:eval (show-ip-address)) " "
+                            " "
                             (:eval (show-kernel))     " "
                             (:eval (show-uptime))     " "
                             "%c (%f) - %B - ^71%N^** [^B%n^71%u^**^b] %T %W - %m - %D - %I - %p")

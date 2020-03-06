@@ -31,6 +31,7 @@
 (define %lotus-other-packages
   (list "vim"
 
+        "dos2unix"
         "cpulimit"
 
         "perl-yaml"
