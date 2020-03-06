@@ -95,8 +95,51 @@
 
 ;; Default layout
 ;;{{{ mode-line
+
+(progn
+  ;; https://github.com/joelagnel/stumpwm-goodies/blob/master/mode-line/modeline-config.lisp
+  (defun show-ip-address ()
+    (let ((ip (run-shell-command "ip addr show dev enp0s31f6  | grep 'inet' | head -1 | cut -d' ' -f6 | cut -d/ -f1" t)))
+      (substitute #\Space #\Newline ip)))
+
+  (defun show-battery-charge ()
+    (let ((raw-battery (run-shell-command "acpi | cut -d, -f2" t)))
+      (substitute #\Space #\Newline raw-battery)))
+
+  (defun show-hostname ()
+    (let ((host-name (run-shell-command "cat /etc/hostname" t)))
+      (substitute #\Space #\Newline host-name)))
+
+  (defun show-battery-state ()
+    (let ((raw-battery (run-shell-command "acpi | cut -d: -f2 | cut -d, -f1" t)))
+      (substitute #\Space #\Newline raw-battery)))
+
+  (defun show-kernel ()
+    (let ((version (run-shell-command "uname -r" t)))
+      (substitute #\Space #\Newline version)))
+
+  (defun show-emacs-jabber-new-message ()
+    (let ((new-message (run-shell-command "cat /home/joel/emacs-jabber.temp" t)))
+;;;     (and (> (length new-message) 0) (stumpwm:message new-message))
+      (substitute #\Space #\Newline new-message)))
+;;;
+
+  (defun show-emacs-jabber-new-mail ()
+    (let ((new-mail (run-shell-command "cat /home/joel/emacs-jabber-mail.temp" t)))
+      (if (not (eq (length new-mail) 0))
+          (progn (stumpwm:message new-mail)
+                 (run-shell-command "rm /home/joel/emacs-jabber-mail.temp" t)
+                 (run-shell-command "touch /home/joel/emacs-jabber-mail.temp" t)))
+      "")))
+
+
 (defvar *mode-line-fmts* '(
-                           ("^[^B^7*%h^] " (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^71%N^** [^B%n^71%u^**^b] %T %W - %m - %D - %I ")
+                           ("^[^B^7*%h^]" "/"
+                            (:eval (show-ip-address))
+                            (:eval (show-kernel))
+                            (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S"))
+                            " %p - %c (%f) - %B - ^71%N^** [^B%n^71%u^**^b] %T %W - %m - %D - %I ")
+
                            ("^[^B^7*%h^] " (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^01%N^** [^B%n^01%u^**^b] %T %W - %m - %D - %I ")
                            ("^[^B^7*%h^] " (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^1*%N^** [^B%n^b ^B^1*%u^**^b ] %T %W - %m - %D - %I")
                            ("^[^B^7*%h^] " (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S"))
@@ -131,6 +174,7 @@
 ;; actually need to see it:
 
 ;;}}} mode-line end
+
 
 ;;Set X11 background image for all screens
 (defun screen-initilize-decoration ()
