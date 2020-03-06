@@ -97,31 +97,38 @@
 ;;{{{ mode-line
 
 (progn
+
+  (defun cleanup-str (str)
+    (remove #\Newline str))
+
+  (defun cleanup-str-nl (str)
+    (substitute #\Space #\Newline str))
+
   ;; https://github.com/joelagnel/stumpwm-goodies/blob/master/mode-line/modeline-config.lisp
   (defun show-ip-address ()
-    (let ((ip (run-shell-command "ip addr show dev enp0s31f6  | grep 'inet' | head -1 | cut -d' ' -f6 | cut -d/ -f1" t):))
-      (substitute #\Space #\Newline ip)))
+    (let ((ip (run-shell-command "ip addr show dev enp0s31f6  | grep 'inet' | head -1 | cut -d' ' -f6 | cut -d/ -f1" t)))
+      (cleanup-str ip)))
 
   (defun show-battery-charge ()
     (let ((raw-battery (run-shell-command "acpi | cut -d, -f2" t)))
-      (substitute #\Space #\Newline raw-battery)))
+      (cleanup-str raw-battery)))
 
   (defun show-hostname ()
     (let ((host-name (run-shell-command "cat /etc/hostname" t)))
-      (substitute #\Space #\Newline host-name)))
+      (cleanup-str host-name)))
 
   (defun show-battery-state ()
     (let ((raw-battery (run-shell-command "acpi | cut -d: -f2 | cut -d, -f1" t)))
-      (substitute #\Space #\Newline raw-battery)))
+      (cleanup-str raw-battery)))
 
   (defun show-kernel ()
     (let ((version (run-shell-command "uname -r" t)))
-      (substitute #\Space #\Newline version)))
+      (cleanup-str version)))
 
   (defun show-emacs-jabber-new-message ()
     (let ((new-message (run-shell-command "cat /home/joel/emacs-jabber.temp" t)))
 ;;;     (and (> (length new-message) 0) (stumpwm:message new-message))
-      (substitute #\Space #\Newline new-message)))
+      (cleanup-str new-message)))
 ;;;
 
   (defun show-emacs-jabber-new-mail ()
@@ -130,15 +137,22 @@
           (progn (stumpwm:message new-mail)
                  (run-shell-command "rm /home/joel/emacs-jabber-mail.temp" t)
                  (run-shell-command "touch /home/joel/emacs-jabber-mail.temp" t)))
-      "")))
+      ""))
+
+  (defun show-uptime ()
+    (let ((uptime (run-shell-command "uptime | tr ', ' '\\n' | sed  '/^$/d' | sed -n -e 2,3p -e 4's/$/u/p' -e 8,9's/$/,/p' -e 10p | xargs echo | sed 's@,@@g'" t)))
+      (concat "|" (cleanup-str uptime) "|"))))
 
 
 (defvar *mode-line-fmts* '(
-                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S"))
+                           ((:eval (format-expand *time-format-string-alist*
+                                                  ;; "%a %b %e %Y - %k:%M:%S"
+                                                  "%a %k:%M:%S %b %e %Y"))
                             " ^[^B^7*%h^]" "/"
-                            (:eval (show-ip-address))
-                            (:eval (show-kernel))
-                            "%p - %c (%f) - %B - ^71%N^** [^B%n^71%u^**^b] %T %W - %m - %D - %I ")
+                            (:eval (show-ip-address)) " "
+                            (:eval (show-kernel))     " "
+                            (:eval (show-uptime))     " "
+                            "%c (%f) - %B - ^71%N^** [^B%n^71%u^**^b] %T %W - %m - %D - %I - %p")
 
                            ("^[^B^7*%h^] " (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^01%N^** [^B%n^01%u^**^b] %T %W - %m - %D - %I ")
                            ("^[^B^7*%h^] " (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^1*%N^** [^B%n^b ^B^1*%u^**^b ] %T %W - %m - %D - %I")
