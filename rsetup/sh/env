@@ -115,11 +115,6 @@ else
     echo env var HOST is not set $HOST
 fi
 
-if [ -r ~/.LESS_TERMCAP ]
-then
-    source ~/.LESS_TERMCAP
-fi
-
 export EDITOR
 export VISUAL
 export BROWSER
@@ -422,3 +417,11 @@ unset possible_path
 PATH=$PATH:
 export PATH
 # PATH
+
+
+
+if [ -r ~/.LESS_TERMCAP ]
+then
+    source ~/.LESS_TERMCAP
+fi
+

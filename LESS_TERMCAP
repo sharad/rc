@@ -6,7 +6,13 @@
 if [ "x" != "x$TERM" ] && which tput >/dev/null 2>&1
 then
     #{{{
-    if [ -r "/usr/bin/lesspipe" ]
+    if which lesspipe.sh >/dev/null 2>&1
+    then
+      eval "$(lesspipe.sh)"
+    elif which lesspipe >/dev/null 2>&1
+    then
+      eval "$(lesspipe)"
+    elif [ -r "/usr/bin/lesspipe" ]
     then
         eval "$(lesspipe)"
     elif [ -r "/home/s/hell/.guix-profile/bin/lesspipe.sh" ]
@@ -16,6 +22,9 @@ then
     then
         eval "$(/run/current-system/profile/bin/lesspipe.sh)"
     fi
+
+
+
 
     COLORTERM=1
     LESSQUIET=1
