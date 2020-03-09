@@ -82,5 +82,7 @@ Each entry is either:
       (let ((pid (emacs-pid)))
         (process-monitor-memory-usage pid)))
     :config
-    (progn)))
+    (progn
+      (progn
+        (setq process-monitor-memory-usage-period-seconds 180)))))
 ;;; packages.el ends here

@@ -370,7 +370,7 @@
         ;; "font-iosevka-slab"
         "font-go"
         "font-google-material-design-icons"
-        "font-open-dyslexic"
+        "font-opendyslexic"
         "font-dosis"
         "font-culmus"
         ;; "font-indic"
