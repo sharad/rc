@@ -1399,3 +1399,6 @@ define_webjump("company/in/tofler", "https://www.google.com/search?hl=en&&q=tofl
 
 define_webjump("quora", "https://www.quora.com/search?q=%s");
 define_webjump("search/quora", "https://www.quora.com/search?q=%s");
+
+define_webjump("learnxinyminutes", "https://learnxinyminutes.com/docs/%s");
+

@@ -11,7 +11,10 @@ function main()
     # https://guix.gnu.org/cookbook/en/html_node/
     # https://guix.gnu.org/cookbook/en/html_node/Advanced-package-management.html#Advanced-package-management
     # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
-    LOCAL_GUIX_EXTRA_PROFILES=("dev" "dynamic-hash" "heavy" "lengthy")
+    if [ ! "$LOCAL_GUIX_EXTRA_PROFILES" ]
+    then
+        LOCAL_GUIX_EXTRA_PROFILES=("dev" "dynamic-hash" "heavy" "lengthy")
+    fi
     export LOCAL_GUIX_EXTRA_PROFILES
     LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER"
 

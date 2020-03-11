@@ -12,15 +12,17 @@ function main()
     SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME:-30d}
     SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE:-3G}
 
-
-    LOCAL_GUIX_EXTRA_PROFILES=${LOCAL_GUIX_EXTRA_PROFILES:-("dev" "dynamic-hash" "heavy" "lengthy")}
+    if [ ! "$LOCAL_GUIX_EXTRA_PROFILES" ]
+    then
+        LOCAL_GUIX_EXTRA_PROFILES=( "dev" "dynamic-hash" "heavy" "lengthy" )
+    fi
     export LOCAL_GUIX_EXTRA_PROFILES
     LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER"
 
 
     if [ -d "/run/current-system/profile" ]
     then
-        if running info guix pull
+        if : running info guix pull
         then
             running info guix pull --news
 
