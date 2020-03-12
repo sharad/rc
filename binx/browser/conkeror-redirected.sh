@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 #
 
+CPUPERCENTAGE=60
+
 if which conkeror > /dev/null 2>&1
 then
     BIN=conkeror
@@ -13,7 +15,7 @@ if [ "x" != "x$BIN" ]
 then
     if which cpulimit >/dev/null 2>&1
     then
-        exec cpulimit -l 90 $BIN "$@" >/dev/null 2>&1
+        exec cpulimit -l $CPUPERCENTAGE $BIN "$@" >/dev/null 2>&1
     else
         exec $BIN "$@" >/dev/null 2>&1
     fi

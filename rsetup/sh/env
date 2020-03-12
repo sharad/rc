@@ -270,6 +270,11 @@ function emacs_daemon_start()
                        EMACS_STARTUP_LOG_DIR=~/.emacs.d/.cache/startup/$server/
                        mkdir -p $EMACS_STARTUP_LOG_DIR
 
+
+                       # TODO add
+                       # if which cpulimit >/dev/null 2>&1
+
+
                        # export GDK_RGBA=0
                        # EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
                        # GDK_RGBA=0 EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
