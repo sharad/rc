@@ -2,6 +2,25 @@
 ##
 ##  last modified:   11-Dec-1998  Fri  09:09
 
+# {{{
+# for r in sh zsh rc # called in ~/.zprofile
+for r in sh login
+do
+    # date
+    if [  -r ~/.rsetup/$r/env  ]
+    then
+        # echo source ~/.rsetup/$r/env
+        source ~/.rsetup/$r/env
+        # date
+    fi
+    if [  -r ~/.rsetup/$r/run ]
+    then
+        # echo ~/.rsetup/$r/run
+        ~/.rsetup/$r/run
+    fi
+done
+# }}}
+
 umask 022
 [ -n "$PS1" ]  &&  . $HOME/.bashrc
 

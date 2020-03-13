@@ -15,7 +15,7 @@ if [ "x" != "x$BIN" ]
 then
     if which cpulimit >/dev/null 2>&1
     then
-        exec cpulimit -l $CPUPERCENTAGE $BIN "$@" >/dev/null 2>&1
+        exec cpulimit -i -l $CPUPERCENTAGE $BIN "$@" >/dev/null 2>&1
     else
         exec $BIN "$@" >/dev/null 2>&1
     fi

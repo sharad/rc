@@ -2,6 +2,26 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+
+# {{{
+# for r in sh zsh rc # called in ~/.zprofile
+for r in rc
+do
+    # date
+    if [  -r ~/.rsetup/$r/env  ]
+    then
+        # echo source ~/.rsetup/$r/env
+        source ~/.rsetup/$r/env
+        # date
+    fi
+    if [  -r ~/.rsetup/$r/run ]
+    then
+        # echo ~/.rsetup/$r/run
+        ~/.rsetup/$r/run
+    fi
+done
+# }}}
+
 # If not running interactively, don't do anything:
 [ -z "$PS1" ] && return
 
