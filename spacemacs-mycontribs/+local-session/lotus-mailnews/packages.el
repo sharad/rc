@@ -307,8 +307,8 @@ Each entry is either:
   (use-package mu4e-view
     :commands (mu4e-message-at-point)
     :defer t
-    ;; :init
-    ;; (defvar mu4e~view-message)
+    :init
+    (lotus-mailnews/init-mu4e-view-init)
     :config
     (lotus-mailnews/init-mu4e-view-config)))
 

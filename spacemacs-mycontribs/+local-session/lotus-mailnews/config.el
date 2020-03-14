@@ -2233,6 +2233,10 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 (defun lotus-mailnews/init-mu4e-message-config ()
   ())
 
+(defun lotus-mailnews/init-mu4e-view-init ()
+  (progn
+    (defvar mu4e~view-message)))
+
 (defun lotus-mailnews/init-mu4e-view-config ()
   ())
 
