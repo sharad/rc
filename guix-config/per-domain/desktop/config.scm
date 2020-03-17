@@ -585,8 +585,6 @@
                                  (list)))
 
 
-(define %lotus-bitlbee-services (list (service bitlbee-service-type)))
-
 ;; services modifications
 
 (define %lotus-desktop-nm-services (modify-services %desktop-services

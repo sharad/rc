@@ -31,11 +31,14 @@
 (define %lotus-other-packages
   (list "vim"
 
+        "bidiv"
         "dos2unix"
         "cpulimit"
 
         "perl-yaml"
         "perl-xml-compile"              ;xml2yaml
+        "perl-xml-libxslt"
+        "python-lxml"
 
         "man-pages"
 
