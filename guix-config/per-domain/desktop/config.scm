@@ -230,9 +230,11 @@
                                     %lotus-mapped-device-house-home))
 
 
-(define %lotus-udev-lvm-mapped-devices (list %lotus-mapped-device-vgres01-lvres01
-                                             %lotus-mapped-device-vg01-lv01
-                                             %lotus-mapped-device-vg02-lv01))
+(define %lotus-udev-lvm-mapped-devices (if #f
+                                         (list %lotus-mapped-device-vgres01-lvres01
+                                               %lotus-mapped-device-vg01-lv01
+                                               %lotus-mapped-device-vg02-lv01)
+					 (list)))
 
 
 ;; guix system: error: service 'swap-/dev/mapper/guix-swap' requires 'device-mapping-guix-swap', which is not provided by any service
@@ -309,8 +311,7 @@
                                                         (create-mount-point? #f)
                                                         (needed-for-boot?    #f)
                                                         (dependencies        (append (list %lotus-file-system-guix-root)
-                                                                                     ;;%lotus-udev-lvm-mapped-devices)
-									     )))
+                                                                                     %lotus-udev-lvm-mapped-devices))))
 
 (define %lotus-file-system-vg02-lv01       (file-system (mount-point         "/srv/volumes/local/vg02/lv01")
                                                         (device              "/dev/mapper/vg02-lv01")
@@ -320,8 +321,7 @@
                                                         (create-mount-point? #f)
                                                         (needed-for-boot?    #f)
                                                         (dependencies        (append (list %lotus-file-system-guix-root)
-                                                                                     ;;%lotus-udev-lvm-mapped-devices)
-									     )))
+                                                                                     %lotus-udev-lvm-mapped-devices))))
 
 (define %lotus-file-system-vgres01-lvres01 (file-system (mount-point         "/srv/volumes/local/vgres01/lvres01")
                                                         (device              "/dev/mapper/vgres01-lvres01")
