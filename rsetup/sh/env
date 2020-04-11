@@ -446,9 +446,11 @@ export PATH
 # PATH
 
 
-
-if [ -r ~/.LESS_TERMCAP ]
+if [ -r $GUIX_PROFILE/etc/profile ]
 then
-    source ~/.LESS_TERMCAP
+   if [ -r ~/.LESS_TERMCAP ]
+   then
+       source ~/.LESS_TERMCAP
+   fi
 fi
 

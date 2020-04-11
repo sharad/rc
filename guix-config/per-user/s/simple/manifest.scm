@@ -31,9 +31,12 @@
 (define %lotus-other-packages
   (list "vim"
 
+        "ghostscript"
         "bidiv"
         "dos2unix"
         "cpulimit"
+
+        "iproute2"
 
         "perl-yaml"
         "perl-xml-compile"              ;xml2yaml

@@ -513,3 +513,18 @@ pcm.copy {
     }
     route_policy copy
 }
+
+
+
+# https://manual.audacityteam.org/man/tutorial_recording_computer_playback_on_linux.html
+pcm.teeraw {
+   type empty
+   slave.pcm "tee:default,'/tmp/out.raw',raw"
+   # 48000 S16_LE 2ch (aplay -t raw -f dat)
+}
+
+pcm.!default{
+   type empty
+   slave.pcm "teeraw"
+}
+

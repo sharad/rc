@@ -7,7 +7,7 @@
 (define %lotus-other-packages (list "polkit"
                                     "polkit-gnome"
                                     "autorandr"
-
+                                    "ppp"
                                     ;; "dconf"
                                     "glib-networking"
 

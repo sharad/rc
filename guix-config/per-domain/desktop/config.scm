@@ -16,7 +16,7 @@
 (use-modules (gnu services networking))
 (use-modules (gnu) (gnu system nss))
 (use-service-modules networking ssh)
-(use-package-modules bootloaders certs suckless wm)
+(use-package-modules bootloaders certs suckless wm samba linux)
 
 (use-service-modules desktop networking cups ssh xorg avahi mail)
 (use-package-modules certs gnome cups)
@@ -309,7 +309,8 @@
                                                         (create-mount-point? #f)
                                                         (needed-for-boot?    #f)
                                                         (dependencies        (append (list %lotus-file-system-guix-root)
-                                                                                     %lotus-udev-lvm-mapped-devices))))
+                                                                                     ;;%lotus-udev-lvm-mapped-devices)
+									     )))
 
 (define %lotus-file-system-vg02-lv01       (file-system (mount-point         "/srv/volumes/local/vg02/lv01")
                                                         (device              "/dev/mapper/vg02-lv01")
@@ -319,7 +320,8 @@
                                                         (create-mount-point? #f)
                                                         (needed-for-boot?    #f)
                                                         (dependencies        (append (list %lotus-file-system-guix-root)
-                                                                                     %lotus-udev-lvm-mapped-devices))))
+                                                                                     ;;%lotus-udev-lvm-mapped-devices)
+									     )))
 
 (define %lotus-file-system-vgres01-lvres01 (file-system (mount-point         "/srv/volumes/local/vgres01/lvres01")
                                                         (device              "/dev/mapper/vgres01-lvres01")
@@ -585,21 +587,77 @@
                                  (list)))
 
 
+;; (define %lotus-special-files-services (list (service special-files-service-type
+;;                                                      ;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
+;;                                                      ;; Using 'canonical-package' as bash and coreutils
+;;                                                      ;; canonical packages are already a part of
+;;                                                      ;; '%base-packages'.
+;;                                                      `(("/usr/sbin/pppd"
+;;                                                         ,(file-append (canonical-package
+;;                                                                        (guix-package samba ppp)) "/sbin/pppd"))))))
+
+(define %lotus-special-files-services (list
+                                       (extra-special-file "/usr/sbin/pppd"
+                                                           (file-append ppp "/sbin/pppd"))
+
+
+                                       (extra-special-file "/usr/sbin/arpd"
+                                                           (file-append iproute "/sbin/arpd"))
+                                       (extra-special-file "/usr/sbin/bridge"
+                                                           (file-append iproute "/sbin/bridge"))
+                                       (extra-special-file "/usr/sbin/ctstat"
+                                                           (file-append iproute "/sbin/ctstat"))
+                                       (extra-special-file "/usr/sbin/devlink"
+                                                           (file-append iproute "/sbin/devlink"))
+                                       (extra-special-file "/usr/sbin/genl"
+                                                           (file-append iproute "/sbin/genl"))
+                                       (extra-special-file "/usr/sbin/ifcfg"
+                                                           (file-append iproute "/sbin/ifcfg"))
+                                       (extra-special-file "/usr/sbin/ifstat"
+                                                           (file-append iproute "/sbin/ifstat"))
+                                       (extra-special-file "/usr/sbin/ip"
+                                                           (file-append iproute "/sbin/ip"))
+                                       (extra-special-file "/usr/sbin/lnstat"
+                                                           (file-append iproute "/sbin/lnstat"))
+                                       (extra-special-file "/usr/sbin/nstat"
+                                                           (file-append iproute "/sbin/nstat"))
+                                       (extra-special-file "/usr/sbin/rdma"
+                                                           (file-append iproute "/sbin/rdma"))
+                                       (extra-special-file "/usr/sbin/routef"
+                                                           (file-append iproute "/sbin/routef"))
+                                       (extra-special-file "/usr/sbin/routel"
+                                                           (file-append iproute "/sbin/routel"))
+                                       (extra-special-file "/usr/sbin/rtacct"
+                                                           (file-append iproute "/sbin/rtacct"))
+                                       (extra-special-file "/usr/sbin/rtmon"
+                                                           (file-append iproute "/sbin/rtmon"))
+                                       (extra-special-file "/usr/sbin/rtpr"
+                                                           (file-append iproute "/sbin/rtpr"))
+                                       (extra-special-file "/usr/sbin/rtstat"
+                                                           (file-append iproute "/sbin/rtstat"))
+                                       (extra-special-file "/usr/sbin/ss"
+                                                           (file-append iproute "/sbin/ss"))
+                                       (extra-special-file "/usr/sbin/tc"
+                                                           (file-append iproute "/sbin/tc"))
+                                       (extra-special-file "/usr/sbin/tipc"
+                                                           (file-append iproute "/sbin/tipc"))))
+
+
 ;; services modifications
 
 (define %lotus-desktop-nm-services (modify-services %desktop-services
-                                                    (network-manager-service-type config =>
-                                                                                  (network-manager-configuration (inherit config)
-                                                                                                                 ;; (vpn-plugins '("network-manager-openconnect"))
-                                                                                                                 (dns "dnsmasq")))
-                                                    ;; https://gitlab.com/Efraim/guix-config/blob/master/macbook41_config.scm
-                                                    (guix-service-type config =>
-                                                                       (guix-configuration (inherit config)
-                                                                                           ;; (use-substitutes? %lotus-guix-use-substitutes)
-                                                                                           ;; (authorized-keys '())
-                                                                                           (substitute-urls (append %lotus-guix-substitute-urls
-                                                                                                                    %default-substitute-urls))
-                                                                                           (extra-options %lotus-guix-extra-options)))))
+                                     (network-manager-service-type config =>
+                                                                   (network-manager-configuration (inherit config)
+                                                                                                  ;; (vpn-plugins '("network-manager-openconnect"))
+                                                                                                  (dns "dnsmasq")))
+                                     ;; https://gitlab.com/Efraim/guix-config/blob/master/macbook41_config.scm
+                                     (guix-service-type config =>
+                                                        (guix-configuration (inherit config)
+                                                                            ;; (use-substitutes? %lotus-guix-use-substitutes)
+                                                                            ;; (authorized-keys '())
+                                                                            (substitute-urls (append %lotus-guix-substitute-urls
+                                                                                                     %default-substitute-urls))
+                                                                            (extra-options %lotus-guix-extra-options)))))
 
 ;; https://issues.guix.info/issue/35674
 (when #t
@@ -643,6 +701,7 @@
                                                    %lotus-cups-services
                                                    %lotus-polkit-services
                                                    %lotus-krb5-services
+                                                   %lotus-special-files-services
                                                    %lotus-bitlbee-services
                                                    %lotus-desktop-services))
 
