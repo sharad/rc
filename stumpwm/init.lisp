@@ -2,6 +2,10 @@
 
 (in-package :stumpwm)
 
+(asdf:clear-source-registry)
+(push #p"/home/s/hell/.guix-profile/lib/sbcl/" asdf:*central-registry*)
+(push #p"/home/s/hell/.guix-profile/lib/sbcl/contrib/" asdf:*central-registry*)
+(asdf:initialize-source-registry)
 
  ;;Debugging
 ;; (setq *debug-level* 10)
