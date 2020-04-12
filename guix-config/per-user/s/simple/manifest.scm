@@ -310,9 +310,9 @@
           "xcursor-themes"
           "unclutter"
 
-          "sbcl"
-          "cl-fad"
-          "cl-slime-swank"
+          ;; "sbcl"
+          ;; "cl-fad"
+          ;; "cl-slime-swank"
 
           "glibc-utf8-locales" ;; guix guile showing some error even it is part of system configuration
 

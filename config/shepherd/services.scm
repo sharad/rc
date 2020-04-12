@@ -30,11 +30,12 @@
     #:respawn? #f))
 
 (define conky
-  (make <service>
-    #:provides '(conky)
-    #:start    (make-forkexec-constructor '("conky" "-d" "-c" (string-append (getenv "HOME") "/.conkyrc/main/conkyrc"))) ; to make it more obvious
-    #:stop     (make-kill-destructor)
-    #:respawn? #t))
+  (let ((conkyrc (string-append (getenv "HOME") "/.conkyrc/main/conkyrc"))) ; to make it more obvious
+    (make <service>
+      #:provides '(conky)
+      #:start    (make-forkexec-constructor (list "conky" "-d" "-c" conkyrc)) ; to make it more obvious
+      #:stop     (make-kill-destructor)
+      #:respawn? #t)))
 
 (define keynav
   (make <service>

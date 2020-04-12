@@ -5,7 +5,8 @@
 
 (define %lotus-disputed-packages (list "sbcl"
                                        "cl-fad"
-                                       "cl-slime-swank"))
+                                       "cl-slime-swank"
+				       ))
 
 (define %lotus-other-packages (list "polkit"
                                     "polkit-gnome"
