@@ -26,7 +26,7 @@
 
 ;; #-quicklisp
 (local-set-contrib-dir)
-zc
+
 (defun load-external-module (module)
   #+quicklisp
   (if (ql:where-is-system module)

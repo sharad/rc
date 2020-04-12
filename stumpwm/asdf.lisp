@@ -9,7 +9,6 @@
     (when asdf-file
       (message "found asdf file ~a" asdf-file)
       (load asdf-file)
-      (asdf:clear-source-registry)
       (dolist (dir '(#p"/run/current-system/profile/lib/sbcl/"
                      #p"~/.guix-profile/lib/sbcl/"
                      #p"/run/current-system/profile/lib/sbcl/contrib/"
@@ -20,5 +19,6 @@
       )))
 
 (stumpwm-initialize-asdf)
+(asdf:clear-source-registry)
 (asdf:initialize-source-registry #p"~/.config/common-lisp/source-registry.conf.d/")
 ;;}}
