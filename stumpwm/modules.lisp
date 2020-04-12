@@ -2,15 +2,6 @@
 
 (in-package :stumpwm)
 
-
-;; (push #p"/home/s/hell/.guix-profile/lib/sbcl/" asdf:*central-registry*)
-;; (push #p"/home/s/hell/.guix-profile/lib/sbcl/contrib/" asdf:*central-registry*)
-;; (push #p"/home/s/hell/.guix-profile/share/common-lisp/systems/" asdf:*central-registry*)
-;; (push #p"/home/s/hell/.guix-profile/share/common-lisp/source/" asdf:*central-registry*)
-
-
-;; (load #p"~/.guix-profile/share/common-lisp/source/cl-fad/load.lisp")
-
 (require :cl-fad)
 
 ;; FOR GUIX

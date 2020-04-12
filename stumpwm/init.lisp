@@ -12,7 +12,11 @@
 (setq *debug-level* 10)
 
 
+(set-prefix-key (kbd "C-quoteleft"))
+
+
 ;;{{{ Basic files loading
+(load (concat *initdir* "/asdf.lisp"))
 (load (concat *initdir* "/basic.lisp"))
 (load (concat *initdir* "/macros.lisp"))
 ;;}}}

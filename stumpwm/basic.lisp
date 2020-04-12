@@ -2,6 +2,7 @@
 (in-package :stumpwm)
 
 
+
 ;;{{{
 (defvar *interactive-debug* 0 "Interactive debug.")
 (defparameter *debug-wait* 0)
