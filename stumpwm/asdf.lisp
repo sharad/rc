@@ -1,24 +1,24 @@
 
 (in-package :stumpwm)
 
-(defun local-set-contrib-dir ())
-  
 ;;{{
 (defun stumpwm-initialize-asdf ()
-  (let* ((asdf-files '("/run/current-system/profile/share/sbcl/contrib/asdf/asdf.lisp"))
+  (let* ((asdf-files '(#p"/run/current-system/profile/share/sbcl/contrib/asdf/asdf.lisp"))
          (asdf-files (member-if #'probe-file asdf-files))
          (asdf-file  (car asdf-files)))
     (when asdf-file
       (message "found asdf file ~a" asdf-file)
       (load asdf-file)
       (asdf:clear-source-registry)
-      (push #p"/run/current-system/profile/profile/lib/sbcl/" asdf:*central-registry*)
-      (push #p"/run/current-system/profile/profile/lib/sbcl/contrib/" asdf:*central-registry*)
-      (push #p"/home/s/hell/.guix-profile/lib/sbcl/" asdf:*central-registry*)
-      (push #p"/home/s/hell/.guix-profile/lib/sbcl/contrib/" asdf:*central-registry*)
+      (dolist (dir '(#p"/run/current-system/profile/lib/sbcl/"
+                     #p"~/.guix-profile/lib/sbcl/"
+                     #p"/run/current-system/profile/lib/sbcl/contrib/"
+                     #p"~/.guix-profile/lib/sbcl/contrib/"
+                     ))
+        (pushnew dir asdf:*central-registry* :test #'equal))
       ;; (asdf:initialize-source-registry)
       )))
 
 (stumpwm-initialize-asdf)
-(asdf:initialize-source-registry)
+(asdf:initialize-source-registry #p"~/.config/common-lisp/source-registry.conf.d/")
 ;;}}
