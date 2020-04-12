@@ -14,11 +14,5 @@
                      #p"/run/current-system/profile/lib/sbcl/contrib/"
                      #p"~/.guix-profile/lib/sbcl/contrib/"
                      ))
-        (pushnew dir asdf:*central-registry* :test #'equal))
-      ;; (asdf:initialize-source-registry)
-      )))
-
-(stumpwm-initialize-asdf)
-(asdf:clear-source-registry)
-(asdf:initialize-source-registry #p"~/.config/common-lisp/source-registry.conf.d/")
+        (pushnew dir asdf:*central-registry* :test #'equal)))))
 ;;}}
