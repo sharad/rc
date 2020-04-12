@@ -1,6 +1,14 @@
-
+     
 
 (in-package :stumpwm)
+
+(push #p"/home/s/hell/.guix-profile/lib/sbcl/" asdf:*central-registry*)
+(push #p"/home/s/hell/.guix-profile/lib/sbcl/contrib/" asdf:*central-registry*)
+(push #p"/home/s/hell/.guix-profile/share/common-lisp/systems/" asdf:*central-registry*)
+(push #p"/home/s/hell/.guix-profile/share/common-lisp/source/" asdf:*central-registry*)
+
+
+(load #p"~/.guix-profile/share/common-lisp/source/cl-fad/load.lisp")
 
 (require :cl-fad)
 
@@ -8,9 +16,10 @@
 (defvar *contrib-dirs* nil)
 
 (defun local-set-contrib-dir ()
-  (let* ((contrib-dirs '(;; "/usr/local/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib/"
-                         "/home/s/hell/.stumpwm.d/contrib/"
-                         "/home/s/hell/.stumpwm/contrib/"))
+  (let* ((contrib-dirs '("/home/s/hell/.stumpwm.d/contrib/"
+                         "/home/s/hell/.stumpwm/contrib/"
+			 ;; "/usr/local/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib/"
+			 ))
          (contrib-dirs  (member-if #'probe-file contrib-dirs)))
     (dolist (dir contrib-dirs)
       (when dir

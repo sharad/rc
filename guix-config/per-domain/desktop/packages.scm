@@ -2,7 +2,10 @@
 
 (use-modules (gnu packages glib))
 
-
+
+(define %lotus-disputed-packages (list "sbcl"
+                                       "cl-fad"
+                                       "cl-slime-swank"))
 
 (define %lotus-other-packages (list "polkit"
                                     "polkit-gnome"
@@ -46,7 +49,8 @@
 
 
 (define %lotus-package-names-for-installation
-  (append %lotus-other-packages
+  (append %lotus-disputed-packages
+          %lotus-other-packages
           %lotus-system-selected-package-names
           %lotus-mail-packages
           %lotus-font-packages

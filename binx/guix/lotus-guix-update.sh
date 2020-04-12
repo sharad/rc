@@ -24,7 +24,7 @@ function main()
         if running info guix pull
         then
             running info guix pull --news
-            if running info sudo guix system reconfigure "${HOME}/.setup/guix-config/per-domain/desktop/config.scm"
+            if [ "x" != "x$NOSYS" ] || running info sudo guix system reconfigure "${HOME}/.setup/guix-config/per-domain/desktop/config.scm"
             then
                 # verbose guix upgrading
                 running info guix upgrade # default
