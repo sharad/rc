@@ -19,8 +19,11 @@
 (load (concat *initdir* "/asdf.lisp"))
 
 (stumpwm-initialize-asdf)
-;; (asdf:clear-source-registry)
-;; (asdf:initialize-source-registry #p"~/.config/common-lisp/source-registry.conf.d/")
+
+#+asdf
+(progn
+  ;; (asdf:clear-source-registry)
+  (asdf:initialize-source-registry #p"~/.config/common-lisp/source-registry.conf.d/"))
 
 (load (concat *initdir* "/basic.lisp"))
 (load (concat *initdir* "/macros.lisp"))
