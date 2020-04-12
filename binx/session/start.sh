@@ -22,6 +22,10 @@ ecryptfs-mount-private
 mount.ecryptfs_private
 df
 update-ssh-agent force
-secret-tool lookup server exch-cas.fortinet.com user 'fortinet-us\spratap' protocol imap  | xclip -i
+
+if [ "x" != "x$DISPLAY" ]
+then
+    secret-tool lookup server exch-cas.fortinet.com user 'fortinet-us\spratap' protocol imap  | xclip -i
+fi
 
 
