@@ -15,7 +15,8 @@
 
 (unless (sb-posix:getenv "SBCL_HOME")
   (stumpwm-set-sbcl-home)
-  (asdf:initialize-source-registry))
+  ;; (asdf:initialize-source-registry)
+  )
 ;; (ignore-errors **
 ;;  (asdf:initialize-source-registry)) **
 

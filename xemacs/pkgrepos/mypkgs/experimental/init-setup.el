@@ -74,7 +74,8 @@
                                    (insert-file-contents filePath)
                                    (buffer-string))))
       (let ((machine-id-file
-             (find-if #'file-exists-p  '("/etc/machine-id" "/var/lib/dbus/machine-id"))))
+             (find-if #'file-exists-p  '("/etc/machine-id"
+                                         "/var/lib/dbus/machine-id"))))
        (let* ((display-str  (or (getenv "DISPLAY" (selected-frame)) ":0.0"))
               (dismajor-str (if (>= (length display-str) 2)
                                 (substring display-str 1 2)
