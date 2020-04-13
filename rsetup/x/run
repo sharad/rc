@@ -107,6 +107,8 @@ fi
 ##}}
 
 ##{{ compositor
+if false
+then
 GUIX_PROFILE="$HOME/.guix-profile"
 if [ -r $GUIX_PROFILE/etc/profile ] &&  whence -p compton >& /dev/null && ! pgrep -u "$(id -u)" compton >& /dev/null
 then
@@ -114,6 +116,7 @@ then
 elif whence -p xcompmgr >& /dev/null && ! pgrep -u "$(id -u)" xcompmgr >& /dev/null
 then
     xcompmgr -a &!
+fi
 fi
 ##}}
 

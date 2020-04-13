@@ -2,7 +2,10 @@
 ;;
 ;; Stumpwm user definitions
 
-(in-package :stumpwm)
+(sb-posix:putenv "SBCL_HOME=/run/current-system/profile/lib/sbcl/")
+
+(ignore-errors
+ (asdf:initialize-source-registry))
 
 ;;; see at first line.
 ;;  Always remember, the StumpWM dotfile is in lisp
@@ -10,10 +13,8 @@
 
 ;; Press C-c @ C-q to unfold
 
-(defparameter *home-dir* (getenv "HOME"))
-(defparameter *initdir* (concat *home-dir* "/.stumpwm/"))
 
-(load (concat *initdir* "init.lisp"))
+(load #p"~/.stumpwm/init.lisp")
 
 ;; Local Variables: **
 ;; folded-file:t **

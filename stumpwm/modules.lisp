@@ -61,8 +61,8 @@
       (reverse (apply #'append modules-sets))))
 
   (defvar *stumpwm-contrib-exclude-modules* '("notify"
-                                              "qubes"))
-  (defvar *stumpwm-contrib-exclude-modules* '("notify" "qubes"))
+                                              "qubes"
+                                              "lookup"))
   (defvar *stumpwm-contrib-include-modules-in-end* '("notify"))
   (setf *stumpwm-contrib-include-modules-in-end* '())
 

@@ -14,4 +14,8 @@
                      #p"/run/current-system/profile/lib/sbcl/contrib/"
                      #p"~/.guix-profile/lib/sbcl/contrib/"))
         (pushnew dir asdf:*central-registry* :test #'equal)))))
+
+
+
+(stumpwm-initialize-asdf)
 ;;}}

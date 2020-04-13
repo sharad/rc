@@ -9,8 +9,12 @@
 
 #+asdf
 (progn)
-  ;; (asdf:clear-source-registry)
-  ;; (asdf:initialize-source-registry #p"~/.config/common-lisp/source-registry.conf.d/")
+;; (asdf:clear-source-registry)
+;; (asdf:initialize-source-registry #p"~/.config/common-lisp/source-registry.conf.d/")
+
+
+
+;; (asdf:initialize-source-registry #p"~/.config/common-lisp/source-registry.conf.d/")
 ;;;----
 
 
@@ -64,7 +68,7 @@
 
 (load (concat *initdir* "/modules.lisp"))
 
-(require :remember-win)
+;; (require :remember-win)
 
 
 ;; #-remember-win
