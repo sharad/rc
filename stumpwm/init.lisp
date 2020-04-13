@@ -17,14 +17,7 @@
 
 ;;{{{ Basic files loading
 (load (concat *initdir* "/asdf.lisp"))
-
-(stumpwm-initialize-asdf)
-
-#+asdf
-(progn
-  ;; (asdf:clear-source-registry)
-  (asdf:initialize-source-registry #p"~/.config/common-lisp/source-registry.conf.d/")
-  )
+
 
 (load (concat *initdir* "/basic.lisp"))
 (load (concat *initdir* "/macros.lisp"))
@@ -49,7 +42,7 @@
 (sharad/load-dir-files *session-dir*)
 (message "loaded ~a" *session-dir*)
 (debug-sleep)
-(sharad/load-dir-files (concat *session-dir* "contrib"))
+;; (sharad/load-dir-files (concat *session-dir* "contrib"))
 ;;}}}
 
 

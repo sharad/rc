@@ -22,17 +22,24 @@
          (swank-loader  (find-if #'probe-file swank-loaders)))
     (when (and swank-loader
                (probe-file swank-loader))
-        (load swank-loader))))
+      (progn
+        (load swank-loader)
+        ;; from http://lists.common-lisp.net/pipermail/slime-devel/2008-August/015346.html
+        (require :swank)))))
+
+;; (load-swank-loader)
 ;; FOR GUIX
 
-;; from http://lists.common-lisp.net/pipermail/slime-devel/2008-August/015346.html
-(require :swank)
-(load-swank-loader)
 
-#+swank-loader
-(when (functionp 'swank-loader::init)
-   ;; (setq swank-loader::*fasl-directory* "/tmp/fasl/")
-   (swank-loader::init :setup nil))
+
+(defun stumpwm-swank-loader-init ()
+  (progn
+    #+swank-loader
+    (when (functionp 'swank-loader::init)
+      ;; (setq swank-loader::*fasl-directory* "/tmp/fasl/")
+      (swank-loader::init :setup nil))))
+
+;; (stumpwm-swank-loader-init)
 
 #+swank
 (defcommand swank () ()
