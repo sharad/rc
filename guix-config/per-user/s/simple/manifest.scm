@@ -28,6 +28,10 @@
 (use-modules (gnu system locale))
 
 
+(define %lotus-disputed-packages (list "sbcl"
+                                       "cl-fad"
+                                       "cl-slime-swank"))
+
 (define %lotus-other-packages
   (list "vim"
 
@@ -252,8 +256,8 @@
         "beep"))
 
 (define %lotus-lang-packages (list ;; "ocaml"
-                                   ;; ;; "ocaml-merlin"
-                                   ;; "opam"
+                              ;; ;; "ocaml-merlin"
+                              ;; "opam"
                               ))
 
 (define %lotus-user-selected-package-names
@@ -310,9 +314,6 @@
           "xcursor-themes"
           "unclutter"
 
-          ;; "sbcl"
-          ;; "cl-fad"
-          ;; "cl-slime-swank"
 
           "glibc-utf8-locales" ;; guix guile showing some error even it is part of system configuration
 
@@ -493,6 +494,7 @@
 (define %lotus-package-names-for-installation 
   (append %lotus-user-selected-package-names
           %lotus-lang-packages
+          %lotus-disputed-packages
           %lotus-other-packages
           %lotus-mail-packages
           %lotus-font-packages

@@ -3,9 +3,9 @@
 (use-modules (gnu packages glib))
 
 
-(define %lotus-disputed-packages (list "sbcl"
-                                       "cl-fad"
-                                       "cl-slime-swank"
+(define %lotus-disputed-packages (list ;; "sbcl"
+                                       ;; "cl-fad"
+                                       ;; "cl-slime-swank"
 				       ))
 
 (define %lotus-other-packages (list "polkit"
