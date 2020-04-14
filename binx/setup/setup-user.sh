@@ -1090,6 +1090,83 @@ function setup_config_dirs()
     running info setup_emacs_dir
 }
 
+function setup_copy_src_trg ()
+{
+    _SRC=$1
+    _TRG=$2
+
+    if [ -d "${_SRC}" ]
+    then
+	      if running debug mkdir -p ${_TRG}/_old_dot_filedirs
+        then
+	          # mv ${_TRG}/.setup/.config/_home/.setup $SETUP_TMPDIR/Xsetup
+	          cd "${_SRC}"
+	          for c in .[a-zA-Z^.^..]* *
+	          do
+                debug considering $c
+                clink=$(readlink $c)
+	              if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
+	              then
+                    # setup_copy_link $c ${_TRG}/$c
+                    if [ -L $c ]
+                    then
+		                    if [ -e ${_TRG}/$c ]
+		                    then
+
+                            if [ ! -L ${_TRG}/$c -o "$(readlink ${_TRG}/$c)" != "$(readlink $c)" ]
+                            then
+
+                                if [ ! -L ${_TRG}/$c ] # backup
+                                then
+		                                running debug mv ${_TRG}/$c ${_TRG}/_old_dot_filedirs
+                                fi
+
+                                if [ ! -e ${_TRG}/$c ]
+                                then
+		                                running debug cp -af $c ${_TRG}/$c
+                                    # exit -1
+                                elif [ -L ${_TRG}/$c ]
+                                then
+                                    running debug rm -f ${_TRG}/$c
+                                    running debug cp -af $c ${_TRG}/$c
+                                    # exit -1
+                                    # continue
+                                fi
+                                verbose done setting up $c
+
+                            else    # if [ ! -L ${_TRG}/$c -o "$(readlink ${_TRG}/$c)" != "$(readlink $c)" ]
+                                verbose not doing anything $c ${_TRG}/$c
+                            fi      # if [ ! -L ${_TRG}/$c -o "$(readlink ${_TRG}/$c)" != "$(readlink $c)" ]
+
+                        else        # if [ -e ${_TRG}/$c ]
+                            running debug cp -af $c ${_TRG}/$c
+                            verbose done setting up $c
+		                    fi          # if [ -e ${_TRG}/$c ]
+
+                    elif [ -d "$c" ]
+                    then
+
+                        setup_copy_src_trg "$c" "${_TRG}/$c"
+
+                    else
+
+                        info ignoring  src="$c" trg="${_TRG}/$c"
+
+                    fi
+
+                else            # if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
+                    verbose not setting up $c
+	              fi              # if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
+	          done
+	          # mv $SETUP_TMPDIR/Xsetup ${_TRG}/.setup/.config/_home/.setup
+	          cd - > /dev/null 2>&1
+        fi                      # if mkdir -p ${_TRG}/_old_dot_filedirs
+        rmdir ${_TRG}/_old_dot_filedirs
+    else                        # if [ -d "${_SRC}" ]
+        error "${_SRC}" not exists >&2
+    fi                          # if [ -d "${_SRC}" ]
+}
+
 function setup_user_config_setup()
 {
     RCHOME="$HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc/.config/_home/"
@@ -1097,61 +1174,7 @@ function setup_user_config_setup()
     setup_copy_link ${HOME}/.setup/.config/_home/.dirs.d ${HOME}/.dirs.d
     setup_copy_link ${HOME}/.setup/.config/_home/.fa     ${HOME}/.fa
 
-
-    if [ -d "${RCHOME}" ]
-    then
-	      if running debug mkdir -p ${HOME}/_old_dot_filedirs
-        then
-	          # mv ${HOME}/.setup/.config/_home/.setup $SETUP_TMPDIR/Xsetup
-	          cd "${RCHOME}"
-	          for c in .[a-zA-Z^.^..]* *
-	          do
-                debug considering $c
-                clink=$(readlink $c)
-	              if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
-	              then
-                    # setup_copy_link $c ${HOME}/$c
-		                if [ -e ${HOME}/$c ]
-		                then
-                        if [ ! -L ${HOME}/$c -o "$(readlink ${HOME}/$c)" != "$(readlink $c)" ]
-                        then
-
-                            if [ ! -L ${HOME}/$c ] # backup
-                            then
-		                            running debug mv ${HOME}/$c ${HOME}/_old_dot_filedirs
-                            fi
-
-                            if [ ! -e ${HOME}/$c ]
-                            then
-		                            running debug cp -af $c ${HOME}/$c
-                                # exit -1
-                            elif [ -L ${HOME}/$c ]
-                            then
-                                running debug rm -f ${HOME}/$c
-                                running debug cp -af $c ${HOME}/$c
-                                # exit -1
-                                # continue
-                            fi
-                            verbose done setting up $c
-
-                        else    # if [ ! -L ${HOME}/$c -o "$(readlink ${HOME}/$c)" != "$(readlink $c)" ]
-                            verbose not doing anything $c ${HOME}/$c
-                        fi      # if [ ! -L ${HOME}/$c -o "$(readlink ${HOME}/$c)" != "$(readlink $c)" ]
-                    else        # if [ -e ${HOME}/$c ]
-                        running debug cp -af $c ${HOME}/$c
-                        verbose done setting up $c
-		                fi          # if [ -e ${HOME}/$c ]
-                else            # if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
-                    verbose not setting up $c
-	              fi              # if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
-	          done
-	          # mv $SETUP_TMPDIR/Xsetup ${HOME}/.setup/.config/_home/.setup
-	          cd - > /dev/null 2>&1
-        fi                      # if mkdir -p ${HOME}/_old_dot_filedirs
-        rmdir ${HOME}/_old_dot_filedirs
-    else                        # if [ -d "${RCHOME}" ]
-        error "${RCHOME}" not exists >&2
-    fi                          # if [ -d "${RCHOME}" ]
+    setup_copy_src_trg "$RCHOME" "$HOME"
 }
 
 function setup_download_misc()
