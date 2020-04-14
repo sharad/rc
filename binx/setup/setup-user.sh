@@ -1174,7 +1174,11 @@ function setup_user_config_setup()
     setup_copy_link ${HOME}/.setup/.config/_home/.dirs.d ${HOME}/.dirs.d
     setup_copy_link ${HOME}/.setup/.config/_home/.fa     ${HOME}/.fa
 
+    cd ~
+
     setup_copy_src_trg "$RCHOME" "$HOME"
+
+    cd ~
 }
 
 function setup_download_misc()
