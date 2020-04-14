@@ -1145,13 +1145,18 @@ function setup_copy_src_trg ()
 
                     elif [ -d "$c" ]
                     then
-
-                        setup_copy_src_trg "$c" "${_TRG}/$c"
-
+                        if [ -e "${_TRG}/$c" ]
+                        then
+                            if [ ! -d  ${_TRG}/$c -a -L ${_TRG}/$c ]
+                            then
+                                running info mv "${_TRG}/$c" "${_TRG}/${c}-BAK"
+                                running info cp -af $c ${_TRG}/$c
+                            fi
+                        else
+                            running info cp -af $c ${_TRG}/$c
+                        fi
                     else
-
                         info ignoring  src="$c" trg="${_TRG}/$c"
-
                     fi
 
                 else            # if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
@@ -1176,7 +1181,7 @@ function setup_user_config_setup()
 
     cd ~
 
-    setup_copy_src_trg "$RCHOME" "$HOME"
+    running info setup_copy_src_trg "$RCHOME" "$HOME"
 
     cd ~
 }
