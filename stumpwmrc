@@ -3,20 +3,26 @@
 ;; Stumpwm user definitions
 
 (defun stumpwm-set-sbcl-home ()
-  (let* ((sbcl-homes '("/usr/lib/sbcl/"
-                       "/run/current-system/profile/lib/sbcl/"
-                       "~/.guix-profile/lib/sbcl/"))
-         (sbcl-homes (member-if #'probe-file sbcl-homes))
+  (let* ((usr-dirs   '("/usr"
+                       "/run/current-system/profile"
+                       "~/.guix-profile"))
+         (sbcl-homes (mapcar #'(lambda (dir)
+                                 (let ((truepath (merge-pathnames #p"lib/sbcl/"
+                                                                  (truename dir))))
+                                   truepath))
+                             usr-dirs))
+         (sbcl-homes (member-if #'probe-file
+                                sbcl-homes))
          (sbcl-home  (car sbcl-homes)))
     (when sbcl-home
-      (sb-posix:putenv (concat "SBCL_HOME=" sbcl-home))
+      (sb-posix:putenv (concat "SBCL_HOME=" (namestring sbcl-home)))
       (message "found sbcl-home ~a" sbcl-home)
       (sb-posix:getenv "SBCL_HOME"))))
 
 (unless (sb-posix:getenv "SBCL_HOME")
   (stumpwm-set-sbcl-home))
 
-;; (asdf:initialize-source-registry)
+(asdf:initialize-source-registry)
 
 ;;; see at first line.
 ;;  Always remember, the StumpWM dotfile is in lisp

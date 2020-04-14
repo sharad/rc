@@ -48,6 +48,12 @@ function main()
                 do
                     manifest_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/manifest.scm
                     profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"$profile"
+
+                    if [ ! -d "$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR/$profile/profiles.d" ]
+                    then
+                        mkdir -p "$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR/$profile/profiles.d"
+                    fi
+
                     if [ -f "${manifest_path}" ]
                     then
                         running info guix package -p "${profile_path}" -m "${manifest_path}"
