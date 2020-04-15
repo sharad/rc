@@ -8,7 +8,7 @@
 
 (defun stumpwm-set-sbcl-home ()
   (let* ((sbcl-home (car (mapcar #'truename
-                                 (member-if #'probe-file *stumpwm-sbcl-homes*)))))
+                                 (remove-if-not #'probe-file *stumpwm-sbcl-homes*)))))
     (when sbcl-home
       (sb-posix:putenv (concat "SBCL_HOME=" (namestring sbcl-home)))
       (message "found sbcl-home ~a" sbcl-home)
