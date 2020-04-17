@@ -9,6 +9,7 @@
                                                 "ocaml4.07-merlin"
                                                 "ocaml4.07-utop"
                                                 "ocaml4.07-core"
+                                                "ocaml-findlib"
                                                 "opam"
                                                 ;; qemu
                                                 "virt-manager"

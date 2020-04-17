@@ -24,6 +24,7 @@
         "automake"
         "libtool"
         "patchelf"
+        "gcc-toolchain"
         "gdb"
         ;; "fribidi"
         ;; "bicon"
