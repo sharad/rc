@@ -1,8 +1,9 @@
 
-(when (configuration-layer/package-usedp 'sessions-mgr)
-  (defun spacemacs/sessions-mgr-enable ()
+(when (configuration-layer/package-usedp 'elscreen)
+  (defun spacemacs/elscreen-enable ()
     (progn ;; "Keybinding: Elscreen"
       ;;{{ elscreen
+      (turn-off-evil-mode)
       ;; https://github.com/syl20bnr/spacemacs/issues/7372
       (define-key evil-emacs-state-map (kbd "C-z") nil)
       (global-unset-key [C-z])
@@ -21,7 +22,7 @@
       ;; (global-set-key-if-unbind [H-down]  'elscreen-previous)
       ;;}}
       ))
-  (defun spacemacs/sessions-mgr-disable ()
+  (defun spacemacs/elscreen-disable ()
     (deh-section "Keybinding: Elscreen"
       ;;{{ elscreen
       (global-unset-key [C-z])
@@ -36,4 +37,4 @@
       ;;}}
       ))
 
-  (spacemacs/sessions-mgr-enable))
+  (spacemacs/elscreen-enable))
