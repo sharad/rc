@@ -4,12 +4,15 @@
 
 (use-modules (lotus packages cdesktopenv))
 
-(define %lotus-dev-cdesktop-package-names (list "ocaml"
+(define %lotus-dev-cdesktop-package-names (list "ocaml@4.07.1"
+                                                ;; "ocaml"
                                                 ;; "ocaml-merlin"
                                                 "ocaml4.07-merlin"
                                                 "ocaml4.07-utop"
                                                 "ocaml4.07-core"
-                                                "ocaml-findlib"
+                                                ;; "ocaml-findlib"
+                                                "ocaml4.07-findlib"
+                                                "ocaml4.07-ppxlib"
                                                 "opam"
                                                 ;; qemu
                                                 "virt-manager"

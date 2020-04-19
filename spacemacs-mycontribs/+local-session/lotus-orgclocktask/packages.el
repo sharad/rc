@@ -230,11 +230,10 @@ Each entry is either:
 (defun lotus-orgclocktask/init-activity ()
   (use-package activity
     :defer t
+    :init
+    (activity-activate-all)
     :config
-    (progn))
-
-
-  (activity-activate-all))
+    (progn)))
 
 (defun lotus-orgclocktask/init-org-clock-resolve-advanced ()
   (use-package org-clock-resolve-advanced

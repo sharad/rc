@@ -75,14 +75,18 @@ Each entry is either:
   ;; (elscreen-set-mode-to-nickname-alist MODE-TO-NICKNAME-ALIST-SYMBOL)
   ;; thanks http://www.emacswiki.org/emacs-pt/EmacsLispScreen ElScreen-server
   (use-package elscreen-server
-      :defer t
-      :config
-      (progn
-        )))
+    :defer t
+    :config
+    (progn
+      )))
 
 (defun lotus-screen/post-init-elscreen ()
   (use-package elscreen
     :defer t
+    :init
+    (progn
+      (turn-off-evil-mode)
+      (elscreen-start))
     :config
     (progn
       (defun elscreen-move-right ()

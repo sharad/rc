@@ -38,7 +38,7 @@
   '(lotus-spacemacs-utils
     startup-hooks
     sessions-unified
-    elscreen
+    ;; elscreen
     lotus-wrapper)
 
   "The list of Lisp packages required by the basic-startup layer.
@@ -230,28 +230,6 @@ Each entry is either:
                               '(lambda ()
                                  (message-notify "Emacs" "Loaded Completely :)")
                                  (message "\n\n\n\n")))))))))))))
-
-(defun lotus-basic-startup/init-elscreen ()
-  (use-package elscreen
-    :defer t
-    :init
-    (progn
-      (turn-off-evil-mode)
-      (elscreen-start))
-    :config
-    (progn
-      (defun elscreen-move-right ()
-        (interactive)
-        (elscreen-next)
-        (elscreen-swap)
-        (elscreen-notify-screen-modification))
-
-      (defun elscreen-move-left ()
-        (interactive)
-        (elscreen-previous)
-        (elscreen-swap)
-        ;; (elscreen-next)
-        (elscreen-notify-screen-modification)))))
 
 (defun lotus-basic-startup/init-lotus-wrapper ()
   (progn

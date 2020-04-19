@@ -32,6 +32,9 @@
                                        "cl-fad"
                                        "cl-slime-swank"))
 
+;; "notification-daemon" "trezord-udev-rules" "trezord"
+
+
 (define %lotus-other-packages
   (list "vim"
 
