@@ -28,5 +28,4 @@
       (global-unset-key [H-right])
       (global-unset-key [H-left])
       (global-unset-key [M-H-right])))
-
   (spacemacs/elscreen-enable))

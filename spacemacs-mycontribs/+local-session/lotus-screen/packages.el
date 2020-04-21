@@ -80,7 +80,7 @@ Each entry is either:
     (progn
       )))
 
-(defun lotus-screen/post-init-elscreen ()
+(defun lotus-screen/init-elscreen ()
   (use-package elscreen
     :defer t
     :init
@@ -99,7 +99,6 @@ Each entry is either:
         (interactive)
         (elscreen-previous)
         (elscreen-swap)
-        ;; (elscreen-next)
         (elscreen-notify-screen-modification)))))
 
 ;;; packages.el ends here

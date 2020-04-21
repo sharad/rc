@@ -302,19 +302,19 @@
 
 (defun lotus-orgclocktask/init-org-clock-daysummary-config ()
   (progn
-        (use-package occ
-          :defer t
-          :config
-          (progn
-            (defun lotus-day-summary-add-occ-files ()
-              (dolist (f (occ-files))
-                (org-clock-monitor-files-add-files f))
-              (org-clock-work-day-mode-line-add t))
+    (use-package occ
+      :defer t
+      :config
+      (progn
+        (defun lotus-day-summary-add-occ-files ()
+          (dolist (f (occ-files))
+            (org-clock-monitor-files-add-files f))
+          (org-clock-work-day-mode-line-add t))
 
-            (lotus-day-summary-add-occ-files)
+        (lotus-day-summary-add-occ-files)
 
-            (occ-run-with-global-tsk-collection
-             #'lotus-day-summary-add-occ-files)))
+        (occ-run-with-global-tsk-collection
+         #'lotus-day-summary-add-occ-files)
 
         (use-package publishing
           :defer t
@@ -360,23 +360,27 @@
                                    (when (file-exists-p unnamed-file)
                                      (org-clock-monitor-files-add-files unnamed-file))
                                    (org-clock-work-day-mode-line-add t))
-                               (message "[2]org monitor dir %s not exists." monitor-dir))))))))))))))
+                               (message "[2]org monitor dir %s not exists." monitor-dir))))))))))))))))
 
 (defun lotus-orgclocktask/init-occ-init ()
   (progn
       (progn
         (defun lotus-load-task-manager-delay (delay)
+          (message "lotus-load-task-manager-delay: running lotus-load-task-manager-delay after %d" delay)
           (run-at-time-or-now delay
                               #'(lambda ()
                                   (task-party-base-dir))))
 
         (defun lotus-load-task-manager-delay-time ()
+          (message "lotus-load-task-manager-delay-time: running lotus-load-task-manager-delay after %d" delay)
           (lotus-load-task-manager-delay 100)))
 
       (progn
         (defun lotus-config-start-occ-mode-after-delay (delay)
+          (message "lotus-config-start-occ-mode-after-delay: running occ-mode after %d" delay)
           (run-at-time-or-now delay
                               #'(lambda ()
+                                  (message "running occ-mode")
                                   (if (functionp 'occ-mode)
                                       (occ-mode t)
                                     (warn "function occ-mode not available."))
@@ -420,43 +424,41 @@
 
 (defun lotus-orgclocktask/init-occ-config ()
   (progn
+    (progn
+      (use-package task-manager
+        :defer t
+        :config
         (progn
-          (use-package task-manager
-            :defer t
-            :config
-            (progn
-              (progn
-                (let* ((party-base-dir (task-party-base-dir))
-                       (start-file (expand-file-name "start.org" party-base-dir)))
-                  (if (and
-                       (file-directory-p party-base-dir)
+          (progn
+            (let* ((party-base-dir (task-party-base-dir))
+                   (start-file (expand-file-name "start.org" party-base-dir)))
+              (if (and (file-directory-p party-base-dir)
                        (file-exists-p start-file))
-                      (progn
-                        (if (functionp 'occ-set-global-tsk-collection-spec)
-                            (occ-set-global-tsk-collection-spec (list :tree start-file))
-                          (warn "function occ-setup-task-tree-task-root-org-file not available.")))
-                    (message "org party dir %s or file %s not exists."
-                             party-base-dir
-                             start-file))))
+                  (progn
+                    (if (functionp 'occ-set-global-tsk-collection-spec)
+                        (occ-set-global-tsk-collection-spec (list :tree start-file))
+                      (warn "function occ-setup-task-tree-task-root-org-file not available.")))
+                (message "org party dir %s or file %s not exists."
+                         party-base-dir
+                         start-file))))
 
-              (progn
-                (add-to-task-current-party-change-hook
-                 #'(lambda ()
-                     (unless task-current-party
-                       (task-current-party "meru"))
-                     (when (task-current-party)
-                       (let* ((party-base-dir (task-party-base-dir))
-                              (start-file (expand-file-name "start.org" party-base-dir)))
-                         (if (and
-                              (file-directory-p party-base-dir)
+          (progn
+            (add-to-task-current-party-change-hook
+             #'(lambda ()
+                 (unless task-current-party
+                   (task-current-party "meru"))
+                 (when (task-current-party)
+                   (let* ((party-base-dir (task-party-base-dir))
+                          (start-file (expand-file-name "start.org" party-base-dir)))
+                     (if (and (file-directory-p party-base-dir)
                               (file-exists-p start-file))
-                             (progn
-                               (if (functionp 'occ-set-global-tsk-collection-spec)
-                                   (occ-set-global-tsk-collection-spec (list :tree start-file))
-                                 (warn "function occ-setup-task-tree-task-root-org-file not available.")))
-                           (message "org party dir %s or file %s not exists."
-                                    party-base-dir
-                                    start-file))))))))))
+                         (progn
+                           (if (functionp 'occ-set-global-tsk-collection-spec)
+                               (occ-set-global-tsk-collection-spec (list :tree start-file))
+                             (warn "function occ-setup-task-tree-task-root-org-file not available.")))
+                       (message "org party dir %s or file %s not exists."
+                                party-base-dir
+                                start-file))))))))
 
         (progn)
           ;; (setq occ-task-tree-task-root-org-file
@@ -464,7 +466,7 @@
 
 
         (progn
-          (spaceline-toggle-org-clock-on))))
+          (spaceline-toggle-org-clock-on))))))
 
 (defun lotus-orgclocktask/init-org-clock-resolve-advanced-init ()
   (use-package startup-hooks

@@ -260,6 +260,7 @@
     jabber
     ivy
     games
+    geeknote
     selectric
     chinese
     japanese

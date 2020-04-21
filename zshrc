@@ -109,12 +109,9 @@ fi
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
-if [ `uname -s` != "SunOS" ]
+if which shopt > /dev/null 2>&1
 then
-    if which shopt > /dev/null 2>&1
-    then
-	      shopt -s checkwinsize
-    fi
+	  shopt -s checkwinsize
 fi
 
 # {{{ *zModules*
@@ -123,15 +120,11 @@ fi
 # }}}
 
 # {{{ *Autoload*
-if [ `uname -s` != "SunOS" ]
-then
-    autoload -U colors && colors
-    autoload -Uz compinit && compinit
-    autoload -U select-word-style && select-word-style bash
-    autoload -U tetris	# game
-    autoload -U zed	# game
-fi
-
+autoload -U colors && colors
+autoload -Uz compinit && compinit
+autoload -U select-word-style && select-word-style bash
+autoload -U tetris	# game
+autoload -U zed	# game
 # }}}
 
 # {{{ *Setopt*
@@ -139,92 +132,92 @@ fi
 #  is-at-least 3.1.6-15 && setopt NO_GLOBAL_RCS
 #  is-at-least 3.1.0 && setopt HIST_REDUCE_BLANKS
 #  is-at-least 2.6-17 || print "You can't use is-at-least here."
-        setopt DVORAK           # Dvorak
-        setopt BANG_HIST # enable '!' history expansion
-        setopt APPEND_HISTORY # when exiting, append history entries
-                              # to $HISTFILE, rather than replacing
-                              # the old file; this is the default
-        setopt EXTENDED_HISTORY # save additional info to $HISTFILE
-        setopt HIST_IGNORE_SPACE # if the commandline starts with a
-                                 # whitespace, don't add it to history
-        setopt INC_APPEND_HISTORY # append every single command to
-                                  # $HISTFILE immediately after hitting ENTER.
-        setopt SHARE_HISTORY # always import new commands from $HISTFILE
-                             # (see 'inc_append_history' above)
-        setopt AUTO_PUSHD        # add to pushd stack
-        setopt PUSHD_IGNOREDUPS  # ignore dup entries
-        setopt BRACE_CCL
+setopt DVORAK           # Dvorak
+setopt BANG_HIST # enable '!' history expansion
+setopt APPEND_HISTORY # when exiting, append history entries
+# to $HISTFILE, rather than replacing
+# the old file; this is the default
+setopt EXTENDED_HISTORY # save additional info to $HISTFILE
+setopt HIST_IGNORE_SPACE # if the commandline starts with a
+# whitespace, don't add it to history
+setopt INC_APPEND_HISTORY # append every single command to
+# $HISTFILE immediately after hitting ENTER.
+setopt SHARE_HISTORY # always import new commands from $HISTFILE
+# (see 'inc_append_history' above)
+setopt AUTO_PUSHD        # add to pushd stack
+setopt PUSHD_IGNOREDUPS  # ignore dup entries
+setopt BRACE_CCL
 
-        setopt COMPLETE_IN_WORD # If this is set, completion always
-        # takes place at the cursor position in the word.
-
-
-        setopt COMPLETE_ALIASES # This is quite useful to avoid having
-        # to define extra completions for all your aliases.
-
-        setopt AUTO_REMOVE_SLASH # This option is turned on by
-        # default. If you complete a directory name and a slash is added
-        # --- which it usually is, both to tell you that you have
-        # completed a directory and to allow you to complete files
-        # inside it without adding a `/' by hand --- and the next thing
-        # you type is not something which would insert or complete part
-        # of a file in that directory, then the slash is removed.
-
-        setopt AUTO_PARAM_SLASH # If AUTO_PARAM_SLASH is set, then any
-        # parameter expression whose value is the name of a directory
-        # will have a slash appended when completed
-
-        setopt AUTO_PARAM_KEYS # You will find that you get the
-        # complete word `${PARAM}', with the closing brace and
-        # (assuming there are no other matching parameters) a space
-        # afterwards. However, often after you have completed a
-        # parameter in this fashion you want to type something
-        # immediately after it, such as a subscript. With
-        # AUTO_PARAM_KEYS, if you type something at this point which
-        # seems likely to have to go after the parameter name, it will
-        # immediately be put there without you having to delete the
-        # intervening characters
-
-        setopt NO_ALWAYS_TO_END # If this is set, the cursor is always
-        # moved to the end of the word after it is completed
-
-        setopt LIST_TYPES # This is like the -F option to ls; files
-        # which appear in the completion listing have a trailing `/' for
-        # a directory, `*' for a regular file executable by the current
-        # process, `@' for a link, `|' for a named pipe, `%' for a
-        # character device and `#' for a block device. This option is on
-        # by default.
-
-        setopt LIST_PACKED # With LIST_PACKED, completion lists are
-        # made as compact as possible by varying the widths of the
-        # columns, instead of formatting them into a completely regular
-        # grid.
-
-        setopt LIST_ROWS_FIRST # With LIST_ROWS_FIRST, the listing
-        # order is changed so that adjacent items appear along rows
-        # instead of down columns, rather like ls's -x option.
+setopt COMPLETE_IN_WORD # If this is set, completion always
+# takes place at the cursor position in the word.
 
 
-        setopt NO_BEEP          # set, that annoying beep goes away,
+setopt COMPLETE_ALIASES # This is quite useful to avoid having
+# to define extra completions for all your aliases.
 
-        setopt NO_LIST_BEEP #, beeping is only turned off for ambiguous completions,
+setopt AUTO_REMOVE_SLASH # This option is turned on by
+# default. If you complete a directory name and a slash is added
+# --- which it usually is, both to tell you that you have
+# completed a directory and to allow you to complete files
+# inside it without adding a `/' by hand --- and the next thing
+# you type is not something which would insert or complete part
+# of a file in that directory, then the slash is removed.
 
-        # setopt AUTO_LIST # set, when the completion is ambiguous you
-        # get a list without having to type ^D,
+setopt AUTO_PARAM_SLASH # If AUTO_PARAM_SLASH is set, then any
+# parameter expression whose value is the name of a directory
+# will have a slash appended when completed
 
-        setopt BASH_AUTO_LIST # set, the list only happens the second
-        # time you hit tab on an ambiguous completion,
+setopt AUTO_PARAM_KEYS # You will find that you get the
+# complete word `${PARAM}', with the closing brace and
+# (assuming there are no other matching parameters) a space
+# afterwards. However, often after you have completed a
+# parameter in this fashion you want to type something
+# immediately after it, such as a subscript. With
+# AUTO_PARAM_KEYS, if you type something at this point which
+# seems likely to have to go after the parameter name, it will
+# immediately be put there without you having to delete the
+# intervening characters
 
-        setopt LIST_AMBIGUOUS #, this is modified so that nothing is
-        # listed if there is an unambiguous prefix or suffix to be
-        # inserted --- this can be combined with BASH_AUTO_LIST, so that
-        # where both are applicable you need to hit tab three times for
-        # a listing,
+setopt NO_ALWAYS_TO_END # If this is set, the cursor is always
+# moved to the end of the word after it is completed
 
-        # setopt REC_EXACT # , if the string on the command line exactly
-        # matches one of the possible completions, it is accepted, even
-        # if there is another completion (i.e. that string with
-        # something else added) that also matches,
+setopt LIST_TYPES # This is like the -F option to ls; files
+# which appear in the completion listing have a trailing `/' for
+# a directory, `*' for a regular file executable by the current
+# process, `@' for a link, `|' for a named pipe, `%' for a
+# character device and `#' for a block device. This option is on
+# by default.
+
+setopt LIST_PACKED # With LIST_PACKED, completion lists are
+# made as compact as possible by varying the widths of the
+# columns, instead of formatting them into a completely regular
+# grid.
+
+setopt LIST_ROWS_FIRST # With LIST_ROWS_FIRST, the listing
+# order is changed so that adjacent items appear along rows
+# instead of down columns, rather like ls's -x option.
+
+
+setopt NO_BEEP          # set, that annoying beep goes away,
+
+setopt NO_LIST_BEEP #, beeping is only turned off for ambiguous completions,
+
+# setopt AUTO_LIST # set, when the completion is ambiguous you
+# get a list without having to type ^D,
+
+setopt BASH_AUTO_LIST # set, the list only happens the second
+# time you hit tab on an ambiguous completion,
+
+setopt LIST_AMBIGUOUS #, this is modified so that nothing is
+# listed if there is an unambiguous prefix or suffix to be
+# inserted --- this can be combined with BASH_AUTO_LIST, so that
+# where both are applicable you need to hit tab three times for
+# a listing,
+
+# setopt REC_EXACT # , if the string on the command line exactly
+# matches one of the possible completions, it is accepted, even
+# if there is another completion (i.e. that string with
+# something else added) that also matches,
 
 
 # # Please note
@@ -518,7 +511,11 @@ fi
 # }}}
 
 # {{{
-test -r $HOME/.opam/opam-init/init.zsh && . $HOME/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+if [ ! -r $HOME/.guix-profile/etc/profile ]
+then
+    test -r $HOME/.opam/opam-init/init.zsh && . $HOME/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+fi
+
 # }}}
 
 
