@@ -213,6 +213,11 @@ ssh_agent_use_run_keychain
 IN_API_KEY=4b4f1599407c4f789e8b79e02762934a
 export IN_API_KEY
 
+##
+# [ -r $HOME/.opam/opam-init/init.sh ] && . $HOME/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
+##
+
+
 __comp=rc
 __subcomp=env
 
