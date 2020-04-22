@@ -38,7 +38,9 @@
   '(
     (elisp-mode :location local)
     (ispell    :locaion local)
-    geiser)
+    geiser
+    tuareg
+    merlin)
 
 
   "The list of Lisp packages required by the lotus-lang layer.
@@ -97,5 +99,33 @@ Each entry is either:
       (progn
         ;; check (describe-variable 'geiser-active-implementations)
         (setq geiser-default-implementation 'guile)))))
+
+(defun lotus-lang/post-init-tuareg ()
+  (use-package tuareg
+    :defer t
+    :config
+    (progn
+      (progn
+        (setq tuareg-indent-align-with-first-arg t)
+        (setq tuareg-match-patterns-aligned t))
+      (progn
+        (add-hook 'tuareg-mode-hook
+                  #'(lambda()
+                      (when (functionp 'prettify-symbols-mode)
+                        (prettify-symbols-mode))
+                      (setq mode-name "🐫")))))))
+
+(defun lotus-lang/post-init-merlin ()
+  (use-package merlin
+    :defer t
+    :config
+    (progn
+      (progn
+        (defun merlin-command ()
+          (executable-find "ocamlmerlin")))
+      (progn))))
+
+
+
 
 ;;; packages.el ends here

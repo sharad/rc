@@ -285,7 +285,8 @@
 
 
 (defun lotus-dist-layers-group-dirs (&optional layers-group-top-dir)
-  (let ((layers-group-top-dir (or layers-group-top-dir (expand-file-name "layers" spacemacs-start-directory))))
+  (let ((layers-group-top-dir (or layers-group-top-dir
+                                  (expand-file-name "layers" spacemacs-start-directory))))
     (directory-files layers-group-top-dir t "^+.*")))
 
 (defun lotus-dist-layers-select (layer-dir &optional match)

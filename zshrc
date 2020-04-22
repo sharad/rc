@@ -511,11 +511,7 @@ fi
 # }}}
 
 # {{{
-if [ ! -r $HOME/.guix-profile/etc/profile ]
-then
-    test -r $HOME/.opam/opam-init/init.zsh && . $HOME/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
-fi
-
+[ -r $HOME/.opam/opam-init/init.zsh ] && source $HOME/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
 # }}}
 
 

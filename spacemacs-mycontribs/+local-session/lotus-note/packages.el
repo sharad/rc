@@ -167,16 +167,19 @@ Each entry is either:
     :config
     (progn
       ))
-
   (use-package ein-ac
     :defer t
     :commands (ein:ac-setup ein:ac-setup-maybe)
     :config
     (progn))
-
   (use-package ein-notebook
     :defer t
     :commands (ein:notebook-mode)
+    :config
+    (progn))
+  (use-package poly-ein
+    :defer t
+    :commands (poly-ein--narrow-to-inner)
     :config
     (progn)))
 
