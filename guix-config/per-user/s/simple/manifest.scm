@@ -68,6 +68,10 @@
         ;; https://github.com/stumpwm/stumpwm/wiki/Tips-And-Tricks#mounting-storage-devices
         ;; "udisks"
         ;; "udisks-glue"
+        "udevil"
+
+        ;; "blueman"
+        ;; "visidata"
 
         "baobab"
         "ncdu"
@@ -197,6 +201,7 @@
         "time"
 
         "xclip"
+        "xsel"
         "xmodmap"
         "xinput"
         ;; at
@@ -346,7 +351,8 @@
         "font-bitstream-vera"
         "font-abattis-cantarell"
         "font-lato"
-        "font-gnu-freefont-ttf"
+        ;; "font-gnu-freefont-ttf"
+        "font-gnu-freefont"
         "font-liberation"
         "font-linuxlibertine"
         "font-terminus"

@@ -4,7 +4,7 @@
 
 (use-modules (lotus packages cdesktopenv))
 
-(define %lotus-dev-cdesktop-package-names
+(define %lotus-dev-package-names
   (list "glibc"
         "glibc-locales"
         "binutils"
@@ -25,15 +25,16 @@
         "libtool"
         "patchelf"
         "gcc-toolchain"
-        "gdb"
+        "gdb"))
+        ;; "linux-libre-headers@4.19.56"
         ;; "fribidi"
         ;; "bicon"
-        ))
+        
 
-(define %lotus-dev-cdesktop-packages
+(define %lotus-dev-packages
   (append
    ;; (list '(gcc "lib"))
    (map specification->package
-        %lotus-dev-cdesktop-package-names)))
+        %lotus-dev-package-names)))
 
-(packages->manifest %lotus-dev-cdesktop-packages)
+(packages->manifest %lotus-dev-packages)
