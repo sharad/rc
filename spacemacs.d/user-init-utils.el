@@ -265,6 +265,7 @@
     chinese
     japanese
     keyboard-layout
+    nlinum
     osx
     perforce
     rebox ;; --- startup errors , (error "Style 371 defined more than once") signal(error ("Style 371 defined more than once"))

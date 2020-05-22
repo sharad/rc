@@ -3,7 +3,7 @@
 (use-package-modules base gcc llvm base python version-control less ccache pkg-config glib gnome cmake messaging autotools flex bison compression m4 gawk xorg onc-rpc gsasl kerberos image commencement fontutils shells)
 
 (define %lotus-ocaml-heavy-package-names (list "ocaml"
-                                               ;; "ocaml-merlin"
+					       "ocamlbuild"
                                                "ocaml-findlib"
                                                "opam"
                                                "emacs-tuareg"))

@@ -36,7 +36,7 @@ SSH_KEY_DUMP=$1
 logicaldirs=(config deletable longterm preserved shortterm maildata)
 
 dataclassname=data
-homeclassname=home
+infoclassname=info
 
 if [ -r "${HOME}/.ssh/authorized_keys" ]
 then
@@ -173,7 +173,7 @@ function main()
 
     if [ ! -d "/run/current-system/profile" ]
     then
-       running info setup_sourcecode_pro_font
+        running info setup_sourcecode_pro_font
     fi
 
     cd "${HOME}/"
@@ -1600,18 +1600,23 @@ function setup_deps_control_class_all_positions_dirs()
         error setup_deps_control_class_all_positions_dirs: Not correct number of arguments.
     fi
 }
+# 
 
 function setup_deps_control_data_usrdata_dirs()
 {
     storage_path="${1-local}"
 
     running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/usrdatas" "usrdata"
+
+    running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "usrdata" Desktop Documents Downloads Library Music Pictures Public public_html Scratch Templates Videos #  tmp
 }
 function setup_deps_control_data_sysdata_dirs()
 {
     storage_path="${1-local}"
 
     running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/sysdatas" "sysdata"
+
+    running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "sysdata" config deletable longterm preserved shortterm maildata
 }
 function setup_deps_control_data_scratches_dirs()
 {
@@ -1631,84 +1636,93 @@ function setup_deps_control_data_dirs()
 
     running debug setup_deps_control_data_usrdata_dirs   "$storage_path"
     running debug setup_deps_control_data_sysdata_dirs   "$storage_path"
+
     running debug setup_deps_control_data_scratches_dirs "$storage_path"
     running debug setup_deps_control_data_main_dirs      "$storage_path"
 }
-function setup_deps_control_home_Downloads_dirs()
+# 
+
+# TODO: present classes are "data" "home" change them to "data" "info" etc
+function setup_deps_control_info_meta_dirs()
 {
     local storage_path="${1-local}"
 
-    # running debug setup_deps_model_volumes_dirs "${storage_path}"
-    # running debug setup_deps_control_class_dir "$storage_path" ${homeclassname}/Downloads Downloads
-    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${homeclassname}/Downloads" "Downloads"
+    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${infoclassname}/meta" "meta"
 }
-function setup_deps_control_home_dirs()
+function setup_deps_control_info_dirs()
 {
     local storage_path="${1-local}"
 
-    running debug setup_deps_control_home_Downloads_dirs "$storage_path"
+    running debug setup_deps_control_info_meta_dirs "$storage_path"
 }
-
-
-function setup_deps_control_data_usrdata_dir()
-{
-    local storage_path="${1-local}"
-    local position=${1-2}
-
-    running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/usrdatas" "usrdata" "$position"
-}
-function setup_deps_control_data_sysdata_dir()
-{
-    local storage_path="${1-local}"
-    local position=${1-2}
-
-    running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/sysdatas" "sysdata" "$position"
-}
-function setup_deps_control_data_scratches_dir()
-{
-    local storage_path="${1-local}"
-    local position=${1-2}
-
-    running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/scratches" "scratch" "$position"
-}
-function setup_deps_control_data_main_dir()
-{
-    local storage_path="${1-local}"
-    local position=${1-2}
-
-    running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/main" "main" "$position"
-}
-function setup_deps_control_data_dir()
-{
-    local storage_path="${1-local}"
-    local position=${1-2}
-
-    running debug setup_deps_control_data_usrdata_dir   "$storage_path" "$position"
-    running debug setup_deps_control_data_sysdata_dir   "$storage_path" "$position"
-    running debug setup_deps_control_data_scratches_dir "$storage_path" "$position"
-    running debug setup_deps_control_data_main_dir      "$storage_path" "$position"
-}
-function setup_deps_control_home_Downloads_dir()
-{
-    local storage_path="${1-local}"
-    local position=${1-2}
-
-    # running debug setup_deps_model_volumes_dir "${storage_path}"
-    # running debug setup_deps_control_class_dir "$storage_path" ${homeclassname}/Downloads Downloads
-    running debug setup_deps_control_class_dir "$storage_path" "${homeclassname}/Downloads" "Downloads" "$position"
-}
-function setup_deps_control_home_dir()
-{
-    local storage_path="${1-local}"
-    local position=${1-2}
-
-    setup_deps_control_home_Downloads_dir "$storage_path" "$position"
-}
-
-
-
 
 ###}}}
+
+if false                        # not required
+then
+    ###{{{
+    function setup_deps_control_data_usrdata_dir()
+    {
+        local storage_path="${1-local}"
+        local position=${1-2}
+
+        running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/usrdatas" "usrdata" "$position"
+
+        running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "userdata" Desktop  Documents Downloads Library Music Pictures Public public_html Scratches Templates Videos #  tmp
+    }
+    function setup_deps_control_data_sysdata_dir()
+    {
+        local storage_path="${1-local}"
+        local position=${1-2}
+
+        running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/sysdatas" "sysdata" "$position"
+
+        running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "sysdata" config deletable longterm preserved shortterm maildata
+    }
+    function setup_deps_control_data_scratches_dir()
+    {
+        local storage_path="${1-local}"
+        local position=${1-2}
+
+        running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/scratches" "scratch" "$position"
+    }
+    function setup_deps_control_data_main_dir()
+    {
+        local storage_path="${1-local}"
+        local position=${1-2}
+
+        running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/main" "main" "$position"
+    }
+    function setup_deps_control_data_dir()
+    {
+        local storage_path="${1-local}"
+        local position=${1-2}
+
+        running debug setup_deps_control_data_usrdata_dir   "$storage_path" "$position"
+        running debug setup_deps_control_data_sysdata_dir   "$storage_path" "$position"
+        running debug setup_deps_control_data_scratches_dir "$storage_path" "$position"
+        running debug setup_deps_control_data_main_dir      "$storage_path" "$position"
+    }
+    # 
+
+    function setup_deps_control_info_meta_dir()
+    {
+        local storage_path="${1-local}"
+        local position=${1-2}
+
+        # running debug setup_deps_model_volumes_dir "${storage_path}"
+        # running debug setup_deps_control_class_dir "$storage_path" ${infoclassname}/meta meta
+        running debug setup_deps_control_class_dir "$storage_path" "${infoclassname}/meta" "meta" "$position"
+    }
+    function setup_deps_control_info_dir()
+    {
+        local storage_path="${1-local}"
+        local position=${1-2}
+
+        setup_deps_control_info_meta_dir "$storage_path" "$position"
+    }
+    ###}}}
+fi
 
 # deps/model
 function setup_deps_model_storage_volumes_dir()
@@ -1813,40 +1827,54 @@ function setup_deps_model_dir()
 ## Continue from here.
 
 # deps/control
-function setup_deps_control_volumes_dirs()
+function setup_deps_control_volumes_internal_dirs()
 {
     # TODO?
     local storage_path="${1-local}"
-    local position=${2-2}
+    local classname="${2-data}"
+    local containername="${3-sysdata}"   # ${logicaldirs[*]}
 
-    local sysdataname=sysdata   # ${logicaldirs[*]}
+    shift 3
+
+    local internal_dirs=("$@")
+
+    position=3
+
+
+    # local position=${4-2} # not required
+
     local viewdirname=view.d
-    local sysdatascontinername="${dataclassname}/${sysdataname}s"
+    local class_container="${classname}/${containername}s"
 
-    local classcontroldir_rel_path=$(setup_make_path_by_position "${dataclassname}" "${storage_path}" "${sysdataname}s.d" "$position" )
-    local sysdatasdirname="${classcontroldir_rel_path}"
+    local classcontroldir_rel_path=$(setup_make_path_by_position "${classname}" "${storage_path}" "${containername}s.d" "$position" )
+    local classcontroldir_rel_path_dirname="${classcontroldir_rel_path}"
 
     local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     local machinedir="${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d"
     local hostdir="${machinedir}/$HOST"
     local volumedir="${hostdir}/volumes.d"
 
-    running debug setup_deps_control_class_dir "$storage_path" "$sysdatascontinername" "$sysdataname" "$position"
+    if false                    # not required
+    then
+        running debug setup_deps_control_class_dir "$storage_path" "$class_container" "$containername" "$position"
+    fi
 
-    for cdir in "${logicaldirs[@]}" # config deletable longterm preserved shortterm maildata
+    # for cdir in "${logicaldirs[@]}" # config deletable longterm preserved shortterm maildata
+    for cdir in "${internal_dirs[@]}" # config deletable longterm preserved shortterm maildata
     do
         debug "${volumedir}/${viewdirname}/$cdir"
+        debug "${volumedir}/control.d/${classcontroldir_rel_path_dirname}"
 
         if [ ! -L "${volumedir}/${viewdirname}/$cdir" -o ! -d "${volumedir}/${viewdirname}/$cdir" ]
         then
             # TODO? STATS
-            if ls "${volumedir}/control.d/${sysdatasdirname}"/* > /dev/null 2>&1
+            if ls "${volumedir}/control.d/${classcontroldir_rel_path_dirname}"/* > /dev/null 2>&1
             then
-                for sysdatadir in "${volumedir}/control.d/${sysdatasdirname}"/*
+                for internaldir in "${volumedir}/control.d/${classcontroldir_rel_path_dirname}"/*
                 do
                     # TODO? -sharad
-                    volsysdatadirbase="$(basename ${sysdatadir})"
-                    running debug mkdir -p "${volumedir}/control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir"
+                    volinternaldirbase="$(basename ${internaldir})"
+                    running debug mkdir -p "${volumedir}/control.d/${classcontroldir_rel_path_dirname}/${volinternaldirbase}/$cdir"
                 done
             fi
         fi
@@ -1859,12 +1887,6 @@ function setup_deps_control_dir()
 
     running debug setup_deps_control_data_dirs "$storage_path"
     running debug setup_deps_control_home_dirs "$storage_path"
-
-    for pos in 1 2 3
-    do
-        running debug setup_deps_control_volumes_dirs "$storage_path" "$pos"
-    done
-
 }
 
 # deps/view
@@ -1878,8 +1900,6 @@ function setup_deps_view_volumes_dirs()
 
     # TODO?
     # ls ${HOME}/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/control.d/
-
-    # logicaldirs=(config deletable longterm preserved shortterm maildata)
 
     # use namei to track
     local BASE_DIR=~
@@ -1942,15 +1962,6 @@ function setup_deps_view_volumes_dirs()
             else
                 error ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/model.d not exists.
             fi                  # if [ -d ${volumedir}/model.d ]
-
-
-            # running debug setup_deps_control_data_sysdata_dirs
-            # running debug setup_deps_control_class_dir "$storage_path" $sysdatascontinername $sysdataname
-            running debug setup_deps_control_volumes_dirs "$storage_path" $position
-            # TODO?
-            running debug setup_deps_control_class_dir "$storage_path" "$sysdatascontinername" "$sysdataname" "$position"
-
-
 
             # touch ${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/.gitignore
             # echo running debug setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} ${volumedir}/${viewdirname}/.gitignore
@@ -2063,34 +2074,42 @@ function setup_org_resource_dirs()
     # org/resource.d/control.d/class/data/storage/local/container/scratches.d/Public/
 	  # org/resource.d/control.d/class/data/storage/local/container/scratches.d/local
 
-    running debug setup_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" \
-                                                                                         "osetup/dirs.d/org/resource.d"
+    running debug setup_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user                        "localdirs/org/resource.d" \
+                                                                                                                            "osetup/dirs.d/org/resource.d"
     running debug setup_add_to_version_control_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/resource.d" \
-                                                                                                                "osetup" \
-                                                                                                                "dirs.d/org/resource.d"
+                                                                                                                            "osetup" \
+                                                                                                                            "dirs.d/org/resource.d"
 
     # TODO: add support for git add
     running debug setup_recursive_links_container_dirs                        "${LOCALDIRS_DIR}/org" \
-                                                                        "deps.d/control.d/machine.d/default/volumes.d/model.d" \
-                                                                        "resource.d/model.d"
+                                                                              "deps.d/control.d/machine.d/default/volumes.d/model.d" \
+                                                                              "resource.d/model.d"
 
     running debug setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR}" \
-                                                                        "org/resource.d/model.d"
+                                                                              "org/resource.d/model.d"
 
     running debug setup_recursive_links_container_dirs                        "${LOCALDIRS_DIR}/org" \
-                                                                        "deps.d/control.d/machine.d/default/volumes.d/control.d" \
-                                                                        "resource.d/control.d"
+                                                                              "deps.d/control.d/machine.d/default/volumes.d/control.d" \
+                                                                              "resource.d/control.d"
 
     running debug setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR}" \
-                                                                        "org/resource.d/control.d"
+                                                                              "org/resource.d/control.d"
 
     running debug setup_make_relative_link                                    "${LOCALDIRS_DIR}/org" \
-                                                                        "deps.d/control.d/machine.d/default/volumes.d/view.d" \
-                                                                        "resource.d/view.d"
+                                                                              "deps.d/control.d/machine.d/default/volumes.d/view.d" \
+                                                                              "resource.d/view.d"
 
     running debug setup_add_to_version_control                                "${LOCALDIRS_DIR}" \
-                                                                        "org/resource.d/view.d"
+                                                                              "org/resource.d/view.d"
 }
+
+
+
+
+
+
+
+
 
 # home/portable
 function setup_org_home_portable_local_dirs()
@@ -2100,21 +2119,23 @@ function setup_org_home_portable_local_dirs()
     local relhomeprotabledir="org/home.d/portable.d"
 
     running debug setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" \
-                                      "${relhomeprotabledir}" \
-                                      "local.d"
+                                            "${relhomeprotabledir}" \
+                                            "local.d"
+
+    # TODO: NEXT need work here -sharad
 
     # for folder in Desktop Documents Downloads Library Music Pictures Scratches Templates tmp Videos
     # for folder in Desktop Documents Downloads Library Music Pictures Templates tmp Videos
     for folder in Desktop Downloads Music Pictures Templates tmp Videos Sink
     do
         running debug setup_vc_mkdirpath_ensure    "${LOCALDIRS_DIR}" \
-                                             "${relhomeprotabledir}/local.d" \
-                                             "${folder}"
+                                                   "${relhomeprotabledir}/local.d" \
+                                                   "${folder}"
         running debug setup_make_relative_link     "${LOCALDIRS_DIR}/org/home.d" \
-                                             "local.d/${folder}" \
-                                             "portable.d/${folder}/local"
+                                                   "local.d/${folder}" \
+                                                   "portable.d/${folder}/local"
         running debug setup_add_to_version_control "${LOCALDIRS_DIR}" \
-                                             "org/home.d/portable.d/${folder}/local"
+                                                   "org/home.d/portable.d/${folder}/local"
     done
 }
 
@@ -2132,6 +2153,7 @@ function setup_org_home_portable_public_dirs()
     echo '' > "${LOCALDIRS_DIR}/${relhomeprotabledir}/Public/Publish/html/index.html"
     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${relhomeprotabledir}/Public/Publish/html/index.html"
 
+    # ???
     for folder in local
     do
         running debug mkdir -p "${LOCALDIRS_DIR}/org/home.d/portable.d/${folder}.d/Public/Publish/html"
@@ -2221,12 +2243,17 @@ EOF
     running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Public/Publish/html" "public_html"
     running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Documents/Library"   "Library"
 
+    # TODO: NEXT need work here -sharad
     running debug setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/control.d/class/data/storage/local/container/scratches.d" "home.d/portable.d/Scratches"
-    running debug setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/model.d"                                                  "home.d/portable.d/Volumes"
-    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/model.d"                                                  "home.d/portable.d/VolRes/model"
-    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/control.d"                                                "home.d/portable.d/VolRes/control"
-    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/view.d"                                                   "home.d/portable.d/VolRes/view"
-    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/maildata/mail-and-metadata/maildir"                "home.d/portable.d/Maildir"
+    # now
+    # ln ~/.fa/localdirs/org/resource.d/control.d/class/data/storage/local/container/usrdatas.d/*/Scratches to link in "home.d/portable.d/Scratches/CLASS-STORAGE-CONTAINER-VOLX-VOLY"
+    # similarly for Picture Desktop Downloads etc
+
+    running debug setup_recursive_links    "${LOCALDIRS_DIR}/org" "resource.d/model.d"                                   "home.d/portable.d/Volumes"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/model.d"                                   "home.d/portable.d/VolRes/model"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/control.d"                                 "home.d/portable.d/VolRes/control"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/view.d"                                    "home.d/portable.d/VolRes/view"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/view.d/maildata/mail-and-metadata/maildir" "home.d/portable.d/Maildir"
 
     # links
     for lnk in org/home.d/portable.d/{Documents,Private,Library,public_html,Maildir}
