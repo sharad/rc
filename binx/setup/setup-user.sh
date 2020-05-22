@@ -1886,7 +1886,7 @@ function setup_deps_control_dir()
     local storage_path="${1-local}"
 
     running debug setup_deps_control_data_dirs "$storage_path"
-    running debug setup_deps_control_home_dirs "$storage_path"
+    running debug setup_deps_control_info_dirs "$storage_path"
 }
 
 # deps/view
