@@ -107,7 +107,7 @@
         ;; "emacs-pass"
         "emacs-direnv"
         "emacs-editorconfig"
-        "emacs-develock"
+        ;; "emacs-develock"
         "emacs-el-x"
         "emacs-default-encrypt"
         "emacs-default-text-scale"
@@ -456,11 +456,12 @@
         ;; "slock" -- need suid
         "xset"
         "xsetroot"
-        "pidgin"
-        "python-dbus"
-        "pidgin-otr"
-        ;; "telegram-purple"
-        "telegram-purple"))
+        "python-dbus"))
+;; "pidgin"
+;; "pidgin-otr"
+;; "telegram-purple"
+;; "telegram-purple"
+
 
 (define %lotus-text-packages
   (list "aspell"

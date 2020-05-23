@@ -7,7 +7,8 @@
 (define %lotus-dynamic-hash-package-names (list "firefox"
                                                 "conkeror-firefox"
                                                 "p4"
-                                                "lesspipe"))
+                                                "lesspipe" 
+                                                "emacs-develock"))
 
 (define %lotus-dynamic-hash-packages
   (append

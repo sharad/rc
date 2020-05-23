@@ -53,7 +53,7 @@ then
 
             if mount /dev/mapper/guix-root /mnt
             then
-                mkdir -p /mnt/gnu /mnt/etc /mnt/tmp /mnt/boot/
+                mkdir -p /mnt/gnu /mnt/etc /mnt/tmp /mnt/boot/efi /mnt/var
 
                 if mount /dev/mapper/guix-gnu /mnt/gnu         &&
                         mount /dev/mapper/guix-tmp /mnt/tmp    &&

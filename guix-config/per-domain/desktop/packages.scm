@@ -12,6 +12,7 @@
                                     "polkit-gnome"
                                     "autorandr"
                                     "ppp"
+				    "xmodmap"
                                     ;; "dconf"
                                     "glib-networking"
 

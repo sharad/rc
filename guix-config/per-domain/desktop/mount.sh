@@ -33,6 +33,14 @@ umount /mnt/var
 umount /mnt/gnu
 umount /mnt
 
+
+mkdir -p /mnt/boot/efi
+mkdir -p /mnt/boot/
+mkdir -p /mnt/tmp
+mkdir -p /mnt/var
+mkdir -p /mnt/gnu
+mkdir -p /mnt
+
 vgchange -ay guix
 
 sleep 2
@@ -46,7 +54,7 @@ then
 
             if mount /dev/mapper/guix-root /mnt
             then
-                mkdir -p /mnt/gnu /mnt/etc /mnt/tmp /mnt/boot/
+                mkdir -p /mnt/gnu /mnt/etc /mnt/tmp /mnt/boot/efi /mnt/var
 
                 if mount /dev/mapper/guix-gnu /mnt/gnu         &&
                         mount /dev/mapper/guix-tmp /mnt/tmp    &&

@@ -77,13 +77,22 @@ function main()
 
 function update_fc_cache()
 {
-    for fdir in ~/.guix-profile/share/fonts/**/fonts.dir ~/.setup/guix-config/per-user/s/heavy/profiles.d/heavy/share/fonts/**/fonts.dir
-    do
-        fontdir=$fdir
-        ls $fontdir
-        xset +fp $(dirname $(readlink -f $fontdir))
-    done
-    fc-cache -f
+    if [ "x" != "x$DISPLAY" ]
+    then
+	if whence -p xset
+	then
+    	  for fdir in ~/.guix-profile/share/fonts/**/fonts.dir ~/.setup/guix-config/per-user/s/heavy/profiles.d/heavy/share/fonts/**/fonts.dir
+    	  do
+            fontdir=$fdir
+            ls $fontdir
+            xset +fp $(dirname $(readlink -f $fontdir))
+          done
+	  if whence -p fc-cache
+	  then
+            fc-cache -f
+	  fi
+	fi
+    fi
 }
 
 

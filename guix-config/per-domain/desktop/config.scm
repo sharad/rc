@@ -371,9 +371,9 @@
 (define %lotus-lvm-system-file-systems             (append %lotus-mount-lvm-system-file-systems
                                                            %lotus-unmount-lvm-system-file-systems
                                                            %lotus-lvm-mount-home-file-systems
-                                                           %lotus-lvm-unmount-home-file-systems
-                                                           %lotus-mount-lvm-non-system-file-systems
-                                                           %lotus-unmount-lvm-non-system-file-systems))
+                                                           %lotus-lvm-unmount-home-file-systems))
+                                                           ;; %lotus-mount-lvm-non-system-file-systems
+                                                           ;; %lotus-unmount-lvm-non-system-file-systems
 
 
 (define %lotus-lvm-file-systems                    (append %lotus-lvm-system-file-systems))
@@ -630,7 +630,8 @@
 (define %lotus-many-services (append %lotus-network-services
                                      %lotus-heavy-wm-services))
 
-(define %lotus-few-services  (append %lotus-network-services))
+(define %lotus-few-services  (append (list (service gnome-desktop-service-type)) 
+				     %lotus-network-services))
 
 
 (define %lotus-simple-services %lotus-few-services)
