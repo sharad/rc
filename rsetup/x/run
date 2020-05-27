@@ -106,6 +106,15 @@ fi
 # sudo fc-cache -f
 ##}}
 
+
+##{{ IBus
+if whence -p ibus-daemon >& /dev/null && ! pgrep ibus-daemon >& /dev/null
+then
+    # ibus-daemon -r -d -n stumwpm -v
+    ibus-daemon -r -d
+fi
+##}}
+
 ##{{ compositor
 if false
 then

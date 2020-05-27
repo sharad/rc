@@ -204,6 +204,7 @@
         "xsel"
         "xmodmap"
         "xinput"
+        "ibus"
         ;; at
         "curl"
         "perl"
