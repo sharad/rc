@@ -32,6 +32,17 @@ fi
 export GNUSTEP_USER_ROOT=~/.GNUstep/
 #}}
 
+##{{ IBus https://mollermara.com/blog/ibus-emacs/
+GTK_IM_MODULE=ibus
+XMODIFIERS=@im=ibus
+QT_IM_MODULE=ibus
+
+export GTK_IM_MODULE
+export XMODIFIERS
+export QT_IM_MODULE
+##}}
+
+
 if ! pgrep -u "$(id -u)" gnome-keyring-d >> ~/.logs/wmlogin.log 2>&1
 then
  	  # eval $(gnome-keyring-daemon --start)

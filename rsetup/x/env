@@ -101,4 +101,13 @@ then
 fi
 
 
+##{{ IBus https://mollermara.com/blog/ibus-emacs/
+GTK_IM_MODULE=ibus
+XMODIFIERS=@im=ibus
+QT_IM_MODULE=ibus
+
+export GTK_IM_MODULE
+export XMODIFIERS
+export QT_IM_MODULE
+##}}
 
