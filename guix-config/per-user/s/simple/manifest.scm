@@ -138,7 +138,7 @@
 
         "enscript"
 
-        "jupyter"
+        ;; "jupyter"
         "python-git-review"
 
         "wget"
@@ -205,6 +205,9 @@
         "xmodmap"
         "xinput"
         "ibus"
+        "m17n-lib"
+        "m17n-db"
+
         ;; at
         "curl"
         "perl"
@@ -457,11 +460,11 @@
         ;; "slock" -- need suid
         "xset"
         "xsetroot"
-        "python-dbus"))
-;; "pidgin"
-;; "pidgin-otr"
-;; "telegram-purple"
-;; "telegram-purple"
+        "python-dbus"
+        "pidgin"
+        "pidgin-otr"
+        "telegram-purple"
+        "telegram-purple"))
 
 
 (define %lotus-text-packages

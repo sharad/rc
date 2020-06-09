@@ -9,3 +9,28 @@ unset __NO_SSH_AGENT_REQUIRED
 for startup in sh login x ; do
     [ -r ~/.rsetup/$startup/run ] && ~/.rsetup/$startup/run >> ~/.xsession-errors 2>&1
 done
+
+
+echo SBCL_HOME=$SBCL_HOME
+
+SBCL_HOME_DIRS=(/usr/lib/sbcl
+                /run/current-system/profile/lib/sbcl
+                ~/.guix-profile/lib/sbcl)
+
+if [ x = "x$SBCL_HOME" ]
+then
+  for sbdir in ${SBCL_HOME_DIRS[@]}
+  do
+    echo sbdir=$sbdir
+    if [ -d $sbdir ]
+    then
+      echo not setting SBCL_HOME now
+      # SBCL_HOME="$(readlink -m $sbdir )"
+      # export SBCL_HOME
+    else
+      echo not exists sbdir=$sbdir
+      ls $sbdir
+    fi
+  done
+fi
+echo SBCL_HOME=$SBCL_HOME

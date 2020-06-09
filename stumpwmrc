@@ -5,17 +5,18 @@
 (defparameter *stumpwm-sbcl-homes* '(#p"/usr/lib/sbcl/"
                                      #p"/run/current-system/profile/lib/sbcl/"
                                      #p"~/.guix-profile/lib/sbcl/"))
+#+sb-posix
+(progn
+  (defun stumpwm-set-sbcl-home ()
+    (let* ((sbcl-home (car (mapcar #'truename
+                                   (remove-if-not #'probe-file *stumpwm-sbcl-homes*)))))
+      (when sbcl-home
+        (sb-posix:putenv (concat "SBCL_HOME=" (namestring sbcl-home)))
+        (message "found sbcl-home ~a" sbcl-home)
+        (sb-posix:getenv "SBCL_HOME"))))
 
-(defun stumpwm-set-sbcl-home ()
-  (let* ((sbcl-home (car (mapcar #'truename
-                                 (remove-if-not #'probe-file *stumpwm-sbcl-homes*)))))
-    (when sbcl-home
-      (sb-posix:putenv (concat "SBCL_HOME=" (namestring sbcl-home)))
-      (message "found sbcl-home ~a" sbcl-home)
-      (sb-posix:getenv "SBCL_HOME"))))
-
-(unless (sb-posix:getenv "SBCL_HOME")
-  (stumpwm-set-sbcl-home))
+  (unless (sb-posix:getenv "SBCL_HOME")
+    (stumpwm-set-sbcl-home)))
 
 ;;; see at first line.
 ;;  Always remember, the StumpWM dotfile is in lisp
