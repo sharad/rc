@@ -11,12 +11,14 @@ function main()
     # https://guix.gnu.org/cookbook/en/html_node/
     # https://guix.gnu.org/cookbook/en/html_node/Advanced-package-management.html#Advanced-package-management
     # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
-    if [ ! "$LOCAL_GUIX_EXTRA_PROFILES" ]
+    if [ -f "$HOME/.setup/guix-config/per-user/$USER/meta/current" ]
     then
+        LOCAL_GUIX_EXTRA_PROFILES=( $(cat "$HOME/.setup/guix-config/per-user/$USER/meta/current" ) )
+    else
         LOCAL_GUIX_EXTRA_PROFILES=("dev" "dynamic-hash" "heavy" "lengthy")
     fi
     export LOCAL_GUIX_EXTRA_PROFILES
-    LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER"
+    LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER/profiles"
 
 
     if [ -d "/run/current-system/profile" ]
@@ -43,7 +45,7 @@ function main()
                 done
 
                 verbose guix installing
-                running info guix package -m "${HOME}/.setup/guix-config/per-user/s/simple/manifest.scm" # default
+                running info guix package -m "${HOME}/.setup/guix-config/per-user/s/profiles/simple/manifest.scm" # default
                 for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
                 do
                     manifest_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/manifest.scm
@@ -81,7 +83,7 @@ function update_fc_cache()
     then
 	if whence -p xset
 	then
-    	  for fdir in ~/.guix-profile/share/fonts/**/fonts.dir ~/.setup/guix-config/per-user/s/heavy/profiles.d/heavy/share/fonts/**/fonts.dir
+    	  for fdir in ~/.guix-profile/share/fonts/**/fonts.dir ~/.setup/guix-config/per-user/s/profiles/heavy/profiles.d/heavy/share/fonts/**/fonts.dir
     	  do
             fontdir=$fdir
             ls $fontdir
