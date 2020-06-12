@@ -293,8 +293,8 @@
 (defun lotus-dist-layers-select (layer-dir &optional match)
   (when (file-directory-p layer-dir)
     (mapcar #'(lambda (f) (intern f))
-            (remove-if
-             'file-directory-p
+            (remove-if-not
+             #'(lambda (f) (not (file-directory-p f)))
              (directory-files layer-dir nil match)))))
 
 (defun lotus-dist-layers-group-dirs-layers-select (&optional layers-group-top-dir match)
@@ -397,6 +397,7 @@
 
 (defun lotus-emacs-user-init-begin ()
   (message "loading lotus-emacs-user-init-begin begin")
+  (setq use-package-inject-hooks t)
   ;; (debug-on-entry 'org-mode)
   (let ((osetup
          (expand-file-name
