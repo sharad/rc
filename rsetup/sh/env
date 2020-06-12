@@ -358,11 +358,6 @@ function eval_guix_profiles()
     GUIX_PROFILE="$HOME/.guix-profile"
     if [ -r $GUIX_PROFILE/etc/profile ]
     then
-        # https://guix.gnu.org/blog/2019/guix-profiles-in-practice/
-        # https://guix.gnu.org/cookbook/en/
-        # https://guix.gnu.org/cookbook/en/html_node/
-        # https://guix.gnu.org/cookbook/en/html_node/Advanced-package-management.html#Advanced-package-management
-        # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
         if [ -f "$HOME/.setup/guix-config/per-user/$USER/meta/current" ]
         then
             LOCAL_GUIX_EXTRA_PROFILES=( $(cat "$HOME/.setup/guix-config/per-user/$USER/meta/current" ) )
@@ -376,8 +371,8 @@ function eval_guix_profiles()
             if [ -f "$profile_path"/etc/profile ]
             then
                 eval $(memoize_run guix package  -p "$profile_path" --search-paths=suffix)
-            # else
-            #    echo file "${profile_path}"/etc/profile not exist, for "${profile_path}" >&2
+            else
+               echo file "${profile_path}"/etc/profile not exist, for "${profile_path}"
             fi
             unset profile_path
             unset profile

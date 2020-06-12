@@ -81,7 +81,7 @@ function update_fc_cache()
 {
     if [ "x" != "x$DISPLAY" ]
     then
-	if whence -p xset
+	if which xset
 	then
     	  for fdir in ~/.guix-profile/share/fonts/**/fonts.dir ~/.setup/guix-config/per-user/s/profiles/heavy/profiles.d/heavy/share/fonts/**/fonts.dir
     	  do
