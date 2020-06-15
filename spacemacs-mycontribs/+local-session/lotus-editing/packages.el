@@ -166,7 +166,17 @@ Each entry is either:
     :defer t
     :config
     (progn
-      (add-hook 'prog-mode-hook #'(lambda () (symbol-overlay t))))))
+      (progn
+        (defun enable-symbol-overlay-mode ()
+          (unless (or (minibufferp)
+                      (derived-mode-p 'magit-mode)
+                      (derived-mode-p 'xref--xref-buffer-mode))
+            (symbol-overlay-mode t)))
+        (define-global-minor-mode global-symbol-overlay-mode ;; name of the new global mode
+          symbol-overlay-mode                                ;; name of the minor mode
+          enable-symbol-overlay-mode))
+      (progn
+        (global-symbol-overlay-mode)))))
 
 (defun lotus-editing/init-show-wspace ()
   ;; http://emacswiki.org/emacs/ShowWhiteSpace
