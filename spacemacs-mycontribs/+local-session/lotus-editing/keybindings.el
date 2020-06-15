@@ -30,16 +30,27 @@
 (when (configuration-layer/package-usedp 'highlight-symbol)
   (defun spacemacs/highlight-symbol-enable ()
     (progn ;; "Keybinding: Elscreen"
-      (global-set-key-if-unbind [(control f3)] 'highlight-symbol)
-      (global-set-key-if-unbind [f3]           'highlight-symbol-next)
-      (global-set-key-if-unbind [(shift f3)]   'highlight-symbol-prev)
-      (global-set-key-if-unbind [(meta f3)]    'highlight-symbol-query-replace)))
+      (global-set-key-if-unbind (kbd "M-s-s") 'highlight-symbol)
+      (global-set-key-if-unbind (kbd "M-s-n") 'highlight-symbol-next)
+      (global-set-key-if-unbind (kbd "M-s-p") 'highlight-symbol-prev)
+      (global-set-key-if-unbind (kbd "M-s-r") 'highlight-symbol-query-replace)))
 
   (defun spacemacs/highlight-symbol-disable ()
     (progn ;; "Keybinding: Elscreen"
-      (global-unset-key-if-bind [(control f3)] 'highlight-symbol)
-      (global-unset-key-if-bind [f3]           'highlight-symbol-next)
-      (global-unset-key-if-bind [(shift f3)]   'highlight-symbol-prev)
-      (global-unset-key-if-bind [(meta f3)]    'highlight-symbol-query-replace)))
+      (global-set-key-if-bind (kbd "M-s-s") 'highlight-symbol)
+      (global-set-key-if-bind (kbd "M-s-n") 'highlight-symbol-next)
+      (global-set-key-if-bind (kbd "M-s-p") 'highlight-symbol-prev)
+      (global-set-key-if-bind (kbd "M-s-r") 'highlight-symbol-query-replace)))
 
   (spacemacs/highlight-symbol-enable))
+
+(when (configuration-layer/package-usedp 'symbol-overlay)
+  (defun spacemacs/symbol-overlay-enable ()
+    (progn
+      (global-set-key-if-unbind (kbd "s-s") 'symbol-overlay-map)))
+
+  (defun spacemacs/symbol-overlay-disable ()
+    (progn
+      (global-set-key-if-bind (kbd "s-s") 'symbol-overlay-map)))
+
+  (spacemacs/symbol-overlay-enable))

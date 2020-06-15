@@ -42,6 +42,8 @@
                                    (light-symbol :location local)
                                    hilit-chg
                                    highlight-symbol
+                                   ;; idle-highlight-mode
+                                   symbol-overlay
                                    (show-wspace :location local)
                                    paren
                                    corral
@@ -154,8 +156,17 @@ Each entry is either:
   (use-package highlight-symbol
     :defer t
     :config
+    (progn)))
+      ;; (add-hook 'prog-mode-hook #'(lambda () (highlight-symbol-mode t)))
+      
+
+(defun lotus-editing/init-symbol-overlay ()
+  ;; https://stackoverflow.com/questions/385661/how-to-highlight-all-occurrences-of-a-word-in-an-emacs-buffer
+  (use-package symbol-overlay
+    :defer t
+    :config
     (progn
-      (add-hook 'prog-mode-hook #'highlight-symbol-mode))))
+      (add-hook 'prog-mode-hook #'(lambda () (symbol-overlay t))))))
 
 (defun lotus-editing/init-show-wspace ()
   ;; http://emacswiki.org/emacs/ShowWhiteSpace
