@@ -265,6 +265,8 @@
         "gpa"
         "jetring"
 
+        "lm-sensors"
+
         "beep"))
 
 (define %lotus-lang-packages (list ;; "ocaml"

@@ -4,37 +4,17 @@
 
 (use-modules (lotus packages cdesktopenv))
 
-(define %lotus-dev-package-names
-  (list "glibc"
-        "glibc-locales"
-        "binutils"
-        "pkg-config"
-        "coreutils"
-        "diffutils"
-        "findutils"
-        "tar"
-        "patch"
-        "sed"
-        "grep"
-        "gawk"
-        "flex"
-        "bison"
-        "make"
-        "autoconf"
-        "automake"
-        "libtool"
-        "patchelf"
-        "gcc-toolchain"
-        "gdb"))
+(define %lotus-x-package-names
+  (list))
         ;; "linux-libre-headers@4.19.56"
         ;; "fribidi"
         ;; "bicon"
         
 
-(define %lotus-dev-packages
+(define %lotus-x-packages
   (append
    ;; (list '(gcc "lib"))
    (map specification->package
-        %lotus-dev-package-names)))
+        %lotus-x-package-names)))
 
-(packages->manifest %lotus-dev-packages)
+(packages->manifest %lotus-x-packages)

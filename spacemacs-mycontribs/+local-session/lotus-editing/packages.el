@@ -38,18 +38,16 @@
 ;; http://www.emacswiki.org/emacs/CopyAndPaste#toc5
 ;; (global-set-key [mouse-2] 'mouse-yank-primary)
 
-(defconst lotus-editing-packages
-  '(
-    (common-win :location local)
-    (light-symbol :location local)
-    hilit-chg
-    (show-wspace :location local)
-    paren
-    corral
-    (autorevert :location local)
-    (simple :location local)
-    parinfer
-    )
+(defconst lotus-editing-packages '((common-win :location local)
+                                   (light-symbol :location local)
+                                   hilit-chg
+                                   highlight-symbol
+                                   (show-wspace :location local)
+                                   paren
+                                   corral
+                                   (autorevert :location local)
+                                   (simple :location local)
+                                   parinfer)
   "The list of Lisp packages required by the lotus-editing layer.
 
 Each entry is either:
@@ -100,65 +98,72 @@ Each entry is either:
 
 (defun lotus-editing/init-hilit-chg ()
   (use-package hilit-chg
-      :defer t
-      :config
-      (progn
-        ;; (add-element-to-lists '(lambda ()
-        ;;                         (light-symbol-mode 1)
-        ;;                         (highlight-changes-visible-mode t)
-        ;;                         (highlight-changes-mode t)) pgm-langs)
-        ;; (highlight-changes-mode t) - not works
-        ;; (highlight-changes-visible-mode t)
+    :defer t
+    :config
+    (progn
+      ;; (add-element-to-lists '(lambda ()
+      ;;                         (light-symbol-mode 1)
+      ;;                         (highlight-changes-visible-mode t)
+      ;;                         (highlight-changes-mode t)) pgm-langs)
+      ;; (highlight-changes-mode t) - not works
+      ;; (highlight-changes-visible-mode t)
 
-        ;;{{
-        ;; http://www.emacswiki.org/emacs/TrackChanges
-        (make-empty-face 'highlight-changes-saved-face)
-        (setq highlight-changes-face-list '(highlight-changes-saved-face))
+      ;;{{
+      ;; http://www.emacswiki.org/emacs/TrackChanges
+      (make-empty-face 'highlight-changes-saved-face)
+      (setq highlight-changes-face-list '(highlight-changes-saved-face))
 
-        ; Example: activate highlight changes with rotating faces for C programming
-        (add-hook 'c-mode-hook
-                  (function (lambda ()
-                    (add-hook 'local-write-file-hooks 'highlight-changes-rotate-faces)
-                    (highlight-changes-mode t)
-                    ;; (... other stuff for setting up C mode ...)
-                    )))
-        ;;}}
+      ; Example: activate highlight changes with rotating faces for C programming
+      (add-hook 'c-mode-hook
+                (function (lambda ()
+                            (add-hook 'local-write-file-hooks 'highlight-changes-rotate-faces)
+                            (highlight-changes-mode t)
+                            ;; (... other stuff for setting up C mode ...)
+                            )))
+      ;;}}
 
-        ;;{{
-        (defun DE-highlight-changes-rotate-faces ()
-          (let ((toggle (eq highlight-changes-mode 'passive)))
-            (when toggle (highlight-changes-mode t))
-            (highlight-changes-rotate-faces)
-            (when toggle (highlight-changes-mode nil))))
+      ;;{{
+      (defun DE-highlight-changes-rotate-faces ()
+        (let ((toggle (eq highlight-changes-mode 'passive)))
+          (when toggle (highlight-changes-mode t))
+          (highlight-changes-rotate-faces)
+          (when toggle (highlight-changes-mode nil))))
 
-        ; Example for c-mode-hook:
-        (add-hook 'c-mode-hook
-                  (function (lambda ()
-                    (add-hook 'local-write-file-hooks 'DE-highlight-changes-rotate-faces)
-                    (highlight-changes-mode t)
-                    (highlight-changes-mode nil)
-                    ;; (... other stuff for setting up C mode ...)
-                    )))
-        ;;}}
+      ; Example for c-mode-hook:
+      (add-hook 'c-mode-hook
+                (function (lambda ()
+                            (add-hook 'local-write-file-hooks 'DE-highlight-changes-rotate-faces)
+                            (highlight-changes-mode t)
+                            (highlight-changes-mode nil)
+                            ;; (... other stuff for setting up C mode ...)
+                            )))
+      ;;}}
 
-        ;;{{
-        ;; Following function can make the highlight vanish after save file --coldnew
-        (defun highlight-changes-remove-after-save ()
-          "Remove previous changes after save."
-          (make-local-variable 'after-save-hook)
-          (add-hook 'after-save-hook
-                    (lambda ()
-                      (highlight-changes-remove-highlight (point-min) (point-max)))))
-        ;;}}
-        )))
+      ;;{{
+      ;; Following function can make the highlight vanish after save file --coldnew
+      (defun highlight-changes-remove-after-save ()
+        "Remove previous changes after save."
+        (make-local-variable 'after-save-hook)
+        (add-hook 'after-save-hook
+                  (lambda ()
+                    (highlight-changes-remove-highlight (point-min) (point-max)))))
+      ;;}}
+      )))
+
+(defun lotus-editing/init-highlight-symbol ()
+  (use-package highlight-symbol
+    :defer t
+    :config
+    (progn
+      (add-hook 'prog-mode-hook #'highlight-symbol-mode))))
 
 (defun lotus-editing/init-show-wspace ()
   ;; http://emacswiki.org/emacs/ShowWhiteSpace
   (use-package show-wspace
-      :defer t
-      :config
-      (progn
-        )))
+    :defer t
+    :config
+    (progn
+      )))
 
 (defun lotus-editing/init-paren ()
   (use-package paren

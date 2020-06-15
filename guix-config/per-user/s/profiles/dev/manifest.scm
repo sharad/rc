@@ -28,7 +28,7 @@
         "gdb"
         "gprolog"
         "swi-prolog"
-        "emacs-editprolog"))
+        "emacs-ediprolog"))
         ;; "linux-libre-headers@4.19.56"
         ;; "fribidi"
         ;; "bicon"
