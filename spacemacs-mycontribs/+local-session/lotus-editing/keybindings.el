@@ -12,13 +12,13 @@
 
   (defun spacemacs/corral-disable ()
     (progn ;; "Keybinding: Elscreen"
-      (global-unset-key-if-bind (kbd "M-9") 'corral-parentheses-backward)
-      (global-unset-key-if-bind (kbd "M-0") 'corral-parentheses-forward)
-      (global-unset-key-if-bind (kbd "M-[") 'corral-brackets-backward)
-      (global-unset-key-if-bind (kbd "M-]") 'corral-brackets-forward)
-      (global-unset-key-if-bind (kbd "M-{") 'corral-braces-backward)
-      (global-unset-key-if-bind (kbd "M-}") 'corral-braces-forward)
-      (global-unset-key-if-bind (kbd "M-\"") 'corral-double-quotes-backward)))
+      (global-unset-key-if-bound (kbd "M-9") 'corral-parentheses-backward)
+      (global-unset-key-if-bound (kbd "M-0") 'corral-parentheses-forward)
+      (global-unset-key-if-bound (kbd "M-[") 'corral-brackets-backward)
+      (global-unset-key-if-bound (kbd "M-]") 'corral-brackets-forward)
+      (global-unset-key-if-bound (kbd "M-{") 'corral-braces-backward)
+      (global-unset-key-if-bound (kbd "M-}") 'corral-braces-forward)
+      (global-unset-key-if-bound (kbd "M-\"") 'corral-double-quotes-backward)))
 
   (spacemacs/corral-enable))
 
@@ -37,20 +37,20 @@
 
   (defun spacemacs/highlight-symbol-disable ()
     (progn ;; "Keybinding: Elscreen"
-      (global-set-key-if-bind (kbd "M-s-s") 'highlight-symbol)
-      (global-set-key-if-bind (kbd "M-s-n") 'highlight-symbol-next)
-      (global-set-key-if-bind (kbd "M-s-p") 'highlight-symbol-prev)
-      (global-set-key-if-bind (kbd "M-s-r") 'highlight-symbol-query-replace)))
+      (global-unset-key-if-bound (kbd "M-s-s") 'highlight-symbol)
+      (global-unset-key-if-bound (kbd "M-s-n") 'highlight-symbol-next)
+      (global-unset-key-if-bound (kbd "M-s-p") 'highlight-symbol-prev)
+      (global-unset-key-if-bound (kbd "M-s-r") 'highlight-symbol-query-replace)))
 
   (spacemacs/highlight-symbol-enable))
 
 (when (configuration-layer/package-usedp 'symbol-overlay)
   (defun spacemacs/symbol-overlay-enable ()
     (progn
-      (global-set-key-if-unbind (kbd "s-s") 'symbol-overlay-map)))
+      (global-set-key-if-unbind (kbd "s-s") symbol-overlay-map)))
 
   (defun spacemacs/symbol-overlay-disable ()
     (progn
-      (global-set-key-if-bind (kbd "s-s") 'symbol-overlay-map)))
+      (global-unset-key-if-bound (kbd "s-s") symbol-overlay-map)))
 
   (spacemacs/symbol-overlay-enable))
