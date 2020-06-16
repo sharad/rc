@@ -35,8 +35,7 @@
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-orgclocktask-packages
-  '(
-    org
+  '(org
     ;; org-notify
     org-doing
     org-alert
@@ -110,13 +109,10 @@ Each entry is either:
     (lotus-orgclocktask/init-org-doing-config)))
 
 (defun lotus-orgclocktask/init-org-alert ()
-  ;; https://www.reddit.com/r/emacs/comments/3nx0d0/introducing_orgalert_system_notifications_for/
-  ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-06/msg00122.html
-  ;; https://www.reddit.com/r/emacs/comments/8bywj3/orgnotify_to_show_scheduled_items/
   (use-package org-alert
+    :commands (org-alert-enable)
     :init
     (lotus-orgclocktask/init-org-alert-init)
-    :commands (org-alert-enable)
     :defer t
     :config
     (lotus-orgclocktask/init-org-alert-config)))

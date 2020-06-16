@@ -71,6 +71,9 @@
   (org-alert-enable))
 
 (defun lotus-orgclocktask/init-org-alert-config ()
+  ;; https://www.reddit.com/r/emacs/comments/3nx0d0/introducing_orgalert_system_notifications_for/
+  ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-06/msg00122.html
+  ;; https://www.reddit.com/r/emacs/comments/8bywj3/orgnotify_to_show_scheduled_items/
   ())
 
 (defun lotus-orgclocktask/init-lotus-utils-init ()
