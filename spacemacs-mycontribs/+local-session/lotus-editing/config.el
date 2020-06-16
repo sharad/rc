@@ -25,15 +25,22 @@
 ;;; Code:
 
 
+(defun lotus-editing/init-delsel-init ())
 
-;; (provide 'config)
-;;; config.el ends here
+(defun lotus-editing/init-delsel-config ()
+  (setq select-active-regions 'only)
+  (delete-selection-mode 1))
+
 
+(defun lotus-editing/init-common-win-init ())
 
+(defun lotus-editing/init-common-win-config ())
+
 
-(delete-selection-mode 1)
+(defun lotus-editing/init-light-symbol-init ())
 
-(setq select-active-regions 'only)
+(defun lotus-editing/init-light-symbol-config ())
+
 
 (defun lotus-editing/init-hilit-chg-init ())
 
@@ -83,7 +90,7 @@
                   #'(lambda ()
                       (highlight-changes-remove-highlight (point-min) (point-max))))))
       ;;}}
-
+
 
 (defun lotus-editing/init-highlight-symbol-init ())
 
@@ -91,6 +98,7 @@
   (when nil
     (add-hook 'prog-mode-hook
               #'(lambda () (highlight-symbol-mode t)))))
+
 
 (defun lotus-editing/init-symbol-overlay-init ())
 
@@ -106,15 +114,16 @@
       enable-symbol-overlay-mode))
   (progn
     (global-symbol-overlay-mode)))
+
 
 (defun lotus-editing/init-common-win-init ())
 
 (defun lotus-editing/init-common-win-config ()
-  (setq
-   x-select-enable-clipboard t
-   x-select-enable-primary t
-   ;; http://www.emacswiki.org/emacs/CopyAndPaste#toc5
-   select-active-regions 'only))
+  (setq   x-select-enable-clipboard t
+          x-select-enable-primary t
+          ;; http://www.emacswiki.org/emacs/CopyAndPaste#toc5
+          select-active-regions 'only))
+
 
 (defun lotus-editing/init-light-symbol-init ())
 
@@ -122,11 +131,12 @@
   ;; http://stackoverflow.com/a/385676/341107
   ;; (add-element-to-lists 'light-symbol-mode pgm-langs)
   ;; (light-symbol-mode 1) - not works
+
 
 (defun lotus-editing/init-show-wspace-init ())
 
 (defun lotus-editing/init-show-wspace-config ())
-
+
 
 (defun lotus-editing/init-paren-init ())
 
@@ -172,6 +182,7 @@
           (progn
             (when t
               (ad-remove-advice 'show-paren-function 'after 'show-matching-paren-offscreen))))))))
+
 
 (defun lotus-editing/init-autorevert-init ())
 
@@ -224,7 +235,7 @@
 
     (setq auto-revert-use-notify                t       ;default
           auto-revert-notify-exclude-dir-regexp (auto-revert-notify-exclude-dir-regexp-add-regex (concat "\\|" "^" (expand-file-name "." "~") "/$")))))
-
+
 
 (defun lotus-editing/post-init-parinfer-init ())
 
@@ -254,3 +265,5 @@
         ;; (get 'parinfer-smart-yank:yank 'delete-selection)
         (put 'parinfer-yank 'delete-selection 'yank)
         (put 'parinfer-smart-yank:yank 'delete-selection 'yank)))))
+
+
