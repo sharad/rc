@@ -25,7 +25,9 @@
 ;;; Code:
 
 
-(defun lotus-editing/init-delsel-init ())
+(defun lotus-editing/init-delsel-init ()
+  (setq select-active-regions 'only)
+  (delete-selection-mode 1))
 
 (defun lotus-editing/init-delsel-config ()
   (setq select-active-regions 'only)
@@ -100,9 +102,9 @@
               #'(lambda () (highlight-symbol-mode t)))))
 
 
-(defun lotus-editing/init-symbol-overlay-init ())
+(defun lotus-editing/post-init-symbol-overlay-init ())
 
-(defun lotus-editing/init-symbol-overlay-config ()
+(defun lotus-editing/post-init-symbol-overlay-config ()
   (progn
     (defun enable-symbol-overlay-mode ()
       (unless (or (minibufferp)
@@ -235,6 +237,12 @@
 
     (setq auto-revert-use-notify                t       ;default
           auto-revert-notify-exclude-dir-regexp (auto-revert-notify-exclude-dir-regexp-add-regex (concat "\\|" "^" (expand-file-name "." "~") "/$")))))
+
+
+(defun lotus-editing/init-simple-init ())
+
+(defun lotus-editing/init-simple-config ()
+  (setq kill-whole-line t))
 
 
 (defun lotus-editing/post-init-parinfer-init ())

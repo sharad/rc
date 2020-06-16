@@ -109,14 +109,14 @@ Each entry is either:
     :config
     (lotus-editing/init-highlight-symbol-config)))
 
-  (defun lotus-editing/init-symbol-overlay ()
-    ;; https://stackoverflow.com/questions/385661/how-to-highlight-all-occurrences-of-a-word-in-an-emacs-buffer
-    (use-package symbol-overlay
-      :defer t
-      :init
-      (lotus-editing/init-symbol-overlay-init)
-      :config
-      (lotus-editing/init-symbol-overlay-config)))
+(defun lotus-editing/init-symbol-overlay ()
+  ;; https://stackoverflow.com/questions/385661/how-to-highlight-all-occurrences-of-a-word-in-an-emacs-buffer
+  (use-package symbol-overlay
+    :defer t
+    :init
+    (lotus-editing/post-init-symbol-overlay-init)
+    :config
+    (lotus-editing/post-init-symbol-overlay-config)))
 
 (defun lotus-editing/init-show-wspace ()
   ;; http://emacswiki.org/emacs/ShowWhiteSpace
@@ -154,10 +154,10 @@ Each entry is either:
 (defun lotus-editing/init-simple ()
   (use-package simple
     :defer t
+    :init
+    (lotus-editing/init-simple-init)
     :config
-    (progn
-      (progn
-        (setq kill-whole-line t)))))
+    (lotus-editing/init-simple-config)))
 
 (defun lotus-editing/post-init-parinfer ()
   (use-package parinfer
