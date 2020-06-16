@@ -239,7 +239,8 @@
           auto-revert-notify-exclude-dir-regexp (auto-revert-notify-exclude-dir-regexp-add-regex (concat "\\|" "^" (expand-file-name "." "~") "/$")))))
 
 
-(defun lotus-editing/init-simple-init ())
+(defun lotus-editing/init-simple-init ()
+  (setq kill-whole-line t))
 
 (defun lotus-editing/init-simple-config ()
   (setq kill-whole-line t))
@@ -249,7 +250,7 @@
 
 (defun lotus-editing/post-init-parinfer-config ()
   (progn
-    (when nil
+    (when t
       ;; from delsel.el
       (put 'self-insert-command 'delete-selection 'delete-selection-uses-region-p)
       (put 'insert-char 'delete-selection t)
