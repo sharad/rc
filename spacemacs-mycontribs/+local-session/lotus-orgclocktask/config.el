@@ -486,107 +486,98 @@
 
 (defun lotus-orgclocktask/init-task-manager-config ()
   (progn
-      (progn
-        ;; BUG: TODO: will load publishing which agian trigger task-manager configs
-        (let ((org-task-base-dir
-               (org-publish-get-attribute "tasks" "org" :base-directory)))
+    ;; BUG: TODO: will load publishing which agian trigger task-manager configs
+    (let ((org-task-base-dir (org-publish-get-attribute "tasks"
+                                                        "org" :base-directory)))
 
-          ;; (task-current-party "meru")
-          (unless org-task-base-dir
-            (error "Not able to get org-task-base-dir"))
+      ;; (task-current-party "meru")
+      (unless org-task-base-dir
+        (error "Not able to get org-task-base-dir"))
 
-          (when (and
-                 org-task-base-dir
+      (when (and org-task-base-dir
                  (file-directory-p org-task-base-dir))
+        (task-party-base-dir     (org-publish-get-attribute "tasks" "org" :base-directory))
+        (task-scratch-dir        "~/Scratches/main")
+        (task-projbuffs-base-dir (publishing-created-contents-path 'misc "projbuffs"))
 
-            (task-party-base-dir     (org-publish-get-attribute "tasks" "org" :base-directory))
-            (task-scratch-dir        "~/Scratches/main")
-            (task-projbuffs-base-dir (publishing-created-contents-path 'misc "projbuffs"))
+        (message "lotus-orgclocktask/init-task-manager: org-task-base-dir = %s" org-task-base-dir)
 
-            (message "lotus-orgclocktask/init-task-manager: org-task-base-dir = %s" org-task-base-dir)
+        (task-add-task-party "personal"
+                             "report.org"
+                             "Personal work"
+                             "https://bugzilla.merunetworks.com")
 
-            (task-add-task-party
-             "personal"
-             "report.org"
-             "Personal work"
-             "https://bugzilla.merunetworks.com")
+        (task-add-task-party "meru"
+                             "report.org"
+                             "Office related work"
+                             "https://bugzilla.merunetworks.com")
 
-            (task-add-task-party
-             "meru"
-             "report.org"
-             "Office related work"
-             "https://bugzilla.merunetworks.com")
+        (task-current-party "meru")))
 
-            (task-current-party "meru"))))
+    (progn
+      (autoload 'magit-git-lines "magit")
+      (autoload 'magit-process-file "magit")
 
-      (progn
-        (autoload 'magit-git-lines "magit")
-        (autoload 'magit-process-file "magit")
+      (defvar office-git-remote-regex "")
 
-        (defvar office-git-remote-regex "")
+      (setq office-git-remote-regex "fortinet")
+      (defun office-file-p (file)
+        (let ((remote-repo (car (remove-if-not #'(lambda (s) (if s (string-match-p "^origin" s)))
+                                               (magit-git-lines "remote" "-v")))))
+          (when (and (functionp 'magit-git-lines)
+                     remote-repo)
+            (string-match-p office-git-remote-regex
+                            remote-repo))))
 
-        (setq office-git-remote-regex "fortinet")
-        (defun office-file-p (file)
-          (let ((remote-repo
-                 (car
-                  (remove-if-not
-                   #'(lambda (s) (if s (string-match-p "^origin" s)))
-                   (magit-git-lines "remote" "-v")))))
-            (if (and
-                 (functionp 'magit-git-lines)
-                 remote-repo)
-                (string-match-p
-                 office-git-remote-regex
-                 remote-repo))))
+      (defun office-activate ()
+        (interactive)
+        (let ((file (buffer-file-name)))
+          (when (and file
+                     (office-file-p file))
+            ;; if file is handled by perforce than assume it is
+            ;; related to office perforce repository.
+            (office-mode 1))))
 
-        (defun office-activate ()
-          (interactive)
-          (let ((file (buffer-file-name)))
-            (when (and file (office-file-p file))
-              ;; if file is handled by perforce than assume it is
-              ;; related to office perforce repository.
-              (office-mode 1))))
-
-        (add-hook 'prog-mode-hook 'office-activate)
-        (add-hook 'nxml-mode-hook 'office-activate))))
+      (add-hook 'prog-mode-hook 'office-activate)
+      (add-hook 'nxml-mode-hook 'office-activate))))
 
 (defun lotus-orgclocktask/post-init-startup-hooks-config ()
-  (progn
-      (progn ;code will not get run as when
-        ;`enable-startup-interrupting-feature-hook' run at early start,
-        ;that time package `org-misc-utils-lotus' did not get loaded.
-        ;; BUG: not getting included
-        (add-to-enable-startup-interrupting-feature-hook
-         #'(lambda ()
-             (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
-               (add-hook 'after-make-frame-functions
-                         '(lambda (nframe)
-                            (run-at-time-or-now 100
-                                                '(lambda ()
-                                                   (if (any-frame-opened-p)
-                                                       (org-clock-in-if-not)))))
-                         t)))
-             ;; (add-hook
-             ;;  'delete-frame-functions
-             ;;  #'(lambda (nframe)
-             ;;      (if (and
-             ;;           (org-clock-is-active)
-             ;;           (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-             ;;          (org-with-clock-writeable
-             ;;           (let (org-log-note-clock-out)
-             ;;             (if (org-clock-is-active)
-             ;;                 (org-clock-out)))))))
+  (progn ;code will not get run as when
+                                        ;`enable-startup-interrupting-feature-hook' run at early start,
+                                        ;that time package `org-misc-utils-lotus' did not get loaded.
+    ;; BUG: not getting included
+    (add-to-enable-startup-interrupting-feature-hook
+     #'(lambda ()
+         (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
+           (add-hook 'after-make-frame-functions
+                     '(lambda (nframe)
+                        (run-at-time-or-now 100
+                                            '(lambda ()
+                                               (if (any-frame-opened-p)
+                                                   (org-clock-in-if-not)))))
+                     t)))
+     ;; (add-hook
+     ;;  'delete-frame-functions
+     ;;  #'(lambda (nframe)
+     ;;      (if (and
+     ;;           (org-clock-is-active)
+     ;;           (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
+     ;;          (org-with-clock-writeable
+     ;;           (let (org-log-note-clock-out)
+     ;;             (if (org-clock-is-active)
+     ;;                 (org-clock-out)))))))
 
-         t))))
+     t)))
 
-      ;; (progn
-      ;;   (add-to-enable-desktop-restore-interrupting-feature-hook
-      ;;    #'(lambda ()
-      ;;       (if (fboundp 'org-clock-persistence-insinuate)
-      ;;           (org-clock-persistence-insinuate)
-      ;;           (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
-      ;;       (if (fboundp 'org-clock-start-check-timer-insiuate)
-      ;;           (org-clock-start-check-timer-insiuate)))
-      ;;     t))
+;; (progn
+;;   (add-to-enable-desktop-restore-interrupting-feature-hook
+;;    #'(lambda ()
+;;       (if (fboundp 'org-clock-persistence-insinuate)
+;;           (org-clock-persistence-insinuate)
+;;           (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
+;;       (if (fboundp 'org-clock-start-check-timer-insiuate)
+;;           (org-clock-start-check-timer-insiuate)))
+;;     t))
+
 
 ;;; config.el ends here
