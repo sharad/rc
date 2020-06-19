@@ -24,7 +24,7 @@ function main()
 
     if [ -d "/run/current-system/profile" ]
     then
-        if : running info guix pull
+        if running info guix pull
         then
             running info guix pull --news
 

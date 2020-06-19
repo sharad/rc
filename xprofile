@@ -25,8 +25,8 @@ then
     if [ -d $sbdir ]
     then
       echo not setting SBCL_HOME now > /dev/null 2>&1
-      # SBCL_HOME="$(readlink -m $sbdir )"
-      # export SBCL_HOME
+      SBCL_HOME="$(readlink -m $sbdir )"
+      export SBCL_HOME
     else
       echo not exists sbdir=$sbdir > /dev/null 2>&1
       ls $sbdir > /dev/null 2>&1
