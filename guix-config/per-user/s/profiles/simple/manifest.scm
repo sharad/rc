@@ -30,6 +30,7 @@
 
 (define %lotus-disputed-packages (list "sbcl"
                                        "cl-fad"
+				       "sbcl-clx-xembed"
                                        "cl-slime-swank"))
 
 ;; "notification-daemon" "trezord-udev-rules" "trezord"

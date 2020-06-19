@@ -46,7 +46,7 @@
 
 (when (configuration-layer/package-usedp 'symbol-overlay)
   (defun spacemacs/symbol-overlay-enable ()
-    (progn
+    (when (boundp 'symbol-pverlay-map)
       (global-set-key-if-unbind (kbd "s-s") symbol-overlay-map)))
 
   (defun spacemacs/symbol-overlay-disable ()
