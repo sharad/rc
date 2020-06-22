@@ -270,10 +270,10 @@
 
         "beep"))
 
-(define %lotus-lang-packages (list ;; "ocaml"
+(define %lotus-lang-packages (list)) ;; "ocaml"
                               ;; ;; "ocaml-merlin"
                               ;; "opam"
-                              ))
+                              
 
 (define %lotus-user-selected-package-names
   (list   "m4"
@@ -303,7 +303,7 @@
           "tmux"
           "byobu"
           "kitty"
-          "lxqt-openssh-askpass"
+          ;; "lxqt-openssh-askpass"
           "gettext"
           ;; "ecryptfs-utils"
           "zsh"
