@@ -55,7 +55,7 @@
 (define autocutsel
   (make <service>
     #:provides '(autocutsel)
-    #:start    (make-forkexec-constructor '("autocutsel" "-f")) ; to make it more obvious
+    #:start    (make-forkexec-constructor '("autocutsel")) ; to make it more obvious
     #:stop     (make-kill-destructor)
     #:respawn? #t))
 
