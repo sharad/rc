@@ -33,7 +33,8 @@
   (let ((conkyrc (string-append (getenv "HOME") "/.conkyrc/main/conkyrc"))) ; to make it more obvious
     (make <service>
       #:provides '(conky)
-      #:start    (make-forkexec-constructor (list "conky" "-d" "-c" conkyrc)) ; to make it more obvious
+      ;; #:start    (make-forkexec-constructor (list "conky" "-d" "-c" conkyrc)) ; to make it more obvious
+      #:start    (make-forkexec-constructor (list "conky" "-c" conkyrc)) ; to make it more obvious
       #:stop     (make-kill-destructor)
       #:respawn? #t)))
 
