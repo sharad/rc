@@ -104,11 +104,10 @@
         "emacs-org-noter" ;; https://github.com/weirdNox/org-noter
         "emacs-closql"
         "emacs-diminish"
-        ;; "emacs-diminish"
         ;; "emacs-pass"
         "emacs-direnv"
         "emacs-editorconfig"
-        ;; "emacs-develock"
+        "emacs-develock"
         "emacs-el-x"
         "emacs-default-encrypt"
         "emacs-default-text-scale"
