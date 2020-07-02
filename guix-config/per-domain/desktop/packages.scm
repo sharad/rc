@@ -11,8 +11,9 @@
 (define %lotus-other-packages (list "polkit"
                                     "polkit-gnome"
                                     "autorandr"
-                                    "ppp"
+                                    ;; "ppp"
 				    "xmodmap"
+				    "nm-dnsmasq-ns"
                                     ;; "dconf"
                                     "glib-networking"
 
