@@ -1237,6 +1237,68 @@ interactive("clear-http-auth",
 
 //}}
 
+
+//{{ Permission https://truongtx.me/2016/02/18/conkeror-working-with-web-page-permission
+const permissionManager = Components.classes["@mozilla.org/permissionmanager;1"]
+      .getService(Components.interfaces.nsIPermissionManager);
+// List of web api permission
+var permissionsList = [
+    {desc: "Audio Capture", value: "audio-capture"},
+    {desc: "Video Capture", value: "video-capture"},
+    {desc: "Geo Location", value: "geolocation"},
+    {desc: "Desktop Notification", value: "desktop-notification"}
+];
+
+// read permission from minibuffer
+var readPermission = function(I) {
+    return I.minibuffer.read(
+        $prompt = "Select permission:",
+        $completer = new all_word_completer(
+            $completions = permissionsList,
+            $get_string = function(x) {return x.value;},
+            $get_description = function(x) {return x.desc;}
+        )
+    );
+};
+// add and remove permission for current page
+var addPermission = function(I) {
+    var perm = yield readPermission(I);
+    var uri = make_uri(I.buffer.current_uri.prePath);
+    var allow = Components.interfaces.nsIPermissionManager.ALLOW_ACTION;
+
+    permissionManager.add(uri, perm, allow);
+
+    I.minibuffer.message("Permission " + perm + " added");
+};
+var removePermission = function(I) {
+    var perm = yield readPermission(I);
+    var uri = make_uri(I.buffer.current_uri.prePath);
+    var deny = Components.interfaces.nsIPermissionManager.DENY_ACTION;
+
+    permissionManager.add(uri, perm, deny);
+
+    I.minibuffer.message("Permission " + perm + " removed");
+};
+
+interactive("add-permission", "Add specific permission for current uri", addPermission);
+interactive("remove-permission", "Remove specific permission for current uri", removePermission);
+//}}
+
+//{{ mendeley https://arinbasu.wordpress.com/2010/03/12/how-to-use-conkeror-and-mendeley-to-organize-information/
+function send_mend(I){
+    check_buffer(I.buffer, content_buffer);
+    I.buffer
+        .document
+        .getElementsByTagName('body')[0]
+        .appendChild(I.buffer
+                     .document
+                     .createElement('script'))
+        .setAttribute('src', 'http://www.mendeley.com/min.php/bookmarklet');
+}
+
+interactive("mendeley-post","post the page to Mendeley", send_mend);
+//}}
+
 // tab_bar_mode(false); //disable
 
 // Local Variables: **
