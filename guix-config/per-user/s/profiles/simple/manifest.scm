@@ -39,6 +39,7 @@
 (define %lotus-other-packages
   (list "vim"
 
+	"openfortivpn"
         "ghostscript"
         "bidiv"
         "dos2unix"
