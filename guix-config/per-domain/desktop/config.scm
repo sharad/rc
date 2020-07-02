@@ -36,6 +36,8 @@
 (use-package-modules base idutils)
 (use-service-modules dns mcron messaging)
 
+(use-modules (lotus packages utils))
+
 (define this-config-file (local-file (assoc-ref (current-source-location) 'filename)))
 ;; (define nm-dnsmasq-file
 ;;   (plain-file "cache.conf"
@@ -56,6 +58,12 @@
 (define %lotus-account-home-parent-directory "/home")
 ;; (define %lotus-account-home-directory        (string-append %lotus-account-home-parent-directory "/" %lotus-account-user-name "/" "hell"))
 (define %lotus-account-shell                 #~(string-append #$zsh "/bin/zsh"))
+
+;; (if (not %lotus-system-init)
+;;     (define %lotus-nm-dnsmasq-ns-path            #~(string-append #$nm-dnsmasq-ns "/etc/NetworkManager/dnsmasq.d")))
+
+(define %lotus-nm-dnsmasq-ns-path            #~(string-append #$nm-dnsmasq-ns "/etc/NetworkManager/dnsmasq.d"))
+
 (define %lotus-account-create-home-directory #f)
 (define %lotus-guix-substitute-urls          '("https://ci.guix.gnu.org"
                                                "https://bayfront.guixsd.org"
@@ -465,7 +473,12 @@
                                                                       (list `("config/config.scm" ,this-config-file))
                                                                       ;; ("dnsmasq.d/cache.conf" ,nm-dnsmasq-file)
                                                                       (if (not %lotus-system-init)
-                                                                          (list `("config/package.scm" ,this-package-file))
+                                                                          (list
+                                                                           `("config/package.scm" ,this-package-file))
+                                                                          (list))
+                                                                      (if (not %lotus-system-init)
+                                                                          (list)
+                                                                           ;; `("NetworkManager/dnsmasq.d" ,%lotus-nm-dnsmasq-ns-path)
                                                                           (list))))))
 
 
