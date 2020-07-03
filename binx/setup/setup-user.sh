@@ -179,6 +179,7 @@ function main()
     cd "${HOME}/"
 
     running info setup_apt_packages
+    running info setup_dirs
     running info setup_ecrypt_private
     running info setup_tmp_ssh_keys "$SETUP_TMPDIR/ssh" "$SSH_KEY_DUMP"
 
@@ -722,7 +723,7 @@ function setup_apt_upgrade_system()
 function setup_apt_packages()
 {
     running info setup_apt_repo
-    running info setup_apt_upgrade_system
+    # running info setup_apt_upgrade_system
 
     local deb_pkg_lists=(
         DEB_PKG_FIRST_INSTALL
@@ -1218,8 +1219,8 @@ function setup_mail_and_metadata()
 {
     local USERDIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR=${USERDIR}/localdirs
-    local maildata_path="${LOCALDIRS_DIR}/org/resource.d/view.d/maildata"
-    local preserved_path="${LOCALDIRS_DIR}/org/resource.d/view.d/preserved"
+    local maildata_path="${LOCALDIRS_DIR}/org/resource.d/view.d/volumes.d/view.d/maildata"
+    local preserved_path="${LOCALDIRS_DIR}/org/resource.d/view.d/volumes.d/view.d/preserved"
 
 
     if [ -e "${maildata_path}" -a -L "${maildata_path}" -a -d "${maildata_path}" ]
@@ -1809,6 +1810,8 @@ function setup_deps_model_dir()
 
             running debug setup_make_link "$HOST" "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default"
 
+            running debug mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/config.d"
+
             running debug setup_make_relative_link ${HOME}/ "" "${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/$HOST/home"
             running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/deps.d/model.d/machine.d/$HOST/home"
 
@@ -1918,11 +1921,11 @@ function setup_deps_view_volumes_dirs()
 
     # need to create ${LOCALDIRS_DIR}/org/deps.d/view.d/
 
-
-
-    running debug setup_make_relative_link ${BASE_DIR}/${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/home       view.d/home
+    running debug setup_make_relative_link ${BASE_DIR}/${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/config.d  view.d/config.d
+    running debug setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} org/deps.d/view.d/config.d
+    running debug setup_make_relative_link ${BASE_DIR}/${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/home      view.d/home
     running debug setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} org/deps.d/view.d/home
-    running debug setup_make_relative_link ${BASE_DIR}/${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/volumes.d  view.d/volumes.d
+    running debug setup_make_relative_link ${BASE_DIR}/${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/volumes.d view.d/volumes.d
     running debug setup_add_to_version_control ${BASE_DIR}/${LOCALDIRS_DIR} org/deps.d/view.d/volumes.d
 
 
@@ -2060,9 +2063,9 @@ function setup_deps_dirs()
 {
     local storage_path="${1-local}"
 
-    running debug setup_deps_model_dir   "$storage_path"
-    running debug setup_deps_control_dir "$storage_path"
-    running debug setup_deps_view_dir    "$storage_path"
+    running info setup_deps_model_dir   "$storage_path"
+    running info setup_deps_control_dir "$storage_path"
+    running info setup_deps_view_dir    "$storage_path"
 }
 
 function setup_org_resource_dirs()
@@ -2071,8 +2074,29 @@ function setup_org_resource_dirs()
     local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
 
-    # org/resource.d/control.d/class/data/storage/local/container/scratches.d/Public/
-	  # org/resource.d/control.d/class/data/storage/local/container/scratches.d/local
+    running debug setup_recursive_links                                       "${LOCALDIRS_DIR}/org" \
+                                                                              "deps.d/view.d" \
+                                                                              "resource.d/model.d"
+
+    running debug setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR}" \
+                                                                              "org/resource.d/model.d"
+
+    running debug setup_recursive_links                                       "${LOCALDIRS_DIR}/org/resource.d" \
+                                                                              "model.d" \
+                                                                              "control.d"
+
+    running debug setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR}" \
+                                                                              "org/resource.d/control.d"
+
+    running debug setup_recursive_links                                       "${LOCALDIRS_DIR}/org/resource.d" \
+                                                                              "control.d" \
+                                                                              "view.d"
+
+    running debug setup_add_to_version_control                                "${LOCALDIRS_DIR}" \
+                                                                              "org/resource.d/view.d"
+
+
+
 
     running debug setup_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user                        "localdirs/org/resource.d" \
                                                                                                                             "osetup/dirs.d/org/resource.d"
@@ -2080,27 +2104,6 @@ function setup_org_resource_dirs()
                                                                                                                             "osetup" \
                                                                                                                             "dirs.d/org/resource.d"
 
-    # TODO: add support for git add
-    running debug setup_recursive_links_container_dirs                        "${LOCALDIRS_DIR}/org" \
-                                                                              "deps.d/control.d/machine.d/default/volumes.d/model.d" \
-                                                                              "resource.d/model.d"
-
-    running debug setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR}" \
-                                                                              "org/resource.d/model.d"
-
-    running debug setup_recursive_links_container_dirs                        "${LOCALDIRS_DIR}/org" \
-                                                                              "deps.d/control.d/machine.d/default/volumes.d/control.d" \
-                                                                              "resource.d/control.d"
-
-    running debug setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR}" \
-                                                                              "org/resource.d/control.d"
-
-    running debug setup_make_relative_link                                    "${LOCALDIRS_DIR}/org" \
-                                                                              "deps.d/control.d/machine.d/default/volumes.d/view.d" \
-                                                                              "resource.d/view.d"
-
-    running debug setup_add_to_version_control                                "${LOCALDIRS_DIR}" \
-                                                                              "org/resource.d/view.d"
 }
 
 
@@ -2244,21 +2247,34 @@ EOF
     running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Documents/Library"   "Library"
 
     # TODO: NEXT need work here -sharad
-    running debug setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/control.d/class/data/storage/local/container/scratches.d" "home.d/portable.d/Scratches"
-    # now
-    # ln ~/.fa/localdirs/org/resource.d/control.d/class/data/storage/local/container/usrdatas.d/*/Scratches to link in "home.d/portable.d/Scratches/CLASS-STORAGE-CONTAINER-VOLX-VOLY"
-    # similarly for Picture Desktop Downloads etc
-
-    running debug setup_recursive_links    "${LOCALDIRS_DIR}/org" "resource.d/model.d"                                   "home.d/portable.d/Volumes"
-    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/model.d"                                   "home.d/portable.d/VolRes/model"
-    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/control.d"                                 "home.d/portable.d/VolRes/control"
-    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/view.d"                                    "home.d/portable.d/VolRes/view"
-    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/view.d/maildata/mail-and-metadata/maildir" "home.d/portable.d/Maildir"
+    running debug setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/volumes.d/control.d/class/data/storage/local/container/scratches.d" "home.d/portable.d/Scratches"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/volumes.d/view.d/maildata/mail-and-metadata/maildir" "home.d/portable.d/Maildir"
 
     # links
-    for lnk in org/home.d/portable.d/{Documents,Private,Library,public_html,Maildir}
+    for lnk in org/home.d/portable.d/{Documents,Private,Library,public_html,Scratches,Maildir}
     do
-        running debug setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
+        # running debug setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
+        running debug setup_add_to_version_control ${LOCALDIRS_DIR} "$lnk"
+    done
+
+    # now
+    # ln ~/.fa/localdirs/org/resource.d/view.d/volumes.d/control.d/class/data/storage/local/container/usrdatas.d/*/Scratches to link in "home.d/portable.d/Scratches/CLASS-STORAGE-CONTAINER-VOLX-VOLY"
+    # similarly for Picture Desktop Downloads etc
+
+    running debug setup_recursive_links    "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/model.d"   "home.d/portable.d/Volumes"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/model.d"   "home.d/portable.d/VolRes/model"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d" "home.d/portable.d/VolRes/control"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/view.d"    "home.d/portable.d/VolRes/view"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/org" "resource.d/view.d/config.d"            "home.d/portable.d/Config"
+
+
+    # TODO recursive git add "org/home.d/portable.d/Volumes"
+
+    # links
+    for lnk in org/home.d/portable.d/{VolRes/model,VolRes/control,VolRes/view,Config}
+    do
+        # running debug setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
+        running debug setup_add_to_version_control ${LOCALDIRS_DIR} "$lnk"
     done
 
     running debug setup_org_home_portable_public_dirs
@@ -2273,18 +2289,19 @@ function setup_org_misc_dirs()
     # TODO?
     # org/misc.d% ls -1l
     # total 4.0K
-    # lrwxrwxrwx 1 s s 72 Dec  4 03:37 offlineimap -> ../../resource.d/view.d/maildata/mail-and-metadata/offlineimap
+    # lrwxrwxrwx 1 s s 72 Dec  4 03:37 offlineimap -> ../../resource.d/view.d/volumes.d/view.d/maildata/mail-and-metadata/offlineimap
     :
 
     running debug setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "org" "misc.d"
 
-    running debug setup_make_relative_link  "${LOCALDIRS_DIR}/org" "resource.d/view.d/maildata/mail-and-metadata/offlineimap" "misc.d/offlineimap"
-    running debug setup_make_relative_link  "${LOCALDIRS_DIR}/org" "resource.d/view.d/preserved/mailattachments"              "misc.d/mailattachments"
+    running debug setup_make_relative_link  "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/view.d/maildata/mail-and-metadata/offlineimap" "misc.d/offlineimap"
+    running debug setup_make_relative_link  "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/view.d/preserved/mailattachments"              "misc.d/mailattachments"
 
     # links
     for lnk in org/misc.d/{offlineimap,mailattachments}
     do
-        running debug setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
+        # running debug setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
+        running debug setup_add_to_version_control ${LOCALDIRS_DIR} "$lnk"
     done
 
 } # function setup_org_misc_dirs()
@@ -2443,7 +2460,7 @@ function setup_rc_org_dirs()
 function setup_dirs()
 {
 
-    running debug setup_machine_dir
+    running info setup_machine_dir
 
     if true
     then
@@ -2458,7 +2475,7 @@ function setup_dirs()
 
         for mntpnt in $(df --output=target | grep  '^/srv/volumes/' | cut -d/ -f4- | rev | cut -d/ -f3-  | rev | sort -u)
         do
-            running debug setup_deps_dirs "$mntpnt"
+            running info setup_deps_dirs "$mntpnt"
         done
 
         # running debug setup_deps_dirs "local"

@@ -109,7 +109,7 @@ Each entry is either:
     :config
     (lotus-editing/init-highlight-symbol-config)))
 
-(defun lotus-editing/init-symbol-overlay ()
+(defun lotus-editing/post-init-symbol-overlay ()
   ;; https://stackoverflow.com/questions/385661/how-to-highlight-all-occurrences-of-a-word-in-an-emacs-buffer
   (use-package symbol-overlay
     :defer t
