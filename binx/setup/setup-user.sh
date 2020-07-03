@@ -2082,6 +2082,14 @@ function setup_org_resource_dirs()
     # TODO: not getting added in version control
     local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
+    for path in "${LOCALDIRS_DIR}/org/resource.d/view.d" "${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/org/resource.d/view.d"
+    do
+        if [ -L "$path" ]
+        then
+            rm -f "path"
+        fi
+    done
+
 
     running debug setup_recursive_links                                       "${LOCALDIRS_DIR}/org" \
                                                                               "deps.d/view.d" \
@@ -2458,6 +2466,10 @@ function setup_rc_org_dirs()
     local resourcedir="${LOCALDIRS_DIR}/org/resource.d"
 
     # TODO: add support for git add
+    if [ -L "${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc/.config/dirs.d/org/resource.d/view.d" ]
+    then
+        rm -f "${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc/.config/dirs.d/org/resource.d/view.d"
+    fi
     running debug setup_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "osetup/dirs.d/org" "rc/.config/dirs.d/org"
     running debug setup_add_to_version_control_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "osetup/dirs.d/org" "rc" ".config/dirs.d/org"
 
