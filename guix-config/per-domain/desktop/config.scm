@@ -50,6 +50,15 @@
   (use-modules (nongnu packages linux)))
 
 
+(if (not %lotus-system-init)
+    (load "local/local.scm"))
+
+(define (lotus-local-value local alternat)
+  (if (not %lotus-system-init)
+      local
+      alternat))
+
+(define %lotus-host-name                     (lotus-local-value %local-host-name "machine1"))
 (define %lotus-account-uid                   1000)
 (define %lotus-account-user-name             "s")
 (define %lotus-account-comment               "sharad")
