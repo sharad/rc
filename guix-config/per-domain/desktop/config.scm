@@ -146,55 +146,6 @@
                                                        (close close-nonudev-lvm-device)))
 
 
-(define (open-udev-lvm-device source target)
-  "Return a gexp that maps SOURCES to TARGETS as a LVM device, using
-'lvm'."
-  (with-imported-modules (source-module-closure '((gnu build file-systems)))
-    #~(let ((source  #$source)
-            (lvm-bin #$(file-append lvm2-static "/sbin/lvm")))
-        ;; Use 'lvm2-static', not 'lvm2', to avoid pulling the
-        ;; whole world inside the initrd (for when we're in an initrd).
-        (begin
-          (format #t "Enabling ~a~%" #$target)
-          (system* lvm-bin "vgchange" "-ay" (car (string-split #$target #\-)))
-          (sleep 1)
-          (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
-                          (string-join (string-split #$target #\-) "/")))))))
-
-(define (close-udev-lvm-device sources target)
-  "Return a gexp that closes TARGET, a LVM device."
-  #~(zero? (system* #$(file-append lvm2-static "/sbin/lvm")
-                    "lvchange" "-an" "-y" (string-join (string-split #$target #\-) "/"))))
-
-;; (define* (check-udev-lvm-device md #:key
-;;                             needed-for-boot?
-;;                             (initrd-modules '())
-;;                             #:allow-other-keys
-;;                             #:rest rest)
-;;   "Ensure the source of MD is valid."
-;;   (let ((source   (mapped-device-source md))
-;;         (location (mapped-device-location md)))
-;;     (or (not (zero? (getuid)))
-;;         (if (uuid? source)
-;;             (match (find-partition-by-lvm-uuid (uuid-bytevector source))
-;;               (#f
-;;                (raise (condition
-;;                        (&message
-;;                         (message (format #f (G_ "no LVM partition with UUID '~a'")
-;;                                          (uuid->string source))))
-;;                        (&error-location
-;;                         (location (source-properties->location
-;;                                    (mapped-device-location md)))))))
-;;               ((? string? device)
-;;                (check-device-initrd-modules device initrd-modules location)))
-;;             (check-device-initrd-modules source initrd-modules location)))))
-
-;; The type of LVM mapped devices.
-(define udev-lvm-device-mapping (mapped-device-kind (open open-udev-lvm-device)
-                                                    ;; (check check-udev-lvm-device)
-                                                    (close close-udev-lvm-device)))
-
-
 (define %lotus-mapped-device-guix-root       (mapped-device (source "/dev/sda31")
                                                             (target "guix-root")
                                                             (type   nonudev-lvm-device-mapping)))

@@ -723,7 +723,7 @@ function setup_apt_upgrade_system()
 function setup_apt_packages()
 {
     running info setup_apt_repo
-    # running info setup_apt_upgrade_system
+    running info setup_apt_upgrade_system
 
     local deb_pkg_lists=(
         DEB_PKG_FIRST_INSTALL
@@ -1786,6 +1786,13 @@ function setup_deps_model_volumes_dirs()
     # check local home model.d directory
 
     running debug mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d"
+    running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d"
+
+    running debug mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/control.d"
+    running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/deps.d/model.d/machine.d/$HOST/volumes.d/control.d"
+
+    running debug mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/view.d"
+    running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/deps.d/model.d/machine.d/$HOST/volumes.d/view.d"
 
     running debug setup_deps_model_storage_volumes_dir "$storage_path"
 }
@@ -1811,11 +1818,13 @@ function setup_deps_model_dir()
             running debug setup_make_link "$HOST" "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default"
 
             running debug mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/config.d"
+            running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/deps.d/model.d/machine.d/$HOST/config.d"
 
             running debug setup_make_relative_link ${HOME}/ "" "${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/$HOST/home"
             running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/deps.d/model.d/machine.d/$HOST/home"
 
             running debug mkdir -p "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d"
+            running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d"
 
             running debug setup_deps_model_volumes_dirs "$storage_path"
 
