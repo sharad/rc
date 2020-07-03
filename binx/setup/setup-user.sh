@@ -2092,7 +2092,7 @@ function setup_org_resource_dirs()
                                                                               "control.d" \
                                                                               "view.d"
 
-    running debug setup_add_to_version_control                                "${LOCALDIRS_DIR}" \
+    running debug setup_add_to_version_control_recursive_links_container_dirs "${LOCALDIRS_DIR}" \
                                                                               "org/resource.d/view.d"
 
 

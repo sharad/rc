@@ -219,18 +219,6 @@
                                                             (target "guix-var")
                                                             (type   nonudev-lvm-device-mapping)))
 
-(define %lotus-mapped-device-vg01-lv01       (mapped-device (source "/dev/test")
-                                                            (target "vg01-lv01")
-                                                            (type   udev-lvm-device-mapping)))
-
-(define %lotus-mapped-device-vg02-lv01       (mapped-device (source "/dev/test")
-                                                            (target "vg02-lv01")
-                                                            (type   udev-lvm-device-mapping)))
-
-(define %lotus-mapped-device-vgres01-lvres01 (mapped-device (source "/dev/test")
-                                                            (target "vgres01-lvres01")
-                                                            (type   udev-lvm-device-mapping)))
-
 (define %lotus-mapped-device-house-home      (mapped-device (source "/dev/test")
                                                             (target "house-home")
                                                             (type   nonudev-lvm-device-mapping)))
@@ -245,11 +233,6 @@
                                     %lotus-mapped-device-house-home
                                     %lotus-mapped-device-house-home
                                     %lotus-mapped-device-house-home))
-
-
-(define %lotus-udev-lvm-mapped-devices (list %lotus-mapped-device-vgres01-lvres01
-                                             %lotus-mapped-device-vg01-lv01
-                                             %lotus-mapped-device-vg02-lv01))
 
 
 ;; guix system: error: service 'swap-/dev/mapper/guix-swap' requires 'device-mapping-guix-swap', which is not provided by any service
@@ -315,36 +298,8 @@
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #f)
                                                         (dependencies        (append (list ;; %lotus-file-system-guix-root
-                                                                                           )
+                                                                                      )
                                                                                      %lotus-mapped-devices))))
-
-(define %lotus-file-system-vg01-lv01       (file-system (mount-point         "/srv/volumes/local/vg01/lv01")
-                                                        (device              "/dev/mapper/vg01-lv01")
-                                                        (type                "ext4")
-                                                        (check?              #f)
-                                                        (mount?              #f)
-                                                        (create-mount-point? #f)
-                                                        (needed-for-boot?    #f)
-                                                        (dependencies        (append (list %lotus-file-system-guix-root)
-                                                                                     %lotus-udev-lvm-mapped-devices))))
-
-(define %lotus-file-system-vg02-lv01       (file-system (mount-point         "/srv/volumes/local/vg02/lv01")
-                                                        (device              "/dev/mapper/vg02-lv01")
-                                                        (type                "ext4")
-                                                        (check?              #f)
-                                                        (mount?              #f)
-                                                        (create-mount-point? #f)
-                                                        (needed-for-boot?    #f)
-                                                        (dependencies        (append (list %lotus-file-system-guix-root)
-                                                                                     %lotus-udev-lvm-mapped-devices))))
-
-(define %lotus-file-system-vgres01-lvres01 (file-system (mount-point         "/srv/volumes/local/vgres01/lvres01")
-                                                        (device              "/dev/mapper/vgres01-lvres01")
-                                                        (type                "reiserfs")
-                                                        (check?              #f)
-                                                        (mount?              #f)
-                                                        (create-mount-point? #f)
-                                                        (needed-for-boot?    #f)))
 
 
 (define %lotus-file-system-boot-efi        (file-system (mount-point         "/boot/efi")
@@ -378,19 +333,19 @@
 (define %lotus-unmount-lvm-system-file-systems     (list))
 
 
-(define %lotus-mount-lvm-non-system-file-systems   (list %lotus-file-system-vg01-lv01
-                                                         ;; %lotus-file-system-vg02-lv01
-                                                         %lotus-file-system-vgres01-lvres01))
+(define %lotus-mount-lvm-non-system-file-systems   (lotus-local-value %local-mount-lvm-non-system-file-systems
+                                                                      (list)))
 
-(define %lotus-unmount-lvm-non-system-file-systems (list %lotus-file-system-vg02-lv01))
+(define %lotus-unmount-lvm-non-system-file-systems (lotus-local-value %local-unmount-lvm-non-system-file-systems
+                                                                      (list)))
 
 
 (define %lotus-lvm-system-file-systems             (append %lotus-mount-lvm-system-file-systems
                                                            %lotus-unmount-lvm-system-file-systems
                                                            %lotus-lvm-mount-home-file-systems
-                                                           %lotus-lvm-unmount-home-file-systems))
-                                                           ;; %lotus-mount-lvm-non-system-file-systems
-                                                           ;; %lotus-unmount-lvm-non-system-file-systems
+                                                           %lotus-lvm-unmount-home-file-systems
+                                                           %lotus-mount-lvm-non-system-file-systems
+                                                           %lotus-unmount-lvm-non-system-file-systems))
 
 
 (define %lotus-lvm-file-systems                    (append %lotus-lvm-system-file-systems))
