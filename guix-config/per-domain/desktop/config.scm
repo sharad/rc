@@ -58,7 +58,7 @@
       local
       alternat))
 
-(define %lotus-host-name                     (lotus-local-value %local-host-name "machine1"))
+(define %lotus-host-name                     (lotus-local-value %local-host-name "komputilo"))
 (define %lotus-account-uid                   1000)
 (define %lotus-account-user-name             "s")
 (define %lotus-account-comment               "sharad")
@@ -713,11 +713,6 @@
 
 (define %lotus-timezone  "Asia/Kolkata")
 
-
-;; (define %lotus-host-name "komputilo")
-(define %lotus-host-name "guilem")
-
-
 
 (define %lotus-bootloader %lotus-efi-bootloader)
 (define %lotus-initrd     %lotus-metal-initrd)
