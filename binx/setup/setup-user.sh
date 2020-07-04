@@ -816,9 +816,8 @@ function setup_apt_upgrade_system()
 {
     if [ -d "/run/current-system/profile" ]
     then
-        echo sharad
-        # running info ~/bin/lotus-update
         #running info ~/bin/lotus-clear
+        running info ~/bin/lotus-update
     else
         # running info sudo ${INSTALLER} ${INSTALLER_OPT} clean
         running info sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
