@@ -2842,7 +2842,7 @@ function process_arg()
     warn=1
     error=1
 
-    if ! set -- $(getopt -n $pgm -o "rnsehvdw" -- $@)
+    if ! set -- $(getopt -n $pgm -o "rnsehvdwlm" -- $@)
     then
         verbose Wrong command line.
     fi
@@ -2859,7 +2859,7 @@ function process_arg()
             (-w) warn="";;
             (-e) error="";;
             (-l) nolongproc=1;;
-            (-m) nomidproc=1
+            (-m) nomidproc=1;;
             (-h) help;
                  exit;;
             (--) shift; break;;
