@@ -35,6 +35,8 @@ SSH_KEY_DUMP=$1
 
 logicaldirs=(config deletable longterm preserved shortterm maildata)
 
+userdata_dirs=(Desktop Documents Downloads Library Music Pictures Public public_html Scratch Templates Videos)
+
 dataclassname=data
 infoclassname=info
 
@@ -238,7 +240,7 @@ function setup_count_slash_in_path()
 {
     local rel_path="$1"
 
-    rel_path="$(print ${rel_path} | tr -s /)"
+    rel_path="$(echo ${rel_path} | tr -s /)"
     rel_path="${rel_path%/}"
 
     # TODO?
@@ -250,7 +252,7 @@ function setup_count_slash_in_path()
     local rel_path_array=( ${rel_path//\// } )
     local rel_path_len=$(expr ${#rel_path_array[@]} - 1)
 
-    print $rel_path_len
+    echo $rel_path_len
 }
 
 function setup_make_parent_path()
@@ -391,7 +393,59 @@ function setup_make_relative_link()
     fi
 }
 
-function setup_recursive_links_container_dirs()
+function setup_custom_recursive_links()
+{
+    #  ./storage/local class/data/container/usrdatas.d/ $lnk home.d/portable.d/$lnk
+    basepath=$1
+    storagebasepath=$2
+    relpath=$3
+    name=$4
+    trg=$5
+
+    debug storagebasepath=$storagebasepath
+    debug relpath=$relpath
+    debug name=$name
+    debug trg=$trg
+
+    if [ -d "${storagebasepath}" ]
+    then
+        relcount=$(expr $(setup_count_slash_in_path "$relpath") + 2)
+
+        cd "${storagebasepath}"
+        # debug SHARAD TEST
+        # https://stackoverflow.com/questions/4269798/use-gnu-find-to-show-only-the-leaf-directories
+        # https://stackoverflow.com/a/4269862
+        local trgstoragebasepaths=( $(find -type l \( \! -name '*BACKUP*' \) | rev | cut -d/ -f${relcount}- | rev | cut -c3- ) )
+        debug trgstoragebasepaths=$trgstoragebasepaths
+        cd - > /dev/null 2>&1
+
+        debug trgstoragebasepaths=${trgstoragebasepaths[*]}
+
+        for trgstoragebasepath in "${trgstoragebasepaths[@]}"
+        do
+            if [ -d "${storagebasepath}${trgstoragebasepath}" ]
+            then
+                cd "${storagebasepath}${trgstoragebasepath}"
+                local linkdirs=( $(find -type l \( \! -name '*BACKUP*' \) | cut -c3- ) )
+                debug linkdirs=$linkdirs
+                cd - > /dev/null 2>&1
+
+                for lnkdir in "${linkdirs[@]}"
+                do
+                    info mkdir -p $trg/$trgstoragebasepath
+                    running info setup_make_relative_link $basepath ${storagebasepath}/$trgstoragebasepath/$lnkdir/$name $trg/$trgstoragebasepath/$name
+                    # running debug setup_add_to_version_control
+                done
+            else
+                warn "${storagebasepath}${trgstoragebasepath}" not exists.
+            fi
+        done
+    else
+        earn "${storagebasepath}" not exists.
+    fi
+}
+
+function setup_recursive_links_leafs()
 {
     # create all leaf dirs symlinks recursively.
     basepath="$1"
@@ -428,7 +482,7 @@ function setup_recursive_links_container_dirs()
         error dir ${basepath}/${linktopdir} not exists
     fi
 
-}                               # function setup_recursive_links_container_dirs()
+}                               # function setup_recursive_links_leafs()
 
 function setup_recursive_links()
 {
@@ -1609,7 +1663,7 @@ function setup_deps_control_data_usrdata_dirs()
 
     running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/usrdatas" "usrdata"
 
-    running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "usrdata" Desktop Documents Downloads Library Music Pictures Public public_html Scratch Templates Videos #  tmp
+    running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "usrdata" "${userdata_dirs[@]}" #  tmp
 }
 function setup_deps_control_data_sysdata_dirs()
 {
@@ -1669,7 +1723,7 @@ then
 
         running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/usrdatas" "usrdata" "$position"
 
-        running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "userdata" Desktop  Documents Downloads Library Music Pictures Public public_html Scratches Templates Videos #  tmp
+        running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "userdata" "${userdata_dirs[@]}" #  tmp
     }
     function setup_deps_control_data_sysdata_dir()
     {
@@ -2144,8 +2198,8 @@ function setup_org_home_portable_local_dirs()
 
     # TODO: NEXT need work here -sharad
 
-    # for folder in Desktop Documents Downloads Library Music Pictures Scratches Templates tmp Videos
-    # for folder in Desktop Documents Downloads Library Music Pictures Templates tmp Videos
+    # for folder in "${userdata_dirs[@]}"
+    # for folder in "${userdata_dirs[@]}"
     for folder in Desktop Downloads Music Pictures Templates tmp Videos Sink
     do
         running debug setup_vc_mkdirpath_ensure    "${LOCALDIRS_DIR}" \
@@ -2267,6 +2321,7 @@ EOF
     running debug setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/volumes.d/control.d/class/data/storage/local/container/scratches.d" "home.d/portable.d/Scratches"
     running debug setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/volumes.d/view.d/maildata/mail-and-metadata/maildir" "home.d/portable.d/Maildir"
 
+
     # links
     for lnk in org/home.d/portable.d/{Documents,Private,Library,public_html,Scratches,Maildir}
     do
@@ -2293,6 +2348,15 @@ EOF
         # running debug setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
         running debug setup_add_to_version_control ${LOCALDIRS_DIR} "$lnk"
     done
+
+
+
+    for lnk in "${userdata_dirs[@]}"
+    do
+        running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage"  "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/$lnk"
+    done
+
+
 
     running debug setup_org_home_portable_public_dirs
     running debug setup_org_home_portable_local_dirs
