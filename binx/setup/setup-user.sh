@@ -180,7 +180,10 @@ function main()
 
     cd "${HOME}/"
 
-    running info setup_apt_packages
+    if [ "x" = "x$nolongproc" ]
+    then
+        running info setup_apt_packages
+    fi
     running info setup_dirs
     running info setup_ecrypt_private
     running info setup_tmp_ssh_keys "$SETUP_TMPDIR/ssh" "$SSH_KEY_DUMP"
@@ -192,7 +195,10 @@ function main()
     fi
 
     # will set the ${HOME}/.setup also
-    running info setup_git_repos
+    if [ "x" = "x$nomidproc" ]
+    then
+        running info setup_git_repos
+    fi
     running info setup_config_dirs
     running info setup_user_config_setup
     running info setup_ssh_keys "$SSH_KEY_DUMP"
@@ -362,7 +368,9 @@ function setup_make_link()
             mkdir -p "$(dirname $link)"
         fi
 
+        debug rm -f  $link
         running debug rm -f  $link
+        debug ln -sf $target $link
         running debug ln -sf $target $link
     else
         verbose $link is correctly pointing to "$(readlink -m $rtarget )" is equal to $target
@@ -436,7 +444,6 @@ function setup_make_relative_link()
 
         # debug separator=$separator
 
-        debug running debug setup_make_link ${parents_link}${separator:+/}${target} $path/$link
         running debug setup_make_link ${parents_link}${separator:+/}${target} $path/$link
     else
         warn running debug setup_make_link "${path}/${target}" is broken link not creating link ${parents_link}${separator:+/}${target} $path/$link
@@ -2851,6 +2858,8 @@ function process_arg()
             (-v) verbose=1;;
             (-w) warn="";;
             (-e) error="";;
+            (-l) nolongproc=1;;
+            (-m) nomidproc=1
             (-h) help;
                  exit;;
             (--) shift; break;;
