@@ -255,6 +255,56 @@ function setup_count_slash_in_path()
     echo $rel_path_len
 }
 
+function setup_sudo_mkdirp()
+{
+    path="$1"
+    if [ ! -d "$path" ]
+    then
+        running info sudo mkdir -p "$path"
+    else
+        running info ls -ld "$path"
+    fi
+}
+
+function setup_chown()
+{
+    user="$1"
+    group="$2"
+    path="$3"
+
+    curr_user=$(stat -c %U "$path")
+    curr_user_id=$(stat -c %u "$path")
+
+    curr_group=$(stat -c %G "$path")
+    curr_group_id=$(stat -c %g "$path")
+
+    if [ "$user" != "$curr_user" ] && [ "$user" -ne "$curr_user_id" ] || [ "$group" != "$curr_group" ] && [ "$group" -ne "$curr_group_id" ]
+    then
+        running info sudo chown ${user}.${group} "${path}"
+    else
+        ls -ld "$path"
+    fi
+}
+
+function setup_install_sys_pkg()
+{
+    pkg=$1
+
+    if [ -d "/run/current-system/profile" ]
+    then
+        # not installing only printing
+        # maybe be we have to decide some profile then need to install all there.
+        info guix install $pkg
+    else
+        if ! dpkg -s $pkg
+        then
+            running info sudo apt -y install $pkg
+        else
+            info $pkg is installed
+        fi
+    fi
+}
+
 function setup_make_parent_path()
 {
     count="$1"
@@ -263,11 +313,11 @@ function setup_make_parent_path()
     local updirsrel_path=${updirsrel_path_len_space// /"../"}
     updirsrel_path=${updirsrel_path%/}
 
-    print $updirsrel_path
-
     # TODO?
     # at last no / should be present
     # simply join number of .. by /
+
+    print $updirsrel_path
 }
 
 function setup_make_link()
@@ -407,15 +457,15 @@ function setup_custom_recursive_links()
     debug name=$name
     debug trg=$trg
 
-    if [ -d "${storagebasepath}" ]
-    then
-        relcount=$(expr $(setup_count_slash_in_path "$relpath") + 2)
+    storagebase_fullpath="${basepath}/${storagebasepath}"
 
-        cd "${storagebasepath}"
-        # debug SHARAD TEST
-        # https://stackoverflow.com/questions/4269798/use-gnu-find-to-show-only-the-leaf-directories
-        # https://stackoverflow.com/a/4269862
-        local trgstoragebasepaths=( $(find -type l \( \! -name '*BACKUP*' \) | rev | cut -d/ -f${relcount}- | rev | cut -c3- ) )
+    if [ -d "${storagebase_fullpath}" ]
+    then
+        relcount=$(expr $(setup_count_slash_in_path "$relpath") + 3)
+
+        cd "${storagebase_fullpath}"
+        info running find in $(pwd)
+        local trgstoragebasepaths=( $(find -type l \( \! -name '*BACKUP*' \) | grep "$relpath" | rev | cut -d/ -f${relcount}- | rev | cut -c3- ) )
         debug trgstoragebasepaths=$trgstoragebasepaths
         cd - > /dev/null 2>&1
 
@@ -423,25 +473,42 @@ function setup_custom_recursive_links()
 
         for trgstoragebasepath in "${trgstoragebasepaths[@]}"
         do
-            if [ -d "${storagebasepath}${trgstoragebasepath}" ]
+            info trgstoragebasepath=$trgstoragebasepath
+
+            trgstoragebase_fullpath="${basepath}/${storagebasepath}/${trgstoragebasepath}/${relpath}"
+
+            if [ -d "${trgstoragebase_fullpath}" ]
             then
-                cd "${storagebasepath}${trgstoragebasepath}"
+                cd "${trgstoragebase_fullpath}"
+                info running find in $(pwd)
                 local linkdirs=( $(find -type l \( \! -name '*BACKUP*' \) | cut -c3- ) )
                 debug linkdirs=$linkdirs
                 cd - > /dev/null 2>&1
 
+
+                info TEST
+                info linkdirs="${linkdirs[@]}"
+
+                running rm -rf $basepath/$trg/$trgstoragebasepath
+
                 for lnkdir in "${linkdirs[@]}"
                 do
+                    info basepath=$basepath
+                    info storagebasepath=$storagebasepath
+                    info trgstoragebasepath=$trgstoragebasepath
+                    info lnkdir=$lnkdir
+                    info name=$name
                     info mkdir -p $trg/$trgstoragebasepath
-                    running info setup_make_relative_link $basepath ${storagebasepath}/$trgstoragebasepath/$lnkdir/$name $trg/$trgstoragebasepath/$name
+                    running info setup_make_relative_link $basepath $storagebasepath/$trgstoragebasepath/$relpath/$lnkdir/$name $trg/$trgstoragebasepath/$lnkdir
+                    echo
                     # running debug setup_add_to_version_control
                 done
             else
-                warn "${storagebasepath}${trgstoragebasepath}" not exists.
+                warn "${storagebasepath}/${trgstoragebasepath}" not exists.
             fi
         done
     else
-        earn "${storagebasepath}" not exists.
+        warn "${storagebasepath}" not exists.
     fi
 }
 
@@ -738,7 +805,7 @@ function setup_apt_repo()
 
             if [ ! -f "$REPO_FILE_PATH" ]
             then
-                sudo add-apt-repository "$repo"
+                running info sudo add-apt-repository "$repo"
             else
                 verbose "$REPO_FILE_PATH" already added.
             fi
@@ -750,27 +817,28 @@ function setup_apt_upgrade_system()
 {
     if [ -d "/run/current-system/profile" ]
     then
-        running info ~/bin/lotus-update
+        echo sharad
+        # running info ~/bin/lotus-update
         #running info ~/bin/lotus-clear
     else
-        # sudo ${INSTALLER} ${INSTALLER_OPT} clean
-        sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
-        sudo ${INSTALLER} ${INSTALLER_OPT} autoclean
-        sudo ${INSTALLER} ${INSTALLER_OPT} update
-        sudo apt-file update
-        # sudo ${INSTALLER} ${INSTALLER_OPT} clean
-        sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
-        sudo ${INSTALLER} ${INSTALLER_OPT} autoclean
-        sudo ${INSTALLER} ${INSTALLER_OPT} upgrade
-        # sudo ${INSTALLER} ${INSTALLER_OPT} clean
-        sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
-        sudo ${INSTALLER} ${INSTALLER_OPT} autoclean
-        # sudo ${INSTALLER} ${INSTALLER_OPT} clean
-        sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
-        sudo ${INSTALLER} ${INSTALLER_OPT} autoclean
+        # running info sudo ${INSTALLER} ${INSTALLER_OPT} clean
+        running info sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
+        running info sudo ${INSTALLER} ${INSTALLER_OPT} autoclean
+        running info sudo ${INSTALLER} ${INSTALLER_OPT} update
+        running info sudo apt-file update
+        # running info sudo ${INSTALLER} ${INSTALLER_OPT} clean
+        running info sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
+        running info sudo ${INSTALLER} ${INSTALLER_OPT} autoclean
+        running info sudo ${INSTALLER} ${INSTALLER_OPT} upgrade
+        # running info sudo ${INSTALLER} ${INSTALLER_OPT} clean
+        running info sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
+        running info sudo ${INSTALLER} ${INSTALLER_OPT} autoclean
+        # running info sudo ${INSTALLER} ${INSTALLER_OPT} clean
+        running info sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
+        running info sudo ${INSTALLER} ${INSTALLER_OPT} autoclean
 
-        sudo ${INSTALLER} ${INSTALLER_OPT} clean
-        sudo ${INSTALLER} update
+        running info sudo ${INSTALLER} ${INSTALLER_OPT} clean
+        running info sudo ${INSTALLER} update
     fi
 }
 
@@ -864,11 +932,11 @@ function setup_apt_packages()
         if [ ! -d "/run/current-system/profile" ]
         then
             eval echo Intalling pkg list '\$'$pkg='\(' \${$pkg[*]} '\)'
-            if ! eval sudo ${INSTALLER} ${INSTALLER_OPT} install \$$pkg
+            if ! eval running info ${INSTALLER} ${INSTALLER_OPT} \$$pkg
             then
                 for p in $(eval print \$$pkg)
                 do
-                    running info sudo ${INSTALLER} ${INSTALLER_OPT} install ${p}
+                    running info setup_install_sys_pkg ${p}
                 done
             fi
         fi
@@ -878,14 +946,14 @@ function setup_apt_packages()
     then
         for pkg in "$PY_PIP_PKG"
         do
-            sudo pip install $pkg
+            running info sudo pip install $pkg
         done
     fi
 }
 
 function setup_ecrypt_private()
 {
-    sudo ${INSTALLER} ${INSTALLER_OPT} install ecryptfs-utils
+    running info setup_install_sys_pkg ecryptfs-utils
 
     if ! mount | grep $HOME/.Private
     then
@@ -930,7 +998,7 @@ function setup_tmp_ssh_keys()
     fi                          # if ! ssh-add -l
     if ! ssh-add -l
     then
-        sudo ${INSTALLER} ${INSTALLER_OPT} install openssl
+        running info setup_install_sys_pkg openssl
         if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
         then
             ## bring the ssh keys
@@ -962,7 +1030,7 @@ function setup_ssh_keys()
     then
         if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
         then
-            sudo ${INSTALLER} ${INSTALLER_OPT} install openssl
+            running info setup_install_sys_pkg openssl
 
             SSH_KEY_ENC_DUMP=$1
             SSH_DIR=$2
@@ -1248,8 +1316,8 @@ function setup_download_misc()
         if [ ! -f /usr/local/bin/p4 ]
         then
 	          wget 'https://www.perforce.com/downloads/free/p4' -O $SETUP_TMPDIR/p4
-	          sudo cp $SETUP_TMPDIR/p4 /usr/local/bin/p4
-	          sudo chmod +x /usr/local/bin/p4
+	          running info sudo cp $SETUP_TMPDIR/p4 /usr/local/bin/p4
+	          running info sudo chmod +x /usr/local/bin/p4
         fi
     fi
 }
@@ -1292,7 +1360,7 @@ function setup_mail_and_metadata()
 function setup_mail()
 {
     local SYSTEM_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/system/system
-    sudo ${INSTALLER} ${INSTALLER_OPT} install dovecot-core dovecot-imapd ntpdate postfix
+    running info setup_install_sys_pkg dovecot-core dovecot-imapd ntpdate postfix
     if [ -d ${SYSTEM_DIR}/ubuntu/etc/postfix ]
     then
         if [ ! -d /etc/postfix-ORG ]
@@ -1343,7 +1411,7 @@ function setup_login_shell()
     curshell="$(getent passwd $USER | cut -d: -f7)"
     if [ "$curshell" != "/bin/zsh" ]
     then
-        running info sudo ${INSTALLER} ${INSTALLER_OPT} install zsh
+        running info setup_install_sys_pkg zsh
         running info chsh -s /bin/zsh
     fi
 }
@@ -1364,9 +1432,9 @@ function setup_paradise()
         running info sudo rm -rf $curhomedir/hell # if exists
         newhomedir=$curhomedir/hell
         running info sudo mv $curhomedir ${curhomedir}_tmp
-        running info sudo mkdir -p $curhomedir
+        running info setup_sudo_mkdirp $curhomedir
         running info sudo mv ${curhomedir}_tmp "$newhomedir"
-        # sudo mkdir -p "$newhomedir"
+        # running info setup_sudo_mkdirp "$newhomedir"
         running info sudo usermod -d "$newhomedir" $USER
         warn first change home dir to $newhomedir
         exit -1
@@ -1553,8 +1621,8 @@ function setup_dep_control_storage_class_dir()
 
                 debug mdirbase=$mdirbase
 
-                running debug sudo mkdir -p "${hostdir}/volumes.d/${volclasspathinstdir}"
-                running debug sudo chown "$USER.$(id -gn)" "${hostdir}/volumes.d/${volclasspathinstdir}"
+                running debug setup_sudo_mkdirp "${hostdir}/volumes.d/${volclasspathinstdir}"
+                running debug setup_chown "$USER" "$(id -gn)" "${hostdir}/volumes.d/${volclasspathinstdir}"
 
 
                 debug fullupdirs=$fullupdirs
@@ -1803,11 +1871,11 @@ function setup_deps_model_storage_volumes_dir()
                 local _location="$vld/users/$USER"
                 if [ ! -d ${_location} ]
                 then
-                    running debug sudo mkdir -p "${_location}"
+                    running debug setup_sudo_mkdirp "${_location}"
                 fi
                 if [ -d ${_location} ]
                 then
-                    running debug sudo chown root.root "${_location}"
+                    running debug setup_chown root root "${_location}"
                 fi
 
                 vgdbase=$(basename $vgd)
@@ -2353,7 +2421,7 @@ EOF
 
     for lnk in "${userdata_dirs[@]}"
     do
-        running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage"  "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/$lnk"
+        running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage"  "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
     done
 
 
@@ -2544,6 +2612,8 @@ function setup_rc_org_dirs()
 
 function setup_dirs()
 {
+    running info find ~/.fa/localdirs/ ~/.fa/osetup/dirs.d ~/.fa/rc/.config/dirs.d  -name '*BACKUP*' -type l
+    running info find ~/.fa/localdirs/ ~/.fa/osetup/dirs.d ~/.fa/rc/.config/dirs.d  -name '*BACKUP*' -type l  -exec rm {} \;
 
     running info setup_machine_dir
 
@@ -2679,14 +2749,14 @@ Include /usr/local/etc/apache/sites-enabled/*.conf
 Include /usr/local/etc/apache/conf-enabled/*.conf
 
 EOF
-            sudo cp $TMP/apache2.conf /etc/apache2/apache2.conf
+            running info sudo cp $TMP/apache2.conf /etc/apache2/apache2.conf
         fi                      # if ! grep /usr/local/etc/apache /etc/apache2/apache2.conf
     fi                          # if [ -r /etc/apache2/apache2.conf ]
 }
 
 function setup_clib_installer()
 {
-    running debug sudo ${INSTALLER} ${INSTALLER_OPT} install libcurl4-gnutls-dev -qq
+    running debug setup_install_sys_pkg libcurl4-gnutls-dev -qq
     if [ ! -d /usr/local/stow/clib/ ]
     then
         if running debug git -c core.sshCommand="$GIT_SSH_OPTION" clone https://github.com/clibs/clib.git $SETUP_TMPDIR/clib
@@ -2694,7 +2764,7 @@ function setup_clib_installer()
             cd $SETUP_TMPDIR/clib
             running debug make PREFIX=/usr/local/stow/clib/
             running debug sudo make PREFIX=/usr/local/stow/clib/ install
-            cd /usr/local/stow && sudo stow clib
+            cd /usr/local/stow && running info sudo stow clib
             cd - > /dev/null 2>&1
             running debug rm -rf $SETUP_TMPDIR/clib
         fi
@@ -2710,7 +2780,7 @@ function install_clib_pkg()
     if [ ! -d /usr/local/stow/$pkg ]
     then
         running debug sudo sh -c "PREFIX=/usr/local/stow/$pkg clib install $pkgfull -o /usr/local/stow/$pkg"
-        cd /usr/local/stow && sudo stow $pkg
+        cd /usr/local/stow && running info sudo stow $pkg
         cd - > /dev/null 2>&1
     else
         verbose $pkgfull is already present. >&2
@@ -2733,9 +2803,9 @@ function install_bpkg_pkg()
     local pkg="$(basename $pkgfull)"
     if [ ! -d /usr/local/stow/$pkg ]
     then
-        running debug sudo mkdir -p "/usr/local/stow/$pkg/bin"
+        running debug setup_sudo_mkdirp "/usr/local/stow/$pkg/bin"
         running debug sudo sh -c "PREFIX=/usr/local/stow/$pkg bpkg install -g $pkgfull"
-        cd /usr/local/stow/ && sudo stow $pkg
+        cd /usr/local/stow/ && running info sudo stow $pkg
         cd - > /dev/null 2>&1
     else
         verbose $pkgfull is already present. >&2
