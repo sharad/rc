@@ -1,6 +1,11 @@
 #!/usr/bin/env zsh
 
 
+if [ ! -d "/tmp/user/$(id -u)" ]
+then
+    mkdir -p "/tmp/user/$(id -u)"
+fi
+
 if ! (( ${+RSETUP_LOGIN_RUN} )) ; then
     RSETUP_LOGIN_RUN=done
 else
@@ -38,20 +43,12 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
     if whence -p remind >& /dev/null &&
        ! pgrep -u "$(id -u)" remind   >& /dev/null
     then
-    # remind -z1 \
-    #     -k"~/bin/popremind %s &" \
-    #     ${DOTREMINDERS-$HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem} &!
-
         if [ -r ${DOTREMINDERS-$HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem} ]
         then
             remind -z1 \
                 -k'~/bin/popremind %s &' \
                 ${DOTREMINDERS-$HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem} >& /dev/null &!
         fi
-
-    # for testing remind that do not go into daemon mode, try below command
-    # remind -aqh -k"~/bin/popremind %s &" ${DOTREMINDERS-~/.Organize/remind/Reminders/init.rem} >& /dev/null
-
     fi
 
     if [ "x$DISPLAY" = x ]
@@ -59,16 +56,7 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
         emacs_daemon_start
     fi
 
-    # foreach server (general) {
-    #     if [ ! -e ~/.emacs.d/server/${server} ] ||
-    #         # do notr delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
-    #    	    ! timeout 7 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")'; then
-    #         # blow one is not allow gnus to read its ~/.gnus file automatically.
-    #         pkill -u "$(id -u)" emacs ; EMACS_SERVER_NAME=$server command emacs --daemon=$server
-    #     fi
-    # }
-
-    if whence leave  >& /dev/null && pgrep -u "$(id -u)" leave >& /dev/null
+    if whence -p leave  >& /dev/null && pgrep -u "$(id -u)" leave >& /dev/null
     then
         leave +0800
     fi
