@@ -464,7 +464,7 @@ function setup_custom_recursive_links()
         relcount=$(expr $(setup_count_slash_in_path "$relpath") + 3)
 
         cd "${storagebase_fullpath}"
-        info running find in $(pwd)
+        debug running find in $(pwd)
         local trgstoragebasepaths=( $(find -type l \( \! -name '*BACKUP*' \) | grep "$relpath" | rev | cut -d/ -f${relcount}- | rev | cut -c3- ) )
         debug trgstoragebasepaths=$trgstoragebasepaths
         cd - > /dev/null 2>&1
@@ -473,34 +473,33 @@ function setup_custom_recursive_links()
 
         for trgstoragebasepath in "${trgstoragebasepaths[@]}"
         do
-            info trgstoragebasepath=$trgstoragebasepath
+            debug trgstoragebasepath=$trgstoragebasepath
 
             trgstoragebase_fullpath="${basepath}/${storagebasepath}/${trgstoragebasepath}/${relpath}"
 
             if [ -d "${trgstoragebase_fullpath}" ]
             then
                 cd "${trgstoragebase_fullpath}"
-                info running find in $(pwd)
+                debug running find in $(pwd)
                 local linkdirs=( $(find -type l \( \! -name '*BACKUP*' \) | cut -c3- ) )
                 debug linkdirs=$linkdirs
                 cd - > /dev/null 2>&1
 
 
-                info TEST
-                info linkdirs="${linkdirs[@]}"
+                debug linkdirs="${linkdirs[@]}"
 
-                running rm -rf $basepath/$trg/$trgstoragebasepath
+                info DIR $basepath/$trg/$trgstoragebasepath
 
                 for lnkdir in "${linkdirs[@]}"
                 do
-                    info basepath=$basepath
-                    info storagebasepath=$storagebasepath
-                    info trgstoragebasepath=$trgstoragebasepath
-                    info lnkdir=$lnkdir
-                    info name=$name
-                    info mkdir -p $trg/$trgstoragebasepath
-                    running info setup_make_relative_link $basepath $storagebasepath/$trgstoragebasepath/$relpath/$lnkdir/$name $trg/$trgstoragebasepath/$lnkdir
-                    echo
+                    debug basepath=$basepath
+                    debug storagebasepath=$storagebasepath
+                    debug trgstoragebasepath=$trgstoragebasepath
+                    debug lnkdir=$lnkdir
+                    debug name=$name
+                    debug mkdir -p $trg/$trgstoragebasepath
+                    debug info setup_make_relative_link $basepath $storagebasepath/$trgstoragebasepath/$relpath/$lnkdir/$name $trg/$trgstoragebasepath/$lnkdir
+                    debug
                     # running debug setup_add_to_version_control
                 done
             else
