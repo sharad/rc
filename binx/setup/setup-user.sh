@@ -2009,9 +2009,15 @@ function setup_deps_control_volumes_internal_dirs()
                     info position="$position"
 
 
-                    # SHARAD new
-                    running info setup_public_dirs       "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
-                    running info setup_mutule_dirs_links "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                    if [ $position -eq 1 ]
+                    then
+                        # SHARAD new
+                        running info setup_public_dirs       "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                        running info setup_mutule_dirs_links "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                    else
+                        info not running setup_public_dirs       "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                        info not running setup_mutule_dirs_links "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                    fi
 
                 done
             fi
@@ -2311,7 +2317,7 @@ function setup_public_dirs()
                 then
                     running debug setup_vc_mkdirpath_ensure "${base}" "${relpath}" "${folder}/_local/Public/Publish/html" "ignoreall"
                 else
-                    running debug mkdir -p "${base}/${relpath}/${folder}/_local/Public/Publish/html/ignoreall"
+                    running debug mkdir -p "${base}/${relpath}/${folder}/_local/Public/Publish/html"
                 fi
             fi
 
@@ -2354,8 +2360,8 @@ function setup_mutule_dirs_links()
                 running info setup_vc_mkdirpath_ensure "${base}" "${relpath}/${folder}" "_local" "ignoreall"
                 running info setup_vc_mkdirpath_ensure "${base}" "${relpath}/${folder}" "_nonlocal" "ignoreall"
             else
-                running info mkdir -p "${base}/${relpath}/${folder}/_local/ignoreall"
-                running info mkdir -p "${base}/${relpath}/${folder}/_nonlocal/ignoreall"
+                running info mkdir -p "${base}/${relpath}/${folder}/_local"
+                running info mkdir -p "${base}/${relpath}/${folder}/_nonlocal"
             fi
 
             for ofolder in "${internal_dirs[@]}"
