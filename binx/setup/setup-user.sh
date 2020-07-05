@@ -35,7 +35,7 @@ SSH_KEY_DUMP=$1
 
 logicaldirs=(config deletable longterm preserved shortterm maildata)
 
-userdata_dirs=(Desktop Documents Downloads Library Music Pictures Public public_html Scratch Templates Videos)
+userdata_dirs=(Desktop Documents Downloads Library Music Pictures Public public_html Scratch Templates Videos Trash tmp)
 
 dataclassname=data
 infoclassname=info
@@ -2286,12 +2286,75 @@ function setup_org_home_portable_local_dirs()
     done
 }
 
+function setup_public_dirs()
+{
+    local base="$1"
+    local relpath="$2"
+    shift 2
+    local internal_dirs=("$@")
+
+    local fullpath=$base/$relpath
+
+    for folder in "${internal_dirs[@]}"
+    do
+        if [ "$folder" != "Pubic" ]
+        then
+            if [ ! -L "${base}/${relpath}/${folder}"]
+            then
+                running debug setup_vc_mkdirpath_ensure "${base}" "${relpath}" "${folder}/Public/Publish/html" "ignoreall"
+            fi
+
+            running debug setup_make_relative_link "${fullpath}" "${folder}/Public"              "Public/${folder}"
+            running debug setup_make_relative_link "${fullpath}" "${folder}/Public/Publish"      "Public/Publish/${folder}"
+            running debug setup_make_relative_link "${fullpath}" "${folder}/Public/Publish/html" "Public/Publish/html/${folder}"
+
+
+            running debug setup_add_to_version_control "${base}" "$relpath/Public/$folder"
+            running debug setup_add_to_version_control "${base}" "$relpath/Public/Publish/$folder"
+            running debug setup_add_to_version_control "${base}" "$relpath/Public/Publish/html/$folder"
+        fi
+    done
+}
+
+function setup_mutule_dirs_links()
+{
+    local base="$1"
+    local relpath="$2"
+    shift 2
+    local internal_dirs=("$@")
+
+    local fullpath=$base/$relpath
+
+    for folder in "${internal_dirs[@]}"
+    do
+        if [ ! -L "${base}/${relpath}/${folder}"]
+        then
+            running debug setup_vc_mkdirpath_ensure "${base}" "${relpath}" "_local" "ignoreall"
+            running debug setup_vc_mkdirpath_ensure "${base}" "${relpath}" "_nonlocal" "ignoreall"
+        fi
+        for ofolder in "${internal_dirs[@]}"
+        do
+            if [ "$folder" != "$ofolder" ]
+            then
+                running debug setup_vc_mkdirpath_ensure "${base}"     "${relpath}/${folder}/_local"            "${ofolder}"
+                running debug setup_make_relative_link "${fullpath}"  "${ofolder}/_local/${folder}" "${folder}/_nonlocal/${folder}"
+
+                running debug setup_make_relative_link "${fullpath}/${folder}" "_local/${ofolder}"     "_${ofolder}"
+                running debug setup_make_relative_link "${fullpath}/${folder}" "_nonlocal/${ofolder}"  "${ofolder}"
+
+                running debug setup_add_to_version_control "${base}" "$relpath/${folder}/_local/${ofolder}"
+                running debug setup_add_to_version_control "${base}" "$relpath//${folder}/_nonlocal/${folder}"
+            fi
+        done
+    done
+}
+
 function setup_org_home_portable_public_dirs()
 {
     local USERDIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR="${USERDIR}/localdirs"
-    local homeprotabledir="${LOCALDIRS_DIR}/org/home.d/portable.d"
     local relhomeprotabledir="org/home.d/portable.d"
+    local homeprotabledir="${LOCALDIRS_DIR}/${relhomeprotabledir}"
 
     running debug setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "${relhomeprotabledir}" "Public/Publish/html"
 
@@ -2301,38 +2364,42 @@ function setup_org_home_portable_public_dirs()
     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${relhomeprotabledir}/Public/Publish/html/index.html"
 
     # ???
-    for folder in local
-    do
-        running debug mkdir -p "${LOCALDIRS_DIR}/org/home.d/portable.d/${folder}.d/Public/Publish/html"
-        running debug setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d/portable.d/" "${folder}.d/Public"              "Public/$folder"
-        running debug setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d/portable.d/" "${folder}.d/Public/Publish"      "Public/Publish/$folder"
-        running debug setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d/portable.d/" "${folder}.d/Public/Publish/html" "Public/Publish/html/$folder"
+    # for folder in local
+    # do
+    #     running debug mkdir -p "${LOCALDIRS_DIR}/org/home.d/portable.d/${folder}.d/Public/Publish/html"
+    #     running debug setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d/portable.d/" "${folder}.d/Public"              "Public/$folder"
+    #     running debug setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d/portable.d/" "${folder}.d/Public/Publish"      "Public/Publish/$folder"
+    #     running debug setup_make_relative_link "${LOCALDIRS_DIR}/org/home.d/portable.d/" "${folder}.d/Public/Publish/html" "Public/Publish/html/$folder"
+    #
+    #     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/$folder"
+    #     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/$folder"
+    #     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/html/$folder"
+    #
+    #     # setup_add_to_version_control
+    # done
 
-        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/$folder"
-        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/$folder"
-        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/html/$folder"
+    local linkdirs=()
+    # local plaindirs=(Documents Library Downloads Music Pictures Templates tmp Videos Scratches Sink VolRes)
+    local plaindirs=("${userdata_dirs[@]}")
 
-        # setup_add_to_version_control
-    done
+    setup_public_dirs       "${LOCALDIRS_DIR}" "org/home.d/portable.d" "${plaindirs[@]}"
+    setup_mutule_dirs_links "${LOCALDIRS_DIR}" "org/home.d/portable.d" "${plaindirs[@]}"
+    # for folder in "${plaindirs[@]}"
+    # do
+    #     running debug setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "${relhomeprotabledir}" "${folder}/Public/Publish/html" "ignoreall"
+    #
+    #     running debug setup_make_relative_link "${homeprotabledir}" "${folder}/Public"              "Public/${folder}"
+    #     running debug setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish"      "Public/Publish/${folder}"
+    #     running debug setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish/html" "Public/Publish/html/${folder}"
+    #
+    #
+    #     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/$folder"
+    #     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/$folder"
+    #     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/html/$folder"
+    #
+    # done
 
-    local linkdirs=(Documents Library)
-    local plaindirs=(Downloads Music Pictures Templates tmp Videos Scratches Sink VolRes)
 
-    # for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
-    for folder in "${plaindirs[@]}"
-    do
-        running debug setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "${relhomeprotabledir}" "${folder}/Public/Publish/html" "ignoreall"
-
-        running debug setup_make_relative_link "${homeprotabledir}" "${folder}/Public"              "Public/${folder}"
-        running debug setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish"      "Public/Publish/${folder}"
-        running debug setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish/html" "Public/Publish/html/${folder}"
-
-
-        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/$folder"
-        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/$folder"
-        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/html/$folder"
-
-    done
     for folder in "${linkdirs[@]}"
     do
         # running debug setup_vc_mkdirpath_ensure ${LOCALDIRS_DIR} ${relhomeprotabledir} ${folder}/Public/Publish/html
@@ -2383,12 +2450,21 @@ EOF
     echo 'add in script' > "${LOCALDIRS_DIR}/org/home.d/portable.d/TODO"
     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/TODO"
 
-    running debug setup_make_relative_link "${USERDIR}" "doc" "localdirs/${rel_homeprotabledir}/Documents"
+
+    for lnk in "${userdata_dirs[@]}"
+    do
+        # mkdir-p
+        running debug setup_vc_mkdirpath_ensure   "${LOCALDIRS_DIR}" "${rel_homeprotabledir}" "${lnk}"
+        running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
+    done
+
+
+    running debug setup_make_relative_link "${USERDIR}" "doc" "localdirs/${rel_homeprotabledir}/Documents/online"
 
     running debug setup_make_relative_link ${HOME}/"${RESOURCEPATH}/${USERORGMAIN}/readwrite/" "private/user/noenc/Private" "public/user/localdirs/${rel_homeprotabledir}/Private"
 
-    running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Public/Publish/html" "public_html"
-    running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Documents/Library"   "Library"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Public/Publish/html" "public_html/html"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Documents/Library"   "Library/online"
 
     # TODO: NEXT need work here -sharad
     running debug setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/volumes.d/control.d/class/data/storage/local/container/scratches.d" "home.d/portable.d/Scratches"
@@ -2423,11 +2499,6 @@ EOF
     done
 
 
-
-    for lnk in "${userdata_dirs[@]}"
-    do
-        running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage"  "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
-    done
 
 
 
