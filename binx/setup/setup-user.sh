@@ -2336,8 +2336,8 @@ function setup_mutule_dirs_links()
         do
             if [ "$folder" != "$ofolder" ]
             then
-                running debug setup_vc_mkdirpath_ensure "${base}"     "${relpath}/${folder}/_local"            "${ofolder}"
-                running debug setup_make_relative_link "${fullpath}"  "${ofolder}/_local/${folder}" "${folder}/_nonlocal/${folder}"
+                running debug setup_vc_mkdirpath_ensure "${base}"     "${relpath}"                  "${folder}/_local/${ofolder}"
+                running debug setup_make_relative_link "${fullpath}"  "${ofolder}/_local/${folder}" "${folder}/_nonlocal/${ofolder}"
 
                 running debug setup_make_relative_link "${fullpath}/${folder}" "_local/${ofolder}"     "_${ofolder}"
                 running debug setup_make_relative_link "${fullpath}/${folder}" "_nonlocal/${ofolder}"  "${ofolder}"
