@@ -2327,25 +2327,26 @@ function setup_mutule_dirs_links()
 
     for folder in "${internal_dirs[@]}"
     do
-        if [ ! -L "${base}/${relpath}/${folder}"]
+        if [ ! -L "${base}/${relpath}/${folder}" ]
         then
             running debug setup_vc_mkdirpath_ensure "${base}" "${relpath}" "_local" "ignoreall"
             running debug setup_vc_mkdirpath_ensure "${base}" "${relpath}" "_nonlocal" "ignoreall"
+
+            for ofolder in "${internal_dirs[@]}"
+            do
+                if [ "$folder" != "$ofolder" ]
+                then
+                    running debug setup_vc_mkdirpath_ensure "${base}"     "${relpath}"                  "${folder}/_local/${ofolder}"
+                    running debug setup_make_relative_link "${fullpath}"  "${ofolder}/_local/${folder}" "${folder}/_nonlocal/${ofolder}"
+
+                    running debug setup_make_relative_link "${fullpath}/${folder}" "_local/${ofolder}"     "_${ofolder}"
+                    running debug setup_make_relative_link "${fullpath}/${folder}" "_nonlocal/${ofolder}"  "${ofolder}"
+
+                    running debug setup_add_to_version_control "${base}" "$relpath/${folder}/_local/${ofolder}"
+                    running debug setup_add_to_version_control "${base}" "$relpath//${folder}/_nonlocal/${folder}"
+                fi
+            done
         fi
-        for ofolder in "${internal_dirs[@]}"
-        do
-            if [ "$folder" != "$ofolder" ]
-            then
-                running debug setup_vc_mkdirpath_ensure "${base}"     "${relpath}"                  "${folder}/_local/${ofolder}"
-                running debug setup_make_relative_link "${fullpath}"  "${ofolder}/_local/${folder}" "${folder}/_nonlocal/${ofolder}"
-
-                running debug setup_make_relative_link "${fullpath}/${folder}" "_local/${ofolder}"     "_${ofolder}"
-                running debug setup_make_relative_link "${fullpath}/${folder}" "_nonlocal/${ofolder}"  "${ofolder}"
-
-                running debug setup_add_to_version_control "${base}" "$relpath/${folder}/_local/${ofolder}"
-                running debug setup_add_to_version_control "${base}" "$relpath//${folder}/_nonlocal/${folder}"
-            fi
-        done
     done
 }
 
