@@ -284,7 +284,7 @@ function setup_chown()
     curr_group=$(stat -c %G "$path")
     curr_group_id=$(stat -c %g "$path")
 
-    if [ "$user" != "$curr_user" ] && [ "$user" -ne "$curr_user_id" ] || [ "$group" != "$curr_group" ] && [ "$group" -ne "$curr_group_id" ]
+    if [ "$user" != "$curr_user" ] && [ "$user_id" -ne "$curr_user_id" ] || [ "$group" != "$curr_group" ] && [ "$group_id" -ne "$curr_group_id" ]
     then
         running info sudo chown ${user}.${group} "${path}"
     else
@@ -1569,6 +1569,8 @@ function setup_make_path_by_position()
 function setup_dep_control_storage_class_dir()
 {
     debug setup_dep_control_storage_class_dir \#=$#
+    info setup_dep_control_storage_class_dir \#=$#
+    info setup_dep_control_storage_class_dir "$@"
 
     if [ $# -eq 4 ]
     then
@@ -1622,24 +1624,36 @@ function setup_dep_control_storage_class_dir()
                 if [ -L "$mdir" ]
                 then
                     modelsymlink=1
+
+                    mdirbase=$(basename "$mdir")
+                    volclasspathinstdir="model.d/${storage_path}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
+
+                    info storage_path=$storage_path
+                    info mdir=$mdir
+                    info mdirbase=$mdirbase
+                    info classpath=$classpath
+                    info classinstdir=$classinstdir
+
+                    info 'volclasspathinstdir="model.d/${storage_path}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"'
+                    info =
+                    info $volclasspathinstdir
+
+                    debug mdirbase=$mdirbase
+
+                    running debug setup_sudo_mkdirp "${hostdir}/volumes.d/${volclasspathinstdir}"
+                    running debug setup_chown "$USER" "$(id -gn)" "${hostdir}/volumes.d/${volclasspathinstdir}"
+
+
+                    debug fullupdirs=$fullupdirs
+                    # running debug setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/model.d/${mdirbase}
+                    # debug running debug setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
+                    running debug setup_make_link "${fullupdirs}/${volclasspathinstdir}" "$classcontrol_dir_path/${mdirbase}"
+
+                    # SHARAD
+                    running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${classcontrol_dir_path}/${mdirbase}"
+
                 fi
 
-                mdirbase=$(basename "$mdir")
-                volclasspathinstdir="model.d/${storage_path}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
-
-                debug mdirbase=$mdirbase
-
-                running debug setup_sudo_mkdirp "${hostdir}/volumes.d/${volclasspathinstdir}"
-                running debug setup_chown "$USER" "$(id -gn)" "${hostdir}/volumes.d/${volclasspathinstdir}"
-
-
-                debug fullupdirs=$fullupdirs
-                # running debug setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/model.d/${mdirbase}
-                # debug running debug setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
-                running debug setup_make_link "${fullupdirs}/${volclasspathinstdir}" "$classcontrol_dir_path/${mdirbase}"
-
-                # SHARAD
-                running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${classcontrol_dir_path}/${mdirbase}"
 
             done
 
@@ -1663,6 +1677,8 @@ function setup_deps_control_class_dir()
     # ls ${HOME}/fa/localdirs/org/deps.d/model.d/machine.d/$HOST/${class}.d/
 
     debug setup_deps_control_class_dir \#=$#
+    info setup_deps_control_class_dir \#=$#
+    info setup_deps_control_class_dir "$@"
 
     if [ $# -eq 4 ]
     then
@@ -1717,14 +1733,20 @@ function setup_deps_control_class_all_positions_dirs()
     # ls ${HOME}/fa/localdirs/org/deps.d/model.d/machine.d/$HOST/${class}.d/
     debug setup_deps_control_class_all_positions_dirs  \#=$#
 
+    info setup_deps_control_class_all_positions_dirs  \#=$#
+    info setup_deps_control_class_all_positions_dirs  "$@"
+
     if [ $# -eq 3 ]
     then
         local storage_path="$1"
         local class="$2"
         local classinstdir="$3"
+        info storage_path=$storage_path
+        info class=$class
+        info classinstdir=$classinstdir
         for pos in  1 2 3
         do
-            debug running debug setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
+            debug running info setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
             running debug setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
         done
     else
@@ -1955,19 +1977,27 @@ function setup_deps_control_volumes_internal_dirs()
                     # TODO? -sharad
                     volinternaldirbase="$(basename ${internaldir})"
                     running debug mkdir -p "${volumedir}/control.d/${classcontroldir_rel_path_dirname}/${volinternaldirbase}/$cdir"
+                    running info echo TEST sharad
+                    info volinternaldirbase=${volinternaldirbase}
+                    info classname="${classname}"
+                    info storage_path="${storage_path}"
+                    info containernames.d="${containername}s.d"
+                    info position="$position"
+
+
+                    # SHARAD new
+                    running info echo TEST sharad
+                    running info setup_public_dirs       "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" "${internal_dirs[@]}"
+                    running info setup_mutule_dirs_links "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" "${internal_dirs[@]}"
+
                 done
             fi
         fi
     done
 
 
-    # SHARAD new
-    running info echo TEST sharad
-    # running info setup_public_dirs       "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/" "${internal_dirs[@]}"
-    running info setup_mutule_dirs_links "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${containername}/${volinternaldirbase}/" "${internal_dirs[@]}"
 
 
-    setup-user: setup_mutule_dirs_links /home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs org/deps.d/model.d/machine.d//home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/latitude5480-spratap//home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/latitude5480-spratap/volumes.d/control.d/storage/local/container/sysdatas.d/class/data/vgres01-lvres01 config deletable longterm preserved shortterm maildata
 }
 
 function setup_deps_control_dir()
@@ -2277,6 +2307,11 @@ function setup_mutule_dirs_links()
     do
         if [ ! -L "${base}/${relpath}/${folder}" ]
         then
+            rm -f "${base}"/"${relpath}"/"_local/.gitignore"
+            rm -f "${base}"/"${relpath}"/"_nonlocal/.gitignore"
+            rmdir "${base}"/"${relpath}"/"_local"
+            rmdir "${base}"/"${relpath}"/"_nonlocal"
+
             running info setup_vc_mkdirpath_ensure "${base}" "${relpath}/${folder}" "_local" "ignoreall"
             running info setup_vc_mkdirpath_ensure "${base}" "${relpath}/${folder}" "_nonlocal" "ignoreall"
 
