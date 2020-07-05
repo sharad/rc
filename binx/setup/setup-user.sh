@@ -1930,6 +1930,10 @@ function setup_deps_control_volumes_internal_dirs()
     local hostdir="${machinedir}/$HOST"
     local volumedir="${hostdir}/volumes.d"
 
+    local _machinedir="org/deps.d/model.d/machine.d"
+    local _hostdir="$HOST"
+    local _volumedir="volumes.d"
+
     if false                    # not required
     then
         running debug setup_deps_control_class_dir "$storage_path" "$class_container" "$containername" "$position"
@@ -1958,8 +1962,12 @@ function setup_deps_control_volumes_internal_dirs()
 
 
     # SHARAD new
-    running info setup_public_dirs       "${LOCALDIRS_DIR}" "org/deps.d/model.d/machine.d/${hostdir}/${volumedir}/control.d/${classcontroldir_rel_path_dirname}/${volinternaldirbase}" "${internal_dirs[@]}"
-    running info setup_mutule_dirs_links "${LOCALDIRS_DIR}" "org/deps.d/model.d/machine.d/${hostdir}/${volumedir}/control.d/${classcontroldir_rel_path_dirname}/${volinternaldirbase}" "${internal_dirs[@]}"
+    running info echo TEST sharad
+    # running info setup_public_dirs       "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/" "${internal_dirs[@]}"
+    running info setup_mutule_dirs_links "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${containername}/${volinternaldirbase}/" "${internal_dirs[@]}"
+
+
+    setup-user: setup_mutule_dirs_links /home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs org/deps.d/model.d/machine.d//home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/latitude5480-spratap//home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/latitude5480-spratap/volumes.d/control.d/storage/local/container/sysdatas.d/class/data/vgres01-lvres01 config deletable longterm preserved shortterm maildata
 }
 
 function setup_deps_control_dir()
@@ -1994,8 +2002,6 @@ function setup_deps_view_volumes_dirs()
     # TODO?
     # local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
     local viewdirname="view.d"
-
-    # debug SHARAD TEST
 
     # need to create ${LOCALDIRS_DIR}/org/deps.d/view.d/
 
@@ -2271,21 +2277,21 @@ function setup_mutule_dirs_links()
     do
         if [ ! -L "${base}/${relpath}/${folder}" ]
         then
-            running debug setup_vc_mkdirpath_ensure "${base}" "${relpath}" "_local" "ignoreall"
-            running debug setup_vc_mkdirpath_ensure "${base}" "${relpath}" "_nonlocal" "ignoreall"
+            running info setup_vc_mkdirpath_ensure "${base}" "${relpath}/${folder}" "_local" "ignoreall"
+            running info setup_vc_mkdirpath_ensure "${base}" "${relpath}/${folder}" "_nonlocal" "ignoreall"
 
             for ofolder in "${internal_dirs[@]}"
             do
                 if [ "$folder" != "$ofolder" ]
                 then
-                    running debug setup_vc_mkdirpath_ensure "${base}"     "${relpath}"                  "${folder}/_local/${ofolder}"
-                    running debug setup_make_relative_link "${fullpath}"  "${ofolder}/_local/${folder}" "${folder}/_nonlocal/${ofolder}"
+                    running info setup_vc_mkdirpath_ensure "${base}"     "${relpath}"                  "${folder}/_local/${ofolder}"
+                    running info setup_make_relative_link "${fullpath}"  "${ofolder}/_local/${folder}" "${folder}/_nonlocal/${ofolder}"
 
-                    running debug setup_make_relative_link "${fullpath}/${folder}" "_local/${ofolder}"     "_${ofolder}"
-                    running debug setup_make_relative_link "${fullpath}/${folder}" "_nonlocal/${ofolder}"  "${ofolder}"
+                    running info setup_make_relative_link "${fullpath}/${folder}" "_local/${ofolder}"     "_${ofolder}"
+                    running info setup_make_relative_link "${fullpath}/${folder}" "_nonlocal/${ofolder}"  "${ofolder}"
 
-                    running debug setup_add_to_version_control "${base}" "$relpath/${folder}/_local/${ofolder}"
-                    running debug setup_add_to_version_control "${base}" "$relpath//${folder}/_nonlocal/${folder}"
+                    running info setup_add_to_version_control "${base}" "$relpath/${folder}/_local/${ofolder}"
+                    running info setup_add_to_version_control "${base}" "$relpath//${folder}/_nonlocal/${folder}"
                 fi
             done
         fi
@@ -2386,7 +2392,7 @@ EOF
     for lnk in "${userdata_dirs[@]}"
     do
         info TEST $lnk
-        # running debug setup_vc_mkdirpath_ensure   "${LOCALDIRS_DIR}" "${rel_homeprotabledir}" "${lnk}"
+        running info setup_vc_mkdirpath_ensure   "${LOCALDIRS_DIR}" "${rel_homeprotabledir}" "${lnk}"
         running info mkdir -p   "${LOCALDIRS_DIR}"/"${rel_homeprotabledir}"/"${lnk}"
         running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
     done
