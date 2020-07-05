@@ -1741,12 +1741,19 @@ function setup_deps_control_class_all_positions_dirs()
         local storage_path="$1"
         local class="$2"
         local classinstdir="$3"
+
         info storage_path=$storage_path
         info class=$class
         info classinstdir=$classinstdir
+
+        info for pos in 1 2 3
         for pos in  1 2 3
         do
-            debug running info setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
+            info pos="${pos}"
+            info classinstdir="${classinstdir}"
+            info class="${class}"
+            info storage_path="${storage_path}"
+
             running debug setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
         done
     else
@@ -1936,7 +1943,7 @@ function setup_deps_control_volumes_internal_dirs()
 
     local internal_dirs=("$@")
 
-    position=3
+
 
 
     # local position=${4-2} # not required
@@ -1944,6 +1951,7 @@ function setup_deps_control_volumes_internal_dirs()
     local viewdirname=view.d
     local class_container="${classname}/${containername}s"
 
+    position=3
     local classcontroldir_rel_path=$(setup_make_path_by_position "${classname}" "${storage_path}" "${containername}s.d" "$position" )
     local classcontroldir_rel_path_dirname="${classcontroldir_rel_path}"
 
@@ -1986,7 +1994,6 @@ function setup_deps_control_volumes_internal_dirs()
 
 
                     # SHARAD new
-                    running info echo TEST sharad
                     running info setup_public_dirs       "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" "${internal_dirs[@]}"
                     running info setup_mutule_dirs_links "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" "${internal_dirs[@]}"
 
@@ -2166,8 +2173,12 @@ function setup_deps_view_dir()
 {
     local storage_path="${1-local}"
 
+    info for pos in 1 2 3
     for pos in 1 2 3
     do
+        info pos="${pos}"
+        info storage_path="${storage_path}"
+
         running debug setup_deps_view_volumes_dirs "$storage_path" "$pos"
     done
 }
@@ -2279,15 +2290,15 @@ function setup_public_dirs()
         then
             if [ ! -L "${base}/${relpath}/${folder}" ]
             then
-                running debug setup_vc_mkdirpath_ensure "${base}" "${relpath}" "${folder}/Public/Publish/html" "ignoreall"
+                running debug setup_vc_mkdirpath_ensure "${base}" "${relpath}" "${folder}/_local/Public/Publish/html" "ignoreall"
             fi
 
-            running debug setup_make_relative_link "${fullpath}" "${folder}/Public"              "Public/${folder}"
-            running debug setup_make_relative_link "${fullpath}" "${folder}/Public/Publish"      "Public/Publish/${folder}"
-            running debug setup_make_relative_link "${fullpath}" "${folder}/Public/Publish/html" "Public/Publish/html/${folder}"
+            # running debug setup_make_relative_link "${fullpath}" "${folder}/_Public"                  "Public/${folder}"
+            running debug setup_make_relative_link "${fullpath}" "${folder}/_local/Public/Publish"      "Public/Publish/${folder}"
+            running debug setup_make_relative_link "${fullpath}" "${folder}/_local/Public/Publish/html" "Public/Publish/html/${folder}"
 
 
-            running debug setup_add_to_version_control "${base}" "$relpath/Public/$folder"
+            # running debug setup_add_to_version_control "${base}" "$relpath/Public/$folder"
             running debug setup_add_to_version_control "${base}" "$relpath/Public/Publish/$folder"
             running debug setup_add_to_version_control "${base}" "$relpath/Public/Publish/html/$folder"
         fi
