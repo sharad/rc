@@ -637,15 +637,26 @@ function setup_add_to_version_control()
     local base="$1"
     local relfile="$2"
 
-    if ! git -C "${base}" ls-files --error-unmatch "${relfile}" >/dev/null 2>&1
+    info base=$base
+    info relfile=$relfile
+
+    local reldir=$(dirname "${relfile}" )
+    local relbase=$(basename "${relfile}" )
+
+    running info git -C "${base}/${reldir}" add -f "${relbase}"
+
+    running debug git -C "${base}/${reldir}" add -f "${relbase}"
+
+
+    if ! git -C "${base}/${reldir}" ls-files --error-unmatch "${relbase}" >/dev/null 2>&1
     then
-        debug do   git -C "${base}" add -f "${relfile}"
+        debug do   git -C "${base}/${reldir}" add -f "${relbase}"
         if [ -d "${base}/${relfile}" -a ! -L "${base}/${relfile}"  ]
         then
             debug in ${base}
             debug ${relfile} is directory so not adding it in git.
         else
-            if setup_add_to_version_control_ask "git -C ${base} add -f ${relfile} ? "
+            if setup_add_to_version_control_ask "git -C ${base}/${reldir} add -f ${relbase} ? "
             then
                 # running debug git -C "${base}" add -f "${relfile}"
                 local reldir=$(dirname "${relfile}" )
@@ -1598,6 +1609,8 @@ function setup_dep_control_storage_class_dir()
         local classcontroldir_rel_path=$(setup_make_path_by_position "${classpath}" "${storage_path}" "${classcontainer}.d" "$position")
         local classcontrol_dir_path="${hostdir}/volumes.d/control.d/${classcontroldir_rel_path}"
 
+        local _classcontrol_dir_path="org/deps.d/model.d/machine.d/$HOST/volumes.d/control.d/${classcontroldir_rel_path}"
+
         # # TODO?
         # local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
         local pcount=$(setup_count_slash_in_path ${classcontroldir_rel_path})
@@ -1653,7 +1666,7 @@ function setup_dep_control_storage_class_dir()
                     running debug setup_make_link "${fullupdirs}/${volclasspathinstdir}" "$classcontrol_dir_path/${mdirbase}"
 
                     # SHARAD
-                    running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${classcontrol_dir_path}/${mdirbase}"
+                    running info setup_add_to_version_control "${LOCALDIRS_DIR}" "${_classcontrol_dir_path}/${mdirbase}"
 
                 fi
 
@@ -1997,8 +2010,8 @@ function setup_deps_control_volumes_internal_dirs()
 
 
                     # SHARAD new
-                    running info setup_public_dirs       "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" "${internal_dirs[@]}"
-                    running info setup_mutule_dirs_links "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" "${internal_dirs[@]}"
+                    running info setup_public_dirs       "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                    running info setup_mutule_dirs_links "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
 
                 done
             fi
@@ -2282,6 +2295,7 @@ function setup_public_dirs()
 {
     local base="$1"
     local relpath="$2"
+    local vc=$3
     shift 2
     local internal_dirs=("$@")
 
@@ -2293,7 +2307,12 @@ function setup_public_dirs()
         then
             if [ ! -L "${base}/${relpath}/${folder}" ]
             then
-                running debug setup_vc_mkdirpath_ensure "${base}" "${relpath}" "${folder}/_local/Public/Publish/html" "ignoreall"
+                if [ $vc -eq 1 ]
+                then
+                    running debug setup_vc_mkdirpath_ensure "${base}" "${relpath}" "${folder}/_local/Public/Publish/html" "ignoreall"
+                else
+                    running debug mkdir -p "${base}/${relpath}/${folder}/_local/Public/Publish/html/ignoreall"
+                fi
             fi
 
             # running debug setup_make_relative_link "${fullpath}" "${folder}/_Public"                  "Public/${folder}"
@@ -2301,9 +2320,12 @@ function setup_public_dirs()
             running debug setup_make_relative_link "${fullpath}" "${folder}/_local/Public/Publish/html" "Public/Publish/html/${folder}"
 
 
-            # running debug setup_add_to_version_control "${base}" "$relpath/Public/$folder"
-            running debug setup_add_to_version_control "${base}" "$relpath/Public/Publish/$folder"
-            running debug setup_add_to_version_control "${base}" "$relpath/Public/Publish/html/$folder"
+            if [ $vc -eq 1 ]
+            then
+                # running debug setup_add_to_version_control "${base}" "$relpath/Public/$folder"
+                running debug setup_add_to_version_control "${base}" "$relpath/Public/Publish/$folder"
+                running debug setup_add_to_version_control "${base}" "$relpath/Public/Publish/html/$folder"
+            fi
         fi
     done
 }
@@ -2312,7 +2334,8 @@ function setup_mutule_dirs_links()
 {
     local base="$1"
     local relpath="$2"
-    shift 2
+    local vc=$3
+    shift 3
     local internal_dirs=("$@")
 
     local fullpath=$base/$relpath
@@ -2326,21 +2349,36 @@ function setup_mutule_dirs_links()
             rmdir "${base}"/"${relpath}"/"_local"
             rmdir "${base}"/"${relpath}"/"_nonlocal"
 
-            running info setup_vc_mkdirpath_ensure "${base}" "${relpath}/${folder}" "_local" "ignoreall"
-            running info setup_vc_mkdirpath_ensure "${base}" "${relpath}/${folder}" "_nonlocal" "ignoreall"
+            if [ $vc -eq 1 ]
+            then
+                running info setup_vc_mkdirpath_ensure "${base}" "${relpath}/${folder}" "_local" "ignoreall"
+                running info setup_vc_mkdirpath_ensure "${base}" "${relpath}/${folder}" "_nonlocal" "ignoreall"
+            else
+                running info mkdir -p "${base}/${relpath}/${folder}/_local/ignoreall"
+                running info mkdir -p "${base}/${relpath}/${folder}/_nonlocal/ignoreall"
+            fi
 
             for ofolder in "${internal_dirs[@]}"
             do
                 if [ "$folder" != "$ofolder" ]
                 then
-                    running info setup_vc_mkdirpath_ensure "${base}"     "${relpath}"                  "${folder}/_local/${ofolder}"
+                    if [ $vc -eq 1 ]
+                    then
+                        running info setup_vc_mkdirpath_ensure "${base}"     "${relpath}"                  "${folder}/_local/${ofolder}"
+                    else
+                        running info mkdir -p "${base}"/"${relpath}"/"${folder}/_local/${ofolder}"
+                    fi
+
                     running info setup_make_relative_link "${fullpath}"  "${ofolder}/_local/${folder}" "${folder}/_nonlocal/${ofolder}"
 
                     running info setup_make_relative_link "${fullpath}/${folder}" "_local/${ofolder}"     "_${ofolder}"
                     running info setup_make_relative_link "${fullpath}/${folder}" "_nonlocal/${ofolder}"  "${ofolder}"
 
-                    running info setup_add_to_version_control "${base}" "$relpath/${folder}/_local/${ofolder}"
-                    running info setup_add_to_version_control "${base}" "$relpath//${folder}/_nonlocal/${folder}"
+                    if [ $vc -eq 1 ]
+                    then
+                        running info setup_add_to_version_control "${base}" "$relpath/${folder}/_local/${ofolder}"
+                        running info setup_add_to_version_control "${base}" "$relpath//${folder}/_nonlocal/${folder}"
+                    fi
                 fi
             done
         fi
@@ -2380,8 +2418,8 @@ function setup_org_home_portable_public_dirs()
     # local plaindirs=(Documents Library Downloads Music Pictures Templates tmp Videos Scratches Sink VolRes)
     local plaindirs=("${userdata_dirs[@]}")
 
-    setup_public_dirs       "${LOCALDIRS_DIR}" "org/home.d/portable.d" "${plaindirs[@]}"
-    setup_mutule_dirs_links "${LOCALDIRS_DIR}" "org/home.d/portable.d" "${plaindirs[@]}"
+    setup_public_dirs       "${LOCALDIRS_DIR}" "org/home.d/portable.d" 1 "${plaindirs[@]}"
+    setup_mutule_dirs_links "${LOCALDIRS_DIR}" "org/home.d/portable.d" 1 "${plaindirs[@]}"
 
     for folder in "${linkdirs[@]}"
     do
