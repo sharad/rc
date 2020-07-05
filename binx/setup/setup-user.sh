@@ -647,7 +647,10 @@ function setup_add_to_version_control()
         else
             if setup_add_to_version_control_ask "git -C ${base} add -f ${relfile} ? "
             then
-                running debug git -C "${base}" add -f "${relfile}"
+                # running debug git -C "${base}" add -f "${relfile}"
+                local reldir=$(dirname "${relfile}" )
+                local relbase=$(basename "${relfile}" )
+                running debug git -C "${base}/${reldir}" add -f "${relbase}"
             fi
         fi
     else
