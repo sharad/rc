@@ -1351,7 +1351,6 @@ function setup_sshkeys()
 
 function setup_Documentation()  # TODO
 {
-    running debug setup_copy_link ${HOME}/.setup/.config/_home/Documents ${HOME}/Documents
 }
 
 function setup_public_html()    # TODO
