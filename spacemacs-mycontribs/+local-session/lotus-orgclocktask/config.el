@@ -497,7 +497,7 @@
       (when (and org-task-base-dir
                  (file-directory-p org-task-base-dir))
         (task-party-base-dir     (org-publish-get-attribute "tasks" "org" :base-directory))
-        (task-scratch-dir        "~/Scratches/main")
+        (task-scratch-dir        "~/Scratch/main")
         (task-projbuffs-base-dir (publishing-created-contents-path 'misc "projbuffs"))
 
         (message "lotus-orgclocktask/init-task-manager: org-task-base-dir = %s" org-task-base-dir)

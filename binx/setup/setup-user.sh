@@ -1789,72 +1789,6 @@ function setup_deps_control_info_dirs()
 
 ###}}}
 
-if false                        # not required
-then
-    ###{{{
-    function setup_deps_control_data_usrdata_dir()
-    {
-        local storage_path="${1-local}"
-        local position=${1-2}
-
-        running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/usrdatas" "usrdata" "$position"
-
-        running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "userdata" "${userdata_dirs[@]}" #  tmp
-    }
-    function setup_deps_control_data_sysdata_dir()
-    {
-        local storage_path="${1-local}"
-        local position=${1-2}
-
-        running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/sysdatas" "sysdata" "$position"
-
-        running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "sysdata" config deletable longterm preserved shortterm maildata
-    }
-    function setup_deps_control_data_scratches_dir()
-    {
-        local storage_path="${1-local}"
-        local position=${1-2}
-
-        running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/scratches" "scratch" "$position"
-    }
-    function setup_deps_control_data_main_dir()
-    {
-        local storage_path="${1-local}"
-        local position=${1-2}
-
-        running debug setup_deps_control_class_dir "$storage_path" "${dataclassname}/main" "main" "$position"
-    }
-    function setup_deps_control_data_dir()
-    {
-        local storage_path="${1-local}"
-        local position=${1-2}
-
-        running debug setup_deps_control_data_usrdata_dir   "$storage_path" "$position"
-        running debug setup_deps_control_data_sysdata_dir   "$storage_path" "$position"
-        running debug setup_deps_control_data_scratches_dir "$storage_path" "$position"
-        running debug setup_deps_control_data_main_dir      "$storage_path" "$position"
-    }
-    # 
-
-    function setup_deps_control_info_meta_dir()
-    {
-        local storage_path="${1-local}"
-        local position=${1-2}
-
-        # running debug setup_deps_model_volumes_dir "${storage_path}"
-        # running debug setup_deps_control_class_dir "$storage_path" ${infoclassname}/meta meta
-        running debug setup_deps_control_class_dir "$storage_path" "${infoclassname}/meta" "meta" "$position"
-    }
-    function setup_deps_control_info_dir()
-    {
-        local storage_path="${1-local}"
-        local position=${1-2}
-
-        setup_deps_control_info_meta_dir "$storage_path" "$position"
-    }
-    ###}}}
-fi
-
 # deps/model
 function setup_deps_model_storage_volumes_dir()
 {
@@ -2021,6 +1955,11 @@ function setup_deps_control_volumes_internal_dirs()
             fi
         fi
     done
+
+
+    # SHARAD new
+    running info setup_public_dirs       "${LOCALDIRS_DIR}" "org/deps.d/model.d/machine.d/${hostdir}/${volumedir}/control.d/${classcontroldir_rel_path_dirname}/${volinternaldirbase}" "${internal_dirs[@]}"
+    running info setup_mutule_dirs_links "${LOCALDIRS_DIR}" "org/deps.d/model.d/machine.d/${hostdir}/${volumedir}/control.d/${classcontroldir_rel_path_dirname}/${volinternaldirbase}" "${internal_dirs[@]}"
 }
 
 function setup_deps_control_dir()
@@ -2461,7 +2400,7 @@ EOF
     running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Documents/Library"   "Library/online"
 
     # TODO: NEXT need work here -sharad
-    running debug setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/volumes.d/control.d/class/data/storage/local/container/scratches.d" "home.d/portable.d/Scratches"
+    # running debug setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/volumes.d/control.d/class/data/storage/local/container/scratches.d" "home.d/portable.d/Scratches"
     running debug setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/volumes.d/view.d/maildata/mail-and-metadata/maildir" "home.d/portable.d/Maildir"
 
 
