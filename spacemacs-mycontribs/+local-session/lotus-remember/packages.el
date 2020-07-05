@@ -147,7 +147,7 @@ Each entry is either:
                                             ?i "\n* %^{topic} %T \n%i%?\n [%a]\n" (expand-file-name "idea.org" org-parent-dir) "Ideas")
 
                 (add-org-remember-templates "Book" ;; book descp
-                                            ?b "\n* %^{Book Title} %t :READING: \n%[~/Documents/CreatedContent/contents/virtual/org/default/remember/templates/book]\n [%a]\n" (expand-file-name "journal.org" org-parent-dir) "Books")
+                                            ?b "\n* %^{Book Title} %t :READING: \n%[~/Documents/online/CreatedContent/contents/virtual/org/default/remember/templates/book]\n [%a]\n" (expand-file-name "journal.org" org-parent-dir) "Books")
 
                 (add-org-remember-templates "Private" ;; private note
                                             ?p "\n* %^{topic} %T \n%i%?\n [%a]\n" (expand-file-name "privnotes.org" org-parent-dir))
@@ -162,7 +162,7 @@ Each entry is either:
                                             ?w "\n* %^{topic} %T \n%i%?\n [%a]\n" (expand-file-name "waiting4.org" org-parent-dir))
 
                 (add-org-remember-templates "Contact" ;; contact
-                                            ?c "\n* %^{Name} :CONTACT:\n%[~/Documents/CreatedContent/contents/virtual/org/default/remember/templates/contact]\n %i\n [%a]\n" (expand-file-name "contacts.org" org-parent-dir))
+                                            ?c "\n* %^{Name} :CONTACT:\n%[~/Documents/online/CreatedContent/contents/virtual/org/default/remember/templates/contact]\n %i\n [%a]\n" (expand-file-name "contacts.org" org-parent-dir))
 
                 (add-org-remember-templates "Receipt" ;; receipt
                                             ?e "** %^{BriefDesc} %U %^g\n%?\n [%a]\n" (expand-file-name "finances.org" org-parent-dir)))))
@@ -275,7 +275,7 @@ Each entry is either:
                  "b" "Book" ;; book descp
                  'entry
                  `(file+headline ,(expand-file-name "journal.org" org-parent-dir) "Books")
-                 "\n* %^{Book Title} %t :READING: \n%[~/Documents/CreatedContent/contents/virtual/org/default/remember/templates/book]\n [%a]\n"
+                 "\n* %^{Book Title} %t :READING: \n%[~/Documents/online/CreatedContent/contents/virtual/org/default/remember/templates/book]\n [%a]\n"
                  :empty-lines 1)
 
                 (add-org-capture-templates
@@ -310,7 +310,7 @@ Each entry is either:
                  "ac" "Contact" ;; contact
                  'entry
                  `(file+headline ,(expand-file-name "contacts.org" org-parent-dir) "Contacts")
-                 "\n* %^{Name} :CONTACT:\n%[~/Documents/CreatedContent/contents/virtual/org/default/remember/templates/contact]\n %i\n [%a]\n"
+                 "\n* %^{Name} :CONTACT:\n%[~/Documents/online/CreatedContent/contents/virtual/org/default/remember/templates/contact]\n %i\n [%a]\n"
                  :empty-lines 1)
 
                 (add-org-capture-templates

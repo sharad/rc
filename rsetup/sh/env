@@ -24,6 +24,11 @@ export GUIX_PROFILE
 # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
 ## GUIX
 
+## DOCUMENT_PUBLISH_PATH
+DOCUMENT_PUBLISH_PATH=~/Documents/online
+export DOCUMENT_PUBLISH_PATH
+## DOCUMENT_PUBLISH_PATH
+
 if [ "x" != "x$SSL_CERT_FILE" ]
 then
     LDAPTLS_CACERT=$SSL_CERT_FILE

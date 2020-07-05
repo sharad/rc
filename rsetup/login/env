@@ -31,6 +31,14 @@ unset __subcomp
 unset __comp
 
 
+
+## DOCUMENT_PUBLISH_PATH
+DOCUMENT_PUBLISH_PATH=~/Documents/online
+export DOCUMENT_PUBLISH_PATH
+## DOCUMENT_PUBLISH_PATH
+
+
+
 PRIVATE_DIR=$HOME/.Private
 SSH_KEYS_DIR=$HOME/.ssh/login-keys.d
 SCREEN4KEYCHAIN=keychain

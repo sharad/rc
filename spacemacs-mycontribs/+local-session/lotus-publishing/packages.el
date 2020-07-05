@@ -75,422 +75,427 @@ Each entry is either:
 
 (defun lotus-publishing/init-publishing ()
   (use-package publishing
-               :defer t
-               :config
-               (progn
-                 (progn ;; publishing
-                   ;; (setq
-                   ;;  *doc-root*            (expand-file-name "Documents" "~")
-                   ;;  *created-content-dir* (expand-file-name "CreatedContent" *doc-root*)
-                   ;;  *website-address*     "http://sharad.ddns.net/~s/gen/")
-                   )
+    :defer t
+    :init
+    (progn)
+    ;; (setq *doc-root*
+    ;;       (let ((envdoc-path (getenv "DOCUMENT_PUBLISH_PATH")))
+    ;;         ((expand-file-name "Documents/online" "~"))))
+    :config
+    (progn
+      (progn ;; publishing
+        ;; (setq
+        ;;  *doc-root*            (expand-file-name "Documents" "~")
+        ;;  *created-content-dir* (expand-file-name "CreatedContent" *doc-root*)
+        ;;  *website-address*     "http://sharad.ddns.net/~s/gen/")
+        )
 
-                 (progn ;; misc
-                   (progn
-                     ;; (debug)
-                     (progn
-                       (use-package diary-lib
-                                    :defer t
-                                    :config
-                                    (progn
-                                      (progn
-                                        (setq
-                                         diary-file (touch-file (misc-publishing-created-contents-path "emacs/schedule/diary/diary")))
+      (progn ;; misc
+        (progn
+          ;; (debug)
+          (progn
+            (use-package diary-lib
+              :defer t
+              :config
+              (progn
+                (progn
+                  (setq
+                   diary-file (touch-file (misc-publishing-created-contents-path "emacs/schedule/diary/diary")))
 
-                                        (use-package appt
-                                                     ;; :defer t
-                                                     :defer t
-                                                     :config
-                                                     (progn
-                                                       (progn
-                                                         (if (not running-xemacs)
-                                                             (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
-                                                             (appt-initialize))))))))))
-                   (progn
-                     (use-package mm-decode
-                                  :defer t
-                                  :config
-                                  (progn
-                                    (setq
-                                     icalendar-outlook-file (touch-file (misc-publishing-created-contents-path "emacs/schedule/diary/outlook")))))))
+                  (use-package appt
+                    ;; :defer t
+                    :defer t
+                    :config
+                    (progn
+                      (progn
+                        (if (not running-xemacs)
+                            (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
+                          (appt-initialize))))))))))
+        (progn
+          (use-package mm-decode
+            :defer t
+            :config
+            (progn
+              (setq
+               icalendar-outlook-file (touch-file (misc-publishing-created-contents-path "emacs/schedule/diary/outlook")))))))
 
-                 (progn ;; muse
-                   (progn
-                     ;; (require 'publishing)
-                     (progn
-                       ;; (setq
-                       ;;  *muse-top-dir*           (expand-file-name "contents/virtual/muse/default" *created-content-dir*)
-                       ;;  *muse-top-style-dir*     (expand-file-name "generic/muse/style" *muse-top-dir*)
-                       ;;  *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*)
-                       ;;  *muse-website-address*   (concat *website-address* "muse/"))
-                       )
-                     (progn
-                       ;; Here is my master project listing.
-                       ;; (make-muse-style-spec
-                       ;;  (muse-publishing-created-contents-path "web/site/wiki/projects")
-                       ;;  (muse-publishing-generated-contents-path "web/site/wiki/projects/my-xhtml")
-                       ;;  "my-xhtml"
-                       ;;  (muse-publishing-website-address "projects/"))
+      (progn ;; muse
+        (progn
+          ;; (require 'publishing)
+          (progn
+            ;; (setq
+            ;;  *muse-top-dir*           (expand-file-name "contents/virtual/muse/default" *created-content-dir*)
+            ;;  *muse-top-style-dir*     (expand-file-name "generic/muse/style" *muse-top-dir*)
+            ;;  *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*)
+            ;;  *muse-website-address*   (concat *website-address* "muse/"))
+            )
+          (progn
+            ;; Here is my master project listing.
+            ;; (make-muse-style-spec
+            ;;  (muse-publishing-created-contents-path "web/site/wiki/projects")
+            ;;  (muse-publishing-generated-contents-path "web/site/wiki/projects/my-xhtml")
+            ;;  "my-xhtml"
+            ;;  (muse-publishing-website-address "projects/"))
 
-                       (setq muse-project-alist nil)
+            (setq muse-project-alist nil)
 
-                       (add-muse-project
-                        `("Website"
-                          (
-                           ,(muse-publishing-created-contents-path "web/site/wiki/web")
-                           ,(muse-publishing-created-contents-path "web/site/wiki/web/testdir")
-                           :force-publish ("WikiIndex")
-                           :default "WelcomePage")
-                          (:base "my-xhtml"
-                                 :base-url ,(muse-publishing-website-address "web/")
-                                 :include "/web/[^/]+"
-                                 :path ,(muse-publishing-generated-contents-path "web/site/wiki/web/my-xhtml"))
-                          (:base "my-xhtml"
-                                 :base-url ,(muse-publishing-website-address "web/")
-                                 :include "/testdir/[^/]+"
-                                 :path ,(muse-publishing-generated-contents-path "web/site/wiki/web/testdir/my-xhtml"))
-                          (:base "my-pdf"
-                                 :base-url ,(muse-publishing-website-address "web/")
-                                 :path ,(muse-publishing-generated-contents-path "doc/pdf/site/wiki/web/my-pdf")
-                                 :include "/\\(CurriculumVitae\\|BriefResume\\)[^/]*$")))
+            (add-muse-project
+             `("Website"
+               (
+                ,(muse-publishing-created-contents-path "web/site/wiki/web")
+                ,(muse-publishing-created-contents-path "web/site/wiki/web/testdir")
+                :force-publish ("WikiIndex")
+                :default "WelcomePage")
+               (:base "my-xhtml"
+                      :base-url ,(muse-publishing-website-address "web/")
+                      :include "/web/[^/]+"
+                      :path ,(muse-publishing-generated-contents-path "web/site/wiki/web/my-xhtml"))
+               (:base "my-xhtml"
+                      :base-url ,(muse-publishing-website-address "web/")
+                      :include "/testdir/[^/]+"
+                      :path ,(muse-publishing-generated-contents-path "web/site/wiki/web/testdir/my-xhtml"))
+               (:base "my-pdf"
+                      :base-url ,(muse-publishing-website-address "web/")
+                      :path ,(muse-publishing-generated-contents-path "doc/pdf/site/wiki/web/my-pdf")
+                      :include "/\\(CurriculumVitae\\|BriefResume\\)[^/]*$")))
 
-                       (if t
-                           (add-muse-project
-                            `("Projects" ( ,(muse-publishing-created-contents-path "web/site/wiki/projects")
-                                            :force-publish ("WikiIndex" "MuseQuickStart")
-                                            :default "WelcomePage")
-                                         (:base "my-xhtml"
-                                                :base-url ,(muse-publishing-website-address "web/site/wiki/projects/my-xhtml/")
-                                                :path ,(muse-publishing-generated-contents-path "web/site/wiki/projects/my-xhtml"))))
+            (if t
+                (add-muse-project
+                 `("Projects" ( ,(muse-publishing-created-contents-path "web/site/wiki/projects")
+                                :force-publish ("WikiIndex" "MuseQuickStart")
+                                :default "WelcomePage")
+                   (:base "my-xhtml"
+                          :base-url ,(muse-publishing-website-address "web/site/wiki/projects/my-xhtml/")
+                          :path ,(muse-publishing-generated-contents-path "web/site/wiki/projects/my-xhtml"))))
 
-                           (add-muse-project
-                            `("Projects"
-                              ( ,(muse-publishing-created-contents-path "web/site/wiki/projects")
-                                 :force-publish ("WikiIndex" "MuseQuickStart")
-                                 :default "WelcomePage")
+              (add-muse-project
+               `("Projects"
+                 ( ,(muse-publishing-created-contents-path "web/site/wiki/projects")
+                   :force-publish ("WikiIndex" "MuseQuickStart")
+                   :default "WelcomePage")
 
-                              ,(make-muse-style-spec
-                                (muse-publishing-created-contents-path "web/site/wiki/projects")
-                                (muse-publishing-generated-contents-path "web/site/wiki/projects/my-xhtml/")
-                                "my-xhtml"
-                                (muse-publishing-website-address "web/site/wiki/projects/my-xhtml/"))))
-                           )
+                 ,(make-muse-style-spec
+                   (muse-publishing-created-contents-path "web/site/wiki/projects")
+                   (muse-publishing-generated-contents-path "web/site/wiki/projects/my-xhtml/")
+                   "my-xhtml"
+                   (muse-publishing-website-address "web/site/wiki/projects/my-xhtml/"))))
+              )
 
-                       (add-muse-project
-                        `("WikiWriting"
-                          (,(muse-publishing-created-contents-path "web/site/wiki/writing")
-                            ;; :force-publish ("WikiIndex" "MuseQuickStart")
-                            :major-mode muse-mode
-                            :default "index")
-                          (:base "my-xhtml"
-                                 :base-url ,(muse-publishing-website-address "projects/")
-                                 :path ,(muse-publishing-generated-contents-path "web/site/wiki/writing/my-xhtml"))))
+            (add-muse-project
+             `("WikiWriting"
+               (,(muse-publishing-created-contents-path "web/site/wiki/writing")
+                ;; :force-publish ("WikiIndex" "MuseQuickStart")
+                :major-mode muse-mode
+                :default "index")
+               (:base "my-xhtml"
+                      :base-url ,(muse-publishing-website-address "projects/")
+                      :path ,(muse-publishing-generated-contents-path "web/site/wiki/writing/my-xhtml"))))
 
 
-                       (add-muse-project
-                        `("Blog" (,@(muse-project-alist-dirs (muse-publishing-created-contents-path "web/site/blog"))
-                                    :default "index"
-                                    :publish-project #'ignore)
-                                 ;; Publish this directory and its subdirectories.  Arguments
-                                 ;; are as follows.  The above `muse-project-alist-dirs' part
-                                 ;; is also needed.
-                                 ;;   1. Source directory
-                                 ;;   2. Output directory
-                                 ;;   3. Publishing style
-                                 ;;   remainder: Other things to put in every generated style
-                                 ,@(muse-project-alist-styles
-                                    (muse-publishing-created-contents-path "web/site/blog")
-                                    (muse-publishing-generated-contents-path "web/site/blog/ikiwiki")
-                                    "ikiwiki"
-                                    :base-url (muse-publishing-website-address "blog/"))))
+            (add-muse-project
+             `("Blog" (,@(muse-project-alist-dirs (muse-publishing-created-contents-path "web/site/blog"))
+                       :default "index"
+                       :publish-project #'ignore)
+               ;; Publish this directory and its subdirectories.  Arguments
+               ;; are as follows.  The above `muse-project-alist-dirs' part
+               ;; is also needed.
+               ;;   1. Source directory
+               ;;   2. Output directory
+               ;;   3. Publishing style
+               ;;   remainder: Other things to put in every generated style
+               ,@(muse-project-alist-styles
+                  (muse-publishing-created-contents-path "web/site/blog")
+                  (muse-publishing-generated-contents-path "web/site/blog/ikiwiki")
+                  "ikiwiki"
+                  :base-url (muse-publishing-website-address "blog/"))))
 
-                       ;; "http://grepfind.hello.org/blog/"
-                       (add-muse-project
-                        `("MyNotes" (,(muse-publishing-created-contents-path "web/site/wiki/notes")
-                                      :force-publish ("index")
-                                      :default "index")
-                                    (:base "xhtml"
-                                           :base-url ,(muse-publishing-website-address "notes/")
-                                           :path ,(muse-publishing-generated-contents-path "web/site/wiki/notes/xhtml"))
-                                    (:base "my-pdf"
-                                           :base-url ,(muse-publishing-website-address "notes/")
-                                           :path ,(muse-publishing-generated-contents-path "web/site/wiki/notes/my-pdf"))))
+            ;; "http://grepfind.hello.org/blog/"
+            (add-muse-project
+             `("MyNotes" (,(muse-publishing-created-contents-path "web/site/wiki/notes")
+                          :force-publish ("index")
+                          :default "index")
+               (:base "xhtml"
+                      :base-url ,(muse-publishing-website-address "notes/")
+                      :path ,(muse-publishing-generated-contents-path "web/site/wiki/notes/xhtml"))
+               (:base "my-pdf"
+                      :base-url ,(muse-publishing-website-address "notes/")
+                      :path ,(muse-publishing-generated-contents-path "web/site/wiki/notes/my-pdf"))))
 
-                       (add-muse-project
-                        `("_Private" (,(muse-publishing-created-contents-path "doc/priv"))
-                                     ,@(muse-project-alist-styles (muse-publishing-created-contents-path "doc/priv")
-                                                                  (muse-publishing-generated-contents-path "doc/pdf/doc/priv/pdf")
-                                                                  "pdf")))
+            (add-muse-project
+             `("_Private" (,(muse-publishing-created-contents-path "doc/priv"))
+               ,@(muse-project-alist-styles (muse-publishing-created-contents-path "doc/priv")
+                                            (muse-publishing-generated-contents-path "doc/pdf/doc/priv/pdf")
+                                            "pdf")))
 
-                       (add-muse-project
-                        `("_Classes" (,@(muse-project-alist-dirs (muse-publishing-created-contents-path "web/site/wiki/classes"))
-                                        :default "index")
-                                     ,@(muse-project-alist-styles (muse-publishing-created-contents-path "web/site/wiki/classes")
-                                                                  (muse-publishing-generated-contents-path "web/site/wiki/classes/xhtml")
-                                                                  "xhtml")))
+            (add-muse-project
+             `("_Classes" (,@(muse-project-alist-dirs (muse-publishing-created-contents-path "web/site/wiki/classes"))
+                           :default "index")
+               ,@(muse-project-alist-styles (muse-publishing-created-contents-path "web/site/wiki/classes")
+                                            (muse-publishing-generated-contents-path "web/site/wiki/classes/xhtml")
+                                            "xhtml")))
 
-                       (add-muse-project
-                        `("MA366" (,(muse-publishing-created-contents-path "doc/pdf/classes/ma366"))
-                                  (:base "pdf-uh"
-                                         :path ,(muse-publishing-generated-contents-path "doc/pdf/classes/ma366/pdf-uh"))))
+            (add-muse-project
+             `("MA366" (,(muse-publishing-created-contents-path "doc/pdf/classes/ma366"))
+               (:base "pdf-uh"
+                      :path ,(muse-publishing-generated-contents-path "doc/pdf/classes/ma366/pdf-uh"))))
 
-                       (add-muse-project
-                        `("ENGL238" (,(muse-publishing-created-contents-path "doc/pdf/classes/eng238"))
-                                    (:base "pdf-uh"
-                                           :path ,(muse-publishing-generated-contents-path "doc/pdf/classes/eng238/pdf-uh"))))
+            (add-muse-project
+             `("ENGL238" (,(muse-publishing-created-contents-path "doc/pdf/classes/eng238"))
+               (:base "pdf-uh"
+                      :path ,(muse-publishing-generated-contents-path "doc/pdf/classes/eng238/pdf-uh"))))
 
-                       (add-muse-project
-                        `("CS426" (,(muse-publishing-created-contents-path "web/site/wiki/classes/cs426"))
-                                  (:base "pdf-uh"
-                                         :path "~/proj/classes/cs426/pdf-uh")))
+            (add-muse-project
+             `("CS426" (,(muse-publishing-created-contents-path "web/site/wiki/classes/cs426"))
+               (:base "pdf-uh"
+                      :path "~/proj/classes/cs426/pdf-uh")))
 
-                       (add-muse-project
-                        `("_Plans" (,(muse-publishing-created-contents-path "web/site/wiki/plans")
-                                     :default "TaskPool"
-                                     :major-mode planner-mode
-                                     :visit-link planner-visit-link)
-                                   (:base "planner-xhtml"
-                                          :path ,(muse-publishing-generated-contents-path "web/site/wiki/plans/html")))))))
+            (add-muse-project
+             `("_Plans" (,(muse-publishing-created-contents-path "web/site/wiki/plans")
+                         :default "TaskPool"
+                         :major-mode planner-mode
+                         :visit-link planner-visit-link)
+               (:base "planner-xhtml"
+                      :path ,(muse-publishing-generated-contents-path "web/site/wiki/plans/html")))))))
 
-                 (progn ;; org
-                   (progn
-                     ;; (debug)
-                     (progn
-                       ;; (setq
-                       ;;  *org-top-dir*           (expand-file-name "contents/virtual/org/default" *created-content-dir*)
-                       ;;  *org-top-style-dir*     (expand-file-name "generic/org/style" *org-top-dir*)
-                       ;;  *org-generated-top-dir* (expand-file-name "gen/org" *created-content-dir*)
-                       ;;  *org-website-address*   (concat *website-address* "org/"))
-                       )
-                     (progn
-                       (progn
-                         (setq org-publish-project-alist nil)
+      (progn ;; org
+        (progn
+          ;; (debug)
+          (progn
+            ;; (setq
+            ;;  *org-top-dir*           (expand-file-name "contents/virtual/org/default" *created-content-dir*)
+            ;;  *org-top-style-dir*     (expand-file-name "generic/org/style" *org-top-dir*)
+            ;;  *org-generated-top-dir* (expand-file-name "gen/org" *created-content-dir*)
+            ;;  *org-website-address*   (concat *website-address* "org/"))
+            )
+          (progn
+            (progn
+              (setq org-publish-project-alist nil)
 
-                         (progn
-                           (add-org-project
-                            "inherit-org-info-js"
-                            ;; :base-directory "~/develop/org/Worg/code/org-info-js/"
-                            :base-directory (org-publishing-created-contents-path "org-info-js/")
-                            :recursive t
-                            :base-extension "js"
-                            :publishing-directory (org-publishing-generated-contents-path "js/")
-                            :publishing-function 'org-publish-attachment)
+              (progn
+                (add-org-project
+                 "inherit-org-info-js"
+                 ;; :base-directory "~/develop/org/Worg/code/org-info-js/"
+                 :base-directory (org-publishing-created-contents-path "org-info-js/")
+                 :recursive t
+                 :base-extension "js"
+                 :publishing-directory (org-publishing-generated-contents-path "js/")
+                 :publishing-function 'org-publish-attachment)
 
-                           (add-org-project
-                            "inherit-org-info-js"
-                            ;; :base-directory "~/develop/org/Worg/code/org-info-js/"
-                            :base-directory (org-publishing-created-contents-path "org-info-js/")
-                            :recursive t
-                            :base-extension "js"
-                            :publishing-directory (org-publishing-generated-contents-path "js/")
-                            :publishing-function 'org-publish-attachment)
+                (add-org-project
+                 "inherit-org-info-js"
+                 ;; :base-directory "~/develop/org/Worg/code/org-info-js/"
+                 :base-directory (org-publishing-created-contents-path "org-info-js/")
+                 :recursive t
+                 :base-extension "js"
+                 :publishing-directory (org-publishing-generated-contents-path "js/")
+                 :publishing-function 'org-publish-attachment)
 
-                           (add-org-project
-                            "generic-inherit"
-                            :base-directory (org-publishing-created-contents-path "generic/")
-                            :recursive t
-                            :base-extension "css\\|js"
-                            :publishing-directory (org-publishing-generated-contents-path "generic/html/")
-                            :publishing-function 'org-publish-attachment)
+                (add-org-project
+                 "generic-inherit"
+                 :base-directory (org-publishing-created-contents-path "generic/")
+                 :recursive t
+                 :base-extension "css\\|js"
+                 :publishing-directory (org-publishing-generated-contents-path "generic/html/")
+                 :publishing-function 'org-publish-attachment)
 
-                           (add-org-project
-                            "generic-static"
-                            :base-directory (org-publishing-created-contents-path "generic/")
-                            :recursive t
-                            :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-                            :publishing-directory (org-publishing-generated-contents-path "generic/html/")
-                            :publishing-function 'org-publish-attachment)
+                (add-org-project
+                 "generic-static"
+                 :base-directory (org-publishing-created-contents-path "generic/")
+                 :recursive t
+                 :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+                 :publishing-directory (org-publishing-generated-contents-path "generic/html/")
+                 :publishing-function 'org-publish-attachment)
 
-                           (add-org-project
-                            "generic-org"
-                            :base-directory (org-publishing-created-contents-path "generic/")
-                            :auto-index t
-                            :auto-sitemap t
-                            :sitemap-title "Sitemap"
-                            :index-filename "sitemap.org"
-                            :index-title "Sitemap"
-                            :recursive t
-                            :base-extension "org"
-                            :publishing-directory (org-publishing-generated-contents-path "generic/html/")
-                            ;; :publishing-function org-publish-org-to-html
-                            :publishing-function 'org-html-publish-to-html
-                            :headline-levels 3
-                            :auto-preamble t))
+                (add-org-project
+                 "generic-org"
+                 :base-directory (org-publishing-created-contents-path "generic/")
+                 :auto-index t
+                 :auto-sitemap t
+                 :sitemap-title "Sitemap"
+                 :index-filename "sitemap.org"
+                 :index-title "Sitemap"
+                 :recursive t
+                 :base-extension "org"
+                 :publishing-directory (org-publishing-generated-contents-path "generic/html/")
+                 ;; :publishing-function org-publish-org-to-html
+                 :publishing-function 'org-html-publish-to-html
+                 :headline-levels 3
+                 :auto-preamble t))
 
-                         (progn         ;org
-                           (add-org-project
-                            "org-notes"
-                            :base-directory (org-publishing-created-contents-path "org/")
-                            :base-extension "org"
-                            :publishing-directory (org-publishing-generated-contents-path "org/html/")
-                            :recursive t
-                            :publishing-function 'org-html-publish-to-html
-                            :headline-levels 4             ; Just the default for this project.
-                            :auto-preamble t)
+              (progn         ;org
+                (add-org-project
+                 "org-notes"
+                 :base-directory (org-publishing-created-contents-path "org/")
+                 :base-extension "org"
+                 :publishing-directory (org-publishing-generated-contents-path "org/html/")
+                 :recursive t
+                 :publishing-function 'org-html-publish-to-html
+                 :headline-levels 4             ; Just the default for this project.
+                 :auto-preamble t)
 
-                           (add-org-project
-                            "org-static"
-                            :base-directory (org-publishing-created-contents-path "org/")
-                            :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-                            :publishing-directory (org-publishing-generated-contents-path "org/html/")
-                            :recursive t
-                            :publishing-function 'org-publish-attachment)
+                (add-org-project
+                 "org-static"
+                 :base-directory (org-publishing-created-contents-path "org/")
+                 :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+                 :publishing-directory (org-publishing-generated-contents-path "org/html/")
+                 :recursive t
+                 :publishing-function 'org-publish-attachment)
 
-                           (add-org-project "org" :components '("org-notes" "org-static")))
+                (add-org-project "org" :components '("org-notes" "org-static")))
 
-                         (progn
+              (progn
 
-                           (defun add-org-main-project (project)
-                             (let ((project
-                                     (cond
-                                       ((stringp project) project)
-                                       ((symbolp project) (symbol-name project))
-                                       (t (error "project %s is not correct" project)))))         ; project
-                               (add-org-project
-                                (string-join (list project "notes") "-")
-                                :base-directory (org-publishing-created-contents-path (concat project "/"))
-                                :auto-index t
-                                :auto-sitemap t
-                                :sitemap-title "Sitemap"
-                                :index-filename "sitemap.org"
-                                :index-title "Sitemap"
-                                :recursive t
-                                :base-extension "org"
-                                :publishing-directory (org-publishing-generated-contents-path (concat project "/html/"))
-                                ;; :publishing-function org-publish-org-to-html
-                                :publishing-function 'org-html-publish-to-html
-                                :headline-levels 3
-                                :with-section-numbers nil
-                                :table-of-contents nil
-                                :auto-preamble t
-                                :auto-postamble nil)
+                (defun add-org-main-project (project)
+                  (let ((project
+                         (cond
+                          ((stringp project) project)
+                          ((symbolp project) (symbol-name project))
+                          (t (error "project %s is not correct" project)))))         ; project
+                    (add-org-project
+                     (string-join (list project "notes") "-")
+                     :base-directory (org-publishing-created-contents-path (concat project "/"))
+                     :auto-index t
+                     :auto-sitemap t
+                     :sitemap-title "Sitemap"
+                     :index-filename "sitemap.org"
+                     :index-title "Sitemap"
+                     :recursive t
+                     :base-extension "org"
+                     :publishing-directory (org-publishing-generated-contents-path (concat project "/html/"))
+                     ;; :publishing-function org-publish-org-to-html
+                     :publishing-function 'org-html-publish-to-html
+                     :headline-levels 3
+                     :with-section-numbers nil
+                     :table-of-contents nil
+                     :auto-preamble t
+                     :auto-postamble nil)
 
-                               (add-org-project
-                                project
-                                :base-extension "org"
-                                :components (list
-                                             "inherit-org-info-js" "generic-inherit"
-                                             (string-join (list project "notes") "-")
-                                             "generic-static"))))
+                    (add-org-project
+                     project
+                     :base-extension "org"
+                     :components (list
+                                  "inherit-org-info-js" "generic-inherit"
+                                  (string-join (list project "notes") "-")
+                                  "generic-static"))))
 
-                           (add-org-main-project 'tasks)
+                (add-org-main-project 'tasks)
 
-                           (dolist (proj
-                                    (remove-if-not
-                                     #'(lambda (file)
-                                         (let ((path (expand-file-name
-                                                      file
-                                                      (org-publishing-created-contents-path))))
-                                           (and
-                                            (not
-                                             (string-match "^\\.\*$" file))
-                                            (file-directory-p path)
-                                            (file-exists-p
-                                             (expand-file-name ".publish"
-                                                               path)))))
-                                     (directory-files
-                                      (org-publishing-created-contents-path))))
-                             (add-org-main-project proj))))
+                (dolist (proj
+                         (remove-if-not
+                          #'(lambda (file)
+                              (let ((path (expand-file-name
+                                           file
+                                           (org-publishing-created-contents-path))))
+                                (and
+                                 (not
+                                  (string-match "^\\.\*$" file))
+                                 (file-directory-p path)
+                                 (file-exists-p
+                                  (expand-file-name ".publish"
+                                                    path)))))
+                          (directory-files
+                           (org-publishing-created-contents-path))))
+                  (add-org-main-project proj))))
 
-                       (progn
-                         (use-package org-agenda
-                                      :defer t
-                                      :config
-                                      (progn
+            (progn
+              (use-package org-agenda
+                :defer t
+                :config
+                (progn
 
-                                        (progn
-                                          (use-package task-manager
-                                                       :defer t
-                                                       :commands (office-mode task-party-dir task-select-party-dir find-task-dir)
-                                                       :config
-                                                       (progn
-                                                         (progn
-                                                           (add-hook
-                                                            'task-current-party-change-hook
-                                                            #'(lambda ()
-                                                                (progn
-                                                                  (unless task-current-party
-                                                                    (task-current-party "meru"))
-                                                                  (let ((task-dir (task-party-dir)))
-                                                                    (when (file-directory-p task-dir)
+                  (progn
+                    (use-package task-manager
+                      :defer t
+                      :commands (office-mode task-party-dir task-select-party-dir find-task-dir)
+                      :config
+                      (progn
+                        (progn
+                          (add-hook
+                           'task-current-party-change-hook
+                           #'(lambda ()
+                               (progn
+                                 (unless task-current-party
+                                   (task-current-party "meru"))
+                                 (let ((task-dir (task-party-dir)))
+                                   (when (file-directory-p task-dir)
 
-                                                                      (add-to-org-agenda-custom-commands
-                                                                       `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
-                                                                         ,(task-party-org-heading) ;;  search ""
-                                                                         ((agenda ""
-                                                                                  ((org-agenda-span 'day)
-                                                                                   (org-agenda-prefix-format  "%e")))
-                                                                          (org-agenda-files #'task-party-dir-files-recursive)
-                                                                          ;; (org-agenda-sorting-strategy '(priority-up effort-down))
-                                                                          )
-                                                                         ;; ("~/computer.html")
-                                                                         ))
+                                     (add-to-org-agenda-custom-commands
+                                      `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
+                                        ,(task-party-org-heading) ;;  search ""
+                                        ((agenda ""
+                                                 ((org-agenda-span 'day)
+                                                  (org-agenda-prefix-format  "%e")))
+                                         (org-agenda-files #'task-party-dir-files-recursive)
+                                         ;; (org-agenda-sorting-strategy '(priority-up effort-down))
+                                         )
+                                        ;; ("~/computer.html")
+                                        ))
 
-                                                                      ;; COMMON settings for all reviews
-                                                                      (setq efs/org-agenda-review-settings
-                                                                            '((org-agenda-files #'task-party-dir-files-recursive)
-                                                                              (org-agenda-show-all-dates t)
-                                                                              (org-agenda-start-with-log-mode t)
-                                                                              (org-agenda-start-with-clockreport-mode t)
-                                                                              (org-agenda-archives-mode t)
-                                                                              ;; I don't care if an entry was archived
-                                                                              (org-agenda-hide-tags-regexp
-                                                                               (concat org-agenda-hide-tags-regexp
-                                                                                "\\|ARCHIVE"))
-                                                                              )))))))))))
+                                     ;; COMMON settings for all reviews
+                                     (setq efs/org-agenda-review-settings
+                                           '((org-agenda-files #'task-party-dir-files-recursive)
+                                             (org-agenda-show-all-dates t)
+                                             (org-agenda-start-with-log-mode t)
+                                             (org-agenda-start-with-clockreport-mode t)
+                                             (org-agenda-archives-mode t)
+                                             ;; I don't care if an entry was archived
+                                             (org-agenda-hide-tags-regexp
+                                              (concat org-agenda-hide-tags-regexp
+                                                      "\\|ARCHIVE"))
+                                             )))))))))))
 
-                                        (use-package org-agenda
-                                                     :defer t
-                                                     :config
-                                                     (progn
-                                                       (progn ;; "org-publishing"
+                  (use-package org-agenda
+                    :defer t
+                    :config
+                    (progn
+                      (progn ;; "org-publishing"
 
-                                                         (defvar efs/org-agenda-review-settings nil)
+                        (defvar efs/org-agenda-review-settings nil)
 
-                                                         ;; "Review Aganda" ;;http://stackoverflow.com/a/22440571
-                                                         ;; define "R" as the prefix key for reviewing what happened in various
-                                                         ;; time periods
-                                                         (add-to-org-agenda-custom-commands
-                                                          '("R" . "Review" ))
+                        ;; "Review Aganda" ;;http://stackoverflow.com/a/22440571
+                        ;; define "R" as the prefix key for reviewing what happened in various
+                        ;; time periods
+                        (add-to-org-agenda-custom-commands
+                         '("R" . "Review" ))
 
-                                                         ;; Show the agenda with the log turn on, the clock table show and
-                                                         ;; archived entries shown.  These commands are all the same exept for
-                                                         ;; the time period.
-                                                         (add-to-org-agenda-custom-commands
-                                                          `("Rw" "Week in review"
-                                                                 agenda ""
-                                                                 ;; agenda settings
-                                                                 ,(append
-                                                                   efs/org-agenda-review-settings
-                                                                   '((org-agenda-span 'week)
-                                                                     (org-agenda-start-on-weekday 0)
-                                                                     (org-agenda-overriding-header "Week in Review"))
-                                                                   )
-                                                                 ("~/org/review/week.html")))
+                        ;; Show the agenda with the log turn on, the clock table show and
+                        ;; archived entries shown.  These commands are all the same exept for
+                        ;; the time period.
+                        (add-to-org-agenda-custom-commands
+                         `("Rw" "Week in review"
+                           agenda ""
+                           ;; agenda settings
+                           ,(append
+                             efs/org-agenda-review-settings
+                             '((org-agenda-span 'week)
+                               (org-agenda-start-on-weekday 0)
+                               (org-agenda-overriding-header "Week in Review"))
+                             )
+                           ("~/org/review/week.html")))
 
-                                                         (add-to-org-agenda-custom-commands
-                                                          `("Rd" "Day in review"
-                                                                 agenda ""
-                                                                 ;; agenda settings
-                                                                 ,(append
-                                                                   efs/org-agenda-review-settings
-                                                                   '((org-agenda-span 'day)
-                                                                     (org-agenda-overriding-header "Week in Review"))
-                                                                   )
-                                                                 ("~/org/review/day.html")))
+                        (add-to-org-agenda-custom-commands
+                         `("Rd" "Day in review"
+                           agenda ""
+                           ;; agenda settings
+                           ,(append
+                             efs/org-agenda-review-settings
+                             '((org-agenda-span 'day)
+                               (org-agenda-overriding-header "Week in Review"))
+                             )
+                           ("~/org/review/day.html")))
 
-                                                         (add-to-org-agenda-custom-commands
-                                                          `("Rm" "Month in review"
-                                                                 agenda ""
-                                                                 ;; agenda settings
-                                                                 ,(append
-                                                                   efs/org-agenda-review-settings
-                                                                   '((org-agenda-span 'month)
-                                                                     (org-agenda-start-day "01")
-                                                                     (org-read-date-prefer-future nil)
-                                                                     (org-agenda-overriding-header "Month in Review"))
-                                                                   )
-                                                                 ("~/org/review/month.html")))))))))))))))
+                        (add-to-org-agenda-custom-commands
+                         `("Rm" "Month in review"
+                           agenda ""
+                           ;; agenda settings
+                           ,(append
+                             efs/org-agenda-review-settings
+                             '((org-agenda-span 'month)
+                               (org-agenda-start-day "01")
+                               (org-read-date-prefer-future nil)
+                               (org-agenda-overriding-header "Month in Review"))
+                             )
+                           ("~/org/review/month.html")))))))))))))))
 
 (defun lotus-publishing/init-muse ()
   (use-package muse
@@ -762,9 +767,9 @@ between the two tags."
                    ;; (muse-project "MyNotes")
 
                    ;; ("MyNotes"
-                   ;;  ("~/Documents/CreatedContent/contents/muse/web/site/wiki/notes" :force-publish ("index") :default "index")
-                   ;;  (:base "xhtml" :base-url (org-publishing-website-address "/notes/") :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/html")
-                   ;;  (:base "my-pdf" :base-url "http://hello.org//notes/" :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/pdf"))
+                   ;;  ("~/Documents/online/CreatedContent/contents/muse/web/site/wiki/notes" :force-publish ("index") :default "index")
+                   ;;  (:base "xhtml" :base-url (org-publishing-website-address "/notes/") :path "~/Documents/online/CreatedContent/gen/web/site/wiki/notes/html")
+                   ;;  (:base "my-pdf" :base-url "http://hello.org//notes/" :path "~/Documents/online/CreatedContent/gen/web/site/wiki/notes/pdf"))
 
                    (progn ;; "muse-publishing"
 

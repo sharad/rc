@@ -459,10 +459,10 @@ function setup_custom_recursive_links()
     name=$4
     trg=$5
 
-    debug storagebasepath=$storagebasepath
-    debug relpath=$relpath
-    debug name=$name
-    debug trg=$trg
+    info storagebasepath=$storagebasepath
+    info relpath=$relpath
+    info name=$name
+    info trg=$trg
 
     storagebase_fullpath="${basepath}/${storagebasepath}"
 
@@ -471,43 +471,46 @@ function setup_custom_recursive_links()
         relcount=$(expr $(setup_count_slash_in_path "$relpath") + 3)
 
         cd "${storagebase_fullpath}"
-        debug running find in $(pwd)
+        info running find in $(pwd)
         local trgstoragebasepaths=( $(find -type l \( \! -name '*BACKUP*' \) | grep "$relpath" | rev | cut -d/ -f${relcount}- | rev | cut -c3- ) )
-        debug trgstoragebasepaths=$trgstoragebasepaths
+        info trgstoragebasepaths=$trgstoragebasepaths
         cd - > /dev/null 2>&1
 
-        debug trgstoragebasepaths=${trgstoragebasepaths[*]}
+        info trgstoragebasepaths=${trgstoragebasepaths[*]}
+        info
 
         for trgstoragebasepath in "${trgstoragebasepaths[@]}"
         do
-            debug trgstoragebasepath=$trgstoragebasepath
+            info trgstoragebasepath=$trgstoragebasepath
 
             trgstoragebase_fullpath="${basepath}/${storagebasepath}/${trgstoragebasepath}/${relpath}"
 
             if [ -d "${trgstoragebase_fullpath}" ]
             then
                 cd "${trgstoragebase_fullpath}"
-                debug running find in $(pwd)
+                info running find in $(pwd)
                 local linkdirs=( $(find -type l \( \! -name '*BACKUP*' \) | cut -c3- ) )
-                debug linkdirs=$linkdirs
+                info linkdirs=$linkdirs
                 cd - > /dev/null 2>&1
 
 
-                debug linkdirs="${linkdirs[@]}"
+                info linkdirs="${linkdirs[@]}"
+                info
 
                 info DIR $basepath/$trg/$trgstoragebasepath
 
                 for lnkdir in "${linkdirs[@]}"
                 do
-                    debug basepath=$basepath
-                    debug storagebasepath=$storagebasepath
-                    debug trgstoragebasepath=$trgstoragebasepath
-                    debug lnkdir=$lnkdir
-                    debug name=$name
-                    debug mkdir -p $trg/$trgstoragebasepath
-                    debug info setup_make_relative_link $basepath $storagebasepath/$trgstoragebasepath/$relpath/$lnkdir/$name $trg/$trgstoragebasepath/$lnkdir
-                    debug
-                    # running debug setup_add_to_version_control
+                    info basepath=$basepath
+                    info storagebasepath=$storagebasepath
+                    info trgstoragebasepath=$trgstoragebasepath
+                    info lnkdir=$lnkdir
+                    info name=$name
+                    running info mkdir -p $basepath/$trg/$trgstoragebasepath
+                    running info ls -ld $basepath/$trg/$trgstoragebasepath
+                    running info setup_make_relative_link $basepath $storagebasepath/$trgstoragebasepath/$relpath/$lnkdir/$name $trg/$trgstoragebasepath/$lnkdir
+                    info 
+                    # running info setup_add_to_version_control
                 done
             else
                 warn "${storagebasepath}/${trgstoragebasepath}" not exists.
@@ -2299,7 +2302,7 @@ function setup_public_dirs()
     do
         if [ "$folder" != "Pubic" ]
         then
-            if [ ! -L "${base}/${relpath}/${folder}"]
+            if [ ! -L "${base}/${relpath}/${folder}" ]
             then
                 running debug setup_vc_mkdirpath_ensure "${base}" "${relpath}" "${folder}/Public/Publish/html" "ignoreall"
             fi
@@ -2385,21 +2388,6 @@ function setup_org_home_portable_public_dirs()
 
     setup_public_dirs       "${LOCALDIRS_DIR}" "org/home.d/portable.d" "${plaindirs[@]}"
     setup_mutule_dirs_links "${LOCALDIRS_DIR}" "org/home.d/portable.d" "${plaindirs[@]}"
-    # for folder in "${plaindirs[@]}"
-    # do
-    #     running debug setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "${relhomeprotabledir}" "${folder}/Public/Publish/html" "ignoreall"
-    #
-    #     running debug setup_make_relative_link "${homeprotabledir}" "${folder}/Public"              "Public/${folder}"
-    #     running debug setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish"      "Public/Publish/${folder}"
-    #     running debug setup_make_relative_link "${homeprotabledir}" "${folder}/Public/Publish/html" "Public/Publish/html/${folder}"
-    #
-    #
-    #     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/$folder"
-    #     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/$folder"
-    #     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/html/$folder"
-    #
-    # done
-
 
     for folder in "${linkdirs[@]}"
     do
@@ -2451,11 +2439,16 @@ EOF
     echo 'add in script' > "${LOCALDIRS_DIR}/org/home.d/portable.d/TODO"
     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/TODO"
 
+    for lnk in "${userdata_dirs[@]}"
+    do
+        info TEST $lnk
+    done
 
     for lnk in "${userdata_dirs[@]}"
     do
-        # mkdir-p
-        running debug setup_vc_mkdirpath_ensure   "${LOCALDIRS_DIR}" "${rel_homeprotabledir}" "${lnk}"
+        info TEST $lnk
+        # running debug setup_vc_mkdirpath_ensure   "${LOCALDIRS_DIR}" "${rel_homeprotabledir}" "${lnk}"
+        running info mkdir -p   "${LOCALDIRS_DIR}"/"${rel_homeprotabledir}"/"${lnk}"
         running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
     done
 

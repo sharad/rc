@@ -527,7 +527,7 @@
             ;; (setq
             ;;  org-agenda-files (directory-files-recursive
             ;;                    (expand-file-name
-            ;;                     "~/Documents/CreatedContent/contents/virtual/org/default")
+            ;;                     "~/Documents/online/CreatedContent/contents/virtual/org/default")
             ;;                    "\\.org$"
             ;;                    2
             ;;                    "\\(rip\\|stage\\)"))
