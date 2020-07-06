@@ -2738,15 +2738,14 @@ function setup_dirs()
 
         for mntpnt in $(df --output=target | grep  '^/srv/volumes/' | cut -d/ -f4- | rev | cut -d/ -f3-  | rev | sort -u)
         do
+            # running debug setup_deps_dirs "local"
+            # running debug setup_deps_dirs "externdisk/mywd5hgb"
+            # running debug setup_deps_dirs "network/office"
+            # running debug setup_deps_dirs "network/cloud/droplet"
+            # running debug setup_deps_dirs "network/cloud/s3"
             running info setup_deps_dirs "$mntpnt"
         done
 
-        # running debug setup_deps_dirs "local"
-
-        # running debug setup_deps_dirs "externdisk/mywd5hgb"
-        # running debug setup_deps_dirs "network/office"
-        # running debug setup_deps_dirs "network/cloud/droplet"
-        # running debug setup_deps_dirs "network/cloud/s3"
 
 
 
