@@ -283,7 +283,7 @@ function emacs_daemon_start()
                            PARENT_CMD="$PARENT_CMD dbus-launch --autolaunch=$MY_DBUS_SESSION"
                        fi
 
-                       if whence cpulimit >& /dev/null
+                       if false && whence cpulimit >& /dev/null
                        then
                            PARENT_CMD="$PARENT_CMD cpulimit -i -l ${CPU_PERCENTAGE}"
                        fi

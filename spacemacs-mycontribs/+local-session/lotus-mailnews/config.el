@@ -311,7 +311,9 @@ always hide."
                 (message-attach-all-files-from-folder disposition full-file-path)
 
               (setq mime-type (substring (shell-command-to-string (concat "file --mime-type --brief " (shell-quote-argument (expand-file-name full-file-path)))) 0 -1))
-              (insert (concat "<#part type=\"" mime-type "\" filename=\"" full-file-path "\" disposition=" disposition ">\n"))))))))
+              (insert (concat "<#part type=\"" mime-type
+                              "\" filename=\"" full-file-path
+                              "\" disposition=" disposition ">\n"))))))))
 ;;}}
 
 ;;{{ http://www.inference.phy.cam.ac.uk/cjb/dotfiles/dotgnus
