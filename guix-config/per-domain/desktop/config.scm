@@ -255,8 +255,8 @@
 
 (define %lotus-file-system-boot-efi        (file-system (mount-point         "/boot/efi")
                                                         ;; (device              (uuid "BAA8-1C0B" 'fat32))
-                                                        (device              (%local-fs-boot-efi-partition %local-fs-boot-efi-partition
-                                                                                                           "/dev/sda1"))
+                                                        (device              (lotus-local-value %local-fs-boot-efi-partition
+                                                                                                "/dev/sda1"))
                                                         (mount?              #t)
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #t)
