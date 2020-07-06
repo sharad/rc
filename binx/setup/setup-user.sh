@@ -2301,8 +2301,8 @@ function setup_public_dirs()
 {
     local base="$1"
     local relpath="$2"
-    local vc=$3
-    shift 2
+    local vc="$3"
+    shift 3
     local internal_dirs=("$@")
 
     local fullpath=$base/$relpath
@@ -2321,7 +2321,7 @@ function setup_public_dirs()
                 fi
             fi
 
-            # running debug setup_make_relative_link "${fullpath}" "${folder}/_Public"                  "Public/${folder}"
+            # running debug setup_make_relative_link "${fullpath}" "${folder}/_local/Public"                  "Public/${folder}"
             running debug setup_make_relative_link "${fullpath}" "${folder}/_local/Public/Publish"      "Public/Publish/${folder}"
             running debug setup_make_relative_link "${fullpath}" "${folder}/_local/Public/Publish/html" "Public/Publish/html/${folder}"
 
