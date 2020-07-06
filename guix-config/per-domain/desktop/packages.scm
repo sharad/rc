@@ -11,12 +11,8 @@
 (define %lotus-other-packages (list "polkit"
                                     "polkit-gnome"
                                     "autorandr"
-                                    ;; "ppp"
-				    "xmodmap"
-				    "nm-dnsmasq-ns"
-                                    ;; "dconf"
+                                    "xmodmap"
                                     "glib-networking"
-
                                     "xf86-input-evdev"))
 
 (define %lotus-system-selected-package-names (list "glibc-utf8-locales"

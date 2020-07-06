@@ -58,6 +58,7 @@
       local
       alternat))
 
+
 (define %lotus-host-name                     (lotus-local-value %local-host-name "komputilo"))
 (define %lotus-account-uid                   1000)
 (define %lotus-account-user-name             "s")
@@ -65,11 +66,9 @@
 (define %lotus-account-group-name            "users")
 (define %lotus-account-supplementry-groups   '("wheel" "netdev" "audio" "video"))
 (define %lotus-account-home-parent-directory "/home")
-;; (define %lotus-account-home-directory        (string-append %lotus-account-home-parent-directory "/" %lotus-account-user-name "/" "hell"))
 (define %lotus-account-shell                 #~(string-append #$zsh "/bin/zsh"))
-
-;; (if (not %lotus-system-init)
-;;     (define %lotus-nm-dnsmasq-ns-path            #~(string-append #$nm-dnsmasq-ns "/etc/NetworkManager/dnsmasq.d")))
+(define %lotus-gdm-auto-login                #f)
+(define %lotus-gdm-allow-empty-password      #t)
 
 (define %lotus-nm-dnsmasq-ns-path            #~(string-append #$nm-dnsmasq-ns "/etc/NetworkManager/dnsmasq.d"))
 
@@ -538,8 +537,8 @@
                                                                                          (xorg-configuration
                                                                                           (xorg-configuration
                                                                                            (keyboard-layout %lotus-keyboard-layout)))
-                                                                                         ;; (allow-empty-passwords? #t)
-                                                                                         (auto-login?            #f)
+                                                                                         (allow-empty-passwords? %lotus-gdm-allow-empty-password)
+                                                                                         (auto-login?            %lotus-gdm-auto-login)
                                                                                          (default-user           %lotus-account-user-name))))))
 
 ;; services add

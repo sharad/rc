@@ -243,52 +243,3 @@
 
 (add-hook *new-head-hook* #'new-head-function)
 
-
-#+wifi
-(setf wifi:*iwconfig-path*
-      (let ((default-path (or wifi:*iwconfig-path*
-                              "/sbin/iwconfig"))
-            (found-path   (some #'probe-file
-                                (list wifi:*iwconfig-path*
-                                      "/sbin/iwconfig"
-                                      "/run/current-system/profile/sbin/iwconfig"))))
-        (if found-path (namestring found-path) default)))
-
-
-
-
-(defun net::net-device ()
-  "Returns statically assigned device name or tries to find it be default gw.
-For the second case rescans route table every minute."
-  (let ((ip-cmd (let ((default-path "/sbin/ip")
-                      (found-path   (some #'probe-file
-                                          '("/sbin/ip"
-                                            "/run/current-system/profile/sbin/ip"))))
-                  (if found-path (namestring found-path) default))))
-   (if net::*net-device*
-      net::*net-device*
-      (if (and net::*last-route-device*
-               (< (- (net::now) net::*last-route-rescan-time*) 60))
-          net::*last-route-device*
-          (let ((new-device (or (net::find-default) "lo")))
-            (when (string/= new-device net::*last-route-device*)
-              (setf net::*net-ipv4*
-                    (string-trim '(#\Newline)
-                     (run-shell-command
-                      (format nil
-                              "~a -o -4 addr list ~A | awk '{print $4}' | cut -d/ -f1" ip-cmd new-device))
-                     t))
-              (setf net::*net-ipv6*
-                    (string-trim '(#\Newline)
-                     (run-shell-command
-                      (format nil
-                              "~a -o -6 addr list ~A | awk '{print $4}' | cut -d/ -f1" ip-cmd new-device))
-                     t))
-              (setq net::*net-last-tx* 0
-                    net::*net-last-rx* 0
-                    net::*net-last-time* nil
-                    net::*net-rx* nil
-                    net::*net-tx* nil
-                    net::*net-time* nil))
-            (setq net::*last-route-rescan-time* (net::now)
-                  net::*last-route-device* new-device))))))
