@@ -507,7 +507,7 @@ function setup_custom_recursive_links()
                     debug lnkdir=$lnkdir
                     debug name=$name
                     running debug mkdir -p $basepath/$trg/$trgstoragebasepath
-                    running debug ls -ld $basepath/$trg/$trgstoragebasepath
+                    # running debug ls -ld $basepath/$trg/$trgstoragebasepath
                     running debug setup_make_relative_link $basepath $storagebasepath/$trgstoragebasepath/$relpath/$lnkdir/$name $trg/$trgstoragebasepath/$lnkdir
                     debug 
                     # running debug setup_add_to_version_control
@@ -2350,8 +2350,14 @@ function setup_mutule_dirs_links()
         then
             rm -f "${base}"/"${relpath}"/"_local/.gitignore"
             rm -f "${base}"/"${relpath}"/"_nonlocal/.gitignore"
-            rmdir "${base}"/"${relpath}"/"_local"
-            rmdir "${base}"/"${relpath}"/"_nonlocal"
+            if [ -d "${base}"/"${relpath}"/"_local" ]
+	    then
+              rmdir "${base}"/"${relpath}"/"_local"
+	    fi
+            if [ -d "${base}"/"${relpath}"/"_nonlocal" ]
+	    then
+              rmdir "${base}"/"${relpath}"/"_nonlocal"
+	    fi
 
             if [ $vc -eq 1 ]
             then
