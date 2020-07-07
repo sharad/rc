@@ -266,9 +266,9 @@ function setup_sudo_mkdirp()
     path="$1"
     if [ ! -d "$path" ]
     then
-        running info sudo mkdir -p "$path"
+        running debug sudo mkdir -p "$path"
     else
-        running info ls -ld "$path"
+        debug "$path" dir already exists.
     fi
 }
 
@@ -286,9 +286,9 @@ function setup_chown()
 
     if [ "$user" != "$curr_user" ] && [ "$user_id" -ne "$curr_user_id" ] || [ "$group" != "$curr_group" ] && [ "$group_id" -ne "$curr_group_id" ]
     then
-        running info sudo chown ${user}.${group} "${path}"
+        running debug sudo chown ${user}.${group} "${path}"
     else
-        ls -ld "$path"
+        debug "$path" already set to ${user}:${group}
     fi
 }
 
@@ -459,10 +459,10 @@ function setup_custom_recursive_links()
     name=$4
     trg=$5
 
-    info storagebasepath=$storagebasepath
-    info relpath=$relpath
-    info name=$name
-    info trg=$trg
+    debug storagebasepath=$storagebasepath
+    debug relpath=$relpath
+    debug name=$name
+    debug trg=$trg
 
     storagebase_fullpath="${basepath}/${storagebasepath}"
 
@@ -471,46 +471,46 @@ function setup_custom_recursive_links()
         relcount=$(expr $(setup_count_slash_in_path "$relpath") + 3)
 
         cd "${storagebase_fullpath}"
-        info running find in $(pwd)
+        debug running find in $(pwd)
         local trgstoragebasepaths=( $(find -type l \( \! -name '*BACKUP*' \) | grep "$relpath" | rev | cut -d/ -f${relcount}- | rev | cut -c3- ) )
-        info trgstoragebasepaths=$trgstoragebasepaths
+        debug trgstoragebasepaths=$trgstoragebasepaths
         cd - > /dev/null 2>&1
 
-        info trgstoragebasepaths=${trgstoragebasepaths[*]}
+        debug trgstoragebasepaths=${trgstoragebasepaths[*]}
         info
 
         for trgstoragebasepath in "${trgstoragebasepaths[@]}"
         do
-            info trgstoragebasepath=$trgstoragebasepath
+            debug trgstoragebasepath=$trgstoragebasepath
 
             trgstoragebase_fullpath="${basepath}/${storagebasepath}/${trgstoragebasepath}/${relpath}"
 
             if [ -d "${trgstoragebase_fullpath}" ]
             then
                 cd "${trgstoragebase_fullpath}"
-                info running find in $(pwd)
+                debug running find in $(pwd)
                 local linkdirs=( $(find -type l \( \! -name '*BACKUP*' \) | cut -c3- ) )
-                info linkdirs=$linkdirs
+                debug linkdirs=$linkdirs
                 cd - > /dev/null 2>&1
 
 
-                info linkdirs="${linkdirs[@]}"
-                info
+                debug linkdirs="${linkdirs[@]}"
+                debug
 
-                info DIR $basepath/$trg/$trgstoragebasepath
+                debug DIR $basepath/$trg/$trgstoragebasepath
 
                 for lnkdir in "${linkdirs[@]}"
                 do
-                    info basepath=$basepath
-                    info storagebasepath=$storagebasepath
-                    info trgstoragebasepath=$trgstoragebasepath
-                    info lnkdir=$lnkdir
-                    info name=$name
-                    running info mkdir -p $basepath/$trg/$trgstoragebasepath
-                    running info ls -ld $basepath/$trg/$trgstoragebasepath
-                    running info setup_make_relative_link $basepath $storagebasepath/$trgstoragebasepath/$relpath/$lnkdir/$name $trg/$trgstoragebasepath/$lnkdir
-                    info 
-                    # running info setup_add_to_version_control
+                    debug basepath=$basepath
+                    debug storagebasepath=$storagebasepath
+                    debug trgstoragebasepath=$trgstoragebasepath
+                    debug lnkdir=$lnkdir
+                    debug name=$name
+                    running debug mkdir -p $basepath/$trg/$trgstoragebasepath
+                    running debug ls -ld $basepath/$trg/$trgstoragebasepath
+                    running debug setup_make_relative_link $basepath $storagebasepath/$trgstoragebasepath/$relpath/$lnkdir/$name $trg/$trgstoragebasepath/$lnkdir
+                    debug 
+                    # running debug setup_add_to_version_control
                 done
             else
                 warn "${storagebasepath}/${trgstoragebasepath}" not exists.
@@ -637,13 +637,11 @@ function setup_add_to_version_control()
     local base="$1"
     local relfile="$2"
 
-    info base=$base
-    info relfile=$relfile
+    debug base=$base
+    debug relfile=$relfile
 
     local reldir=$(dirname "${relfile}" )
     local relbase=$(basename "${relfile}" )
-
-    running info git -C "${base}/${reldir}" add -f "${relbase}"
 
     running debug git -C "${base}/${reldir}" add -f "${relbase}"
 
@@ -1644,15 +1642,15 @@ function setup_dep_control_storage_class_dir()
                     mdirbase=$(basename "$mdir")
                     volclasspathinstdir="model.d/${storage_path}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
 
-                    info storage_path=$storage_path
-                    info mdir=$mdir
-                    info mdirbase=$mdirbase
-                    info classpath=$classpath
-                    info classinstdir=$classinstdir
+                    debug storage_path=$storage_path
+                    debug mdir=$mdir
+                    debug mdirbase=$mdirbase
+                    debug classpath=$classpath
+                    debug classinstdir=$classinstdir
 
-                    info 'volclasspathinstdir="model.d/${storage_path}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"'
-                    info =
-                    info $volclasspathinstdir
+                    debug 'volclasspathinstdir="model.d/${storage_path}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"'
+                    debug =
+                    debug $volclasspathinstdir
 
                     debug mdirbase=$mdirbase
 
@@ -1665,8 +1663,8 @@ function setup_dep_control_storage_class_dir()
                     # debug running debug setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
                     running debug setup_make_link "${fullupdirs}/${volclasspathinstdir}" "$classcontrol_dir_path/${mdirbase}"
 
-                    # SHARAD
-                    running info setup_add_to_version_control "${LOCALDIRS_DIR}" "${_classcontrol_dir_path}/${mdirbase}"
+                    # TODO
+                    running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${_classcontrol_dir_path}/${mdirbase}"
 
                 fi
 
@@ -1770,7 +1768,7 @@ function setup_deps_control_class_all_positions_dirs()
             info class="${class}"
             info storage_path="${storage_path}"
 
-            running debug setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
+            running info setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
         done
     else
         error setup_deps_control_class_all_positions_dirs: Not correct number of arguments.
@@ -2002,21 +2000,21 @@ function setup_deps_control_volumes_internal_dirs()
                     volinternaldirbase="$(basename ${internaldir})"
                     running debug mkdir -p "${volumedir}/control.d/${classcontroldir_rel_path_dirname}/${volinternaldirbase}/$cdir"
                     running info echo TEST sharad
-                    info volinternaldirbase=${volinternaldirbase}
-                    info classname="${classname}"
-                    info storage_path="${storage_path}"
-                    info containernames.d="${containername}s.d"
-                    info position="$position"
+                    debug volinternaldirbase=${volinternaldirbase}
+                    debug classname="${classname}"
+                    debug storage_path="${storage_path}"
+                    debug containernames.d="${containername}s.d"
+                    debug position="$position"
 
 
                     if [ $position -eq 1 ]
                     then
                         # SHARAD new
-                        running info setup_public_dirs       "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
-                        running info setup_mutule_dirs_links "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                        running debug setup_public_dirs       "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                        running debug setup_mutule_dirs_links "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
                     else
-                        info not running setup_public_dirs       "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
-                        info not running setup_mutule_dirs_links "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                        debug not running setup_public_dirs       "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                        debug not running setup_mutule_dirs_links "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${classname}/${containername}" 0 "${internal_dirs[@]}"
                     fi
 
                 done
@@ -2201,7 +2199,7 @@ function setup_deps_view_dir()
         info pos="${pos}"
         info storage_path="${storage_path}"
 
-        running debug setup_deps_view_volumes_dirs "$storage_path" "$pos"
+        running info setup_deps_view_volumes_dirs "$storage_path" "$pos"
     done
 }
 
@@ -2357,11 +2355,11 @@ function setup_mutule_dirs_links()
 
             if [ $vc -eq 1 ]
             then
-                running info setup_vc_mkdirpath_ensure "${base}" "${relpath}/${folder}" "_local" "ignoreall"
-                running info setup_vc_mkdirpath_ensure "${base}" "${relpath}/${folder}" "_nonlocal" "ignoreall"
+                running debug setup_vc_mkdirpath_ensure "${base}" "${relpath}/${folder}" "_local" "ignoreall"
+                running debug setup_vc_mkdirpath_ensure "${base}" "${relpath}/${folder}" "_nonlocal" "ignoreall"
             else
-                running info mkdir -p "${base}/${relpath}/${folder}/_local"
-                running info mkdir -p "${base}/${relpath}/${folder}/_nonlocal"
+                running debug mkdir -p "${base}/${relpath}/${folder}/_local"
+                running debug mkdir -p "${base}/${relpath}/${folder}/_nonlocal"
             fi
 
             for ofolder in "${internal_dirs[@]}"
@@ -2370,20 +2368,20 @@ function setup_mutule_dirs_links()
                 then
                     if [ $vc -eq 1 ]
                     then
-                        running info setup_vc_mkdirpath_ensure "${base}"     "${relpath}"                  "${folder}/_local/${ofolder}"
+                        running debug setup_vc_mkdirpath_ensure "${base}"     "${relpath}"                  "${folder}/_local/${ofolder}"
                     else
-                        running info mkdir -p "${base}"/"${relpath}"/"${folder}/_local/${ofolder}"
+                        running debug mkdir -p "${base}"/"${relpath}"/"${folder}/_local/${ofolder}"
                     fi
 
-                    running info setup_make_relative_link "${fullpath}"  "${ofolder}/_local/${folder}" "${folder}/_nonlocal/${ofolder}"
+                    running debug setup_make_relative_link "${fullpath}"  "${ofolder}/_local/${folder}" "${folder}/_nonlocal/${ofolder}"
 
-                    running info setup_make_relative_link "${fullpath}/${folder}" "_local/${ofolder}"     "_${ofolder}"
-                    running info setup_make_relative_link "${fullpath}/${folder}" "_nonlocal/${ofolder}"  "${ofolder}"
+                    running debug setup_make_relative_link "${fullpath}/${folder}" "_local/${ofolder}"     "_${ofolder}"
+                    running debug setup_make_relative_link "${fullpath}/${folder}" "_nonlocal/${ofolder}"  "${ofolder}"
 
                     if [ $vc -eq 1 ]
                     then
-                        running info setup_add_to_version_control "${base}" "$relpath/${folder}/_local/${ofolder}"
-                        running info setup_add_to_version_control "${base}" "$relpath//${folder}/_nonlocal/${folder}"
+                        running debug setup_add_to_version_control "${base}" "$relpath/${folder}/_local/${ofolder}"
+                        running debug setup_add_to_version_control "${base}" "$relpath//${folder}/_nonlocal/${folder}"
                     fi
                 fi
             done
