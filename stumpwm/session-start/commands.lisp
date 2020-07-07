@@ -347,8 +347,7 @@
 
 
 (stumpwm:defcommand chromium () ()
-  (remember-win:run-wcli-command
-   (concat "chromium"))))
+  (remember-win:run-wcli-command "chromium"))
 
 (stumpwm:defcommand epiphany () ()
   (remember-win:run-wcli-command
