@@ -340,14 +340,11 @@
   (stumpwm:run-or-raise
    "xterm -title ebib -e emacs -nw -f ebib"
    '(:title "ebib")))
+
 
-;; (stumpwm:defcommand ebib () ()
-;;   (stumpwm:run-or-raise-cli
-;;    (if (emacs-server-running-p)
-;;        "emacsclient -d ${DISPLAY} -e \"(open-ebib-in-new-frame)\""
-;;        "emacs -d ${DISPLAY} -f \"(let ((ebib-layout 'full))
-;;                                      (ebib))\"")
-;;     '(:title "ebib")))
+(stumpwm:defcommand pavucontrol () ()
+  (remember-win:run-wcli-command (concat "pavucontrol")))
+
 
 (stumpwm:defcommand chromium () ()
   (remember-win:run-wcli-command
@@ -789,10 +786,13 @@
 
 ;; no window command
 (stumpwm:defcommand cpy-pass () ()
-  (let ((sec-cmd "secret-tool lookup server exch-cas.fortinet.com user 'fortinet-us\\spratap' protocol imap")
-        (clip-cmd "xclip -i"))
-    (stumpwm:run-shell-command (concat sec-cmd " | " clip-cmd))))
+(let ((sec-cmd "secret-tool lookup server exch-cas.fortinet.com user 'fortinet-us\\spratap' protocol imap")
+      (clip-cmd "xclip -i"))
+  (stumpwm:run-shell-command (concat sec-cmd " | " clip-cmd))))
 
 
+(stumpwm:defcommand abort-recursive-edit () ()
+  (remember-win:run-cli-command (build-emacslcient-cmd  "-e" "'(abort-recursive-edit)'")))
+
 ;; TODO: universal menu for all KEYMAPS
 

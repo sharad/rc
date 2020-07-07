@@ -320,52 +320,26 @@
 ;; (define-key *top-map* (kbd "S-Super_L") '*spare-map*)
 ;; (define-key *root-map* (kbd "Super_L") '*spare-map*)
 
-
-
 ;; Heirarichal Maps now
 ;; Window
 ;; Commands
 
 (defvar *file-manager-map* nil
   "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
-
-(defvar *window-commands-map* nil
-  "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
-
-(defvar *window-handling-map* nil
-  "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
-
-(defvar *window-map* nil
-  "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
-
-(defvar *imergency-map* nil
-  "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
-
-(defvar *term-commands-map* nil
-  "The keymap for terminal emulator commands.")
-
-(defvar *browser-commands-map* nil
-  "The keymap for terminal emulator commands.")
-
 (fill-keymap *file-manager-map*
              (kbd "o") "file-manager"
              (kbd "q") "file-manager-quit")
 
-(fill-keymap *window-commands-map*
-             (kbd "f") '*file-manager-map*
-             (kbd "t") '*term-commands-map*
-             (kbd "b") '*browser-commands-map*
-             (kbd "e") "emacsclient"
-             (kbd "m") "mail-reader"
-             (kbd "n") "new-mail"
-             (kbd "E") "editor")
-
+(defvar *term-commands-map* nil
+  "The keymap for terminal emulator commands.")
 (fill-keymap *term-commands-map*
              (kbd "k") "kitty"
              (kbd "s") "sakura"
              (kbd "u") "urxvt"
              (kbd "x") "xterm")
 
+(defvar *browser-commands-map* nil
+  "The keymap for terminal emulator commands.")
 (fill-keymap *browser-commands-map*
              (kbd "c") "chromium"
              (kbd "e") "epiphany"
@@ -374,15 +348,36 @@
              (kbd "t") "xbrowser-tor"
              (kbd "T") "firefox-tor")
 
+(defvar *utilities-map* nil
+  "The keymap for utilities commands.")
+(fill-keymap *utilities-map*
+             (kbd "p") "pavucontrol")
+
+(defvar *window-commands-map* nil
+  "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
+(fill-keymap *window-commands-map*
+             (kbd "f") '*file-manager-map*
+             (kbd "t") '*term-commands-map*
+             (kbd "b") '*browser-commands-map*
+             (kbd "e") "emacsclient"
+             (kbd "m") "mail-reader"
+             (kbd "n") "new-mail"
+             (kbd "E") "editor"
+             (kbd "u") '*utilities-map*)
+
+
 (define-key *top-map* (kbd "XF86Mail") "mail-reader")
 
 ;; Handling
+(defvar *window-handling-map* nil
+  "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
 (fill-keymap *window-handling-map*
              (kbd "d") "disappear-window"
              (kbd "s") "pause-win"
              (kbd "c") "continue-win")
 
-(define-key *top-map* (kbd "s-w") '*window-map*)
+(defvar *window-map* nil
+  "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
 (setf *window-map*
       (let ((m (make-sparse-keymap)))
         (define-key m (kbd "C-c") '*window-commands-map*)
@@ -391,12 +386,12 @@
         (define-key m (kbd "t") '*window-handling-map*)
         (define-key m (kbd "w") "meta s-w")
         m))
+(define-key *top-map* (kbd "s-w") '*window-map*)
+
 
-;; Imergency
-(define-key *top-map* (kbd "s-i")      '*imergency-map*)
-(define-key *top-map* (kbd "KP_Enter") '*imergency-map*)
-; (undefine-key *top-map* (kbd "s-i"))
 
+(defvar *imergency-map* nil
+  "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
 (fill-keymap *imergency-map*
              (kbd "s") "show-current-profile"
              (kbd "o") "set-profile cprofile"
@@ -405,8 +400,27 @@
              (kbd "KP_Enter") "toggle-profile")
 
 (undefine-key stumpwm:*top-map* (kbd "s-p"))
+
+;; Imergency
+(define-key *top-map* (kbd "s-i")      '*imergency-map*)
+(define-key *top-map* (kbd "KP_Enter") '*imergency-map*)
+; (undefine-key *top-map* (kbd "s-i"))
 
 
+(defvar *cleanup-map* nil
+  "The keymap for cleanup commands.")
+(fill-keymap *cleanup-map*
+             (kbd "a") "abort-recursive-edit")
+(defvar *non-window-commands-map* nil
+  "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
+(fill-keymap *non-window-commands-map*
+             (kbd "c") '*cleanup-map*)
+(defvar *non-window--map* nil
+  "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
+(fill-keymap *non-window--map*
+             (kbd "c") '*non-window-commands-map*)
+(define-key *top-map* (kbd "s-a") '*non-window-map*)
+
 ;;{{{ Notification
 #+notifications
 (progn

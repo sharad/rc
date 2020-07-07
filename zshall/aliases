@@ -78,6 +78,8 @@ alias care='exec screen'
 alias music='mp3blaster    ~/Music/{misc,ASHA.KISHORE/*}/*'
 alias msuspend='pmi action suspend '
 alias mhibernate='pmi action hibernate'
+
+
 # GNUEmacs aliases
 alias zz='python   /usr/lib/command-not-found  -- '
 alias emacs='emacsclient -t'
@@ -85,7 +87,8 @@ alias e='emacsclient -t'
 alias edit='emacsclient -t'
 alias xemacs='emacsclient -n -d $DISPLAY'
 alias xe='emacsclient -n -d $DISPLAY'
-alias xedit='emacsclient -n -d $DISPLAY -f ~/.emacs.d/server/general'
+alias xedit='emacsclient -n -d $DISPLAY -f ~/.emacs.d/server/$EMACS_SERVER_NAME'
+alias eabrtrecedit="timeout -k 8s 2s emacsclient -f ~/.emacs.d/server/$EMACS_SERVER_NAME -n -e '(abort-recursive-edit)'"
 # alias plan='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp nil)'\'''
 # alias noteit='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp 4)'\'''
 # alias onote='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp 1)'\'' '
@@ -98,6 +101,9 @@ alias xedit='emacsclient -n -d $DISPLAY -f ~/.emacs.d/server/general'
 # alias agenda='emacsclient  -nw -t --eval '\''(org-agenda-list)'\''  --eval '\''(toggle-read-only)'\'''
 # alias gnus='emacsclient  -nw -t --eval '\''(gnus)'\'''
 # alias bbdb='emacsclient  -nw -t --eval '\''(bbdb)'\'''
+
+
+
 alias vncviewer='vncviewer -shared'
 alias mancolor="TERMINFO=~/.terminfo/ LESS=C TERM=mostlike PAGER=less man"
 alias last='last -awFx'
