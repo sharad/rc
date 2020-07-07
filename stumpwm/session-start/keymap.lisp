@@ -417,8 +417,10 @@
              (kbd "c") '*cleanup-map*)
 (defvar *non-window--map* nil
   "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
-(fill-keymap *non-window--map*
-             (kbd "c") '*non-window-commands-map*)
+(setf *non-window-map*
+      (let ((m (make-sparse-keymap)))
+        (define-key m (kbd "c") '*non-window-commands-map*)
+        m))
 (define-key *top-map* (kbd "s-a") '*non-window-map*)
 
 ;;{{{ Notification
