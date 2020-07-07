@@ -37,9 +37,18 @@ stop_loading_pages_browser();
 
 //{{ Remember the last save directory for downloads
 // Add the following code to your rc:
+function setup_file_download_match_dir() {
+    // jpeg -> Pictures
+    // pdf  -> Documents
+}
 function setup_file_download_save_path () {
     let _save_path = get_home_directory();
-    let download_dirs = {tmp:"tmp", Downloads:"Downloads"};
+    let download_dirs =
+        {
+            tmpDownloads:"tmp/Downloads",
+            tmp:"tmp",
+            Downloads:"Downloads"
+        };
 
     // Add command to reset _save_path
 

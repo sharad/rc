@@ -5,18 +5,15 @@
 (use-modules (lotus packages cdesktopenv))
 
 (define %lotus-text-package-names
-  (list 
-       "jupyter" 
-        ))
-        ;; "linux-libre-headers@4.19.56"
-        ;; "fribidi"
-        ;; "bicon"
-        
+  (list "jupyter" 
+        "unrar"))
+;; "linux-libre-headers@4.19.56"
+;; "fribidi"
+;; "bicon"
+
 
 (define %lotus-text-packages
-  (append
-   ;; (list '(gcc "lib"))
-   (map specification->package
-        %lotus-text-package-names)))
+  (append (map specification->package
+                 %lotus-text-package-names)))
 
 (packages->manifest %lotus-text-packages)

@@ -1,9 +1,9 @@
 
 ;; https://wingolog.org/archives/2015/08/04/developing-v8-with-guix
-(use-package-modules base gcc llvm base python version-control less ccache pkg-config glib gnome cmake messaging autotools flex bison compression m4 gawk xorg onc-rpc gsasl kerberos image commencement fontutils shells)
+
 
 (define %lotus-ocaml-heavy-package-names (list "ocaml"
-					       "ocamlbuild"
+                                               "ocamlbuild"
                                                "ocaml-findlib"
                                                "opam"
                                                "emacs-tuareg"))
@@ -21,12 +21,16 @@
                                             "libvirt"))
 
 (define %lotus-font-heavy-package-names (list "font-cns11643"))
-                                            ;; "font-google-noto"
-                                            ;; "font-adobe-source-han-sans"))
+;; "font-google-noto"
+;; "font-adobe-source-han-sans"))
+
+(define %lotus-misc-heavy-package-names (list "ungoogled-chromium"
+                                              "wine"))
 
 (define %lotus-heavy-package-names (append %lotus-ocaml-heavy-package-names
                                            %lotus-vm-heavy-package-names
-                                           %lotus-font-heavy-package-names))
+                                           %lotus-font-heavy-package-names
+                                           %lotus-misc-heavy-package-names))
 
 (define %lotus-heavy-packages
   (append

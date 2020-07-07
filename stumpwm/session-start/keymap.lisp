@@ -367,6 +367,7 @@
              (kbd "x") "xterm")
 
 (fill-keymap *browser-commands-map*
+             (kbd "c") "chromium"
              (kbd "e") "epiphany"
              (kbd "b") "xbrowser"
              (kbd "f") "firefox"

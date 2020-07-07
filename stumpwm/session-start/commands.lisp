@@ -349,6 +349,10 @@
 ;;                                      (ebib))\"")
 ;;     '(:title "ebib")))
 
+(stumpwm:defcommand chromium () ()
+  (remember-win:run-wcli-command
+   (concat "chromium"))))
+
 (stumpwm:defcommand epiphany () ()
   (remember-win:run-wcli-command
    (concat "epiphany --profile=" (getenv "HOME") "/.config/epiphany-profiles/" (getenv "XBPROFILE"))))
