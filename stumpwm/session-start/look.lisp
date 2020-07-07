@@ -185,14 +185,6 @@
 
                            "%N [^B%n^b ^B^1%u^*^b ] %T %W - %I"))
 
-;; (setf *mode-line-fmts* '(
-;;                            ((:eval
-;;                              (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S"))
-;;                             ;; (:eval (format "Name"))
-;;                             "~% - %c (%f) - %B - [^B%n^b ^B%u^b] %W - %m - %D")
-;;                             " - %c (%f) - %b %B - [^B%n^b ^B%u^b ] %W - %m - %D"
-;;                             "[^B%n^b ^B%u^b] %W"))
-
 (setf stumpwm:*screen-mode-line-format* (car *mode-line-fmts*))
 
 ;; Stumpwm lets you have a mode-line that can be used to show

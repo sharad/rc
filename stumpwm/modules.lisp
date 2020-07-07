@@ -103,14 +103,15 @@
 
 
 #+wifi
-(setf wifi:*iwconfig-path*
-      (let ((default-path (or wifi:*iwconfig-path*
-                              "/sbin/iwconfig"))
-            (found-path   (some #'probe-file
-                                (list wifi:*iwconfig-path*
-                                      "/sbin/iwconfig"
-                                      "/run/current-system/profile/sbin/iwconfig"))))
-        (if found-path (namestring found-path) default)))
+(progn
+  (setf wifi:*iwconfig-path*
+        (let ((default-path (or wifi:*iwconfig-path*
+                                "/sbin/iwconfig"))
+              (found-path   (some #'probe-file
+                                  (list wifi:*iwconfig-path*
+                                        "/sbin/iwconfig"
+                                        "/run/current-system/profile/sbin/iwconfig"))))
+          (if found-path (namestring found-path) default))))
 
 #+net
 (progn
