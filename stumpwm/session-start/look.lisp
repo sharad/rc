@@ -164,7 +164,9 @@
 
 
 (defvar *mode-line-fmts* '(("^[^B^7*%h^]" "/"
-                            (:eval (show-ip-address)) " "
+                            ;; (:eval (show-ip-address))
+                            "%l"
+                            " "
                             (:eval (format-expand *time-format-string-alist*
                                                   ;; "%a %b %e %Y - %k:%M:%S"
                                                   "%a %k:%M:%S %b %e %Y"))
@@ -172,7 +174,8 @@
                             (:eval (show-kernel))     " "
                             (:eval (show-uptime))     " "
                             ;; "%c (%f) - %B - ^71%N^** [^B%n^71%u^**^b] %T %W - %m - %D - %I - %p"
-                            "%c (%f) - %B - ^71%N^** [^B%n^71%u^**^b] %T %W - %m - %l %D - %I - %p")
+                            ;; "%c (%f) - %B - ^71%N^** [^B%n^71%u^**^b] %T %W - %m - %l %D - %I - %p"
+                            "%C - %B - ^71%N^** [^B%n^71%u^**^b] %T %W - %m - %D - %I - %p")
 
                            ("^[^B^7*%h^] " (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^01%N^** [^B%n^01%u^**^b] %T %W - %m - %D - %I ")
                            ("^[^B^7*%h^] " (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^1*%N^** [^B%n^b ^B^1*%u^**^b ] %T %W - %m - %D - %I")

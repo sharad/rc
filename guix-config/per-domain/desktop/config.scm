@@ -7,8 +7,8 @@
 (define %lotus-system-init #f)
 (define %lotus-use-nongnu  #t)
 
-(define nongnu-desktop? (and %lotus-use-nongnu
-                             (not %lotus-system-init)))
+(define nongnu-desktop?    (and %lotus-use-nongnu
+                                (not %lotus-system-init)))
 
 
 (use-modules (guix utils))
@@ -46,7 +46,7 @@
 ;; non-guix
 
 ;; Import nonfree linux module.
-(when  nongnu-desktop?
+(when nongnu-desktop?
   (use-modules (nongnu packages linux)))
 
 
