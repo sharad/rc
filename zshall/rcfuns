@@ -468,6 +468,49 @@ function lsscreenssh {
     fi
 }
 
+
+function scn() {
+    # https://raymii.org/s/snippets/Sending_commands_or_input_to_a_screen_session.html
+    # https://stackoverflow.com/questions/12255388/checking-if-a-screen-of-the-specified-name-exists
+    local SESSION="$1"
+    shift 1
+    local _CLI="$@"
+    local CLI="${(j:/:)_CLI}"
+    local _CR=""
+
+    if [ -z "$STY" ]
+    then
+        if ! screen -S "$SESSION" -Q select
+        then
+            screen -d -m -S "$SESSION"
+        fi
+        echo screen -d -x "$SESSION" -p 2 -X stuff "$CLI$_CR"
+        screen -d -x "$SESSION" -p 2 -X stuff "$CLI$_CR"
+
+        screen -d -m -x "$SESSION"
+    fi
+}
+
+function scn-send() {
+    # https://raymii.org/s/snippets/Sending_commands_or_input_to_a_screen_session.html
+    # https://stackoverflow.com/questions/12255388/checking-if-a-screen-of-the-specified-name-exists
+    local SESSION="$1"
+    shift 1
+    local _CLI="$@"
+    local CLI="${(j:/:)_CLI}"
+    local _CR=""
+
+    if [ -z "$STY" ]
+    then
+        if ! screen -S "$SESSION" -Q select
+        then
+            screen -d -m -S "$SESSION"
+        fi
+        echo screen -d -x "$SESSION" -p 2 -X stuff "$CLI$_CR"
+        screen -d -x "$SESSION" -p 2 -X stuff "$CLI$_CR"
+    fi
+}
+
 # function zshexit {
 # }
 
