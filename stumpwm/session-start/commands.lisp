@@ -785,13 +785,32 @@
 
 ;; no window command
 (stumpwm:defcommand cpy-pass () ()
-(let ((sec-cmd "secret-tool lookup server exch-cas.fortinet.com user 'fortinet-us\\spratap' protocol imap")
-      (clip-cmd "xclip -i"))
-  (stumpwm:run-shell-command (concat sec-cmd " | " clip-cmd))))
+  (let ((sec-cmd "secret-tool lookup server exch-cas.fortinet.com user 'fortinet-us\\spratap' protocol imap")
+        (clip-cmd "xclip -i"))
+    (stumpwm:run-shell-command (concat sec-cmd " | " clip-cmd))))
 
 
 (stumpwm:defcommand abort-recursive-edit () ()
   (remember-win:run-cli-command (build-emacslcient-cmd  "-e" "'(abort-recursive-edit)'")))
+
+
+;; https://www.reddit.com/r/qtools/comments/aeu2qn/rofi_does_not_open_terminal_in_i3wm/
+;; https://wiki.archlinux.org/index.php/Dmenu
+;; https://bbs.archlinux.org/viewtopic.php?id=80145
+;; https://github.com/cdown/clipmenu/blob/develop/clipmenud
+;; https://wiki.archlinux.org/index.php/Rofi
+
+(stumpwm:defcommand run-rofi-win () ()
+  (stumpwm:run-shell-command "rofi -show run"))
+
+(stumpwm:defcommand run-rofi-desktop () ()
+  (stumpwm:run-shell-command "rofi -show drun"))
+
+(stumpwm:defcommand run-rofi-terminal-wait () ()
+  (stumpwm:run-shell-command "rofi -terminal xterm -kb-accept-entry \"\" -kb-accept-alt Return -show run -run-shell-command '{terminal} -e \"{cmd}; read -n 1 -s\"'"))
+
+(stumpwm:defcommand run-rofi-terminal-nowait () ()
+  (stumpwm:run-shell-command "rofi -terminal xterm -kb-accept-entry \"\" -kb-accept-alt Return -show run -run-shell-command '{terminal} -e \"{cmd}\"'"))
 
 ;; TODO: universal menu for all KEYMAPS
 

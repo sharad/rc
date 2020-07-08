@@ -35,7 +35,7 @@
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-lang-packages
-  '(
+  '(pgm-utils
     (elisp-mode :location local)
     (ispell    :locaion local)
     geiser
@@ -69,6 +69,18 @@ Each entry is either:
 
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
+
+(defun lotus-lang/init-pgm-utils ()
+  (use-package pgm-utils
+    :defer t
+    :init
+    (progn
+      (add-hook 'prog-mode-hook 'office-activate)
+      (add-hook 'nxml-mode-hook 'office-activate))
+    :config
+    (progn
+      (progn
+        (setq office-git-remote-regex "fortinet")))))
 
 (defun lotus-lang/init-elisp-mode ()
   (use-package elisp-mode

@@ -326,8 +326,7 @@
             (progn
               (use-package task-manager
                 :defer t
-                :commands (office-mode
-                           task-current-party-select-set
+                :commands (task-current-party-select-set
                            task-current-party task-party-dir
                            task-select-party-dir
                            find-task-dir)
@@ -512,34 +511,7 @@
                              "Office related work"
                              "https://bugzilla.merunetworks.com")
 
-        (task-current-party "meru")))
-
-    (progn
-      (autoload 'magit-git-lines "magit")
-      (autoload 'magit-process-file "magit")
-
-      (defvar office-git-remote-regex "")
-
-      (setq office-git-remote-regex "fortinet")
-      (defun office-file-p (file)
-        (let ((remote-repo (car (remove-if-not #'(lambda (s) (if s (string-match-p "^origin" s)))
-                                               (magit-git-lines "remote" "-v")))))
-          (when (and (functionp 'magit-git-lines)
-                     remote-repo)
-            (string-match-p office-git-remote-regex
-                            remote-repo))))
-
-      (defun office-activate ()
-        (interactive)
-        (let ((file (buffer-file-name)))
-          (when (and file
-                     (office-file-p file))
-            ;; if file is handled by perforce than assume it is
-            ;; related to office perforce repository.
-            (office-mode 1))))
-
-      (add-hook 'prog-mode-hook 'office-activate)
-      (add-hook 'nxml-mode-hook 'office-activate))))
+        (task-current-party "meru")))))
 
 (defun lotus-orgclocktask/post-init-startup-hooks-config ()
   (progn ;code will not get run as when
@@ -556,28 +528,6 @@
                                                (if (any-frame-opened-p)
                                                    (org-clock-in-if-not)))))
                      t)))
-     ;; (add-hook
-     ;;  'delete-frame-functions
-     ;;  #'(lambda (nframe)
-     ;;      (if (and
-     ;;           (org-clock-is-active)
-     ;;           (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-     ;;          (org-with-clock-writeable
-     ;;           (let (org-log-note-clock-out)
-     ;;             (if (org-clock-is-active)
-     ;;                 (org-clock-out)))))))
-
      t)))
-
-;; (progn
-;;   (add-to-enable-desktop-restore-interrupting-feature-hook
-;;    #'(lambda ()
-;;       (if (fboundp 'org-clock-persistence-insinuate)
-;;           (org-clock-persistence-insinuate)
-;;           (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
-;;       (if (fboundp 'org-clock-start-check-timer-insiuate)
-;;           (org-clock-start-check-timer-insiuate)))
-;;     t))
-
 
 ;;; config.el ends here

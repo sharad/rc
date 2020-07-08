@@ -406,7 +406,7 @@ Each entry is either:
                   (progn
                     (use-package task-manager
                       :defer t
-                      :commands (office-mode task-party-dir task-select-party-dir find-task-dir)
+                      :commands (task-party-dir task-select-party-dir find-task-dir)
                       :config
                       (progn
                         (progn

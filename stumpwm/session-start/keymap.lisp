@@ -407,14 +407,16 @@
 ; (undefine-key *top-map* (kbd "s-i"))
 
 
-(defvar *cleanup-map* nil
+(defvar *non-window-cleanup-map* nil
   "The keymap for cleanup commands.")
-(fill-keymap *cleanup-map*
+(fill-keymap *non-window-cleanup-map*
              (kbd "a") "abort-recursive-edit")
+
 (defvar *non-window-commands-map* nil
   "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
 (fill-keymap *non-window-commands-map*
-             (kbd "c") '*cleanup-map*)
+             (kbd "c") '*non-window-cleanup-map*)
+
 (defvar *non-window--map* nil
   "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
 (setf *non-window-map*
@@ -422,6 +424,28 @@
         (define-key m (kbd "c") '*non-window-commands-map*)
         m))
 (define-key *top-map* (kbd "s-a") '*non-window-map*)
+
+
+(defvar *rofi-run-map* nil
+  "The keymap for rofi run.")
+(fill-keymap *rofi-run-map*
+             (kbd "w") "run-rofi-win"
+             (kbd "d") "run-rofi-desktop"
+             (kbd "t") "run-rofi-terminal-wait"
+             (kbd "T") "run-rofi-terminal-nowait")
+
+(defvar *rofi-commands-map* nil
+  "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
+(fill-keymap *rofi-commands-map*
+             (kbd "r") '*rofi-run-map*)
+
+(defvar *dynamic-menu--map* nil
+  "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
+(setf *dynamic-menu-map*
+      (let ((m (make-sparse-keymap)))
+        (define-key m (kbd "r") '*rofi-commands-map*)
+        m))
+(define-key *top-map* (kbd "s-r") '*dynamic-menu-map*)
 
 ;;{{{ Notification
 #+notifications
