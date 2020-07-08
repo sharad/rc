@@ -807,10 +807,10 @@
   (stumpwm:run-shell-command "rofi -show drun"))
 
 (stumpwm:defcommand run-rofi-terminal-wait () ()
-  (stumpwm:run-shell-command "rofi -terminal xterm -kb-accept-entry \"\" -kb-accept-alt Return -show run -run-shell-command '{terminal} -e \"{cmd}; read -n 1 -s\"'"))
+  (stumpwm:run-shell-command "rofi -show run -terminal xterm -kb-accept-entry '' -kb-accept-alt Return -run-shell-command '{terminal} -e \"{cmd}; bash -c \\\"read -n 1 \\\" \" ' "))
 
 (stumpwm:defcommand run-rofi-terminal-nowait () ()
-  (stumpwm:run-shell-command "rofi -terminal xterm -kb-accept-entry \"\" -kb-accept-alt Return -show run -run-shell-command '{terminal} -e \"{cmd}\"'"))
+  (stumpwm:run-shell-command "rofi -show run -terminal xterm -kb-accept-entry \"\" -kb-accept-alt Return -run-shell-command '{terminal} -e \"{cmd}\"'"))
 
 ;; TODO: universal menu for all KEYMAPS
 
