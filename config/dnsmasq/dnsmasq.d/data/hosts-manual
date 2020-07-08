@@ -108,6 +108,10 @@ ff02::2 ip6-allrouters
 
 #### beta setup ####
 10.36.231.226 beta.fortiapcloud.com
+10.36.231.221 betadispatcher.fortiapcloud.com
+10.36.231.220 beta-login.fortiapcloud.com
+10.36.231.223 betacontroller.fortiapcloud.com
+
 10.36.231.224 beta-apportal001.fortiapcloud.com
 10.36.231.224 beta-apportal001-1.fortiapcloud.com
 10.36.231.224 beta-apportal001-2.fortiapcloud.com
@@ -119,8 +123,6 @@ ff02::2 ip6-allrouters
 10.36.231.224 beta-apportal001-8.fortiapcloud.com
 10.36.231.224 beta-apportal001-9.fortiapcloud.com
 10.36.231.224 beta-apportal001-10.fortiapcloud.com
-10.36.231.220 beta-login.fortiapcloud.com
-
 #### end        ####
 
 
