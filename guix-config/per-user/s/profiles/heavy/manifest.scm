@@ -25,7 +25,8 @@
 ;; "font-adobe-source-han-sans"))
 
 (define %lotus-misc-heavy-package-names (list "ungoogled-chromium"
-                                              "wine"))
+                                              "wine"
+                                              "wine64"))
 
 (define %lotus-heavy-package-names (append %lotus-ocaml-heavy-package-names
                                            %lotus-vm-heavy-package-names

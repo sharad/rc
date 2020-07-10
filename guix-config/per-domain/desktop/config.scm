@@ -78,7 +78,8 @@
                                                "http://guix.genenetwork.org"
                                                "https://guix.tobias.gr"
                                                "https://ci.guix.info/"
-                                               "https://berlin.guixsd.org"))
+                                               ;; "https://berlin.guixsd.org"
+                                               "https://berlin.guix.gnu.org"))
 (define %lotus-guix-extra-options            '(
                                                ;; "--max-jobs=2"
                                                ;; "--cores=1"
