@@ -40,7 +40,10 @@ DOCUMENT_PUBLISH_PATH=~/Documents/online
 export DOCUMENT_PUBLISH_PATH
 ## DOCUMENT_PUBLISH_PATH
 
-
+## wine
+WINEPREFIX="$(readlink -m ~/.wine)"
+export WINEPREFIX
+## wine
 
 PRIVATE_DIR=$HOME/.Private
 SSH_KEYS_DIR=$HOME/.ssh/login-keys.d

@@ -4,13 +4,12 @@
 # and returns the output
 
 import locale
-from subprocess import Popen, PIPE, DEVNULL
 import subprocess
 
 encoding = locale.getdefaultlocale()[1]
 
 def get_password(server, protocol):
-    (out, err) = Popen(["secret-tool", "lookup", "server", server,  "protocol", protocol], stdout=PIPE).communicate()
+    (out, err) = subprocess.Popen(["secret-tool", "lookup", "server", server,  "protocol", protocol], stdout=subprocess.PIPE).communicate()
     return out.decode(encoding).strip()
 
 def get_username(server, protocol):
