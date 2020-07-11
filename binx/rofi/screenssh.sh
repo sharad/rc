@@ -38,7 +38,7 @@ function prefixcmd()
         then
             echo "ssh -t -X -o PubkeyAuthentication=yes -o VisualHostKey=no $_host"
         else
-            echo "ssh -X -o PubkeyAuthentication=yes -o VisualHostKey=no $_host"
+            echo "ssh -o PubkeyAuthentication=yes -o VisualHostKey=no $_host"
         fi
     fi
 }
@@ -48,21 +48,27 @@ function run_screen()
     _host="$1"
     _session="$2"
     _prefixcmd=$(prefixcmd 1 $_host)
+    _prefixcmd_test=$(prefixcmd 0 $_host)
 
     echo coproc xterm -e ${=_prefixcmd} screen -d -m -x $_session >> ${_SCREEN_SEL}/test
-    if ! ${=_prefixcmd} screen -S "$_session" -Q select >/dev/null 2>&1
+    if ${=_prefixcmd_test} screen -x "$_session" -ls | grep 'No Sockets' >/dev/null 2>&1
     then
-        ${=_prefixcmd} screen -d -m -S $_session >/dev/null 2>&1
+        ${=_prefixcmd_test} screen -d -m -S $_session >/dev/null 2>&1
     fi
 
-    if ${=_prefixcmd} screen -S "$_session" -Q select >/dev/null 2>&1
+    # coproc xterm -hold -e ${=_prefixcmd} screen -d -m -x $_session
+    # exec 1>&-
+    # exit
+
+    if ! ${=_prefixcmd_test} screen -x "$_session" -ls | grep 'No Sockets' >/dev/null 2>&1
     then
         coproc xterm -e ${=_prefixcmd} screen -d -m -x $_session
         exec 1>&-
         exit
-    else
-        rofi -e 'can not start'
+    # else
+    #     rofi -e 'can not start'
     fi
+    exec 1>&-
     exit
 }
 
