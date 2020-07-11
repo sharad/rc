@@ -56,10 +56,6 @@ function run_screen()
         ${=_prefixcmd_test} screen -d -m -S $_session >/dev/null 2>&1
     fi
 
-    # coproc xterm -hold -e ${=_prefixcmd} screen -d -m -x $_session
-    # exec 1>&-
-    # exit
-
     if ! ${=_prefixcmd_test} screen -x "$_session" -ls | grep 'No Sockets' >/dev/null 2>&1
     then
         coproc xterm -e ${=_prefixcmd} screen -d -m -x $_session
@@ -87,7 +83,7 @@ function list_session()
 {
     local _host="$1"
     local _SESSION_HISTORY=${_SCREEN_SEL}/session_${_host}
-    _prefixcmd=$(prefixcmd 0 ${_host})
+    _prefixcmd_test=$(prefixcmd 0 ${_host})
 
     echo $_host >> $_HOST_HISTORY
 
@@ -97,7 +93,7 @@ function list_session()
         echo default >> $_SESSION_HISTORY
     fi
 
-    ${=_prefixcmd} screen -ls | egrep '^	' | cut -d'	' -f2 | cut -d. -f2 >> $_SESSION_HISTORY >/dev/null 2>&1
+    ${=_prefixcmd_test} screen -ls | egrep '^	' | cut -d'	' -f2 | cut -d. -f2 >> $_SESSION_HISTORY >/dev/null 2>&1
 
     sort -u $_SESSION_HISTORY -o $_SESSION_HISTORY
     echo -en "\x00prompt\x1fChange prompt\n"
