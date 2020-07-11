@@ -43,8 +43,18 @@ function run_screen()
     _session="$2"
     _prefixcmd=$(prefixcmd $_host)
 
-    echo xterm -e ${=_prefixcmd} screen -d -m -x $_session >> ${_SCREEN_SEL}/test
-    exec xterm -e ${=_prefixcmd} screen -d -m -x $_session
+    echo coproc xterm -e ${=_prefixcmd} screen -d -m -x $_session > ${_SCREEN_SEL}/test
+    if ! ${=_prefixcmd} screen -S "$_session" -Q select >/dev/null 2>&1
+    then
+        ${=_prefixcmd} screen -d -m -S $_session >/dev/null 2>&1
+    fi
+
+    if ${=_prefixcmd} screen -S "$_session" -Q select >/dev/null 2>&1
+    then
+        coproc xterm -e ${=_prefixcmd} screen -d -m -x $_session
+    else
+        rofi -e 'can not start'
+    fi
     exit
 }
 
