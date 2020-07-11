@@ -4,6 +4,9 @@ _SCREEN_SEL=~/.local/var/cache/rofi
 
 _HOST_HISTORY=${_SCREEN_SEL}/hosts
 
+TERMINAL=xterm
+TERMINAL_OPTIONS="-e"
+
 
 function main()
 {
@@ -50,7 +53,7 @@ function run_screen()
     _prefixcmd=$(prefixcmd 1 $_host)
     _prefixcmd_test=$(prefixcmd 0 $_host)
 
-    echo coproc xterm -e ${=_prefixcmd} screen -d -m -x $_session >> ${_SCREEN_SEL}/test
+    echo coproc "$TERMINAL" "$TERMINAL_OPTIONS" ${=_prefixcmd} screen -d -m -x $_session >> ${_SCREEN_SEL}/test
     if ${=_prefixcmd_test} screen -x "$_session" -ls | grep 'No Sockets' >/dev/null 2>&1
     then
         ${=_prefixcmd_test} screen -d -m -S $_session >/dev/null 2>&1
@@ -58,11 +61,11 @@ function run_screen()
 
     if ! ${=_prefixcmd_test} screen -x "$_session" -ls | grep 'No Sockets' >/dev/null 2>&1
     then
-        coproc xterm -e ${=_prefixcmd} screen -d -m -x $_session
+        coproc "$TERMINAL" "$TERMINAL_OPTIONS" ${=_prefixcmd} screen -d -m -x $_session >/dev/null 2>&1
         exec 1>&-
         exit
     # else
-    #     rofi -e 'can not start'
+    #     echo RofiErrorCode
     fi
     exec 1>&-
     exit
