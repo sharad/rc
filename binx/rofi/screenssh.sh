@@ -1,9 +1,9 @@
 #!/usr/bin/env zsh
 
 _SCREEN_SEL=~/.local/var/cache/rofi
-
 _HOST_HISTORY=${_SCREEN_SEL}/hosts
 
+TIMEOUT=timeout
 TERMINAL=xterm
 TERMINAL_OPTIONS="-e"
 
@@ -20,6 +20,7 @@ function main()
     elif [ $# -eq 1 ]
     then
         _host="$1"
+        check_host $_host
         list_session $_host
     else
         _host="$1"
@@ -27,8 +28,6 @@ function main()
         run_screen "$_host" "$_session"
     fi
 }
-
-
 
 function prefixcmd()
 {
@@ -86,7 +85,7 @@ function list_session()
 {
     local _host="$1"
     local _SESSION_HISTORY=${_SCREEN_SEL}/session_${_host}
-    _prefixcmd_test=$(prefixcmd 0 ${_host})
+    local _prefixcmd_test=$(prefixcmd 0 ${_host})
 
     echo $_host >> $_HOST_HISTORY
 
@@ -111,6 +110,29 @@ function list_session()
     cat $_SESSION_HISTORY | xargs -r printf -- ${_host}" %s\n"
 }
 
+function check_host()
+{
+    local _host="$1"
+    local _prefixcmd=$(prefixcmd 1 $_host)
+    local _prefixcmd_test=$(prefixcmd 0 $_host)
+
+    if [ "${_host}" != "localhost" ]
+    then
+        if [ "x" = "x$SSH_AUTH_SOCK" ]
+        then
+            echo Error SSH_AUTH_SOCK not set
+            exit
+        elif [ "$_prefixcmd_test" ]
+        then
+            if ! ${TIMEOUT} -k 10 8 ${=_prefixcmd_test} ps >/dev/null 2>&1
+            then
+                coproc "${TERMINAL}" -hold "${TERMINAL_OPTIONS}" ${=_prefixcmd_test} ps >/dev/null 2>&1
+                exec 1>&-
+                exit
+            fi
+        fi
+    fi
+}
 
 main ${=1}
 

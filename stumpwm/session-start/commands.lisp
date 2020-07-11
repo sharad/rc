@@ -811,6 +811,9 @@
 
 (stumpwm:defcommand run-rofi-terminal-nowait () ()
   (stumpwm:run-shell-command "rofi -show run -terminal xterm -kb-accept-entry \"\" -kb-accept-alt Return -run-shell-command '{terminal} -e \"{cmd}\"'"))
+
+(stumpwm:defcommand run-rofi-xscreen-session () ()
+  (stumpwm:run-shell-command "rofi -modi xscreen:~/.setup/binx/rofi/screenssh.sh -show xscreen"))
 
 ;; TODO: universal menu for all KEYMAPS
 

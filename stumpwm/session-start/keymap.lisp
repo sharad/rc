@@ -265,15 +265,6 @@
         (define-key m (kbd "k") "describe-key")
         (define-key m (kbd "w") "where-is")
         m))
-;;Query map----------------------------------------------
-;; (setf *query-map*
-;;   (let ((m (make-sparse-keymap)))
-;;      (define-key m (kbd "i") "imdb")
-;;      (define-key m (kbd "g") "google")
-;;      (define-key m (kbd "w") "wikipedia")
-;;      m))
-
-;; (cl-ppcre:split "(\\w*): ?(\"?[\\w\\s\\.]*\"?)\\s|(\\w*): ?(\"?[\\w\s\\.]*\"?)|(\"[\\w\\s]*\")|([\\w]+)" "sdf dg ")
 
 
 (defvar *web-jump-map* nil
@@ -429,6 +420,7 @@
 (defvar *rofi-run-map* nil
   "The keymap for rofi run.")
 (fill-keymap *rofi-run-map*
+             (kbd "s") "run-rofi-xscreen-session"
              (kbd "w") "run-rofi-win"
              (kbd "d") "run-rofi-desktop"
              (kbd "t") "run-rofi-terminal-wait"
