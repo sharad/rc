@@ -142,7 +142,7 @@ function check_host()
         if [ "x" = "x$SSH_AUTH_SOCK" ]
         then
             echo Error SSH_AUTH_SOCK not set >> ${_SCREEN_SEL}/test
-            echo Error SSH_AUTH_SOCK not set
+            coproc rofi -e "Error SSH_AUTH_SOCK not set"
             exit
         elif [ "$_prefixcmd_test" ]
         then
@@ -153,6 +153,7 @@ function check_host()
             echo ${TIMEOUT} -k 10 8 nc -z "$_Host" 22 >> ${_SCREEN_SEL}/test
             if ! ${TIMEOUT} -k 10 8 nc -z "$_Host" 22 >/dev/null 2>&1
             then
+                coproc rofi -e "can not access $_host"
                 coproc "${TERMINAL}" -hold "${TERMINAL_OPTIONS}" ${=_prefixcmd_test} ps >/dev/null 2>&1
                 exec 1>&-
                 exit
