@@ -55,12 +55,14 @@ function run_screen()
 
     echo "$TERMINAL" "$TERMINAL_OPTIONS" ${=_prefixcmd} screen -d -m -x $_session >> ${_SCREEN_SEL}/test
     coproc (
+        # create if not exists
         if ${=_prefixcmd_test} screen -x "$_session" -ls | grep 'No Sockets' >/dev/null 2>&1
         then
             ${=_prefixcmd_test} screen -d -m -S $_session >/dev/null 2>&1
         fi
 
-        if ! ${=_prefixcmd_test} screen -x "$_session" -ls | grep 'No Sockets' >/dev/null 2>&1
+        # attach
+        if true || ! ${=_prefixcmd_test} screen -x "$_session" -ls | grep 'No Sockets' >/dev/null 2>&1
         then
             exec "$TERMINAL" "$TERMINAL_OPTIONS" ${=_prefixcmd} screen -d -m -x $_session 1>&- >/dev/null 2>&1
             # exec 1>&-
@@ -105,7 +107,7 @@ function list_session()
     fi
 
     echo -en "\x00prompt\x1fChange prompt\n"
-    echo -en "\0message\x1f<b>$_host</b> sessions\n"
+    echo -en "\0message\x1f<b>${_host}</b> sessions\n"
 
     echo -en "\0urgent\x1f0,2\n"
     echo -en "\0active\x1f1\n"
@@ -117,7 +119,7 @@ function list_session()
         local _Host=$(echo "$_host" | cut -d@ -f2)
         if nc -z $_Host 22
         then
-            if timeout -k 10 5 ${=_prefixcmd_test} screen -ls | egrep '^	' | cut -d'	' -f2 | cut -d. -f2 > $_SESSION_HISTORY_NEW >/dev/null 2>&1
+            if timeout -k 10 5 ${=_prefixcmd_test} screen -ls | egrep '^	' | cut -d'	' -f2 | cut -d. -f2 | sort -u $_SESSION_HISTORY_NEW >/dev/null 2>&1
             then
                 comm -31 $_SESSION_HISTORY $_SESSION_HISTORY_NEW > $_SESSION_HISTORY_TMP
                 cat $_SESSION_HISTORY_TMP >> $_SESSION_HISTORY
