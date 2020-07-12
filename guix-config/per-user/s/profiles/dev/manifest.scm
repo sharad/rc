@@ -34,7 +34,8 @@
         ;; "fribidi"
         ;; "bicon"
 
-(define %lotus-dev-package-experimental-names (list "rofi-master"))
+(define %lotus-dev-package-experimental-names (list ;; "rofi-master"
+                                                    ))
 
 (define %lotus-dev-package-names (append %lotus-dev-package-developement-names
                                          %lotus-dev-package-experimental-names))
