@@ -61,7 +61,7 @@ function run_screen()
             ${=_prefixcmd_test} screen -d -m -S $_session >/dev/null 2>&1
         fi
 
-        # attach
+        # attach, true is for saving time
         if true || ! ${=_prefixcmd_test} screen -x "$_session" -ls | grep 'No Sockets' >/dev/null 2>&1
         then
             exec "$TERMINAL" "$TERMINAL_OPTIONS" ${=_prefixcmd} screen -d -m -x $_session 1>&- >/dev/null 2>&1
