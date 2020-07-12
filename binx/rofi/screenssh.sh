@@ -53,21 +53,22 @@ function run_screen()
 
     check_host $_host
 
+    echo "$TERMINAL" "$TERMINAL_OPTIONS" ${=_prefixcmd} screen -d -m -x $_session >> ${_SCREEN_SEL}/test
+    coproc (
+        if ${=_prefixcmd_test} screen -x "$_session" -ls | grep 'No Sockets' >/dev/null 2>&1
+        then
+            ${=_prefixcmd_test} screen -d -m -S $_session >/dev/null 2>&1
+        fi
 
-    echo coproc "$TERMINAL" "$TERMINAL_OPTIONS" ${=_prefixcmd} screen -d -m -x $_session >> ${_SCREEN_SEL}/test
-    if ${=_prefixcmd_test} screen -x "$_session" -ls | grep 'No Sockets' >/dev/null 2>&1
-    then
-        ${=_prefixcmd_test} screen -d -m -S $_session >/dev/null 2>&1
-    fi
-
-    if ! ${=_prefixcmd_test} screen -x "$_session" -ls | grep 'No Sockets' >/dev/null 2>&1
-    then
-        coproc "$TERMINAL" "$TERMINAL_OPTIONS" ${=_prefixcmd} screen -d -m -x $_session >/dev/null 2>&1
-        exec 1>&-
-        exit
-    # else
-    #     echo RofiErrorCode
-    fi
+        if ! ${=_prefixcmd_test} screen -x "$_session" -ls | grep 'No Sockets' >/dev/null 2>&1
+        then
+            exec "$TERMINAL" "$TERMINAL_OPTIONS" ${=_prefixcmd} screen -d -m -x $_session 1>&- >/dev/null 2>&1
+            # exec 1>&-
+            exit
+        else
+            rofi -e "No session $_session for $)host exists."
+        fi
+    )
     exec 1>&-
     exit
 }
@@ -113,11 +114,15 @@ function list_session()
     # echo -en "aap\0icon\x1ffolder\n"
     # echo -en "-------------\0nonselectable\x1ftrue\n"
     coproc (
-        if timeout -k 10 5 ${=_prefixcmd_test} screen -ls | egrep '^	' | cut -d'	' -f2 | cut -d. -f2 > $_SESSION_HISTORY_NEW >/dev/null 2>&1
+        local _Host=$(echo "$_host" | cut -d@ -f2)
+        if nc -z $_Host 22
         then
-            comm -31 $_SESSION_HISTORY $_SESSION_HISTORY_NEW > $_SESSION_HISTORY_TMP
-            cat $_SESSION_HISTORY_TMP >> $_SESSION_HISTORY
-            sort -u $_SESSION_HISTORY -o $_SESSION_HISTORY
+            if timeout -k 10 5 ${=_prefixcmd_test} screen -ls | egrep '^	' | cut -d'	' -f2 | cut -d. -f2 > $_SESSION_HISTORY_NEW >/dev/null 2>&1
+            then
+                comm -31 $_SESSION_HISTORY $_SESSION_HISTORY_NEW > $_SESSION_HISTORY_TMP
+                cat $_SESSION_HISTORY_TMP >> $_SESSION_HISTORY
+                sort -u $_SESSION_HISTORY -o $_SESSION_HISTORY
+            fi
         fi
     )
     cat $_SESSION_HISTORY | xargs -r printf -- ${_host}" %s\n"
@@ -142,8 +147,11 @@ function check_host()
         elif [ "$_prefixcmd_test" ]
         then
             echo test $SSH_AUTH_SOCK >> ${_SCREEN_SEL}/test
-            echo ${TIMEOUT} -k 10 8 ${=_prefixcmd_test} ps >> ${_SCREEN_SEL}/test
-            if ! ${TIMEOUT} -k 10 8 ${=_prefixcmd_test} ps >/dev/null 2>&1
+
+            local _Host=$(echo "$_host" | cut -d@ -f2)
+
+            echo ${TIMEOUT} -k 10 8 nc -z "$_Host" 22 >> ${_SCREEN_SEL}/test
+            if ! ${TIMEOUT} -k 10 8 nc -z "$_Host" 22 >/dev/null 2>&1
             then
                 coproc "${TERMINAL}" -hold "${TERMINAL_OPTIONS}" ${=_prefixcmd_test} ps >/dev/null 2>&1
                 exec 1>&-
