@@ -39,7 +39,7 @@
 (define %lotus-other-packages
   (list "vim"
 
-	"openfortivpn"
+        "openfortivpn"
         "ghostscript"
         "bidiv"
         "dos2unix"
@@ -136,6 +136,7 @@
         "xcompmgr"
         "xdpyinfo"
         "rofi"
+        "rofi-master"
 
         "enscript"
 
