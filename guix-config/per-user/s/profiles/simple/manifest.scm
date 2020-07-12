@@ -29,9 +29,9 @@
 
 
 (define %lotus-disputed-packages (list "sbcl"
-                                       "cl-fad"
-				       "sbcl-clx-xembed"
-                                       "cl-slime-swank"))
+                                       "cl-fad")
+               "sbcl-clx-xembed"
+                                       "cl-slime-swank")
 
 ;; "notification-daemon" "trezord-udev-rules" "trezord"
 
@@ -136,7 +136,7 @@
         "xcompmgr"
         "xdpyinfo"
         "rofi"
-        "rofi-master"
+        ;; "rofi-master"
 
         "enscript"
 
@@ -338,6 +338,10 @@
           "strace"
           "guile-readline"))
 
+(define %lotus-network-packages
+  (list "netcat"
+        "nmap"))
+
 (define %lotus-mail-packages
   (list "mailutils"
         "offlineimap"
@@ -524,6 +528,7 @@
           %lotus-lang-packages
           %lotus-disputed-packages
           %lotus-other-packages
+          %lotus-network-packages
           %lotus-mail-packages
           %lotus-font-packages
           %lotus-media-packages

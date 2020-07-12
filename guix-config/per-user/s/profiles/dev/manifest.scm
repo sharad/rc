@@ -4,7 +4,7 @@
 
 (use-modules (lotus packages cdesktopenv))
 
-(define %lotus-dev-package-names
+(define %lotus-dev-package-developement-names
   (list "glibc"
         "glibc-locales"
         "binutils"
@@ -32,7 +32,11 @@
         ;; "linux-libre-headers@4.19.56"
         ;; "fribidi"
         ;; "bicon"
-        
+
+(define %lotus-dev-package-experimental-names (list "rofi-master"))
+
+(define %lotus-dev-package-names (append %lotus-dev-package-developement-names
+                                         %lotus-dev-package-experimental-names))
 
 (define %lotus-dev-packages
   (append
