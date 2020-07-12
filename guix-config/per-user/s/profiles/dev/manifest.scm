@@ -17,6 +17,7 @@
         "sed"
         "grep"
         "gawk"
+        "moreutils"
         "flex"
         "bison"
         "make"
