@@ -283,6 +283,8 @@
 ;; ;; "ocaml-merlin"
 ;; "opam"
 
+(define %lotus-audio-packages (list "sox"
+                                    "alsa-utils"))
 
 (define %lotus-user-selected-package-names
   (list   "m4"

@@ -93,7 +93,7 @@ function run_screen_remote()
 
 function create_screen()
 {
-    
+    echo
 }
 
 
