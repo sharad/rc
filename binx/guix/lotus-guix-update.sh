@@ -89,7 +89,7 @@ function update_fc_cache()
             ls $fontdir
             xset +fp $(dirname $(readlink -f $fontdir))
           done
-	  if whence -p fc-cache
+	  if which fc-cache >/dev/null 2>&1
 	  then
             fc-cache -f
 	  fi

@@ -70,7 +70,7 @@
 (define %lotus-gdm-auto-login                #f)
 (define %lotus-gdm-allow-empty-password      #t)
 
-(define %lotus-nm-dnsmasq-ns-path            #~(string-append #$nm-dnsmasq-ns "/etc/NetworkManager/dnsmasq.d"))
+;; (define %lotus-nm-dnsmasq-ns-path            #~(string-append #$nm-dnsmasq-ns "/etc/NetworkManager/dnsmasq.d"))
 
 (define %lotus-account-create-home-directory #f)
 (define %lotus-guix-substitute-urls          '("https://ci.guix.gnu.org"

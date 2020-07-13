@@ -280,9 +280,9 @@
         "beep"))
 
 (define %lotus-lang-packages (list)) ;; "ocaml"
-                              ;; ;; "ocaml-merlin"
-                              ;; "opam"
-                              
+;; ;; "ocaml-merlin"
+;; "opam"
+
 
 (define %lotus-user-selected-package-names
   (list   "m4"

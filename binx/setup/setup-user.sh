@@ -537,7 +537,6 @@ function setup_recursive_links_leafs()
     if [ -d "$basepath" -a -d "${basepath}/${linktopdir}" ]
     then
         cd "${basepath}/${linktopdir}"
-        # debug SHARAD TEST
         # https://stackoverflow.com/questions/4269798/use-gnu-find-to-show-only-the-leaf-directories
         # https://stackoverflow.com/a/4269862
         local linkdirs=( $(find -type d -links 2 \( \! -name '*BACKUP*' \) | cut -c3- ) )
@@ -574,7 +573,6 @@ function setup_recursive_links()
     if [ -d "${basepath}/${linkdir}" ]
     then
         cd ${basepath}/${linkdir}
-        # debug SHARAD TEST
         local links=( $(find -type l \( \! -name '*BACKUP*' \) | cut -c3- ) )
         cd - > /dev/null 2>&1
 
@@ -685,7 +683,6 @@ function setup_add_to_version_control_recursive_links_container_dirs() # NOT REQ
     if [ -d "${targettopleafdir}" ]
     then
         cd "${targettopleafdir}"
-        # debug SHARAD TEST
         # https://unix.stackexchange.com/questions/68577/find-directories-that-do-not-contain-subdirectories
         local linkdirs=( $(find -type d -links 2 \( \! -name '*BACKUP*' \) | cut -c3- ) )
         cd - > /dev/null 2>&1
@@ -728,7 +725,6 @@ function setup_add_to_version_control_recursive_links() # SHARAD
     if [ -d "${linkbasepath}" ]
     then
         cd ${linkbasepath}
-        # debug SHARAD TEST
         local links=( $(find -type l \( \! -name '*BACKUP*' \) | cut -c3- ) )
         cd - > /dev/null 2>&1
 
@@ -1547,7 +1543,6 @@ function setup_machine_dir()
     if [ -d "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST" ]
     then
         running debug setup_make_link "$HOST" "${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default"
-        # debug SHARAD TEST
         debug running debug setup_make_relative_link "${LOCALDIRS_DIR}/org/deps.d" " model.d/machine.d/default"  "control.d/machine.d/default"
     fi
 }
@@ -1999,7 +1994,6 @@ function setup_deps_control_volumes_internal_dirs()
                     # TODO? -sharad
                     volinternaldirbase="$(basename ${internaldir})"
                     running debug mkdir -p "${volumedir}/control.d/${classcontroldir_rel_path_dirname}/${volinternaldirbase}/$cdir"
-                    running info echo TEST sharad
                     debug volinternaldirbase=${volinternaldirbase}
                     debug classname="${classname}"
                     debug storage_path="${storage_path}"
@@ -2481,14 +2475,14 @@ EOF
     echo 'add in script' > "${LOCALDIRS_DIR}/org/home.d/portable.d/TODO"
     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/TODO"
 
-    for lnk in "${userdata_dirs[@]}"
-    do
-        info TEST $lnk
-    done
+    # for lnk in "${userdata_dirs[@]}"
+    # do
+    #     info TEST $lnk
+    # done
 
     for lnk in "${userdata_dirs[@]}"
     do
-        info TEST $lnk
+        info creting dir $lnk
         running info setup_vc_mkdirpath_ensure   "${LOCALDIRS_DIR}" "${rel_homeprotabledir}" "${lnk}"
         running info mkdir -p   "${LOCALDIRS_DIR}"/"${rel_homeprotabledir}"/"${lnk}"
         running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
@@ -2611,7 +2605,6 @@ function setup_manual_dirs()
 
     running debug setup_vc_mkdirpath_ensure "${LOCALDIRS_DIR}" "manual.d"
 
-    # debug SHARAD TEST
     running debug setup_make_relative_link "${LOCALDIRS_DIR}" "org/deps.d/control.d/machine.d/default/volumes.d/model.d"   "manual.d/model"
     running debug setup_make_relative_link "${LOCALDIRS_DIR}" "org/deps.d/control.d/machine.d/default/volumes.d/control.d" "manual.d/control"
     running debug setup_make_relative_link "${LOCALDIRS_DIR}" "org/deps.d/control.d/machine.d/default/volumes.d/view.d"    "manual.d/view"
