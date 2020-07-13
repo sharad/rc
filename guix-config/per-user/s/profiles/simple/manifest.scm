@@ -28,10 +28,20 @@
 (use-modules (gnu system locale))
 
 
-(define %lotus-disputed-packages (list "sbcl"
-                                       "cl-fad")
-               "sbcl-clx-xembed"
-                                       "cl-slime-swank")
+(define %lotus-disputed-packages
+  (list "sbcl"
+        "cl-fad"
+        "sbcl-clx-xembed"
+        "cl-slime-swank"
+        "stumpish"
+        "sbcl-stumpwm-wifi"
+        "sbcl-stumpwm-ttf-fonts"
+        "sbcl-stumpwm-swm-gaps"
+        "sbcl-stumpwm-stumptray"
+        "sbcl-stumpwm-pass"
+        "sbcl-stumpwm-net"
+        "sbcl-stumpwm-kbd-layouts"
+        "sbcl-stumpwm-globalwindows"))
 
 ;; "notification-daemon" "trezord-udev-rules" "trezord"
 
@@ -64,8 +74,6 @@
         "pwgen"
         "synergy"
         ;; "gettext"
-
-        "net-snmp"
 
         ;; https://github.com/stumpwm/stumpwm/wiki/Tips-And-Tricks#mounting-storage-devices
         ;; "udisks"
@@ -340,7 +348,10 @@
 
 (define %lotus-network-packages
   (list "netcat"
-        "nmap"))
+        "nmap"
+        "net-snmp"
+        "net-tools"
+        "nethogs"))
 
 (define %lotus-mail-packages
   (list "mailutils"
@@ -459,15 +470,6 @@
         "wmnd"
         "menumaker"
         "emacs-stumpwm-mode"
-        "stumpish"
-        "sbcl-stumpwm-wifi"
-        "sbcl-stumpwm-ttf-fonts"
-        "sbcl-stumpwm-swm-gaps"
-        "sbcl-stumpwm-stumptray"
-        "sbcl-stumpwm-pass"
-        "sbcl-stumpwm-net"
-        "sbcl-stumpwm-kbd-layouts"
-        "sbcl-stumpwm-globalwindows"
 
         "keynav"
         "conky"
