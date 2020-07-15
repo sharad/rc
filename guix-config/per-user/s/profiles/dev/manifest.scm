@@ -34,8 +34,11 @@
         ;; "fribidi"
         ;; "bicon"
 
-(define %lotus-dev-package-experimental-names (list ;; "rofi-master"
-                                                    ))
+(define %lotus-dev-package-experimental-names (list "screen-message" ;; "rofi-master"
+                                                    ;; "zssh"
+                                                    "gnutls"
+                                                    "p11-kit"
+                                                    "emacs-hyperbole"))
 
 (define %lotus-dev-package-names (append %lotus-dev-package-developement-names
                                          %lotus-dev-package-experimental-names))

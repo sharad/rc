@@ -5,11 +5,7 @@
 (use-modules (lotus packages cdesktopenv))
 
 (define %lotus-x-package-names
-  (list))
-        ;; "linux-libre-headers@4.19.56"
-        ;; "fribidi"
-        ;; "bicon"
-        
+  (list "xpra"))
 
 (define %lotus-x-packages
   (append

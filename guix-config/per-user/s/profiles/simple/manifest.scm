@@ -286,6 +286,8 @@
 (define %lotus-audio-packages (list "sox"
                                     "alsa-utils"))
 
+(define %lotus-hardware-packages (list "ddcutil"))
+
 (define %lotus-user-selected-package-names
   (list   "m4"
           "binutils"
@@ -523,13 +525,16 @@
         "gstreamer"
         "openh264"
         "libsmpeg"
-        "libmpeg2"
+        "libmpeg2"))
         ;; "icecat"
-        ))
+
+(define %lotus-file-packages (list "inotify-tools"))
 
 (define %lotus-package-names-for-installation 
   (append %lotus-user-selected-package-names
           %lotus-lang-packages
+          %lotus-audio-packages
+          ;; %lotus-hardware-packages
           %lotus-disputed-packages
           %lotus-other-packages
           %lotus-network-packages
@@ -539,7 +544,8 @@
           %lotus-gui-packages
           %lotus-text-packages
           %lotus-notification-packages
-          %lotus-test-packages))
+          %lotus-test-packages
+          %lotus-file-packages))
 
 (define %lotus-user-desktop-packages
   (list (list glib     "bin")

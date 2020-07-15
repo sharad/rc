@@ -13,7 +13,6 @@ function main()
     local _host
     local _session
 
-
     if [ $# -eq 0 ]
     then
         list_hosts

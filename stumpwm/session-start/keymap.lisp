@@ -222,9 +222,20 @@
 (define-key stumpwm:*groups-map* (kbd "r"  )   "grename")
 (define-key stumpwm:*groups-map* (kbd "k"  )   "gkill")
 (define-key stumpwm:*groups-map* (kbd "o"  )   "gother")
-(define-key stumpwm:*groups-map* (kbd "s"  )   "gsshow")
-(define-key stumpwm:*groups-map* (kbd "O"  )   "gspop")
-(define-key stumpwm:*groups-map* (kbd "C"  )   "gsclear")
+
+(defvar *group-stack-map* nil)
+(setf *group-stack-map*
+      (let ((m (make-sparse-keymap)))
+        (define-key m (kbd "p")  "gspush")
+        (define-key m (kbd "o")  "gspop")
+        (define-key m (kbd "S")  "gspushlist")
+        (define-key m (kbd "\"") "gspushlist")
+        (define-key m (kbd "s")  "gsshow")
+        (define-key m (kbd "c")  "gsclear")
+        m))
+
+(define-key stumpwm:*groups-map* (kbd "s"  )   '*group-stack-map*)
+
 (define-key stumpwm:*groups-map* (kbd "1"  )   "gselect 1")
 (define-key stumpwm:*groups-map* (kbd "2"  )   "gselect 2")
 (define-key stumpwm:*groups-map* (kbd "3"  )   "gselect 3")

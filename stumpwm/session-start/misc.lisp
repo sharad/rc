@@ -404,6 +404,8 @@
       (toggle-fullscreen-on-ungrabbed-pointer-for-few-mins 7)
       (toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer nil))
   ;; TODO: disable fullscreen on inactivity
+  ;; 1. handle group change case
+  ;; 2. handle auto created windows which may/may not take focus (guess it is handled.)
 
   (defun activate-fullscreen-if-not (window)
     (when window
