@@ -440,6 +440,8 @@
 (define %lotus-gui-packages
   (list "xinit"
         "i3status"
+        ;; "xvkbd" ;; https://unix.stackexchange.com/a/11890
+        "xautomation"
         "dmenu"
         "st"
         "xrdb"

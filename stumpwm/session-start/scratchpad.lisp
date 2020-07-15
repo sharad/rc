@@ -32,11 +32,11 @@
   (defun pop-group ()
     (if group-stack
         (let ((group (pop group-stack)))
-          (if (member group (screen-groups (current-screen))
-                (progn
-                  (group-stack-switch-to-group group)
-                  t)
-                (pop-group))))))
+          (if (member group (screen-groups (current-screen)))
+              (progn
+                (group-stack-switch-to-group group)
+                t)
+              (pop-group)))))
   (defun get-group-stack ()
     group-stack)
   (defun reset-group-stack ()

@@ -786,8 +786,10 @@
 ;; no window command
 (stumpwm:defcommand cpy-pass () ()
   (let ((sec-cmd "secret-tool lookup server exch-cas.fortinet.com user 'fortinet-us\\spratap' protocol imap")
-        (clip-cmd "xclip -i"))
-    (stumpwm:run-shell-command (concat sec-cmd " | " clip-cmd))))
+        (clip-cmd "xclip"))
+    (stumpwm:run-shell-command (concat sec-cmd " | " clip-cmd))
+    (sleep 1)
+    (paste)))
 
 
 (stumpwm:defcommand abort-recursive-edit () ()
