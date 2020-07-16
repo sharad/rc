@@ -526,6 +526,7 @@
                                                                        (guix-configuration (inherit config)
                                                                                            ;; (use-substitutes? %lotus-guix-use-substitutes)
                                                                                            ;; (authorized-keys '())
+                                                                                           ;; (tmpdir "/gnu/tmp") ;; https://guix.gnu.org/manual/en/html_node/Base-Services.html
                                                                                            (substitute-urls (append %lotus-guix-substitute-urls
                                                                                                                     %default-substitute-urls))
                                                                                            (extra-options %lotus-guix-extra-options)))))

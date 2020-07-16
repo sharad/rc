@@ -36,6 +36,8 @@
 
 (define %lotus-dev-package-experimental-names (list "screen-message" ;; "rofi-master"
                                                     ;; "zssh"
+                                                    ;; gnome-pie
+                                                    ;; python-ulauncher
                                                     "gnutls"
                                                     "p11-kit"
                                                     "emacs-hyperbole"))

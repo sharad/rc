@@ -320,6 +320,7 @@
           "gettext"
           ;; "ecryptfs-utils"
           "zsh"
+          "dash"
           "zsh-autosuggestions"
           "hstr"
           "shflags"
@@ -441,6 +442,9 @@
   (list "xinit"
         "i3status"
         ;; "xvkbd" ;; https://unix.stackexchange.com/a/11890
+        "libwm"
+        "wmutils-core"
+        "wmutils-opt"
         "xautomation"
         "dmenu"
         "st"
@@ -532,6 +536,9 @@
 
 (define %lotus-file-packages (list "inotify-tools"))
 
+(define %lotus-misc-packages (list "bluez"
+                                   "blueman"))
+
 (define %lotus-package-names-for-installation 
   (append %lotus-user-selected-package-names
           %lotus-lang-packages
@@ -547,7 +554,8 @@
           %lotus-text-packages
           %lotus-notification-packages
           %lotus-test-packages
-          %lotus-file-packages))
+          %lotus-file-packages
+          %lotus-misc-packages))
 
 (define %lotus-user-desktop-packages
   (list (list glib     "bin")
