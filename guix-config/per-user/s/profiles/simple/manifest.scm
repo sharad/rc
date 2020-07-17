@@ -145,6 +145,7 @@
         "xdpyinfo"
         "rofi"
         "python-rofi"
+        "python-rofi-menu"
         "python-rofi-tmux"
         ;; "rofi-master"
 
