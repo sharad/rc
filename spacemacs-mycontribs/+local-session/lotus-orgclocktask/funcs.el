@@ -26,5 +26,18 @@
 
 
 
+(defadvice kill-emacs (around kill-emacs-org-clock-out activate)
+  "emacs-org-clock-out"
+  (progn
+    (kill-emacs-org-clock-out)
+    ad-do-it))
+
+(defadvice save-buffers-kill-emacs (around kill-emacs-org-clock-out activate)
+  "emacs-org-clock-out"
+  (progn
+    (kill-emacs-org-clock-out)
+    ad-do-it))
+
+
 ;; (provide 'funcs)
 ;;; funcs.el ends here

@@ -144,6 +144,8 @@
         "xcompmgr"
         "xdpyinfo"
         "rofi"
+        "python-rofi"
+        "python-rofi-tmux"
         ;; "rofi-master"
 
         "enscript"
@@ -308,6 +310,7 @@
           "jq"
           "python-xq"
           "python-yq"
+          "python-tinydb"
           "csvkit"
 
           ;; "macchanger"

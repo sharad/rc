@@ -35,7 +35,7 @@
         ;; "bicon"
 
 (define %lotus-dev-package-experimental-names (list "screen-message" ;; "rofi-master"
-                                                    ;; "zssh"
+                                                    "zssh"
                                                     ;; gnome-pie
                                                     ;; python-ulauncher
                                                     "gnutls"
