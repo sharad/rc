@@ -1,11 +1,11 @@
 # # bubble-background-color = 6D84B4
-# bubble-background-color = c0c0c0
+bubble-background-color = c0c0c0
 # # bubble-background-opacity = .85
-# bubble-background-opacity = .75
-# text-title-color = ffffff
-# text-title-opacity = 1.0
-# text-body-color = ffffff
-# text-body-opacity = 1.0
+bubble-background-opacity = .75
+text-title-color = ffffff
+text-title-opacity = 1.0
+text-body-color = ffffff
+text-body-opacity = 1.0
 
 
 slot-allocation = fixed

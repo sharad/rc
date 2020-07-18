@@ -24,7 +24,7 @@
 				))
 (define unused-services       (list emacs))
 (define tty-services          (list pkttyagent))
-(define x-services            (list redshift polkit-gnome-agent osdsh autocutsel keynav conky xautolock))
+(define x-services            (list notification-daemon redshift polkit-gnome-agent osdsh autocutsel keynav conky xautolock))
 
 
 ;; Services known to shepherd:

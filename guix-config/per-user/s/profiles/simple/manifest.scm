@@ -54,6 +54,7 @@
         "bidiv"
         "dos2unix"
         "cpulimit"
+        "units"
 
         "iproute2"
 
@@ -515,6 +516,7 @@
         ;; "osdsh"
         "xosd"
         "libnotify"
+        "notification-daemon"
         "dunst"))
 
 (define %lotus-test-packages

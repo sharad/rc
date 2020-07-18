@@ -72,3 +72,18 @@
     #:start    (make-forkexec-constructor '("osdsh")) ; to make it more obvious
     #:stop     (make-kill-destructor)
     #:respawn? #t))
+
+(define dunst
+  (make <service>
+    #:provides '(dunst)
+    #:start    (make-forkexec-constructor '("dunst")) ; to make it more obvious
+    #:stop     (make-kill-destructor)
+    #:respawn? #t))
+
+(define notification-daemon
+  (let ((cmd (string-append (getenv "HOME") "/.guix-profile/libexec/notification-daemon")))
+    (make <service>
+      #:provides '(notification-daemon)
+      #:start    (make-forkexec-constructor (list cmd)) ; to make it more obvious
+      #:stop     (make-kill-destructor)
+      #:respawn? #t)))
