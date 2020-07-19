@@ -510,11 +510,6 @@ then # let emacs tramp work.
 fi
 # }}}
 
-# {{{
-[ -r $HOME/.opam/opam-init/init.zsh ] && source $HOME/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
-# }}}
-
-
 # {{{ *Display Information*
 # For Tramp
 # "$TERM" = "dumb" for emacs tramp

@@ -38,6 +38,4 @@
     (kill-emacs-org-clock-out)
     ad-do-it))
 
-
-;; (provide 'funcs)
 ;;; funcs.el ends here

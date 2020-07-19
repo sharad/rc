@@ -395,7 +395,16 @@ ssh_agent_use_run_keychain
 
 
 ##
-[ -r $HOME/.opam/opam-init/init.sh ] && . $HOME/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
+_SHELL_EXTENTION=sh
+case $(basename $SHELL) in
+    sh|bash) _SHELL_EXTENTION=sh;;
+    zsh)     _SHELL_EXTENTION=zsh;;
+    csh)     _SHELL_EXTENTION=csh;;
+    fissh)   _SHELL_EXTENTION=fish;;
+    *)       _SHELL_EXTENTION=sh;;
+esac
+[ -r $HOME/.opam/opam-init/init.${_SHELL_EXTENTION} ] && . $HOME/.opam/opam-init/init.${_SHELL_EXTENTION} > /dev/null 2> /dev/null || true
+unset _SHELL_EXTENTION
 ##
 
 
