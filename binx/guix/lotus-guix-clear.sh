@@ -19,7 +19,7 @@ function main()
         LOCAL_GUIX_EXTRA_PROFILES=("dev" "dynamic-hash" "heavy" "lengthy")
     fi
     export LOCAL_GUIX_EXTRA_PROFILES
-    LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER"
+    LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER/profiles"
 
 
     if [ -d "/run/current-system/profile" ]

@@ -45,7 +45,7 @@ function main()
                 done
 
                 verbose guix installing
-                running info guix package -m "${HOME}/.setup/guix-config/per-user/s/profiles/simple/manifest.scm" # default
+                running info guix package -m "${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/simple/manifest.scm" # default
                 for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
                 do
                     manifest_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/manifest.scm
@@ -83,7 +83,7 @@ function update_fc_cache()
     then
 	if which xset
 	then
-    	  for fdir in ~/.guix-profile/share/fonts/**/fonts.dir ~/.setup/guix-config/per-user/s/profiles/heavy/profiles.d/heavy/share/fonts/**/fonts.dir
+    	for fdir in ~/.guix-profile/share/fonts/**/fonts.dir ${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/heavy/profiles.d/heavy/share/fonts/**/fonts.dir
     	  do
             fontdir=$fdir
             ls $fontdir
