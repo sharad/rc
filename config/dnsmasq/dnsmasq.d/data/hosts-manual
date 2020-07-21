@@ -41,6 +41,7 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 
 
+10.34.112.51 fortidevblr.com 
 10.34.237.2 ayan-build.merunetworks.com. ayan-build
 10.34.189.241 exsi-vm-srv
 # 10.34.189.29 forticloudaddev-sharad

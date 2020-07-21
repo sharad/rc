@@ -14,6 +14,7 @@
 (use-modules (guix utils))
 (use-modules (guix packages))
 (use-modules (gnu services networking))
+(use-modules (gnu services audio))
 (use-modules (gnu) (gnu system nss))
 (use-service-modules networking ssh)
 (use-package-modules bootloaders certs suckless wm)
@@ -94,7 +95,7 @@
 (use-modules (gnu packages linux))
 (use-modules (guix modules))
 
-(define (open-nonudev-lvm-device source target)
+(define (open-non-udev-lvm-device source target)
   "Return a gexp that maps SOURCES to TARGETS as a LVM device, using
 'lvm'."
   (with-imported-modules (source-module-closure '((gnu build file-systems)))
@@ -112,12 +113,12 @@
           (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
                           (string-join (string-split #$target #\-) "/")))))))
 
-(define (close-nonudev-lvm-device sources target)
+(define (close-non-udev-lvm-device sources target)
   "Return a gexp that closes TARGET, a LVM device."
   #~(zero? (system* #$(file-append lvm2-static "/sbin/lvm")
                     "lvchange" "-an" "-y" (string-join (string-split #$target #\-) "/"))))
 
-;; (define* (check-nonudev-lvm-device md #:key
+;; (define* (check-non-udev-lvm-device md #:key
 ;;                             needed-for-boot?
 ;;                             (initrd-modules '())
 ;;                             #:allow-other-keys
@@ -141,38 +142,87 @@
 ;;             (check-device-initrd-modules source initrd-modules location)))))
 
 ;; The type of LVM mapped devices.
-(define nonudev-lvm-device-mapping (mapped-device-kind (open open-nonudev-lvm-device)
-                                                       ;; (check check-nonudev-lvm-device)
-                                                       (close close-nonudev-lvm-device)))
+(define non-udev-lvm-device-mapping (mapped-device-kind (open open-non-udev-lvm-device)
+                                                       ;; (check check-non-udev-lvm-device)
+                                                       (close close-non-udev-lvm-device)))
+
+
+(define (open-udev-lvm-device source target)
+  "Return a gexp that maps SOURCES to TARGETS as a LVM device, using
+'lvm'."
+  (with-imported-modules (source-module-closure '((gnu build file-systems)))
+    #~(let ((source  #$source)
+            (lvm-bin #$(file-append lvm2-static "/sbin/lvm")))
+        ;; Use 'lvm2-static', not 'lvm2', to avoid pulling the
+        ;; whole world inside the initrd (for when we're in an initrd).
+        (begin
+          (format #t "Enabling ~a~%" #$target)
+          (system* lvm-bin "vgchange" "-ay" (car (string-split #$target #\-)))
+          (sleep 1)
+          (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
+                          (string-join (string-split #$target #\-) "/")))))))
+
+(define (close-udev-lvm-device sources target)
+  "Return a gexp that closes TARGET, a LVM device."
+  #~(zero? (system* #$(file-append lvm2-static "/sbin/lvm")
+                    "lvchange" "-an" "-y" (string-join (string-split #$target #\-) "/"))))
+
+;; (define* (check-udev-lvm-device md #:key
+;;                             needed-for-boot?
+;;                             (initrd-modules '())
+;;                             #:allow-other-keys
+;;                             #:rest rest)
+;;   "Ensure the source of MD is valid."
+;;   (let ((source   (mapped-device-source md))
+;;         (location (mapped-device-location md)))
+;;     (or (not (zero? (getuid)))
+;;         (if (uuid? source)
+;;             (match (find-partition-by-lvm-uuid (uuid-bytevector source))
+;;               (#f
+;;                (raise (condition
+;;                        (&message
+;;                         (message (format #f (G_ "no LVM partition with UUID '~a'")
+;;                                          (uuid->string source))))
+;;                        (&error-location
+;;                         (location (source-properties->location
+;;                                    (mapped-device-location md)))))))
+;;               ((? string? device)
+;;                (check-device-initrd-modules device initrd-modules location)))
+;;             (check-device-initrd-modules source initrd-modules location)))))
+
+;; The type of LVM mapped devices.
+(define udev-lvm-device-mapping (mapped-device-kind (open open-udev-lvm-device)
+                                                    ;; (check check-udev-lvm-device)
+                                                    (close close-udev-lvm-device)))
 
 
 (define %lotus-mapped-device-guix-root       (mapped-device (source "/dev/sda31")
                                                             (target "guix-root")
-                                                            (type   nonudev-lvm-device-mapping)))
+                                                            (type   non-udev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-boot       (mapped-device (source "/dev/sda31")
                                                             (target "guix-boot")
-                                                            (type   nonudev-lvm-device-mapping)))
+                                                            (type   non-udev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-gnu        (mapped-device (source "/dev/sda31")
                                                             (target "guix-gnu")
-                                                            (type   nonudev-lvm-device-mapping)))
+                                                            (type   non-udev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-swap       (mapped-device (source "/dev/sda31")
                                                             (target "guix-swap")
-                                                            (type   nonudev-lvm-device-mapping)))
+                                                            (type   non-udev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-tmp        (mapped-device (source "/dev/sda31")
                                                             (target "guix-tmp")
-                                                            (type   nonudev-lvm-device-mapping)))
+                                                            (type   non-udev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-var        (mapped-device (source "/dev/sda31")
                                                             (target "guix-var")
-                                                            (type   nonudev-lvm-device-mapping)))
+                                                            (type   non-udev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-house-home      (mapped-device (source "/dev/test")
                                                             (target "house-home")
-                                                            (type   nonudev-lvm-device-mapping)))
+                                                            (type   non-udev-lvm-device-mapping)))
 
 
 (define %lotus-mapped-devices (list %lotus-mapped-device-guix-root
@@ -479,6 +529,14 @@
 (define %lotus-gpm-services  (list (service gpm-service-type)))
 
 
+(define %lotus-audio-services (list (service mpd-service-type
+                                             (mpd-configuration
+                                              (user %lotus-account-user-name)
+                                              (music-dir "~/Music")
+                                              ;; (music-dir (string-append %lotus-account-home-parent-directory "/" %lotus-account-user-name "/" "hell/Music"))
+                                              ))))
+
+
 ;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
 (define %lotus-mingetty-services (list (service mingetty-service-type
                                                 (mingetty-configuration (tty "tty1")))
@@ -570,6 +628,7 @@
                                                    %lotus-mail-aliases-services
                                                    %lotus-dovecot-services
                                                    %lotus-gpm-services
+                                                   %lotus-audio-services
                                                    %lotus-mcron-services
                                                    %lotus-cups-services
                                                    %lotus-polkit-services
