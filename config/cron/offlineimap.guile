@@ -10,7 +10,7 @@
 (define offline-syncimap
   ;; offline-syncimap evry minutes
   ;; The job's action is a shell command.
-  (job '(next-minute-from (next-day) '(3)) "~/bin/syncimap"))
+  (job '(next-minute (range 0 (* 24 * 60) 3)) "~/bin/syncimap"))
 
 ;; (define offline-syncimap
 ;;   ;; offline-syncimap evry minutes
