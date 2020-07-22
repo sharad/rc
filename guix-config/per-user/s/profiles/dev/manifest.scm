@@ -4,7 +4,7 @@
 
 (use-modules (lotus packages cdesktopenv))
 
-(define %lotus-dev-package-developement-names
+(define %lotus-dev-utits-names
   (list "glibc"
         "glibc-locales"
         "binutils"
@@ -34,6 +34,9 @@
         ;; "fribidi"
         ;; "bicon"
 
+(define %lotus-dev-tools-names (list "python-gitlab"
+                                     "python-argcomplete"))
+
 (define %lotus-dev-package-experimental-names (list "screen-message" ;; "rofi-master"
                                                     "zssh"
                                                     ;; lrzsz
@@ -43,7 +46,8 @@
                                                     "p11-kit"
                                                     "emacs-hyperbole"))
 
-(define %lotus-dev-package-names (append %lotus-dev-package-developement-names
+(define %lotus-dev-package-names (append %lotus-dev-utits-names
+                                         %lotus-dev-tools-names
                                          %lotus-dev-package-experimental-names))
 
 (define %lotus-dev-packages

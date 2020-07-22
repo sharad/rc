@@ -1,2 +1,4 @@
 *subdomain.conf
 custom-hosts
+hosts-manual
+*priv.conf
