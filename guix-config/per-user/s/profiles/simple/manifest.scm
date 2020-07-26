@@ -150,6 +150,8 @@ audio
         "python-rofi"
         "python-rofi-menu"
         "python-rofi-tmux"
+        "python-paramiko"
+        "python-scp"
         ;; "rofi-master"
 
         "enscript"
