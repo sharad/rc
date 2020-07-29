@@ -1,4 +1,3 @@
-audio
 ;; https://wingolog.org/archives/2015/08/04/developing-v8-with-guix
 (use-package-modules base gcc llvm base python version-control less ccache pkg-config glib gnome cmake messaging autotools flex bison m4 gawk xorg onc-rpc commencement fonts dns)
 

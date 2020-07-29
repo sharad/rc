@@ -470,6 +470,11 @@
         (progn
           (spaceline-toggle-org-clock-on))))))
 
+(defun lotus-orgclocktask/init-activity-init ()
+  (activity-activate-all))
+
+(defun lotus-orgclocktask/init-activity-config ())
+
 (defun lotus-orgclocktask/init-org-clock-resolve-advanced-init ()
   (use-package startup-hooks
     :defer t
@@ -483,12 +488,18 @@
                (warn "function org-clock-resolve-advanced-insinuate not available.")))
          t)))))
 
+(defun lotus-orgclocktask/init-org-clock-resolve-advanced-config ())
+
+(defun lotus-orgclocktask/init-timesheet-init ())
+(defun lotus-orgclocktask/init-timesheet-config ())
+
+(defun lotus-orgclocktask/init-task-manager-init ())
+
 (defun lotus-orgclocktask/init-task-manager-config ()
   (progn
     ;; BUG: TODO: will load publishing which agian trigger task-manager configs
     (let ((org-task-base-dir (org-publish-get-attribute "tasks"
                                                         "org" :base-directory)))
-
       ;; (task-current-party "meru")
       (unless org-task-base-dir
         (error "Not able to get org-task-base-dir"))
@@ -513,6 +524,12 @@
 
         (task-current-party "meru")))))
 
+(defun lotus-orgclocktask/init-org-sync-init ())
+
+(defun lotus-orgclocktask/init-org-sync-config ())
+
+(defun lotus-orgclocktask/post-init-startup-hooks-init ())
+
 (defun lotus-orgclocktask/post-init-startup-hooks-config ()
   (progn ;code will not get run as when
                                         ;`enable-startup-interrupting-feature-hook' run at early start,
@@ -529,5 +546,14 @@
                                                    (org-clock-in-if-not)))))
                      t)))
      t)))
+
+(defun lotus-orgclocktask/init-counsel-org-clock-init ())
+
+(defun lotus-orgclocktask/init-counsel-org-clock-config ())
+
+(defun lotus-orgclocktask/init-org-clock-split-init ())
+(defun lotus-orgclocktask/init-org-clock-split-config ())
 
+
+
 ;;; config.el ends here

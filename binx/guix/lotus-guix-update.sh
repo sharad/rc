@@ -97,36 +97,6 @@ function update_fc_cache()
     fi
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function process_arg()
 {
     warn=1
@@ -160,7 +130,7 @@ function process_arg()
 
 function running()
 {
-    local  notifier=$1
+    local notifier=$1
     local _cmd=$2
     shift
     shift

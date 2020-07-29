@@ -56,6 +56,7 @@
     timesheet
     ;; wakatime-mode
     task-manager
+    org-sync
     startup-hooks
     counsel-org-clock
     org-clock-split)
@@ -216,7 +217,6 @@ Each entry is either:
 (defun lotus-orgclocktask/init-occ ()
   (progn
     (use-package occ
-      ;; :commands (occ-mode occ-uninsinuate)
       :defer t
       :init
       (lotus-orgclocktask/init-occ-init)
@@ -227,9 +227,9 @@ Each entry is either:
   (use-package activity
     :defer t
     :init
-    (activity-activate-all)
+    (lotus-orgclocktask/init-activity-init)
     :config
-    (progn)))
+    (lotus-orgclocktask/init-activity-config)))
 
 (defun lotus-orgclocktask/init-org-clock-resolve-advanced ()
   (use-package org-clock-resolve-advanced
@@ -237,16 +237,16 @@ Each entry is either:
     :init
     (lotus-orgclocktask/init-org-clock-resolve-advanced-init)
     :config
-    (progn
-      )))
+    (lotus-orgclocktask/init-org-clock-resolve-advanced-config)))
 
 (defun lotus-orgclocktask/init-timesheet ()
   ;; https://github.com/tmarble/timesheet.el
   (use-package timesheet
     :defer t
+    :init
+    (lotus-orgclocktask/init-timesheet-init)
     :config
-    (progn
-      )))
+    (lotus-orgclocktask/init-timesheet-config)))
 
 ;; (defun lotus-orgclocktask/post-init-wakatime-mode ()
 ;;   ;; https://github.com/tmarble/timesheet.el
@@ -264,27 +264,41 @@ Each entry is either:
                task-current-party task-party-dir
                task-select-party-dir
                find-task-dir)
+    :init
+    (lotus-orgclocktask/init-task-manager-init)
     :config
     (lotus-orgclocktask/init-task-manager-config)))
 
+(defun lotus-orgclocktask/init-org-sync ()
+  (use-package org-sync
+    :defer t
+    :init
+    (lotus-orgclocktask/init-org-sync-init)
+    :config
+    (lotus-orgclocktask/init-org-sync-config)))
 
 (defun lotus-orgclocktask/post-init-startup-hooks () ;getting run when run-each-hooks called at last
   (use-package startup-hooks
     :defer t
+    :init
+    (lotus-orgclocktask/post-init-startup-hooks-init)
     :config
     (lotus-orgclocktask/post-init-startup-hooks-config)))
 
 (defun lotus-orgclocktask/init-counsel-org-clock ()
   (use-package counsel-org-clock
     :defer t
+    :init
+    (lotus-orgclocktask/init-counsel-org-clock-init)
     :config
-    (progn
-      )))
+    (lotus-orgclocktask/init-counsel-org-clock-config)))
 
 (defun lotus-orgclocktask/init-org-clock-split ()
   (use-package org-clock-split
     :defer t
+    :init
+    (lotus-orgclocktask/init-org-clock-split-init)
     :config
-    (progn)))
+    (lotus-orgclocktask/init-org-clock-split-config)))
 
 ;;; packages.el ends here
