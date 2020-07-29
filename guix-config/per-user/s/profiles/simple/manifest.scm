@@ -152,6 +152,7 @@ audio
         "python-rofi-tmux"
         "python-paramiko"
         "python-scp"
+        "python-attnmgr"
         ;; "rofi-master"
 
         "enscript"

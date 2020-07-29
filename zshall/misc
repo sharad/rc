@@ -40,3 +40,12 @@ do
     fi
 done
 # }}
+
+
+
+# {{
+if [ -r ~/.guix-profile/share/attnmgr/attnmgr-hook.zsh ]
+then
+    source ~/.guix-profile/share/attnmgr/attnmgr-hook.zsh
+fi
+# }}

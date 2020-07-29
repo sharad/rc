@@ -310,4 +310,11 @@ then
         echo notify-send test test >>& ~/.logs/wmlogin.log &!
     fi
 fi
+
+if whence -p attnmgr >& /dev/null &&
+       ! pgrep -u "$(id -u)" attnmgr >& /dev/null
+then
+    attnmgr >>& ~/.logs/attnmgr.log &!
+fi
+
 # cat ~/.logs/wmlogin.log 
