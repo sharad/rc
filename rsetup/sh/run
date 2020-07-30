@@ -5,6 +5,11 @@ then
     HOST=$HOSTNAME
 fi
 
+if [ ! -d "/tmp/user/$(id -u)" ]
+then
+    mkdir -p "/tmp/user/$(id -u)"
+fi
+
 if [ "x${HOST}" != "x" ]
 then
     __comp=sh

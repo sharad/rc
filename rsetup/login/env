@@ -30,6 +30,17 @@ fi
 unset __subcomp
 unset __comp
 
+if [ ! -d "/tmp/user/$(id -u)" ]
+then
+    mkdir -p "/tmp/user/$(id -u)"
+fi
+if [ -d "/tmp/user/$(id -u)" ]
+then
+    TMP="/tmp/user/$(id -u)"
+    TMPDIR="/tmp/user/$(id -u)"
+    export TMP
+    export TMPDIR
+fi
 
 XDG_USER_CONFIG_DIR=$HOME/.config # default
 export XDG_USER_CONFIG_DIR

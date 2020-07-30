@@ -66,7 +66,7 @@
 
         "man-pages"
 
-        "deb-forticlient-sslvpn"
+        ;; "deb-forticlient-sslvpn"
         "cups-minimal" ;; for lp lpr command
 
         "unzip"

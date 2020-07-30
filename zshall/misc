@@ -41,10 +41,14 @@ do
 done
 # }}
 
-
-
 # {{
-if [ -r ~/.guix-profile/share/attnmgr/attnmgr-hook.zsh ]
+if [ -r ~/../paradise/Projects/Utils/attnmgr/share/attnmgr-hook.zsh ]
+then
+    source ~/../paradise/Projects/Utils/attnmgr/share/attnmgr-hook.zsh
+elif [ -r ~/.local/share/attnmgr/attnmgr-hook.zsh ]
+then
+    source ~/.local/share/attnmgr/attnmgr-hook.zsh
+elif [ -r ~/.guix-profile/share/attnmgr/attnmgr-hook.zsh ]
 then
     source ~/.guix-profile/share/attnmgr/attnmgr-hook.zsh
 fi
