@@ -42,9 +42,11 @@ then
     export TMPDIR
 fi
 
+SCREENDIR=$TMP/uscreens
+export SCREENDIR
+
 XDG_USER_CONFIG_DIR=$HOME/.config # default
 export XDG_USER_CONFIG_DIR
-
 
 ## DOCUMENT_PUBLISH_PATH
 DOCUMENT_PUBLISH_PATH=~/Documents/online

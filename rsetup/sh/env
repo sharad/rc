@@ -18,6 +18,9 @@ then
     export TMPDIR
 fi
 
+SCREENDIR=$TMP/uscreens
+export SCREENDIR
+
 ## GUIX
 #
 # Source the system-wide file.
