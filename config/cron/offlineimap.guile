@@ -3,24 +3,25 @@
 (use-modules (shepherd service))
 (use-modules (guix utils))
 (use-modules (gnu))
-;; (use-service-modules mcron)
+(use-service-modules mcron)
 (use-modules (gnu services mcron))
 
 ;; https://rdmp.org/dale-mellor/mcron.html
-(define offline-syncimap
-  ;; offline-syncimap evry minutes
-  ;; The job's action is a shell command.
-  (job '(next-minute (range 0 (* 24 * 60) 3)) "~/bin/syncimap"))
+
+;; (define offline-syncimap
+;;   ;; offline-syncimap evry minutes
+;;   ;; The job's action is a shell command.
+;;   (job '(next-minute (range 0 (* 24 * 60) 3)) "~/bin/syncimap"))
 
 ;; (define offline-syncimap
 ;;   ;; offline-syncimap evry minutes
 ;;   ;; The job's action is a shell command.
 ;;   (job '(next-minute) "~/bin/syncimap"))
 
-;; (define offline-syncimap
-;;   ;; offline-syncimap evry minutes
-;;   ;; The job's action is a shell command.
-;;   (job '(next-minute (range 0 60 . 3)) "~/bin/syncimap"))
+(define offline-syncimap
+  ;; offline-syncimap evry minutes
+  ;; The job's action is a shell command.
+  (job '(next-minute (range 0 60 . 3)) "~/bin/syncimap"))
 
 
 

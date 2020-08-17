@@ -1,5 +1,6 @@
 ;; -*- major-mode: scheme-mode; -*-
 
+(use-modules (gnu services))
 (use-modules (shepherd service))
 (use-modules (guix utils))
 (use-modules (gnu))

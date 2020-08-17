@@ -2345,13 +2345,13 @@ function setup_mutule_dirs_links()
             rm -f "${base}"/"${relpath}"/"_local/.gitignore"
             rm -f "${base}"/"${relpath}"/"_nonlocal/.gitignore"
             if [ -d "${base}"/"${relpath}"/"_local" ]
-	    then
-              rmdir "${base}"/"${relpath}"/"_local"
-	    fi
+	          then
+                rmdir "${base}"/"${relpath}"/"_local"
+	          fi
             if [ -d "${base}"/"${relpath}"/"_nonlocal" ]
-	    then
-              rmdir "${base}"/"${relpath}"/"_nonlocal"
-	    fi
+	          then
+                rmdir "${base}"/"${relpath}"/"_nonlocal"
+	          fi
 
             if [ $vc -eq 1 ]
             then

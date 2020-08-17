@@ -4,7 +4,7 @@
 
 (use-modules (lotus packages cdesktopenv))
 
-(define %lotus-dynamic-hash-package-names (list "firefox"
+(define %lotus-dynamic-hash-package-names (list "retro-firefox"
                                                 "conkeror-firefox"
                                                 "p4"
                                                 "lesspipe" 

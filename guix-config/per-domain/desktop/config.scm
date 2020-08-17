@@ -432,6 +432,9 @@
                                     %base-user-accounts))
 
 
+;; https://guix.gnu.org/manual/devel/en/html_node/Unattended-Upgrades.html
+;; https://lists.gnu.org/archive/html/help-guix/2019-07/msg00180.html
+
 (define %lotus-copy-current-config-file-in-etc (list (simple-service 'config-file etc-service-type
                                                                      ;; https://willschenk.com/articles/2019/installing_guix_on_nuc/
                                                                      ;; Copy current config to /etc/config.scm
@@ -444,7 +447,7 @@
                                                                           (list))
                                                                       (if (not %lotus-system-init)
                                                                           (list)
-                                                                           ;; `("NetworkManager/dnsmasq.d" ,%lotus-nm-dnsmasq-ns-path)
+                                                                          ;; `("NetworkManager/dnsmasq.d" ,%lotus-nm-dnsmasq-ns-path)
                                                                           (list))))))
 
 
