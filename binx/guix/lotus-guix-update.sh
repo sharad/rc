@@ -33,12 +33,12 @@ function main()
                 # running debug guix upgrade -p "${HOME}/.setup/guix-config/per-user/s/cdesktopenv/profiles.d/"
                 for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
                 do
-                    profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"$profile"
-                    if [ -f "${profile_path}"/etc/profile ]
+                    profile_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/profiles.d/${profile}"
+                    if [ -f "${profile_path}/etc/profile" ]
                     then
                         running info guix upgrade -p "${profile_path}"
                     else
-                        warn file "${profile_path}"/etc/profile not exist, for "${profile_path}"
+                        warn file "${profile_path}/etc/profile" not exist, for "${profile_path}"
                     fi
                     unset profile_path
                     unset profile
@@ -130,8 +130,13 @@ function process_arg()
 
 function running()
 {
-    local notifier=$1
-    local _cmd=$2
+
+    echo 1="$1"
+    echo 2="$2"
+
+    local notifier="$1"
+    local _cmd="$2"
+
     shift
     shift
 
