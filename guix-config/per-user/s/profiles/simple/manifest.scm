@@ -152,7 +152,7 @@
         "python-rofi-tmux"
         "python-paramiko"
         "python-scp"
-        ;; "python-attnmgr"
+        "python-attnmgr"
         ;; "rofi-master"
 
         "enscript"
