@@ -331,7 +331,7 @@
           ;; "ecryptfs-utils"
           "zsh"
           "dash"
-          "zsh-autosuggestions"
+          ;; "zsh-autosuggestions"
           "hstr"
           "shflags"
           "the-silver-searcher"

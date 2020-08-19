@@ -131,8 +131,8 @@ function process_arg()
 function running()
 {
 
-    echo 1="$1"
-    echo 2="$2"
+    # echo 1="$1"
+    # echo 2="$2"
 
     local notifier="$1"
     local _cmd="$2"
