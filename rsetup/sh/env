@@ -390,6 +390,9 @@ function eval_guix_profiles()
             LOCAL_GUIX_EXTRA_PROFILES=("dev" "dynamic-hash" "heavy" "lengthy")
         fi
         LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER/profiles"
+
+        eval $(memoize_run guix package --search-paths=suffix)
+
         for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
         do
             profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"$profile"
