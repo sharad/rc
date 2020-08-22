@@ -502,7 +502,7 @@
         "xsetroot"
         "python-dbus"
         "pidgin"
-        "skype4pidgin"
+        "skype4pidgin@1.6"
         "pidgin-otr"
         "telegram-purple"
         "telegram-purple"))
