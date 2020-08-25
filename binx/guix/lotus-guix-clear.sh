@@ -16,7 +16,7 @@ function main()
     then
         LOCAL_GUIX_EXTRA_PROFILES=( $(cat "$HOME/.setup/guix-config/per-user/$USER/meta/current" ) )
     else
-        LOCAL_GUIX_EXTRA_PROFILES=("dev" "dynamic-hash" "heavy" "lengthy")
+        LOCAL_GUIX_EXTRA_PROFILES=("01-dev" "01-console" "01-x" "01-dynamic-hash" "90-heavy" "60-lengthy")
     fi
     export LOCAL_GUIX_EXTRA_PROFILES
     LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER/profiles"
@@ -37,8 +37,8 @@ function main()
                 running info guix package  --delete-generations=${USER_GENERATION_CLEANUP_TIME}
                 for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
                 do
-                    manifest_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/manifest.scm
-                    profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"$profile"
+                    manifest_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/manifest.scm"
+                    profile_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/profiles.d/profile"
                     if [ -f "${manifest_path}" -a -f "${profile_path}"/etc/profile ]
                     then
                         running info guix package -p "${profile_path}" --delete-generations=${USER_GENERATION_CLEANUP_TIME}
