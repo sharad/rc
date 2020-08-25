@@ -1,6 +1,5 @@
 
-(define %lotus-dynamic-hash-package-names (list "retro-firefox"
-                                                "conkeror-firefox"
+(define %lotus-dynamic-hash-package-names (list "conkeror-firefox"
                                                 "p4"
                                                 "lesspipe" 
                                                 "emacs-develock"))
