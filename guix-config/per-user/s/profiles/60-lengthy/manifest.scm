@@ -4,8 +4,7 @@
 
 (use-modules (lotus packages cdesktopenv))
 
-(define %lotus-lengthy-package-names (list "retro-firefox-80.0"
-                                           "git-annex"
+(define %lotus-lengthy-package-names (list "git-annex"
                                            "agda"
                                            "python-pypdf2"
                                            "python-numpy"
