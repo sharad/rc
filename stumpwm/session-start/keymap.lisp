@@ -347,8 +347,10 @@
              (kbd "e") "epiphany"
              (kbd "b") "xbrowser"
              (kbd "f") "firefox"
+             (kbd "i") "icecat"
              (kbd "t") "xbrowser-tor"
-             (kbd "T") "firefox-tor")
+             (kbd "T") "firefox-tor"
+             (kbd "I") "icecat-tor")
 
 (defvar *utilities-map* nil
   "The keymap for utilities commands.")

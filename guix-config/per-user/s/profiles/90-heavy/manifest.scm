@@ -24,7 +24,8 @@
 ;; "font-google-noto"
 ;; "font-adobe-source-han-sans"))
 
-(define %lotus-misc-heavy-package-names (list "icecat"
+(define %lotus-misc-heavy-package-names (list ;; "ungoogled-chromium"
+                                              ;; "icecat"
                                               "wine"))
 
 (define %lotus-heavy-package-names (append %lotus-ocaml-heavy-package-names

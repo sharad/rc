@@ -39,7 +39,7 @@ function main()
                 do
                     manifest_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/manifest.scm"
                     profile_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/profiles.d/profile"
-                    if [ -f "${manifest_path}" -a -f "${profile_path}"/etc/profile ]
+                    if [ -f "${manifest_path}" -a -f "${profile_path}/etc/profile" ]
                     then
                         running info guix package -p "${profile_path}" --delete-generations=${USER_GENERATION_CLEANUP_TIME}
                     else

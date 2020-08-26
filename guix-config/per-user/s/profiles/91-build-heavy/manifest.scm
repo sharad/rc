@@ -1,6 +1,7 @@
 
 (define %lotus-build-heavy-package-names
-  (list ;; "ungoogled-chromium"
+  (list "icecat"
+        "ungoogled-chromium"
         "firefox"))
 
 (define %lotus-build-heavy-packages
@@ -8,3 +9,4 @@
                %lotus-build-heavy-package-names)))
 
 (packages->manifest %lotus-build-heavy-packages)
+

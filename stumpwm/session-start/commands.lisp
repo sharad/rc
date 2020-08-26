@@ -353,6 +353,14 @@
   (remember-win:run-wcli-command
    (concat "epiphany --profile=" (getenv "HOME") "/.config/epiphany-profiles/" (getenv "XBPROFILE"))))
 
+(stumpwm:defcommand icecat () ()
+  (remember-win:run-wcli-command
+   (concat "icecat -P " (getenv "XBPROFILE"))))
+
+(stumpwm:defcommand icecat-tor () ()
+  (remember-win:run-wcli-command
+   (concat "icecat -P tor")))
+
 (stumpwm:defcommand firefox () ()
   (remember-win:run-wcli-command
    (concat "firefox -P " (getenv "XBPROFILE"))))

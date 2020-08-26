@@ -45,10 +45,10 @@ function main()
                 done
 
                 verbose guix installing
-                running info guix package -m "${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/simple/manifest.scm" # default
+                running info guix package -m "${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/01-simple/manifest.scm" # default
                 for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
                 do
-                    manifest_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/manifest.scm
+                    manifest_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/manifest.scm"
                     profile_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/profiles.d/profile"
 
                     if [ ! -d "$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR/$profile/profiles.d" ]
