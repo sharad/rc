@@ -83,11 +83,16 @@ function update_fc_cache()
     then
 	if which xset
 	then
-    	for fdir in ~/.guix-profile/share/fonts/**/fonts.dir ${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/heavy/profiles.d/heavy/share/fonts/**/fonts.dir
+    	for fdir in ~/.guix-profile/share/fonts/**/fonts.dir ${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/*/profiles.d/profile/share/fonts/**/fonts.dir
     	  do
             fontdir=$fdir
             ls $fontdir
-            xset +fp $(dirname $(readlink -f $fontdir))
+            if [ -d "$fontdir" ]
+            then
+                xset +fp $(dirname $(readlink -f $fontdir))
+            else
+                warn fontdir $fontdir do not exists.
+            fi
           done
 	  if which fc-cache >/dev/null 2>&1
 	  then
