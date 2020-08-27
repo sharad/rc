@@ -1,10 +1,10 @@
-;; -*- major-mode: scheme-mode; -*-
+;; -*- mode: scheme; -*-
 
-(use-modules (shepherd service))
-(use-modules (guix utils))
-(use-modules (gnu))
-(use-service-modules mcron)
-(use-modules (gnu services mcron))
+;; (use-modules (shepherd service))
+;; (use-modules (guix utils))
+;; (use-modules (gnu))
+;; (use-service-modules mcron)
+;; (use-modules (gnu services mcron))
 
 ;; https://rdmp.org/dale-mellor/mcron.html
 

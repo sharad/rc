@@ -1,11 +1,11 @@
-;; -*- major-mode: scheme-mode; -*-
+;; -*- mode: scheme; -*-
 
-(use-modules (gnu services))
-(use-modules (shepherd service))
-(use-modules (guix utils))
-(use-modules (gnu))
-;; (use-service-modules mcron)
-(use-modules (gnu services mcron))
+;; (use-modules (gnu services))
+;; (use-modules (shepherd service))
+;; (use-modules (guix utils))
+;; (use-modules (gnu))
+;; ;; (use-service-modules mcron)
+;; (use-modules (gnu services mcron))
 
 (define monitru
   ;; offline-syncimap evry minutes

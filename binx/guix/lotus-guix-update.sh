@@ -81,24 +81,24 @@ function update_fc_cache()
 {
     if [ "x" != "x$DISPLAY" ]
     then
-	if which xset
-	then
-    	for fdir in ~/.guix-profile/share/fonts/**/fonts.dir ${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/*/profiles.d/profile/share/fonts/**/fonts.dir
-    	  do
-            fontdir=$fdir
-            ls $fontdir
-            if [ -d "$fontdir" ]
-            then
-                xset +fp $(dirname $(readlink -f $fontdir))
-            else
-                warn fontdir $fontdir do not exists.
-            fi
-          done
-	  if which fc-cache >/dev/null 2>&1
-	  then
-            fc-cache -f
-	  fi
-	fi
+	      if which xset
+	      then
+    	      for fdir in ~/.guix-profile/share/fonts/**/fonts.dir ${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/*/profiles.d/profile/share/fonts/**/fonts.dir
+    	      do
+                fontdir=$fdir
+                ls $fontdir
+                if [ -e "$fontdir" ]
+                then
+                    xset +fp $(dirname $(readlink -f $fontdir))
+                else
+                    warn fontdir $fontdir file do not exists.
+                fi
+            done
+	          if which fc-cache >/dev/null 2>&1
+	          then
+                fc-cache -f
+	          fi
+	      fi
     fi
 }
 
