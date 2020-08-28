@@ -83,10 +83,6 @@ else
     ps >> ~/.logs/gitwatch.log
 fi
 
-
-
-
-
 if whence -p mcron >/dev/null 2>&1 &&
        ! pgrep -u "$(id -u)"  -u $(id -u ) mcron >/dev/null 2>&1
 then
@@ -98,8 +94,6 @@ if whence -p shepherd >/dev/null 2>&1 &&
 then
     shepherd --socket="$XDG_RUNTIME_DIR/shepherd/socket" &!
 fi
-
-
 
 __comp=login
 __subcomp=run

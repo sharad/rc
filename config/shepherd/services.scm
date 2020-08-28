@@ -87,3 +87,6 @@
       #:start    (make-forkexec-constructor (list cmd)) ; to make it more obvious
       #:stop     (make-kill-destructor)
       #:respawn? #t)))
+
+
+;; https://guix.gnu.org/manual/en/html_node/Scheduled-Job-Execution.html
