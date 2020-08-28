@@ -8,11 +8,6 @@
 
 ;; https://rdmp.org/dale-mellor/mcron.html
 
-;; (define offline-syncimap
-;;   ;; offline-syncimap evry minutes
-;;   ;; The job's action is a shell command.
-;;   (job '(next-minute) "~/bin/syncimap"))
-
 (define offline-syncimap
   ;; offline-syncimap evry minutes
   ;; The job's action is a shell command.
