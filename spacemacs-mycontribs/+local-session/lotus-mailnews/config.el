@@ -1237,12 +1237,20 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     (setq gnus-init-file "~/.gnus.el")
     (make-directory           (expand-file-name ".cache/gnus/" user-emacs-directory) t)
     (setq gnus-home-directory (expand-file-name ".cache/gnus/" user-emacs-directory))
-    (setq gnus-directory      (expand-file-name "News/" gnus-home-directory))
+    (setq gnus-directory      (expand-file-name "News/" gnus-home-directory))))
+
+(defun lotus-mailnews/common-init-setup-gnus-nndraft ()
+  (interactive)
+  ;; (debug)
+  (progn
     (use-package nndraft
       :defer t
       :config
       (progn
-        (setq nndraft-directory (expand-file-name "drafts/" gnus-directory)))))
+        (setq nndraft-directory (expand-file-name "drafts/" gnus-directory))))))
+
+(defun lotus-mailnews/common-init-setup-gnus-select-method ()
+  (interactive)
   (progn
     (setq gnus-asynchronous t)
     ;; https://lars.ingebrigtsen.no/2020/01/15/news-gmane-org-is-now-news-gmane-io/
@@ -1271,12 +1279,19 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
         "Gmail\\.INBOX\\|Gmail\\.sent-mail"))))
 
 (defun lotus-mailnews/post-init-gnus-init ()
-  (lotus-mailnews/common-init-gnus))
+  (progn
+    (lotus-mailnews/common-init-gnus)
+    (lotus-mailnews/common-config-gnus)
+    (lotus-mailnews/common-init-setup-gnus-nndraft)
+    (lotus-mailnews/common-init-setup-gnus-select-method)))
 
 (defun lotus-mailnews/post-init-gnus-config ()
   (interactive)
-  (lotus-mailnews/common-init-gnus)
-  (lotus-mailnews/common-config-gnus)
+  (progn
+    (lotus-mailnews/common-init-gnus)
+    (lotus-mailnews/common-config-gnus)
+    (lotus-mailnews/common-init-setup-gnus-nndraft)
+    (lotus-mailnews/common-init-setup-gnus-select-method))
   (progn
     (setq gnus-interactive-exit t)
     (progn
@@ -1339,6 +1354,8 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     :defer t
     :config
     (progn
+      (lotus-mailnews/common-init-gnus)
+      (lotus-mailnews/common-config-gnus)
       (setq nndraft-directory (nnheader-concat gnus-directory "drafts/")))))
 
 (defun lotus-mailnews/init-gnus-gravatar-config ()
@@ -1346,9 +1363,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     :defer t
     :config
     (progn
-      (add-hook
-       'gnus-article-prepare-hook
-       'gnus-treat-mail-gravatar))))
+      (add-hook 'gnus-article-prepare-hook 'gnus-treat-mail-gravatar))))
 
 (defun lotus-mailnews/post-init-bbdb-config ()
   (progn
