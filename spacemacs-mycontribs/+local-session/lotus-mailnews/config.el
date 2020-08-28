@@ -1,5 +1,4 @@
 ;;; config.el --- config                             -*- lexical-binding: t; -*-
-
 
 (defmacro lotus-fix-later (&rest body)
   `(when nil
@@ -1688,8 +1687,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 ; uncompface; } | icontopbm | display -"))))
   (progn
     (setq gnus-visible-headers
-          '(
-            "^Cc:"
+          '("^Cc:"
             "^Date:"
             "^Followup-To:"
             "^From:"
@@ -1958,9 +1956,8 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     :defer t
     :config
     (progn
-      (setq
-       gnus-directory      (nnheader-concat gnus-home-directory "News/")
-       nndraft-directory   (nnheader-concat gnus-directory      "drafts/")))))
+      (setq gnus-directory    (nnheader-concat gnus-home-directory "News/")
+            nndraft-directory (nnheader-concat gnus-directory      "drafts/")))))
 
 (defun lotus-mailnews/init-gnus-group-config ()
   (progn

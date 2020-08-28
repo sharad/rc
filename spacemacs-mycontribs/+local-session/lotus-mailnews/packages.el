@@ -2,7 +2,7 @@
 ;;
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
 ;;
-;; Author: sharad <s@think530-spratap>
+;; Author: sharad <>
 ;; URL: https://github.com/syl20bnr/spacemacs
 ;;
 ;; This file is not part of GNU Emacs.
@@ -35,8 +35,7 @@
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-mailnews-packages
-  '(
-    outlook
+  '(outlook
     org-outlook
     (gnus          :location local)
     (nndraft       :location local)

@@ -71,7 +71,7 @@ function main() {
         fi
     }
 
-    sleep 21s
+    # sleep 21s
 }
 
 
