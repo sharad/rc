@@ -26,10 +26,12 @@
         "libtool"
         "patchelf"
         "gcc-toolchain"
+        ;; (gcc "lib")
         "gdb"
         "gprolog"
         "swi-prolog"
-        "emacs-ediprolog"))
+        "emacs-ediprolog"
+        "artanis"))
         ;; "linux-libre-headers@4.19.56"
         ;; "fribidi"
         ;; "bicon"
