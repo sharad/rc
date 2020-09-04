@@ -1,4 +1,4 @@
-;;; packages.el --- lotus-erc layer packages file for Spacemacs.
+;;; packages.el --- lotus-messaging layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
 ;;
@@ -18,14 +18,14 @@
 ;;
 ;;
 ;; Briefly, each package to be installed or configured by this layer should be
-;; added to `lotus-erc-packages'. Then, for each package PACKAGE:
+;; added to `lotus-messaging-packages'. Then, for each package PACKAGE:
 ;;
 ;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
-;;   function `lotus-erc/init-PACKAGE' to load and initialize the package.
+;;   function `lotus-messaging/init-PACKAGE' to load and initialize the package.
 
 ;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
-;;   define the functions `lotus-erc/pre-init-PACKAGE' and/or
-;;   `lotus-erc/post-init-PACKAGE' to customize the package as it is loaded.
+;;   define the functions `lotus-messaging/pre-init-PACKAGE' and/or
+;;   `lotus-messaging/post-init-PACKAGE' to customize the package as it is loaded.
 
 ;;; Code:
 
@@ -34,7 +34,7 @@
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
-(defconst lotus-erc-packages
+(defconst lotus-messaging-packages
   '(
     erc
     (erc-join :location local)
@@ -43,8 +43,9 @@
     (h4x0r :location local)
     bitlbee
     passwds
-    )
-  "The list of Lisp packages required by the lotus-erc layer.
+
+    circ)
+  "The list of Lisp packages required by the lotus-messaging layer.
 
 Each entry is either:
 
@@ -71,47 +72,53 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-erc/post-init-erc ()
+(defun lotus-messaging/post-init-erc ()
   (use-package erc
     :defer t
-    :commands (lotus-erc-start-or-switch)
+    :commands (lotus-messaging-start-or-switch)
     :config
-    (lotus-erc/post-init-erc-config)))
+    (lotus-messaging/post-init-erc-config)))
 
-(defun lotus-erc/init-erc-join ()
+(defun lotus-messaging/init-erc-join ()
   (use-package erc-join
     :defer t
     :config
-    (lotus-erc/init-erc-join-config)))
+    (lotus-messaging/init-erc-join-config)))
 
-(defun lotus-erc/init-erc-services ()
+(defun lotus-messaging/init-erc-services ()
   (use-package erc-services
     :defer t
     :config
-    (lotus-erc/init-erc-services-config)))
+    (lotus-messaging/init-erc-services-config)))
 
-(defun lotus-erc/init-erc-nick-notify ()
+(defun lotus-messaging/init-erc-nick-notify ()
   (use-package erc-nick-notify
     :defer t
     :config
-    (lotus-erc/init-erc-nick-notify-config)))
+    (lotus-messaging/init-erc-nick-notify-config)))
 
-(defun lotus-erc/init-h4x0r ()
+(defun lotus-messaging/init-h4x0r ()
   (use-package h4x0r
     :defer t
     :config
-    (lotus-erc/init-h4x0r-config)))
+    (lotus-messaging/init-h4x0r-config)))
 
-(defun lotus-erc/init-bitlbee ()
+(defun lotus-messaging/init-bitlbee ()
   (use-package bitlbee
     :defer t
     :config
-    (lotus-erc/init-bitlbee-config)))
+    (lotus-messaging/init-bitlbee-config)))
 
-(defun lotus-erc/post-init-passwds ()
+(defun lotus-messaging/post-init-passwds ()
   (use-package passwds
     :defer t
     :config
-    (lotus-erc/post-init-passwds-config)))
+    (lotus-messaging/post-init-passwds-config)))
+
+(defun lotus-messaging/init-circ ()
+  (use-package circ
+    :defer t
+    :config
+    (lotus-messaging/init-circ-config)))
 
 ;;; packages.el ends here
