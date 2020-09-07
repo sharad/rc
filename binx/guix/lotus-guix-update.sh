@@ -33,14 +33,16 @@ function main()
                 # running debug guix upgrade -p "${HOME}/.setup/guix-config/per-user/s/cdesktopenv/profiles.d/"
                 for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
                 do
+                    manifest_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/manifest.scm"
                     profile_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/profiles.d/profile"
-                    if [ -f "${profile_path}/etc/profile" ]
+                    packages_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/packages"
+                    if [ -f "${packages_path}/etc/profile" ]
                     then
-                        if [ -f "${profile_path}/packages" ]
+                        if [ -f "${packages_path}" ]
                         then
-                            for pkg in $(cat "${profile_path}/packages")
+                            for pkg in $(cat "${packages_path}")
                             do
-                                echo running info guix upgrade -p "${profile_path}" "$pkg"
+                                running info guix upgrade -p "${profile_path}" "$pkg"
                             done
                         fi
 
@@ -59,6 +61,7 @@ function main()
                 do
                     manifest_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/manifest.scm"
                     profile_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/profiles.d/profile"
+                    packages_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/packages"
 
                     if [ ! -d "$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR/$profile/profiles.d" ]
                     then
@@ -68,11 +71,11 @@ function main()
                     if [ -f "${manifest_path}" ]
                     then
 
-                        if [ -f "${profile_path}/packages" ]
+                        if [ -f "${packages_path}" ]
                         then
-                            for pkg in $(cat "${profile_path}/packages")
+                            for pkg in $(cat "${packages_path}")
                             do
-                                echo running info guix install -p "${profile_path}" "$pkg"
+                                running info guix install -p "${profile_path}" "$pkg"
                             done
                         fi
 
