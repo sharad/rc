@@ -36,7 +36,16 @@ function main()
                     profile_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/profiles.d/profile"
                     if [ -f "${profile_path}/etc/profile" ]
                     then
+                        if [ -f "${profile_path}/packages" ]
+                        then
+                            for pkg in $(cat "${profile_path}/packages")
+                            do
+                                echo running info guix upgrade -p "${profile_path}" "$pkg"
+                            done
+                        fi
+
                         running info guix upgrade -p "${profile_path}"
+
                     else
                         warn file "${profile_path}/etc/profile" not exist, for "${profile_path}"
                     fi
@@ -58,7 +67,17 @@ function main()
 
                     if [ -f "${manifest_path}" ]
                     then
+
+                        if [ -f "${profile_path}/packages" ]
+                        then
+                            for pkg in $(cat "${profile_path}/packages")
+                            do
+                                echo running info guix install -p "${profile_path}" "$pkg"
+                            done
+                        fi
+
                         running info guix package -p "${profile_path}" -m "${manifest_path}"
+
                     else
                         warn file "${manifest_path}" not exist, for "${profile_path}"
                     fi
