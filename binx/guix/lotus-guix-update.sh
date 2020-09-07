@@ -36,7 +36,7 @@ function main()
                     manifest_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/manifest.scm"
                     profile_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/profiles.d/profile"
                     packages_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/packages"
-                    if [ -f "${packages_path}/etc/profile" ]
+                    if [ -f "${profile_path}/etc/profile" ]
                     then
                         if [ -f "${packages_path}" ]
                         then
