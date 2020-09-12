@@ -25,6 +25,7 @@
                                                    "windowmaker"
                                                    ;; "findutils"
                                                    "idutils"
+						   "dovecot"
                                                    ;; "twm"
                                                    ;; "herbstluftwm"
                                                    "ecryptfs-utils"))

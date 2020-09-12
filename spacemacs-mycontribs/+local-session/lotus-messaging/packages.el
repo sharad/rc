@@ -44,7 +44,7 @@
     bitlbee
     passwds
 
-    circ)
+    rcirc)
   "The list of Lisp packages required by the lotus-messaging layer.
 
 Each entry is either:
@@ -115,10 +115,10 @@ Each entry is either:
     :config
     (lotus-messaging/post-init-passwds-config)))
 
-(defun lotus-messaging/init-circ ()
-  (use-package circ
+(defun lotus-messaging/init-rcirc ()
+  (use-package rcirc
     :defer t
     :config
-    (lotus-messaging/init-circ-config)))
+    (lotus-messaging/init-rcirc-config)))
 
 ;;; packages.el ends here

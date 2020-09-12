@@ -658,7 +658,7 @@
   (cond ((= 1 (length (complete-program "systemctl")))
          (stumpwm:run-shell-command "systemctl reboot"))
         ((= 1 (length (complete-program "herd")))
-         (stumpwm:run-shell-command "pkexec herd reboot shepherd"))))
+         (stumpwm:run-shell-command "pkexec herd stop shepherd"))))
 
 
 (defun generate-menu (menu &key (fclear nil) (gravity :center))
