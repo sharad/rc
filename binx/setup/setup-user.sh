@@ -638,6 +638,9 @@ function setup_add_to_version_control()
     debug base=$base
     debug relfile=$relfile
 
+    # info setup_add_to_version_control base=$base
+    # info setup_add_to_version_control relfile=$relfile
+
     local reldir=$(dirname "${relfile}" )
     local relbase=$(basename "${relfile}" )
 
@@ -1628,6 +1631,9 @@ function setup_dep_control_storage_class_dir()
         if [ -d "${hostdir}/volumes.d/model.d/${storage_path}/" ] && ls "${hostdir}/volumes.d/model.d/${storage_path}"/* > /dev/null 2>&1
         then
             modelsymlink=0
+
+            info for loop in "${hostdir}/volumes.d/model.d/${storage_path}"
+
             for mdir in "${hostdir}/volumes.d/model.d/${storage_path}"/*
             do
                 if [ -L "$mdir" ]
@@ -1642,6 +1648,15 @@ function setup_dep_control_storage_class_dir()
                     debug mdirbase=$mdirbase
                     debug classpath=$classpath
                     debug classinstdir=$classinstdir
+
+                    if false
+                    then
+                        info storage_path=$storage_path
+                        info mdir=$mdir
+                        info mdirbase=$mdirbase
+                        info classpath=$classpath
+                        info classinstdir=$classinstdir
+                    fi
 
                     debug 'volclasspathinstdir="model.d/${storage_path}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"'
                     debug =
@@ -1659,6 +1674,7 @@ function setup_dep_control_storage_class_dir()
                     running debug setup_make_link "${fullupdirs}/${volclasspathinstdir}" "$classcontrol_dir_path/${mdirbase}"
 
                     # TODO
+                    info running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${_classcontrol_dir_path}/${mdirbase}"
                     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${_classcontrol_dir_path}/${mdirbase}"
 
                 fi
