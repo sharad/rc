@@ -31,7 +31,9 @@
         "gprolog"
         "swi-prolog"
         "emacs-ediprolog"
-        "artanis"))
+        "artanis"
+        "doxygen"
+        "nomad"))
         ;; "linux-libre-headers@4.19.56"
         ;; "fribidi"
         ;; "bicon"

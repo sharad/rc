@@ -135,6 +135,7 @@
         "ccls"
         "emacs-ccls"
         "emacs-slack"
+        "emacs-pdf-tools"
         ;; "emacs-org-roam" ;; need roam internet service login
 
         "xhost"
