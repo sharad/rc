@@ -250,7 +250,9 @@ function  delicious_post_internal(buffer, window, minibuffer,
     var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
 
     // {{ completer
-    var xsendurl = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/suggest?' + delicious_auth_token + '&url='+encodeURIComponent(buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
+    var xsendurl = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/suggest?' + delicious_auth_token + '&url='+
+        encodeURIComponent(buffer.display_uri_string);
+        // encodeURIComponent(buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
     var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
     var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
     // window.alert(xcontent.responseText);
@@ -277,7 +279,9 @@ function  delicious_post_internal(buffer, window, minibuffer,
     // }}
 
     // {{ initial value
-    var tsendurl   = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  '&url=' + encodeURIComponent(buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
+    var tsendurl   = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  '&url=' +
+        encodeURIComponent(buffer.display_uri_string);
+        // encodeURIComponent(buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
 
     if (conkeror_debug > 7)
         window.alert("url for inquiring existing bm:\n" + tsendurl);
@@ -291,9 +295,11 @@ function  delicious_post_internal(buffer, window, minibuffer,
 
     if (post.length > 0 &&
         post[0].attributes['description'].textContent.length > 0) {
-        var desc = post[0].attributes['description'].textContent.replace(/[^\x00-\x7F]/g, '');
+        // var desc = post[0].attributes['description'].textContent.replace(/[^\x00-\x7F]/g, '');
+        var desc = post[0].attributes['description'].textContent;
     } else {
-        var desc = (buffer.title == "" ? buffer.display_uri_string : buffer.title).replace(/[^\x00-\x7F]/g, '');
+        // var desc = (buffer.title == "" ? buffer.display_uri_string : buffer.title).replace(/[^\x00-\x7F]/g, '');
+        var desc = (buffer.title == "" ? buffer.display_uri_string : buffer.title);
     }
 
     // correct it
@@ -313,8 +319,9 @@ function  delicious_post_internal(buffer, window, minibuffer,
         post_url ?
             post_url :
             (yield minibuffer.read( $prompt = "url (required): ",
-                                // $initial_value = buffer.display_uri_string)))
-                                $initial_value = buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''))));
+                                    // $initial_value = buffer.display_uri_string)))
+                                    // $initial_value = buffer.display_uri_string.replace(/[^\x00-\x7F]/g, '')
+                                    $initial_value = buffer.display_uri_string)));
     var post_description = encodeURIComponent(
         post_description ?
             post_description :
@@ -394,7 +401,9 @@ function delicious_post_all(buffer, post_tags) {
     {
         var buff = buffers.get_buffer(i);
         // {{ initial value
-        var tsendurl   = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  '&url=' + encodeURIComponent(buff.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
+        var tsendurl   = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  '&url=' +
+            // encodeURIComponent(buff.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
+            encodeURIComponent(buff.display_uri_string);
         var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
         var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
         var post       = tc.getElementsByTagName('post');
@@ -402,9 +411,11 @@ function delicious_post_all(buffer, post_tags) {
 
         if (post.length > 0 &&
             post[0].attributes['description'].textContent.length > 0) {
-            var desc = post[0].attributes['description'].textContent.replace(/[^\x00-\x7F]/g, '');
+            // var desc = post[0].attributes['description'].textContent.replace(/[^\x00-\x7F]/g, '');
+            var desc = post[0].attributes['description'].textContent;
         } else {
-            var desc = (buff.title == "" ? buff.display_uri_string : buff.title).replace(/[^\x00-\x7F]/g, '');
+            // var desc = (buff.title == "" ? buff.display_uri_string : buff.title).replace(/[^\x00-\x7F]/g, '');
+            var desc = (buff.title == "" ? buff.display_uri_string : buff.title);
         }
 
         var shared = null;
@@ -413,7 +424,8 @@ function delicious_post_all(buffer, post_tags) {
         }
 
         delicious_post_internal(buff, buffer.window, buffer.window.minibuffer,
-                                buff.display_uri_string.replace(/[^\x00-\x7F]/g, ''),
+                                // buff.display_uri_string.replace(/[^\x00-\x7F]/g, ''),
+                                buff.display_uri_string,
                                 desc,
                                 tags + " " + post_tags,
                                 "extended description: later session readlater",
@@ -493,7 +505,8 @@ interactive("delicious-post-link",
             "bookmark the link via delicious",
             function (I) {
                 var bo = yield read_browser_object(I);
-                var mylink = load_spec_uri_string(load_spec(encodeURIComponent(bo))).replace(/[^\x00-\x7F]/g, '');
+                // var mylink = load_spec_uri_string(load_spec(encodeURIComponent(bo))).replace(/[^\x00-\x7F]/g, '');
+                var mylink = load_spec_uri_string(load_spec(encodeURIComponent(bo)));
                 check_buffer(I.buffer, content_buffer);
 
                 var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
@@ -537,11 +550,13 @@ interactive("delicious-post-link",
                 if (post.length > 0 &&
                     post[0].attributes['description'].textContent.length > 0)
                 {
-                    var desc = post[0].attributes['description'].textContent.replace(/[^\x00-\x7F]/g, '');
+                    // var desc = post[0].attributes['description'].textContent.replace(/[^\x00-\x7F]/g, '');
+                    var desc = post[0].attributes['description'].textContent;
                 }
                 else
                 {
-                    var desc = (bo.textContent == "" ? bo : bo.textContent).replace(/[^\x00-\x7F]/g, '');
+                    // var desc = (bo.textContent == "" ? bo : bo.textContent).replace(/[^\x00-\x7F]/g, '');
+                    var desc = (bo.textContent == "" ? bo : bo.textContent);
                 }
 
                 var shared = null;
