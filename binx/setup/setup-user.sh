@@ -210,8 +210,6 @@ function main()
         running info setup_advertisement_blocking
     fi
 
-    running info setup_dirs
-
     if [ ! -d "/run/current-system/profile" ]
     then
         running info setup_apache_usermod

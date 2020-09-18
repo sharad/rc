@@ -6,7 +6,7 @@ notmuch new
 
 if [ -r "$HOME/.config/offlineimap/notmuch_tag" ]
 then
-    notmuch tag --batch --input="$HOME/.config/offlineimap/notmuch_tag"
+    : notmuch tag --batch --input="$HOME/.config/offlineimap/notmuch_tag"
 fi
 
 notifymuch
