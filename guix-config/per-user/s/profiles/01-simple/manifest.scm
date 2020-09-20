@@ -137,6 +137,7 @@
         "emacs-slack"
         "emacs-pdf-tools"
         ;; "emacs-org-roam" ;; need roam internet service login
+        "emacs-standard-dirs"
 
         "xhost"
         "xauth"

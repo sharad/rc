@@ -507,7 +507,7 @@ function setup_custom_recursive_links()
                     running debug mkdir -p $basepath/$trg/$trgstoragebasepath
                     # running debug ls -ld $basepath/$trg/$trgstoragebasepath
                     running debug setup_make_relative_link $basepath $storagebasepath/$trgstoragebasepath/$relpath/$lnkdir/$name $trg/$trgstoragebasepath/$lnkdir
-                    debug 
+                    # debug
                     # running debug setup_add_to_version_control
                 done
             else
@@ -642,7 +642,13 @@ function setup_add_to_version_control()
     local reldir=$(dirname "${relfile}" )
     local relbase=$(basename "${relfile}" )
 
-    running debug git -C "${base}/${reldir}" add -f "${relbase}"
+    if [ ! -L "${base}/${reldir}/${relbase}" -a -d "${base}/${reldir}/${relbase}" ]
+    then
+        touch "${base}/${reldir}/${relbase}/.gitignore"
+        running debug git -C "${base}/${reldir}" add -f "${relbase}/.gitignore"
+    else
+        running debug git -C "${base}/${reldir}" add -f "${relbase}"
+    fi
 
 
     if ! git -C "${base}/${reldir}" ls-files --error-unmatch "${relbase}" >/dev/null 2>&1
@@ -836,7 +842,7 @@ function setup_apt_upgrade_system()
     if [ -d "/run/current-system/profile" ]
     then
         #running info ~/bin/lotus-clear
-        running info ~/bin/lotus-update
+        : running info ~/bin/lotus-update
     else
         # running info sudo ${INSTALLER} ${INSTALLER_OPT} clean
         running info sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
@@ -1859,29 +1865,44 @@ function setup_deps_model_storage_volumes_dir()
         modelsymlink_present=0
         for vgd in "${storageclassdirpath}"/*
         do
-            modelsymlink_present=1
-            for vld in ${vgd}/*
-            do
-                local _location="$vld/users/$USER"
-                if [ ! -d ${_location} ]
-                then
-                    running debug setup_sudo_mkdirp "${_location}"
-                fi
-                if [ -d ${_location} ]
-                then
-                    running debug setup_chown root root "${_location}"
-                fi
+            if [ -n "${vgd}" ]
+            then
+                modelsymlink_present=1
+                for vld in ${vgd}/*
+                do
+                    if [ -n "${vld}" ]
+                    then
+                        local _location="$vld/users/$USER"
+                        if [ ! -d ${_location} ]
+                        then
+                            running debug setup_sudo_mkdirp "${_location}"
+                        fi
+                        if [ -d ${_location} ]
+                        then
+                            running debug setup_chown root root "${_location}"
+                        fi
 
-                vgdbase=$(basename $vgd)
-                vldbase=$(basename $vld)
-                vgldirlink=${vgdbase}-${vldbase}
-                debug vgd=$vgd
-                debug vld=$vld
-                debug vgdbase=$vgdbase
-                debug vldbase=$vldbase
-                running debug setup_make_link              "${_location}"     "${deps_model_storageclass_path}/${vgldirlink}"
-                running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${rel_deps_model_storageclass_path}/${vgldirlink}"
-            done
+                        vgdbase=$(basename $vgd)
+                        vldbase=$(basename $vld)
+                        if [ -n "${vgdbase}" -a -n "${vldbase}" ]
+                        then
+                            vgldirlink=${vgdbase}-${vldbase}
+                            debug vgd=$vgd
+                            debug vld=$vld
+                            debug vgdbase=$vgdbase
+                            debug vldbase=$vldbase
+                            running debug setup_make_link              "${_location}"     "${deps_model_storageclass_path}/${vgldirlink}"
+                            running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${rel_deps_model_storageclass_path}/${vgldirlink}"
+                        else
+                            warning vgdbase="${vgdbase}" or vldbase="${vldbase}" is empty
+                        fi
+                    else
+                        warning vld="${vld}" is empty
+                    fi
+                done
+            else
+                warning vgd="${vgd}" is empty
+            fi
         done
 
         if [ "$modelsymlink_present" -eq 0 ]
@@ -2476,7 +2497,6 @@ function setup_org_home_portable_dirs()
     running debug setup_vc_mkdirpath_ensure    "${LOCALDIRS_DIR}"            ""                   "${rel_homeprotabledir}"
     running debug setup_make_relative_link     "${LOCALDIRS_DIR}/org/home.d" "portable.d"         "default"
     running debug setup_add_to_version_control "${LOCALDIRS_DIR}"            "org/home.d/default"
-
     cat <<'EOF' > "${LOCALDIRS_DIR}/org/home.d/portable.d/README"
 portable.d is for required dir trees while
 
@@ -2484,11 +2504,8 @@ local.d is to rearrange according to space needs
 EOF
 
     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/README"
-
-
     echo 'add in script' > "${LOCALDIRS_DIR}/org/home.d/portable.d/TODO"
     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/TODO"
-
     # for lnk in "${userdata_dirs[@]}"
     # do
     #     info TEST $lnk
@@ -2502,14 +2519,12 @@ EOF
         running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
     done
 
-
     running debug setup_make_relative_link "${USERDIR}" "doc" "localdirs/${rel_homeprotabledir}/Documents/online"
 
     running debug setup_make_relative_link ${HOME}/"${RESOURCEPATH}/${USERORGMAIN}/readwrite/" "private/user/noenc/Private" "public/user/localdirs/${rel_homeprotabledir}/Private"
 
     running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Public/Publish/html" "public_html/html"
     running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Documents/Library"   "Library/online"
-
     # TODO: NEXT need work here -sharad
     # running debug setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/volumes.d/control.d/class/data/storage/local/container/scratches.d" "home.d/portable.d/Scratches"
     running debug setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/volumes.d/view.d/maildata/mail-and-metadata/maildir" "home.d/portable.d/Maildir"
@@ -2755,18 +2770,12 @@ function setup_dirs()
             # running debug setup_deps_dirs "network/cloud/droplet"
             # running debug setup_deps_dirs "network/cloud/s3"
             running info setup_deps_dirs "$mntpnt"
-        done
-
-
-
+done
 
         running debug setup_org_dirs
         running debug setup_manual_dirs
-
         running debug setup_osetup_dirs
-
         running debug setup_rc_org_dirs
-
         running debug setup_Documentation
         running debug setup_public_html
         running debug setup_mail_and_metadata
