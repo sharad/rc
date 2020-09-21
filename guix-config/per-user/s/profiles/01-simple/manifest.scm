@@ -48,6 +48,7 @@
 (define %lotus-other-packages
   (list "vim"
 
+	"gnu-pw-mgr"
         "mpd-mpc"
         "cava"
         "openfortivpn"
