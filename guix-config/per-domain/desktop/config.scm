@@ -373,14 +373,24 @@
 (define %lotus-keyboard-layout (keyboard-layout "us" "altgr-intl"))
 
 
+;; https://gist.github.com/trzczy/517c5ec6459b2fe47197c489f092afae
 ;; https://www.hubert-lombard.website/GuixSD/html/GuixSD-0.16_en-Dual-Boot-avec-Debian-Testing.html
+;; https://www.gnu.org/software/grub/manual/grub/html_node/Device-syntax.html
 (define %lotus-grub-other-menuentries '(menu-entries
-	               				(list
-						  (menu-entry
-		        			  (label "Debian GNU/Linux")
-	                			  (linux "/boot/vmlinuz-4.19.0-1-amd64")
-	                			  (linux-arguments '("root=/dev/sda1"))
-	                			  (initrd "/boot/initrd.img-4.19.0-1-amd64")))))
+	               				                (list
+						                             (menu-entry
+		        			                        (label "Debian GNU/Linux")
+	                			                  (linux "/boot/vmlinuz-4.19.0-1-amd64")
+	                			                  (linux-arguments '("root=/dev/sda1"))
+	                			                  (initrd "/boot/initrd.img-4.19.0-1-amd64")))))
+
+(define %lotus-grub-ubuntu-menuentries '(menu-entries
+                                         (list
+                                          (menu-entry
+                                           (label "Ubuntu GNU/Linux")
+                                           (linux "(lvm/ubuntu-boot)/vmlinuz-5.3.0-62-generic")
+                                           (linux-arguments '("root=/dev/mapper/ubuntu-root ro"))
+                                           (initrd "/initrd.img-5.3.0-62-generic"))))
 
 (define %lotus-vm-bootloader
   (bootloader-configuration (bootloader grub-bootloader)
@@ -389,7 +399,8 @@
 (define %lotus-efi-bootloader
   (bootloader-configuration (bootloader      grub-efi-bootloader)
                             (target          "/boot/efi")
-                            (keyboard-layout %lotus-keyboard-layout)))
+                            (keyboard-layout %lotus-keyboard-layout)
+                            %lotus-grub-ubuntu-menuentries))
 
 (define %lotus-nonefi-bootloader
   (bootloader-configuration (bootloader      grub-bootloader)
