@@ -377,7 +377,8 @@
 ;; https://www.hubert-lombard.website/GuixSD/html/GuixSD-0.16_en-Dual-Boot-avec-Debian-Testing.html
 ;; https://www.gnu.org/software/grub/manual/grub/html_node/Device-syntax.html
 
-(define %lotus-grub-ubuntu-menuentries %local-grub-ubuntu-menuentries)
+(define %lotus-grub-ubuntu-menuentries (lotus-local-value %local-grub-ubuntu-menuentries
+                                                          (list)))
 
 (define %lotus-vm-bootloader
   (bootloader-configuration (bootloader grub-bootloader)
