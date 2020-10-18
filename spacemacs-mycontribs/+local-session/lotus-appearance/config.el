@@ -237,27 +237,25 @@
 
 
 (defvar face-size-display-matrix
-  '(
-    ((1080 1920 285 508) (:height 87 :width normal :machine "lispm"))
-    ((900  2966 238 784) (:height 71 :width normal :machine "think530-spratap"))
-    ((900  2966 237 781) (:height 71 :width normal :machine "think530-spratap"))
-    ((900  2966 238 784) (:height 72 :width normal :machine "think530-spratap"))
-    ((900  2966 237 781) (:height 72 :width normal :machine "think530-spratap"))
-    ((1080 3286 285 868) (:height 71 :width normal :machine "latitude5480-spratap"))
-    ((1080 1920 285 508) (:height 68 :width normal :machine "latitude5480-spratap"))
-    ((1080 3286 285 867) (:height 68 :width normal :machine "latitude5480-spratap"))
-    ((1080 3286 285 869) (:height 71 :width normal :machine "latitude5480-spratap")))
+  '(((1080 1920 285 508)  (:height 87 :width normal :machine "lispm"))
+    ((900  2966 238 784)  (:height 71 :width normal :machine "think530-spratap"))
+    ((900  2966 237 781)  (:height 71 :width normal :machine "think530-spratap"))
+    ((900  2966 238 784)  (:height 72 :width normal :machine "think530-spratap"))
+    ((900  2966 237 781)  (:height 72 :width normal :machine "think530-spratap"))
+    ((1080 3286 285 868)  (:height 71 :width normal :machine "latitude5480-spratap"))
+    ((1080 1920 285 508)  (:height 68 :width normal :machine "latitude5480-spratap"))
+    ((1080 3286 285 867)  (:height 68 :width normal :machine "latitude5480-spratap"))
+    ((1080 3286 285 869)  (:height 71 :width normal :machine "latitude5480-spratap"))
+    ((1080 3840 285 1016) (:height 83 :width normal :machine "latitude5480-spratap")))
   "Enter here all machine details of
 
    ((pixel-height pixel-width mm-height mm-width) . (height width))")
 
 (defun assoc-attribs-in-matrix ()
-  (let ((phy-attribs
-         (list
-          (x-display-pixel-height)
-          (x-display-pixel-width)
-          (x-display-mm-height)
-          (x-display-mm-width))))
+  (let ((phy-attribs (list (x-display-pixel-height)
+                           (x-display-pixel-width)
+                           (x-display-mm-height)
+                           (x-display-mm-width))))
     (cadr (assoc phy-attribs face-size-display-matrix))))
 
 (defun get-current-attribes-matrix-row ()
@@ -305,20 +303,16 @@
   (if (and (featurep 'x) window-system)
       (let* ((frame       nil)
              (disp-attrib (assoc-attribs-in-matrix))
-             (height
-              (or
-               height
-               (plist-get disp-attrib :height)
-               (if (and (featurep 'x)
-                        window-system
-                        (x-display-mm-height))
-                   (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
-                 (face-attribute 'default :height))))
-             (width
-              (or
-               width
-               (plist-get disp-attrib :width)
-               (face-attribute 'default :width))))
+             (height      (or height
+                              (plist-get disp-attrib :height)
+                              (if (and (featurep 'x)
+                                       window-system
+                                       (x-display-mm-height))
+                                  (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
+                                (face-attribute 'default :height))))
+             (width       (or width
+                              (plist-get disp-attrib :width)
+                              (face-attribute 'default :width))))
         (if (x-display-mm-height)
             (if (any-frame-opened-p)
                 (progn
