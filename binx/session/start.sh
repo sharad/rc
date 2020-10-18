@@ -15,7 +15,7 @@ DISPNO=$(xrandr | grep -v disconnected | grep connected | wc -l)
 
 if [ "$DISPNO" -gt 1 ]
 then
-    echo 'URxvt.font: xft:DejaVu Sans Mono:style=Book:size=7:antialias=true' |  xrdb -merge -  >&/dev/null
+    echo 'URxvt.font: xft:DejaVu Sans Mono:style=Book:size=7:antialias=true' |  xrdb -merge - >/dev/null 2>&1
 fi
 
 ecryptfs-mount-private
@@ -25,7 +25,7 @@ update-ssh-agent force
 
 if [ "x" != "x$DISPLAY" ]
 then
-    secret-tool lookup server exch-cas.fortinet.com user 'fortinet-us\spratap' protocol imap  | xclip -i
+    secret-tool lookup server exch-cas.fortinet.com user 'fortinet-us\spratap' protocol imap >/dev/null 2>&1
 fi
 
 unalias ssh
@@ -47,3 +47,4 @@ else
     alias noninteractive-scp='command scp -q -o VisualHostKey=yes'
 fi
 
+echo 'URxvt.font: xft:DejaVu Sans Mono:style=Book:size=9:antialias=true' |  xrdb -merge - >/dev/null 2>&1
