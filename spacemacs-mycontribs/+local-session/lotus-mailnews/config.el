@@ -849,24 +849,26 @@ always hide."
   "Brutally kill running IMAP server background processes. Useful
 when Gnus hangs on network outs or changes."
   (interactive)
-  (let ((sm (if gnus-select-method
-                (cons gnus-select-method gnus-secondary-select-methods)
-              gnus-secondary-select-methods)))
-    (while sm
-      (let ((method (car (car sm)))
-            (vserv (nth 1 (car sm))))
-        (when (and (eq 'nnimap method)
-                   (not (string= "localhost"
-                                        ;(second (find-if
-                                 (second (remove-if-not
-                                          (lambda (e)
-                                            (if (listp e)
-                                                (eq 'nnimap-address (car e))))
-                                          sm))))
-                   (buffer-local-value 'imap-process (get-buffer (nnimap-get-server-buffer vserv))))
-          (gnus-message 6 "Killing IMAP process for server %s" vserv)
-          (delete-process (buffer-local-value 'imap-process (get-buffer (nnimap-get-server-buffer vserv))))))
-      (setq sm (cdr sm)))))
+  (when (and (boundp 'gnus-select-method)
+             (boundp 'gnus-secondary-select-methods))
+    (let ((sm (if gnus-select-method
+                  (cons gnus-select-method gnus-secondary-select-methods)
+                gnus-secondary-select-methods)))
+      (while sm
+        (let ((method (car (car sm)))
+              (vserv (nth 1 (car sm))))
+          (when (and (eq 'nnimap method)
+                     (not (string= "localhost"
+                                   ;(second (find-if
+                                   (second (remove-if-not
+                                            (lambda (e)
+                                              (if (listp e)
+                                                  (eq 'nnimap-address (car e))))
+                                            sm))))
+                     (buffer-local-value 'imap-process (get-buffer (nnimap-get-server-buffer vserv))))
+            (gnus-message 6 "Killing IMAP process for server %s" vserv)
+            (delete-process (buffer-local-value 'imap-process (get-buffer (nnimap-get-server-buffer vserv))))))
+        (setq sm (cdr sm))))))
 
 (defun gnus-nm-agent-unplug()
   "Kill IMAP server processes and unplug Gnus agent."
@@ -1504,11 +1506,11 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
     ;;{{ http://eschulte.github.com/emacs-starter-kit/starter-kit-gnus.html
     (when window-system
       (setq
-       gnus-sum-thread-tree-indent "  "
-       gnus-sum-thread-tree-root "● "
-       gnus-sum-thread-tree-false-root "◯ "
-       gnus-sum-thread-tree-single-indent "◎ "
-       gnus-sum-thread-tree-vertical        "│"
+       gnus-sum-thread-tree-indent          "  "
+       gnus-sum-thread-tree-root            "● "
+       gnus-sum-thread-tree-false-root      "◯ "
+       gnus-sum-thread-tree-single-indent   "◎ "
+       gnus-sum-thread-tree-vertical        "│ "
        gnus-sum-thread-tree-leaf-with-other "├─► "
        gnus-sum-thread-tree-single-leaf     "╰─► ")))
   (progn
@@ -1661,29 +1663,29 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
                  (gnus-article-date-local)              ; will actually convert timestamp from other timezones to yours
                  (gnus-article-strip-trailing-space))))
   (progn
-    (setq
-     gnus-treat-body-boundary              'head
-     gnus-treat-date-lapsed                'head
-     gnus-treat-display-x-face             'head
-     gnus-treat-strip-cr                   2
-     gnus-treat-strip-leading-blank-lines  t
-     gnus-treat-strip-multiple-blank-lines t
-     gnus-treat-strip-trailing-blank-lines t
-     gnus-treat-unsplit-urls               t
+    (setq gnus-treat-body-boundary              'head
+          gnus-treat-date-lapsed                'head
+          gnus-treat-display-x-face             'head
+          gnus-treat-strip-cr                   2
+          gnus-treat-strip-leading-blank-lines  t
+          gnus-treat-strip-multiple-blank-lines t
+          gnus-treat-strip-trailing-blank-lines t
+          gnus-treat-unsplit-urls               t
 
-     gnus-treat-date-english               'head
-     gnus-treat-date-iso8601               'head
-     gnus-treat-date-lapsed                'head
-     gnus-treat-date-local                 'head
-     gnus-treat-date-original              'head
-     gnus-treat-date-user-defined          'head
-     gnus-treat-date-ut                    'head
-     gnus-treat-date-original              'head
-     ;; Make sure Gnus doesn't display smiley graphics.
-     gnus-treat-display-smileys            t
-     gnus-treat-hide-boring-headers        'head
-     gnus-treat-hide-signature             nil ;; (unless (equal (system-name) office-host-name) 'last)
-     gnus-treat-strip-banner               t))
+          gnus-treat-date-english               'head
+          gnus-treat-date-iso8601               'head
+          gnus-treat-date-lapsed                'head
+          gnus-treat-date-local                 'head
+          gnus-treat-date-original              'head
+          gnus-treat-date-user-defined          'head
+          gnus-treat-date-ut                    'head
+          gnus-treat-date-original              'head
+          ;; Make sure Gnus doesn't display smiley graphics.
+          gnus-treat-display-smileys            t
+          gnus-treat-hide-boring-headers        'head
+          gnus-treat-hide-signature             nil ;; (unless (equal (system-name) office-host-name) 'last)
+          gnus-treat-strip-banner               t))
+
   (progn
     (setq gnus-article-x-face-command
           ;; http://git.gnus.org/cgit/gnus.git/plain/lisp/gnus-art.el?h=V5-8&id=9e60844ade6660e25359aefaf313daf3e92ff3a9
@@ -1700,40 +1702,39 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
               "{ echo \
 '/* Format_version=1, Width=48, Height=48, Depth=1, Valid_bits_per_item=16 */'\
 ; uncompface; } | icontopbm | display -"))))
-  (progn
-    (setq gnus-visible-headers
-          '("^Cc:"
-            "^Date:"
-            "^Followup-To:"
-            "^From:"
-            "^Keywords:"
-            "^Newsgroups:"
-            "^Mailing-List:"
-            "^Organization:"
-            "^Posted-To:"
-            "^Reply-To:"
-            "^Subject:"
-            "^Summary:"
-            "^To:"
-            "^X-Newsreader:"
-            "^X-Url:"
-            "^X-bugzilla"  ; Show all X-headers
-            ;; for attachment
-            "^Content-Type"
-            "^X-Face:"
-            "^X-Face")
 
-          gnus-sorted-header-list
-          '("^From:"
-            "^Subject:"
-            "^Summary:"
-            "^Keywords:"
-            "^Newsgroups:"
-            "^Followup-To:"
-            "^To:"
-            "^Cc:"
-            "^Date:"
-            "^Organization:"))))
+  (progn
+    (setq gnus-visible-headers    '("^Cc:"
+                                    "^Date:"
+                                    "^Followup-To:"
+                                    "^From:"
+                                    "^Keywords:"
+                                    "^Newsgroups:"
+                                    "^Mailing-List:"
+                                    "^Organization:"
+                                    "^Posted-To:"
+                                    "^Reply-To:"
+                                    "^Subject:"
+                                    "^Summary:"
+                                    "^To:"
+                                    "^X-Newsreader:"
+                                    "^X-Url:"
+                                    "^X-bugzilla"  ; Show all X-headers
+                                    ;; for attachment
+                                    "^Content-Type"
+                                    "^X-Face:"
+                                    "^X-Face")
+
+          gnus-sorted-header-list '("^From:"
+                                    "^Subject:"
+                                    "^Summary:"
+                                    "^Keywords:"
+                                    "^Newsgroups:"
+                                    "^Followup-To:"
+                                    "^To:"
+                                    "^Cc:"
+                                    "^Date:"
+                                    "^Organization:"))))
 
 (defun lotus-mailnews/init-nnmail-config ()
   (setq nnmail-extra-headers '(To Newsgroups Content-Type Date)))
@@ -1745,7 +1746,6 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 (defun lotus-mailnews/init-gnus-namazu-config ()
   (progn
     (gnus-namazu-insinuate)
-
     (setq gnus-namazu-index-update-interval nil)
 
     (defun xsteve-gnus-namazu-update-all-indices ()

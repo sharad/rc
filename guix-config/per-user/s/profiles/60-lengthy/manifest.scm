@@ -10,8 +10,8 @@
                                            "python-numpy"
                                            "python-pandas"
                                            "python-pycryptodome"
-                                           "python-pdfminer"))
-                                                ;; "opencv" ;; -- put it in input depedency
+                                           "python-pdfminer"
+                                           "libreoffice"))
 
 (define %lotus-lengthy-packages
   (append
