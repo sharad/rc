@@ -8,9 +8,14 @@ function main()
 
     running debug process_arg $@
     USER_GENERATION_CLEANUP_TIME=${USER_GENERATION_CLEANUP_TIME:-96h}
+
     SYSTEM_GENERATION_CLEANUP_TIME=${SYSTEM_GENERATION_CLEANUP_TIME:-10m} # 10 months
     SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME:-30d}
-    SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE:-3G}
+
+    # make 75% of available space of /gnu/store
+    GNU_STORE_SIZE="$(df  --output=size  /gnu/store | sed -n -e 's/[^[:digit:]]//g' -e 2p)"
+    GUIX_CLEANUP_MIN_SPACE="$(expr $GNU_STORE_SIZE '*' 21 / 100)"
+    SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE:-${GUIX_CLEANUP_MIN_SPACE}G}
 
     if [ -f "$HOME/.setup/guix-config/per-user/$USER/meta/current" ]
     then
@@ -61,35 +66,6 @@ function main()
     fi
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
