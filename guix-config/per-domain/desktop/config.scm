@@ -95,28 +95,35 @@
 (use-modules (gnu packages linux))
 (use-modules (guix modules))
 
-(define (open-non-udev-lvm-device source target)
-  "Return a gexp that maps SOURCES to TARGETS as a LVM device, using
+(define (open-non-udev-lvm-device source targets)
+  "Return a gexp that maps SOURCES to TARGETSS as a LVM device, using
 'lvm'."
   (with-imported-modules (source-module-closure '((gnu build file-systems)))
-    #~(let ((source  #$source)
-            (lvm-bin #$(file-append lvm2-static "/sbin/lvm")))
-        ;; Use 'lvm2-static', not 'lvm2', to avoid pulling the
-        ;; whole world inside the initrd (for when we're in an initrd).
-        (begin
-          (format #t "Enabling ~a~%" #$target)
-          (sleep 1)
-          (system* lvm-bin "vgscan" "--mknodes")
-          (sleep 1)
-          (system* lvm-bin "vgchange" "-ay" (car (string-split #$target #\-)))
-          (sleep 1)
-          (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
-                          (string-join (string-split #$target #\-) "/")))))))
+                         #~(let ((source   #$source)
+                                 (targets  '#$targets)
+                                 (lvm-bin  #$(file-append lvm2-static "/sbin/lvm")))
+                             ;; Use 'lvm2-static', not 'lvm2', to avoid pulling the
+                             ;; whole world inside the initrd (for when we're in an initrd).
+                             (begin
+                               (format #t "Enabling ~a~%" '#$targets)
+                               (sleep 1)
+                               (system* lvm-bin "vgscan" "--mknodes")
+                               (sleep 1)
+                               (map (lambda (file) (system* lvm-bin "vgchange" "-ay" (car (string-split file #\-))))
+                                    '#$targets)
+                               (sleep 1)
+                               (map (lambda (file) (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
+                                                                   (string-join (string-split file #\-) "/"))))
+                                    '#$targets)
+                               #t))))
 
-(define (close-non-udev-lvm-device sources target)
-  "Return a gexp that closes TARGET, a LVM device."
-  #~(zero? (system* #$(file-append lvm2-static "/sbin/lvm")
-                    "lvchange" "-an" "-y" (string-join (string-split #$target #\-) "/"))))
+(define (close-non-udev-lvm-device sources targets)
+  "Return a gexp that closes TARGETS, a LVM device."
+  #~(begin
+      (map (lambda (file) (zero? (system* #$(file-append lvm2-static "/sbin/lvm")
+                                          "lvchange" "-an" "-y" (string-join (string-split file #\-) "/"))))
+           '#$targets)
+      #t))
 
 ;; (define* (check-non-udev-lvm-device md #:key
 ;;                             needed-for-boot?
@@ -143,29 +150,36 @@
 
 ;; The type of LVM mapped devices.
 (define non-udev-lvm-device-mapping (mapped-device-kind (open open-non-udev-lvm-device)
-                                                       ;; (check check-non-udev-lvm-device)
-                                                       (close close-non-udev-lvm-device)))
+                                                        ;; (check check-non-udev-lvm-device)
+                                                        (close close-non-udev-lvm-device)))
 
 
-(define (open-udev-lvm-device source target)
-  "Return a gexp that maps SOURCES to TARGETS as a LVM device, using
+(define (open-udev-lvm-device source targets)
+  "Return a gexp that maps SOURCES to TARGETSS as a LVM device, using
 'lvm'."
   (with-imported-modules (source-module-closure '((gnu build file-systems)))
-    #~(let ((source  #$source)
-            (lvm-bin #$(file-append lvm2-static "/sbin/lvm")))
-        ;; Use 'lvm2-static', not 'lvm2', to avoid pulling the
-        ;; whole world inside the initrd (for when we're in an initrd).
-        (begin
-          (format #t "Enabling ~a~%" #$target)
-          (system* lvm-bin "vgchange" "-ay" (car (string-split #$target #\-)))
-          (sleep 1)
-          (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
-                          (string-join (string-split #$target #\-) "/")))))))
+                         #~(let ((source   #$source)
+                                 (targets  '#$targets)
+                                 (lvm-bin  #$(file-append lvm2-static "/sbin/lvm")))
+                             ;; Use 'lvm2-static', not 'lvm2', to avoid pulling the
+                             ;; whole world inside the initrd (for when we're in an initrd).
+                             (begin
+                               (format #t "Enabling ~a~%" '#$targets)
+                               (map (lambda (file) (system* lvm-bin "vgchange" "-ay" (car (string-split file #\-))))
+                                    '#$targets)
+                               (sleep 1)
+                               (map (lambda (file) (zero? (system* lvm-bin "lvchange" "-aay" "-y" "--sysinit" "--ignoreskippedcluster"
+                                                                   (string-join (string-split file #\-) "/"))))
+                                    '#$targets)
+                               #t))))
 
-(define (close-udev-lvm-device sources target)
-  "Return a gexp that closes TARGET, a LVM device."
-  #~(zero? (system* #$(file-append lvm2-static "/sbin/lvm")
-                    "lvchange" "-an" "-y" (string-join (string-split #$target #\-) "/"))))
+(define (close-udev-lvm-device sources targets)
+  "Return a gexp that closes TARGETS, a LVM device."
+  #~(begin
+      (map (lambda (file) (zero? (system* #$(file-append lvm2-static "/sbin/lvm")
+                                          "lvchange" "-an" "-y" (string-join (string-split file #\-) "/"))))
+           '#$targets)
+      #t))
 
 ;; (define* (check-udev-lvm-device md #:key
 ;;                             needed-for-boot?

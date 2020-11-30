@@ -246,7 +246,8 @@
     ((1080 1920 285 508)  (:height 68 :width normal :machine "latitude5480-spratap"))
     ((1080 3286 285 867)  (:height 68 :width normal :machine "latitude5480-spratap"))
     ((1080 3286 285 869)  (:height 71 :width normal :machine "latitude5480-spratap"))
-    ((1080 3840 285 1016) (:height 83 :width normal :machine "latitude5480-spratap")))
+    ((1080 3840 285 1016) (:height 83 :width normal :machine "latitude5480-spratap"))
+    ((1080 3848 285 1015) (:height 83 :width normal :machine "latitude5480-spratap")))
   "Enter here all machine details of
 
    ((pixel-height pixel-width mm-height mm-width) . (height width))")
@@ -454,8 +455,7 @@
 
 (defun lotus-appearance-setup ()
   (interactive)
-  (setq
-   dotspacemacs-default-font (car lotus-dotspacemacs-default-font-list))
+  (setq dotspacemacs-default-font (car lotus-dotspacemacs-default-font-list))
   (spacemacs/set-default-font dotspacemacs-default-font)
   (lotus-mode-line-reduce lotus-mode-line-reduce-percent)
   (lotus-powerline-attrib-setup)

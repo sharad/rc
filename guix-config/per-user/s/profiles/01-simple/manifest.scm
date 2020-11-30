@@ -48,7 +48,7 @@
 (define %lotus-other-packages
   (list "vim"
 
-	"gnu-pw-mgr"
+	      "gnu-pw-mgr"
         "mpd-mpc"
         "cava"
         "openfortivpn"
@@ -71,6 +71,7 @@
         "cups-minimal" ;; for lp lpr command
 
         "unzip"
+        "cpio"
 
         "poppler"
         "whois"

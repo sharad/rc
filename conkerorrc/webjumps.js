@@ -1402,3 +1402,4 @@ define_webjump("search/quora", "https://www.quora.com/search?q=%s");
 
 define_webjump("learnxinyminutes", "https://learnxinyminutes.com/docs/%s");
 
+define_webjump("codeproject/article", "https://www.codeproject.com/search.aspx?q=%s&doctypeid=1");
