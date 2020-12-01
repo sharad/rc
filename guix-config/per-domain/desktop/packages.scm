@@ -21,11 +21,12 @@
                                                    "slock" ; need suid
                                                    "zsh"
                                                    "stumpwm"
+                                                   "sbcl-stumpwm-cpu" "sbcl-stumpwm-mem" "sbcl-stumpwm-numpad-layouts" "sbcl-stumpwm-screenshot" "sbcl-stumpwm-winner-mode"
                                                    "guile-wm"
                                                    "windowmaker"
                                                    ;; "findutils"
                                                    "idutils"
-						   "dovecot"
+						                                       "dovecot"
                                                    ;; "twm"
                                                    ;; "herbstluftwm"
                                                    "ecryptfs-utils"))

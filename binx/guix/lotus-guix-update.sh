@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# LOTUS_GUIX_NOPULL
+# LOTUS_GUIX_NOSYS
+
 function main()
 {
 
@@ -23,10 +26,10 @@ function main()
 
     if [ -d "/run/current-system/profile" ]
     then
-        if running info guix pull
+        if [ "x" != "x$LOTUS_GUIX_NOPULL" ] || running info guix pull
         then
             running info guix pull --news
-            if [ "x" != "x$NOSYS" ] || running info sudo guix system reconfigure "${HOME}/.setup/guix-config/per-domain/desktop/config.scm"
+            if [ "x" != "x$LOTUS_GUIX_NOSYS" ] || running info sudo guix system reconfigure "${HOME}/.setup/guix-config/per-domain/desktop/config.scm"
             then
                 # verbose guix upgrading
                 running info guix upgrade # default
