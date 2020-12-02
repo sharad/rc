@@ -115,10 +115,10 @@ Each entry is either:
     :config
     (lotus-messaging/post-init-passwds-config)))
 
-(defun lotus-messaging/init-rcirc ()
+(defun lotus-messaging/post-init-rcirc ()
   (use-package rcirc
     :defer t
     :config
-    (lotus-messaging/init-rcirc-config)))
+    (lotus-messaging/post-init-rcirc-config)))
 
 ;;; packages.el ends here

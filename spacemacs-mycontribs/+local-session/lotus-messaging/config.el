@@ -971,7 +971,7 @@ waiting for responses from the server"
 (defun lotus-messaging/post-init-passwds-config ()
   ())
 
-(defun lotus-messaging/init-rcirc-config ()
+(defun lotus-messaging/post-init-rcirc-config ()
   (add-to-list 'rcirc-server-alist
                '("localhost")))
 

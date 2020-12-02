@@ -260,14 +260,15 @@ Each entry is either:
 ;;         (progn))))
 ;;           ;;(setq orgstruct-heading-prefix-regexp "^;; ")
 
-(defun lotus-orgmode/init-outorg ()
+(defun lotus-orgmode/post-init-outorg ()
   ;; https://github.com/alphapapa/outorg
   (use-package outorg
     :defer t
     :config
-    (progn)))
+    (progn
+      (lotus-orgmode-config/post-init-outorg))))
 
-(defun lotus-orgmode/init-outshine ()
+(defun lotus-orgmode/post-init-outshine ()
   (use-package outshine
     :init
     ;; https://github.com/alphapapa/outshine
@@ -275,7 +276,7 @@ Each entry is either:
     :defer t
     :config
     (progn
-      (lotus-orgmode-config/init-outshine))))
+      (lotus-orgmode-config/post-init-outshine))))
 
 (defun lotus-orgmode/init-outline-ivy ()
   ;; http://www.modernemacs.com/post/outline-bullets/

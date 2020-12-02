@@ -691,7 +691,10 @@
   (progn
     (setq orgnav-log 't)))
 
-(defun lotus-orgmode-config/init-outshine ()
+(defun lotus-orgmode-config/post-init-outorg ()
+  )
+
+(defun lotus-orgmode-config/post-init-outshine ()
   ;; https://github.com/alphapapa/outshine
   ;; TODO https://orgmode.org/worg/org-tutorials/org-outside-org.html
   ;; http://www.modernemacs.com/post/outline-ivy/
