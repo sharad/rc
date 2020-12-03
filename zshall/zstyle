@@ -181,16 +181,18 @@ local _myhosts;                 # beautiful
 # _myhosts=( ${${=${${(f)"$(cat {/etc/ssh_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
 #           ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} )
 
+local _HOST_FILE_TO_USE=~/.config/dnsmasq/dnsmasq.d/data/hosts-manual-priv
 if [ ! -e ~/.var/cache/zsh/etc_hosts ] ||
-   [[ /etc/hosts -nt ~/.var/cache/zsh/etc_hosts ]]
+       [[ /etc/hosts -nt ~/.var/cache/zsh/etc_hosts ]] ||
+       [[ $_HOST_FILE_TO_USE -nt ~/.var/cache/zsh/etc_hosts ]]
 then
     mkdir -p ~/.var/cache/zsh
     if [ -d ~/.var/cache/zsh ]
     then
-        echo ${=${(f)"$(sed -n '1,/###ADVERTISEMENT/p' /etc/hosts | head -300 (|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} > ~/.var/cache/zsh/etc_hosts
+        echo ${=${(f)"$(cat $_HOST_FILE_TO_USE /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} > ~/.var/cache/zsh/etc_hosts
     fi
 fi
-
+unset _HOST_FILE_TO_USE
 
 zstyle ':completion:*' hosts $_myhosts;
 # _myhosts=( ${${=${${(f)"$(cat /etc/{ssh_,}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}

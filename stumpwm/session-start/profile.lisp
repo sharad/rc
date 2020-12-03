@@ -2,6 +2,9 @@
 (in-package :stumpwm)
 
 
+(defcommand x-disable-capslock () ()
+  (run-shell-command "if xset q | grep -q 'Caps Lock: *on' ; then xdotool key Caps_Lock ; fi"))
+
 
 (progn
   ;; Profiles management
@@ -35,6 +38,7 @@
           (message "Added ~a profile" (setf current name))))
 
     (defun profile-apply (profile)
+      (x-disable-capslock)
       (let ((maps (cdr (assoc :map profile)))
             (cmds (cdr (assoc :cmd profile))))
         (if maps
