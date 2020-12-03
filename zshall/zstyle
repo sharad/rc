@@ -194,6 +194,11 @@ then
 fi
 unset _HOST_FILE_TO_USE
 
+if [ -r ~/.var/cache/zsh/etc_hosts ]
+then
+    _myhosts=($(< ~/.var/cache/zsh/etc_hosts))
+fi
+
 zstyle ':completion:*' hosts $_myhosts;
 # _myhosts=( ${${=${${(f)"$(cat /etc/{ssh_,}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
 #            $(< ~/.var/cache/zsh/etc_hosts) )
