@@ -226,7 +226,7 @@ zstyle -e ':completion:*:email-ldap' filter '(( $#PREFIX+$#SUFFIX > 2 )) && repl
 # zstyle ':completion:*:email-ldap' command 'ldapsearch -w Hog27Xol -LLL $filter cn mail'
 # zstyle ':completion:*:email-ldap' command 'ldapsearch -w Hog27Xol -LLL $filter cn mail | grep -v "^# refldap://"'
 
-zstyle ':completion:*:email-ldap' command 'ldapsearch -w `get-imap-pass.py` -LLL $filter displayName mail | egrep -v "^(# refldap://|dn:)" | grep -v "^\$"'
+zstyle ':completion:*:email-ldap' command 'ldapsearch -w `get-imap-pass -p exch-cas.fortinet.com` -LLL $filter displayName mail | egrep -v "^(# refldap://|dn:)" | grep -v "^\$"'
 
 
 
