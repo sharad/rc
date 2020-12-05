@@ -30,7 +30,7 @@
                                      "gprolog"
                                      "swi-prolog"
                                      "emacs-ediprolog"
-                                     ;; "smalltalk"
+                                     "smalltalk"
                                      ;; "fribidi"
                                      ;; "bicon"
                                      "artanis"

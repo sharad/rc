@@ -47,8 +47,8 @@
 
 (define %lotus-other-packages
   (list "vim"
-
-	      "gnu-pw-mgr"
+        "gparted" ;; required for situations
+        "gnu-pw-mgr"
         "mpd-mpc"
         "cava"
         "openfortivpn"
