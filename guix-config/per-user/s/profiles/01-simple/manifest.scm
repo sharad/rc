@@ -40,9 +40,7 @@
                                        "sbcl-stumpwm-net"
                                        "sbcl-stumpwm-kbd-layouts"
                                        "sbcl-stumpwm-globalwindows"))
-
 ;; "notification-daemon" "trezord-udev-rules" "trezord"
-
 
 (define %lotus-other-packages (list "vim"
                                     "gparted" ;; required for situations

@@ -34,3 +34,7 @@ then
   done
 fi
 echo SBCL_HOME=$SBCL_HOME > /dev/null 2>&1
+
+
+export ASDF_OUTPUT_TRANSLATIONS="/:$HOME/.cache/common-lisp/my-dir/"
+
