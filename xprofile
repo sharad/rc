@@ -35,6 +35,7 @@ then
 fi
 echo SBCL_HOME=$SBCL_HOME > /dev/null 2>&1
 
-
-export ASDF_OUTPUT_TRANSLATIONS="/:$HOME/.cache/common-lisp/my-dir/"
+## https://common-lisp.net/project/asdf/asdf/Output-Shell_002dfriendly-syntax-for-configuration.html#Output-Shell_002dfriendly-syntax-for-configuration
+ASDF_OUTPUT_TRANSLATIONS="/:$HOME/.cache/common-lisp/my-dir/"
+export ASDF_OUTPUT_TRANSLATIONS
 

@@ -25,12 +25,10 @@
                                      "libtool"
                                      "patchelf"
                                      "gcc-toolchain"
-                                     ;; (gcc "lib")
                                      "gdb"
                                      "gprolog"
                                      "swi-prolog"
                                      "emacs-ediprolog"
-                                     "smalltalk"
                                      ;; "fribidi"
                                      ;; "bicon"
                                      "artanis"

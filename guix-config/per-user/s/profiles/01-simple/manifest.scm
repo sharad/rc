@@ -136,6 +136,14 @@
                                     "emacs-pdf-tools"
                                     ;; "emacs-org-roam" ;; need roam internet service login
                                     "emacs-standard-dirs"
+                                    "emacs-helm-switch-to-repl"
+                                    "emacs-org-pretty-table"
+                                    "emacs-chess"
+                                    "emacs-company-emoji"
+                                    "emacs-dash-docs"
+                                    "emacs-lsp-ivy"
+                                    "emacs-smart-hungry-delete"
+                                    "emacs-webpaste"
 
                                     "xhost"
                                     "xauth"
