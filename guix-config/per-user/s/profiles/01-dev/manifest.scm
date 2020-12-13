@@ -1,6 +1,32 @@
 
 ;; https://wingolog.org/archives/2015/08/04/developing-v8-with-guix
-(use-package-modules base gcc llvm base python version-control less ccache pkg-config glib gnome cmake messaging autotools flex bison compression m4 gawk xorg onc-rpc gsasl kerberos image commencement fontutils shells)
+(use-package-modules base
+                     gcc
+                     llvm
+                     base
+                     python
+                     version-control
+                     less
+                     ccache
+                     pkg-config
+                     glib
+                     gnome
+                     cmake
+                     messaging
+                     autotools
+                     flex
+                     bison
+                     compression
+                     m4
+                     gawk
+                     xorg
+                     onc-rpc
+                     gsasl
+                     kerberos
+                     image
+                     commencement
+                     fontutils
+                     shells)
 
 (use-modules (lotus packages cdesktopenv))
 
@@ -53,10 +79,7 @@
                                          %lotus-dev-tools-names
                                          %lotus-dev-package-experimental-names))
 
-(define %lotus-dev-packages
-  (append
-   ;; (list '(gcc "lib"))
-   (map specification->package
-        %lotus-dev-package-names)))
+(define %lotus-dev-packages (append (map specification->package
+                                         %lotus-dev-package-names)))
 
 (packages->manifest %lotus-dev-packages)
