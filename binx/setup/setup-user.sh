@@ -2795,9 +2795,15 @@ function setup_dep_model_cleanup()
 {                               # to save time
     local LOCALDIRS_DIR="${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs"
     local rel_deps_model_path="org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d"
+    local rel_deps_control_path="org/deps.d/model.d/machine.d/$HOST/volumes.d/control.d"
     local deps_model_path="${LOCALDIRS_DIR}/${rel_deps_model_path}"
+    local deps_control_path="${LOCALDIRS_DIR}/${rel_deps_control_path}"
+
+    info setup_dep_model_cleanup deps_model_path="${LOCALDIRS_DIR}/${rel_deps_model_path}"
+    info setup_dep_control_cleanup deps_control_path="${LOCALDIRS_DIR}/${rel_deps_control_path}"
 
     setup_cleanup_broken_link_empty_dir "${deps_model_path}"
+    setup_cleanup_broken_link_empty_dir "${deps_control_path}"
 }
 
 function setup_dirs()
