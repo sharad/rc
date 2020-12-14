@@ -144,6 +144,7 @@
                                     "emacs-lsp-ivy"
                                     "emacs-smart-hungry-delete"
                                     "emacs-webpaste"
+                                    "emacs-vterm"
 
                                     "xhost"
                                     "xauth"

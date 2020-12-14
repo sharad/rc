@@ -464,14 +464,16 @@ function setup_custom_recursive_links()
 
     storagebase_fullpath="${basepath}/${storagebasepath}"
 
+    debug storagebase_fullpath="${storagebase_fullpath}"
+
     if [ -d "${storagebase_fullpath}" ]
     then
         relcount=$(expr $(setup_count_slash_in_path "$relpath") + 3)
 
         cd "${storagebase_fullpath}"
         debug running find in $(pwd)
-        local trgstoragebasepaths=( $(find -type l \( \! -name '*BACKUP*' \) | grep "$relpath" | rev | cut -d/ -f${relcount}- | rev | cut -c3- ) )
-        debug trgstoragebasepaths=$trgstoragebasepaths
+        local trgstoragebasepaths=( $(find -type l \( \! -name '*BACKUP*' \) | grep "$relpath" | rev | cut -d/ -f${relcount}- | rev | cut -c3- | sort -u) )
+        debug trgstoragebasepaths=${trgstoragebasepaths[*]}
         cd - > /dev/null 2>&1
 
         debug trgstoragebasepaths=${trgstoragebasepaths[*]}
@@ -479,9 +481,19 @@ function setup_custom_recursive_links()
 
         for trgstoragebasepath in "${trgstoragebasepaths[@]}"
         do
-            debug trgstoragebasepath=$trgstoragebasepath
+            debug storagebase_fullpath="${storagebase_fullpath}"
+
+            debug trgstoragebasepath="${trgstoragebasepath}"
+            debug basepath="${basepath}"
+            debug storagebasepath="${storagebasepath}"
+            debug trgstoragebasepath="${trgstoragebasepath}"
+            debug relpath="${relpath}"
+
 
             trgstoragebase_fullpath="${basepath}/${storagebasepath}/${trgstoragebasepath}/${relpath}"
+            debug trgstoragebase_fullpath="${trgstoragebase_fullpath}"
+
+
 
             if [ -d "${trgstoragebase_fullpath}" ]
             then
@@ -587,6 +599,38 @@ function setup_recursive_links()
     fi
 
 }                               # function setup_recursive_links()
+
+function setup_cleanup_broken_link()
+{                               # to save time
+    local _tgdir="${1}"
+    if [ -d "${_tgdir}" ]
+    then
+        running info find "${_tgdir}" -xtype l -delete
+    else
+        info setup_cleanup_broken_link "${_tgdir}" not exists
+    fi
+}
+
+function setup_cleanup_empty_dir()
+{                               # to save time
+    local _tgdir="${1}"
+    if [ -d "${_tgdir}" ]
+    then
+        running info find "${_tgdir}" -type d -empty -delete
+    else
+        info setup_cleanup_empty_dir "${_tgdir}" not exists
+    fi
+}
+
+function setup_cleanup_broken_link_empty_dir()
+{                               # to save time
+    local _tgdir="${1}"
+    if [ -d "${_tgdir}" ]
+    then
+        running info setup_cleanup_broken_link "${_tgdir}"
+        running info setup_cleanup_empty_dir   "${_tgdir}"
+    fi
+}
 
 # worker
 function confirm()
@@ -868,7 +912,7 @@ function setup_apt_upgrade_system()
 function setup_apt_packages()
 {
     running info setup_apt_repo
-    running info setup_apt_upgrade_system
+    # running info setup_apt_upgrade_system
 
     local deb_pkg_lists=(
         DEB_PKG_FIRST_INSTALL
@@ -1860,7 +1904,7 @@ function setup_deps_model_storage_volumes_dir()
 
     running debug mkdir -p "${deps_model_storageclass_path}"
 
-    if [ -d ${deps_model_storageclass_path} -a -d $storageclassdirpath ]
+    if [ -d "${deps_model_storageclass_path}" -a -d "${storageclassdirpath}" ]
     then
         modelsymlink_present=0
         for vgd in "${storageclassdirpath}"/*
@@ -2516,6 +2560,9 @@ EOF
         info creting dir $lnk
         running info setup_vc_mkdirpath_ensure   "${LOCALDIRS_DIR}" "${rel_homeprotabledir}" "${lnk}"
         running info mkdir -p   "${LOCALDIRS_DIR}"/"${rel_homeprotabledir}"/"${lnk}"
+
+        setup_cleanup_broken_link_empty_dir "${LOCALDIRS_DIR}/org/home.d/portable.d/${lnk}/storage"
+
         running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
     done
 
@@ -2744,10 +2791,20 @@ function setup_rc_org_dirs()
     running debug setup_add_to_version_control ${HOME}/.fa/rc ".config/dirs.d/org"
 }
 
+function setup_dep_model_cleanup()
+{                               # to save time
+    local LOCALDIRS_DIR="${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs"
+    local rel_deps_model_path="org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d"
+    local deps_model_path="${LOCALDIRS_DIR}/${rel_deps_model_path}"
+
+    setup_cleanup_broken_link_empty_dir "${deps_model_path}"
+}
+
 function setup_dirs()
 {
     running info find ~/.fa/localdirs/ ~/.fa/osetup/dirs.d ~/.fa/rc/.config/dirs.d  -name '*BACKUP*' -type l
     running info find ~/.fa/localdirs/ ~/.fa/osetup/dirs.d ~/.fa/rc/.config/dirs.d  -name '*BACKUP*' -type l  -exec rm {} \;
+    running info setup_dep_model_cleanup
 
     running info setup_machine_dir
 
@@ -2770,7 +2827,7 @@ function setup_dirs()
             # running debug setup_deps_dirs "network/cloud/droplet"
             # running debug setup_deps_dirs "network/cloud/s3"
             running info setup_deps_dirs "$mntpnt"
-done
+        done
 
         running debug setup_org_dirs
         running debug setup_manual_dirs
