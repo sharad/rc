@@ -16,6 +16,23 @@
 
 # BUG: ${HOME}/.setup/.config/dirs.d/home.d/ is wrongly getting created.
 
+
+# BUG
+# setup-user: setup_custom_recursive_links /home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/org resource.d/view.d/volumes.d/control.d/storage class/data/container/usrdatas.d tmp home.d/portable.d/tmp/storage
+# setup-user: 
+#
+# setup-user: Warning: running debug setup_make_link .repos/git/main/resource/data/multimedia/orgs/private/media/collection/Videos is broken link not creating link ../../../../../../../../../..data/multimedia/orgs/private/media/collection/Videos .repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/org/home.d/portable.d/Videos/private
+#
+#
+# setup-user: Warning: running debug setup_make_link /home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/org/home.d/local.d/Sink is broken link not creating link ../..local.d/Sink /home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/org/home.d/portable.d/Sink/local
+#
+#
+# /srv/volumes/local/vgres01/lvres01/users/s/data/sysdata/maildata
+# setup-user: setup_ecrypt_private
+# setup-user: setup_install_sys_pkg ecryptfs-utils
+# setup-user: guix install ecryptfs-utils
+
+
 DEBUG=1
 
 if [ -d "/run/current-system/profile" ]
@@ -912,7 +929,7 @@ function setup_apt_upgrade_system()
 function setup_apt_packages()
 {
     running info setup_apt_repo
-    # running info setup_apt_upgrade_system
+    running info setup_apt_upgrade_system
 
     local deb_pkg_lists=(
         DEB_PKG_FIRST_INSTALL
