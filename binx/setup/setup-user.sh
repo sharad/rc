@@ -2094,10 +2094,6 @@ function setup_deps_control_volumes_internal_dirs()
             fi
         fi
     done
-
-
-
-
 }
 
 function setup_deps_control_dir()
@@ -2529,7 +2525,6 @@ function setup_org_home_portable_public_dirs()
         running debug setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/orgs/$collection/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/$collection"
         running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/$collection"
     done
-
 }
 
 function setup_org_home_portable_dirs()
