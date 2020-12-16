@@ -56,11 +56,14 @@
                                      "swi-prolog"
                                      "emacs-ediprolog"
 
+                                     "node"
+
                                      "r"
                                      "r-ggplot2"
                                      "r-cowplot"
 
                                      "erlang"
+                                     "elixir"
 
                                      "ghc"
                                      "idris"
