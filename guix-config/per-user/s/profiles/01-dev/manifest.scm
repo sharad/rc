@@ -55,6 +55,16 @@
                                      "gprolog"
                                      "swi-prolog"
                                      "emacs-ediprolog"
+
+                                     "r"
+                                     "r-ggplot2"
+                                     "r-cowplot"
+
+                                     "erlang"
+
+                                     "ghc"
+                                     "idris"
+
                                      ;; "fribidi"
                                      ;; "bicon"
                                      "artanis"
