@@ -46,8 +46,14 @@ function main()
                 running info guix package  --delete-generations=${USER_GENERATION_CLEANUP_TIME}
                 for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
                 do
-                    manifest_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/manifest.scm"
-                    profile_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/profiles.d/profile"
+                    profile_container_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}"
+                    manifest_path="${profile_container_path}/manifest.scm"
+                    profile_path="${profile_container_path}/profiles.d/profile"
+                    broken_path="${profile_container_path}/broken"
+
+                    mkdir -p "${broken_path}"
+                    find "${profile_container_path}/profiles.d" -xtype l -exec mv {} "${broken_path}" \;
+
                     if [ -f "${manifest_path}" -a -f "${profile_path}/etc/profile" ]
                     then
                         running info guix package -p "${profile_path}" --delete-generations=${USER_GENERATION_CLEANUP_TIME}

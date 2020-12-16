@@ -36,9 +36,10 @@ function main()
                 # running debug guix upgrade -p "${HOME}/.setup/guix-config/per-user/s/cdesktopenv/profiles.d/"
                 for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
                 do
-                    manifest_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/manifest.scm"
-                    profile_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/profiles.d/profile"
-                    packages_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/packages"
+                    profile_container_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}"
+                    manifest_path="${profile_container_path}/manifest.scm"
+                    profile_path="${profile_container_path}/profiles.d/profile"
+                    packages_path="${profile_container_path}/packages"
                     if [ -f "${profile_path}/etc/profile" ]
                     then
                         if [ -f "${packages_path}" ]
@@ -62,9 +63,10 @@ function main()
                 running info guix package -m "${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/01-simple/manifest.scm" # default
                 for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
                 do
-                    manifest_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/manifest.scm"
-                    profile_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/profiles.d/profile"
-                    packages_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}/packages"
+                    profile_container_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}"
+                    manifest_path="${profile_container_path}/manifest.scm"
+                    profile_path="${profile_container_path}/profiles.d/profile"
+                    packages_path="${profile_container_path}/packages"
 
                     if [ ! -d "$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR/$profile/profiles.d" ]
                     then

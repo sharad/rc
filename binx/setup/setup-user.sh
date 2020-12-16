@@ -2569,7 +2569,7 @@ EOF
 
     for lnk in "${userdata_dirs[@]}"
     do
-        info creting dir $lnk
+        info creating dir $lnk
         running info setup_vc_mkdirpath_ensure   "${LOCALDIRS_DIR}" "${rel_homeprotabledir}" "${lnk}"
         running info mkdir -p   "${LOCALDIRS_DIR}"/"${rel_homeprotabledir}"/"${lnk}"
 
