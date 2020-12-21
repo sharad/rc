@@ -187,6 +187,7 @@
                                     "python-organize-tool"
 
                                     "evince"
+                                    "gv"
 
                                     "mosh"
                                     "eternalterminal"
