@@ -5,16 +5,12 @@
 ;; (use-modules (lotus packages cdesktopenv))
 
 (define %lotus-java-package-names
-  (list 
+  (list "icedtea" ;; "icedtea:out"
         ;; java
-        "icedtea" ;; "icedtea:out"
         "icedtea:jdk"
         ;; "maven"
+        "java-picocli"
         "maven-compact"))
-        ;; "linux-libre-headers@4.19.56"
-        ;; "fribidi"
-        ;; "bicon"
-        
 
 (define %lotus-java-packages
   (append
