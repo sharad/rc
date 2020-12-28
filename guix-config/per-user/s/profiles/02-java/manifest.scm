@@ -1,6 +1,4 @@
 
-
-
 ;; https://www.kuon.ch/post/2020-01-12-android-app/
 ;; https://lepiller.eu/en/running-android-studio-on-guix.html
 
@@ -13,15 +11,14 @@
 (define %lotus-java-package-names
   (list "icedtea" ;; "icedtea:out"
         ;; java
-        "icedtea:jdk"
+        ;; "icedtea:jdk"
         ;; "maven"
-        "java-picocli"
-        "maven-compact"))
+
+        ;; "maven-compact"
+        "java-picocli"))
 
 (define %lotus-java-packages
-  (append
-   ;; (list '(gcc "lib"))
-   (map specification->package
-        %lotus-java-package-names)))
+  (append (map specification->package
+               %lotus-java-package-names)))
 
 (packages->manifest %lotus-java-packages)
