@@ -1,8 +1,14 @@
 
-;; https://wingolog.org/archives/2015/08/04/developing-v8-with-guix
-;; (use-package-modules base gcc llvm base python version-control less ccache pkg-config glib gnome cmake messaging autotools flex bison compression m4 gawk xorg onc-rpc gsasl kerberos image commencement fontutils shells)
 
-;; (use-modules (lotus packages cdesktopenv))
+
+;; https://www.kuon.ch/post/2020-01-12-android-app/
+;; https://lepiller.eu/en/running-android-studio-on-guix.html
+
+;; https://archlinux.org/packages/community/x86_64/android-tools/
+;; https://github.com/archlinux/svntogit-community/tree/packages/android-tools/trunk
+
+;; https://archlinux.org/packages/community/any/gradle/
+;; https://github.com/archlinux/svntogit-community/tree/packages/gradle/trunk
 
 (define %lotus-java-package-names
   (list "icedtea" ;; "icedtea:out"
