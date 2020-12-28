@@ -52,6 +52,10 @@
                                      "patchelf"
                                      "gcc-toolchain"
                                      "gdb"
+
+
+                                     "go"
+
                                      "gprolog"
                                      "swi-prolog"
                                      "emacs-ediprolog"
