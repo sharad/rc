@@ -34,7 +34,8 @@
                                    (url "https://framagit.org/tyreunom/guix-more.git"))))
 
 
-(define %local-channels (append %nonguix-channels
+(define %local-channels (append ;; %guix-more-channels
+                                %nonguix-channels
                                 %guix-lotus-channels
                                 %local-default-channels))
 

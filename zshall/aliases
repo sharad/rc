@@ -1,4 +1,4 @@
-# -*- Mode: shell-script; indent-tabs-mode: nil -*-
+# -*- Mode: shell-script; indent-tabs-mode: nil; sh-shell: zsh; -*-
 
 # enable color support of ls and also add handy aliases
 if [ "$TERM" != "dumb" ]; then
@@ -163,9 +163,11 @@ then
     # alias -s txt='command emacsclient  -nw -t'
     alias -s html='command w3m'
     alias -s org='command w3m'
-    if alias -s pdf >& /dev/null ; then
+    if ! alias -s pdf >& /dev/null
+    then
         foreach reader (acroread evince) {
-            if whence -p $reader > /dev/null ; then
+            if whence -p $reader >& /dev/null
+            then
 	              alias -s pdf='command '$reader
                 break
             fi

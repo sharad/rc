@@ -1,107 +1,107 @@
-application/excel;                              /usr/bin/soffice --nologo %s
-application/msexcel;                            /usr/bin/soffice --nologo %s
-application/mspowerpoint;                       /usr/bin/soffice --nologo %s
-application/msword;                             /usr/bin/soffice --nologo %s
-application/doc;                                /usr/bin/soffice --nologo %s
-application/vnd.ms-word.document.12;            /usr/bin/soffice --nologo %s
-application/pdf;                                /usr/bin/evince '%s'
+application/excel;                              soffice --nologo %s
+application/msexcel;                            soffice --nologo %s
+application/mspowerpoint;                       soffice --nologo %s
+application/msword;                             soffice --nologo %s
+application/doc;                                soffice --nologo %s
+application/vnd.ms-word.document.12;            soffice --nologo %s
+application/pdf;                                evince '%s'
 application/pdf;                                xapp.sh xpdf /dev/stdin
 application/pdf;                                pdftotext -layout /dev/stdin -; copiousoutput
-application/powerpoint;                         /usr/bin/soffice --nologo %s
+application/powerpoint;                         soffice --nologo %s
 application/sdp;                                /usr/local/RealPlayer8/realplay "%u"
 application/smil;                               /usr/local/RealPlayer8/realplay "%u"
-application/vnd.ms-asf;                         /usr/bin/gxine    %s
-application/vnd.ms-excel;                       /usr/bin/soffice --nologo %s
-application/vnd.ms-powerpoint;                  /usr/bin/soffice --nologo %s
+application/vnd.ms-asf;                         gxine    %s
+application/vnd.ms-excel;                       soffice --nologo %s
+application/vnd.ms-powerpoint;                  soffice --nologo %s
 application/vnd.rn-realmedia;                   /usr/local/RealPlayer8/realplay "%u"
-application/vnd.stardivision.calc;              /usr/bin/soffice --nologo %s
-application/vnd.stardivision.draw;              /usr/bin/soffice --nologo %s
-application/vnd.stardivision.impress-packed;    /usr/bin/soffice --nologo %s
-application/vnd.stardivision.impress;           /usr/bin/soffice --nologo %s
-application/vnd.stardivision.math;              /usr/bin/soffice --nologo %s
-application/vnd.stardivision.writer-global;     /usr/bin/soffice --nologo %s
-application/vnd.stardivision.writer;            /usr/bin/soffice --nologo %s
-application/vnd.sun.xml.calc.template;          /usr/bin/soffice --nologo %s
-application/vnd.sun.xml.calc;                   /usr/bin/soffice --nologo %s
-application/vnd.sun.xml.draw.template;          /usr/bin/soffice --nologo %s
-application/vnd.sun.xml.draw;                   /usr/bin/soffice --nologo %s
-application/vnd.sun.xml.impress.template;       /usr/bin/soffice --nologo %s
-application/vnd.sun.xml.impress;                /usr/bin/soffice --nologo %s
-application/vnd.sun.xml.math;                   /usr/bin/soffice --nologo %s
-application/vnd.sun.xml.writer.global;          /usr/bin/soffice --nologo %s
-application/vnd.sun.xml.writer.template;        /usr/bin/soffice --nologo %s
-application/vnd.sun.xml.writer;                 /usr/bin/soffice --nologo %s
-application/x-annodex;                          /usr/bin/gxine    %s
-application/x-mplayer2;                         /usr/bin/gxine    %s
-application/x-msexcel;                          /usr/bin/soffice --nologo %s
-application/x-mspowerpoint;                     /usr/bin/soffice --nologo %s
-application/x-ogg;                              /usr/bin/gxine    %s
-application/x-quicktimeplayer;                  /usr/bin/gxine    %s
+application/vnd.stardivision.calc;              soffice --nologo %s
+application/vnd.stardivision.draw;              soffice --nologo %s
+application/vnd.stardivision.impress-packed;    soffice --nologo %s
+application/vnd.stardivision.impress;           soffice --nologo %s
+application/vnd.stardivision.math;              soffice --nologo %s
+application/vnd.stardivision.writer-global;     soffice --nologo %s
+application/vnd.stardivision.writer;            soffice --nologo %s
+application/vnd.sun.xml.calc.template;          soffice --nologo %s
+application/vnd.sun.xml.calc;                   soffice --nologo %s
+application/vnd.sun.xml.draw.template;          soffice --nologo %s
+application/vnd.sun.xml.draw;                   soffice --nologo %s
+application/vnd.sun.xml.impress.template;       soffice --nologo %s
+application/vnd.sun.xml.impress;                soffice --nologo %s
+application/vnd.sun.xml.math;                   soffice --nologo %s
+application/vnd.sun.xml.writer.global;          soffice --nologo %s
+application/vnd.sun.xml.writer.template;        soffice --nologo %s
+application/vnd.sun.xml.writer;                 soffice --nologo %s
+application/x-annodex;                          gxine    %s
+application/x-mplayer2;                         gxine    %s
+application/x-msexcel;                          soffice --nologo %s
+application/x-mspowerpoint;                     soffice --nologo %s
+application/x-ogg;                              gxine    %s
+application/x-quicktimeplayer;                  gxine    %s
 application/x-sdp;                              /usr/local/RealPlayer8/realplay "%u"
 application/x-shockwave-flash2-preview;         /usr/local/RealPlayer8/realplay "%u"
-application/x-starcalc;                         /usr/bin/soffice --nologo %s
-application/x-stardraw;                         /usr/bin/soffice --nologo %s
-application/x-starimpress;                      /usr/bin/soffice --nologo %s
-application/x-starmath;                         /usr/bin/soffice --nologo %s
-application/x-starwriter;                       /usr/bin/soffice --nologo %s
-audio/168sv;                                    /usr/bin/gxine    %s
-audio/8svx;                                     /usr/bin/gxine    %s
+application/x-starcalc;                         soffice --nologo %s
+application/x-stardraw;                         soffice --nologo %s
+application/x-starimpress;                      soffice --nologo %s
+application/x-starmath;                         soffice --nologo %s
+application/x-starwriter;                       soffice --nologo %s
+audio/168sv;                                    gxine    %s
+audio/8svx;                                     gxine    %s
 audio/aiff;                                     /usr/local/RealPlayer8/realplay "%u"
 audio/basic;                                    /usr/local/RealPlayer8/realplay "%u"
-audio/mp3;                                      /usr/bin/gxine    %s
-audio/mpeg2;                                    /usr/bin/gxine    %s
-audio/mpeg3;                                    /usr/bin/gxine    %s
-audio/mpeg;                                     /usr/bin/gxine    %s
-audio/mpegurl;                                  /usr/bin/gxine    %s
+audio/mp3;                                      gxine    %s
+audio/mpeg2;                                    gxine    %s
+audio/mpeg3;                                    gxine    %s
+audio/mpeg;                                     gxine    %s
+audio/mpegurl;                                  gxine    %s
 audio/vnd.rn-realaudio;                         /usr/local/RealPlayer8/realplay "%u"
 audio/wav;                                      /usr/local/RealPlayer8/realplay "%u"
-audio/x-16sv;                                   /usr/bin/gxine    %s
-audio/x-8svx;                                   /usr/bin/gxine    %s
+audio/x-16sv;                                   gxine    %s
+audio/x-8svx;                                   gxine    %s
 audio/x-aiff;                                   /usr/local/RealPlayer8/realplay "%u"
-audio/x-basic;                                  /usr/bin/gxine    %s
-audio/x-m4a;                                    /usr/bin/gxine    %s
-audio/x-mp3;                                    /usr/bin/gxine    %s
-audio/x-mpeg2;                                  /usr/bin/gxine    %s
-audio/x-mpeg3;                                  /usr/bin/gxine    %s
-audio/x-mpeg;                                   /usr/bin/gxine    %s
-audio/x-ogg;                                    /usr/bin/gxine    %s
+audio/x-basic;                                  gxine    %s
+audio/x-m4a;                                    gxine    %s
+audio/x-mp3;                                    gxine    %s
+audio/x-mpeg2;                                  gxine    %s
+audio/x-mpeg3;                                  gxine    %s
+audio/x-mpeg;                                   gxine    %s
+audio/x-ogg;                                    gxine    %s
 audio/x-pn-aiff;                                /usr/local/RealPlayer8/realplay "%u"
 audio/x-pn-au;                                  /usr/local/RealPlayer8/realplay "%u"
-audio/x-pn-realaudio-plugin;                    /usr/bin/gxine    %s
+audio/x-pn-realaudio-plugin;                    gxine    %s
 audio/x-pn-realaudio;                           /usr/local/RealPlayer8/realplay "%u"
 audio/x-pn-wav;                                 /usr/local/RealPlayer8/realplay "%u"
 audio/x-pn-windows-acm;                         /usr/local/RealPlayer8/realplay "%u"
-audio/x-real-audio;                             /usr/bin/gxine    %s
-audio/x-realaudio;                              /usr/bin/gxine    %s
-audio/x-speex;                                  /usr/bin/gxine    %s
+audio/x-real-audio;                             gxine    %s
+audio/x-realaudio;                              gxine    %s
+audio/x-speex;                                  gxine    %s
 audio/x-wav;                                    /usr/local/RealPlayer8/realplay "%u"
-image/ilbm;                                     /usr/bin/gxine    %s
-image/png;                                      /usr/bin/gxine    %s
+image/ilbm;                                     gxine    %s
+image/png;                                      gxine    %s
 image/vnd.rn-realflash;                         /usr/local/RealPlayer8/realplay "%u"
 image/vnd.rn-realpix;                           /usr/local/RealPlayer8/realplay "%u"
-image/x-ilbm;                                   /usr/bin/gxine    %s
-image/x-png;                                    /usr/bin/gxine    %s
+image/x-ilbm;                                   gxine    %s
+image/x-png;                                    gxine    %s
 text/calendar;	                                ~/bin/meeting; copiousoutput
 text/calendar;	                                ~/bin/add\reminder
 text/html;                                      links -dump %s; nametemplate=%s.html; copiousoutput
 text/vnd.rn-realtext;                           /usr/local/RealPlayer8/realplay "%u"
-video/anim;                                     /usr/bin/gxine    %s
-video/mkv;                                      /usr/bin/gxine    %s
-video/mng;                                      /usr/bin/gxine    %s
-video/mpeg;                                     /usr/bin/gxine    %s
-video/msvideo;                                  /usr/bin/gxine    %s
-video/quicktime;                                /usr/bin/gxine    %s
+video/anim;                                     gxine    %s
+video/mkv;                                      gxine    %s
+video/mng;                                      gxine    %s
+video/mpeg;                                     gxine    %s
+video/msvideo;                                  gxine    %s
+video/quicktime;                                gxine    %s
 video/vnd.rn-realvideo;                         /usr/local/RealPlayer8/realplay "%u"
-video/x-anim;                                   /usr/bin/gxine    %s
-video/x-flic;                                   /usr/bin/gxine    %s
-video/x-mng;                                    /usr/bin/gxine    %s
-video/x-mpeg;                                   /usr/bin/gxine    %s
-video/x-ms-asf-plugin;                          /usr/bin/gxine    %s
-video/x-ms-asf;                                 /usr/bin/gxine    %s
-video/x-ms-wax;                                 /usr/bin/gxine    %s
-video/x-ms-wma;                                 /usr/bin/gxine    %s
-video/x-ms-wmv;                                 /usr/bin/gxine    %s
-video/x-ms-wvx;                                 /usr/bin/gxine    %s
-video/x-msvideo;                                /usr/bin/gxine    %s
-video/x-quicktime;                              /usr/bin/gxine    %s
-x-mpegurl;                                      /usr/bin/gxine    %s
+video/x-anim;                                   gxine    %s
+video/x-flic;                                   gxine    %s
+video/x-mng;                                    gxine    %s
+video/x-mpeg;                                   gxine    %s
+video/x-ms-asf-plugin;                          gxine    %s
+video/x-ms-asf;                                 gxine    %s
+video/x-ms-wax;                                 gxine    %s
+video/x-ms-wma;                                 gxine    %s
+video/x-ms-wmv;                                 gxine    %s
+video/x-ms-wvx;                                 gxine    %s
+video/x-msvideo;                                gxine    %s
+video/x-quicktime;                              gxine    %s
+x-mpegurl;                                      gxine    %s

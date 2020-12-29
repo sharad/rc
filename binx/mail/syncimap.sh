@@ -1,8 +1,5 @@
 #!/usr/bin/env zsh
-#
-#
-#
-# exit
+#  -*- mode: sh; -*-
 
 WM=stumpwm
 

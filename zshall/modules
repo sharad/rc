@@ -57,9 +57,16 @@ autoload -U zsh-mime-setup
 autoload -U pick-web-browser
 zstyle ':mime:.htm(|l):' handler 'pick-web-browser %s'
 zstyle ':mime:.htm(|l):' flags ''
-zstyle :mime: mailcap ~/.mailcap /usr/local/etc/mailcap /etc/mailcap
-zstyle :mime: mime-types ~/.mime.types /usr/local/etc/mime.types /etc/mime.types
 
-zsh-mime-setup
+LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER/profiles"
+GUIX_PROFILES=( "$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/* )
+MIME_ETC_DIRS=( ~/.guix-profile $^GUIX_PROFILES/profiles.d/profile  /run/current-system/profile /usr/local / )
+MIME_PATHS=( $^MIME_ETC_DIRS/etc )
+
+zstyle :mime: mailcap    ~/.mailcap   ${^MIME_PATHS}/mailcap
+zstyle :mime: mime-types ~/.mime.type ${^MIME_PATHS}/mime.type
+unset GUIX_PROFILES MIME_ETC_DIRS MIME_PATHS
+
+# zsh-mime-setup
 
 exec 2> /dev/tty
