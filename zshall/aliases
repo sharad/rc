@@ -173,7 +173,7 @@ then
             fi
         }
     fi
-    foreach writer (abiword ooffice) {
+    foreach writer (abiword ooffice soffice) {
         if whence -p $writer > /dev/null ; then
 	          alias -s doc >& /dev/null || alias -s doc='command '${writer}' -nologo'
 	          alias -s ppt >& /dev/null || alias -s ppt='command '${writer}' -nologo'

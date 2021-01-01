@@ -8,17 +8,24 @@
 ;; https://archlinux.org/packages/community/any/gradle/
 ;; https://github.com/archlinux/svntogit-community/tree/packages/gradle/trunk
 
+;; (use-package-modules scheme java base)
+
 (define %lotus-java-package-names
   (list "icedtea" ;; "icedtea:out"
-        ;; java
         ;; "icedtea:jdk"
+        ;; ("icedtea" "jdk")
+        ;; java
         ;; "maven"
 
         ;; "maven-compact"
         "java-picocli"))
 
-(define %lotus-java-packages
-  (append (map specification->package
-               %lotus-java-package-names)))
+(define %lotus-java-misc-packages (list "icedtea:jdk"))
 
-(packages->manifest %lotus-java-packages)
+(define %lotus-java-packages
+ (append (map specification->package
+              %lotus-java-package-names)))
+
+(concatenate-manifests (list (packages->manifest %lotus-java-packages)
+                             (specifications->manifest %lotus-java-misc-packages)))
+

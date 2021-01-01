@@ -72,6 +72,9 @@
                                      "ghc"
                                      "idris"
 
+                                     "erlang"
+                                     "elixir"
+
                                      ;; "fribidi"
                                      ;; "bicon"
                                      "artanis"
