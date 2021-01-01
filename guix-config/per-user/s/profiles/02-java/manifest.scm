@@ -11,16 +11,12 @@
 ;; (use-package-modules scheme java base)
 
 (define %lotus-java-package-names
-  (list "icedtea" ;; "icedtea:out"
-        ;; "icedtea:jdk"
-        ;; ("icedtea" "jdk")
-        ;; java
-        ;; "maven"
-
+  (list ;; "maven"
         ;; "maven-compact"
         "java-picocli"))
 
-(define %lotus-java-misc-packages (list "icedtea:jdk"))
+(define %lotus-java-misc-packages (list "icedtea"
+                                        "icedtea:jdk"))
 
 (define %lotus-java-packages
  (append (map specification->package
