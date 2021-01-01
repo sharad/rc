@@ -92,7 +92,11 @@ export EDITOR
 BROWSER=w3m
 export BROWSER
 
-
+if [ -d ~/../paradise/Projects/Practice/golang ]
+then
+    GOPATH=~/../paradise/Projects/Practice/golang/checkouts
+    export GOPATH
+fi
 
 # default values
 
