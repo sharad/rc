@@ -258,9 +258,6 @@ alias filemgr='nautilus --no-default-window'
 alias gfilemgr='nautilus --no-default-window'
 alias xfilemgr='nautilus --no-default-window'
 
-# tabula panda python PDF
-alias tabula='java -Dfile.encoding=UTF8 -Dorg.slf4j.simpleLogger.defaultLogLevel=off -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar /home/s/hell/.local/lib/python3.6/site-packages/tabula/tabula-1.0.3-jar-with-dependencies.jar'
-
 # music
 alias xmms="promoe"
 
@@ -277,15 +274,15 @@ alias scndetach='screen -X detach'
 ##{{ rlwrap
 if whence -p rlwrap >& /dev/null
 then
-    if whence -p bc
+    if whence -p bc >& /dev/null
     then
         alias bc='rlwrap bc'
     fi
-    if whence -p gcalccmd
+    if whence -p gcalccmd >& /dev/null
     then
         alias gcalccmd='rlwrap gcalccmd'
     fi
-    if whence -p gst
+    if whence -p gst >& /dev/null
     then
         alias gst='rlwrap gst'
     fi
