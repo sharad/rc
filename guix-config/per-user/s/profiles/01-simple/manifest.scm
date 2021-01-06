@@ -481,16 +481,6 @@
                                   "libsecret"
                                   "libxft"
                                   "scsh"
-                                  ;; "stumpwm"
-                                  ;; "guile-wm"
-                                  ;; "stumpwm-with-slynk"
-                                  ;; "cl-stumpwm"
-                                  ;; "openbox"
-                                  ;; "awesome"
-                                  ;; "i3-wm"
-                                  ;; "windowmaker"
-                                  ;; "twm"
-                                  ;; "herbstluftwm"
                                   "wmnd"
                                   "menumaker"
                                   "emacs-stumpwm-mode"
@@ -504,14 +494,7 @@
                                   ;; "slock" -- need suid
                                   "xset"
                                   "xsetroot"
-                                  "python-dbus"
-                                  "pidgin"
-                                  ;; "skype4pidgin@1.6"
-                                  "skype4pidgin"
-                                  "pidgin-otr"
-                                  "telegram-purple"
-                                  "telegram-purple"))
-
+                                  "python-dbus"))
 
 (define %lotus-text-packages (list "aspell"
                                    "aspell-dict-en"

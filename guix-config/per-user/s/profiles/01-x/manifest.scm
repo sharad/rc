@@ -4,13 +4,15 @@
 
 (use-modules (lotus packages cdesktopenv))
 
-(define %lotus-x-package-names
-  (list "xpra"))
+(define %lotus-x-package-names (list "pidgin"
+                                     ;; "skype4pidgin@1.6"
+                                     "skype4pidgin"
+                                     "pidgin-otr"
+                                     "telegram-purple"
+                                     "telegram-purple"))
 
 (define %lotus-x-packages
-  (append
-   ;; (list '(gcc "lib"))
-   (map specification->package
-        %lotus-x-package-names)))
+  (append (map specification->package
+               %lotus-x-package-names)))
 
 (packages->manifest %lotus-x-packages)
