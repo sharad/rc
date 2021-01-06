@@ -277,8 +277,18 @@ alias scndetach='screen -X detach'
 ##{{ rlwrap
 if whence -p rlwrap >& /dev/null
 then
-    alias bc='rlwrap bc'
-    alias gcalccmd='rlwrap gcalccmd'
+    if whence -p bc
+    then
+        alias bc='rlwrap bc'
+    fi
+    if whence -p gcalccmd
+    then
+        alias gcalccmd='rlwrap gcalccmd'
+    fi
+    if whence -p gst
+    then
+        alias gst='rlwrap gst'
+    fi
 fi
 ##}}
 
