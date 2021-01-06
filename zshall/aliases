@@ -270,7 +270,6 @@ alias fct=focus-ctrl-term
 alias scndetach='screen -X detach'
 ##}}
 
-
 ##{{ rlwrap
 if whence -p rlwrap >& /dev/null
 then

@@ -75,6 +75,11 @@
                                      "erlang"
                                      "elixir"
 
+                                     "rust"
+                                     ;; "scala"
+                                     "vala"
+                                     ;; "kotlin"
+
                                      ;; "fribidi"
                                      ;; "bicon"
                                      "artanis"

@@ -1008,6 +1008,14 @@ define_webjump("book/shops",
                "http://www.biblio.com/search.php?author=&title=%skeyisbn=");
 // "http://www.biblio.com/search.php?stage=1&title=art+of+assembly+language&pageper=20&strip_common=1&program=1005&order=priceasc")
 
+define_webjump("bookpub/pearson", "https://www.pearson.com/store/en-us/search?_charset_=UTF-8&q=%s");
+define_webjump("bookpub/wiley", "https://www.wiley.com/en-in/search?pq=%s");
+define_webjump("bookpub/phieee", "https://www.phindia.com/SearchBooks/SearchphiBooks/?searchbooks=%s");
+define_webjump("bookpub/packetpub", "https://www.packtpub.com/in/catalogsearch/result/?q=%s");
+define_webjump("bookpub/nostarch", "https://nostarch.com/search/node/%s");
+define_webjump("bookpub/pragprog", "https://pragprog.com/search/?q=%s");
+define_webjump("bookpub/apress", "https://www.apress.com/in/search?query=%s");
+define_webjump("bookpub/manning", "https://www.manning.com/api/search/shallowSearch?query=%s");
 
 // Electronics
 define_webjump("electronics/element14",
