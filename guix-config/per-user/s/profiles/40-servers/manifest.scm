@@ -1,20 +1,16 @@
 
-;; https://wingolog.org/archives/2015/08/04/developing-v8-with-guix
-(use-package-modules base gcc llvm base python version-control less ccache pkg-config glib gnome cmake messaging autotools flex bison compression m4 gawk xorg onc-rpc gsasl kerberos image commencement fontutils shells)
 
-(use-modules (lotus packages cdesktopenv))
+(define %lotus-servers-package-names (list "bc"))
 
-(define %lotus-dev-cdesktop-package-names (list))
-
-(define %lotus-dev-cdesktop-packages (append
+(define %lotus-servers-packages (append
                                       (map specification->package
-                                           %lotus-dev-cdesktop-package-names)))
+                                           %lotus-servers-package-names)))
 
 
 ;; set LD_LIBRARY_PATH as some command built and used
-;; (packages->manifest %lotus-dev-cdesktop-packages)
+;; (packages->manifest %lotus-servers-packages)
 
-(packages->manifest %lotus-dev-cdesktop-packages)
+(packages->manifest %lotus-servers-packages)
 
 ;; https://sourceforge.net/p/cdesktopenv/wiki/LinuxBuild/#debian
 
