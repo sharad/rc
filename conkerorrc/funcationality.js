@@ -246,7 +246,7 @@ interactive("delicious-toread-set",
             });
 
 function strdedup(str) {
-    return str.split(' ').filter(function(item,i,allItems){ return i==allItems.indexOf(item) }).join(" ");
+    return str.replace(new RegExp(/,\s*/g), ' ').split(' ').filter(function(item,i,allItems){ return i==allItems.indexOf(item) }).join(" ");
 }
 
 
