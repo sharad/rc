@@ -372,13 +372,13 @@ function delicious_post_internal(buffer, window, minibuffer,
                                      "yes" : "no")  : delicious_toread );
 
     var sendurl =
-        'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/add?' + delicious_auth_token +
-        '&url='+ post_url +
+        'https://' + delicious_api_server  + '/' + delicious_api_version + '/posts/add?' + delicious_auth_token +
+        '&url='         + post_url         +
         '&description=' + post_description +
-        '&replace=yes' +
-        '&tags='+ post_tags +
-        '&extended=' + post_extended +
-        '&shared=' + post_shared;
+        '&replace=yes'  +
+        '&tags='        + post_tags        +
+        '&extended='    + post_extended    +
+        '&shared='      + pos t_shared;
 
     if (conkeror_debug > 7)
         window.alert("url for adding bm:\n" + sendurl);
