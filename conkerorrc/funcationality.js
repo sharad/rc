@@ -217,6 +217,7 @@ var delicious_auth_token  = 'auth_token=' + delicious_api_token;
 var conkeror_debug = 0;
 var delicious_shared = null;
 var delicious_toread = null;
+var delicious_post_tagsRetained = "";
 
 interactive("delicious-shared-set",
             "bookmark setting delicious shared.",
@@ -244,10 +245,20 @@ interactive("delicious-toread-set",
                      "yes" : "no");
             });
 
-function  delicious_post_internal(buffer, window, minibuffer,
+function strdedup(str) {
+    return str.split(' ').filter(function(item,i,allItems){ return i==allItems.indexOf(item) }).join(" ");
+}
+
+
+
+
+function delicious_post_internal(buffer, window, minibuffer,
                                   post_url, post_description, post_tags, post_extended, post_shared, post_toread) {
     check_buffer(buffer, content_buffer);
     var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
+
+    post_tags = post_tags ? post_tags : "";
+
 
     // {{ completer
     var xsendurl = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/suggest?' + delicious_auth_token + '&url='+
@@ -327,12 +338,17 @@ function  delicious_post_internal(buffer, window, minibuffer,
             post_description :
             (yield minibuffer.read( $prompt = "name (required): ", $initial_value = desc)));
 
-    var post_tags = encodeURIComponent( (post_tags ?
-                                         tags + post_tags :
-                                         (yield minibuffer.read( $prompt = "tags (space delimited): ",
-                                                                   $completer = completer,
-                                                                   $initial_value = tags + " " + read_from_x_primary_selection()
-                                                                 ))).replace(new RegExp(/\s+/g), ','));
+    var post_tagsToConsider     = strdedup( (tags + " " + post_tags).replace(new RegExp(/,\s*/g), ' ') + " " + read_from_x_primary_selection() + " " + delicious_post_tagsRetained);
+    delicious_post_tagsRetained = post_tagsToConsider;
+    var post_tags_unencoded = (post_tags ?
+                               tags + post_tags :
+                               (yield minibuffer.read( $prompt = "tags (space delimited): ",
+                                                       $completer = completer,
+                                                       $initial_value = post_tagsToConsider))).replace(new RegExp(/\s+/g), ',');
+    delicious_post_tagsRetained = strdedup( (tags + " " + post_tags_unencoded).replace(new RegExp(/,\s*/g), ' ') );
+    post_tags = encodeURIComponent( post_tags_unencoded );
+
+
 
     var post_extended = encodeURIComponent(
         post_extended ?
@@ -372,6 +388,7 @@ function  delicious_post_internal(buffer, window, minibuffer,
     if (typeof(debug_level) != "undefined" && debug_level)
         window.minibuffer.message(sendurl);
 }
+
 
 function delicious_post_I(I) {
     return delicious_post_internal( I.buffer, I.window, I.minibuffer );
@@ -511,6 +528,7 @@ interactive("delicious-post-link",
 
                 var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
 
+                post_tags = post_tags ? post_tags : "";
 
                 // {{ completer
                 var xsendurl = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/suggest?' + delicious_auth_token + '&url='+mylink;
@@ -570,6 +588,16 @@ interactive("delicious-post-link",
                 // }}
 
 
+                var post_tagsToConsider     = strdedup( (tags + " " + post_tags).replace(new RegExp(/,\s*/g), ' ') + " " + read_from_x_primary_selection() + " " + delicious_post_tagsRetained );
+                delicious_post_tagsRetained = post_tagsToConsider;
+                var post_tags_unencoded = (post_tags ?
+                                           tags + post_tags :
+                                           (yield minibuffer.read( $prompt        = "tags (space delimited): ",
+                                                                   $completer     = completer,
+                                                                   $initial_value = post_tagsToConsider ))).replace(new RegExp(/\s+/g), ',');
+                delicious_post_tagsRetained = strdedup( (tags + " " + post_tags_unencoded).replace(new RegExp(/,\s*/g), ' ') );
+                post_tags = encodeURIComponent( post_tags_unencoded );
+
                 let sendurl = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/add?' + delicious_auth_token + '&url=' +
                     // mylink
                     encodeURIComponent((yield I.minibuffer.read(
@@ -581,11 +609,8 @@ interactive("delicious-post-link",
                         (yield I.minibuffer.read(
                             $prompt = "name (required): " , $initial_value = desc))) +
                     '&replace=yes' +
-                    '&tags=' + encodeURIComponent((yield I.minibuffer.read(
-                        $prompt = "tags (space delimited): ",
-                        $completer = completer,
-                        $initial_value = tags + " " + read_from_x_primary_selection()
-                    )).replace(new RegExp(/\s+/g), ',')) +
+                    '&tags='       +
+                    post_tags      +
                     '&extended=' + encodeURIComponent((yield I.minibuffer.read($prompt = "extended description: "))) +
                     '&shared=' +
                     (delicious_shared == null ?
