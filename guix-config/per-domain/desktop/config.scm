@@ -646,7 +646,7 @@
                                                    %lotus-gpm-services
                                                    %lotus-audio-services
                                                    %lotus-mcron-services
-                                                   %lotus-cups-services
+                                                   ;; %lotus-cups-services
                                                    %lotus-polkit-services
                                                    %lotus-krb5-services
                                                    %lotus-bitlbee-services

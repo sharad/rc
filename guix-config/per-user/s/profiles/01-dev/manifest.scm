@@ -58,7 +58,7 @@
 
                                      "gprolog"
                                      "swi-prolog"
-                                     "emacs-ediprolog"
+                                     ;; "emacs-ediprolog"
 
                                      "node"
 
@@ -97,8 +97,8 @@
                                                     ;; gnome-pie
                                                     ;; python-ulauncher
                                                     "gnutls"
-                                                    "p11-kit"
-                                                    "emacs-hyperbole"))
+                                                    ;; "emacs-hyperbole"
+                                                    "p11-kit"))
 
 (define %lotus-dev-package-names (append %lotus-dev-utits-names
                                          %lotus-dev-tools-names

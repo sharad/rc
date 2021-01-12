@@ -145,6 +145,8 @@
                                     "emacs-smart-hungry-delete"
                                     "emacs-webpaste"
                                     "emacs-vterm"
+                                    "emacs-ediprolog"
+                                    "emacs-hyperbole"
 
                                     "xhost"
                                     "xauth"
