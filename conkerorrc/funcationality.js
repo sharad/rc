@@ -249,20 +249,17 @@ function strdedup(str) {
     return str.replace(new RegExp(/,\s*/g), ' ').split(' ').filter(function(item,i,allItems){ return i==allItems.indexOf(item) }).join(" ");
 }
 
-
-
-
 function delicious_post_internal(buffer, window, minibuffer,
                                   post_url, post_description, post_tags, post_extended, post_shared, post_toread) {
     check_buffer(buffer, content_buffer);
     var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
 
-    post_tags = post_tags ? post_tags : "";
+    var post_tags = post_tags ? post_tags : "";
 
 
     // {{ completer
     var xsendurl = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/suggest?' + delicious_auth_token + '&url='+
-        encodeURIComponent(buffer.display_uri_string);
+                              encodeURIComponent(buffer.display_uri_string);
         // encodeURIComponent(buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
     var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
     var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
@@ -291,7 +288,7 @@ function delicious_post_internal(buffer, window, minibuffer,
 
     // {{ initial value
     var tsendurl   = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  '&url=' +
-        encodeURIComponent(buffer.display_uri_string);
+                     encodeURIComponent(buffer.display_uri_string);
         // encodeURIComponent(buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
 
     if (conkeror_debug > 7)
@@ -378,7 +375,7 @@ function delicious_post_internal(buffer, window, minibuffer,
         '&replace=yes'  +
         '&tags='        + post_tags        +
         '&extended='    + post_extended    +
-        '&shared='      + pos t_shared;
+        '&shared='      + post_shared;
 
     if (conkeror_debug > 7)
         window.alert("url for adding bm:\n" + sendurl);
@@ -387,6 +384,8 @@ function delicious_post_internal(buffer, window, minibuffer,
     window.minibuffer.message(content.responseText);
     if (typeof(debug_level) != "undefined" && debug_level)
         window.minibuffer.message(sendurl);
+
+    // AAAAAAAAAAAABBBBBBBBBB;
 }
 
 

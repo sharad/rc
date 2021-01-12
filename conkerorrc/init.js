@@ -33,13 +33,14 @@ function al_load (relpath) {
     }
     else
         dumpln("WARNING: file '" + file.path + "' does not exist");
-}
+};
 
 function load_rc_files() {
     let (conkerorhome = get_home_directory().path + "/.conkerorrc/") {
 
         var rc_files = ["local/security.js",
                         "local/office.js",
+                        // "functionality.js"
                         "custom.js",
                         "display.js",
                         "webjumps.js",
@@ -63,7 +64,7 @@ function load_rc_files() {
             dumpln("loaded " + rc_files[f])
         }
     }
-}
+};
 function load_local_files() {
     var files = ["/home/s/hell/.conkerorrc/local/security.js",
                  "/home/s/hell/.conkerorrc/local/office.js"];
@@ -71,7 +72,7 @@ function load_local_files() {
         sec = make_file(files[f])
         load(sec);
     }
-}
+};
 
 load_local_files();
 load_rc_files();
