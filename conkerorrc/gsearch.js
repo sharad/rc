@@ -8,6 +8,16 @@
 
 require("content-buffer.js");
 
+var google_xpaths = ["//a[@class='l']",
+                     "//a[@class='l vst']",
+                     "//a[@class='gs-title']",
+                     "//h3[@class='r']/a",
+                     "//span[@class='flc']/a",
+                     "//div[@class='osl']/a",
+                     "//div[@class='kCrYT']/a",
+                     "//a[parent::node()/@class='r']"];
+var google_xpath  = google_xpaths.join('|');
+
 
 define_keymap("google_search_results_keymap", $display_name = "google-search-results");
 
@@ -22,21 +32,27 @@ define_key(google_search_results_keymap, "return", "ensure-content-focused", $fa
  * Note: escape already does the same thing as the Google key binding.
  */
 
-define_browser_object_class("google-search-results-links", null,
-    xpath_browser_object_handler("//a[@class='l']|//a[@class='l vst']|//a[@class='gs-title']|//h3[@class='r']/a"),
-    $hint = "select search result");
+define_browser_object_class("google-search-results-links",
+                            null,
+                            xpath_browser_object_handler( google_xpath ),
+                            $hint = "select search result");
 
 
 // Bind keys 1 through 9 to follow corresponding results links
 //
 define_browser_object_class("google-search-result-by-digit", null,
-    function (I, prompt) {
-        var doc = I.buffer.document;
-        var digit = I.event.charCode - 48;
-        var res = doc.evaluate("//a[parent::node()/@class='r']", doc, null,
-                               Ci.nsIDOMXPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-                               null);
-        yield co_return(res.snapshotItem(digit - 1));
+                            function (I, prompt) {
+
+                                // xpath = "//a[parent::node()/@class='r']"; // old
+
+                                var doc = I.buffer.document;
+                                var digit = I.event.charCode - 48;
+                                var res = doc.evaluate(google_xpath,
+                                                       doc,
+                                                       null,
+                                                       Ci.nsIDOMXPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                                                       null);
+                                yield co_return(res.snapshotItem(digit - 1));
     });
 
 function google_search_bind_number_shortcuts () {
@@ -63,9 +79,9 @@ var google_search_results_modality = {
 
 function docEvaluateArray (expr, doc, context, resolver) {
     var i, result, a = [];
-    doc = doc || (context ? context.ownerDocument : document);
+    doc      = doc || (context ? context.ownerDocument : document);
     resolver = resolver || null;
-    context = context || doc;
+    context  = context || doc;
 
     result = doc.evaluate(expr, context, resolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
     for(i = 0; i < result.snapshotLength; i++) {
@@ -96,8 +112,8 @@ function docEvaluateArray (expr, doc, context, resolver) {
 
 
 function correctlink(buffer) {
-    get_recent_conkeror_window().alert("hello world22" + docEvaluateArray);
-
+    // get_recent_conkeror_window().alert("hello world22" + docEvaluateArray);
+    // if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("google");
     var els = docEvaluateArray('//a');
 
 
@@ -135,34 +151,42 @@ function cleanlink(link) {
     var urlre = new RegExp(/.+url\?q=([^&]+).+/);
     if (urlre.test(link))
         return decodeURIComponent(link.replace(urlre, "$1"));
+    // if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("google");
     return link;
 }
 
 function cleanpage(buffer) {
-    var doc = buffer.document;
-    var links = [];
+    var doc    = buffer.document;
+    var links  = [];
+
+    // get_recent_conkeror_window().alert("xpaths: " + xpaths);
+    // get_recent_conkeror_window().alert("xpath: " + xpath);
 
     // var iterator = doc.evaluate("//a", doc, null, 0, null);
-    var iterator = doc.evaluate("//a[@class='l']|//a[@class='l vst']|//a[@class='gs-title']|//h3[@class='r']/a|//span[@class='flc']/a|//div[@class='osl']/a",
+    var iterator = doc.evaluate(google_xpath,
                                 doc,
                                 null,
                                 Ci.nsIDOMXPathResult.ANY_TYPE, //XPathResult.ANY_TYPE,
                                 null);
 
     try {
+        // get_recent_conkeror_window().alert("start iterator");
         var thisNode = iterator.iterateNext();
         while (thisNode != null) {
+
             // get_recent_conkeror_window().alert("matched ... " + thisNode.href);
-            links.push(thisNode);
+
+            links.push( thisNode );
             thisNode = iterator.iterateNext();
         }
+        // get_recent_conkeror_window().alert("iterator");
     }
     catch (e) {
         get_recent_conkeror_window().alert("error: " + e);
     }
     try {
         for(var l in links) {
-            links[l].href = cleanlink(links[l].href);
+            links[l].href = cleanlink( links[l].href );
         }
     } catch (e) {
         get_recent_conkeror_window().alert("error: " + e);
@@ -179,12 +203,13 @@ define_page_mode("google-search-results-mode",
 
                  function enable (buffer) {
 
+                     // if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("google-mode");
 
                      for each (var c in google_search_results_link_commands) {
                          buffer.default_browser_object_classes[c] =
                              browser_object_google_search_results_links;
                      }
-                     buffer.content_modalities.push(google_search_results_modality);
+                     buffer.content_modalities.push( google_search_results_modality );
                      add_hook.call(buffer, "buffer_dom_content_loaded_hook",
                                    cleanpage);
                      add_hook.call(buffer, "content_buffer_finished_loading_hook",
@@ -192,13 +217,13 @@ define_page_mode("google-search-results-mode",
                  },
 
                  function disable (buffer) {
-        for each (var c in google_search_results_link_commands) {
-            delete buffer.default_browser_object_classes[c];
-        }
-        var i = buffer.content_modalities.indexOf(google_search_results_modality);
-        if (i > -1)
-            buffer.content_modalities.splice(i, 1);
-    },
+                     for each (var c in google_search_results_link_commands) {
+                         delete buffer.default_browser_object_classes[c];
+                     }
+                     var i = buffer.content_modalities.indexOf(google_search_results_modality);
+                     if (i > -1)
+                         buffer.content_modalities.splice(i, 1);
+                 },
 
                  $display_name = "Google Search Results");
 

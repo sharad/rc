@@ -210,15 +210,13 @@ var delicious_auth_token  = 'auth_token=' + delicious_api_token;
 //     return txt;
 // }
 
-// https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  '&url={URL} get all tags for old url
-
 // https://pinboard.in/api/
 // toread	yes/no	Marks the bookmark as unread. Default is "no"
-var conkeror_debug = 0;
-var delicious_shared = null;
-var delicious_toread = null;
+var conkeror_debug              = 0;
+var delicious_shared            = null;
+var delicious_toread            = null;
 var delicious_post_tagsRetained = "";
-var delicious_existing_marker = "*EXISTS* "
+var delicious_existing_marker   = "*EXISTS* "
 
 interactive("delicious-shared-set",
             "bookmark setting delicious shared.",
@@ -352,17 +350,17 @@ function delicious_post_internal(buffer, window, minibuffer,
     }
     // }}
 
-    var post_url = encodeURIComponent(
-        post_url ?
-            post_url :
-            (yield minibuffer.read( $prompt = "url (required): ",
-                                    // $initial_value = buffer.display_uri_string)))
-                                    // $initial_value = buffer.display_uri_string.replace(/[^\x00-\x7F]/g, '')
-                                    $initial_value = buffer.display_uri_string)));
-    var post_description = encodeURIComponent(
-        post_description ?
-            post_description :
-            (yield minibuffer.read( $prompt = "name (required): ", $initial_value = desc)));
+    var post_url =
+        encodeURIComponent(post_url ?
+                           post_url :
+                           (yield minibuffer.read( $prompt = "url (required): ",
+                                                   // $initial_value = buffer.display_uri_string)))
+                                                   // $initial_value = buffer.display_uri_string.replace(/[^\x00-\x7F]/g, '')
+                                                   $initial_value = buffer.display_uri_string)));
+    var post_description =
+        encodeURIComponent(post_description ?
+                           post_description :
+                           (yield minibuffer.read( $prompt = "name (required): ", $initial_value = desc)));
 
     var post_tagsToConsider         = strdedup( (tags + " " + post_tags).replace(new RegExp(/,\s*/g), ' ') + " " + delicious_post_tagsRetained);
     delicious_post_tagsRetained     = post_tagsToConsider;
@@ -370,7 +368,7 @@ function delicious_post_internal(buffer, window, minibuffer,
                                        tags + post_tags :
                                        (yield minibuffer.read( $prompt = "tags (space delimited): ",
                                                                $completer = completer,
-                                                               $initial_value = addExistingMarker(tags, post_tagsToConsider + " " + read_from_x_primary_selection())))).replace(new RegExp(/\s+/g), ',');
+                                                               $initial_value = addExistingMarker(tags, post_tagsToConsider + " " + read_from_x_primary_selection() ) ) ) ).replace(new RegExp(/\s+/g), ',');
     var post_tags_unencoded         = removeExistingMarker(post_tags_unencoded_mediate);
     delicious_post_tagsRetained     = strdedup( (tags + " " + post_tags_unencoded).replace(new RegExp(/,\s*/g), ' ') );
     post_tags                       = encodeURIComponent( post_tags_unencoded );
@@ -399,12 +397,12 @@ function delicious_post_internal(buffer, window, minibuffer,
                                      "yes" : "no")  : delicious_toread );
 
     var sendurl =
-        'https://' + delicious_api_server  + '/' + delicious_api_version + '/posts/add?' + delicious_auth_token +
-        '&url='         + post_url         +
-        '&description=' + post_description +
+        'https://'      + delicious_api_server  + '/' + delicious_api_version + '/posts/add?' + delicious_auth_token +
+        '&url='         + post_url              +
+        '&description=' + post_description      +
         '&replace=yes'  +
-        '&tags='        + post_tags        +
-        '&extended='    + post_extended    +
+        '&tags='        + post_tags             +
+        '&extended='    + post_extended         +
         '&shared='      + post_shared;
 
     if (conkeror_debug > 7)
@@ -414,8 +412,6 @@ function delicious_post_internal(buffer, window, minibuffer,
     window.minibuffer.message(content.responseText);
     if (typeof(debug_level) != "undefined" && debug_level)
         window.minibuffer.message(sendurl);
-
-    // AAAAAAAAAAAABBBBBBBBBB;
 }
 
 
