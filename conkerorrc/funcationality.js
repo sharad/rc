@@ -212,11 +212,12 @@ var delicious_auth_token  = 'auth_token=' + delicious_api_token;
 
 // https://pinboard.in/api/
 // toread	yes/no	Marks the bookmark as unread. Default is "no"
-var conkeror_debug              = 0;
-var delicious_shared            = null;
-var delicious_toread            = null;
-var delicious_post_tagsRetained = "";
-var delicious_existing_marker   = "*EXISTS* "
+var conkeror_debug               = 0;
+var delicious_shared             = null;
+var delicious_toread             = null;
+var delicious_post_tagsRetained  = "";
+var delicious_existing_marker    = "*EXISTS* "
+var delicious_x_selection_marker = "*XSELECTION* "
 
 interactive("delicious-shared-set",
             "bookmark setting delicious shared.",
@@ -252,11 +253,15 @@ interactive("delicious-tagsretained-set",
                     (yield I.minibuffer.read( $prompt = "tags retained (space delimited): ",
                                               $completer = completer,
                                               $initial_value = delicious_post_tagsRetained));
+                I.minibuffer.message("delicious_post_tagsRetained: " + delicious_post_tagsRetained);
             });
 
 interactive("delicious-tagsretained-clear",
             "delicious-tagsretained-clear",
-            function (I) { delicious_post_tagsRetained = ""; });
+            function (I) {
+                delicious_post_tagsRetained = "";
+                I.minibuffer.message("delicious_post_tagsRetained: cleared");
+            });
 
 
 function strdedup(str) {
@@ -266,13 +271,27 @@ function strdedup(str) {
 function addExistingMarker(todo, str) {
     // if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("todo: " + todo); /\/  // 
     // if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("/^\s+$/.test(todo): " + /^\s+$/.test(todo)); /\/  // 
-    todo = todo.replace(new RegExp(/\s/g), '');
-    return ('' == todo ? '' : delicious_existing_marker) + str;
+    var xtodo = todo.replace(new RegExp(/\s/g), '');
+    return ( ('' == xtodo) ? '' : (delicious_existing_marker + ' ')) + str;
+}
+
+function addExistingNXselMarker(todo, str) {
+    // if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("todo: " + todo); /\/  // 
+    // if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("/^\s+$/.test(todo): " + /^\s+$/.test(todo)); /\/  // 
+    var xsel   = read_from_x_primary_selection()
+    xsel       = xsel.replace(new RegExp(/\s/g), '');
+
+    var retstr = str + ( ('' == xsel) ? '' : (delicious_x_selection_marker + ' ' + xsel) );
+    var ret    = addExistingMarker( todo, strdedup( retstr ) );
+    return ret;
 }
 
 function removeExistingMarker(str) {
-    var pattern  = delicious_existing_marker.replace('*', '\\*');
-    str          = str.replace(new RegExp(pattern), '');
+    var pattern      = delicious_existing_marker.replace('*', '\\*');
+    var x_sel_marker = delicious_x_selection_marker.replace('*', '\\*');
+    str              = str.replace(new RegExp(pattern), '');
+    str              = str.replace(new RegExp(x_sel_marker), '');
+
     return str.replace(new RegExp('^' + pattern + '\s*'), '');
 }
 
@@ -368,7 +387,7 @@ function delicious_post_internal(buffer, window, minibuffer,
                                        tags + post_tags :
                                        (yield minibuffer.read( $prompt = "tags (space delimited): ",
                                                                $completer = completer,
-                                                               $initial_value = addExistingMarker(tags, post_tagsToConsider + " " + read_from_x_primary_selection() ) ) ) ).replace(new RegExp(/\s+/g), ',');
+                                                               $initial_value = addExistingNXselMarker(tags, strdedup(post_tagsToConsider) ) ) ) ).replace(new RegExp(/\s+/g), ',');
     var post_tags_unencoded         = removeExistingMarker(post_tags_unencoded_mediate);
     delicious_post_tagsRetained     = strdedup( (tags + " " + post_tags_unencoded).replace(new RegExp(/,\s*/g), ' ') );
     post_tags                       = encodeURIComponent( post_tags_unencoded );
@@ -629,7 +648,7 @@ interactive("delicious-post-link",
                                                    tags + post_tags :
                                                    removeExistingMarker(yield minibuffer.read( $prompt        = "tags (space delimited): ",
                                                                                                $completer     = completer,
-                                                                                               $initial_value = addExistingMarker(tags, post_tagsToConsider + " " + read_from_x_primary_selection()) ) ) ).replace(new RegExp(/\s+/g), ',');
+                                                                                               $initial_value = addExistingMarker(tags, strdedup(post_tagsToConsider + " " + read_from_x_primary_selection())) ) ) ).replace(new RegExp(/\s+/g), ',');
                 var post_tags_unencoded         = removeExistingMarker(post_tags_unencoded_mediate);
                 delicious_post_tagsRetained     = strdedup( (tags + " " + post_tags_unencoded).replace(new RegExp(/,\s*/g), ' ') );
                 post_tags                       = encodeURIComponent( post_tags_unencoded );
