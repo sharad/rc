@@ -275,13 +275,19 @@ function addExistingMarker(todo, str) {
     return ( ('' == xtodo) ? '' : (delicious_existing_marker + ' ')) + str;
 }
 
-function addExistingNXselMarker(todo, str) {
-    // if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("todo: " + todo); /\/  // 
-    // if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("/^\s+$/.test(todo): " + /^\s+$/.test(todo)); /\/  // 
-    var xsel   = read_from_x_primary_selection()
-    xsel       = xsel.replace(new RegExp(/\s/g), '');
+function isExtraXsel(str, xsel)
+{
+    if ('' != xsel)
+    {
+        return (strdedup(str) != strdedup(str + ' ' + xsel));
+    }
+    return false;
+}
 
-    var retstr = str + ( ('' == xsel) ? '' : (delicious_x_selection_marker + ' ' + xsel) );
+function addExistingNXselMarker(todo, str) {
+    var xsel   = read_from_x_primary_selection();
+
+    var retstr = str + ( isExtraXsel(str, xsel) ? (' ' + delicious_x_selection_marker + ' ' + xsel) : '' );
     var ret    = addExistingMarker( todo, strdedup( retstr ) );
     return ret;
 }
