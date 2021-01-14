@@ -10,14 +10,26 @@ zstyle ':vcs_info:*' actionformats '%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
 zstyle ':vcs_info:*' formats       '%F{5}[%F{2}%b%F{5}] %F{2}%c%F{3}%u%f'
 zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
 zstyle ':vcs_info:*' enable git
+LOCAL_ZSH_GIT_CHECK=0
+LOCAL_ZSH_GIT_CACHED_UNSTAGED=""
 +vi-git-untracked() {
-    if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]]
+    # TODO: optimize for fast reappearance of prompt.
+    if [ $LOCAL_ZSH_GIT_CHECK -lt 0 ]
     then
-        if [[ $(git ls-files --other --directory --exclude-standard | sed q | wc -l | tr -d ' ') == 1 ]]
+        if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]]
         then
-            hook_com[unstaged]+='%F{1}??%f'
+            if [[ $(git ls-files --other --directory --exclude-standard | sed q | wc -l | tr -d ' ') == 1 ]]
+            then
+                LOCAL_ZSH_GIT_CHECK=20
+                LOCAL_ZSH_GIT_CACHED_UNSTAGED='%F{1}??%f'
+                # hook_com[unstaged]+=$LOCAL_ZSH_GIT_CACHED_UNSTAGED
+            else
+                LOCAL_ZSH_GIT_CACHED_UNSTAGED=""
+            fi
         fi
     fi
+    hook_com[unstaged]+=$LOCAL_ZSH_GIT_CACHED_UNSTAGED
+    (( LOCAL_ZSH_GIT_CHECK -- ))
 }
 
 # time
