@@ -246,12 +246,26 @@ interactive("delicious-toread-set",
                      "yes" : "no");
             });
 
+interactive("delicious-tagsretained",
+            "delicious-tagsretained.",
+            function (I)
+            {
+                delicious_post_tagsRetained =
+                    (yield I.minibuffer.read( $prompt = "tags retained (space delimited): ",
+                                              $completer = completer,
+                                              $initial_value = delicious_post_tagsRetained));
+            });
+
+
 function strdedup(str) {
     return str.replace(new RegExp(/,\s*/g), ' ').split(' ').filter(function(item,i,allItems){ return i==allItems.indexOf(item) }).join(" ");
 }
 
 function addExistingMarker(todo, str) {
-    return (/^\s+$/.test(todo) ? "" : delicious_existing_marker) + str;
+    // if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("todo: " + todo); /\/  // 
+    // if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("/^\s+$/.test(todo): " + /^\s+$/.test(todo)); /\/  // 
+    todo = todo.replace(new RegExp(/\s/g), '');
+    return ('' == todo ? '' : delicious_existing_marker) + str;
 }
 
 function removeExistingMarker(str) {
@@ -346,14 +360,13 @@ function delicious_post_internal(buffer, window, minibuffer,
             post_description :
             (yield minibuffer.read( $prompt = "name (required): ", $initial_value = desc)));
 
-
-    var post_tagsToConsider         = strdedup( (tags + " " + post_tags).replace(new RegExp(/,\s*/g), ' ') + " " + read_from_x_primary_selection() + " " + delicious_post_tagsRetained);
+    var post_tagsToConsider         = strdedup( (tags + " " + post_tags).replace(new RegExp(/,\s*/g), ' ') + " " + delicious_post_tagsRetained);
     delicious_post_tagsRetained     = post_tagsToConsider;
     var post_tags_unencoded_mediate = (post_tags ?
                                        tags + post_tags :
                                        (yield minibuffer.read( $prompt = "tags (space delimited): ",
                                                                $completer = completer,
-                                                               $initial_value = addExistingMarker(tags, post_tagsToConsider)))).replace(new RegExp(/\s+/g), ',');
+                                                               $initial_value = addExistingMarker(tags, post_tagsToConsider + " " + read_from_x_primary_selection())))).replace(new RegExp(/\s+/g), ',');
     var post_tags_unencoded         = removeExistingMarker(post_tags_unencoded_mediate);
     delicious_post_tagsRetained     = strdedup( (tags + " " + post_tags_unencoded).replace(new RegExp(/,\s*/g), ' ') );
     post_tags                       = encodeURIComponent( post_tags_unencoded );
@@ -610,13 +623,13 @@ interactive("delicious-post-link",
                 // }}
 
                 // {{
-                var post_tagsToConsider         = strdedup( (tags + " " + post_tags).replace(new RegExp(/,\s*/g), ' ') + " " + read_from_x_primary_selection() + " " + delicious_post_tagsRetained);
+                var post_tagsToConsider         = strdedup( (tags + " " + post_tags).replace(new RegExp(/,\s*/g), ' ') + " " + delicious_post_tagsRetained);
                 delicious_post_tagsRetained     = post_tagsToConsider;
                 var post_tags_unencoded_mediate = (post_tags ?
                                                    tags + post_tags :
                                                    removeExistingMarker(yield minibuffer.read( $prompt        = "tags (space delimited): ",
                                                                                                $completer     = completer,
-                                                                                               $initial_value = addExistingMarker(tags, post_tagsToConsider) ) ) ).replace(new RegExp(/\s+/g), ',');
+                                                                                               $initial_value = addExistingMarker(tags, post_tagsToConsider + " " + read_from_x_primary_selection()) ) ) ).replace(new RegExp(/\s+/g), ',');
                 var post_tags_unencoded         = removeExistingMarker(post_tags_unencoded_mediate);
                 delicious_post_tagsRetained     = strdedup( (tags + " " + post_tags_unencoded).replace(new RegExp(/,\s*/g), ' ') );
                 post_tags                       = encodeURIComponent( post_tags_unencoded );
