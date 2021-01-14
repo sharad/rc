@@ -8,13 +8,16 @@
 
 require("content-buffer.js");
 
-var google_xpaths = ["//a[@class='l']",
+var google_xpaths = ["//a",
+                     "//a[@class='l']",
                      "//a[@class='l vst']",
                      "//a[@class='gs-title']",
                      "//h3[@class='r']/a",
                      "//span[@class='flc']/a",
                      "//div[@class='osl']/a",
                      "//div[@class='kCrYT']/a",
+                     "//div[@class='tHmfQe']/a",
+                     "//span[@class='BNeawe']/a",
                      "//a[parent::node()/@class='r']"];
 var google_xpath  = google_xpaths.join('|');
 
