@@ -45,13 +45,13 @@ define_browser_object_class("google-search-result-by-digit", null,
 
                                 // xpath = "//a[parent::node()/@class='r']"; // old
 
-                                var doc = I.buffer.document;
+                                var doc   = I.buffer.document;
                                 var digit = I.event.charCode - 48;
-                                var res = doc.evaluate(google_xpath,
-                                                       doc,
-                                                       null,
-                                                       Ci.nsIDOMXPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-                                                       null);
+                                var res   = doc.evaluate(google_xpath,
+                                                         doc,
+                                                         null,
+                                                         Ci.nsIDOMXPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                                                         null);
                                 yield co_return(res.snapshotItem(digit - 1));
     });
 
@@ -151,7 +151,6 @@ function cleanlink(link) {
     var urlre = new RegExp(/.+url\?q=([^&]+).+/);
     if (urlre.test(link))
         return decodeURIComponent(link.replace(urlre, "$1"));
-    // if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("google");
     return link;
 }
 
@@ -159,10 +158,6 @@ function cleanpage(buffer) {
     var doc    = buffer.document;
     var links  = [];
 
-    // get_recent_conkeror_window().alert("xpaths: " + xpaths);
-    // get_recent_conkeror_window().alert("xpath: " + xpath);
-
-    // var iterator = doc.evaluate("//a", doc, null, 0, null);
     var iterator = doc.evaluate(google_xpath,
                                 doc,
                                 null,
@@ -171,6 +166,7 @@ function cleanpage(buffer) {
 
     try {
         // get_recent_conkeror_window().alert("start iterator");
+        var countUrlMatched = 0;
         var thisNode = iterator.iterateNext();
         while (thisNode != null) {
 
@@ -178,17 +174,26 @@ function cleanpage(buffer) {
 
             links.push( thisNode );
             thisNode = iterator.iterateNext();
+            countUrlMatched ++;
+        }
+        if (0 == countUrlMatched) {
+            if (get_recent_conkeror_window())
+                get_recent_conkeror_window().minibuffer.message("google-mode: No urls are matched with google_xpath: " + google_xpath);
         }
         // get_recent_conkeror_window().alert("iterator");
     }
     catch (e) {
+        get_recent_conkeror_window().minibuffer.message("error: " + e);
         get_recent_conkeror_window().alert("error: " + e);
     }
+
+
     try {
         for(var l in links) {
             links[l].href = cleanlink( links[l].href );
         }
     } catch (e) {
+        get_recent_conkeror_window().minibuffer.message("error: " + e);
         get_recent_conkeror_window().alert("error: " + e);
     }
 }
@@ -203,12 +208,11 @@ define_page_mode("google-search-results-mode",
 
                  function enable (buffer) {
 
-                     // if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("google-mode");
-
                      for each (var c in google_search_results_link_commands) {
                          buffer.default_browser_object_classes[c] =
                              browser_object_google_search_results_links;
                      }
+
                      buffer.content_modalities.push( google_search_results_modality );
                      add_hook.call(buffer, "buffer_dom_content_loaded_hook",
                                    cleanpage);
@@ -220,6 +224,7 @@ define_page_mode("google-search-results-mode",
                      for each (var c in google_search_results_link_commands) {
                          delete buffer.default_browser_object_classes[c];
                      }
+
                      var i = buffer.content_modalities.indexOf(google_search_results_modality);
                      if (i > -1)
                          buffer.content_modalities.splice(i, 1);
