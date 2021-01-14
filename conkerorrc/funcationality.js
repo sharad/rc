@@ -269,8 +269,6 @@ function strdedup(str) {
 }
 
 function addExistingMarker(todo, str) {
-    // if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("todo: " + todo); /\/  // 
-    // if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("/^\s+$/.test(todo): " + /^\s+$/.test(todo)); /\/  // 
     var xtodo = todo.replace(new RegExp(/\s/g), '');
     return ( ('' == xtodo) ? '' : (delicious_existing_marker + ' ')) + str;
 }
@@ -286,7 +284,6 @@ function isExtraXsel(str, xsel)
 
 function addExistingNXselMarker(todo, str) {
     var xsel   = read_from_x_primary_selection();
-
     var retstr = str + ( isExtraXsel(str, xsel) ? (' ' + delicious_x_selection_marker + ' ' + xsel) : '' );
     var ret    = addExistingMarker( todo, strdedup( retstr ) );
     return ret;
