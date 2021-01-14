@@ -246,8 +246,8 @@ interactive("delicious-toread-set",
                      "yes" : "no");
             });
 
-interactive("delicious-tagsretained",
-            "delicious-tagsretained.",
+interactive("delicious-tagsretained-set",
+            "delicious-tagsretained-set",
             function (I)
             {
                 delicious_post_tagsRetained =
@@ -255,6 +255,10 @@ interactive("delicious-tagsretained",
                                               $completer = completer,
                                               $initial_value = delicious_post_tagsRetained));
             });
+
+interactive("delicious-tagsretained-clear",
+            "delicious-tagsretained-clear",
+            function (I) { delicious_post_tagsRetained = ""; });
 
 
 function strdedup(str) {
