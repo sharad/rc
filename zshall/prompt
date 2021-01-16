@@ -135,10 +135,7 @@ function make_prompt() {
     else
         local slash_b4_ps1job="%(2L./.)"
     fi
-    # %(1j.%{$fg[green]%}%j%{${reset_color}%}%(2L.. ).)
-    # >= 1 job then put %{$fg[green]%}%j%{${reset_color}%}%(2L.. ) else nothing
-    # %(2L.. ) # shell level >= 2 then nothing else a space.
-    # local ps1job="%(1j./%{$fg[green]%}%j%{${reset_color}%}%(2L.. ).)"
+
     if [[  $TERM == "screen" ]]
     then
         local ps1job="${slash_b4_ps1job}%j"
@@ -159,19 +156,16 @@ function make_prompt() {
         local ps1_user_at_host="%U%n%u"
     fi
 
-    # if [[ $HOST != $ps1_host_default && $HOST != "pcz-c-sharad" ]] then
     if [ $ps1_ssh_to_host ]
     then
         if [ $ps1_user_at_host ]
         then
             local ps1_user_at_host="${ps1_user_at_host}@"
         fi
-        if [[  $TERM == "XYZ" ]]
+        if [[ $TERM == "XYZ" ]]
         then
-            # local ps1_user_at_host="${ps1_user_at_host}${x_bold}%m${x_unbold}"
             local ps1_user_at_host="${ps1_user_at_host}${x_bold}${ps1_ssh_to_host}${x_unbold}"
         else
-            # local ps1_user_at_host="${ps1_user_at_host}%{$fg[yellow]%}${x_bold}%m${x_unbold}%{$reset_color%}"
             local ps1_user_at_host="${ps1_user_at_host}%{$fg[yellow]%}${x_bold}${ps1_ssh_to_host}${x_unbold}%{$reset_color%}"
         fi
     fi
@@ -180,17 +174,6 @@ function make_prompt() {
     then
         local spacing_b4_ps1status="%(2L..%(1j.. ))"
     fi
-
-    # # will have both side space
-    # if [[  $TERM == "XYZ" ]] then
-    #     local ps1status="%(?..%S%?%s )"
-    # else
-    #     if [[  $TERM == "screen" ]] then
-    #         local ps1status="%(?..%? )"
-    #     else
-    #         local ps1status="%(?..%S%{$fg[red]%}%?%{$reset_color%}%s )"
-    #     fi
-    # fi
 
     # will have both side space
     if [[  $TERM == "XYZ" ]]
@@ -201,7 +184,7 @@ function make_prompt() {
         then
             local ps1status="%(?..%? )"
         else
-            local ps1status="%(?..%S%{$fg[red]%}${cmd_status}[%?]%{$reset_color%}%s )"
+            local ps1status="%(?..%s%{$fg[red]%}${cmd_status}%S%?%s%{$reset_color%}%s )"
         fi
     fi
 
@@ -238,8 +221,14 @@ function make_prompt() {
 
     if [ ! $SUDO_USER ]
     then
-        PS1="${ps1ssh_connection}${ps1shlv_n_screen_n_job}${spacing}${ps1_user_at_host:+${ps1_user_at_host} }${ps1_time_at_hour}${spacing_b4_ps1status}${ps1status}${ps1_dir}${ps1_extra}${ps1_prompt_char} "
-        # PS1="${ps1ssh_connection}${spacing}${ps1_user_at_host:+${ps1_user_at_host} }${ps1_time_at_hour}${spacing_b4_ps1status}${ps1status}${ps1_dir}${ps1_prompt_char} "
+        # PS1="${ps1ssh_connection}${ps1shlv_n_screen_n_job}${spacing}${ps1_user_at_host:+${ps1_user_at_host} }${ps1_time_at_hour}${spacing_b4_ps1status}${ps1status}${ps1_dir}${ps1_extra}${ps1_prompt_char} "
+        PS1="${ps1ssh_connection}$"
+        PS1+="{ps1shlv_n_screen_n_job}${spacing}"
+        PS1+="${ps1_user_at_host:+${ps1_user_at_host} }${ps1_time_at_hour}"
+        PS1+="${spacing_b4_ps1status}${ps1status}"
+        PS1+="${ps1_dir}"
+        PS1+="${ps1_extra}"
+        PS1+="${ps1_prompt_char} "
     else
         PS1='$ '
     fi
