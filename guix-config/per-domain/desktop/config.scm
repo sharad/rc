@@ -718,7 +718,7 @@
 
 (operating-system
  (kernel              %lotus-kernel)
- (kernel-arguments    '(" --verbose nosplash debug "))
+ (kernel-arguments    '(" modprobe.blacklist=usbmouse,usbkbd --verbose nosplash debug"))
  (firmware            %lotus-firmware)
  (initrd              %lotus-initrd)
  (locale              %lotus-locale)
