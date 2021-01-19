@@ -1280,6 +1280,9 @@ function setup_git_repos()
 
     running info setup_git_tree_repo "git@github.com:sharad/userorg.git" ${HOME}/${RESOURCEPATH}/userorg
     running info setup_git_annex_repo "git@bitbucket.org:sh4r4d/doclibrary.git" ${HOME}/${RESOURCEPATH}/userorg/main/readwrite/public/user/doc/Library
+    # third party
+    running info setup_git_tree_repo "git@github.com:sharad/opt.git" ${HOME}/${RESOURCEPATH}/data/opt
+
 
     if true                    # decide through command line arguments
     then
