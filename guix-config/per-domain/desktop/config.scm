@@ -403,9 +403,8 @@
                             (target          "/boot/efi")
                             (keyboard-layout %lotus-keyboard-layout)
                             ;; https://guix.gnu.org/manual/en/html_node/Bootloader-Configuration.html
-                            (terminal-outputs '(console))
+                            (terminal-outputs '(console gfxterm))
                             (terminal-inputs '(console))
-                            ;; (linux-arguments '("--verbose nosplash debug"))
                             (menu-entries    %lotus-grub-ubuntu-menuentries)))
 
 (define %lotus-nonefi-bootloader
