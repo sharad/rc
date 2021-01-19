@@ -130,3 +130,5 @@ delete-merged-branches = "!git co master && git branch --merged | grep -v '\\*' 
 	includeStatusHeader = false
 	includePullRequestsSection = false
 	includeIssuesSection = false
+[protocol "gcrypt"]
+	allow = always
