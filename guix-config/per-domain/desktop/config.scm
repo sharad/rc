@@ -402,6 +402,10 @@
   (bootloader-configuration (bootloader      grub-efi-bootloader)
                             (target          "/boot/efi")
                             (keyboard-layout %lotus-keyboard-layout)
+                            ;; https://guix.gnu.org/manual/en/html_node/Bootloader-Configuration.html
+                            (terminal-outputs '(console))
+                            (terminal-inputs '(console))
+                            ;; (linux-arguments '("--verbose nosplash debug"))
                             (menu-entries    %lotus-grub-ubuntu-menuentries)))
 
 (define %lotus-nonefi-bootloader
@@ -713,24 +717,25 @@
 
 
 (operating-system
-  (kernel              %lotus-kernel)
-  (firmware            %lotus-firmware)
-  (initrd              %lotus-initrd)
-  (locale              %lotus-locale)
-  (locale-definitions  %lotus-locale-definitions)
-  (timezone            %lotus-timezone)
-  (keyboard-layout     %lotus-keyboard-layout)
-  (host-name           %lotus-host-name)
-  (setuid-programs     %lotus-setuid-programs)
-  (mapped-devices      %lotus-mapped-devices)
-  (users               %lotus-users)
-  (file-systems        %lotus-file-systems)
-  (swap-devices        %lotus-swap-devices)
-  (bootloader          %lotus-bootloader)
-  (packages            %lotus-packages)
-  (services            %lotus-services)
-  ;; Allow resolution of '.local' host names with mDNS.
-  (name-service-switch %mdns-host-lookup-nss))
+ (kernel              %lotus-kernel)
+ (kernel-arguments    '(" --verbose nosplash debug "))
+ (firmware            %lotus-firmware)
+ (initrd              %lotus-initrd)
+ (locale              %lotus-locale)
+ (locale-definitions  %lotus-locale-definitions)
+ (timezone            %lotus-timezone)
+ (keyboard-layout     %lotus-keyboard-layout)
+ (host-name           %lotus-host-name)
+ (setuid-programs     %lotus-setuid-programs)
+ (mapped-devices      %lotus-mapped-devices)
+ (users               %lotus-users)
+ (file-systems        %lotus-file-systems)
+ (swap-devices        %lotus-swap-devices)
+ (bootloader          %lotus-bootloader)
+ (packages            %lotus-packages)
+ (services            %lotus-services)
+ ;; Allow resolution of '.local' host names with mDNS.
+ (name-service-switch %mdns-host-lookup-nss))
 
 
 ;; TO SEE host-file
