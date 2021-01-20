@@ -58,7 +58,7 @@
     (nnheader      :location local)
     (gnus-group    :location local)
     (mm-decode     :location local)
-    (todo-gnus        :location local)
+    (todo-gnus     :location local)
     rs-gnus-exts
     (gnus-start    :location local)
     (common-info   :location local)

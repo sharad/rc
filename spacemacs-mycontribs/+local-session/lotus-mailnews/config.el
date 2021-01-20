@@ -849,26 +849,30 @@ always hide."
   "Brutally kill running IMAP server background processes. Useful
 when Gnus hangs on network outs or changes."
   (interactive)
-  (when (and (boundp 'gnus-select-method)
-             (boundp 'gnus-secondary-select-methods))
-    (let ((sm (if gnus-select-method
-                  (cons gnus-select-method gnus-secondary-select-methods)
-                gnus-secondary-select-methods)))
-      (while sm
-        (let ((method (car (car sm)))
-              (vserv (nth 1 (car sm))))
-          (when (and (eq 'nnimap method)
-                     (not (string= "localhost"
-                                   ;(second (find-if
-                                   (second (remove-if-not
-                                            (lambda (e)
-                                              (if (listp e)
-                                                  (eq 'nnimap-address (car e))))
-                                            sm))))
-                     (buffer-local-value 'imap-process (get-buffer (nnimap-get-server-buffer vserv))))
-            (gnus-message 6 "Killing IMAP process for server %s" vserv)
-            (delete-process (buffer-local-value 'imap-process (get-buffer (nnimap-get-server-buffer vserv))))))
-        (setq sm (cdr sm))))))
+  (if (and (boundp 'gnus-select-method)
+           (boundp 'gnus-secondary-select-methods)
+           (let ((sm (if gnus-select-method
+                         (cons gnus-select-method gnus-secondary-select-methods)
+                       gnus-secondary-select-methods)))
+             (while sm
+               (let ((method (car (car sm)))
+                     (vserv (nth 1 (car sm))))
+                 (when (and (eq 'nnimap method)
+                            (not (string= "localhost"
+                                          ;(second (find-if
+                                          (second (remove-if-not
+                                                   (lambda (e)
+                                                     (if (listp e)
+                                                         (eq 'nnimap-address (car e))))
+                                                   sm))))
+                            (buffer-local-value 'imap-process (get-buffer (nnimap-get-server-buffer vserv))))
+                   (gnus-message 6 "Killing IMAP process for server %s" vserv)
+                   (delete-process (buffer-local-value 'imap-process (get-buffer (nnimap-get-server-buffer vserv))))))
+               (setq sm (cdr sm))))
+           (lwarn 'imap-nuke-server-processes
+                  :warning "(boundp 'gnus-secondary-select-methods) = %s, (boundp 'gnus-select-method) = %s"
+                  (boundp 'gnus-secondary-select-methods)
+                  (boundp 'gnus-select-method)))))
 
 (defun gnus-nm-agent-unplug()
   "Kill IMAP server processes and unplug Gnus agent."
@@ -1261,24 +1265,30 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 (defun lotus-mailnews/common-config-gnus ()
   ;; (debug)
-  (add-to-list
-   'gnus-secondary-select-methods
-   '(nnimap "localhost"
-            (nnimap-address "localhost")
-            ;; (nnimap-server-port 993)
-            ;; (nnimap-server-port 443)
-            (nnimap-server-port 143)
-            (nnimap-stream network)
-            (nnimap-authenticator login)
-            (nnimap-authinfo-file "~/.authinfo.gpg")
-            (nnir-search-engin imap)))
-
-  (add-to-list
-   'gnus-secondary-select-methods
-   `(nnvirtual
-     ,(if (equal (system-name) office-host-name)
-          "Office\\.INBOX\\|Office\\.sent-mail"
-        "Gmail\\.INBOX\\|Gmail\\.sent-mail"))))
+  (if (and (boundp 'gnus-select-method)
+           (boundp 'gnus-secondary-select-methods))
+      (progn
+        (add-to-list
+         'gnus-secondary-select-methods
+         '(nnimap "localhost"
+                  (nnimap-address "localhost")
+                  ;; (nnimap-server-port 993)
+                  ;; (nnimap-server-port 443)
+                  (nnimap-server-port 143)
+                  (nnimap-stream network)
+                  (nnimap-authenticator login)
+                  (nnimap-authinfo-file "~/.authinfo.gpg")
+                  (nnir-search-engin imap))
+         (add-to-list
+          'gnus-secondary-select-methods
+          `(nnvirtual
+            ,(if (equal (system-name) office-host-name)
+                 "Office\\.INBOX\\|Office\\.sent-mail"
+               "Gmail\\.INBOX\\|Gmail\\.sent-mail")))))
+    (lwarn 'lotus-mailnews/common-config-gnus
+           :warning "(boundp 'gnus-secondary-select-methods) = %s, (boundp 'gnus-select-method) = %s"
+           (boundp 'gnus-secondary-select-methods)
+           (boundp 'gnus-select-method))))
 
 (defun lotus-mailnews/post-init-gnus-init ()
   (progn
