@@ -39,7 +39,7 @@
 ;; should be built into this as well.)
 
 ;;  Default root key is C-t
-(set! (root-key) 'F20)
+;; (set! (root-key) 'F20)
 
 ;; simple-focus simply draws a thin border around the focused window
 
