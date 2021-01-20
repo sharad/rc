@@ -174,27 +174,25 @@ zstyle ':completion:*:*:$command:*:$tag'  list-colors "=(#b) =$zshregex_with_bra
 ## (http://www.zshwiki.org/cgi-bin/wiki.pl?ZshCompletionTips)
 
 # Allow zsh to complete on hostnames found in common config files.
-local _myhosts;                 # beautiful
-# _myhosts=( ${${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
-#            ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} )
-
-# _myhosts=( ${${=${${(f)"$(cat {/etc/ssh_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
-#           ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} )
-
-local _HOST_FILE_TO_USE=~/.config/dnsmasq/dnsmasq.d/data/hosts-manual-priv
-if [ ! -e ~/.var/cache/zsh/etc_hosts ] ||
-       [[ /etc/hosts -nt ~/.var/cache/zsh/etc_hosts ]] ||
-       [[ $_HOST_FILE_TO_USE -nt ~/.var/cache/zsh/etc_hosts ]]
-then
-    mkdir -p ~/.var/cache/zsh
-    if [ -d ~/.var/cache/zsh ]
+local _HOST_FILE_TO_USE=(~/.config/dnsmasq/dnsmasq.d/data/hosts-* /etc/hosts)
+for hostfile in $_HOST_FILE_TO_USE
+do
+    _full_hostfile="$(readlink -m $hostfile)"
+    if [ ! -e ~/.var/cache/zsh/etc_hosts ] ||
+           [ "$_full_hostfile"  -nt ~/.var/cache/zsh/etc_hosts ]
     then
-        echo ${=${(f)"$(cat $_HOST_FILE_TO_USE /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} > ~/.var/cache/zsh/etc_hosts
+        mkdir -p ~/.var/cache/zsh
+        if [ -d ~/.var/cache/zsh ]
+        then
+            # echo ${=${(f)"$(cat $_HOST_FILE_TO_USE /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null) | sort -u)"}%%\#*} > ~/.var/cache/zsh/etc_hosts
+            echo ${=${(f)"$(cat $_HOST_FILE_TO_USE <<(ypcat hosts 2>/dev/null) | sort -u)"}%%\#*} > ~/.var/cache/zsh/etc_hosts
+            break
+        fi
     fi
-fi
+done
 unset _HOST_FILE_TO_USE
 
-_myhosts=( ${${=${${(f)"$(cat /etc/ssh_hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*} )
+local _myhosts=( ${${=${${(f)"$(cat /etc/ssh_hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*} )
 if [ -r ~/.var/cache/zsh/etc_hosts ]
 then
     _myhosts=( $_myhosts $(< ~/.var/cache/zsh/etc_hosts)  )
