@@ -28,13 +28,18 @@
 ;; OSD text
 (stumpwm:defcommand osd-echo () ()
   (let* ((screen (stumpwm:current-screen))
-         (w (window-xwin (screen-focus screen))))
-    (stumpwm::echo-in-window w
-                             (stumpwm::screen-font screen)
-                             (stumpwm::screen-fg-color screen)
-                             (stumpwm::screen-bg-color screen)
-                             "Test de l'osd"))
-  (xlib:display-finish-output *display*))
+         (win    (screen-focus screen))
+         (xwin   (window-xwin win)))
+    (when xwin
+      (let ((font     (stumpwm::screen-font     screen))
+            (fg-color (stumpwm::screen-fg-color screen))
+            (bg-color (stumpwm::screen-bg-color screen)))
+        (stumpwm::echo-in-window xwin
+                                 font
+                                 fg-color
+                                 bg-color
+                                 "Test de l'osd")
+        (xlib:display-finish-output *display*)))))
 
 
 (stumpwm:defcommand hsbalance-frames () ()
@@ -70,9 +75,10 @@
 (defun create-backup (filename)
   #+ignore (class utility)
   "Create backup"
-  (if (and filename (probe-file filename))
+  (when (and filename
+             (probe-file filename))
                                         ;(translate-pathname filename filename (concatenate 'string filename "~"))))
-      (rename-file filename (concatenate 'string filename "~"))))
+    (rename-file filename (concatenate 'string filename "~"))))
 
 ;; (create-backup "/tmp/out.mpg")
 

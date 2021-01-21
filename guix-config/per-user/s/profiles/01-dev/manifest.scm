@@ -53,6 +53,7 @@
                                      "gcc-toolchain"
                                      "gdb"
 
+                                     "smalltalk"
 
                                      "go"
 
@@ -62,29 +63,27 @@
 
                                      "node"
 
-                                     "r"
-                                     "r-ggplot2"
-                                     "r-cowplot"
-
-                                     "erlang"
-                                     "elixir"
 
                                      "ghc"
                                      "idris"
 
-                                     "erlang"
-                                     "elixir"
 
                                      "rust"
                                      ;; "scala"
                                      "vala"
                                      ;; "kotlin"
 
+                                     "r"
+                                     "r-ggplot2"
+                                     "r-cowplot"
+                                     "erlang"
+                                     "elixir"
+
                                      ;; "fribidi"
                                      ;; "bicon"
+
                                      "artanis"
-                                     "doxygen"
-                                     "nomad"))
+                                     "doxygen"))
 
 
 

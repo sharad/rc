@@ -265,7 +265,7 @@ function preexec_duration_print() {
 function precmd_duration_print() {
     if [ $timer ]
     then
-        __duration=$(($SECONDS - $timer))
+        local __duration=$(($SECONDS - $timer))
         if (( $__duration > 0 ))
         then
             if [[  $TERM == "screen" ]]
