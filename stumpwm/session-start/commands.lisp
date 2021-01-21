@@ -793,7 +793,7 @@
 
 ;; no window command
 (stumpwm:defcommand cpy-pass () ()
-  (let* ((sec-cmd "secret-tool lookup server exch-cas.fortinet.com user 'fortinet-us\\spratap' protocol imap")
+  (let* ((sec-cmd "secret-tool lookup server exch-cas.fortinet.com user 'fortinet-us\\\\spratap' protocol imap")
          (text    (stumpwm:run-shell-command sec-cmd t)))
     (window-send-string text)))
 
