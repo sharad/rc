@@ -242,15 +242,7 @@
                                (min (length pgm) (length s)))))
       (wait-for-program pgm)))
 
-(progn
-
-  ;; https://stackoverflow.com/questions/8830888/whats-the-canonical-way-to-join-strings-in-a-list
-  ;; (defun string-join (separator &rest strings)
-  ;;   " "
-  ;;   (let ((separator (replace-all "~" "~~" separator)))
-  ;;     (format nil
-  ;;             (concatenate 'string "~{~a~^" separator "~}")
-  ;;             strings)))
+(progn ;; https://stackoverflow.com/questions/8830888/whats-the-canonical-way-to-join-strings-in-a-list
 
   (defun string-join (separator &rest strings)
     (format nil
@@ -511,39 +503,39 @@
 (stumpwm:defcommand gcal-week () ()
   (stumpwm:message "~a"
            (stumpwm:run-shell-command (concat "gcalcli calw 1  |"
-                                      " sed 's/\\[0;3\\([0-7]\\)"
-                                      "m/\\^\\1\\*/g' |"
-                                      " sed 's/\\[[0-9;]*m//g'"
-                                      " | "
-                                      *stumpish*
-                                      " -e notify")
-                              nil)))
+                                              " sed 's/\\[0;3\\([0-7]\\)"
+                                              "m/\\^\\1\\*/g' |"
+                                              " sed 's/\\[[0-9;]*m//g'"
+                                              " | "
+                                              *stumpish*
+                                              " -e notify")
+                                      nil)))
 (stumpwm:defcommand gcal-month () ()
   (stumpwm:message "~a"
            (stumpwm:run-shell-command (concat "gcalcli calm  |"
-                                      " sed 's/\\[0;3\\([0-7]\\)"
-                                      "m/\\^\\1\\*/g' |"
-                                      " sed 's/\\[[0-9;]*m//g'"
-                                      " | "
-                                      *stumpish*
-                                      " -e notify")
-                              nil)))
+                                              " sed 's/\\[0;3\\([0-7]\\)"
+                                              "m/\\^\\1\\*/g' |"
+                                              " sed 's/\\[[0-9;]*m//g'"
+                                              " | "
+                                              *stumpish*
+                                              " -e notify")
+                                      nil)))
 
 
 (stumpwm:defcommand gcal-search (search-string) ((:rest "Search gcal: "))
   (stumpwm:message "~a"
            (stumpwm:run-shell-command (concat "gcalcli "
-                                      "--ignore-started --details search \""
-                                      search-string
-                                      "\""
-                                      " | "
-                                      "sed 's/\\[0;3\\([0-7]\\)"
-                                      "m/\\^\\1\\*/g' |"
-                                      " sed 's/\\[[0-9;]*m//g'"
-                                      " | "
-                                      *stumpish*
-                                      " -e notify")
-                              nil)))
+                                              "--ignore-started --details search \""
+                                              search-string
+                                              "\""
+                                              " | "
+                                              "sed 's/\\[0;3\\([0-7]\\)"
+                                              "m/\\^\\1\\*/g' |"
+                                              " sed 's/\\[[0-9;]*m//g'"
+                                              " | "
+                                              *stumpish*
+                                              " -e notify")
+                                      nil)))
 
 (stumpwm:defcommand gcal-add-event (evt) ((:rest "Event:"))
   (stumpwm:run-shell-command (format nil (concat "gcalcli quick '~a'~%")
