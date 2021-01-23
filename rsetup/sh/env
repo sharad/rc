@@ -395,11 +395,24 @@ function eval_guix_profiles()
         fi
         LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER/profiles"
 
-        eval $(memoize_run guix package --search-paths=suffix)
 
         for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
         do
             profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"profile"
+            LOCAL_GUIX_EXTRA_PROFILES_PATHS=(${LOCAL_GUIX_EXTRA_PROFILES_PATHS[@]} $profile_path)
+        done
+
+
+        if [ -n "$GUIX_ENVIRONMENT" ]
+        then
+            LOCAL_GUIX_EXTRA_PROFILES_PATHS=($GUIX_ENVIRONMENT ${LOCAL_GUIX_EXTRA_PROFILES_PATHS[@]})
+        fi
+
+        eval $(memoize_run guix package --search-paths=suffix)
+
+        for profile_path in ${LOCAL_GUIX_EXTRA_PROFILES_PATHS[@]}
+        do
+            # profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"profile"
             if [ -f "$profile_path"/etc/profile ]
             then
                 eval $(memoize_run guix package  -p "$profile_path" --search-paths=suffix)
