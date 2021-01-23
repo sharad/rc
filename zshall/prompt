@@ -230,7 +230,6 @@ function make_prompt() {
 
     if [ ! $SUDO_USER ]
     then
-        # PS1="${ps1ssh_connection}${ps1shlv_n_screen_n_job}${spacing}${ps1_user_at_host:+${ps1_user_at_host} }${ps1_time_at_hour}${spacing_b4_ps1status}${ps1status}${ps1_dir}${ps1_extra}${ps1_prompt_char} "
         PS1="${ps1ssh_connection}"
         PS1+="${ps1shlv_n_screen_n_job}${spacing}"
         PS1+="${ps1_user_at_host:+${ps1_user_at_host} }${ps1_time_at_hour}"
