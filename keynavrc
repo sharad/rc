@@ -54,6 +54,15 @@ alt+semicolon     warp,cursorzoom 800 800
 4                 wrap,click 4,end
 5                 wrap,click 5,end
 
+alt+Prior         wrap,click 1,end
+alt+Up            wrap,click 2,end
+alt+Next          wrap,click 3,end
+ctrl+Prior        wrap,click 1,end
+ctrl+Up           wrap,click 2,end
+ctrl+Next         wrap,click 3,end
+# 4                 wrap,click 4,end
+# 5                 wrap,click 5,end
+
 # Zoom to the current window
 w                 windowzoom
 
