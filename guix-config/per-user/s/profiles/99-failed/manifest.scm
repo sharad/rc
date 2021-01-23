@@ -1,5 +1,6 @@
 
-(define %lotus-failed-package-names (list "nomad"))
+(define %lotus-failed-package-names (list "nomad"
+                                          "hello"))
 
 
 
