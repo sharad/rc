@@ -18,6 +18,8 @@
 #
 # Project page; http://www.semicomplete.com/projects/keynav
 
+# https://manpages.debian.org/unstable/keynav/keynav.1.en.html
+
 # Use 'clear' to blow away any previous keybindings
 clear
 
@@ -48,23 +50,46 @@ Return            warp,click 1,end
 semicolon         warp,end
 alt+semicolon     warp,cursorzoom 800 800
 
-1                 wrap,click 1,end
-2                 wrap,click 2,end
-3                 wrap,click 3,end
-4                 wrap,click 4,end
-5                 wrap,click 5,end
+1                 click 1
+2                 click 2
+3                 click 3
+4                 click 4
+5                 click 5
 
-alt+Prior         wrap,click 1,end
-alt+Up            wrap,click 2,end
-alt+Next          wrap,click 3,end
+1                 wrap,click 1
+2                 wrap,click 2
+3                 wrap,click 3
+4                 wrap,click 4
+5                 wrap,click 5
+
+shift+1           wrap,doubleclick 1
+shift+2           wrap,doubleclick 2
+shift+3           wrap,doubleclick 3
+shift+4           wrap,doubleclick 4
+shift+5           wrap,doubleclick 5
+
 ctrl+Prior        wrap,click 1,end
 ctrl+Up           wrap,click 2,end
 ctrl+Next         wrap,click 3,end
+
+alt+Prior         wrap,doubleclick 1,end
+alt+Up            wrap,doubleclick 2,end
+alt+Next          wrap,doubleclick 3,end
+
 # 4                 wrap,click 4,end
 # 5                 wrap,click 5,end
 
+### Drag examples
+# Start drag holding the left mouse button
+shift+1           drag 1
+shift+2           drag 2
+shift+3           drag 3
+
+# Start drag holding middle mouse + control and shift
+w                 drag 2 ctrl+shift
+
 # Zoom to the current window
-w                 windowzoom
+shift+w                 windowzoom
 
 # Zoom to the cursor location with a given height and width
 c                 cursorzoom 200 200
@@ -82,20 +107,12 @@ ctrl+u            cut-right,cut-up
 ctrl+b            cut-left,cut-down
 ctrl+n            cut-right,cut-down
 
-### Drag examples
-# Start drag holding the left mouse button
-shift+1           drag 1
-shift+2           drag 2
-shift+3           drag 3
-
-# Start drag holding middle mouse + control and shift
-w                 drag 2 ctrl+shift
-
 ### History
 a                 history-back
 
 # Record keynav actions
-q                 record
+q                 record ~/.keynav_macros
+shift+at          playback
 
 ### Example using the 'sh' command.
 # Make firefox the active window
