@@ -222,6 +222,7 @@ function make_prompt() {
 
     if [ -n "$GUIX_ENVIRONMENT" ]
     then
+        # https://guix.gnu.org/manual/en/html_node/Invoking-guix-environment.html
         local ps1_guix_environment=" [dev]"
     fi
 

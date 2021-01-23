@@ -405,6 +405,7 @@ function eval_guix_profiles()
 
         if [ -n "$GUIX_ENVIRONMENT" ]
         then
+            # https://guix.gnu.org/manual/en/html_node/Invoking-guix-environment.html
             LOCAL_GUIX_EXTRA_PROFILES_PATHS=($GUIX_ENVIRONMENT ${LOCAL_GUIX_EXTRA_PROFILES_PATHS[@]})
         fi
 
