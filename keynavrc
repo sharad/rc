@@ -98,8 +98,6 @@ ctrl+semicolon      start
 Escape              end
 ctrl+bracketleft    end
 
-
-
 space               warp,click 1,end
 Return              warp,click 1,end
 semicolon           warp,end
@@ -117,12 +115,20 @@ ctrl+3              wrap,click 3,end
 ctrl+4              wrap,click 4,end
 ctrl+5              wrap,click 5,end
 
-shift+1             wrap,doubleclick 1
-shift+2             wrap,doubleclick 2
-shift+3             wrap,doubleclick 3
-shift+4             wrap,doubleclick 4
-shift+5             wrap,doubleclick 5
+alt+1               wrap,doubleclick 1
+alt+2               wrap,doubleclick 2
+alt+3               wrap,doubleclick 3
+alt+4               wrap,doubleclick 4
+alt+5               wrap,doubleclick 5
 
+### Drag examples
+# Start drag holding the left mouse button
+shift+1             drag 1
+shift+2             drag 2
+shift+3             drag 3
+
+### Alternative mouse buttons click.
+# mouse buttons using pageup,pagedown,up
 ctrl+Prior          wrap,click 1,end
 ctrl+Up             wrap,click 2,end
 ctrl+Next           wrap,click 3,end
@@ -133,12 +139,6 @@ alt+Next            wrap,doubleclick 3,end
 
 # 4                 wrap,click 4,end
 # 5                 wrap,click 5,end
-
-### Drag examples
-# Start drag holding the left mouse button
-shift+1             drag 1
-shift+2             drag 2
-shift+3             drag 3
 
 # Start drag holding middle mouse + control and shift
 w                   drag 2 ctrl+shift
