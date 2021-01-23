@@ -108,24 +108,35 @@ alt+semicolon       warp,cursorzoom 800 800
 3                   click 3
 4                   click 4
 5                   click 5
+6                   click 6
+7                   click 7
 
 ctrl+1              wrap,click 1,end
 ctrl+2              wrap,click 2,end
 ctrl+3              wrap,click 3,end
 ctrl+4              wrap,click 4,end
 ctrl+5              wrap,click 5,end
+ctrl+6              wrap,click 6,end
+ctrl+7              wrap,click 7,end
 
 alt+1               wrap,doubleclick 1
 alt+2               wrap,doubleclick 2
 alt+3               wrap,doubleclick 3
 alt+4               wrap,doubleclick 4
 alt+5               wrap,doubleclick 5
+alt+6               wrap,doubleclick 6
+alt+7               wrap,doubleclick 7
 
 ### Drag examples
 # Start drag holding the left mouse button
 shift+1             drag 1
 shift+2             drag 2
 shift+3             drag 3
+shift+4             drag 4
+shift+5             drag 5
+shift+6             drag 6
+shift+7             drag 7
+
 
 ### Alternative mouse buttons click.
 # mouse buttons using pageup,pagedown,up
@@ -187,7 +198,7 @@ bracketright        move-down
 bracketleft         move-up
 shift+period        move-right    # >
 period              move-right
-shift+bracketright  move-right   # }
+shift+bracketright  move-right    # }
 
 
 # Page UP Down - Laptop
@@ -205,4 +216,9 @@ ctrl+Prior          cut-down,cut-left
 # r for restart / reload config
 r                   restart
 
+# Narrowing
+x                   move-up 0.75,move-down 1,cut-up,cut-right,move-left 0.5
+#                   move-down 0.75,move-up 1,cut-left,cut-down,move-right 0.5
 
+# Expanding
+# Not implemented, open a issue
