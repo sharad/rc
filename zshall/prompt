@@ -246,7 +246,7 @@ function make_prompt() {
     unset ps1shlv_n_screen_n_job spacing ps1_user_at_host \
           ps1_user_at_host ps1_time_at_hour spacing_b4_ps1status \
           ps1status ps1_dir ps1_prompt_char ps1_ssh_to_host \
-          ps1_ssh_from_host ps1ssh_connection
+          ps1_ssh_from_host ps1ssh_connection ps1_guix_environment
 }
 
 PROMPT_COMMAND=make_prompt
