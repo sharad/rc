@@ -498,7 +498,16 @@
          #:user "s"))
 
 
-;; https://guix.gnu.org/manual/en/html_node/Scheduled-Job-Execution.html
+;; https://guix.gnu.org/manual/en/html_node/Base-Services.html
+(define %lotus-publish-services (list (service guix-publish-service-type
+                                               (guix-publish-configuration (advertise?             #t)
+                                                                           (compression            '(("lzip" 7) ("gzip" 9)))
+                                                                           (cache                  "/var/cache/guix/publish")
+                                                                           (cache-bypass-threshold (* 100 1024 1024))
+                                                                           (ttl                    (* 3 24 60 60))))))
+
+
+;; https ://guix.gnu.org/manual/en/html_node/Scheduled-Job-Execution.html
 (define %lotus-mcron-services (list (service mcron-service-type
                                              (mcron-configuration (jobs (list garbage-collector-job
                                                                               ;; idutils-job
@@ -648,6 +657,7 @@
                                                    %lotus-dovecot-services
                                                    %lotus-gpm-services
                                                    %lotus-audio-services
+                                                   %lotus-publish-services
                                                    %lotus-mcron-services
                                                    ;; %lotus-cups-services
                                                    %lotus-polkit-services
