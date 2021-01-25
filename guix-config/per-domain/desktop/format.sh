@@ -10,7 +10,8 @@ function running()
 }
 
 
-CONFIG=$1
+CONFIG="$1"
+DISK_SERIAL_ID="$2"
 
 if [ x = "x$CONFIG" ]
 then

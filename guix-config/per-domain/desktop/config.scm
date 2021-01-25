@@ -211,31 +211,31 @@
 
 
 (define %lotus-mapped-device-guix-root       (mapped-device (source "/dev/sda31")
-                                                            (target (string-append %local-disk-serial "guix-root"))
+                                                            (target (string-append %local-disk-serial-id "guix-root"))
                                                             (type   non-udev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-boot       (mapped-device (source "/dev/sda31")
-                                                            (target (string-append %local-disk-serial "guix-boot")))
+                                                            (target (string-append %local-disk-serial-id "guix-boot"))
                                                             (type   non-udev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-gnu        (mapped-device (source "/dev/sda31")
-                                                            (target (string-append %local-disk-serial "guix-gnu"))
+                                                            (target (string-append %local-disk-serial-id "guix-gnu"))
                                                             (type   non-udev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-swap       (mapped-device (source "/dev/sda31")
-                                                            (target (string-append %local-disk-serial "guix-swap"))
+                                                            (target (string-append %local-disk-serial-id "guix-swap"))
                                                             (type   non-udev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-tmp        (mapped-device (source "/dev/sda31")
-                                                            (target (string-append %local-disk-serial "guix-tmp"))
+                                                            (target (string-append %local-disk-serial-id "guix-tmp"))
                                                             (type   non-udev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-guix-var        (mapped-device (source "/dev/sda31")
-                                                            (target (string-append %local-disk-serial "guix-var"))
+                                                            (target (string-append %local-disk-serial-id "guix-var"))
                                                             (type   non-udev-lvm-device-mapping)))
 
 (define %lotus-mapped-device-house-home      (mapped-device (source "/dev/test")
-                                                            (target (string-append %local-disk-serial "house-home"))
+                                                            (target (string-append %local-disk-serial-id "house-home"))
                                                             (type   non-udev-lvm-device-mapping)))
 
 
@@ -252,12 +252,12 @@
 
 ;; guix system: error: service 'swap-/dev/mapper/guix-swap' requires 'device-mapping-guix-swap', which is not provided by any service
 (define %lotus-swap-devices      (if #f
-                                     (list ("/dev/mapper/" %local-disk-serial "guix-swap"))
+                                     (list ("/dev/mapper/" %local-disk-serial-id "guix-swap"))
                                      (list)))
 
 
 (define %lotus-file-system-guix-root       (file-system (mount-point         "/")
-                                                        (device              (string-append "/dev/mapper/" %local-disk-serial "guix-root"))
+                                                        (device              (string-append "/dev/mapper/" %local-disk-serial-id "guix-root"))
                                                         (type                "ext4")
                                                         (check?              #f)
                                                         (mount?              #t)
@@ -266,7 +266,7 @@
                                                         (dependencies        %lotus-mapped-devices)))
 
 (define %lotus-file-system-guix-boot       (file-system (mount-point         "/boot")
-                                                        (device              (string-append "/dev/mapper/" %local-disk-serial "guix-boot"))
+                                                        (device              (string-append "/dev/mapper/" %local-disk-serial-id "guix-boot"))
                                                         (type                "ext4")
                                                         (check?              #f)
                                                         (mount?              #t)
@@ -276,7 +276,7 @@
                                                                                      %lotus-mapped-devices))))
 
 (define %lotus-file-system-guix-gnu        (file-system (mount-point         "/gnu")
-                                                        (device              (string-append "/dev/mapper/" %local-disk-serial "guix-gnu"))
+                                                        (device              (string-append "/dev/mapper/" %local-disk-serial-id "guix-gnu"))
                                                         (type                "ext4")
                                                         (check?              #f)
                                                         (mount?              #t)
@@ -286,7 +286,7 @@
                                                                                      %lotus-mapped-devices))))
 
 (define %lotus-file-system-guix-tmp        (file-system (mount-point         "/tmp")
-                                                        (device              (string-append "/dev/mapper/" %local-disk-serial "guix-tmp"))
+                                                        (device              (string-append "/dev/mapper/" %local-disk-serial-id "guix-tmp"))
                                                         (type                "ext4")
                                                         (check?              #f)
                                                         (mount?              #t)
@@ -296,7 +296,7 @@
                                                                                      %lotus-mapped-devices))))
 
 (define %lotus-file-system-guix-var        (file-system (mount-point         "/var")
-                                                        (device              (string-append "/dev/mapper/" %local-disk-serial "guix-var"))
+                                                        (device              (string-append "/dev/mapper/" %local-disk-serial-id "guix-var"))
                                                         (type                "ext4")
                                                         (check?              #f)
                                                         (mount?              #t)
@@ -306,7 +306,7 @@
                                                                                      %lotus-mapped-devices))))
 
 (define %lotus-file-system-house-home      (file-system (mount-point         "/home")
-                                                        (device              (string-append "/dev/mapper/" %local-disk-serial "house-home"))
+                                                        (device              (string-append "/dev/mapper/" %local-disk-serial-id "house-home"))
                                                         (type                "ext4")
                                                         (check?              #f)
                                                         (mount?              (if %lotus-system-init #f #t))

@@ -10,13 +10,35 @@ function running()
 }
 
 
-CONFIG=$1
+CONFIG="$1"
+DISK_SERIAL_ID="$2"
 
 if [ x = "x$CONFIG" ]
 then
     echo config file not supplied as first argument >&2
     exit -1
 fi
+
+if [ -r "$CONFIG" ]
+then
+    echo file $CONFIG not exists >&2
+    exit -1
+fi
+
+
+if [ x = "x$DISK_SERIAL_ID" ]
+then
+    echo disk serial id not supplied. >&2
+    exit -1
+fi
+
+
+/dev/mapper/guix-root
+/dev/mapper/guix-boot
+/dev/mapper/guix-var
+/dev/mapper/guix-tmp
+/dev/mapper/guix-gnu
+
 
 SYSTEM_INIT="$(grep 'define %lotus-system-init' $CONFIG | cut -d' ' -f3 | cut -c2)"
 
