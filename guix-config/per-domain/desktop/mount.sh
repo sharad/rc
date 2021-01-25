@@ -9,17 +9,60 @@ function running()
     $_cmd "$@"
 }
 
-
+##
 CONFIG="$1"
 DISK_SERIAL_ID="$2"
+# UUID=A198-A7BC or /dev/sdX1
+# blkid /dev/sdx1
+EFI_DISK="$3"
 
-if [ x = "x$CONFIG" ]
+if [ x = "x${CONFIG}" ]
 then
     echo config file not supplied as first argument >&2
     exit -1
 fi
 
-SYSTEM_INIT="$(grep 'define %lotus-system-init' $CONFIG | cut -d' ' -f3 | cut -c2)"
+if [ -r "${CONFIG}" ]
+then
+    echo file "${CONFIG}" not exists >&2
+    exit -1
+fi
+
+
+if [ x = "x${DISK_SERIAL_ID}" ]
+then
+    echo disk serial id not supplied. >&2
+    exit -1
+fi
+
+if [ x = "x${EFI_DISK}" ]
+then
+    echo efi disk is not supplied as thrid argument >&2
+    exit -1
+fi
+
+DEV_ROOT="/dev/mapper/${DISK_SERIAL_ID}guix-root"
+DEV_BOOT="/dev/mapper/${DISK_SERIAL_ID}guix-boot"
+DEV_VAR="/dev/mapper/${DISK_SERIAL_ID}guix-var"
+DEV_TMP="/dev/mapper/${DISK_SERIAL_ID}guix-tmp"
+DEV_GNU="/dev/mapper/${DISK_SERIAL_ID}guix-gnu"
+
+for part in "${DEV_ROOT}" "${DEV_BOOT}" "${DEV_VAR}" "${DEV_TMP}" "${DEV_GNU}"
+do
+    if [ -e "$part" ]
+    then
+        echo file "$part" not exists. >&2
+        exit -1
+    fi
+    if [ -b "$part" ]
+    then
+        echo file "$part" is not block device. >&2
+        exit -1
+    fi
+done
+##
+
+SYSTEM_INIT="$(grep 'define %lotus-system-init' ${CONFIG} | cut -d' ' -f3 | cut -c2)"
 
 if [ "$SYSTEM_INIT" = "f" ]
 then
@@ -42,50 +85,50 @@ mkdir -p /mnt/var
 mkdir -p /mnt/gnu
 mkdir -p /mnt
 
-vgchange -ay guix
+vgchange -ay "${DISK_SERIAL_ID}guix"
 
 sleep 2
 
-if [ -r $CONFIG ]
+if [ -r "${CONFIG}" ]
 then
-    if [ -e /dev/mapper/guix-root ]
+    if [ -e "${DEV_ROOT}" ]
     then
-        if [ -e /dev/mapper/guix-gnu ]
+        if [ -e "${DEV_GNU}" ]
         then
 
-            if mount /dev/mapper/guix-root /mnt
+            if mount "${DEV_ROOT}" /mnt
             then
                 mkdir -p /mnt/gnu /mnt/etc /mnt/tmp /mnt/boot/efi /mnt/var
 
-                if mount /dev/mapper/guix-gnu /mnt/gnu         &&
-                        mount /dev/mapper/guix-tmp /mnt/tmp    &&
-                        mount /dev/mapper/guix-var /mnt/var    &&
-                        mount /dev/mapper/guix-boot /mnt/boot/ &&
+                if mount "${DEV_GNU}" /mnt/gnu         &&
+                        mount "${DEV_TMP}" /mnt/tmp    &&
+                        mount "${DEV_VAR}" /mnt/var    &&
+                        mount "${DEV_BOOT}" /mnt/boot/ &&
                         mkdir -p /mnt/boot/efi                 &&
                         mount /dev/sda1 /mnt/boot/efi
 
                 then
 
-                        mount /dev/mapper/guix-boot /mnt/boot/
-                        mount /dev/mapper/guix-tmp /mnt/tmp
-                        mount /dev/mapper/guix-var /mnt/var
+                        mount "${DEV_BOOT}" /mnt/boot/
+                        mount "${DEV_TMP}" /mnt/tmp
+                        mount "${DEV_VAR}" /mnt/var
                         mkdir -p /mnt/boot/efi
                         mount /dev/sda1 /mnt/boot/efi
 
                         df -hT
 
-                else                # mount /dev/mapper/guix-gnu /mnt/gnu
-                    echo can not mount /dev/mapper/guix-gnu /mnt/gnu
-                fi                  # mount /dev/mapper/guix-gnu /mnt/gnu
+                else                # mount "${DEV_GNU}" /mnt/gnu
+                    echo can not mount "${DEV_GNU}" /mnt/gnu
+                fi                  # mount "${DEV_GNU}" /mnt/gnu
             else
-                echo can not mount /dev/mapper/guix-root /mnt
-            fi                      # if mount /dev/mapper/guix-root /mnt
+                echo can not mount "${DEV_ROOT}" /mnt
+            fi                      # if mount "${DEV_ROOT}" /mnt
         else
-            echo /dev/mapper/guix-gnu not exists
-        fi                          # if [ -e /dev/mapper/guix-gnu ]
+            echo "${DEV_GNU}" not exists
+        fi                          # if [ -e "${DEV_GNU}" ]
     else
-        echo /dev/mapper/guix-root not exists
-    fi                              # if [ -e /dev/mapper/guix-root ]
+        echo "${DEV_ROOT}" not exists
+    fi                              # if [ -e "${DEV_ROOT}" ]
 else
-    echo $CONFIG not exists
+    echo "${CONFIG}" not exists
 fi
