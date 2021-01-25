@@ -50,6 +50,7 @@ DEV_GNU="/dev/mapper/${DISK_SERIAL_ID}guix-gnu"
 
 for part in "${DEV_ROOT}" "${DEV_BOOT}" "${DEV_VAR}" "${DEV_TMP}" "${DEV_GNU}"
 do
+    echo echcking disk file = "$part"
     if [ -e "$part" ]
     then
         echo file "$part" not exists. >&2
