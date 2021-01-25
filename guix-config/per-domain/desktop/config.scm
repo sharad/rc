@@ -65,6 +65,7 @@
 (define %lotus-account-user-name             "s")
 (define %lotus-account-comment               "sharad")
 (define %lotus-account-group-name            "users")
+(define %lotus-account-group-gid              1000)
 (define %lotus-account-supplementry-groups   '("wheel" "netdev" "audio" "video"))
 (define %lotus-account-home-parent-directory "/home")
 (define %lotus-account-shell                 #~(string-append #$zsh "/bin/zsh"))
@@ -427,22 +428,29 @@
 (define %lotus-metal-initrd base-initrd)
 
 
-(define %lotus-simple-users (list (user-account (uid                    %lotus-account-uid)
-                                                (name                   %lotus-account-user-name)
-                                                (comment                %lotus-account-comment)
-                                                (group                  %lotus-account-group-name)
-                                                (home-directory         (string-append %lotus-account-home-parent-directory "/" %lotus-account-user-name "/" "hell"))
-                                                (shell                  %lotus-account-shell)
-                                                (supplementary-groups   %lotus-account-supplementry-groups)
-                                                (create-home-directory? %lotus-account-create-home-directory))
+(define %lotus-simple-groups (list (user-group (name %lotus-account-group-name)
+                                               (id   %lotus-account-group-gid))))
 
-                                  (user-account (uid                    1002)
-                                                (name                   "j")
-                                                (comment                "Jam")
-                                                (group                  %lotus-account-group-name)
-                                                (home-directory         (string-append %lotus-account-home-parent-directory "/" "j"))
-                                                (supplementary-groups   %lotus-account-supplementry-groups)
-                                                (create-home-directory? %lotus-account-create-home-directory))))
+(define %lotus-groups        (append %lotus-simple-groups
+                                     %base-groups))
+
+
+(define %lotus-simple-users  (list (user-account (uid                    %lotus-account-uid)
+                                                 (name                   %lotus-account-user-name)
+                                                 (comment                %lotus-account-comment)
+                                                 (group                  %lotus-account-group-name)
+                                                 (home-directory         (string-append %lotus-account-home-parent-directory "/" %lotus-account-user-name "/" "hell"))
+                                                 (shell                  %lotus-account-shell)
+                                                 (supplementary-groups   %lotus-account-supplementry-groups)
+                                                 (create-home-directory? %lotus-account-create-home-directory))
+
+                                   (user-account (uid                    1002)
+                                                 (name                   "j")
+                                                 (comment                "Jam")
+                                                 (group                  %lotus-account-group-name)
+                                                 (home-directory         (string-append %lotus-account-home-parent-directory "/" "j"))
+                                                 (supplementary-groups   %lotus-account-supplementry-groups)
+                                                 (create-home-directory? %lotus-account-create-home-directory))))
 
 (define %lotus-users        (append %lotus-simple-users
                                     %base-user-accounts))
@@ -738,6 +746,7 @@
  (setuid-programs     %lotus-setuid-programs)
  (mapped-devices      %lotus-mapped-devices)
  (users               %lotus-users)
+ (groups              %lotus-groups)
  (file-systems        %lotus-file-systems)
  (swap-devices        %lotus-swap-devices)
  (bootloader          %lotus-bootloader)
