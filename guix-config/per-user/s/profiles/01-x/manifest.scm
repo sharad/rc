@@ -5,6 +5,8 @@
 (use-modules (lotus packages cdesktopenv))
 
 (define %lotus-x-package-names (list "pidgin"
+                                     ;; "wmutils-core"
+                                     ;; "wmutils-opt"
                                      ;; "skype4pidgin@1.6"
                                      "skype4pidgin"
                                      "pidgin-otr"

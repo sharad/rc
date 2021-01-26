@@ -40,23 +40,32 @@ LOCAL_ZSH_GIT_CACHED_UNSTAGED=""
 # time
 # RPROMPT='%D{%k:%M:%S}'
 
-# https://stackoverflow.com/questions/60323738/bash-and-zsh-prompt-that-ring-a-bell-and-do-display-error-code-of-last-command
-BLK=$(tput setaf 0; tput bold)
-RED=$(tput setaf 1; tput bold)
-grn=$(tput setaf 2)
-GRN=$(tput setaf 2; tput bold)
-yel=$(tput setaf 3)
-reset_color=$(tput sgr0)
+if whence tput >& /dev/null
+then
+    # https://stackoverflow.com/questions/60323738/bash-and-zsh-prompt-that-ring-a-bell-and-do-display-error-code-of-last-command
+    BLK=$(tput setaf 0; tput bold)
+    RED=$(tput setaf 1; tput bold)
+    grn=$(tput setaf 2)
+    GRN=$(tput setaf 2; tput bold)
+    yel=$(tput setaf 3)
+    reset_color=$(tput sgr0)
+fi
 
 function set_title() {
-    printf '\033]0;%s%s' "$1" "$(tput bel)"
+    if whence tput >& /dev/null
+    then
+        printf '\033]0;%s%s' "$1" "$(tput bel)"
+    fi
 }
 
 function make_prompt() {
     local last_cmd_status="$1"
     local st c bell
     st=$?
-    bell=$(tput bel)
+    if whence tput >& /dev/null
+    then
+        bell=$(tput bel)
+    fi
 
     # Green for success, red and a bell for failure
     if [[ $st -gt 0 ]]

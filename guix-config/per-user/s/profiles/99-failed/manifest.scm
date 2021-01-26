@@ -1,5 +1,8 @@
 
 (define %lotus-failed-package-names (list "nomad"
+                                          "openfortivpn"
+                                          "wmutils-core"
+                                          "wmutils-opt"
                                           "hello"))
 
 

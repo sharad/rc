@@ -23,7 +23,7 @@ then
     exit -1
 fi
 
-if [ -r "${CONFIG}" ]
+if [ ! -r "${CONFIG}" ]
 then
     echo file "${CONFIG}" not exists >&2
     exit -1
@@ -42,21 +42,21 @@ then
     exit -1
 fi
 
-DEV_ROOT="/dev/mapper/${DISK_SERIAL_ID}guix-root"
-DEV_BOOT="/dev/mapper/${DISK_SERIAL_ID}guix-boot"
-DEV_VAR="/dev/mapper/${DISK_SERIAL_ID}guix-var"
-DEV_TMP="/dev/mapper/${DISK_SERIAL_ID}guix-tmp"
-DEV_GNU="/dev/mapper/${DISK_SERIAL_ID}guix-gnu"
+DEV_ROOT="/dev/mapper/${DISK_SERIAL_ID}Xguix-root"
+DEV_BOOT="/dev/mapper/${DISK_SERIAL_ID}Xguix-boot"
+DEV_VAR="/dev/mapper/${DISK_SERIAL_ID}Xguix-var"
+DEV_TMP="/dev/mapper/${DISK_SERIAL_ID}Xguix-tmp"
+DEV_GNU="/dev/mapper/${DISK_SERIAL_ID}Xguix-gnu"
 
 for part in "${DEV_ROOT}" "${DEV_BOOT}" "${DEV_VAR}" "${DEV_TMP}" "${DEV_GNU}"
 do
-    echo echcking disk file = "$part"
-    if [ -e "$part" ]
+    echo checking disk file = "$part"
+    if [ ! -e "$part" ]
     then
         echo file "$part" not exists. >&2
         exit -1
     fi
-    if [ -b "$part" ]
+    if [ ! -b "$part" ]
     then
         echo file "$part" is not block device. >&2
         exit -1
@@ -79,7 +79,7 @@ umount /mnt/var
 umount /mnt/gnu
 umount /mnt
 
-vgchange -ay ${DISK_SERIAL_ID}guix
+vgchange -ay ${DISK_SERIAL_ID}Xguix
 
 sleep 2
 
