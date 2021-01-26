@@ -12,7 +12,7 @@ fi
 
 if [ "x${HOST}" != "x" ]
 then
-    __comp=sh
+    __comp=eev
 
     if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ]
     then
@@ -20,7 +20,7 @@ then
     fi
     if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ]
     then
-        mkdir -p ~/.setup/osetup/setup/rsetup.d/sh.d/run.d
+        mkdir -p ~/.setup/osetup/setup/rsetup.d/${__comp}.d/run.d
         cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
     fi
 

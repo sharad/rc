@@ -8,24 +8,33 @@ then
     HOST=$HOSTNAME
 fi
 
+if [ ! -d "/tmp/user/$(id -u)" ]
+then
+    mkdir -p "/tmp/user/$(id -u)"
+fi
+
 if [ "x${HOST}" != "x" ]
 then
-    if [ -d ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ]
+    __comp=sh
+
+    if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ]
     then
-        rm -rf ~/.rsetup/${__comp}/${__subcomp}.d/${HOST}
+        rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
     fi
-    if [ ! -e ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ]
+    if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ]
     then
-        cp ~/.rsetup/${__comp}/${__subcomp}.tmpl ~/.rsetup/${__comp}/${__subcomp}.d/${HOST}
+        mkdir -p ~/.setup/osetup/setup/rsetup.d/${__comp}.d/run.d
+        cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
     fi
 
-    if [ -r ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ]
+    if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ]
     then
-        . ~/.rsetup/${__comp}/${__subcomp}.d/${HOST}
+        ~/.rsetup/${__comp}/run.d/${HOST}
     fi
 
+    unset __comp
 else
-    echo ${__subcomp} var HOST is not set $HOST
+    print env var HOST is not set $HOST
 fi
-unset __subcomp
-unset __comp
+
+
