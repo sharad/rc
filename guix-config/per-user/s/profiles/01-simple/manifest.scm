@@ -234,10 +234,10 @@
                                     "xclip"
                                     "xsel"
                                     "xmodmap"
-                                    "xinput"
-                                    "ibus"
-                                    "m17n-lib"
-                                    "m17n-db"
+                                    ;; "xinput"
+                                    ;; "ibus"
+                                    ;; "m17n-lib"
+                                    ;; "m17n-db"
 
                                     ;; at
                                     "curl"

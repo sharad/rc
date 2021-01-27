@@ -32,7 +32,7 @@ export SCREENDIR
 GUIX_PROFILE="$HOME/.guix-profile"
 if [ -r $GUIX_PROFILE/etc/profile ]
 then
-  . $GUIX_PROFILE/etc/profile
+    . $GUIX_PROFILE/etc/profile
 fi
 export GUIX_PROFILE
 # export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
@@ -511,5 +511,8 @@ then
    then
        source ~/.LESS_TERMCAP
    fi
+
+   LOCPATH=$GUIX_LOCPATH
+   export LOCPATH
 fi
 

@@ -86,13 +86,13 @@ fi
 if whence -p mcron >/dev/null 2>&1 &&
        ! pgrep -u "$(id -u)"  -u $(id -u ) mcron >/dev/null 2>&1
 then
-    mcron -d -i guile &!
+    mcron -d -i guile >/dev/null 2>&1 &!
 fi
 
 if whence -p shepherd >/dev/null 2>&1 &&
        ! pgrep -u "$(id -u)"  -u $(id -u ) shepherd >/dev/null 2>&1
 then
-    shepherd --socket="$XDG_RUNTIME_DIR/shepherd/socket" &!
+    shepherd --socket="$XDG_RUNTIME_DIR/shepherd/socket" >/dev/null 2>&1 &!
 fi
 
 __comp=login

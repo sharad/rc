@@ -47,14 +47,52 @@ fi
 echo wmlogin/run "starting wmlogin/run" >>& ~/.logs/wmlogin.log &!
 
 
+###
+### {{ IBUS
+
 ##{{ IBus
-if whence -p ibus-daemon >& /dev/null
+if whence -p ibus-daemon >& /dev/null && ! pgrep ibus-daemon >& /dev/null
 then
     # ibus-daemon -r -d -n stumwpm -v
     # ibus-daemon -drx -xim
-    ibus-daemon -drx
+    # ibus-daemon -drx
+    ibus-daemon -d --panel disable -r --xim &!
 fi
 ##}}
+
+if whence -p ibus-x11 >& /dev/null && ! pgrep ibus-x11 >& /dev/null
+then
+    ~/.guix-profile/libexec/ibus-x11 --kill-daemon &!
+fi
+
+if whence -p ibus-x11 >& /dev/null && ! pgrep ibus-x11 >& /dev/null
+then
+    ~/.guix-profile/libexec/ibus-x11 --kill-daemon &!
+fi
+
+if whence -p ibus-portal >& /dev/null && ! pgrep ibus-portal >& /dev/null
+then
+    ~/.guix-profile/libexec/ibus-portal &!
+fi
+
+if whence -p ibus-extention-gtk3 >& /dev/null && ! pgrep ibus-extention-gtk3 >& /dev/null
+then
+    ~/.guix-profile/libexec/ibus-extention-gtk3 &!
+fi
+
+if whence -p ibus-engine-simple >& /dev/null && ! pgrep ibus-engine-simple >& /dev/null
+then
+    ~/.guix-profile/libexec/ibus-engine-simple &!
+fi
+
+if whence -p ibus-dconf >& /dev/null && ! pgrep ibus-dconf >& /dev/null
+then
+    ~/.guix-profile/libexec/ibus-dconf &!
+fi
+
+### }}
+###
+
 
 if whence -p xte >& /dev/null
 then

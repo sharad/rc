@@ -288,3 +288,7 @@ urxvt.keysym.Control-Shift-Up:      perl:font:increment
 urxvt.keysym.Control-Shift-Down:    perl:font:decrement
 
 urxvt.keysym.3-l:		\033c
+
+! https://wiki.archlinux.org/index.php/IBus
+URxvt.inputMethod: ibus
+URxvt.preeditType: OverTheSpot
