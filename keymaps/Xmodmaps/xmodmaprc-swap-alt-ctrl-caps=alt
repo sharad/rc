@@ -46,6 +46,8 @@ clear Mod5
 !! 104 = KP_Enter
 
 !keycode  37 = Alt_L Meta_L Alt_L Meta_L Alt_L Meta_L
+!
+! commented
 keycode  37 = Hyper_L
 keycode  64 = Control_L NoSymbol Control_L NoSymbol Control_L
 keycode  66 = Alt_L Meta_L Alt_L Meta_L Alt_L Meta_L
@@ -73,4 +75,4 @@ add    Mod5    = ISO_Level3_Shift Mode_switch
 add    Lock    = Caps_Lock
 
 
-keycode  22 = BackSpace BackSpace Terminate_Server Terminate_Server BackSpace Terminate_Server Terminate_Server Terminate_Server
+! keycode  22 = BackSpace BackSpace Terminate_Server Terminate_Server BackSpace Terminate_Server Terminate_Server Terminate_Server
