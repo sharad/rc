@@ -36,23 +36,20 @@
 (use-modules (srfi srfi-1))
 (use-package-modules base idutils)
 (use-service-modules dns mcron messaging)
-
-(use-modules (lotus packages utils))
-
-(define this-config-file (local-file (assoc-ref (current-source-location) 'filename)))
-;; (define nm-dnsmasq-file
-;;   (plain-file "cache.conf"
-;;               "cache-size=1000\n"))
 
 ;; non-guix
 
 ;; Import nonfree linux module.
 (when nongnu-desktop?
+  (use-modules (lotus packages utils))
   (use-modules (nongnu packages linux)))
 
 
-(if (not %lotus-system-init)
-    (load "local/local.scm"))
+(define this-config-file (local-file (assoc-ref (current-source-location) 'filename)))
+
+
+(when (not %lotus-system-init)
+  (load "local/local.scm"))
 
 (define (lotus-local-value local alternat)
   (if (not %lotus-system-init)
