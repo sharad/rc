@@ -621,7 +621,7 @@
                                                                                            ;; (use-substitutes? %lotus-guix-use-substitutes)
                                                                                            ;; (authorized-keys '())
                                                                                            ;; (tmpdir "/gnu/tmp") ;; https://guix.gnu.org/manual/en/html_node/Base-Services.html
-                                                                                           (tmpdir "/srv/guix/build/tmp") ;; https://guix.gnu.org/manual/en/html_node/Base-Services.html
+                                                                                           (tmpdir (string-append "/srv/guix/build/" %local-disk-hitachi-serial-id "/tmp")) ;; https://guix.gnu.org/manual/en/html_node/Base-Services.html
                                                                                            (substitute-urls (append %lotus-guix-substitute-urls
                                                                                                                     %default-substitute-urls))
                                                                                            (extra-options %lotus-guix-extra-options)))))
