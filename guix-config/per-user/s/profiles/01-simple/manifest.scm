@@ -47,7 +47,7 @@
                                     "gnu-pw-mgr"
                                     "mpd-mpc"
                                     "cava"
-                                    ;; "openfortivpn"
+                                    "openfortivpn"
                                     "ghostscript"
                                     "bidiv"
                                     "dos2unix"
