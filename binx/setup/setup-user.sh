@@ -313,17 +313,17 @@ function setup_chown()
     curr_group=$(stat -c %G "$path")
     curr_group_id=$(stat -c %g "$path")
 
-    info path=${path}
-    info user=${user}
-    info user_id=${user_id}
-    info curr_user=${curr_user}
-    info curr_user_id=${curr_user_id}
-    info group=${group}
-    info curr_group=${curr_group}
-    info curr_group_id=${curr_group_id}
+    debug path=${path}
+    debug user=${user}
+    debug user_id=${user_id}
+    debug curr_user=${curr_user}
+    debug curr_user_id=${curr_user_id}
+    debug group=${group}
+    debug curr_group=${curr_group}
+    debug curr_group_id=${curr_group_id}
 
 
-    info if \[ "$user" \!\= "$curr_user" \] \&\& \[ "$user_id" \-ne "$curr_user_id" \] \|\| \[ "$group" \!\= "$curr_group" \] \&\& \[ "$group_id" \-ne "$curr_group_id" \]
+    debug if \[ "$user" \!\= "$curr_user" \] \&\& \[ "$user_id" \-ne "$curr_user_id" \] \|\| \[ "$group" \!\= "$curr_group" \] \&\& \[ "$group_id" \-ne "$curr_group_id" \]
 
     if [ "$user" != "$curr_user" ] && [ "$user_id" -ne "$curr_user_id" ] && [ "$group" != "$curr_group" ] && [ "$group_id" -ne "$curr_group_id" ]
     then
