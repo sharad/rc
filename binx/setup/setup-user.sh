@@ -1730,6 +1730,7 @@ function setup_dep_control_storage_class_dir()
 
         local hosts_name=hosts
         local common_name=common
+        local local_host=localhost
 
         running debug setup_deps_model_volumes_dirs "${storage_path}"
 
@@ -1738,7 +1739,7 @@ function setup_dep_control_storage_class_dir()
         running debug mkdir -p "${control_hostmachine_full_path}/${classcontroldir_rel_path}"
         if [ "x" != "x${SETUP_HOSTNAME}" ]     # hostname specific storage
         then
-            running debug mkdir -p "${control_hostmachine_full_path}/${hosts_name}/${SETUP_HOSTNAME}/${classcontroldir_rel_path}/${mdirbase}"
+            running debug mkdir -p "${control_hostmachine_full_path}/${hosts_name}/${local_host}/${classcontroldir_rel_path}/${mdirbase}"
         else
             warn SETUP_HOSTNAME=${SETUP_HOSTNAME} is not set
         fi
@@ -1799,11 +1800,11 @@ function setup_dep_control_storage_class_dir()
                     then
                         running debug setup_sudo_mkdirp "${machine_host_dir_full_path}/volumes.d/${vol_modelpath}/${hosts_name}/${SETUP_HOSTNAME}/${vol_classpathinstdir}"
                         running debug setup_chown "$USER" "$(id -gn)" "${machine_host_dir_full_path}/volumes.d/${vol_modelpath}/${hosts_name}/${SETUP_HOSTNAME}/${vol_classpathinstdir}"
-                        running debug mkdir -p "${control_hostmachine_full_path}/${hosts_name}/${hosts_name}/${SETUP_HOSTNAME}/${classcontroldir_rel_path}/${mdirbase}"
+                        running debug mkdir -p "${control_hostmachine_full_path}/${hosts_name}/${local_host}/${classcontroldir_rel_path}/${mdirbase}"
                         debug fullupdirs=$fullupdirs
                         # running debug setup_make_link ${fullupdirs}/${vol_modelpath}/${vol_classpathinstdir} ${control_hostmachine_full_path}/${classcontroldir_rel_path}/model.d/${mdirbase}
                         # debug running debug setup_make_link ${fullupdirs}/${vol_modelpath}/${vol_classpathinstdir} ${control_hostmachine_full_path}/${classcontroldir_rel_path}/${mdirbase}
-                        running debug setup_make_link "${fullupdirs}/${vol_modelpath}/${hosts_name}/${SETUP_HOSTNAME}/${vol_classpathinstdir}" "${control_hostmachine_full_path}/${hosts_name}/${SETUP_HOSTNAME}/${classcontroldir_rel_path}/${mdirbase}"
+                        running debug setup_make_link "${fullupdirs}/${vol_modelpath}/${hosts_name}/${SETUP_HOSTNAME}/${vol_classpathinstdir}" "${control_hostmachine_full_path}/${hosts_name}/${local_host}/${classcontroldir_rel_path}/${mdirbase}"
                     else
                         warn SETUP_HOSTNAME=${SETUP_HOSTNAME} is not set
                     fi
