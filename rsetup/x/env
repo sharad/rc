@@ -135,9 +135,9 @@ XMODIFIERS=@im=ibus
 QT_IM_MODULE=ibus
 
 # https://wiki.archlinux.org/index.php/IBus
-GTK_IM_MODULE=xim
-XMODIFIERS=@im=ibus
-QT_IM_MODULE=xim
+# GTK_IM_MODULE=xim
+# XMODIFIERS=@im=ibus
+# QT_IM_MODULE=xim
 
 export GTK_IM_MODULE
 export XMODIFIERS
