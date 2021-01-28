@@ -9,6 +9,13 @@ function running()
     $_cmd "$@"
 }
 
+
+# get serial
+# udevadm info --query=all --name=/dev/sdb | grep ID_SERIAL
+
+# get UUID
+# blkid /dev/sda1
+
 ##
 CONFIG="$1"
 DISK_SERIAL_ID="$2"

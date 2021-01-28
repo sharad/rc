@@ -50,6 +50,9 @@ export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 SSH_KEY_DUMP=$1
 
 
+SETUP_HOSTNAME=${HOSTNAME}
+
+
 logicaldirs=(config deletable longterm preserved shortterm maildata)
 
 userdata_dirs=(Desktop Documents Downloads Library Music Pictures Public public_html Scratch Templates Videos Trash tmp)
@@ -185,6 +188,8 @@ function main()
 
     trap setup_finish EXIT SIGINT SIGTERM
 
+    SETUP_HOSTNAME=${HOSTNAME}
+
     running debug process_arg $@
     # process_arg $@
     running debug mkdir -p $SETUP_TMPDIR
@@ -299,6 +304,8 @@ function setup_chown()
     user="$1"
     group="$2"
     path="$3"
+    user_id="$(id -u ${user})"
+    group_id="$(id -g ${user})"
 
     curr_user=$(stat -c %U "$path")
     curr_user_id=$(stat -c %u "$path")
@@ -306,7 +313,19 @@ function setup_chown()
     curr_group=$(stat -c %G "$path")
     curr_group_id=$(stat -c %g "$path")
 
-    if [ "$user" != "$curr_user" ] && [ "$user_id" -ne "$curr_user_id" ] || [ "$group" != "$curr_group" ] && [ "$group_id" -ne "$curr_group_id" ]
+    info path=${path}
+    info user=${user}
+    info user_id=${user_id}
+    info curr_user=${curr_user}
+    info curr_user_id=${curr_user_id}
+    info group=${group}
+    info curr_group=${curr_group}
+    info curr_group_id=${curr_group_id}
+
+
+    info if \[ "$user" \!\= "$curr_user" \] \&\& \[ "$user_id" \-ne "$curr_user_id" \] \|\| \[ "$group" \!\= "$curr_group" \] \&\& \[ "$group_id" \-ne "$curr_group_id" \]
+
+    if [ "$user" != "$curr_user" ] && [ "$user_id" -ne "$curr_user_id" ] && [ "$group" != "$curr_group" ] && [ "$group_id" -ne "$curr_group_id" ]
     then
         running debug sudo chown ${user}.${group} "${path}"
     else
@@ -911,8 +930,8 @@ function setup_apt_upgrade_system()
     then
 	if [ -e ~/bin/lotus-update ]
 	then	
-          # running info ~/bin/lotus-clear
-          running info ~/bin/lotus-update
+      # running info ~/bin/lotus-clear
+      : running info ~/bin/lotus-update
 	fi
     else
         # running info sudo ${INSTALLER} ${INSTALLER_OPT} clean
@@ -1717,7 +1736,7 @@ function setup_dep_control_storage_class_dir()
 
         # mkdir -p ${control_hostmachine_full_path}/${classcontroldir_rel_path}/model.d
         running debug mkdir -p "${control_hostmachine_full_path}/${classcontroldir_rel_path}"
-        if [ "x" != "x${SETUP_HOSTNAME}"]     # hostname specific storage
+        if [ "x" != "x${SETUP_HOSTNAME}" ]     # hostname specific storage
         then
             running debug mkdir -p "${control_hostmachine_full_path}/${hosts_name}/${SETUP_HOSTNAME}/${classcontroldir_rel_path}/${mdirbase}"
         else
@@ -1742,20 +1761,16 @@ function setup_dep_control_storage_class_dir()
                     vol_classpathinstdir="${classpath}${classpath:+/}${classinstdir}"
                     vol_model_classpathinstdir="${vol_modelpath}/${vol_classpathinstdir}"
 
-                    debug storage_path=$storage_path
-                    debug mdir=$mdir
-                    debug mdirbase=$mdirbase
-                    debug classpath=$classpath
-                    debug classinstdir=$classinstdir
+                    info mdirbase=${mdirbase}
+                    info vol_modelpath=${vol_modelpath}
+                    info vol_classpathinstdir=${vol_classpathinstdir}
+                    info vol_model_classpathinstdir=${vol_model_classpathinstdir}
 
-                    if false
-                    then
-                        info storage_path=$storage_path
-                        info mdir=$mdir
-                        info mdirbase=$mdirbase
-                        info classpath=$classpath
-                        info classinstdir=$classinstdir
-                    fi
+                    info storage_path=$storage_path
+                    info mdir=$mdir
+                    info mdirbase=$mdirbase
+                    info classpath=$classpath
+                    info classinstdir=$classinstdir
 
                     debug 'vol_model_classpathinstdir="model.d/${storage_path}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"'
                     debug =
@@ -1767,24 +1782,28 @@ function setup_dep_control_storage_class_dir()
                     then
                         running debug setup_sudo_mkdirp "${machine_host_dir_full_path}/volumes.d/${vol_modelpath}/${vol_classpathinstdir}"
                         running debug setup_chown "$USER" "$(id -gn)" "${machine_host_dir_full_path}/volumes.d/${vol_modelpath}/${vol_classpathinstdir}"
+
+                        running debug setup_sudo_mkdirp "${machine_host_dir_full_path}/volumes.d/${vol_modelpath}/${common_name}/${vol_classpathinstdir}"
+                        running debug setup_chown "$USER" "$(id -gn)" "${machine_host_dir_full_path}/volumes.d/${vol_modelpath}/${common_name}/${vol_classpathinstdir}"
+
                         running debug mkdir -p "${control_hostmachine_full_path}/${classcontroldir_rel_path}"
                         running debug mkdir -p "${control_hostmachine_full_path}/${common_name}/${classcontroldir_rel_path}"
                         debug fullupdirs=$fullupdirs
                         # running debug setup_make_link ${fullupdirs}/${vol_modelpath}/${vol_classpathinstdir} ${control_hostmachine_full_path}/${classcontroldir_rel_path}/model.d/${mdirbase}
                         # debug running debug setup_make_link ${fullupdirs}/${vol_modelpath}/${vol_classpathinstdir} ${control_hostmachine_full_path}/${classcontroldir_rel_path}/${mdirbase}
                         running debug setup_make_link "${fullupdirs}/${vol_modelpath}/${vol_classpathinstdir}" "${control_hostmachine_full_path}/${classcontroldir_rel_path}/${mdirbase}"
-                        running debug setup_make_link "${fullupdirs}/${vol_modelpath}/${vol_classpathinstdir}" "${control_hostmachine_full_path}/${common_name}/${classcontroldir_rel_path}/${mdirbase}"
+                        running debug setup_make_link "${fullupdirs}/${vol_modelpath}/${common_name}/${vol_classpathinstdir}" "${control_hostmachine_full_path}/${common_name}/${classcontroldir_rel_path}/${mdirbase}"
                     fi
 
-                    if [ "x" != "x${SETUP_HOSTNAME}"]     # hostname specific storage
+                    if [ "x" != "x${SETUP_HOSTNAME}" ]     # hostname specific storage
                     then
-                        running debug setup_sudo_mkdirp "${machine_host_dir_full_path}/volumes.d/${vol_modelpath}/${SETUP_HOSTNAME}/${vol_classpathinstdir}"
-                        running debug setup_chown "$USER" "$(id -gn)" "${machine_host_dir_full_path}/volumes.d/${vol_modelpath}/${SETUP_HOSTNAME}/${vol_classpathinstdir}"
-                        running debug mkdir -p "${control_hostmachine_full_path}/${hosts_name}/${SETUP_HOSTNAME}/${classcontroldir_rel_path}/${mdirbase}"
+                        running debug setup_sudo_mkdirp "${machine_host_dir_full_path}/volumes.d/${vol_modelpath}/${hosts_name}/${SETUP_HOSTNAME}/${vol_classpathinstdir}"
+                        running debug setup_chown "$USER" "$(id -gn)" "${machine_host_dir_full_path}/volumes.d/${vol_modelpath}/${hosts_name}/${SETUP_HOSTNAME}/${vol_classpathinstdir}"
+                        running debug mkdir -p "${control_hostmachine_full_path}/${hosts_name}/${hosts_name}/${SETUP_HOSTNAME}/${classcontroldir_rel_path}/${mdirbase}"
                         debug fullupdirs=$fullupdirs
                         # running debug setup_make_link ${fullupdirs}/${vol_modelpath}/${vol_classpathinstdir} ${control_hostmachine_full_path}/${classcontroldir_rel_path}/model.d/${mdirbase}
                         # debug running debug setup_make_link ${fullupdirs}/${vol_modelpath}/${vol_classpathinstdir} ${control_hostmachine_full_path}/${classcontroldir_rel_path}/${mdirbase}
-                        running debug setup_make_link "${fullupdirs}/${vol_modelpath}/${SETUP_HOSTNAME}/${vol_classpathinstdir}" "${control_hostmachine_full_path}/${hosts_name}/${SETUP_HOSTNAME}/${classcontroldir_rel_path}/${mdirbase}"
+                        running debug setup_make_link "${fullupdirs}/${vol_modelpath}/${hosts_name}/${SETUP_HOSTNAME}/${vol_classpathinstdir}" "${control_hostmachine_full_path}/${hosts_name}/${SETUP_HOSTNAME}/${classcontroldir_rel_path}/${mdirbase}"
                     else
                         warn SETUP_HOSTNAME=${SETUP_HOSTNAME} is not set
                     fi
@@ -1796,7 +1815,7 @@ function setup_dep_control_storage_class_dir()
                     info running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${control_hostmachine_rel_path}/${common_name}/${classcontroldir_rel_path}/${mdirbase}"
                     running debug setup_add_to_version_control      "${LOCALDIRS_DIR}" "${control_hostmachine_rel_path}/${common_name}/${classcontroldir_rel_path}/${mdirbase}"
 
-                    if [ "x" != "x${SETUP_HOSTNAME}"]     # hostname specific storage
+                    if [ "x" != "x${SETUP_HOSTNAME}" ]     # hostname specific storage
                     then
                         info running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${control_hostmachine_rel_path}/${hosts_name}/${SETUP_HOSTNAME}/${classcontroldir_rel_path}/${mdirbase}"
                         running debug setup_add_to_version_control      "${LOCALDIRS_DIR}" "${control_hostmachine_rel_path}/${hosts_name}/${SETUP_HOSTNAME}/${classcontroldir_rel_path}/${mdirbase}"
