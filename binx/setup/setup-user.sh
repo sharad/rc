@@ -1228,6 +1228,13 @@ function setup_git_tree_repo()
             then
                 echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" status >&2
             fi
+
+            # checkout branch
+            # if ! running info git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" status
+            # then
+            #     echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" status >&2
+            # fi
+
             if ! running info git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
             then
                 echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase >&2
@@ -1676,14 +1683,18 @@ function setup_dep_control_storage_class_dir()
         fi
 
         local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-        local machinedir="${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d"
-        local hostdir="${machinedir}/$HOST"
+
+        local machine_host_dir_rel_path="org/deps.d/model.d/machine.d/$HOST"
+        local machine_host_dir_full_path="${LOCALDIRS_DIR}/${machine_host_dir_rel_path}"
+
+        local control_hostmachine_rel_path="${machine_host_dir_rel_path}/volumes.d/control.d"
+        local control_hostmachine_full_path="${LOCALDIRS_DIR}/${control_hostmachine_rel_path}"
 
         # TODO?
         local classcontroldir_rel_path=$(setup_make_path_by_position "${classpath}" "${storage_path}" "${classcontainer}.d" "$position")
-        local classcontrol_dir_path="${hostdir}/volumes.d/control.d/${classcontroldir_rel_path}"
 
-        local _classcontrol_dir_path="org/deps.d/model.d/machine.d/$HOST/volumes.d/control.d/${classcontroldir_rel_path}"
+        local classcontrol_host_vol_dir_full_path="${control_hostmachine_full_path}/${classcontroldir_rel_path}"
+        local  classcontrol_host_vol_dir_rel_path="${control_hostmachine_rel_path}/${classcontroldir_rel_path}"
 
         # # TODO?
         # local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
@@ -1698,28 +1709,38 @@ function setup_dep_control_storage_class_dir()
         debug updirsclasscontroldir_rel_path=$updirsclasscontroldir_rel_path fullupdirs-$fullupdirs
 
 
+        local hosts_name=hosts
+        local common_name=common
 
         running debug setup_deps_model_volumes_dirs "${storage_path}"
 
 
-        # mkdir -p $classcontrol_dir_path/model.d
-        running debug mkdir -p "$classcontrol_dir_path"
-        # mkdir -p $classcontrol_dir_path/view.d
+        # mkdir -p ${control_hostmachine_full_path}/${classcontroldir_rel_path}/model.d
+        running debug mkdir -p "${control_hostmachine_full_path}/${classcontroldir_rel_path}"
+        if [ "x" != "x${SETUP_HOSTNAME}"]     # hostname specific storage
+        then
+            running debug mkdir -p "${control_hostmachine_full_path}/${hosts_name}/${SETUP_HOSTNAME}/${classcontroldir_rel_path}/${mdirbase}"
+        else
+            warn SETUP_HOSTNAME=${SETUP_HOSTNAME} is not set
+        fi
+        # mkdir -p ${control_hostmachine_full_path}/${classcontroldir_rel_path}/view.d
         # TODO?STATS
-        if [ -d "${hostdir}/volumes.d/model.d/${storage_path}/" ] && ls "${hostdir}/volumes.d/model.d/${storage_path}"/* > /dev/null 2>&1
+        if [ -d "${machine_host_dir_full_path}/volumes.d/model.d/${storage_path}/" ] && ls "${machine_host_dir_full_path}/volumes.d/model.d/${storage_path}"/* > /dev/null 2>&1
         then
             modelsymlink=0
 
-            info for loop in "${hostdir}/volumes.d/model.d/${storage_path}"
+            info for loop in "${machine_host_dir_full_path}/volumes.d/model.d/${storage_path}"
 
-            for mdir in "${hostdir}/volumes.d/model.d/${storage_path}"/*
+            for mdir in "${machine_host_dir_full_path}/volumes.d/model.d/${storage_path}"/*
             do
                 if [ -L "$mdir" ]
                 then
                     modelsymlink=1
 
                     mdirbase=$(basename "$mdir")
-                    volclasspathinstdir="model.d/${storage_path}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
+                    vol_modelpath="model.d/${storage_path}/${mdirbase}"
+                    vol_classpathinstdir="${classpath}${classpath:+/}${classinstdir}"
+                    vol_model_classpathinstdir="${vol_modelpath}/${vol_classpathinstdir}"
 
                     debug storage_path=$storage_path
                     debug mdir=$mdir
@@ -1736,25 +1757,52 @@ function setup_dep_control_storage_class_dir()
                         info classinstdir=$classinstdir
                     fi
 
-                    debug 'volclasspathinstdir="model.d/${storage_path}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"'
+                    debug 'vol_model_classpathinstdir="model.d/${storage_path}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"'
                     debug =
-                    debug $volclasspathinstdir
+                    debug $vol_model_classpathinstdir
 
                     debug mdirbase=$mdirbase
 
-                    running debug setup_sudo_mkdirp "${hostdir}/volumes.d/${volclasspathinstdir}"
-                    running debug setup_chown "$USER" "$(id -gn)" "${hostdir}/volumes.d/${volclasspathinstdir}"
+                    if true     # common storage
+                    then
+                        running debug setup_sudo_mkdirp "${machine_host_dir_full_path}/volumes.d/${vol_modelpath}/${vol_classpathinstdir}"
+                        running debug setup_chown "$USER" "$(id -gn)" "${machine_host_dir_full_path}/volumes.d/${vol_modelpath}/${vol_classpathinstdir}"
+                        running debug mkdir -p "${control_hostmachine_full_path}/${classcontroldir_rel_path}"
+                        running debug mkdir -p "${control_hostmachine_full_path}/${common_name}/${classcontroldir_rel_path}"
+                        debug fullupdirs=$fullupdirs
+                        # running debug setup_make_link ${fullupdirs}/${vol_modelpath}/${vol_classpathinstdir} ${control_hostmachine_full_path}/${classcontroldir_rel_path}/model.d/${mdirbase}
+                        # debug running debug setup_make_link ${fullupdirs}/${vol_modelpath}/${vol_classpathinstdir} ${control_hostmachine_full_path}/${classcontroldir_rel_path}/${mdirbase}
+                        running debug setup_make_link "${fullupdirs}/${vol_modelpath}/${vol_classpathinstdir}" "${control_hostmachine_full_path}/${classcontroldir_rel_path}/${mdirbase}"
+                        running debug setup_make_link "${fullupdirs}/${vol_modelpath}/${vol_classpathinstdir}" "${control_hostmachine_full_path}/${common_name}/${classcontroldir_rel_path}/${mdirbase}"
+                    fi
 
-
-                    debug fullupdirs=$fullupdirs
-                    # running debug setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/model.d/${mdirbase}
-                    # debug running debug setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
-                    running debug setup_make_link "${fullupdirs}/${volclasspathinstdir}" "$classcontrol_dir_path/${mdirbase}"
+                    if [ "x" != "x${SETUP_HOSTNAME}"]     # hostname specific storage
+                    then
+                        running debug setup_sudo_mkdirp "${machine_host_dir_full_path}/volumes.d/${vol_modelpath}/${SETUP_HOSTNAME}/${vol_classpathinstdir}"
+                        running debug setup_chown "$USER" "$(id -gn)" "${machine_host_dir_full_path}/volumes.d/${vol_modelpath}/${SETUP_HOSTNAME}/${vol_classpathinstdir}"
+                        running debug mkdir -p "${control_hostmachine_full_path}/${hosts_name}/${SETUP_HOSTNAME}/${classcontroldir_rel_path}/${mdirbase}"
+                        debug fullupdirs=$fullupdirs
+                        # running debug setup_make_link ${fullupdirs}/${vol_modelpath}/${vol_classpathinstdir} ${control_hostmachine_full_path}/${classcontroldir_rel_path}/model.d/${mdirbase}
+                        # debug running debug setup_make_link ${fullupdirs}/${vol_modelpath}/${vol_classpathinstdir} ${control_hostmachine_full_path}/${classcontroldir_rel_path}/${mdirbase}
+                        running debug setup_make_link "${fullupdirs}/${vol_modelpath}/${SETUP_HOSTNAME}/${vol_classpathinstdir}" "${control_hostmachine_full_path}/${hosts_name}/${SETUP_HOSTNAME}/${classcontroldir_rel_path}/${mdirbase}"
+                    else
+                        warn SETUP_HOSTNAME=${SETUP_HOSTNAME} is not set
+                    fi
 
                     # TODO
-                    info running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${_classcontrol_dir_path}/${mdirbase}"
-                    running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${_classcontrol_dir_path}/${mdirbase}"
+                    info running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${control_hostmachine_rel_path}/${classcontroldir_rel_path}/${mdirbase}"
+                    running debug setup_add_to_version_control      "${LOCALDIRS_DIR}" "${control_hostmachine_rel_path}/${classcontroldir_rel_path}/${mdirbase}"
 
+                    info running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${control_hostmachine_rel_path}/${common_name}/${classcontroldir_rel_path}/${mdirbase}"
+                    running debug setup_add_to_version_control      "${LOCALDIRS_DIR}" "${control_hostmachine_rel_path}/${common_name}/${classcontroldir_rel_path}/${mdirbase}"
+
+                    if [ "x" != "x${SETUP_HOSTNAME}"]     # hostname specific storage
+                    then
+                        info running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "${control_hostmachine_rel_path}/${hosts_name}/${SETUP_HOSTNAME}/${classcontroldir_rel_path}/${mdirbase}"
+                        running debug setup_add_to_version_control      "${LOCALDIRS_DIR}" "${control_hostmachine_rel_path}/${hosts_name}/${SETUP_HOSTNAME}/${classcontroldir_rel_path}/${mdirbase}"
+                    else
+                        warn SETUP_HOSTNAME=${SETUP_HOSTNAME} is not set
+                    fi
                 fi
 
 
@@ -1762,11 +1810,11 @@ function setup_dep_control_storage_class_dir()
 
             if [ "$modelsymlink" -eq 0 ]
             then
-                error setup_dep_control_storage_class_dir: No symlink for model volume dirs exists in "${hostdir}/volumes.d/model.d/${storage_path}/" create it.
+                error setup_dep_control_storage_class_dir: No symlink for model volume dirs exists in "${machine_host_dir_full_path}/volumes.d/model.d/${storage_path}/" create it.
             fi
-        fi              # if [ -d ${hostdir}/volumes.d/model.d ]
+        fi              # if [ -d ${machine_host_dir_full_path}/volumes.d/model.d ]
 
-        # running debug setup_mvc_dirs ${classcontrol_dir_path}/
+        # running debug setup_mvc_dirs ${control_hostmachine_full_path}/${classcontroldir_rel_path}/
     else
         error setup_dep_control_storage_class_dir Not correct number of arguments.
     fi
@@ -1865,59 +1913,67 @@ function setup_deps_control_class_all_positions_dirs()
 }
 # 
 
-function setup_deps_control_data_usrdata_dirs()
-{
-    storage_path="${1-local}"
+# function setup_deps_control_data_usrdata_dirs()
+# {
+#     storage_path="${1-local}"
+#
+#     running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/usrdatas" "usrdata"
+#     running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "usrdata" "${userdata_dirs[@]}" #  tmp
+# }
+# function setup_deps_control_data_sysdata_dirs()
+# {
+#     storage_path="${1-local}"
+#
+#     running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/sysdatas" "sysdata"
+#     running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "sysdata" config deletable longterm preserved shortterm maildata
+# }
+# function setup_deps_control_data_scratches_dirs()
+# {
+#     storage_path="${1-local}"
+#
+#     running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/scratches" "scratch"
+# }
+# function setup_deps_control_data_main_dirs()
+# {
+#     storage_path="${1-local}"
+#
+#     running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/main" "main"
+# }
 
-    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/usrdatas" "usrdata"
-
-    running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "usrdata" "${userdata_dirs[@]}" #  tmp
-}
-function setup_deps_control_data_sysdata_dirs()
-{
-    storage_path="${1-local}"
-
-    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/sysdatas" "sysdata"
-
-    running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "sysdata" config deletable longterm preserved shortterm maildata
-}
-function setup_deps_control_data_scratches_dirs()
-{
-    storage_path="${1-local}"
-
-    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/scratches" "scratch"
-}
-function setup_deps_control_data_main_dirs()
-{
-    storage_path="${1-local}"
-
-    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/main" "main"
-}
-function setup_deps_control_data_dirs()
-{
-    local storage_path="${1-local}"
-
-    running debug setup_deps_control_data_usrdata_dirs   "$storage_path"
-    running debug setup_deps_control_data_sysdata_dirs   "$storage_path"
-
-    running debug setup_deps_control_data_scratches_dirs "$storage_path"
-    running debug setup_deps_control_data_main_dirs      "$storage_path"
-}
+# function setup_deps_control_data_dirs()
+# {
+#     local storage_path="${1-local}"
+#
+#     # running debug setup_deps_control_data_usrdata_dirs   "$storage_path"
+#     running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/usrdatas" "usrdata"
+#     running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "usrdata" "${userdata_dirs[@]}" #  tmp
+#
+#     # running debug setup_deps_control_data_sysdata_dirs   "$storage_path"
+#     running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/sysdatas" "sysdata"
+#     running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "sysdata" config deletable longterm preserved shortterm maildata
+#
+#     # running debug setup_deps_control_data_scratches_dirs "$storage_path"
+#     running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/scratches" "scratch"
+#
+#     # running debug setup_deps_control_data_main_dirs      "$storage_path"
+#     running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/main" "main"
+# }
 # 
 
 # TODO: present classes are "data" "home" change them to "data" "info" etc
-function setup_deps_control_info_meta_dirs()
-{
-    local storage_path="${1-local}"
-
-    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${infoclassname}/meta" "meta"
-}
-function setup_deps_control_info_dirs()
-{
-    local storage_path="${1-local}"
-
-    running debug setup_deps_control_info_meta_dirs "$storage_path"
-}
+# function setup_deps_control_info_meta_dirs()
+# {
+#     local storage_path="${1-local}"
+#
+#     running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${infoclassname}/meta" "meta"
+# }
+# function setup_deps_control_info_dirs()
+# {
+#     local storage_path="${1-local}"
+#
+#     # running debug setup_deps_control_info_meta_dirs "$storage_path"
+#     running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${infoclassname}/meta" "meta"
+# }
 
 ###}}}
 
@@ -1925,7 +1981,7 @@ function setup_deps_control_info_dirs()
 function setup_deps_model_storage_volumes_dir()
 {
     local storage_path=${1-local}
-    local storageclassdirpath="/srv/volumes/$storage_path/"
+    local storageclassdirpath="/srv/volumes/$storage_path"
 
     local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
@@ -2130,8 +2186,24 @@ function setup_deps_control_dir()
 {
     local storage_path="${1-local}"
 
-    running debug setup_deps_control_data_dirs "$storage_path"
-    running debug setup_deps_control_info_dirs "$storage_path"
+    # running debug setup_deps_control_data_dirs "$storage_path"
+    # running debug setup_deps_control_data_usrdata_dirs   "$storage_path"
+    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/usrdatas" "usrdata"
+    running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "usrdata" "${userdata_dirs[@]}" #  tmp
+
+    # running debug setup_deps_control_data_sysdata_dirs   "$storage_path"
+    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/sysdatas" "sysdata"
+    running debug setup_deps_control_volumes_internal_dirs "$storage_path" "data" "sysdata" config deletable longterm preserved shortterm maildata
+
+    # running debug setup_deps_control_data_scratches_dirs "$storage_path"
+    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/scratches" "scratch"
+
+    # running debug setup_deps_control_data_main_dirs      "$storage_path"
+    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${dataclassname}/main" "main"
+
+    # running debug setup_deps_control_info_dirs "$storage_path"
+    # running debug setup_deps_control_info_meta_dirs "$storage_path"
+    running debug setup_deps_control_class_all_positions_dirs "$storage_path" "${infoclassname}/meta" "meta"
 }
 
 # deps/view
