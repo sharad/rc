@@ -190,20 +190,10 @@ function main()
     running debug mkdir -p $SETUP_TMPDIR
     running info set_keyboard
 
-    if [ ! -d "/run/current-system/profile" ]
-    then
-        running info setup_sourcecode_pro_font
-    fi
 
-    cd "${HOME}/"
 
-    if [ "x" = "x$nolongproc" ]
-    then
-        running info setup_apt_packages
-    fi
-    running info setup_dirs
-    running info setup_ecrypt_private
     running info setup_tmp_ssh_keys "$SETUP_TMPDIR/ssh" "$SSH_KEY_DUMP"
+
 
     if ! ssh-add -l
     then
@@ -220,6 +210,23 @@ function main()
     running info setup_user_config_setup
     running info setup_ssh_keys "$SSH_KEY_DUMP"
     running info setup_download_misc
+
+
+
+    if [ ! -d "/run/current-system/profile" ]
+    then
+        running info setup_sourcecode_pro_font
+    fi
+
+    cd "${HOME}/"
+
+    if [ "x" = "x$nolongproc" ]
+    then
+        running info setup_apt_packages
+    fi
+    # running guix install git
+    running info setup_dirs
+    running info setup_ecrypt_private
 
     if [ ! -d "/run/current-system/profile" ]
     then
@@ -902,8 +909,11 @@ function setup_apt_upgrade_system()
 {
     if [ -d "/run/current-system/profile" ]
     then
-        # running info ~/bin/lotus-clear
-        running info ~/bin/lotus-update
+	if [ -e ~/bin/lotus-update ]
+	then	
+          # running info ~/bin/lotus-clear
+          running info ~/bin/lotus-update
+	fi
     else
         # running info sudo ${INSTALLER} ${INSTALLER_OPT} clean
         running info sudo ${INSTALLER} ${INSTALLER_OPT} autoremove
