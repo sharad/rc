@@ -1,1 +1,1 @@
-../osetup/private/gnupg.d/crls.d
+../osetup/secure/gnupg.d/crls.d
