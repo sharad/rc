@@ -1,1 +1,1 @@
-../osetup/secure/gnupg.d/private-keys-v1.d
+../osetup/private/gnupg.d/private-keys-v1.d

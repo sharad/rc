@@ -1,1 +1,1 @@
-../osetup/secure/gnupg.d/openpgp-revocs.d
+../osetup/private/gnupg.d/openpgp-revocs.d
