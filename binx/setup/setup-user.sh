@@ -2187,7 +2187,7 @@ function setup_deps_control_volumes_internal_dirs()
             then
                 for internaldir in "${volumedir}/control.d/${classcontroldir_rel_path_dirname}"/*
                 do
-                    # TODO? -sharad
+                    # TODO?
                     volinternaldirbase="$(basename ${internaldir})"
                     running debug mkdir -p "${volumedir}/control.d/${classcontroldir_rel_path_dirname}/${volinternaldirbase}/$cdir"
                     running debug mkdir -p "${volumedir}/control.d/${common_name}/${classcontroldir_rel_path_dirname}/${volinternaldirbase}/$cdir"
@@ -2706,8 +2706,11 @@ EOF
 
         running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
 
-        # running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
+        # TODO -sharad
+        ## running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/common/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
+        ## running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/hosts/${SETUP_HOSTNAME}/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
 
+        # running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
         # running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
 
 
