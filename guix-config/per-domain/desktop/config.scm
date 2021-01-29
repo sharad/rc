@@ -503,6 +503,12 @@
          #:user "s"))
 
 
+;; https://guix.gnu.org/es/blog/2020/improve-internationalization-support-for-the-guix-data-service/
+;; https://guix.gnu.org/en/blog/2020/introduction-to-the-guix-data-service-the-missing-blog-post/
+;; https://data.guix.gnu.org/README
+;; https://guix.gnu.org/manual/en/html_node/Guix-Services.html
+;; https://guix.gnu.org/manual/en/guix.html#Debugging-Build-Failures
+;; https://guix.gnu.org/manual/en/html_node/Continuous-Integration.html
 ;; https://guix.gnu.org/manual/en/html_node/Base-Services.html
 (define %lotus-publish-services (list (service guix-publish-service-type
                                                (guix-publish-configuration (advertise?             #t)

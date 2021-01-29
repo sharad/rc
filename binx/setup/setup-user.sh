@@ -1240,32 +1240,37 @@ function setup_git_tree_repo()
         then
             if ! running info git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  ${GITURL} ${GITDIR_BASE}
             then
-                echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  ${GITURL} ${GITDIR_BASE} >&2
+                warn Failed git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  ${GITURL} ${GITDIR_BASE} >&2
+            else
+                # checkout branch
+                if ! git submodule foreach bash -c 'branch=$(git for-each-ref --format='\''%(objectname) %(refname:short)'\'' refs/heads | cut -d'\'' '\'' -f2); if [ "x" != "x${branch}" ] ; then echo git checkout $branch ; fi'
+                then
+                    warn Failed git submodule foreach bash -c 'branch=$(git for-each-ref --format='\''%(objectname) %(refname:short)'\'' refs/heads | cut -d'\'' '\'' -f2); if [ "x" != "x${branch}" ] ; then echo git checkout $branch ; fi'
+                fi
             fi
         else
             if ! running info git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" status
             then
-                echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" status >&2
+                warn Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" status >&2
             fi
 
             # checkout branch
-            # if ! running info git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" status
-            # then
-            #     echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" status >&2
-            # fi
+            if ! git submodule foreach bash -c 'branch="$(git for-each-ref --format='\''%(objectname) %(refname:short)'\'' refs/heads | cut -d'\'' '\'' -f2)"; if [ "x" != "x${branch}" ] ; then echo git checkout $branch ; fi'
+            then
+                warn Failed git submodule foreach bash -c 'branch="$(git for-each-ref --format='\''%(objectname) %(refname:short)'\'' refs/heads | cut -d'\'' '\'' -f2)"; if [ "x" != "x${branch}" ] ; then echo git checkout $branch ; fi'
+            fi
 
             if ! running info git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
             then
-                echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase >&2
+                warn Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase >&2
             fi
-            # running info git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} pull --rebase
             if ! running info git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} fetch
             then
-                echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} fetch >&2
+                warn Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} fetch >&2
             fi
             if ! running info git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} status
             then
-                echo Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} status >&2
+                warn Failed git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} status >&2
             fi
         fi
     else
