@@ -1209,3 +1209,21 @@ function quickfind() {
         | rofi -threads 0 -width 100 -dmenu -i -p "locate:" | xargs -r -0 printf -- $(readlink -m $1)'/%s\n' | xargs -r -o xdg-open
 }
 ##}}
+
+
+
+##{{
+function infinite()
+{
+    local _time="$1"
+    shift
+    local cmd="$1"
+    shift
+    while true
+    do
+        $cmd "$@"
+        echo sleep ${_time}
+        sleep ${_time}
+    done
+}
+##}}
