@@ -2731,6 +2731,7 @@ EOF
     running debug setup_make_relative_link "${USERDIR}" "doc" "localdirs/${rel_homeprotabledir}/Documents/online"
 
     running debug setup_make_relative_link ${HOME}/"${RESOURCEPATH}/${USERORGMAIN}/readwrite/" "private/user/noenc/Private" "public/user/localdirs/${rel_homeprotabledir}/Private"
+    running debug setup_make_relative_link ${HOME}/"${RESOURCEPATH}/${USERORGMAIN}/readwrite/" "private/user/noenc/ecryptfsdir" "public/user/localdirs/${rel_homeprotabledir}/ecryptfsdir"
 
     running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Public/Publish/html" "public_html/html"
     running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Documents/Library"   "Library/online"
@@ -2740,7 +2741,7 @@ EOF
 
 
     # links
-    for lnk in org/home.d/portable.d/{Documents,Private,Library,public_html,Scratches,Maildir}
+    for lnk in org/home.d/portable.d/{ecryptfsdir,Documents,Private,Library,public_html,Scratches,Maildir}
     do
         # running debug setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
         running debug setup_add_to_version_control ${LOCALDIRS_DIR} "$lnk"
@@ -2869,7 +2870,7 @@ function setup_osetup_org_home_dirs()
 {
     local LOCALDIRS_DIR=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
-    for folder_link in "Desktop" "Documents" "Downloads" "Library" "Maildir" "Music" "Pictures" "Private" "Public" "public_html" "Scratches" "Sink" "Templates" "tmp" "Videos" "Volumes" "VolRes"
+    for folder_link in "ecryptfsdir" "Desktop" "Documents" "Downloads" "Library" "Maildir" "Music" "Pictures" "Private" "Public" "public_html" "Scratches" "Sink" "Templates" "tmp" "Videos" "Volumes" "VolRes"
     do
         running debug setup_make_relative_link ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/home.d/portable.d/${folder_link}" "osetup/dirs.d/org/home.d/${folder_link}"
         running debug setup_add_to_version_control ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/home.d/${folder_link}"
