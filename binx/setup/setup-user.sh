@@ -931,7 +931,7 @@ function setup_apt_upgrade_system()
 	if [ -e ~/bin/lotus-update ]
 	then	
       # running info ~/bin/lotus-clear
-      : running info ~/bin/lotus-update
+      running info ~/bin/lotus-update
 	fi
     else
         # running info sudo ${INSTALLER} ${INSTALLER_OPT} clean

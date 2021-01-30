@@ -339,29 +339,66 @@ function cdt () {
     builtin cd "$(mktemp -d)"
     builtin pwd
 }
+
 ## grml https://github.com/grml/grml-etc-core/blob/master/etc/zsh/zshrc
 
-function backupsshkeys() {
+function bkp-keys() {
     #from: http://codeblogging.net/blogs/1/16/creating-password-protected-targz-file-command-line
-    if (( ${+1} ))
+    local bkp_file=${1:-pick.log}
+    local basedir=~/.repos/git/main/resource/userorg/main/readwrite/private/user/noenc/ecryptfsdir
+
+    local cmds=("openssl enc -aes-256-cbc -pbkdf2 -e"
+                "gpg --armor --symmetric --force-mdc -")
+
+    local files=("secure/secure.d"
+                 "enc/orgp")
+
+    if [ ! -e "${bkp_file}" ]
     then
-        tar czf - --xform s@${HOME##/}/.setup/osetup/@@g ~/.setup/osetup/{secure/ssh/pubkeys.d,nosecure.d/ssh/keys.d} | openssl enc -aes-256-cbc -e > $1
+        select cmd in ${cmds[@]}
+        do
+            select file in ${files[@]}
+            do
+                echo tar czvf - --xform s@${basedir##/}/@secrets/@g "${basedir}/$file" \| ${=cmd} \> "${bkp_file}" >&2
+                tar czvf - --xform s@${basedir##/}/@secrets/@g "${basedir}/${file}" | ${=cmd} > "${bkp_file}"
+                break
+            done
+            break
+        done
     else
-        echo no file name
+        echo "${bkp_file}" already exists >&2
     fi
 }
 
-
-function restoresshkeys() {
+function restore-keys() {
     #from: http://codeblogging.net/blogs/1/16/creating-password-protected-targz-file-command-line
-    if (( $# == 2 ))
+    local bkp_file=${1:-pick.log}
+    local trgdir=${2:-.}
+
+    local cmds=("openssl enc -aes-256-cbc -pbkdf2 -d  -in"
+                "gpg --armor --decrypt")
+    if [ -f "${bkp_file}" ]
     then
-        openssl enc -in $1 -aes-256-cbc -d | tar -zxvf - -C $2
+        if [ -d "${trgdir}" ]
+        then
+            if [ ! -e "${trgdir}/secrets" ]
+            then
+                select cmd in ${cmds[@]}
+                do
+                    echo ${=cmd} "${bkp_file}" \| tar -zxvf - -C "${trgdir}" >&2
+                    ${=cmd} "${bkp_file}" | tar -zxvf - -C "${trgdir}"
+                    break
+                done
+            else
+                echo "${trgdir}/secrets" already exists >&2
+            fi
+        else
+            echo no such "${trgdir}" directory exists >&2
+        fi
     else
-        echo no file name
+        echo no "${bkp_file}" provide >&2
     fi
 }
-
 
 function cryptdir() {
     #from: http://codeblogging.net/blogs/1/16/creating-password-protected-targz-file-command-line
