@@ -2172,6 +2172,9 @@ function setup_deps_control_volumes_internal_dirs()
         debug "${volumedir}/${viewdirname}/$cdir"
         debug "${volumedir}/control.d/${classcontroldir_rel_path_dirname}"
 
+
+        info SETUP setup_deps_control_volumes_internal_dirs: "${cdir}"
+
         if [ ! -L "${volumedir}/${viewdirname}/$cdir" -o ! -d "${volumedir}/${viewdirname}/$cdir" ]
         then
             # TODO? STATS
@@ -2190,23 +2193,26 @@ function setup_deps_control_volumes_internal_dirs()
                     debug position="$position"
 
 
-                    if [ $position -eq 3 ]
-                    then
-                        # SHARAD new
-                        running info setup_public_dirs                    "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${common_name}/${classname}/${containername}" 0 "${internal_dirs[@]}"
-                        running info setup_mutule_dirs_links              "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${common_name}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                    info SETUP setup_deps_control_volumes_internal_dirs: cdir="${cdir}" internaldir="${internaldir}"
 
-                        running info setup_public_dirs                    "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${hosts_name}/${SETUP_HOSTNAME}/${classname}/${containername}" 0 "${internal_dirs[@]}"
-                        running info setup_mutule_dirs_links              "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${hosts_name}/${SETUP_HOSTNAME}/${classname}/${containername}" 0 "${internal_dirs[@]}"
-                    else
-                        info not running info setup_public_dirs           "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${common_name}/${classname}/${containername}" 0 "${internal_dirs[@]}"
-                        info not running info setup_mutule_dirs_links     "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${common_name}/${classname}/${containername}" 0 "${internal_dirs[@]}"
 
-                        info not running info setup_public_dirs           "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${hosts_name}/${SETUP_HOSTNAME}/${classname}/${containername}" 0 "${internal_dirs[@]}"
-                        info not running info setup_mutule_dirs_links     "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${hosts_name}/${SETUP_HOSTNAME}/${classname}/${containername}" 0 "${internal_dirs[@]}"
-                    fi
+                    # if [ $position -eq 3 ]
+                    # then
+                    #     # SHARAD new
+                    #     running info setup_public_dirs                    "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${common_name}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                    #     running info setup_mutule_dirs_links              "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${common_name}/${classname}/${containername}" 0 "${internal_dirs[@]}"
 
-                done
+                    #     running info setup_public_dirs                    "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${hosts_name}/${SETUP_HOSTNAME}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                    #     running info setup_mutule_dirs_links              "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${hosts_name}/${SETUP_HOSTNAME}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                    # else
+                    #     info not running info setup_public_dirs           "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${common_name}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                    #     info not running info setup_mutule_dirs_links     "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${common_name}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+
+                    #     info not running info setup_public_dirs           "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${hosts_name}/${SETUP_HOSTNAME}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                    #     info not running info setup_mutule_dirs_links     "${LOCALDIRS_DIR}" "${_machinedir}/${_hostdir}/${_volumedir}/model.d/${storage_path}/${volinternaldirbase}/${hosts_name}/${SETUP_HOSTNAME}/${classname}/${containername}" 0 "${internal_dirs[@]}"
+                    # fi
+
+                done            # for internaldir in "${volumedir}/control.d/${classcontroldir_rel_path_dirname}"/*
             fi
         fi
     done
