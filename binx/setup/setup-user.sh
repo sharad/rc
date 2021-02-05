@@ -2935,10 +2935,10 @@ function setup_rc_org_home_dirs()
     local rcdirpath=${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc
     local rcorghomedir_rel_path=".config/dirs.d/org/home.d"
 
-    running debug setup_make_relative_link "${public_path}/${rcdir_rel_path}" "_bin" "${rcorghomedir_rel_path}/bin"
-    running debug setup_add_to_version_control "${rcdirpath}" "${rcorghomedir_rel_path}/bin"
-    running debug setup_make_relative_link "${public_path}" "system/system/config/bin" "user/rc/${rcorghomedir_rel_path}/sbin"
-    running debug setup_add_to_version_control "${rcdirpath}" "${rcorghomedir_rel_path}/sbin"
+    running debug setup_make_relative_link     "${public_path}/${rcdir_rel_path}" "_bin" "${rcorghomedir_rel_path}/bin"
+    running debug setup_add_to_version_control "${rcdirpath}"                     "${rcorghomedir_rel_path}/bin"
+    running debug setup_make_relative_link     "${public_path}"                   "system/system/config/bin" "user/rc/${rcorghomedir_rel_path}/sbin"
+    running debug setup_add_to_version_control "${rcdirpath}"                     "${rcorghomedir_rel_path}/sbin"
 }
 
 function setup_rc_org_dirs()
@@ -2952,8 +2952,9 @@ function setup_rc_org_dirs()
     then
         rm -f "${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc/.config/dirs.d/org/resource.d/view.d"
     fi
-    running debug setup_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "osetup/dirs.d/org" "rc/.config/dirs.d/org"
-    running debug setup_add_to_version_control_recursive_links ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "osetup/dirs.d/org" "rc" ".config/dirs.d/org"
+    running debug setup_recursive_links                        "${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user" "osetup/dirs.d/org" "rc/.config/dirs.d/org"
+
+    running debug setup_add_to_version_control_recursive_links "${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user" "osetup/dirs.d/org" "rc" ".config/dirs.d/org"
 
     running debug setup_rc_org_home_dirs
 
@@ -2988,7 +2989,6 @@ function setup_dirs()
         # TODO
         # do it for all basename /srv/volumes/*
         # below /srv/volumes/ for all mounted paths
-
 
         # ~% df --output=target | grep  '^/srv/volumes'
         # /srv/volumes/local/vg01/lv01
