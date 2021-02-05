@@ -1288,7 +1288,7 @@ function setup_git_annex_repo()
     then
         if [ ! -d ${modulepath}/.git ]
         then
-            local modulegitpath="$(cat ${modulepath}/.git)"
+            local modulegitpath="$(cat ${modulepath}/.git | cut -d' ' -f2)"
             rm -f ${modulepath}/.git
             ln -s "${modulegitpath}" "${modulepath}/.git"
         fi
@@ -2688,10 +2688,6 @@ EOF
     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/README"
     echo 'add in script' > "${LOCALDIRS_DIR}/org/home.d/portable.d/TODO"
     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/TODO"
-    # for lnk in "${userdata_dirs[@]}"
-    # do
-    #     info TEST $lnk
-    # done
 
     for lnk in "${userdata_dirs[@]}"
     do
@@ -2700,8 +2696,6 @@ EOF
         running info mkdir -p   "${LOCALDIRS_DIR}"/"${rel_homeprotabledir}"/"${lnk}"
 
         setup_cleanup_broken_link_empty_dir "${LOCALDIRS_DIR}/org/home.d/portable.d/${lnk}/storage"
-
-        # running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
 
         running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/${common_name}/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage/${common_name}"
 
@@ -2726,31 +2720,37 @@ EOF
             warn SETUP_HOSTNAME=${SETUP_HOSTNAME} is not set
         fi
 
-
-
         # running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
         # running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
-
 
     done
 
     running debug setup_make_relative_link "${USERDIR}" "doc" "localdirs/${rel_homeprotabledir}/Documents/online"
+    running debug setup_make_relative_link "${USERDIR}" "doc" "localdirs/${rel_homeprotabledir}/Documents/mirror"
 
-    running debug setup_make_relative_link ${HOME}/"${RESOURCEPATH}/${USERORGMAIN}/readwrite/" "private/user/noenc/Private" "public/user/localdirs/${rel_homeprotabledir}/Private"
+    running debug setup_make_relative_link ${HOME}/"${RESOURCEPATH}/${USERORGMAIN}/readwrite/" "private/user/noenc/Private"     "public/user/localdirs/${rel_homeprotabledir}/Private"
     running debug setup_make_relative_link ${HOME}/"${RESOURCEPATH}/${USERORGMAIN}/readwrite/" "private/user/noenc/ecryptfsdir" "public/user/localdirs/${rel_homeprotabledir}/ecryptfsdir"
 
-    running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Public/Publish/html" "public_html/html"
-    running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}"     "Documents/Library"   "Library/online"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}" "Public/Publish/html"      "public_html/html"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}" "Documents/online/Library" "Library/online"
+    running debug setup_make_relative_link "${LOCALDIRS_DIR}/${rel_homeprotabledir}" "Documents/online/Library" "Library/mirror"
     # TODO: NEXT need work here -sharad
     # running debug setup_recursive_links    "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/volumes.d/control.d/class/data/storage/local/container/scratches.d" "home.d/portable.d/Scratches"
     running debug setup_make_relative_link "${LOCALDIRS_DIR}/org"                        "resource.d/view.d/volumes.d/view.d/maildata/mail-and-metadata/maildir" "home.d/portable.d/Maildir"
 
+    if true
+    then
+        for dir in Music Pictures
+        do
+            running debug setup_make_relative_link "${HOME}/${RESOURCEPATH}" "data/multimedia/orgs/private/media/collection/${dir}" "${USERORGMAIN}/readwrite/public/user/localdirs/${rel_homeprotabledir}/${dir}/online"
+            running debug setup_make_relative_link "${HOME}/${RESOURCEPATH}" "data/multimedia/orgs/private/media/collection/${dir}" "${USERORGMAIN}/readwrite/public/user/localdirs/${rel_homeprotabledir}/${dir}/mirror"
+        done
+    fi
 
     # links
     for lnk in org/home.d/portable.d/{ecryptfsdir,Documents,Private,Library,public_html,Scratches,Maildir}
     do
-        # running debug setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
-        running debug setup_add_to_version_control ${LOCALDIRS_DIR} "$lnk"
+        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "$lnk"
     done
 
     # now
