@@ -1328,7 +1328,7 @@ function setup_git_repos()
     if true                    # decide through command line arguments
     then
         running info setup_git_tree_repo "git@bitbucket.org:sh4r4d/docorg.git" ${HOME}/${RESOURCEPATH}/info/doc/orgs/private/doc
-        running info setup_git_tree_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/orgs/private/media/
+        # running info setup_git_tree_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/orgs/private/media/collection
         running info setup_git_annex_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/orgs/private/media/collection
     fi
 }
@@ -2657,12 +2657,6 @@ function setup_org_home_portable_public_dirs()
 
     # private
     # Music Videos Pictures
-    collection=private
-    for folder in Music Videos Pictures
-    do
-        running debug setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/orgs/$collection/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/$collection"
-        running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/$collection"
-    done
 }
 
 function setup_org_home_portable_dirs()
@@ -2740,10 +2734,19 @@ EOF
 
     if true
     then
-        for dir in Music Pictures
+        for dir in Music Videos Pictures
         do
             running debug setup_make_relative_link "${HOME}/${RESOURCEPATH}" "data/multimedia/orgs/private/media/collection/${dir}" "${USERORGMAIN}/readwrite/public/user/localdirs/${rel_homeprotabledir}/${dir}/online"
             running debug setup_make_relative_link "${HOME}/${RESOURCEPATH}" "data/multimedia/orgs/private/media/collection/${dir}" "${USERORGMAIN}/readwrite/public/user/localdirs/${rel_homeprotabledir}/${dir}/mirror"
+            running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/online"
+            running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/mirror"
+        done
+        for folder in Music Videos Pictures
+        do
+            running debug setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/orgs/private/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/online"
+            running debug setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/orgs/private/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/mirror"
+            running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/online"
+            running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/mirror"
         done
     fi
 
