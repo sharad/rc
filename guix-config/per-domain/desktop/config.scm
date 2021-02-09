@@ -671,7 +671,7 @@
                                                    %lotus-audio-services
                                                    %lotus-publish-services
                                                    %lotus-mcron-services
-                                                   ;; %lotus-cups-services
+                                                   %lotus-cups-services
                                                    %lotus-polkit-services
                                                    %lotus-krb5-services
                                                    %lotus-bitlbee-services

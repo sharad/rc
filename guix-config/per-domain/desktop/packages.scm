@@ -12,6 +12,11 @@
                                     "polkit-gnome"
                                     "autorandr"
                                     "xmodmap"
+                                    "hplip"
+                                    "simple-scan"
+                                    "xsane"
+                                    "sane-backends"
+                                    "sane-backends-minimal"
                                     "glib-networking"
                                     "xf86-input-evdev"))
 

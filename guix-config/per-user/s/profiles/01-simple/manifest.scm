@@ -538,7 +538,12 @@
 (define %lotus-file-packages (list "inotify-tools"))
 
 (define %lotus-misc-packages (list "bluez"
-                                   "blueman"))
+                                   "blueman"
+                                   "simple-scan"
+                                   "xsane"
+                                   "sane-backends"
+                                   "sane-backends-minimal"))
+
 
 (define %lotus-package-names-for-installation (append %lotus-user-selected-package-names
                                                       %lotus-lang-packages
