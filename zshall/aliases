@@ -288,3 +288,7 @@ then
 fi
 ##}}
 
+##{{dd
+alias dd='dd status=progress'
+# alias dd='dd status=progress bs=4m'
+##}}

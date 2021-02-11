@@ -53,6 +53,8 @@
                                      "gcc-toolchain"
                                      "gdb"
 
+                                     "dosfstools"
+
                                      "smalltalk"
 
                                      "go"
