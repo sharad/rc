@@ -10,6 +10,7 @@
                                      ;; "skype4pidgin@1.6"
                                      "skype4pidgin"
                                      "pidgin-otr"
+                                     "geeqie"
                                      "telegram-purple"
                                      "telegram-purple"))
 

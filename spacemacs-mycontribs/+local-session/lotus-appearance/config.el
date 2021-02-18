@@ -237,7 +237,9 @@
 
 
 (defvar face-size-display-matrix
-  '(((1080 1920 285 508)  (:height 87 :width normal :machine "lispm"))
+  '(((1080 3286 285 869) (:height 68 :width normal :machine "guilem-evo860"))
+    ;; ((1080 3286 284 866)  (:height 98 :width normal :machine "guilem-evo860"))
+    ((1080 1920 285 508)  (:height 87 :width normal :machine "lispm"))
     ((900  2966 238 784)  (:height 71 :width normal :machine "think530-spratap"))
     ((900  2966 237 781)  (:height 71 :width normal :machine "think530-spratap"))
     ((900  2966 238 784)  (:height 72 :width normal :machine "think530-spratap"))

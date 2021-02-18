@@ -60,7 +60,7 @@
                                      "go"
 
                                      "gprolog"
-                                     "swi-prolog"
+                                     ;; "swi-prolog"
                                      ;; "emacs-ediprolog"
 
                                      "node"

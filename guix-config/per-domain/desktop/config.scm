@@ -250,8 +250,8 @@
 
 ;; guix system: error: service 'swap-/dev/mapper/guix-swap' requires 'device-mapping-guix-swap', which is not provided by any service
 (define %lotus-swap-devices      (if #f
-                                     (list ("/dev/mapper/" %local-disk-serial-id "X" "guix-swap"))
-                                     (list)))
+                                  (list (string-append "/dev/mapper/" %local-disk-serial-id "X" "guix-swap"))
+                                  (list)))
 
 
 (define %lotus-file-system-guix-root       (file-system (mount-point         "/")
@@ -262,6 +262,15 @@
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #t)
                                                         (dependencies        %lotus-mapped-devices)))
+
+;; (define %lotus-file-system-guix-swap       (file-system (mount-point         "/xyz")
+;;                                                         (device              (string-append "/dev/mapper/" %local-disk-serial-id "X" "guix-swap"))
+;;                                                         (type                "ext4")
+;;                                                         (check?              #f)
+;;                                                         (mount?              #f)
+;;                                                         (create-mount-point? #f)
+;;                                                         (needed-for-boot?    #t)
+;;                                                         (dependencies        %lotus-mapped-devices)))
 
 (define %lotus-file-system-guix-boot       (file-system (mount-point         "/boot")
                                                         (device              (string-append "/dev/mapper/" %local-disk-serial-id "X" "guix-boot"))
@@ -401,8 +410,8 @@
                             (target          "/boot/efi")
                             (keyboard-layout %lotus-keyboard-layout)
                             ;; https://guix.gnu.org/manual/en/html_node/Bootloader-Configuration.html
-                            (terminal-outputs '(console gfxterm))
-                            (terminal-inputs '(console))
+                            ;; (terminal-outputs '(console gfxterm))
+                            ;; (terminal-inputs '(console))
                             (menu-entries    %lotus-grub-ubuntu-menuentries)))
 
 (define %lotus-nonefi-bootloader
