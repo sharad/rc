@@ -27,11 +27,10 @@ function cleanpage(buffer) {
     var bugdesc         = table2_tr13_td2.innerHTML.trim();
     var newTitle        = "mantis: " + bugno + "; " + bugdesc;
 
-    addbugnotes[0].innerHTML = '<a name="addbugnote"/>';
+    addbugnotes[0].outerHTML = '<div name="addbugnote">' + addbugnotes[0].innerHTML + '</div>';
 
     doc.title = newTitle;
     doc.querySelector('title').textContent = newTitle;
-
 }
 
 
