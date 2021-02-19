@@ -11,12 +11,25 @@
 function main()
 {
     process_arg $@
+    # echo main
+    # echo ${args[@]}
+    # echo 0 ${args[0]}
+    # echo 1 ${args[1]}
+    # echo ${args[*]}
+    # exit 
 
     CURR_BRANCH=$(git rev-parse --abbrev-ref HEAD)
     if [ "HEAD" != "$CURR_BRANCH" ]
     then
         BRANCH_REMOTE=$(git config branch.${CURR_BRANCH}.remote )
         BRANCH_MERGE_PATH=$(git config branch.${CURR_BRANCH}.merge )
+
+        if [ "." != "${BRANCH_REMOTE}" -a -n "${args[1]}" ]
+        then
+            echo changeing remote from "${BRANCH_REMOTE}" to "${args[1]}"
+            BRANCH_REMOTE="${args[1]}"
+        fi
+
         if [ "$BRANCH_MERGE_PATH" ]
         then
             BRANCH_MERGE=$(basename ${BRANCH_MERGE_PATH})
@@ -76,7 +89,7 @@ function process_arg() {
 
     while [ $# -gt 0 ]
     do
-        case $1 in
+        case "$1" in
             (-r) recursive=1;;
             (-s) stash=1;;
             (-n) noaction="";;
@@ -89,8 +102,12 @@ function process_arg() {
             (-*) echo "$0: error - unrecognized option $1" 1>&2; help; exit 1;;
             (*)  break;;
         esac
+        # echo -- shift "$1"
         shift
+        # echo -- $*
     done
+    
+    eval args=( $0 "$@" )
 }
 
 function running()
