@@ -1327,7 +1327,8 @@ function setup_git_repos()
 
     if true                    # decide through command line arguments
     then
-        running info setup_git_tree_repo "git@bitbucket.org:sh4r4d/docorg.git" ${HOME}/${RESOURCEPATH}/info/doc/orgs/private
+        # running info setup_git_tree_repo "git@bitbucket.org:sh4r4d/docorg.git" ${HOME}/${RESOURCEPATH}/info/doc/orgs/private
+        running info setup_git_tree_repo "git@github.com:sharad/docorg.git" ${HOME}/${RESOURCEPATH}/info/doc/orgs/private
         running info setup_git_tree_repo "git@github.com:sharad/optdocorg.git" ${HOME}/${RESOURCEPATH}/info/doc/orgs/opt
         # running info setup_git_tree_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/orgs/private/media/collection
         running info setup_git_annex_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/orgs/private/media/collection
