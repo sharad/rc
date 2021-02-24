@@ -15,6 +15,7 @@
 (use-modules (guix packages))
 (use-modules (gnu services networking))
 (use-modules (gnu services audio))
+(use-modules (gnu services kerberos))
 (use-modules (gnu) (gnu system nss))
 (use-service-modules networking ssh)
 (use-package-modules bootloaders certs suckless wm)
@@ -87,7 +88,7 @@
 (define %lotus-guix-use-substitutes          #t) ;always true
 
 (define %lotus-network-manager-dns           "dnsmasq")
-(define %lotus-default-realm                 #f)
+;; (define %lotus-default-realm                 #f)
 
 
 (use-modules (gnu packages linux))
@@ -615,9 +616,10 @@
 (define %lotus-krb5-services (if %lotus-default-realm
                                  (list (service krb5-service-type
                                                 (krb5-configuration
-                                                 (default-realm %lotus-default-realm)
-                                                 (allow-weak-crypto? #t))))
-                                 (list)))
+                                                 (default-realm (cadr (assoc ':default %lotus-default-realm)))
+                                                 (allow-weak-crypto? #t)
+                                                 (realms (cdr (assoc ':realms %lotus-default-realm))))))
+                                 (list )))
 
 
 ;; services modifications
