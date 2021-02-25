@@ -326,7 +326,6 @@
 
 
 (define %lotus-file-system-boot-efi        (file-system (mount-point         "/boot/efi")
-                                                        ;; (device              (uuid "BAA8-1C0B" 'fat32))
                                                         (device              (lotus-local-value %local-fs-boot-efi-partition
                                                                                                 "/dev/sda1"))
                                                         (mount?              #t)
@@ -433,13 +432,14 @@
            rest)))
 
 (define %lotus-metal-initrd base-initrd)
+
+(define %lotus-nongnu-metal-initrd microcode-initrd)
 
 
 (define %lotus-simple-groups (list (user-group (name %lotus-account-group-name)
                                                (id   %lotus-account-group-gid))))
 
-(define %lotus-groups        (append %lotus-simple-groups
-                                     %base-groups))
+(define %lotus-groups        (append %lotus-simple-groups %base-groups))
 
 
 (define %lotus-simple-users  (list (user-account (uid                    %lotus-account-uid)
@@ -734,7 +734,7 @@
 
 
 (define %lotus-bootloader %lotus-efi-bootloader)
-(define %lotus-initrd     %lotus-metal-initrd)
+(define %lotus-initrd     (lotus-local-value %lotus-nongnu-metal-initrd %lotus-metal-initrd))
 
 
 ;; (define %lotus-setuid-programs %setuid-programs)
@@ -745,6 +745,7 @@
 
 (define %lotus-kernel (if nongnu-desktop?
                           linux
+                          ;; https://gitlab.com/nonguix/nonguix/-/blob/master/README.org Avoiding kernel recompilation
                           linux-libre))
 
 
