@@ -43,7 +43,8 @@
 ;; Import nonfree linux module.
 (when nongnu-desktop?
   (use-modules (lotus packages utils))
-  (use-modules (nongnu packages linux)))
+  (use-modules (nongnu packages linux)
+               (nongnu system linux-initrd)))
 
 
 (define this-config-file (local-file (assoc-ref (current-source-location) 'filename)))
