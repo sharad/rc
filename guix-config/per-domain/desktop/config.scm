@@ -75,7 +75,7 @@
 
 (define %lotus-account-create-home-directory #f)
 (define %lotus-guix-substitute-urls          '("https://ci.guix.gnu.org"
-                                               "https://bayfront.guixsd.org"
+                                               ;; "https://bayfront.guixsd.org"
                                                "http://guix.genenetwork.org"
                                                "https://guix.tobias.gr"
                                                "https://ci.guix.info/"
@@ -263,7 +263,8 @@
                                                         (mount?              #t)
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #t)
-                                                        (dependencies        %lotus-mapped-devices)))
+                                                        ;; (dependencies        %lotus-mapped-devices)
+                                                        ))
 
 ;; (define %lotus-file-system-guix-swap       (file-system (mount-point         "/xyz")
 ;;                                                         (device              (string-append "/dev/mapper/" %local-disk-serial-id "X" "guix-swap"))
@@ -281,8 +282,8 @@
                                                         (mount?              #t)
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #t)
-                                                        (dependencies        (append (list %lotus-file-system-guix-root)
-                                                                                     %lotus-mapped-devices))))
+                                                        (dependencies        (append ;; %lotus-mapped-devices
+                                                                                     (list %lotus-file-system-guix-root)))))
 
 (define %lotus-file-system-guix-gnu        (file-system (mount-point         "/gnu")
                                                         (device              (string-append "/dev/mapper/" %local-disk-serial-id "X" "guix-gnu"))
@@ -291,8 +292,8 @@
                                                         (mount?              #t)
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #t)
-                                                        (dependencies        (append (list %lotus-file-system-guix-root)
-                                                                                     %lotus-mapped-devices))))
+                                                        (dependencies        (append ;; %lotus-mapped-devices
+                                                                                     (list %lotus-file-system-guix-root)))))
 
 (define %lotus-file-system-guix-tmp        (file-system (mount-point         "/tmp")
                                                         (device              (string-append "/dev/mapper/" %local-disk-serial-id "X" "guix-tmp"))
@@ -301,8 +302,8 @@
                                                         (mount?              #t)
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #t)
-                                                        (dependencies        (append (list %lotus-file-system-guix-root)
-                                                                                     %lotus-mapped-devices))))
+                                                        (dependencies        (append  ;; %lotus-mapped-devices
+                                                                                     (list %lotus-file-system-guix-root)))))
 
 (define %lotus-file-system-guix-var        (file-system (mount-point         "/var")
                                                         (device              (string-append "/dev/mapper/" %local-disk-serial-id "X" "guix-var"))
@@ -311,8 +312,8 @@
                                                         (mount?              #t)
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #t)
-                                                        (dependencies        (append (list %lotus-file-system-guix-root)
-                                                                                     %lotus-mapped-devices))))
+                                                        (dependencies        (append ;; %lotus-mapped-devices
+                                                                                     (list %lotus-file-system-guix-root)))))
 
 (define %lotus-file-system-house-home      (file-system (mount-point         "/home")
                                                         (device              (string-append "/dev/mapper/" %local-disk-serial-id "X" "house-home"))
@@ -321,9 +322,8 @@
                                                         (mount?              (if %lotus-system-init #f #t))
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #f)
-                                                        (dependencies        (append (list ;; %lotus-file-system-guix-root
-                                                                                      )
-                                                                                     %lotus-mapped-devices))))
+                                                        (dependencies        (append ;; %lotus-mapped-devices
+                                                                                     (list))))) ;; %lotus-file-system-guix-root
 
 
 (define %lotus-file-system-boot-efi        (file-system (mount-point         "/boot/efi")
@@ -333,9 +333,9 @@
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #t)
                                                         (type                "vfat")
-                                                        (dependencies        (append (list %lotus-file-system-guix-boot
-                                                                                           %lotus-file-system-guix-root)
-                                                                                     %lotus-mapped-devices))))
+                                                        (dependencies        (append ;; %lotus-mapped-devices
+                                                                                     (list %lotus-file-system-guix-boot
+                                                                                           %lotus-file-system-guix-root)))))
 
 
 (define %lotus-lvm-mount-home-file-systems         (if %lotus-system-init
