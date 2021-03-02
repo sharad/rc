@@ -249,7 +249,7 @@
 
 
 ;; guix system: error: service 'swap-/dev/mapper/guix-swap' requires 'device-mapping-guix-swap', which is not provided by any service
-(define %lotus-swap-devices      (if #f
+(define %lotus-swap-devices      (if #t
                                   (list (string-append "/dev/mapper/" %local-disk-serial-id "X" "guix-swap"))
                                   (list)))
 
