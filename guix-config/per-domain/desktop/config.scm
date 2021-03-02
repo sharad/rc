@@ -76,7 +76,7 @@
 (define %lotus-account-create-home-directory #f)
 (define %lotus-guix-substitute-urls          '("https://ci.guix.gnu.org"
                                                ;; "https://bayfront.guixsd.org"
-                                               "http://guix.genenetwork.org"
+                                               ;; "http://guix.genenetwork.org" -- Backtrace
                                                "https://guix.tobias.gr"
                                                "https://ci.guix.info/"
                                                ;; "https://berlin.guixsd.org"
@@ -245,8 +245,6 @@
                                     %lotus-mapped-device-guix-var
                                     %lotus-mapped-device-guix-swap
                                     %lotus-mapped-device-guix-tmp
-                                    %lotus-mapped-device-house-home
-                                    %lotus-mapped-device-house-home
                                     %lotus-mapped-device-house-home))
 
 
