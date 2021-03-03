@@ -33,7 +33,7 @@ Host *.merunetworks.com 10.* susengg-01
 
 Host controller-* corvina-* 10.33.*
   User admin
-  Ciphers      aes256-cbc,3des-cbc,aes128-cbc,aes192-cbc,rijndael-cbc@lysator.liu.se,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
+  # Ciphers      aes256-cbc,3des-cbc,aes128-cbc,aes192-cbc,rijndael-cbc@lysator.liu.se,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
 
 Host 10.1.1.41 prithvi prithvi.merunetworks.com
   User build_cpy
@@ -53,7 +53,7 @@ Host contoller-* 10.*
    StrictHostKeyChecking no
    UserKnownHostsFile=/dev/null
    ServerAliveInterval 240
-   Ciphers      aes256-cbc,3des-cbc,aes128-cbc,aes192-cbc,rijndael-cbc@lysator.liu.se,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
+   # Ciphers      aes256-cbc,3des-cbc,aes128-cbc,aes192-cbc,rijndael-cbc@lysator.liu.se,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
 
 ##begin via1 http://askubuntu.com/questions/311447/how-do-i-ssh-to-machine-a-via-b-in-one-command
 # Machine B definition (the broker)
@@ -63,7 +63,7 @@ Host qa-private-pontiac
   # Change this default user accordingly # (`user@unibroker` can overwrite it)
   User root
   IdentityFile ~/.ssh/login-keys.d/work
-  Ciphers      aes256-cbc,3des-cbc,aes128-cbc,aes192-cbc,rijndael-cbc@lysator.liu.se,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
+  # Ciphers      aes256-cbc,3des-cbc,aes128-cbc,aes192-cbc,rijndael-cbc@lysator.liu.se,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
 
 ##begin via2 http://askubuntu.com/questions/311447/how-do-i-ssh-to-machine-a-via-b-in-one-command
 Host qa-private-pontiac
@@ -72,7 +72,7 @@ Host qa-private-pontiac
         hostname 10.35.31.6
         port 22
         IdentityFile ~/.ssh/login-keys.d/work
-        Ciphers      aes256-cbc,3des-cbc,aes128-cbc,aes192-cbc,rijndael-cbc@lysator.liu.se,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
+        # Ciphers      aes256-cbc,3des-cbc,aes128-cbc,aes192-cbc,rijndael-cbc@lysator.liu.se,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
 
 # Machine A definition (the target host)
 
@@ -82,7 +82,7 @@ Host 172.24.0.* 172.16.0.* 172.27.0.*
      ControlPersist 0
      User         admin
      ProxyCommand ssh -q -W %h:%p qa-private-pontiac
-     Ciphers      aes256-cbc,3des-cbc,aes128-cbc,aes192-cbc,rijndael-cbc@lysator.liu.se,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
+     # Ciphers      aes256-cbc,3des-cbc,aes128-cbc,aes192-cbc,rijndael-cbc@lysator.liu.se,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
 
 Host  qa-private-pontiac-* internal-x*
      ControlMaster no
@@ -90,7 +90,7 @@ Host  qa-private-pontiac-* internal-x*
      ControlPersist 0
      User         admin
      ProxyCommand ssh -q -W $(resolveip %h):%p qa-private-pontiac
-     Ciphers      aes256-cbc,3des-cbc,aes128-cbc,aes192-cbc,rijndael-cbc@lysator.liu.se,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
+     # Ciphers      aes256-cbc,3des-cbc,aes128-cbc,aes192-cbc,rijndael-cbc@lysator.liu.se,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
 
 
 ##finish via2
