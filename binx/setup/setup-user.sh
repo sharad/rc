@@ -2738,18 +2738,21 @@ EOF
     then
         for dir in Music Videos Pictures
         do
-            running debug setup_make_relative_link "${HOME}/${RESOURCEPATH}" "data/multimedia/orgs/private/media/collection/${dir}" "${USERORGMAIN}/readwrite/public/user/localdirs/${rel_homeprotabledir}/${dir}/online"
-            running debug setup_make_relative_link "${HOME}/${RESOURCEPATH}" "data/multimedia/orgs/private/media/collection/${dir}" "${USERORGMAIN}/readwrite/public/user/localdirs/${rel_homeprotabledir}/${dir}/mirror"
-            running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/online"
-            running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/mirror"
+            if [ -d "${HOME}/${RESOURCEPATH}/data/multimedia/orgs/private/media/collection/${dir}" ]
+            then
+                running debug setup_make_relative_link     "${HOME}/${RESOURCEPATH}" "data/multimedia/orgs/private/media/collection/${dir}" "${USERORGMAIN}/readwrite/public/user/localdirs/${rel_homeprotabledir}/${dir}/online"
+                running debug setup_make_relative_link     "${HOME}/${RESOURCEPATH}" "data/multimedia/orgs/private/media/collection/${dir}" "${USERORGMAIN}/readwrite/public/user/localdirs/${rel_homeprotabledir}/${dir}/mirror"
+                running debug setup_add_to_version_control "${LOCALDIRS_DIR}"        "org/home.d/portable.d/$folder/online"
+                running debug setup_add_to_version_control "${LOCALDIRS_DIR}"        "org/home.d/portable.d/$folder/mirror"
+            fi
         done
-        for folder in Music Videos Pictures
-        do
-            running debug setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/orgs/private/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/online"
-            running debug setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/orgs/private/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/mirror"
-            running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/online"
-            running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/mirror"
-        done
+        # for folder in Music Videos Pictures
+        # do
+        #     running debug setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/orgs/private/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/online"
+        #     running debug setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/orgs/private/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/mirror"
+        #     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/online"
+        #     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/mirror"
+        # done
     fi
 
     # links
