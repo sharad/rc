@@ -21,7 +21,7 @@
 # setup-user: setup_custom_recursive_links /home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/org resource.d/view.d/volumes.d/control.d/storage class/data/container/usrdatas.d tmp home.d/portable.d/tmp/storage
 # setup-user: 
 #
-# setup-user: Warning: running debug setup_make_link .repos/git/main/resource/data/multimedia/orgs/private/media/collection/Videos is broken link not creating link ../../../../../../../../../..data/multimedia/orgs/private/media/collection/Videos .repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/org/home.d/portable.d/Videos/private
+# setup-user: Warning: running debug setup_make_link .repos/git/main/resource/data/multimedia/private/media/collection/Videos is broken link not creating link ../../../../../../../../../..data/multimedia/private/media/collection/Videos .repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/org/home.d/portable.d/Videos/private
 #
 #
 # setup-user: Warning: running debug setup_make_link /home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/org/home.d/local.d/Sink is broken link not creating link ../..local.d/Sink /home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/org/home.d/portable.d/Sink/local
@@ -1322,16 +1322,17 @@ function setup_git_repos()
     running info setup_git_tree_repo "git@github.com:sharad/userorg.git" ${HOME}/${RESOURCEPATH}/userorg
     running info setup_git_annex_repo "git@bitbucket.org:sh4r4d/doclibrary.git" ${HOME}/${RESOURCEPATH}/userorg/main/readwrite/public/user/doc/Library
     # third party
-    running info setup_git_tree_repo "git@github.com:sharad/opt.git" ${HOME}/${RESOURCEPATH}/data/opt
+    running info setup_git_tree_repo "git@github.com:sharad/opt.git" ${HOME}/${RESOURCEPATH}/data/multimedia/opt
 
 
     if true                    # decide through command line arguments
     then
-        # running info setup_git_tree_repo "git@bitbucket.org:sh4r4d/docorg.git" ${HOME}/${RESOURCEPATH}/info/doc/orgs/private
-        running info setup_git_tree_repo "git@github.com:sharad/docorg.git" ${HOME}/${RESOURCEPATH}/info/doc/orgs/private
-        running info setup_git_tree_repo "git@github.com:sharad/optdocorg.git" ${HOME}/${RESOURCEPATH}/info/doc/orgs/opt
-        # running info setup_git_tree_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/orgs/private/media/collection
-        running info setup_git_annex_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/orgs/private/media/collection
+        # running info setup_git_tree_repo "git@bitbucket.org:sh4r4d/docorg.git" ${HOME}/${RESOURCEPATH}/data/info/doc/private
+        running info setup_git_tree_repo "git@github.com:sharad/docorg.git" ${HOME}/${RESOURCEPATH}/data/info/doc/private
+        running info setup_git_tree_repo "git@github.com:sharad/optdocorg.git" ${HOME}/${RESOURCEPATH}/data/info/doc/opt
+        # running info setup_git_tree_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/private/media/collection
+        # running info setup_git_annex_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/private/media/collection
+        running info setup_git_annex_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/private/media/collection
     fi
 }
 
@@ -2738,18 +2739,18 @@ EOF
     then
         for dir in Music Videos Pictures
         do
-            if [ -d "${HOME}/${RESOURCEPATH}/data/multimedia/orgs/private/media/collection/${dir}" ]
+            if [ -d "${HOME}/${RESOURCEPATH}/data/multimedia/private/media/collection/${dir}" ]
             then
-                running debug setup_make_relative_link     "${HOME}/${RESOURCEPATH}" "data/multimedia/orgs/private/media/collection/${dir}" "${USERORGMAIN}/readwrite/public/user/localdirs/${rel_homeprotabledir}/${dir}/online"
-                running debug setup_make_relative_link     "${HOME}/${RESOURCEPATH}" "data/multimedia/orgs/private/media/collection/${dir}" "${USERORGMAIN}/readwrite/public/user/localdirs/${rel_homeprotabledir}/${dir}/mirror"
+                running debug setup_make_relative_link     "${HOME}/${RESOURCEPATH}" "data/multimedia/private/media/collection/${dir}" "${USERORGMAIN}/readwrite/public/user/localdirs/${rel_homeprotabledir}/${dir}/online"
+                running debug setup_make_relative_link     "${HOME}/${RESOURCEPATH}" "data/multimedia/private/media/collection/${dir}" "${USERORGMAIN}/readwrite/public/user/localdirs/${rel_homeprotabledir}/${dir}/mirror"
                 running debug setup_add_to_version_control "${LOCALDIRS_DIR}"        "org/home.d/portable.d/$folder/online"
                 running debug setup_add_to_version_control "${LOCALDIRS_DIR}"        "org/home.d/portable.d/$folder/mirror"
             fi
         done
         # for folder in Music Videos Pictures
         # do
-        #     running debug setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/orgs/private/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/online"
-        #     running debug setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/orgs/private/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/mirror"
+        #     running debug setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/private/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/online"
+        #     running debug setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/private/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/mirror"
         #     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/online"
         #     running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/$folder/mirror"
         # done
