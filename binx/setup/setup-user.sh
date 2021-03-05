@@ -1319,7 +1319,7 @@ function setup_git_repos()
     # RESOURCEPATH=".repos/git/main/resource"
     # USERORGMAIN="userorg/main"
 
-    running info setup_git_tree_repo "git@github.com:sharad/userorg.git" ${HOME}/${RESOURCEPATH}/userorg
+    running info setup_git_tree_repo  "git@github.com:sharad/userorg.git" ${HOME}/${RESOURCEPATH}/userorg
     running info setup_git_annex_repo "git@bitbucket.org:sh4r4d/doclibrary.git" ${HOME}/${RESOURCEPATH}/userorg/main/readwrite/public/user/doc/Library
     # third party
     running info setup_git_tree_repo "git@github.com:sharad/opt.git" ${HOME}/${RESOURCEPATH}/data/multimedia/opt
@@ -1327,12 +1327,14 @@ function setup_git_repos()
 
     if true                    # decide through command line arguments
     then
+        # running info setup_git_tree_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/private/media/collection
+        # running info setup_git_annex_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/private/media/collection
+
+        running info setup_git_tree_repo "git@github.com:sharad/multimedia-private.git" ${HOME}/${RESOURCEPATH}/data/multimedia/private
+        running info setup_git_annex_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/private/media/collection
         # running info setup_git_tree_repo "git@bitbucket.org:sh4r4d/docorg.git" ${HOME}/${RESOURCEPATH}/data/info/doc/private
         running info setup_git_tree_repo "git@github.com:sharad/docorg.git" ${HOME}/${RESOURCEPATH}/data/info/doc/private
         running info setup_git_tree_repo "git@github.com:sharad/optdocorg.git" ${HOME}/${RESOURCEPATH}/data/info/doc/opt
-        # running info setup_git_tree_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/private/media/collection
-        # running info setup_git_annex_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/private/media/collection
-        running info setup_git_annex_repo "git@bitbucket.org:sh4r4d/mediaorg.git" ${HOME}/${RESOURCEPATH}/data/multimedia/private/media/collection
     fi
 }
 
