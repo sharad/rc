@@ -174,7 +174,7 @@ zstyle ':completion:*:*:$command:*:$tag'  list-colors "=(#b) =$zshregex_with_bra
 ## (http://www.zshwiki.org/cgi-bin/wiki.pl?ZshCompletionTips)
 
 # Allow zsh to complete on hostnames found in common config files.
-local _HOST_FILE_TO_USE=(~/.config/dnsmasq/dnsmasq.d/data/hosts-* /etc/hosts)
+local _HOST_FILE_TO_USE=(~/.config/dns/dnsmasq.d/data/hosts-* /etc/hosts)
 for hostfile in $_HOST_FILE_TO_USE
 do
     _full_hostfile="$(readlink -m $hostfile)"

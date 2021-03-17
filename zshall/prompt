@@ -59,203 +59,212 @@ function set_title() {
 }
 
 function make_prompt() {
-    local last_cmd_status="$1"
-    local st c bell
-    st=$?
-    if whence tput >& /dev/null
-    then
-        bell=$(tput bel)
-    fi
 
-    # Green for success, red and a bell for failure
-    if [[ $st -gt 0 ]]
-    then
-        c=31
-    else
-        c=32 bell=
-    fi
+    local last_cmd_status=0
+    last_cmd_status="$1"
 
-    win_title=$(set_title "$PWD")
-    # git_status=$(__git_ps1)
-
-    win_title=$(set_title "$PWD")
-    # git_status=$(__git_ps1)
-
-    ## see http://www.nparikh.org/unix/prompt.php
-
-    if [[  $TERM == "screen" ]]
-    then
-        # these color create alignment problem in screen term.
-        fg=()
-        reset_color=
-        x_bold=
-        x_unbold=
-    else
-        x_bold="%B"
-        x_unbold="%b"
-    fi
-
-    if whence -p errno >& /dev/null
-    then
-        cmd_status="$(errno $last_cmd_status| cut -d' ' -f1,3-) "
-    fi
-
-
-    ##{{ PROMPT PS1
-    if [ "$SSH_CONNECTION" ]
+    if true
     then
 
-        if ! ps1_ssh_from_host=${$(timeout3 -t 1 resolveip -s ${${(z)SSH_CONNECTION}[1]} 2>/dev/null)//.*/} 2>/dev/null
+        # [ $__prompt_debug -ne 0 ] && echo called make_prompt
+
+        local c bell
+
+        if whence tput >& /dev/null
         then
-            ps1_ssh_from_host=${${(z)SSH_CONNECTION}[1]}
+            bell=$(tput bel)
         fi
-        if ! ps1_ssh_to_host=${$(timeout3 -t 1 resolveip -s ${${(z)SSH_CONNECTION}[3]} 2>/dev/null)//.*/} 2>/dev/null
+
+        # Green for success, red and a bell for failure
+        if [[ $last_cmd_status -gt 0 ]]
         then
-            ps1_ssh_to_host=${${(z)SSH_CONNECTION}[3]}
-        fi
-        ps1ssh_connection=%{$fg[green]%}${x_bold}${ps1_ssh_from_host}${x_unbold}%{$reset_color%}'>'
-    fi
-
-
-    local ps1_user_default=s
-    local ps1_host_default=taj
-
-    # come first
-    if [[  $TERM == "screen" ]]
-    then
-        local ps1shlv="%L"
-    else
-        local ps1shlv="%{$fg[magenta]%}%L%{${reset_color}%}"
-    fi
-    # comes second
-    local slash_b4_ps1screen="%(2L./.)"
-    # some changes done in it, for getting it correct, any of these below two will work.
-    if [[  $TERM == "screen" ]]
-    then
-        [ $WINDOW ] && local ps1screen="${WINDOW+${slash_b4_ps1screen}$WINDOW}"
-    else
-        [ $WINDOW ] && local ps1screen="${WINDOW+${slash_b4_ps1screen}%{${fg[yellow]}$WINDOW%}\%{$reset_color%}"
-    fi
-    unset slash_b4_ps1screen
-    #local ps1_screen=${WINDOW:+/%{$fg[yellow]%}${WINDOW}%{${reset_color}%}}
-
-    # %(1j./.)  # 1 job then place / else noting
-    # %(1j.. )  # 1 job then nothing else a space
-
-    # comes third
-    if [ $WINDOW ]
-    then
-        local slash_b4_ps1job="/"
-    else
-        local slash_b4_ps1job="%(2L./.)"
-    fi
-
-    if [[  $TERM == "screen" ]]
-    then
-        local ps1job="${slash_b4_ps1job}%j"
-    else
-        local ps1job="${slash_b4_ps1job}%{$fg[green]%}%j%{${reset_color}%}"
-    fi
-    unset slash_b4_ps1job
-
-    if [[  $TERM == "screen" ]]
-    then
-        local ps1shlv_n_screen_n_job="%(2L.${ps1shlv}.)${ps1screen}%(1j.${ps1job}.)"
-    else
-        local ps1shlv_n_screen_n_job="%(2L.${ps1shlv}.)${ps1screen}%(1j.${ps1job}.)"
-    fi
-
-    if [[ $USER != $ps1_user_default && $USER != "spratap" ]]
-    then
-        local ps1_user_at_host="%U%n%u"
-    fi
-
-    if [ $ps1_ssh_to_host ]
-    then
-        if [ $ps1_user_at_host ]
-        then
-            local ps1_user_at_host="${ps1_user_at_host}@"
-        fi
-        if [[ $TERM == "XYZ" ]]
-        then
-            local ps1_user_at_host="${ps1_user_at_host}${x_bold}${ps1_ssh_to_host}${x_unbold}"
+            c=31
         else
-            local ps1_user_at_host="${ps1_user_at_host}%{$fg[yellow]%}${x_bold}${ps1_ssh_to_host}${x_unbold}%{$reset_color%}"
+            c=32 bell=
         fi
-    fi
 
-    if [ "$ps1_user_at_host" -o "$WINDOW" ]
-    then
-        local spacing_b4_ps1status="%(2L..%(1j.. ))"
-    fi
+        win_title=$(set_title "$PWD")
+        # git_status=$(__git_ps1)
 
-    # will have both side space
-    if [[  $TERM == "XYZ" ]]
-    then
-        local ps1status="%(?..%S%?%s )"
-    else
+        win_title=$(set_title "$PWD")
+        # git_status=$(__git_ps1)
+
+        ## see http://www.nparikh.org/unix/prompt.php
+
         if [[  $TERM == "screen" ]]
         then
-            local ps1status="%(?..%? )"
+            # these color create alignment problem in screen term.
+            fg=()
+            reset_color=
+            x_bold=
+            x_unbold=
         else
-            local ps1status="%(?..%s%{$fg[red]%}${cmd_status}%S%?%s%{$reset_color%}%s )"
+            x_bold="%B"
+            x_unbold="%b"
         fi
+
+        if whence -p errno >& /dev/null
+        then
+            cmd_status="$(errno $last_cmd_status| cut -d' ' -f1,3-) "
+        fi
+
+
+        ##{{ PROMPT PS1
+        if [ "$SSH_CONNECTION" ]
+        then
+
+            if ! ps1_ssh_from_host=${$(timeout3 -t 1 resolveip -s ${${(z)SSH_CONNECTION}[1]} 2>/dev/null)//.*/} 2>/dev/null
+            then
+                ps1_ssh_from_host=${${(z)SSH_CONNECTION}[1]}
+            fi
+            if ! ps1_ssh_to_host=${$(timeout3 -t 1 resolveip -s ${${(z)SSH_CONNECTION}[3]} 2>/dev/null)//.*/} 2>/dev/null
+            then
+                ps1_ssh_to_host=${${(z)SSH_CONNECTION}[3]}
+            fi
+            ps1ssh_connection=%{$fg[green]%}${x_bold}${ps1_ssh_from_host}${x_unbold}%{$reset_color%}'>'
+        fi
+
+
+        local ps1_user_default=s
+        local ps1_host_default=taj
+
+        # come first
+        if [[  $TERM == "screen" ]]
+        then
+            local ps1shlv="%L"
+        else
+            local ps1shlv="%{$fg[magenta]%}%L%{${reset_color}%}"
+        fi
+        # comes second
+        local slash_b4_ps1screen="%(2L./.)"
+        # some changes done in it, for getting it correct, any of these below two will work.
+        if [[  $TERM == "screen" ]]
+        then
+            [ $WINDOW ] && local ps1screen="${WINDOW+${slash_b4_ps1screen}$WINDOW}"
+        else
+            [ $WINDOW ] && local ps1screen="${WINDOW+${slash_b4_ps1screen}%{${fg[yellow]}$WINDOW%}\%{$reset_color%}"
+        fi
+        unset slash_b4_ps1screen
+        #local ps1_screen=${WINDOW:+/%{$fg[yellow]%}${WINDOW}%{${reset_color}%}}
+
+        # %(1j./.)  # 1 job then place / else noting
+        # %(1j.. )  # 1 job then nothing else a space
+
+        # comes third
+        if [ $WINDOW ]
+        then
+            local slash_b4_ps1job="/"
+        else
+            local slash_b4_ps1job="%(2L./.)"
+        fi
+
+        if [[  $TERM == "screen" ]]
+        then
+            local ps1job="${slash_b4_ps1job}%j"
+        else
+            local ps1job="${slash_b4_ps1job}%{$fg[green]%}%j%{${reset_color}%}"
+        fi
+        unset slash_b4_ps1job
+
+        if [[  $TERM == "screen" ]]
+        then
+            local ps1shlv_n_screen_n_job="%(2L.${ps1shlv}.)${ps1screen}%(1j.${ps1job}.)"
+        else
+            local ps1shlv_n_screen_n_job="%(2L.${ps1shlv}.)${ps1screen}%(1j.${ps1job}.)"
+        fi
+
+        if [[ $USER != $ps1_user_default && $USER != "spratap" ]]
+        then
+            local ps1_user_at_host="%U%n%u"
+        fi
+
+        if [ $ps1_ssh_to_host ]
+        then
+            if [ $ps1_user_at_host ]
+            then
+                local ps1_user_at_host="${ps1_user_at_host}@"
+            fi
+            if [[ $TERM == "XYZ" ]]
+            then
+                local ps1_user_at_host="${ps1_user_at_host}${x_bold}${ps1_ssh_to_host}${x_unbold}"
+            else
+                local ps1_user_at_host="${ps1_user_at_host}%{$fg[yellow]%}${x_bold}${ps1_ssh_to_host}${x_unbold}%{$reset_color%}"
+            fi
+        fi
+
+        if [ "$ps1_user_at_host" -o "$WINDOW" ]
+        then
+            local spacing_b4_ps1status="%(2L..%(1j.. ))"
+        fi
+
+        # will have both side space
+        if [[  $TERM == "XYZ" ]]
+        then
+            local ps1status="%(?..%S%?%s )"
+        else
+            if [[  $TERM == "screen" ]]
+            then
+                local ps1status="%(?..%? )"
+            else
+                local ps1status="%(?..%s%{$fg[red]%}${cmd_status}%S%?%s%{$reset_color%}%s )"
+            fi
+        fi
+
+        # time at next hour
+        if [[  $TERM == "screen" ]]
+        then
+            local ps1_time_at_hour="%(0t.%t .)"
+        else
+            local ps1_time_at_hour="%(0t.%{$fg[red]%}%t%{$reset_color%} .)"
+        fi
+
+        local ps1_dir='%2~'
+        # local ps1_dir='%(1~.%2~.)'
+        if [[  $TERM == "screen" ]]
+        then
+            local ps1_prompt_char='%(!.#.%%)'
+        else
+            local ps1_prompt_char="%(!.${x_bold}#${x_unbold}.%%)"
+        fi
+
+        if [ $WINDOW ]
+        then
+            local spacing=" "
+        else
+            local spacing="%(2L.%(1j. .) .%(1j. .))"
+        fi
+
+        ps1_extra_stage1="${vcs_info_msg_0_}"
+        ps1_extra="${ps1_extra_stage1:+<$ps1_extra_stage1>}"
+
+        if [ -n "$GUIX_ENVIRONMENT" ]
+        then
+            # https://guix.gnu.org/manual/en/html_node/Invoking-guix-environment.html
+            local ps1_guix_environment=" [dev]"
+        fi
+
+
+
+
+        if [ ! $SUDO_USER ]
+        then
+            PS1="${ps1ssh_connection}"
+            PS1+="${ps1shlv_n_screen_n_job}${spacing}"
+            PS1+="${ps1_user_at_host:+${ps1_user_at_host} }${ps1_time_at_hour}"
+            PS1+="${spacing_b4_ps1status}${ps1status}"
+            PS1+="${ps1_dir}"
+            PS1+="${ps1_extra}"
+            PS1+="${ps1_guix_environment}"
+            PS1+="${ps1_prompt_char} "
+        else
+            PS1='$ '
+        fi
+
+        unset ps1shlv_n_screen_n_job spacing ps1_user_at_host \
+              ps1_user_at_host ps1_time_at_hour spacing_b4_ps1status \
+              ps1status ps1_dir ps1_prompt_char ps1_ssh_to_host \
+              ps1_ssh_from_host ps1ssh_connection ps1_guix_environment
     fi
-
-    # time at next hour
-    if [[  $TERM == "screen" ]]
-    then
-        local ps1_time_at_hour="%(0t.%t .)"
-    else
-        local ps1_time_at_hour="%(0t.%{$fg[red]%}%t%{$reset_color%} .)"
-    fi
-
-    local ps1_dir='%2~'
-    # local ps1_dir='%(1~.%2~.)'
-    if [[  $TERM == "screen" ]]
-    then
-        local ps1_prompt_char='%(!.#.%%)'
-    else
-        local ps1_prompt_char="%(!.${x_bold}#${x_unbold}.%%)"
-    fi
-
-    if [ $WINDOW ]
-    then
-        local spacing=" "
-    else
-        local spacing="%(2L.%(1j. .) .%(1j. .))"
-    fi
-
-    ps1_extra_stage1="${vcs_info_msg_0_}"
-    ps1_extra="${ps1_extra_stage1:+<$ps1_extra_stage1>}"
-
-    if [ -n "$GUIX_ENVIRONMENT" ]
-    then
-        # https://guix.gnu.org/manual/en/html_node/Invoking-guix-environment.html
-        local ps1_guix_environment=" [dev]"
-    fi
-
-
-
-
-    if [ ! $SUDO_USER ]
-    then
-        PS1="${ps1ssh_connection}"
-        PS1+="${ps1shlv_n_screen_n_job}${spacing}"
-        PS1+="${ps1_user_at_host:+${ps1_user_at_host} }${ps1_time_at_hour}"
-        PS1+="${spacing_b4_ps1status}${ps1status}"
-        PS1+="${ps1_dir}"
-        PS1+="${ps1_extra}"
-        PS1+="${ps1_guix_environment}"
-        PS1+="${ps1_prompt_char} "
-    else
-        PS1='$ '
-    fi
-
-    unset ps1shlv_n_screen_n_job spacing ps1_user_at_host \
-          ps1_user_at_host ps1_time_at_hour spacing_b4_ps1status \
-          ps1status ps1_dir ps1_prompt_char ps1_ssh_to_host \
-          ps1_ssh_from_host ps1ssh_connection ps1_guix_environment
 }
 
 PROMPT_COMMAND=make_prompt
@@ -275,6 +284,9 @@ autoload -U promptinit; promptinit
 
 ##{{ PROMPT RPROMPT
 # https://coderwall.com/p/kmchbw/zsh-display-commands-runtime-in-prompt
+
+
+__prompt_debug=0
 
 
 function preexec_duration_print() {
@@ -302,15 +314,123 @@ function precmd_duration_print() {
   fi
 }
 
-function preexec_prompt_command() {
-    local last_cmd_status=$?
-    make_prompt ${last_cmd_status}
+function prompt_eval_fun() {
+    local last_cmd_status="$1"
+    [ $__prompt_debug -ne 0 ] && echo called prompt_eval_fun
+    [ $__prompt_debug -ne 0 ] && echo called make_prompt "${last_cmd_status}"
+    vcs_info
+    make_prompt "${last_cmd_status}"
 }
 
+function chpwd_prompt_command() {
+    local last_cmd_status=$?
+    [ $__prompt_debug -ne 0 ] && echo called chpwd_prompt_command
+    if true
+    then
+        prompt_eval_fun "${last_cmd_status}"
+    fi
+}
+
+function preexec_prompt_command() {
+    if false
+    then
+        local last_cmd_status=$?
+        [ $__prompt_debug -ne 0 ] && echo called preexec_prompt_command
+        if true # [ "$last_cmd_status" -gt 0 -o $#PS1 -lt 10 ]
+        then
+            prompt_eval_fun "${last_cmd_status}"
+        fi
+    fi
+}
+
+function precmd_prompt_command() {
+    local last_cmd_status=$?
+    [ $__prompt_debug -ne 0 ] && echo called precmd_prompt_command
+    if true # [ "$last_cmd_status" -gt 0 -o $#PS1 -lt 10 ]
+    then
+        prompt_eval_fun "${last_cmd_status}"
+    fi
+}
+
+# http://zsh.sourceforge.net/Doc/Release/Functions.html
+
+# chpwd
+
+#     Executed whenever the current working directory is changed.
+
+# periodic
+
+#    If the parameter PERIOD is set, this function is executed every $PERIOD
+#    seconds, just before a prompt. Note that if multiple functions are defined
+#    using the array periodic_functions only one period is applied to the
+#    complete set of functions, and the scheduled time is not reset if the list
+#    of functions is altered. Hence the set of functions is always called
+#    together.
+
+# precmd
+
+#     Executed before each prompt. Note that precommand functions are not
+#     re-executed simply because the command line is redrawn, as happens, for
+#     example, when a notification about an exiting job is displayed.
+
+# preexec
+
+#     Executed just after a command has been read and is about to be executed.
+#     If the history mechanism is active (regardless of whether the line was
+#     discarded from the history buffer), the string that the user typed is
+#     passed as the first argument, otherwise it is an empty string. The actual
+#     command that will be executed (including expanded aliases) is passed in
+#     two different forms: the second argument is a single-line, size-limited
+#     version of the command (with things like function bodies elided); the
+#     third argument contains the full text that is being executed.
+
+# zshaddhistory
+
+#     Executed when a history line has been read interactively, but before it is
+#     executed. The sole argument is the complete history line (so that any
+#     terminating newline will still be present).
+
+#     If any of the hook functions returns status 1 (or any non-zero value other
+#     than 2, though this is not guaranteed for future versions of the shell)
+#     the history line will not be saved, although it lingers in the history
+#     until the next line is executed, allowing you to reuse or edit it
+#     immediately.
+
+#     If any of the hook functions returns status 2 the history line will be
+#     saved on the internal history list, but not written to the history file.
+#     In case of a conflict, the first non-zero status value is taken.
+
+#     A hook function may call ‘fc -p ...’ to switch the history context so that
+#     the history is saved in a different file from the that in the global
+#     HISTFILE parameter. This is handled specially: the history context is
+#     automatically restored after the processing of the history line is
+#     finished.
+
+#     The following example function works with one of the options
+#     INC_APPEND_HISTORY or SHARE_HISTORY set, in order that the line is written
+#     out immediately after the history entry is added. It first adds the
+#     history line to the normal history with the newline stripped, which is
+#     usually the correct behaviour. Then it switches the history context so
+#     that the line will be written to a history file in the current directory.
+
+#     zshaddhistory() {
+#       print -sr -- ${1%%$'\n'}
+#       fc -p .zsh_local_history
+#     }
+
+# zshexit
+
+#    Executed at the point where the main shell is about to exit normally. This
+#    is not called by exiting subshells, nor when the exec precommand modifier
+#    is used before an external command. Also, unlike TRAPEXIT, it is not called
+#    when functions exit.
+
+chpwd+=(chpwd_prompt_command)
 preexec_functions+=(preexec_duration_print)
-precmd_functions+=(preexec_prompt_command)
+preexec_functions+=(preexec_prompt_command)
 precmd_functions+=(precmd_duration_print)
-precmd_functions+=(vcs_info)
+# precmd_functions+=(vcs_info)
+precmd_functions+=(precmd_prompt_command)
 ##}} PROMPT PS1
 
 
