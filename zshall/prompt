@@ -62,6 +62,7 @@ function make_prompt() {
 
     local last_cmd_status=0
     last_cmd_status="$1"
+    vcs_info
 
     if true
     then
@@ -314,42 +315,95 @@ function precmd_duration_print() {
   fi
 }
 
+local __prompt_vcs_git_branch=""
+
 function prompt_eval_fun() {
     local last_cmd_status="$1"
-    [ $__prompt_debug -ne 0 ] && echo called prompt_eval_fun
-    [ $__prompt_debug -ne 0 ] && echo called make_prompt "${last_cmd_status}"
-    vcs_info
+    [ $__prompt_debug -ne 0 ] && echo called prompt_eval_fun and last_cmd_status="$last_cmd_status"
+    [ $__prompt_debug -ne 0 ] && echo called make_prompt "${last_cmd_status}" and last_cmd_status="$last_cmd_status"
+
+    if git rev-parse --is-inside-work-tree >& /dev/null
+    then
+        __prompt_vcs_git_branch=$(git rev-parse --is-inside-work-tree >& /dev/null && git rev-parse --abbrev-ref HEAD)
+    else
+        __prompt_vcs_git_branch=""
+    fi
     make_prompt "${last_cmd_status}"
 }
 
 function chpwd_prompt_command() {
+    #     Executed whenever the current working directory is changed.
     local last_cmd_status=$?
     [ $__prompt_debug -ne 0 ] && echo called chpwd_prompt_command
+    prompt_eval_fun "${last_cmd_status}"
+}
+
+
+__prompt_last_cmd_status=0
+
+function prompt_detect_status_change() {
+    local last_cmd_status="$1"
+
+    [ $__prompt_debug -ne 0 ] && echo called prompt_detect_status_change last_cmd_status="$last_cmd_status"
+
+    [ $#PS1 -lt 10 ]                                                    && return 0
+
+    if [ $__prompt_last_cmd_status -ne $last_cmd_status -a "$last_cmd_status" -gt 0 ]
+    then
+        __prompt_last_cmd_status="$last_cmd_status"
+        return 0
+    fi
+    __prompt_last_cmd_status="$last_cmd_status"
+
+    if git rev-parse --is-inside-work-tree >& /dev/null
+    then
+        local curr_prompt_vcs_git_branch=$(git rev-parse --is-inside-work-tree >& /dev/null && git rev-parse --abbrev-ref HEAD)
+        if [ "${curr_prompt_vcs_git_branch}" != "${__prompt_vcs_git_branch}" ]
+        then
+            __prompt_vcs_git_branch="${curr_prompt_vcs_git_branch}"
+            return 0
+        fi
+        __prompt_vcs_git_branch="${curr_prompt_vcs_git_branch}"
+    fi
+
+    [ $__prompt_debug -ne 0 ] && echo called prompt_detect_status_change return -1 and last_cmd_status="$last_cmd_status"
+    return -1
+}
+
+__prompt_eval=0
+
+function preexec_prompt_command() {
+    #     Executed just after a command has been read and is about to be executed.
+    #     If the history mechanism is active (regardless of whether the line was
+    #     discarded from the history buffer), the string that the user typed is
+    #     passed as the first argument, otherwise it is an empty string. The actual
+    #     command that will be executed (including expanded aliases) is passed in
+    #     two different forms: the second argument is a single-line, size-limited
+    #     version of the command (with things like function bodies elided); the
+    #     third argument contains the full text that is being executed.
+    local last_cmd_status=$?
+    [ $__prompt_debug -ne 0 ] && echo called preexec_prompt_command and last_cmd_status="$last_cmd_status"
     if true
     then
         prompt_eval_fun "${last_cmd_status}"
+        # __prompt_eval="${last_cmd_status}"
     fi
-}
 
-function preexec_prompt_command() {
-    if false
-    then
-        local last_cmd_status=$?
-        [ $__prompt_debug -ne 0 ] && echo called preexec_prompt_command
-        if true # [ "$last_cmd_status" -gt 0 -o $#PS1 -lt 10 ]
-        then
-            prompt_eval_fun "${last_cmd_status}"
-        fi
-    fi
+    [ $__prompt_debug -ne 0 ] && echo preexec git-branch $(git rev-parse --is-inside-work-tree >& /dev/null && git rev-parse --abbrev-ref HEAD)
 }
 
 function precmd_prompt_command() {
+    #     Executed before each prompt. Note that precommand functions are not
+    #     re-executed simply because the command line is redrawn, as happens, for
+    #     example, when a notification about an exiting job is displayed.
     local last_cmd_status=$?
-    [ $__prompt_debug -ne 0 ] && echo called precmd_prompt_command
-    if true # [ "$last_cmd_status" -gt 0 -o $#PS1 -lt 10 ]
+    [ $__prompt_debug -ne 0 ] && echo called precmd_prompt_command and last_cmd_status="$last_cmd_status"
+    if prompt_detect_status_change "$last_cmd_status"
     then
         prompt_eval_fun "${last_cmd_status}"
     fi
+    # __prompt_eval=0
+    [ $__prompt_debug -ne 0 ] && echo precmd git-branch $(git rev-parse --is-inside-work-tree >& /dev/null && git rev-parse --abbrev-ref HEAD)
 }
 
 # http://zsh.sourceforge.net/Doc/Release/Functions.html
@@ -425,7 +479,7 @@ function precmd_prompt_command() {
 #    is used before an external command. Also, unlike TRAPEXIT, it is not called
 #    when functions exit.
 
-chpwd+=(chpwd_prompt_command)
+chpwd_functions+=(chpwd_prompt_command)
 preexec_functions+=(preexec_duration_print)
 preexec_functions+=(preexec_prompt_command)
 precmd_functions+=(precmd_duration_print)
@@ -433,6 +487,7 @@ precmd_functions+=(precmd_duration_print)
 precmd_functions+=(precmd_prompt_command)
 ##}} PROMPT PS1
 
+prompt_eval_fun 0
 
 ##{{ PROMPT PS1
 ##}} PROMPT PS1

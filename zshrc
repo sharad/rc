@@ -432,7 +432,7 @@ setcursor		# producing empty line.
 ## http://zsh.sourceforge.net/FAQ/zshfaq03.html#l22
 ##
 ## I modified the xterm version because it was too plain.
-chpwd() {
+function chpwd_wintitle() {
     if [[ -t 1 ]]
     then
         case $TERM in
@@ -445,6 +445,8 @@ chpwd() {
         esac
     fi
 }
+
+chpwd_functions+=(chpwd_wintitle)
 
 # }}}
 # {{{ Zsh FAQ entries
