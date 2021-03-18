@@ -62,6 +62,7 @@ function make_prompt() {
 
     local last_cmd_status=0
     last_cmd_status="$1"
+
     vcs_info
 
     if true
@@ -274,46 +275,28 @@ autoload -U promptinit; promptinit
 
 ##}} PROMPT PS1
 
-#         periodic_functions=( show_agenda )
-#         function show_agenda {
-#             if (( TTYIDLE > 2 )) ; then
-#                 echo Hi
-#             fi
-#         }
-#         PERIOD=1
 
+##{{
+# periodic
+
+#    If the parameter PERIOD is set, this function is executed every $PERIOD
+#    seconds, just before a prompt. Note that if multiple functions are defined
+#    using the array periodic_functions only one period is applied to the
+#    complete set of functions, and the scheduled time is not reset if the list
+#    of functions is altered. Hence the set of functions is always called
+#    together.
+PERIOD=6
+function period_show_agenda {
+    echo Hi TTYIDLE=$TTYIDLE
+}
+periodic_functions+=( period_show_agenda )
+##}}
 
 ##{{ PROMPT RPROMPT
 # https://coderwall.com/p/kmchbw/zsh-display-commands-runtime-in-prompt
 
 
 __prompt_debug=0
-
-
-function preexec_duration_print() {
-  timer=${timer:-$SECONDS}
-}
-
-function precmd_duration_print() {
-    if [ $timer ]
-    then
-        local __duration=$(($SECONDS - $timer))
-        if (( $__duration > 0 ))
-        then
-            if [[  $TERM == "screen" ]]
-            then
-                __timer_show="${__duration}s"
-            else
-                __timer_show="%{$fg[cyan]%}${__duration}%{$reset_color%}s"
-            fi
-            export RPROMPT="$__timer_show"
-        else
-            __timer_show=
-            export RPROMPT=
-        fi
-        unset timer
-  fi
-}
 
 local __prompt_vcs_git_branch=""
 
@@ -335,6 +318,15 @@ function chpwd_prompt_command() {
     #     Executed whenever the current working directory is changed.
     local last_cmd_status=$?
     [ $__prompt_debug -ne 0 ] && echo called chpwd_prompt_command
+    if [ $__prompt_debug -ne 0 ]
+    then
+        echo called chpwd_prompt_command wih args start
+        for arg in "$@"
+        do
+            echo called chpwd_prompt_command wih @ "$arg"
+        done
+        echo called chpwd_prompt_command wih args finish
+    fi
     prompt_eval_fun "${last_cmd_status}"
 }
 
@@ -382,6 +374,16 @@ function preexec_prompt_command() {
     #     version of the command (with things like function bodies elided); the
     #     third argument contains the full text that is being executed.
     local last_cmd_status=$?
+    # [ $__prompt_debug -ne 0 ] && echo called preexec_prompt_command wih @ "$@"
+    if [ $__prompt_debug -ne 0 ]
+    then
+        echo called preexec_prompt_command wih args start
+        for arg in "$@"
+        do
+            echo called preexec_prompt_command wih @ "$arg"
+        done
+        echo called preexec_prompt_command wih args finish
+    fi
     [ $__prompt_debug -ne 0 ] && echo called preexec_prompt_command and last_cmd_status="$last_cmd_status"
     if true
     then
@@ -397,7 +399,17 @@ function precmd_prompt_command() {
     #     re-executed simply because the command line is redrawn, as happens, for
     #     example, when a notification about an exiting job is displayed.
     local last_cmd_status=$?
+    [ $__prompt_debug -ne 0 ] && echo called precmd_prompt_command with @ "$@"
     [ $__prompt_debug -ne 0 ] && echo called precmd_prompt_command and last_cmd_status="$last_cmd_status"
+    if [ $__prompt_debug -ne 0 ]
+    then
+        echo called precmd_prompt_command wih args start
+        for arg in "$@"
+        do
+            echo called precmd_prompt_command wih @ "$arg"
+        done
+        echo called precmd_prompt_command wih args finish
+    fi
     if prompt_detect_status_change "$last_cmd_status"
     then
         prompt_eval_fun "${last_cmd_status}"
@@ -480,14 +492,37 @@ function precmd_prompt_command() {
 #    when functions exit.
 
 chpwd_functions+=(chpwd_prompt_command)
-preexec_functions+=(preexec_duration_print)
 preexec_functions+=(preexec_prompt_command)
-precmd_functions+=(precmd_duration_print)
-# precmd_functions+=(vcs_info)
 precmd_functions+=(precmd_prompt_command)
-##}} PROMPT PS1
 
 prompt_eval_fun 0
-
-##{{ PROMPT PS1
 ##}} PROMPT PS1
+
+##{{ RPROMPT
+function preexec_duration_print() {
+    timer=${timer:-$SECONDS}
+}
+
+function precmd_duration_print() {
+    if [ $timer ]
+    then
+        local __duration=$(($SECONDS - $timer))
+        if (( $__duration > 0 ))
+        then
+            if [[  $TERM == "screen" ]]
+            then
+                __timer_show="${__duration}s"
+            else
+                __timer_show="%{$fg[cyan]%}${__duration}%{$reset_color%}s"
+            fi
+            export RPROMPT="$__timer_show"
+        else
+            __timer_show=
+            export RPROMPT=
+        fi
+        unset timer
+    fi
+}
+preexec_functions+=(preexec_duration_print)
+precmd_functions+=(precmd_duration_print)
+##}} RPROMPT
