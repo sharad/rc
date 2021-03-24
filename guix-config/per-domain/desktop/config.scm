@@ -17,6 +17,8 @@
 (use-modules (gnu services audio))
 (use-modules (gnu services kerberos))
 (use-modules (gnu) (gnu system nss))
+(use-modules (guix channels))
+(use-modules (guix inferior))
 (use-service-modules networking ssh)
 (use-package-modules bootloaders certs suckless wm)
 
@@ -68,7 +70,7 @@
 (define %lotus-account-supplementry-groups   '("wheel" "netdev" "audio" "video"))
 (define %lotus-account-home-parent-directory "/home")
 (define %lotus-account-shell                 #~(string-append #$zsh "/bin/zsh"))
-(define %lotus-gdm-auto-login                #t)
+(define %lotus-gdm-auto-login                #f)
 (define %lotus-gdm-allow-empty-password      #f)
 
 ;; (define %lotus-nm-dnsmasq-ns-path            #~(string-append #$nm-dnsmasq-ns "/etc/NetworkManager/dnsmasq.d"))
@@ -742,8 +744,21 @@
                                       %setuid-programs))
 
 
+(define %lotus-pinned-linux (let* ((channels (list (channel (name 'nonguix)
+                                                            (url "https://gitlab.com/nonguix/nonguix")
+                                                            (commit "6ee35a1f1cd50ba0d4bfee37f2b084bc0797885c"))
+                                                   ;; (channel (name 'lotus)
+                                                   ;;          (url "https://github.com/sharad/guix")
+                                                   ;;          (commit "2079c605eff01bb5487d836ab2cbd30c68e42ecd"))
+                                                   (channel (name 'guix)
+                                                            (url "https://git.savannah.gnu.org/git/guix.git")
+                                                            (commit "d9f1752c55a458d80c48192150f68ef37738a91f"))))
+                                   (inferior (inferior-for-channels channels)))
+                              (first (lookup-inferior-packages inferior "linux" "5.11.2"))))
+
 (define %lotus-kernel (if nongnu-desktop?
                           linux
+                          ;; %lotus-pinned-linux
                           ;; https://gitlab.com/nonguix/nonguix/-/blob/master/README.org Avoiding kernel recompilation
                           linux-libre))
 

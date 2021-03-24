@@ -65,6 +65,12 @@ then
         unset CAPS_STATUS
     fi
 
+    if whence -p setxkbmap > /dev/null 2>&1
+    then
+        setxkbmap us
+        sleep 1s
+    fi
+
     if whence -p xmodmap >& /dev/null
     then
         if [ -e ~/.xmodmaprc  ]

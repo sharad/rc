@@ -78,6 +78,24 @@ fi
 ###
 
 
+##{{
+if whence -p setxkbmap > /dev/null 2>&1
+then
+    setxkbmap us
+    sleep 1s
+fi
+
+if whence -p xmodmap >& /dev/null
+then
+    if [ -e ~/.xmodmaprc  ]
+    then
+        xmodmap ~/.xmodmaprc >&/dev/null >> ~/.xsession-errors 2>&1
+    else
+        xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >&/dev/null >> ~/.xsession-errors 2>&1
+    fi
+fi
+##}}
+
 if whence -p xte >& /dev/null
 then
     xte <<EOF >>& ~/.logs/wmlogin.log &!
@@ -94,7 +112,7 @@ fi
 
 ##{{
 # may be very much required.
-if whence -p xdg-autostart 
+if whence -p xdg-autostart
 then
   xdg-autostart &!
 fi
