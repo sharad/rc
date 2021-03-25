@@ -3,13 +3,18 @@
 
 # confirm
 
-## GUIX
-# Tell GDB where to look for separate debugging files.
-set debug-file-directory ~/.guix-profile/lib/debug
+add-auto-load-safe-path /lib
+add-auto-load-safe-path /lib64
+add-auto-load-safe-path /usr/lib
+add-auto-load-safe-path /usr/lib64
 
-# Authorize extensions found in the store, such as the
-# pretty-printers of libstdc++.
-set auto-load safe-path /gnu/store/*/lib
+## GUIX
+# # Tell GDB where to look for separate debugging files.
+# set debug-file-directory ~/.guix-profile/lib/debug
+# # Authorize extensions found in the store, such as the
+# # pretty-printers of libstdc++.
+# 
+# set auto-load safe-path /gnu/store/*/lib
 ## GUIX
 
 
@@ -627,7 +632,7 @@ handle SIG33   print nostop pass
 
 ## Python
 # https://stackoverflow.com/questions/40391404/loading-python-support-in-gdb
-set debug auto-load
+# set debug auto-load ## too much output
 add-auto-load-safe-path /usr/share/gdb/python/gdb/
 add-auto-load-safe-path /usr/share/gdb/python/
 add-auto-load-safe-path /usr/share/gdb/
