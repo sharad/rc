@@ -2,7 +2,7 @@
 
 
 # confirm
-
+add-auto-load-safe-path /opt/
 add-auto-load-safe-path /lib
 add-auto-load-safe-path /lib64
 add-auto-load-safe-path /usr/lib
@@ -241,10 +241,10 @@ document sig
   Print signal actions for target
 end
 
-define thread
+define thrd
   info threads
 end
-document thread
+document thrd
   Print threads in target
 end
 
@@ -637,13 +637,13 @@ handle SIG33   print nostop pass
 
 ## Python
 # https://stackoverflow.com/questions/40391404/loading-python-support-in-gdb
-# set debug auto-load ## too much output
+set debug auto-load ## too much output
 add-auto-load-safe-path /usr/share/gdb/python/gdb/
 add-auto-load-safe-path /usr/share/gdb/python/
 add-auto-load-safe-path /usr/share/gdb/
 add-auto-load-safe-path /usr/lib64/python2.7/lib-dynload
 file python
-# set auto-load python-scripts on
+set auto-load python-scripts on
 
 
 
