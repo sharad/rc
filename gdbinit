@@ -7,13 +7,18 @@ add-auto-load-safe-path /lib
 add-auto-load-safe-path /lib64
 add-auto-load-safe-path /usr/lib
 add-auto-load-safe-path /usr/lib64
+add-auto-load-safe-path /usr/share/gdb/python/gdb/
+add-auto-load-safe-path /usr/share/gdb/python/
+add-auto-load-safe-path /usr/share/gdb/
+add-auto-load-safe-path /usr/lib64/python2.7/lib-dynload
+add-auto-load-safe-path /gnu/store/*/lib
 
 ## GUIX
 # # Tell GDB where to look for separate debugging files.
 # set debug-file-directory ~/.guix-profile/lib/debug
 # # Authorize extensions found in the store, such as the
 # # pretty-printers of libstdc++.
-# 
+#
 # set auto-load safe-path /gnu/store/*/lib
 ## GUIX
 
@@ -638,7 +643,7 @@ add-auto-load-safe-path /usr/share/gdb/python/
 add-auto-load-safe-path /usr/share/gdb/
 add-auto-load-safe-path /usr/lib64/python2.7/lib-dynload
 file python
-set auto-load python-scripts on
+# set auto-load python-scripts on
 
 
 
@@ -657,7 +662,7 @@ class Cmds(gdb.Command):
                          gdb.COMMAND_DATA,
                          gdb.COMPLETE_SYMBOL,
                          True)
-  
+
   def invoke(self, arg, from_tty):
     for fragment in arg.split(';'):
       # from_tty is passed in from invoke.
