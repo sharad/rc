@@ -286,9 +286,8 @@
                      (when (fboundp 'task-current-party)
                        (unless (task-current-party)
                          (task-current-party "meru"))
-                       (unless (and
-                                (boundp 'org-clock-monitor-files)
-                                org-clock-monitor-files)
+                       (unless (and (boundp 'org-clock-monitor-files)
+                                    org-clock-monitor-files)
                          (when (task-current-party)
                            (when (task-current-party)
                              (let* ((monitor-dir (task-party-dir))
@@ -531,9 +530,10 @@
 (defun lotus-orgclocktask/post-init-startup-hooks-init ())
 
 (defun lotus-orgclocktask/post-init-startup-hooks-config ()
-  (progn ;code will not get run as when
-                                        ;`enable-startup-interrupting-feature-hook' run at early start,
-                                        ;that time package `org-misc-utils-lotus' did not get loaded.
+  (progn
+    ;code will not get run as when
+    ;`enable-startup-interrupting-feature-hook' run at early start,
+    ;that time package `org-misc-utils-lotus' did not get loaded.
     ;; BUG: not getting included
     (add-to-enable-startup-interrupting-feature-hook
      #'(lambda ()
