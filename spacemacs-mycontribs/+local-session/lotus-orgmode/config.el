@@ -524,13 +524,6 @@
         (progn
           (defun org-reset-agenda-files ()
             (interactive)
-            ;; (setq
-            ;;  org-agenda-files (directory-files-recursive
-            ;;                    (expand-file-name
-            ;;                     "~/Documents/online/CreatedContent/contents/virtual/org/default")
-            ;;                    "\\.org$"
-            ;;                    2
-            ;;                    "\\(rip\\|stage\\)"))
             (setq org-agenda-files (occ-files)))
 
           (org-reset-agenda-files))))))
@@ -555,7 +548,7 @@
     (spacemacs/add-to-hooks (if dotspacemacs-smartparens-strict-mode
                                 'smartparens-strict-mode
                               'smartparens-mode)
-                            '( org-mode-hook ))
+                            '( org-mode-hook))
 
 
     (dolist (f prog-mode-hook)
@@ -579,7 +572,7 @@
               (org-propertize
                (concat " <" (substring (org-timer-value-string) 0 -1) ">")
                'mouse-face (if (featurep 'xemacs) 'highlight 'mode-line-highlight)))
-        (force-mode-line-update)))
+        (force-mode-line-update)))))
 
     ;; (let ((range (org-clock-special-range 'today))
     ;;       (headline-filter))
@@ -595,7 +588,7 @@
     ;;      :tend   (cadr range)
     ;;      )))
 
-    ))
+    
 
 (defun lotus-orgmode-config/init-org-clock ()
   (progn
@@ -626,10 +619,10 @@
           (message "org-resolve-clocks-if-idle returned %S" res)
           res))
 
-      (advice-add 'org-resolve-clocks-if-idle :around #'org-idle-tracing-function))
+      (advice-add 'org-resolve-clocks-if-idle :around #'org-idle-tracing-function))))
 
     ;; (advice-remove 'display-buffer #'org-idle-tracing-function)
-    ))
+    
 
 (defun lotus-orgmode-config/init-org-feed ()
   (progn
@@ -691,8 +684,8 @@
   (progn
     (setq orgnav-log 't)))
 
-(defun lotus-orgmode-config/post-init-outorg ()
-  )
+(defun lotus-orgmode-config/post-init-outorg ())
+  
 
 (defun lotus-orgmode-config/post-init-outshine ()
   ;; https://github.com/alphapapa/outshine

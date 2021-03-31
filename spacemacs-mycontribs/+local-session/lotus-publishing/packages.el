@@ -44,8 +44,8 @@
     (wikirel :location local)
     (oddmuse-curl :location local)
     (erin :location local)
-    (twiki :location local)
-    )
+    (twiki :location local))
+    
   "The list of Lisp packages required by the lotus-publishing layer.
 
 Each entry is either:
@@ -78,21 +78,10 @@ Each entry is either:
     :defer t
     :init
     (progn)
-    ;; (setq *doc-root*
-    ;;       (let ((envdoc-path (getenv "DOCUMENT_PUBLISH_PATH")))
-    ;;         ((expand-file-name "Documents/online" "~"))))
     :config
     (progn
-      (progn ;; publishing
-        ;; (setq
-        ;;  *doc-root*            (expand-file-name "Documents" "~")
-        ;;  *created-content-dir* (expand-file-name "CreatedContent" *doc-root*)
-        ;;  *website-address*     "http://sharad.ddns.net/~s/gen/")
-        )
-
       (progn ;; misc
         (progn
-          ;; (debug)
           (progn
             (use-package diary-lib
               :defer t
@@ -122,13 +111,13 @@ Each entry is either:
       (progn ;; muse
         (progn
           ;; (require 'publishing)
-          (progn
+          (progn)
             ;; (setq
             ;;  *muse-top-dir*           (expand-file-name "contents/virtual/muse/default" *created-content-dir*)
             ;;  *muse-top-style-dir*     (expand-file-name "generic/muse/style" *muse-top-dir*)
             ;;  *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*)
             ;;  *muse-website-address*   (concat *website-address* "muse/"))
-            )
+            
           (progn
             ;; Here is my master project listing.
             ;; (make-muse-style-spec
@@ -178,8 +167,8 @@ Each entry is either:
                    (muse-publishing-created-contents-path "web/site/wiki/projects")
                    (muse-publishing-generated-contents-path "web/site/wiki/projects/my-xhtml/")
                    "my-xhtml"
-                   (muse-publishing-website-address "web/site/wiki/projects/my-xhtml/"))))
-              )
+                   (muse-publishing-website-address "web/site/wiki/projects/my-xhtml/")))))
+              
 
             (add-muse-project
              `("WikiWriting"
@@ -260,13 +249,13 @@ Each entry is either:
       (progn ;; org
         (progn
           ;; (debug)
-          (progn
+          (progn)
             ;; (setq
             ;;  *org-top-dir*           (expand-file-name "contents/virtual/org/default" *created-content-dir*)
             ;;  *org-top-style-dir*     (expand-file-name "generic/org/style" *org-top-dir*)
             ;;  *org-generated-top-dir* (expand-file-name "gen/org" *created-content-dir*)
             ;;  *org-website-address*   (concat *website-address* "org/"))
-            )
+            
           (progn
             (progn
               (setq org-publish-project-alist nil)
@@ -425,11 +414,11 @@ Each entry is either:
                                         ((agenda ""
                                                  ((org-agenda-span 'day)
                                                   (org-agenda-prefix-format  "%e")))
-                                         (org-agenda-files #'task-party-dir-files-recursive)
+                                         (org-agenda-files #'task-party-dir-files-recursive))))
                                          ;; (org-agenda-sorting-strategy '(priority-up effort-down))
-                                         )
+                                         
                                         ;; ("~/computer.html")
-                                        ))
+                                        
 
                                      ;; COMMON settings for all reviews
                                      (setq efs/org-agenda-review-settings
@@ -441,8 +430,8 @@ Each entry is either:
                                              ;; I don't care if an entry was archived
                                              (org-agenda-hide-tags-regexp
                                               (concat org-agenda-hide-tags-regexp
-                                                      "\\|ARCHIVE"))
-                                             )))))))))))
+                                                      "\\|ARCHIVE")))))))))))))
+                                             
 
                   (use-package org-agenda
                     :defer t
@@ -456,7 +445,7 @@ Each entry is either:
                         ;; define "R" as the prefix key for reviewing what happened in various
                         ;; time periods
                         (add-to-org-agenda-custom-commands
-                         '("R" . "Review" ))
+                         '("R" . "Review"))
 
                         ;; Show the agenda with the log turn on, the clock table show and
                         ;; archived entries shown.  These commands are all the same exept for
@@ -469,8 +458,8 @@ Each entry is either:
                              efs/org-agenda-review-settings
                              '((org-agenda-span 'week)
                                (org-agenda-start-on-weekday 0)
-                               (org-agenda-overriding-header "Week in Review"))
-                             )
+                               (org-agenda-overriding-header "Week in Review")))
+                             
                            ("~/org/review/week.html")))
 
                         (add-to-org-agenda-custom-commands
@@ -480,8 +469,8 @@ Each entry is either:
                            ,(append
                              efs/org-agenda-review-settings
                              '((org-agenda-span 'day)
-                               (org-agenda-overriding-header "Week in Review"))
-                             )
+                               (org-agenda-overriding-header "Week in Review")))
+                             
                            ("~/org/review/day.html")))
 
                         (add-to-org-agenda-custom-commands
@@ -493,8 +482,8 @@ Each entry is either:
                              '((org-agenda-span 'month)
                                (org-agenda-start-day "01")
                                (org-read-date-prefer-future nil)
-                               (org-agenda-overriding-header "Month in Review"))
-                             )
+                               (org-agenda-overriding-header "Month in Review")))
+                             
                            ("~/org/review/month.html")))))))))))))))
 
 (defun lotus-publishing/init-muse ()
@@ -531,9 +520,9 @@ Each entry is either:
                               muse-project  ; load support for projects
                               muse-texinfo  ; load Info publishing style
                               muse-wiki     ; load Wiki support
-                              muse-xml      ; load XML support
+                              muse-xml))      ; load XML support
                               ;; muse-message  ; load message support (experimental)
-                              ))
+                              
                      (require lib))
 
                    (require 'muse-message nil t)
@@ -637,10 +626,10 @@ Each entry is either:
                      (let ((muse-current-project (muse-project project)))
                        (call-interactively 'muse-project-find-file)))
 
-                   (defun my-muse-blosxom-finalize (file output-path target)
+                   (defun my-muse-blosxom-finalize (file output-path target))
                      ;;  (my-muse-prepare-entry-for-xanga output-path)
                      ;; For now, do nothing.
-                     )
+                     
 
                    ;; Make the current file display correctly in Xanga
                    ;; I call this using C-c p x now.
@@ -751,8 +740,8 @@ between the two tags."
                      (global-set-key "\C-cpC" #'my-muse-cdotize-region)
                      (global-set-key "\C-cpM" #'my-muse-surround-math)
                      (global-set-key "\C-cpW" #'my-muse-dictize)
-                     (global-set-key "\C-cpx" #'my-muse-prepare-entry-for-xanga)
-                     )
+                     (global-set-key "\C-cpx" #'my-muse-prepare-entry-for-xanga))
+                     
 
                    (defun muse-make-css-link (media href)
                      (let ((media (or media "all")))
@@ -763,13 +752,6 @@ between the two tags."
                         " charset=\"utf-8\""
                         " media=\"" media "\""
                         " href=\"" href "\" />\n")))
-
-                   ;; (muse-project "MyNotes")
-
-                   ;; ("MyNotes"
-                   ;;  ("~/Documents/online/CreatedContent/contents/muse/web/site/wiki/notes" :force-publish ("index") :default "index")
-                   ;;  (:base "xhtml" :base-url (org-publishing-website-address "/notes/") :path "~/Documents/online/CreatedContent/gen/web/site/wiki/notes/html")
-                   ;;  (:base "my-pdf" :base-url "http://hello.org//notes/" :path "~/Documents/online/CreatedContent/gen/web/site/wiki/notes/pdf"))
 
                    (progn ;; "muse-publishing"
 
@@ -954,7 +936,7 @@ FILE and any extensions that are in `muse-ignored-extensions'."
 
                        (muse-publish-markup-string
                         "[[Controller.muse][Control]]"
-                        (assoc "xhtml" muse-publishing-styles))
+                        (assoc "xhtml" muse-publishing-styles)))))
 
                        ;; (muse-publish-insert-url "aa.muse" "xx" "aa.muse" t)
                        ;; (muse-publish-url url desc orig-url explicit)
@@ -968,7 +950,7 @@ FILE and any extensions that are in `muse-ignored-extensions'."
                        ;;     (muse-publish-link-file page)))
 
 
-                       )))
+                       
 
                  (progn ;; "many changes"
                    (require 'muse-publishing)
@@ -1113,7 +1095,7 @@ FILE and any extensions that are in `muse-ignored-extensions'."
 
                      (muse-publish-markup-string
                       "[[Controller.muse][Control]]"
-                      (assoc "xhtml" muse-publishing-styles))
+                      (assoc "xhtml" muse-publishing-styles)))))))
 
                      ;; (muse-publish-insert-url "aa.muse" "xx" "aa.muse" t)
                      ;; (muse-publish-url url desc orig-url explicit)
@@ -1127,14 +1109,14 @@ FILE and any extensions that are in `muse-ignored-extensions'."
                      ;;     (muse-publish-link-file page)))
 
 
-                     )))))
+                     
 
 (defun lotus-publishing/init-oddmuse ()
   (use-package oddmuse
       :defer t
       :config
-      (progn
-        )))
+      (progn)))
+        
 
 (defun lotus-publishing/init-yaoddmuse ()
   ;; http://www.emacswiki.org/emacs/Yaoddmuse
@@ -1142,7 +1124,7 @@ FILE and any extensions that are in `muse-ignored-extensions'."
   (use-package yaoddmuseo
       :defer t
       :config
-      (progn
+      (progn)))
         ;; excellent great
         ;; http://www.emacswiki.org/emacs/Yaoddmuse
 
@@ -1159,36 +1141,36 @@ FILE and any extensions that are in `muse-ignored-extensions'."
 
         ;;  Me: M-x yaoddmuse-edit-default RET Yaoddmuse RET C-s ==Usage==
 
-        )))
+        
 
 (defun lotus-publishing/init-org-oddmuse ()
   (use-package org-oddmuse
       ;; http://www.emacswiki.org/emacs/OddmuseMode
       :defer t
       :config
-      (progn
-        )))
+      (progn)))
+        
 
 (defun lotus-publishing/init-wikirel ()
   (use-package wikirel
       :defer t
       :config
-      (progn
-        )))
+      (progn)))
+        
 
 (defun lotus-publishing/init-oddmuse-curl ()
   (use-package oddmuse-curl
       :defer t
       :config
-      (progn
-        )))
+      (progn)))
+        
 
 (defun lotus-publishing/init-wikirel ()
   (use-package wikirel
       :defer t
       :config
-      (progn
-        )))
+      (progn)))
+        
 
 ;; from: http://1010.co.uk/tech_notes.html
 ;;
@@ -1218,23 +1200,23 @@ FILE and any extensions that are in `muse-ignored-extensions'."
   (use-package erin
       :defer t
       :config
-      (progn
-        )))
+      (progn)))
+        
 
 (defun lotus-publishing/init-twiki ()
   (use-package twiki
       :defer t
       :mode ("\\.twiki$" . twiki-mode)
       :config
-      (progn
-        )))
+      (progn)))
+        
 
 (defun lotus-publishing/init-PACKAGE ()
   (use-package PACKAGE
       :defer t
 
       :config
-      (progn
-        )))
+      (progn)))
+        
 
 ;;; packages.el ends here

@@ -294,7 +294,7 @@ function emacs_daemon_start()
 
                        if whence -p timeout >& /dev/null
                        then
-                           PARENT_CMD="$PARENT_CMD timeout 240s"
+                           PARENT_CMD="$PARENT_CMD timeout --signal=SIGSTOP 240s"
                        fi
 
                        if [ "x$MY_DBUS_SESSION" != "x" ] && whence -p dbus-launch >& /dev/null
