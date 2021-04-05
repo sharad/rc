@@ -55,6 +55,10 @@
 
                                      "dosfstools"
 
+                                     "rpm"
+
+                                     "picocom"
+
                                      "smalltalk"
 
                                      "go"
