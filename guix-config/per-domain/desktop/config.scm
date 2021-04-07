@@ -760,6 +760,9 @@
                           linux
                           ;; %lotus-pinned-linux
                           ;; https://gitlab.com/nonguix/nonguix/-/blob/master/README.org Avoiding kernel recompilation
+                          ;; guix system image --image-size=7.2GiB /path/to/this/channel/nongnu/system/install.scm
+                          ;; https://guix.gnu.org/manual/en/html_node/Building-the-Installation-Image.html
+                          ;; guix system image -t iso9660 gnu/system/install.scm
                           linux-libre))
 
 
