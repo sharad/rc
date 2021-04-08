@@ -565,10 +565,12 @@ function setup_custom_recursive_links()
                     # debug
                     # running debug setup_add_to_version_control
                 done
+                unset lnkdir
             else
                 warn "${storagebasepath}/${trgstoragebasepath}" not exists.
             fi
         done
+        unset trgstoragebasepath
     else
         warn "${storagebasepath}" not exists.
     fi
@@ -606,6 +608,7 @@ function setup_recursive_links_leafs()
             # debug running debug setup_make_relative_link ${basepath} ${linktopdir}/${lnk} ${targetdir}/${lnk}
             running debug setup_make_relative_link ${basepath} ${linktopdir}/${lnkdir} ${targetdir}/${lnkdir}
         done
+        unset lnkdir
     else
         error dir ${basepath}/${linktopdir} not exists
     fi
@@ -637,6 +640,7 @@ function setup_recursive_links()
             # debug running debug setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
             running debug setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
         done
+        unset lnk
     else
         error dir ${basepath}/${linkdir} not exists
     fi
@@ -794,6 +798,7 @@ function setup_add_to_version_control_recursive_links_container_dirs() # NOT REQ
                 warn setup_add_to_version_control_recursive_links_container_dirs: "${basepath}/${targetdir}/${lnkdir}" not exists not addign .gitignore in it
             fi
         done
+        unset lnkdir
     else
         error dir ${targettopleafdir} not exists
     fi
@@ -829,6 +834,7 @@ function setup_add_to_version_control_recursive_links() # SHARAD
         do
             running debug setup_add_to_version_control "${basepath}/${gitrelbase}" "${targetdir}/${lnk}"
         done
+        unset lnk
     else
         error dir "${basepath}/${linkdir}" not exists
     fi
@@ -921,6 +927,7 @@ function setup_apt_repo()
                 verbose "$REPO_FILE_PATH" already added.
             fi
         done
+        unset repo
     fi
 }
 
@@ -929,7 +936,7 @@ function setup_apt_upgrade_system()
     if [ -d "/run/current-system/profile" ]
     then
 	if [ -e ~/bin/lotus-update ]
-	then	
+	then
       # running info ~/bin/lotus-clear
       running info ~/bin/lotus-update
 	fi
@@ -958,7 +965,7 @@ function setup_apt_upgrade_system()
 function setup_apt_packages()
 {
     running info setup_apt_repo
-    running info setup_apt_upgrade_system
+    # running info setup_apt_upgrade_system
 
     local deb_pkg_lists=(
         DEB_PKG_FIRST_INSTALL
@@ -1054,6 +1061,7 @@ function setup_apt_packages()
             fi
         fi
     done
+    unset pkg
 
     if [ ! -d "/run/current-system/profile" ]
     then
@@ -1061,6 +1069,7 @@ function setup_apt_packages()
         do
             running info sudo pip install $pkg
         done
+        unset pkg
     fi
 }
 
@@ -1419,6 +1428,7 @@ function setup_copy_src_trg ()
                     verbose not setting up $c
 	              fi              # if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
 	          done
+            unset c
 	          # mv $SETUP_TMPDIR/Xsetup ${_TRG}/.setup/.config/_home/.setup
 	          cd - > /dev/null 2>&1
         fi                      # if mkdir -p ${_TRG}/_old_dot_filedirs
@@ -1504,6 +1514,7 @@ function setup_mail()
                 b=$(basename $f)
                 running debug cp $f /etc/postfix/
             done
+            unset f
         fi
 
         if [ ! -d /etc/dovecot-ORG ]
@@ -1595,6 +1606,7 @@ function setup_mvc_dirs()
                 sdirbase=$(basename "$sdir")
                 running debug setup_make_link ../model.d/${sdirbase} ${containerdir}/control.d/${sdirbase}
             done
+            unset sdir
             if [ "$modelsymlink" -eq 0 ]
             then
                 error setup_mvc_dirs: No symlink for model dirs exists in ${containerdir}/model.d create it.
@@ -1614,6 +1626,7 @@ function setup_mvc_dirs()
                 sdirbase=$(basename "$sdir")
                 running debug setup_make_link ../control.d/${sdirbase} ${containerdir}/view.d/${sdirbase}
             done
+            unset dir
             if [ "$modelsymlink" -eq 0 ]
             then
                 error setup_mvc_dirs: No symlink for control dirs exists in ${containerdir}/control.d create it.
@@ -1825,9 +1838,8 @@ function setup_dep_control_storage_class_dir()
                         warn SETUP_HOSTNAME=${SETUP_HOSTNAME} is not set
                     fi
                 fi
-
-
             done
+            unset mdir
 
             if [ "$modelsymlink" -eq 0 ]
             then
@@ -1928,6 +1940,7 @@ function setup_deps_control_class_all_positions_dirs()
 
             running info setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
         done
+        unset pos
     else
         error setup_deps_control_class_all_positions_dirs: Not correct number of arguments.
     fi
@@ -2051,10 +2064,12 @@ function setup_deps_model_storage_volumes_dir()
                         warning vld="${vld}" is empty
                     fi
                 done
+                unset vld
             else
                 warning vgd="${vgd}" is empty
             fi
         done
+        unset vgd
 
         if [ "$modelsymlink_present" -eq 0 ]
         then
@@ -2139,7 +2154,7 @@ function setup_deps_control_volumes_internal_dirs()
     local internal_dirs=("$@")
 
 
-    info running setup_deps_control_volumes_internal_dirs
+    info running setup_deps_control_volumes_internal_dirs internal_dirs="( ${internal_dirs[@]} )"
 
 
     # local position=${4-2} # not required
@@ -2221,6 +2236,7 @@ function setup_deps_control_volumes_internal_dirs()
             fi
         fi
     done
+    unset cdir
 }
 
 function setup_deps_control_dir()
@@ -2310,6 +2326,7 @@ function setup_deps_view_volumes_dirs()
                         modelsymlink=1
                     fi
                 done
+                unset mdir
 
                 if [ "$modelsymlink" -eq 0 ]
                 then
@@ -2357,12 +2374,9 @@ function setup_deps_view_volumes_dirs()
                     do
                         volsysdatadirbase=$(basename ${sysdatadir})
                         debug ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/${viewdirname}/$cdir"
-
                     done
+                    unset sysdatadir
                 fi
-
-
-
 
                 print  >> $todopath
                 print ls "${BASE_DIR}/${LOCALDIRS_DIR}/${volumedir}/control.d/${sysdatasdirname}/" >> $todopath
@@ -2384,10 +2398,12 @@ function setup_deps_view_volumes_dirs()
                         print  >> $missingpath
                     fi
                 done
-                print  >> $todopath
-                print  >> $todopath
+                unset sysdatadir
 
+                print  >> $todopath
+                print  >> $todopath
             done
+            unset cdir
 
             running debug setup_add_to_version_control "${BASE_DIR}/${LOCALDIRS_DIR}" "${volumedir}/${viewdirname}/.gitignore"
 
@@ -2413,6 +2429,7 @@ function setup_deps_view_dir()
 
         running info setup_deps_view_volumes_dirs "$storage_path" "$pos"
     done
+    unset pos
 }
 
 # deps
@@ -2437,7 +2454,7 @@ function setup_org_resource_dirs()
             rm -f "path"
         fi
     done
-
+    unset path
 
     running debug setup_recursive_links                                       "${LOCALDIRS_DIR}/org" \
                                                                               "deps.d/view.d" \
@@ -2505,6 +2522,7 @@ function setup_org_home_portable_local_dirs()
         running debug setup_add_to_version_control "${LOCALDIRS_DIR}" \
                                                    "org/home.d/portable.d/${folder}/local"
     done
+    unset folder
 }
 
 function setup_public_dirs()
@@ -2544,6 +2562,7 @@ function setup_public_dirs()
             fi
         fi
     done
+    unset folder
 }
 
 function setup_mutule_dirs_links()
@@ -2603,8 +2622,10 @@ function setup_mutule_dirs_links()
                     fi
                 fi
             done
+            unset ofolder
         fi
     done
+    unset folder
 }
 
 function setup_org_home_portable_public_dirs()
@@ -2656,6 +2677,7 @@ function setup_org_home_portable_public_dirs()
         running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/$folder"
         running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "org/home.d/portable.d/Public/Publish/html/$folder"
     done
+    unset folder
 
     echo '*' > "${LOCALDIRS_DIR}/${relhomeprotabledir}/tmp/.gitignore"
     running debug setup_add_to_version_control ${HOME}/.fa/localdirs "${relhomeprotabledir}/tmp/.gitignore"
@@ -2706,6 +2728,7 @@ EOF
                 running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/${hosts_name}/${hostdir}/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage/${hosts_name}/${hostdir}"
             fi
         done
+        unset hostdir_path
 
         if [ "x" != "x${SETUP_HOSTNAME}" ]     # hostname specific storage
         then
@@ -2721,8 +2744,8 @@ EOF
 
         # running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
         # running info setup_custom_recursive_links "${LOCALDIRS_DIR}/org" "resource.d/view.d/volumes.d/control.d/storage" "class/data/container/usrdatas.d" "$lnk" "home.d/portable.d/${lnk}/storage"
-
     done
+    unset lnk
 
     running debug setup_make_relative_link "${USERDIR}" "doc" "localdirs/${rel_homeprotabledir}/Documents/online"
     running debug setup_make_relative_link "${USERDIR}" "doc" "localdirs/${rel_homeprotabledir}/Documents/mirror"
@@ -2745,10 +2768,11 @@ EOF
             then
                 running debug setup_make_relative_link     "${HOME}/${RESOURCEPATH}" "data/multimedia/private/media/collection/${dir}" "${USERORGMAIN}/readwrite/public/user/localdirs/${rel_homeprotabledir}/${dir}/online"
                 running debug setup_make_relative_link     "${HOME}/${RESOURCEPATH}" "data/multimedia/private/media/collection/${dir}" "${USERORGMAIN}/readwrite/public/user/localdirs/${rel_homeprotabledir}/${dir}/mirror"
-                running debug setup_add_to_version_control "${LOCALDIRS_DIR}"        "org/home.d/portable.d/$folder/online"
-                running debug setup_add_to_version_control "${LOCALDIRS_DIR}"        "org/home.d/portable.d/$folder/mirror"
+                running debug setup_add_to_version_control "${LOCALDIRS_DIR}"        "org/home.d/portable.d/$dir/online"
+                running debug setup_add_to_version_control "${LOCALDIRS_DIR}"        "org/home.d/portable.d/$dir/mirror"
             fi
         done
+        unset dir
         # for folder in Music Videos Pictures
         # do
         #     running debug setup_make_relative_link     "${RESOURCEPATH}"  "data/multimedia/private/media/collection/$folder" "${USERORGMAIN}/readwrite/public/user/localdirs/org/home.d/portable.d/$folder/online"
@@ -2763,7 +2787,7 @@ EOF
     do
         running debug setup_add_to_version_control "${LOCALDIRS_DIR}" "$lnk"
     done
-
+    unset lnk
     # now
     # ln ~/.fa/localdirs/org/resource.d/view.d/volumes.d/control.d/class/data/storage/local/container/usrdatas.d/*/Scratches to link in "home.d/portable.d/Scratches/CLASS-STORAGE-CONTAINER-VOLX-VOLY"
     # similarly for Picture Desktop Downloads etc
@@ -2783,10 +2807,7 @@ EOF
         # running debug setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
         running debug setup_add_to_version_control ${LOCALDIRS_DIR} "$lnk"
     done
-
-
-
-
+    unset lnk
 
     running debug setup_org_home_portable_public_dirs
     running debug setup_org_home_portable_local_dirs
@@ -2814,6 +2835,7 @@ function setup_org_misc_dirs()
         # running debug setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
         running debug setup_add_to_version_control ${LOCALDIRS_DIR} "$lnk"
     done
+    unset lnk
 
 } # function setup_org_misc_dirs()
 
@@ -2840,6 +2862,7 @@ function setup_org_rc_dirs()
     do
         running debug setup_add_to_version_control ${HOME}/.fa/localdirs "$lnk"
     done
+    unset lnk
 } # function setup_org_rc_dirs()
 
 # org
@@ -2892,6 +2915,7 @@ function setup_osetup_org_home_dirs()
         running debug setup_make_relative_link ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/home.d/portable.d/${folder_link}" "osetup/dirs.d/org/home.d/${folder_link}"
         running debug setup_add_to_version_control ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/home.d/${folder_link}"
     done
+    unset folder_link
 }
 
 function setup_osetup_org_misc_dirs()
@@ -2903,6 +2927,7 @@ function setup_osetup_org_misc_dirs()
         running debug setup_make_relative_link ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/misc.d/${folder_link}" "osetup/dirs.d/org/misc.d/${folder_link}"
         running debug setup_add_to_version_control ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/misc.d/${folder_link}"
     done
+    unset folder_link
 }
 
 function setup_osetup_org_rc_dirs()
@@ -2916,6 +2941,7 @@ function setup_osetup_org_rc_dirs()
         running debug setup_make_relative_link ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user "localdirs/org/rc.d/${folder_link}" "osetup/dirs.d/org/rc.d/${folder_link}"
         running debug setup_add_to_version_control ${HOME}/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup "dirs.d/org/rc.d/${folder_link}"
     done
+    unset folder_link
 }
 
 function setup_osetup_org_dirs()
@@ -3014,6 +3040,7 @@ function setup_dirs()
             # running debug setup_deps_dirs "network/cloud/s3"
             running info setup_deps_dirs "$mntpnt"
         done
+        unset mntpnt
 
         running debug setup_org_dirs
         running debug setup_manual_dirs
@@ -3088,6 +3115,7 @@ function setup_sourcecode_pro_font()
             ls $fontdir
             xset +fp $(dirname $(readlink -f $fontdir))
         done
+        unset fdir
         fc-cache -f
     fi
 
