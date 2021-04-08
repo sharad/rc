@@ -965,7 +965,7 @@ function setup_apt_upgrade_system()
 function setup_apt_packages()
 {
     running info setup_apt_repo
-    # running info setup_apt_upgrade_system
+    running info setup_apt_upgrade_system
 
     local deb_pkg_lists=(
         DEB_PKG_FIRST_INSTALL
