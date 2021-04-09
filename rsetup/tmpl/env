@@ -1,6 +1,6 @@
 # -*- mode: shell-script; -*-
 
-__comp=tmpl
+__comp=SET_IT
 
 if [ "x${HOST}" = "x" ]
 then
@@ -9,7 +9,7 @@ fi
 
 if [ "x${HOST}" != "x" ]
 then
-    __comp=sh
+    __comp=SET_IT
 
     if [ -d ~/.rsetup/${__comp}/env.d/${HOST} ]
     then

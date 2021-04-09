@@ -39,6 +39,7 @@ function warnif () {
 
 
 function workoffice () {
+    echo test
     if ((${+WORKPLACE})) ; then
         if [  -d ~/.opt/p/$WORKPLACE ] ; then
             source ~/.opt/p/$WORKPLACE/env
@@ -47,7 +48,7 @@ function workoffice () {
             echo ~/.opt/p/$WORKPLACE directory  do not exits. 2>&1
         fi
     else
-        echo WORKPLACE is not set. 2>&1
+        echo '[zsh]' WORKPLACE is not set. 2>&1
     fi
 }
 

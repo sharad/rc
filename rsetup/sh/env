@@ -115,7 +115,7 @@ fi
 
 if [ "x${HOST}" != "x" ]
 then
-    __comp=eev
+    __comp=sh
 
     if [ -d ~/.rsetup/${__comp}/env.d/${HOST} ]
     then
@@ -173,7 +173,7 @@ then
 else
     if [ ! $SUDO_USER ] && [ "$TERM" != "dumb" ]
     then
-        echo WORKPLACE is not set. >&2
+        echo '[sh]' WORKPLACE=$WORKPLACE is not set. >&2
     fi
 fi
 
