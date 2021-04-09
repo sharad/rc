@@ -12,7 +12,7 @@ fi
 
 if [ "x${HOST}" != "x" ]
 then
-    __comp=eev
+    __comp=sh
 
     if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ]
     then

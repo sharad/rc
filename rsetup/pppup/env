@@ -6,7 +6,7 @@ then
 fi
 if [ "x${HOST}" != "x" ]
 then
-    __comp=ifup
+    __comp=pppup
 
     if [ -d ~/.rsetup/${__comp}/env.d/${HOST} ]
     then
