@@ -30,22 +30,23 @@ function main()
         then
             running info guix pull --news
 
-            if ! sudo mount /boot
+            if ! running info sudo mount /boot
             then
                 exit -1
             else
                 running info sleep 3s
             fi
 
-            if ! sudo mount /boot/efi
+            if ! running info sudo mount /boot/efi
             then
                 exit -1
             fi
 
             if [ "x" != "x$LOTUS_GUIX_NOSYS" ] || running info sudo guix system reconfigure "${HOME}/.setup/guix-config/per-domain/desktop/config.scm"
             then
-                sudo umount /boot/efi
-                sudo umount /boot
+                running info sudo umount /boot/efi
+                running info sleep 1s
+                running info sudo umount /boot
 
                 # verbose guix upgrading
                 running info guix upgrade # default

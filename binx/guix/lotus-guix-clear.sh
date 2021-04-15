@@ -44,7 +44,9 @@ function main()
             if true
             then
 
-                running info guix package  --delete-generations=${USER_GENERATION_CLEANUP_TIME}
+                running info guix package  --delete-generations=${USER_GENERATION_CLEANUP_TIME} # for "01-simple"
+
+
                 for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
                 do
                     profile_container_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}"
