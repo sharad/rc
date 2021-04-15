@@ -60,13 +60,24 @@
       local
       alternat))
 
-
+(define %lotus-fs-guix-check?                   #t)
+(define %lotus-fs-guix-root-check?              %lotus-fs-guix-check?)
+(define %lotus-fs-guix-boot-check?              %lotus-fs-guix-check?)
+(define %lotus-fs-guix-gnu-check?               %lotus-fs-guix-check?)
+(define %lotus-fs-guix-tmp-check?               %lotus-fs-guix-check?)
+(define %lotus-fs-guix-var-check?               %lotus-fs-guix-check?)
+
+(define %lotus-fs-house-check?                  #t)
+(define %lotus-fs-house-home-check?             %lotus-fs-house-check?)
+
 (define %lotus-guix-boot-mount?                 #f)
 (define %lotus-guix-boot-create-mount-point?    #f)
 (define %lotus-guix-boot-needed-for-boot?       #f)
 (define %lotus-guix-bootefi-mount?              #f)
 (define %lotus-guix-bootefi-create-mount-point? #f)
 (define %lotus-guix-bootefi-needed-for-boot?    #f)
+
+
 (define %lotus-host-name                        (lotus-local-value %local-host-name "komputilo"))
 (define %lotus-account-uid                      1000)
 (define %lotus-account-user-name                "s")
@@ -265,7 +276,7 @@
 (define %lotus-file-system-guix-root       (file-system (mount-point         "/")
                                                         (device              (string-append "/dev/mapper/" %local-disk-serial-id "X" "guix-root"))
                                                         (type                "ext4")
-                                                        (check?              #f)
+                                                        (check?              %lotus-fs-guix-root-check?)
                                                         (mount?              #t)
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #t)))
@@ -273,7 +284,7 @@
 (define %lotus-file-system-guix-boot       (file-system (mount-point         "/boot")
                                                         (device              (string-append "/dev/mapper/" %local-disk-serial-id "X" "guix-boot"))
                                                         (type                "ext4")
-                                                        (check?              #f)
+                                                        (check?              %lotus-fs-guix-boot-check?)
                                                         (mount?              %lotus-guix-boot-mount?)
                                                         (create-mount-point? %lotus-guix-boot-create-mount-point?)
                                                         (needed-for-boot?    %lotus-guix-boot-needed-for-boot?)
@@ -283,7 +294,7 @@
 (define %lotus-file-system-guix-gnu        (file-system (mount-point         "/gnu")
                                                         (device              (string-append "/dev/mapper/" %local-disk-serial-id "X" "guix-gnu"))
                                                         (type                "ext4")
-                                                        (check?              #f)
+                                                        (check?              %lotus-fs-guix-gnu-check?)
                                                         (mount?              #t)
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #t)
@@ -293,7 +304,7 @@
 (define %lotus-file-system-guix-tmp        (file-system (mount-point         "/tmp")
                                                         (device              (string-append "/dev/mapper/" %local-disk-serial-id "X" "guix-tmp"))
                                                         (type                "ext4")
-                                                        (check?              #f)
+                                                        (check?              %lotus-fs-guix-tmp-check?)
                                                         (mount?              #t)
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #t)
@@ -303,7 +314,7 @@
 (define %lotus-file-system-guix-var        (file-system (mount-point         "/var")
                                                         (device              (string-append "/dev/mapper/" %local-disk-serial-id "X" "guix-var"))
                                                         (type                "ext4")
-                                                        (check?              #f)
+                                                        (check?              %lotus-fs-guix-var-check?)
                                                         (mount?              #t)
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #t)
@@ -313,7 +324,7 @@
 (define %lotus-file-system-house-home      (file-system (mount-point         "/home")
                                                         (device              (string-append "/dev/mapper/" %local-disk-serial-id "X" "house-home"))
                                                         (type                "ext4")
-                                                        (check?              #f)
+                                                        (check?              %lotus-fs-house-home-check?)
                                                         (mount?              (if %lotus-system-init #f #t))
                                                         (create-mount-point? #t)
                                                         (needed-for-boot?    #f)
