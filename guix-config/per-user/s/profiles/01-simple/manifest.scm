@@ -43,9 +43,6 @@
 ;; "notification-daemon" "trezord-udev-rules" "trezord"
 
 (define %lotus-other-packages (list "vim"
-                                    "gparted" ;; required for situations
-                                    "parted"
-                                    "efibootmgr"
                                     "gnu-pw-mgr"
                                     "mpd-mpc"
                                     "cava"
