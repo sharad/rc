@@ -480,8 +480,8 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   "Library to load while dumping.
 This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
-dump."
-  )
+dump.")
+  
 
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
@@ -551,7 +551,24 @@ This function is called at the very end of Spacemacs initialization."
  '(psc-ide-add-import-on-completion t t)
  '(psc-ide-rebuild-on-save nil t)
  '(safe-local-variable-values
-   '((ee-line-start . "/+_? *. ")
+   '((eval let
+           ((root-dir-unexpanded
+             (locate-dominating-file default-directory ".dir-locals.el")))
+           (when root-dir-unexpanded
+             (let*
+                 ((root-dir
+                   (expand-file-name root-dir-unexpanded))
+                  (root-dir*
+                   (directory-file-name root-dir)))
+               (unless
+                   (boundp 'geiser-guile-load-path)
+                 (defvar geiser-guile-load-path 'nil))
+               (make-local-variable 'geiser-guile-load-path)
+               (require 'cl-lib)
+               (cl-pushnew root-dir* geiser-guile-load-path :test #'string-equal))))
+     (eval setq-local guix-directory
+           (locate-dominating-file default-directory ".dir-locals.el"))
+     (ee-line-start . "/+_? *. ")
      (ee-comment-prefix . "/")
      (folded-file . t)
      (major-mode . scheme)
@@ -582,3 +599,4 @@ This function is called at the very end of Spacemacs initialization."
  '(default ((t (:background nil))))
  '(muse-bad-link ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold)))))
 )
+

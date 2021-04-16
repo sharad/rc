@@ -26,12 +26,26 @@ function main()
 
     if [ -d "/run/current-system/profile" ]
     then
+        GUIX_TMPDIR="$(grep /srv/guix /etc/fstab | cut -f2)"
+        if [ "x" != "x${GUIX_TMPDIR}" ]
+        then
+            if ! running info sudo mount ${GUIX_TMPDIR}
+            then
+                error Failed in mounting ${GUIX_TMPDIR}
+                exit -1
+            fi
+        else
+            error GUIX_TMPDIR not found
+            exit -1
+        fi
+
         if [ "x" != "x$LOTUS_GUIX_NOPULL" ] || running info guix pull
         then
             running info guix pull --news
 
             if ! running info sudo mount /boot
             then
+                error failed mount /boot
                 exit -1
             else
                 running info sleep 3s
@@ -39,6 +53,7 @@ function main()
 
             if ! running info sudo mount /boot/efi
             then
+                error failed mount /boot/efi
                 exit -1
             fi
 
