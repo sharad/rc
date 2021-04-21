@@ -53,7 +53,10 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
 
     if [ "x$DISPLAY" = x ]
     then
-        emacs_daemon_start
+        if whence -f emacs_daemon_bg_run >& /dev/null
+        then
+            emacs_daemon_bg_run >/dev/null 2>&1 # already going into ~/.emacs.d/.cache/startup/$server/startup.log
+        fi
     fi
 
     if whence -p leave  >& /dev/null && pgrep -u "$(id -u)" leave >& /dev/null

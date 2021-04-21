@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if pgrep gnome-key
+then
+    echo pkill gnome-key
+    pkill gnome-key
+fi
 
 if ! pgrep gnome-key
 then
@@ -17,6 +22,12 @@ if [ "$DISPNO" -gt 1 ]
 then
     echo 'URxvt.font: xft:DejaVu Sans Mono:style=Book:size=7:antialias=true' |  xrdb -merge - >/dev/null 2>&1
 fi
+
+for mpoint in $(grep /srv/volumes /etc/fstab | cut -f1)
+do
+    echo sudo mount $mpoint
+    sudo mount $mpoint
+done
 
 ecryptfs-mount-private
 mount.ecryptfs_private

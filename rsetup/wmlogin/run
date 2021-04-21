@@ -210,7 +210,10 @@ then
 fi
 ##}}} Wallpaper
 
-emacs_daemon_start              # in case it were not started in x/run
+if whence -f emacs_daemon_bg_run >& /dev/null
+then
+    emacs_daemon_bg_run >/dev/null 2>&1 &! # already going into ~/.emacs.d/.cache/startup/$server/startup.log
+fi
 
 if whence -p xautolock >& /dev/null && pgrep -u "$(id -u)" xautolock >& /dev/null
 then
@@ -276,6 +279,8 @@ if [ -x /usr/share/android-notifier-desktop/run.sh ] &&
     /usr/share/android-notifier-desktop/run.sh >& ~/.logs/android-notifier-desktop.log &!
 fi
 
+if false
+then
 if [ "x" != "x$EMACS_SERVER_NAME" ]
 then
     echo Trying to run emacsclient
@@ -285,6 +290,7 @@ then
     else
         ( sleep 30s; emacsclient -d :0 -nc -f ~/.emacs.d/server/$EMACS_SERVER_NAME -e "(progn (message \"Default\"))" ) &!
     fi
+fi
 fi
 
 if whence -p autocutsel >& /dev/null && ! pgrep -u "$(id -u)" autocutsel >& /dev/null

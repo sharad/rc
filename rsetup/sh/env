@@ -342,6 +342,29 @@ function emacs_daemon_start()
     fi # if whence -p emacs >& /dev/null || ! pgrep -u "$(id -u)" emacs >& /dev/null
 }
 
+function emacs_daemon_fg_run()
+{
+    emacs_daemon_start
+    if [ "x" != "x$EMACS_SERVER_NAME" ]
+    then
+        echo Trying to run emacsclient
+        if pgrep -u "$(id -u)" stumpwm >& /dev/null && whence -p stumpish >& /dev/null
+        then
+            ( sleep 30s; stumpish emacsclient ) &!
+        else
+            ( sleep 30s; emacsclient -d :0 -nc -f ~/.emacs.d/server/$EMACS_SERVER_NAME -e "(progn (message \"Default\"))" ) &!
+        fi
+    fi
+}
+
+function emacs_daemon_bg_run()
+{
+    if whence -f emacs_daemon_fg_run >& /dev/null
+    then
+        emacs_daemon_fg_run >/dev/null 2>&1 &! # already going into ~/.emacs.d/.cache/startup/$server/startup.log
+    fi
+}
+
 function ssh_agent_use_run_keychain()
 {
     if [ "x${SSH_AUTH_SOCK}" = "x" ]

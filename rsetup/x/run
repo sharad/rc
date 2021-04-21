@@ -166,9 +166,9 @@ mousemove 42 42
 EOF
 fi
 
-if whence -f emacs_daemon_start >& /dev/null
+if whence -f emacs_daemon_bg_run >& /dev/null
 then
-    emacs_daemon_start >/dev/null 2>&1 # already going into ~/.emacs.d/.cache/startup/$server/startup.log
+    emacs_daemon_bg_run >/dev/null 2>&1 # already going into ~/.emacs.d/.cache/startup/$server/startup.log
 fi
 
 # if which $HOME/bin/ecryptfs-mount-private >/dev/null 2>&1
