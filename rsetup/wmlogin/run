@@ -279,19 +279,19 @@ if [ -x /usr/share/android-notifier-desktop/run.sh ] &&
     /usr/share/android-notifier-desktop/run.sh >& ~/.logs/android-notifier-desktop.log &!
 fi
 
-if false
-then
-if [ "x" != "x$EMACS_SERVER_NAME" ]
-then
-    echo Trying to run emacsclient
-    if pgrep -u "$(id -u)" stumpwm >& /dev/null && whence -p stumpish >& /dev/null
-    then
-        ( sleep 30s; stumpish emacsclient ) &!
-    else
-        ( sleep 30s; emacsclient -d :0 -nc -f ~/.emacs.d/server/$EMACS_SERVER_NAME -e "(progn (message \"Default\"))" ) &!
-    fi
-fi
-fi
+# if false
+# then
+# if [ "x" != "x$EMACS_SERVER_NAME" ]
+# then
+#     echo Trying to run emacsclient
+#     if pgrep -u "$(id -u)" stumpwm >& /dev/null && whence -p stumpish >& /dev/null
+#     then
+#         ( sleep 30s; stumpish emacsclient ) &!
+#     else
+#         ( sleep 30s; emacsclient -d :0 -nc -f ~/.emacs.d/server/$EMACS_SERVER_NAME -e "(progn (message \"Default\"))" ) &!
+#     fi
+# fi
+# fi
 
 if whence -p autocutsel >& /dev/null && ! pgrep -u "$(id -u)" autocutsel >& /dev/null
 then
