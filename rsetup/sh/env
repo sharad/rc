@@ -223,7 +223,7 @@ function ssh_agent_call_p()
 
 function dbus_present_p()
 {
-    whence -p dbus-launch >& /dev/null && [ "x$MY_DBUS_SESSION" != "x" ]
+    whence -p dbus-launch >/dev/null 2>&1 && [ "x$MY_DBUS_SESSION" != "x" ]
 }
 
 function dbus_alive_p()
@@ -248,9 +248,11 @@ function dbus_call_p()
 
 function emacs_daemon_start()
 {
-    if whence -p emacs >& /dev/null || ! pgrep -u "$(id -u)" emacs >& /dev/null
+    local RETVAL_EMACS_DAEMON=0
+
+    if whence -p emacs >/dev/null 2>&1 || ! pgrep -u "$(id -u)" emacs >/dev/null 2>&1
     then
-	      echo emacs >& /dev/null
+	      echo emacs >/dev/null 2>&1
 
         if [ "x$EMACS_SERVER_NAME" = "x" ]
         then
@@ -292,17 +294,17 @@ function emacs_daemon_start()
                        EMACS_CMD="emacs --daemon=$server"
                        PARENT_CMD="SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=${DISPLAY-:0.0}"
 
-                       if whence -p timeout >& /dev/null
+                       if whence -p timeout >/dev/null 2>&1
                        then
                            PARENT_CMD="$PARENT_CMD timeout --signal=SIGSTOP 240s"
                        fi
 
-                       if [ "x$MY_DBUS_SESSION" != "x" ] && whence -p dbus-launch >& /dev/null
+                       if [ "x$MY_DBUS_SESSION" != "x" ] && whence -p dbus-launch >/dev/null 2>&1
                        then
                            PARENT_CMD="$PARENT_CMD dbus-launch --autolaunch=$MY_DBUS_SESSION"
                        fi
 
-                       if false && whence cpulimit >& /dev/null
+                       if false && whence cpulimit >/dev/null 2>&1
                        then
                            PARENT_CMD="$PARENT_CMD cpulimit -i -l ${CPU_PERCENTAGE}"
                        fi
@@ -314,7 +316,7 @@ function emacs_daemon_start()
 
 
                        export GDK_RGBA=0
-                       # if [ "x$MY_DBUS_SESSION" != "x" ] && whence -p dbus-launch >& /dev/null
+                       # if [ "x$MY_DBUS_SESSION" != "x" ] && whence -p dbus-launch >/dev/null 2>&1
                        # then
                        #     SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=${DISPLAY-:0.0} timeout 240s dbus-launch --autolaunch=$MY_DBUS_SESSION emacs --daemon=$server 2>&1 | tee $EMACS_STARTUP_LOG_DIR/startup.log
                        # else
@@ -332,34 +334,50 @@ function emacs_daemon_start()
                        unset EMACS_STARTUP_LOG_DIR
 
                        # disown %emacs
+                   else
+                       RETVAL_EMACS_DAEMON=-1
                    fi
                done
-	             echo emacs1 >& /dev/null
+	             echo emacs1 >/dev/null 2>&1
+        else
+            return -1
         fi
-
         cd $__cwd
         unset __cwd
-    fi # if whence -p emacs >& /dev/null || ! pgrep -u "$(id -u)" emacs >& /dev/null
+    else
+        return -1
+    fi # if whence -p emacs >/dev/null 2>&1 || ! pgrep -u "$(id -u)" emacs >/dev/null 2>&1
+    return ${RETVAL_EMACS_DAEMON}
 }
 
 function emacs_daemon_fg_run()
 {
-    emacs_daemon_start
     if [ "x" != "x$EMACS_SERVER_NAME" ]
     then
-        echo Trying to run emacsclient
-        if pgrep -u "$(id -u)" stumpwm >& /dev/null && whence -p stumpish >& /dev/null
+        if whence -f emacs_daemon_start >/dev/null 2>&1
         then
-            ( sleep 30s; stumpish emacsclient ) &!
-        else
-            ( sleep 30s; emacsclient -d :0 -nc -f ~/.emacs.d/server/$EMACS_SERVER_NAME -e "(progn (message \"Default\"))" ) &!
+            if emacs_daemon_start
+            then
+                if ! pgrep -u "$(id -u)" emacsclient >/dev/null 2>&1
+                then
+                    echo Trying to run emacsclient
+                    if pgrep -u "$(id -u)" stumpwm >/dev/null 2>&1 && whence -p stumpish >/dev/null 2>&1
+                    then
+                        ( sleep 30s; stumpish emacsclient ) &!
+                    else
+                        ( sleep 30s; emacsclient -d :0 -nc -f ~/.emacs.d/server/$EMACS_SERVER_NAME -e "(progn (message \"Default\"))" ) &!
+                    fi
+                else
+                    echo Already running emacscleint
+                fi
+            fi
         fi
     fi
 }
 
 function emacs_daemon_bg_run()
 {
-    if whence -f emacs_daemon_fg_run >& /dev/null
+    if whence -f emacs_daemon_fg_run >/dev/null 2>&1
     then
         emacs_daemon_fg_run >/dev/null 2>&1 &! # already going into ~/.emacs.d/.cache/startup/$server/startup.log
     fi
