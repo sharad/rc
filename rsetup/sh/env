@@ -274,78 +274,78 @@ function emacs_daemon_start()
         fi
 
         if true
-           then
-               for server in $EMACS_SERVER_NAME
-               do
-                   if [ ! -e ~/.emacs.d/server/${server} ] ||
-                          # bundler command is not here for timeout it only for zsh
-                          # do not delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
-                          # ! timeout 7 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")' > /dev/null 2>&1
+        then
+            for server in $EMACS_SERVER_NAME
+            do
+                if [ ! -e ~/.emacs.d/server/${server} ] ||
+                       # bundler command is not here for timeout it only for zsh
+                       # do not delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
+                       # ! timeout 7 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")' > /dev/null 2>&1
                        ! ps $(head -1 ~/.emacs.d/server/${server} | cut -d' ' -f2)
-                   then
-                       # blow one is not allow gnus to read its ~/.gnus file automatically.
-	                     # rm -f   \#.ido.last\#
-                       pkill -u "$(id -u)" emacs
-                       sleep 2s
-                       pkill -u "$(id -u)" -9 emacs
-                       sleep 1s
+                then
+                    # blow one is not allow gnus to read its ~/.gnus file automatically.
+	                  # rm -f   \#.ido.last\#
+                    pkill -u "$(id -u)" emacs
+                    sleep 2s
+                    pkill -u "$(id -u)" -9 emacs
+                    sleep 1s
 
-                       CPU_PERCENTAGE=93
-                       EMACS_CMD="emacs --daemon=$server"
-                       PARENT_CMD="SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=${DISPLAY-:0.0}"
+                    CPU_PERCENTAGE=93
+                    EMACS_CMD="emacs --daemon=$server"
+                    PARENT_CMD="SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=${DISPLAY-:0.0}"
 
-                       if whence -p timeout >/dev/null 2>&1
-                       then
-                           PARENT_CMD="$PARENT_CMD timeout --signal=SIGSTOP 240s"
-                       fi
+                    if whence -p timeout >/dev/null 2>&1
+                    then
+                        PARENT_CMD="$PARENT_CMD timeout --signal=SIGSTOP 240s"
+                    fi
 
-                       if [ "x$MY_DBUS_SESSION" != "x" ] && whence -p dbus-launch >/dev/null 2>&1
-                       then
-                           PARENT_CMD="$PARENT_CMD dbus-launch --autolaunch=$MY_DBUS_SESSION"
-                       fi
+                    if [ "x$MY_DBUS_SESSION" != "x" ] && whence -p dbus-launch >/dev/null 2>&1
+                    then
+                        PARENT_CMD="$PARENT_CMD dbus-launch --autolaunch=$MY_DBUS_SESSION"
+                    fi
 
-                       if false && whence cpulimit >/dev/null 2>&1
-                       then
-                           PARENT_CMD="$PARENT_CMD cpulimit -i -l ${CPU_PERCENTAGE}"
-                       fi
-
-
-                       EMACS_STARTUP_LOG_DIR=~/.emacs.d/.cache/startup/$server/
-                       mkdir -p $EMACS_STARTUP_LOG_DIR
+                    if false && whence cpulimit >/dev/null 2>&1
+                    then
+                        PARENT_CMD="$PARENT_CMD cpulimit -i -l ${CPU_PERCENTAGE}"
+                    fi
 
 
-
-                       export GDK_RGBA=0
-                       # if [ "x$MY_DBUS_SESSION" != "x" ] && whence -p dbus-launch >/dev/null 2>&1
-                       # then
-                       #     SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=${DISPLAY-:0.0} timeout 240s dbus-launch --autolaunch=$MY_DBUS_SESSION emacs --daemon=$server 2>&1 | tee $EMACS_STARTUP_LOG_DIR/startup.log
-                       # else
-                       #     SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=${DISPLAY-:0.0} timeout 240s emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
-                       # fi
+                    EMACS_STARTUP_LOG_DIR=~/.emacs.d/.cache/startup/$server/
+                    mkdir -p $EMACS_STARTUP_LOG_DIR
 
 
-                       echo $PARENT_CMD $EMACS_CMD |& tee $EMACS_STARTUP_LOG_DIR/startup.log
-                       eval $PARENT_CMD $EMACS_CMD |& tee $EMACS_STARTUP_LOG_DIR/startup.log
-                       unset CPU_PERCENTAGE
-                       unset EMACS_CMD
-                       unset PARENT_CMD
 
-                       echo "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> $EMACS_STARTUP_LOG_DIR/startup.log
-                       unset EMACS_STARTUP_LOG_DIR
+                    export GDK_RGBA=0
+                    # if [ "x$MY_DBUS_SESSION" != "x" ] && whence -p dbus-launch >/dev/null 2>&1
+                    # then
+                    #     SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=${DISPLAY-:0.0} timeout 240s dbus-launch --autolaunch=$MY_DBUS_SESSION emacs --daemon=$server 2>&1 | tee $EMACS_STARTUP_LOG_DIR/startup.log
+                    # else
+                    #     SHELL=bash GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=${DISPLAY-:0.0} timeout 240s emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
+                    # fi
 
-                       # disown %emacs
-                   else
-                       RETVAL_EMACS_DAEMON=-1
-                   fi
-               done
-	             echo emacs1 >/dev/null 2>&1
+
+                    echo $PARENT_CMD $EMACS_CMD 2>&1 | tee $EMACS_STARTUP_LOG_DIR/startup.log
+                    eval $PARENT_CMD $EMACS_CMD 2>&1 | tee $EMACS_STARTUP_LOG_DIR/startup.log
+                    unset CPU_PERCENTAGE
+                    unset EMACS_CMD
+                    unset PARENT_CMD
+
+                    echo "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> $EMACS_STARTUP_LOG_DIR/startup.log
+                    unset EMACS_STARTUP_LOG_DIR
+
+                    # disown %emacs
+                else
+                    RETVAL_EMACS_DAEMON=-1
+                fi
+            done
+	          echo emacs1 >/dev/null 2>&1
         else
-            return -1
+            RETVAL_EMACS_DAEMON=-1
         fi
         cd $__cwd
         unset __cwd
     else
-        return -1
+        RETVAL_EMACS_DAEMON=-1
     fi # if whence -p emacs >/dev/null 2>&1 || ! pgrep -u "$(id -u)" emacs >/dev/null 2>&1
     return ${RETVAL_EMACS_DAEMON}
 }
@@ -356,6 +356,7 @@ function emacs_daemon_fg_run()
     then
         if whence -f emacs_daemon_start >/dev/null 2>&1
         then
+            echo running emacs_daemon_start
             if emacs_daemon_start
             then
                 if ! pgrep -u "$(id -u)" emacsclient >/dev/null 2>&1
@@ -363,6 +364,7 @@ function emacs_daemon_fg_run()
                     echo Trying to run emacsclient
                     if pgrep -u "$(id -u)" stumpwm >/dev/null 2>&1 && whence -p stumpish >/dev/null 2>&1
                     then
+                        echo running stumpish emacsclient
                         ( sleep 30s; stumpish emacsclient ) &!
                     else
                         ( sleep 30s; emacsclient -d :0 -nc -f ~/.emacs.d/server/$EMACS_SERVER_NAME -e "(progn (message \"Default\"))" ) &!

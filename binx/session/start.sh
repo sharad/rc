@@ -20,7 +20,7 @@ DISPNO=$(xrandr | grep -v disconnected | grep connected | wc -l)
 
 if [ "$DISPNO" -gt 1 ]
 then
-    echo 'URxvt.font: xft:DejaVu Sans Mono:style=Book:size=7:antialias=true' |  xrdb -merge - >/dev/null 2>&1
+    echo 'URxvt.font: xft:DejaVu Sans Mono:style=Book:size=7:antialias=true' | xrdb -merge - >/dev/null 2>&1
 fi
 
 for mpoint in $(grep /srv/volumes /etc/fstab | cut -f1)
@@ -58,4 +58,4 @@ else
     alias noninteractive-scp='command scp -q -o VisualHostKey=yes'
 fi
 
-echo 'URxvt.font: xft:DejaVu Sans Mono:style=Book:size=9:antialias=true' |  xrdb -merge - >/dev/null 2>&1
+echo 'URxvt.font: xft:DejaVu Sans Mono:style=Book:size=9:antialias=true' | xrdb -merge - >/dev/null 2>&1
