@@ -277,12 +277,21 @@ function emacs_daemon_start()
         then
             for server in $EMACS_SERVER_NAME
             do
-                if [ ! -e ~/.emacs.d/server/${server} ] ||
-                       # bundler command is not here for timeout it only for zsh
-                       # do not delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
-                       # ! timeout 7 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")' > /dev/null 2>&1
-                       ! ps $(head -1 ~/.emacs.d/server/${server} | cut -d' ' -f2)
+                if ! pgrep -l '\<emacs\>'  > /dev/null 2>&1 &&
+                        ( [ ! -e ~/.emacs.d/server/${server} ] ||
+                            # bundler command is not here for timeout it only for zsh
+                            # do not delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
+                            # ! timeout 7 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")' > /dev/null 2>&1
+                            ! ps $(head -1 ~/.emacs.d/server/${server} | cut -d' ' -f2) )
                 then
+
+                    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): ls ~/.emacs.d/server/${server} >> ~/tmp/test.log 2>&1
+                    ls ~/.emacs.d/server/${server} >> ~/tmp/test.log 2>&1
+                    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): cat ~/.emacs.d/server/${server} >> ~/tmp/test.log 2>&1
+                    cat ~/.emacs.d/server/${server} >> ~/tmp/test.log 2>&1
+                    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): ps $(head -1 ~/.emacs.d/server/${server} | cut -d' ' -f2) >> ~/tmp/test.log 2>&1
+                    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): $(ps $(head -1 ~/.emacs.d/server/${server} | cut -d' ' -f2)) >> ~/tmp/test.log 2>&1
+
                     # blow one is not allow gnus to read its ~/.gnus file automatically.
 	                  # rm -f   \#.ido.last\#
                     pkill -u "$(id -u)" emacs
@@ -330,48 +339,80 @@ function emacs_daemon_start()
                     unset EMACS_CMD
                     unset PARENT_CMD
 
-                    echo "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> $EMACS_STARTUP_LOG_DIR/startup.log
+                    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> $EMACS_STARTUP_LOG_DIR/startup.log
                     unset EMACS_STARTUP_LOG_DIR
 
                     # disown %emacs
                 else
+                    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): emacs daemon already running >> ~/tmp/test.log 2>&1
+                    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): ls ~/.emacs.d/server/${server} >> ~/tmp/test.log 2>&1
+                    ls ~/.emacs.d/server/${server} >> ~/tmp/test.log 2>&1
+                    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): cat ~/.emacs.d/server/${server} >> ~/tmp/test.log 2>&1
+                    cat ~/.emacs.d/server/${server} >> ~/tmp/test.log 2>&1
+                    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): ps $(head -1 ~/.emacs.d/server/${server} | cut -d' ' -f2) >> ~/tmp/test.log 2>&1
+                    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): $(ps $(head -1 ~/.emacs.d/server/${server} | cut -d' ' -f2)) >> ~/tmp/test.log 2>&1
+
+                    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): setting RETVAL_EMACS_DAEMON=-1 >> ~/tmp/test.log 2>&1
                     RETVAL_EMACS_DAEMON=-1
+                    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): RETVAL_EMACS_DAEMON=$RETVAL_EMACS_DAEMON >> ~/tmp/test.log 2>&1                    
                 fi
             done
 	          echo emacs1 >/dev/null 2>&1
-        else
+        else                    # true
+            echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): true >> ~/tmp/test.log 2>&1
+            echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): setting RETVAL_EMACS_DAEMON=-1 >> ~/tmp/test.log 2>&1
             RETVAL_EMACS_DAEMON=-1
+            echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): RETVAL_EMACS_DAEMON=$RETVAL_EMACS_DAEMON >> ~/tmp/test.log 2>&1
         fi
         cd $__cwd
         unset __cwd
-    else
+    else                        # if whence -p emacs >/dev/null 2>&1 || ! pgrep -u "$(id -u)" emacs >/dev/null 2>&1
+        echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): emacs command not found >> ~/tmp/test.log 2>&1
+        echo EMACS_COOKIE=${EMACS_COOKIE}: $(date) whence -p emacs >> ~/tmp/test.log 2>&1
+        whence -p emacs >> ~/tmp/test.log 2>&1
+        echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): setting RETVAL_EMACS_DAEMON=-1 >> ~/tmp/test.log 2>&1
         RETVAL_EMACS_DAEMON=-1
+        echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): RETVAL_EMACS_DAEMON=$RETVAL_EMACS_DAEMON >> ~/tmp/test.log 2>&1
     fi # if whence -p emacs >/dev/null 2>&1 || ! pgrep -u "$(id -u)" emacs >/dev/null 2>&1
+
+
+    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): outside: whence -p emacs >> ~/tmp/test.log 2>&1
+    whence -p emacs >> ~/tmp/test.log 2>&1
+    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): outside: returning RETVAL_EMACS_DAEMON=$RETVAL_EMACS_DAEMON >> ~/tmp/test.log 2>&1
+
+
+    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): emacs_daemon_start returning RETVAL_EMACS_DAEMON=${RETVAL_EMACS_DAEMON} >> ~/tmp/test.log 2>&1
     return ${RETVAL_EMACS_DAEMON}
 }
 
 function emacs_daemon_fg_run()
 {
+    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): running emacs_daemon_fg_run: emacs_daemon_start >> ~/tmp/test.log 2>&1
     if [ "x" != "x$EMACS_SERVER_NAME" ]
     then
         if whence -f emacs_daemon_start >/dev/null 2>&1
         then
-            echo running emacs_daemon_start
+            echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): running emacs_daemon_start >> ~/tmp/test.log 2>&1
             if emacs_daemon_start
             then
+                echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): completed emacs_daemon_start >> ~/tmp/test.log 2>&1
                 if ! pgrep -u "$(id -u)" emacsclient >/dev/null 2>&1
                 then
-                    echo Trying to run emacsclient
+                    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): Trying to run emacsclient
                     if pgrep -u "$(id -u)" stumpwm >/dev/null 2>&1 && whence -p stumpish >/dev/null 2>&1
                     then
-                        echo running stumpish emacsclient
-                        ( sleep 30s; stumpish emacsclient ) &!
+                        echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): running stumpish emacsclient >> ~/tmp/test.log 2>&1
+                        echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): running stumpish emacsclient
+                        ( sleep 30s; stumpish emacsclient )
                     else
                         ( sleep 30s; emacsclient -d :0 -nc -f ~/.emacs.d/server/$EMACS_SERVER_NAME -e "(progn (message \"Default\"))" ) &!
                     fi
                 else
-                    echo Already running emacscleint
+                    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): Already running emacscleint
+                    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): Already running emacscleint >> ~/tmp/test.log 2>&1
                 fi
+	          else
+                echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): emacs_daemon_start already started >> ~/tmp/test.log 2>&1
             fi
         fi
     fi
@@ -379,8 +420,11 @@ function emacs_daemon_fg_run()
 
 function emacs_daemon_bg_run()
 {
+    EMACS_COOKIE=emacs-$RANDOM
+    echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): running emacs_daemon_bg_run >> ~/tmp/test.log 2>&1
     if whence -f emacs_daemon_fg_run >/dev/null 2>&1
     then
+        echo EMACS_COOKIE=${EMACS_COOKIE}: $(date): running emacs_daemon_bg_run: emacs_daemon_fg_run >> ~/tmp/test.log 2>&1
         emacs_daemon_fg_run >/dev/null 2>&1 &! # already going into ~/.emacs.d/.cache/startup/$server/startup.log
     fi
 }
