@@ -194,7 +194,7 @@ function help()
     -a : SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=$SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME
     -g : SYSTEM_GENERATION_CLEANUP_TIME=$SYSTEM_GENERATION_CLEANUP_TIME
     -u : USER_GENERATION_CLEANUP_TIME=$USER_GENERATION_CLEANUP_TIME
-    -n : no action TODO not implemented
+    -n : no action
     -d : debug
     -v : verbose
     -w : warn
