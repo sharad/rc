@@ -43,6 +43,7 @@ function main()
             then
 
                 sudo umount "${GUIX_TMPDIR}"
+                sleep 1s
 
                 if ! running info sudo mount "${GUIX_TMPDIR}"
                 then

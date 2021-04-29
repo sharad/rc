@@ -30,13 +30,16 @@ function main()
         if true
         then
             sudo umount /boot/efi
+            sleep 1s
             sudo umount /boot
+            sleep 1s
 
             GUIX_TMPDIR="$(grep /srv/guix /etc/fstab | cut -f2)"
             if [ "x" != "x${GUIX_TMPDIR}" ]
             then
 
                 sudo umount "${GUIX_TMPDIR}"
+                sleep 1s
 
                 if ! running info sudo mount "${GUIX_TMPDIR}"
                 then
@@ -66,20 +69,6 @@ function main()
         if [ "x" != "x$LOTUS_GUIX_NOPULL" ] || running info guix pull
         then
             running info guix pull --news
-
-            if ! running info sudo mount /boot
-            then
-                error failed mount /boot
-                exit -1
-            else
-                running info sleep 3s
-            fi
-
-            if ! running info sudo mount /boot/efi
-            then
-                error failed mount /boot/efi
-                exit -1
-            fi
 
             if [ "x" != "x$LOTUS_GUIX_NOSYS" ] || running info sudo guix system reconfigure "${HOME}/.setup/guix-config/per-domain/desktop/config.scm"
             then
