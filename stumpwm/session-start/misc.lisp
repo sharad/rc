@@ -442,13 +442,19 @@
   ;; (activate-fullscreen-if-not (current-window))
 
   ;; sharad
-  (defun fullscreen-focus-frame (cframe lframe)
-    (activate-fullscreen-if-not   (frame-window cframe))
-    (deactivate-fullscreen-if-not (frame-window lframe)))
-
   (defun fullscreen-focus-window (cwin lwin)
     (activate-fullscreen-if-not   cwin)
     (deactivate-fullscreen-if-not lwin))
+
+  (defun fullscreen-focus-frame (cframe lframe)
+    (let ((cwin (frame-window cframe))
+          (lwin (frame-window lframe)))
+     (fullscreen-focus-window cwin lwin)))
+
+  (defun fullscreen-focus-group (cgroup lgroup)
+    (let ((cwin (group-current-window cgroup))
+          (lwin (group-current-window lgroup)))
+      (fullscreen-focus-window cwin lwin)))
 
   (defun fullscreen-curr-post-command (cmd)
     (activate-fullscreen-if-not (current-window)))
@@ -517,6 +523,7 @@
   (defcommand enable-fullscreen-on-ungrabbed-pointer () ()
     (add-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
     (add-hook *focus-frame-hook* 'fullscreen-focus-frame)
+    (add-hook *focus-group-hook* 'fullscreen-focus-group)
     (add-hook *focus-window-hook* 'fullscreen-focus-window)
     (deactivate-full-screen-on-idle-timer-start)
     (activate-fullscreen-if-not (current-window)))
@@ -524,6 +531,7 @@
   (defcommand disable-fullscreen-on-ungrabbed-pointer () ()
     (remove-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
     (remove-hook *focus-frame-hook* 'fullscreen-focus-frame)
+    (remove-hook *focus-group-hook* 'fullscreen-focus-group)
     (remove-hook *focus-window-hook* 'fullscreen-focus-window)
     (deactivate-full-screen-on-idle-timer-stop)
     (deactivate-fullscreen-if-not (current-window)))
@@ -542,11 +550,9 @@
   (defcommand toggle-fullscreen-on-ungrabbed-pointer-for-few-mins () ()
     "run toggle-fullscreen-on-ungrabbed-pointer-for-few-mins"
     (when (> toggle-fullscreen-on-ungrabbed-pointer-for-few-mins 1)
-      (let (mins
-            (*
-              (if toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer 2 1)
-              toggle-fullscreen-on-ungrabbed-pointer-for-few-mins
-              60))
+      (let (mins (* (if toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer 2 1)
+                    toggle-fullscreen-on-ungrabbed-pointer-for-few-mins
+                    60))
         (toggle-fullscreen-on-ungrabbed-pointer-after-few-mins)
         (setf toggle-fullscreen-on-ungrabbed-pointer-for-few-mins-timer
               (stumpwm::run-with-timer mins nil #'toggle-fullscreen-on-ungrabbed-pointer-after-few-mins)))))
