@@ -119,10 +119,26 @@ function main()
                 running info guix gc -d ${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME} -C  ${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE}
 
             fi
-
             running info df -hx tmpfs -x devtmpfs
+        fi                      # if [ "x" != "x$LOTUS_GUIX_NOPULL" ] || [ "$GNU_STORE_AVAIL_MEGABYTES" -lt "$GNU_STORE_MINIMUM_AVAIL_MEGABYTES" ] || running info guix pull
 
+        if true
+        then
+            GUIX_TMPDIR="$(grep /srv/guix /etc/fstab | cut -f2)"
+            if [ "x" != "x${GUIX_TMPDIR}" ]
+            then
 
+                sudo umount "${GUIX_TMPDIR}"
+
+                if ! running info sudo umount "${GUIX_TMPDIR}"
+                then
+                    error Failed in unmounting "${GUIX_TMPDIR}"
+                    exit -1
+                fi
+            else
+                error GUIX_TMPDIR not found
+                exit -1
+            fi
         fi
     fi
 
