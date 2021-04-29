@@ -312,6 +312,19 @@ CVS_RSA=ssh
 # history setting
 HISTCONTROL='ignoreboth:ignorespace:erasedups'
 HISTFILE=~/.histfile
+if [ -n "$HISTFILE" ]
+then
+  if [ -L "$HISTFILE" ]
+  then
+      if whence -p realpath >& /dev/null
+      then
+          HISTFILE="$(realpath $HISTFILE)"
+      elif whence -p readlink >& /dev/null
+      then
+          HISTFILE="$(realpath $HISTFILE)"
+    fi
+  fi
+fi
 #HISTFILESIZE=1000000000
 HISTSIZE=50000 # 1000000000
 HISTIGNORE='&:ls:[bf]g:exit'

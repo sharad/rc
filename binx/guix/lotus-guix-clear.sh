@@ -8,18 +8,44 @@ function main()
     trap setup_finish EXIT SIGINT SIGTERM
 
     running debug process_arg $@
-    USER_GENERATION_CLEANUP_TIME=${USER_GENERATION_CLEANUP_TIME:-96h}
 
-    SYSTEM_GENERATION_CLEANUP_TIME=${SYSTEM_GENERATION_CLEANUP_TIME:-10m} # 10 months
-    SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME:-30d}
-
+    # calculate
     GNU_STORE_MINIMUM_AVAIL_MEGABYTES=300
     # make 21% of available space of /gnu/store
     GUIX_CLEANUP_MIN_SPACE_PERCENTAGE=21
     GNU_STORE_AVAIL_MEGABYTES="$(df -BM --output=avail  /gnu/store | sed -n -e 's/[^[:digit:]]//g' -e 2p)"
     GNU_STORE_SIZE_GIGABYTES="$(df -BG --output=size  /gnu/store | sed -n -e 's/[^[:digit:]]//g' -e 2p)"
     GUIX_CLEANUP_MIN_SPACE="$(expr $GNU_STORE_SIZE_GIGABYTES '*' $GUIX_CLEANUP_MIN_SPACE_PERCENTAGE / 100)"
-    SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE:-${GUIX_CLEANUP_MIN_SPACE}G}
+    # calculate
+
+
+    DEFAULT_SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=${GUIX_CLEANUP_MIN_SPACE}G
+    DEFAULT_SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=30d
+    DEFAULT_SYSTEM_GENERATION_CLEANUP_TIME=10m
+    DEFAULT_USER_GENERATION_CLEANUP_TIME=96h
+
+    info printing default values
+    info DEFAULT_SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=$DEFAULT_SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE  -- 21 percentage of store size
+    info DEFAULT_SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=$DEFAULT_SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME
+    info DEFAULT_SYSTEM_GENERATION_CLEANUP_TIME=$DEFAULT_SYSTEM_GENERATION_CLEANUP_TIME
+    info DEFAULT_USER_GENERATION_CLEANUP_TIME=$DEFAULT_USER_GENERATION_CLEANUP_TIME
+    info printed default values
+    running info sleep 10s
+
+    SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE:-${DEFAULT_SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE}}
+    SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=${SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME:-30d}
+    SYSTEM_GENERATION_CLEANUP_TIME=${SYSTEM_GENERATION_CLEANUP_TIME:-10m} # 10 months
+    USER_GENERATION_CLEANUP_TIME=${USER_GENERATION_CLEANUP_TIME:-96h}
+
+    echo
+    info printing applied values
+    info SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=$SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE
+    info SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=$SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME
+    info SYSTEM_GENERATION_CLEANUP_TIME=$SYSTEM_GENERATION_CLEANUP_TIME
+    info USER_GENERATION_CLEANUP_TIME=$USER_GENERATION_CLEANUP_TIME
+    info printed applied values
+    echo
+    running info sleep 10s
 
     if [ -f "$HOME/.setup/guix-config/per-user/$USER/meta/current" ]
     then
@@ -42,7 +68,7 @@ function main()
             if [ "x" != "x${GUIX_TMPDIR}" ]
             then
 
-                sudo umount "${GUIX_TMPDIR}"
+                running info sudo umount "${GUIX_TMPDIR}"
                 sleep 1s
 
                 if ! running info sudo mount "${GUIX_TMPDIR}"
@@ -112,17 +138,24 @@ function process_arg()
     warn=1
     error=1
 
-    if ! set -- $(getopt -n $pgm -o "rnsehvdw" -- $@)
+    if ! set -- $(getopt -n $pgm -o "s:g:u:a:nehvdw" -- $@)
     then
         verbose Wrong command line.
     fi
+
+    # info SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=$SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE
+    # info SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=$SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME
+    # info SYSTEM_GENERATION_CLEANUP_TIME=$SYSTEM_GENERATION_CLEANUP_TIME
+    # info USER_GENERATION_CLEANUP_TIME=$USER_GENERATION_CLEANUP_TIME
 
     while [ $# -gt 0 ]
     do
         echo option $1
         case $1 in
-            (-r) recursive=1;;
-            (-s) stash=1;;
+            (-s) eval SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=$2; shift;;
+            (-g) eval SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=$2; shift;;
+            (-u) eval SYSTEM_GENERATION_CLEANUP_TIME=$2; shift;;
+            (-a) eval USER_GENERATION_CLEANUP_TIME=$2; shift;;
             (-n) noaction="";;
             (-d) debug=1;;
             (-v) verbose=1;;
@@ -136,6 +169,22 @@ function process_arg()
         esac
         shift
     done
+}
+
+function help()
+{
+    cat <<-EOF
+    -S : SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=$SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE
+    -a : SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=$SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME
+    -g : SYSTEM_GENERATION_CLEANUP_TIME=$SYSTEM_GENERATION_CLEANUP_TIME
+    -u : USER_GENERATION_CLEANUP_TIME=$USER_GENERATION_CLEANUP_TIME
+    -n : no action TODO not implemented
+    -d : debug
+    -v : verbose
+    -w : warn
+    -e : error
+    -h : this help
+EOF
 }
 
 function running()
