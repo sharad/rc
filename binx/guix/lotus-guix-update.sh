@@ -26,17 +26,41 @@ function main()
 
     if [ -d "/run/current-system/profile" ]
     then
-        GUIX_TMPDIR="$(grep /srv/guix /etc/fstab | cut -f2)"
-        if [ "x" != "x${GUIX_TMPDIR}" ]
+
+        if true
         then
-            if ! running info sudo mount ${GUIX_TMPDIR}
+            sudo umount /boot/efi
+            sudo umount /boot
+
+            GUIX_TMPDIR="$(grep /srv/guix /etc/fstab | cut -f2)"
+            if [ "x" != "x${GUIX_TMPDIR}" ]
             then
-                error Failed in mounting ${GUIX_TMPDIR}
+
+                sudo umount "${GUIX_TMPDIR}"
+
+                if ! running info sudo mount "${GUIX_TMPDIR}"
+                then
+                    error Failed in mounting "${GUIX_TMPDIR}"
+                    exit -1
+                fi
+            else
+                error GUIX_TMPDIR not found
                 exit -1
             fi
-        else
-            error GUIX_TMPDIR not found
-            exit -1
+
+            if ! running info sudo mount /boot
+            then
+                error failed mount /boot
+                exit -1
+            else
+                running info sleep 3s
+            fi
+
+            if ! running info sudo mount /boot/efi
+            then
+                error failed mount /boot/efi
+                exit -1
+            fi
         fi
 
         if [ "x" != "x$LOTUS_GUIX_NOPULL" ] || running info guix pull
@@ -59,9 +83,12 @@ function main()
 
             if [ "x" != "x$LOTUS_GUIX_NOSYS" ] || running info sudo guix system reconfigure "${HOME}/.setup/guix-config/per-domain/desktop/config.scm"
             then
-                running info sudo umount /boot/efi
-                running info sleep 1s
-                running info sudo umount /boot
+                if true
+                then
+                    running info sudo umount /boot/efi
+                    running info sleep 1s
+                    running info sudo umount /boot
+                fi
 
                 # verbose guix upgrading
                 running info guix upgrade # default
@@ -126,11 +153,30 @@ function main()
                 done
             else
                 warn guix system reconfigure -- Failed
-            fi
+            fi                  # if [ "x" != "x$LOTUS_GUIX_NOSYS" ] || running info sudo guix system reconfigure "${HOME}/.setup/guix-config/per-domain/desktop/config.scm"
         else
             warn guix pull -- Failed
+        fi                      # if [ "x" != "x$LOTUS_GUIX_NOPULL" ] || running info guix pull
+
+        if true
+        then
+            GUIX_TMPDIR="$(grep /srv/guix /etc/fstab | cut -f2)"
+            if [ "x" != "x${GUIX_TMPDIR}" ]
+            then
+
+                sudo umount "${GUIX_TMPDIR}"
+
+                if ! running info sudo umount "${GUIX_TMPDIR}"
+                then
+                    error Failed in unmounting "${GUIX_TMPDIR}"
+                    exit -1
+                fi
+            else
+                error GUIX_TMPDIR not found
+                exit -1
+            fi
         fi
-    fi
+    fi                          # if [ -d "/run/current-system/profile" ]
 
     running info update_fc_cache
 

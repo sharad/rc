@@ -192,7 +192,7 @@ function state_unlocked () {
     wscreenlockoff
     if whence -p ~/bin/xintrusion >/dev/null 2>&1
     then
-        ~/bin/xintrusion
+      ~/bin/xintrusion
     fi
 }
 
@@ -200,9 +200,11 @@ function screen_lock() {
     lockstatus=away
     if [ "$HOST" = "lispm.genera.net" ]
     then
-        unlockstatus=away
+      # TODO: add mode
+      unlockstatus=away
+      unlockstatus=online
     else
-        unlockstatus=online
+      unlockstatus=online
     fi
 
     if [ "x$lock" != "x" ]
