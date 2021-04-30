@@ -14,6 +14,8 @@
 (use-modules (guix utils))
 (use-modules (guix packages))
 (use-modules (gnu services networking))
+(use-modules (gnu packages messaging))
+(use-modules (lotus packages chat))
 (use-modules (gnu services audio))
 (use-modules (gnu services kerberos))
 (use-modules (gnu) (gnu system nss))
@@ -542,7 +544,13 @@
                                                                               updatedb-job))))))
 
 
-(define %lotus-bitlbee-services (list (service bitlbee-service-type)))
+(define %lotus-bitlbee-configuration (bitlbee-configuration
+                                      (bitlbee bitlbee-purple)
+                                      (plugins (list skype4pidgin))))
+
+(define %lotus-bitlbee-services (list (service bitlbee-service-type
+                                               ;; %lotus-bitlbee-configuration
+                                               )))
 
 
 ;; https://guix.gnu.org/manual/en/html_node/Mail-Services.html

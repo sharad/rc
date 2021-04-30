@@ -92,13 +92,24 @@
                                      "doxygen"))
 
 
+(define %lotus-dev-emacs-name (list "emacs-emacsql-sqlite3"
+                                    "emacs-lsp-ui"
+                                    "emacs-lsp-treemacs"
+                                    "emacs-helm-lsp"
+                                    "emacs-company-lsp"
+                                    "emacs-eglot"
+                                    "emacs-lsp-mode"
+                                    "emacs-ccls"
+                                    "emacs-eldev"
+                                    "ccls"))
+
 
 (define %lotus-dev-tools-names (list "python-gitlab"
                                      "python-argcomplete"))
 
 (define %lotus-dev-package-experimental-names (list "screen-message" ;; "rofi-master"
                                                     "zssh"
-                                                    ;; lrzsz
+                                                    "lrzsz"
                                                     ;; gnome-pie
                                                     ;; python-ulauncher
                                                     "gnutls"
@@ -106,6 +117,7 @@
                                                     "p11-kit"))
 
 (define %lotus-dev-package-names (append %lotus-dev-utits-names
+                                         %lotus-dev-emacs-name
                                          %lotus-dev-tools-names
                                          %lotus-dev-package-experimental-names))
 
