@@ -297,6 +297,9 @@
 
                                     "lm-sensors"
 
+                                    "blueman-manager"
+                                    "bluez-alsa"
+
                                     "beep"))
 
 (define %lotus-lang-packages (list)) ;; "ocaml"

@@ -973,9 +973,9 @@ waiting for responses from the server"
 
 (defun lotus-messaging/post-init-rcirc-config ()
   (setq rcirc-auto-authenticate-flag nil)
-  (setq rcirc-authinfo '(("localhost" bitlbee "sharad" "test")
-                         ("freenode" nickserv "bob" "p455w0rd")
-                         ("freenode" chanserv "bob" "#bobland" "passwd99")))
+  (setq rcirc-authinfo '(("freenode" nickserv "bob" "p455w0rd")
+                         ("freenode" chanserv "bob" "#bobland" "passwd99")
+                         ("localhost" bitlbee "sharad" "test")))
   (add-to-list 'rcirc-server-alist '("localhost"))
   (progn
     (defadvice rcirc (before rcirc-read-from-authinfo activate)

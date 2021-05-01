@@ -62,6 +62,40 @@
       local
       alternat))
 
+
+(define %lotus-bitlbee-service-use-default?     #f)
+(define %lotus-host-name                        (lotus-local-value %local-host-name "komputilo"))
+(define %lotus-account-uid                      1000)
+(define %lotus-account-user-name                "s")
+(define %lotus-account-comment                  "sharad")
+(define %lotus-account-group-name               "users")
+(define %lotus-account-group-gid                 1000)
+(define %lotus-account-supplementry-groups      '("wheel" "netdev" "audio" "video"))
+(define %lotus-account-home-parent-directory    "/home")
+(define %lotus-account-shell                    #~(string-append #$zsh "/bin/zsh"))
+(define %lotus-gdm-auto-login                   #t)
+(define %lotus-gdm-allow-empty-password         #t)
+
+;; (define %lotus-nm-dnsmasq-ns-path            #~(string-append #$nm-dnsmasq-ns "/etc/NetworkManager/dnsmasq.d"))
+
+(define %lotus-account-create-home-directory    #f)
+(define %lotus-guix-substitute-urls             '("https://ci.guix.gnu.org"
+                                                  ;; "https://bayfront.guixsd.org"
+                                                  ;; "http://guix.genenetwork.org" -- Backtrace
+                                                  "https://guix.tobias.gr"
+                                                  "https://ci.guix.info/"
+                                                  ;; "https://berlin.guixsd.org"
+                                                  "https://berlin.guix.gnu.org"))
+(define %lotus-guix-extra-options               '(
+                                                  ;; "--max-jobs=2"
+                                                  ;; "--cores=1"
+                                                  "--gc-keep-derivations=yes"
+                                                  "--gc-keep-outputs=yes"))
+(define %lotus-guix-use-substitutes             #t) ;always true
+
+(define %lotus-network-manager-dns              "dnsmasq")
+;; (define %lotus-default-realm                    #f)
+
 (define %lotus-fs-guix-check?                   #t)
 (define %lotus-fs-guix-root-check?              %lotus-fs-guix-check?)
 (define %lotus-fs-guix-boot-check?              %lotus-fs-guix-check?)
@@ -78,39 +112,6 @@
 (define %lotus-guix-bootefi-mount?              #f)
 (define %lotus-guix-bootefi-create-mount-point? #f)
 (define %lotus-guix-bootefi-needed-for-boot?    #f)
-
-
-(define %lotus-host-name                        (lotus-local-value %local-host-name "komputilo"))
-(define %lotus-account-uid                      1000)
-(define %lotus-account-user-name                "s")
-(define %lotus-account-comment                  "sharad")
-(define %lotus-account-group-name               "users")
-(define %lotus-account-group-gid                 1000)
-(define %lotus-account-supplementry-groups      '("wheel" "netdev" "audio" "video"))
-(define %lotus-account-home-parent-directory    "/home")
-(define %lotus-account-shell                    #~(string-append #$zsh "/bin/zsh"))
-(define %lotus-gdm-auto-login                   #f)
-(define %lotus-gdm-allow-empty-password         #f)
-
-;; (define %lotus-nm-dnsmasq-ns-path            #~(string-append #$nm-dnsmasq-ns "/etc/NetworkManager/dnsmasq.d"))
-
-(define %lotus-account-create-home-directory #f)
-(define %lotus-guix-substitute-urls          '("https://ci.guix.gnu.org"
-                                               ;; "https://bayfront.guixsd.org"
-                                               ;; "http://guix.genenetwork.org" -- Backtrace
-                                               "https://guix.tobias.gr"
-                                               "https://ci.guix.info/"
-                                               ;; "https://berlin.guixsd.org"
-                                               "https://berlin.guix.gnu.org"))
-(define %lotus-guix-extra-options            '(
-                                               ;; "--max-jobs=2"
-                                               ;; "--cores=1"
-                                               "--gc-keep-derivations=yes"
-                                               "--gc-keep-outputs=yes"))
-(define %lotus-guix-use-substitutes          #t) ;always true
-
-(define %lotus-network-manager-dns           "dnsmasq")
-;; (define %lotus-default-realm                 #f)
 
 
 (use-modules (gnu packages linux))
@@ -460,7 +461,7 @@
                                                  (supplementary-groups   %lotus-account-supplementry-groups)
                                                  (create-home-directory? %lotus-account-create-home-directory))
 
-                                   (user-account (uid                    1002)
+                                   (user-account (uid                    (+ %lotus-account-uid 2))
                                                  (name                   "j")
                                                  (comment                "Jam")
                                                  (group                  %lotus-account-group-name)
@@ -544,8 +545,6 @@
                                                                               updatedb-job))))))
 
 
-(define %lotus-bitlbee-service-use-default? #f)
-
 (define %lotus-bitlbee-configuration (bitlbee-configuration
                                       (bitlbee (if %lotus-bitlbee-service-use-default? bitlbee bitlbee-purple))
                                       (plugins (if %lotus-bitlbee-service-use-default? '() (list skype4pidgin)))))
@@ -587,6 +586,9 @@
 (define %lotus-avahi-services (list (service avahi-service-type)))
 
 (define %lotus-gpm-services  (list (service gpm-service-type)))
+
+;; https://unix.stackexchange.com/questions/617858/how-to-enable-bluetooth-in-guix
+(define %lotus-bluez-services (list (bluetooth-service #:auto-enable? #t)))
 
 
 (define %lotus-audio-services (list (service mpd-service-type
@@ -696,6 +698,7 @@
                                                    %lotus-mail-aliases-services
                                                    %lotus-dovecot-services
                                                    %lotus-gpm-services
+                                                   %lotus-bluez-services
                                                    %lotus-audio-services
                                                    %lotus-publish-services
                                                    %lotus-mcron-services

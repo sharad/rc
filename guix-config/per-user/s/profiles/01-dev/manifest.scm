@@ -101,6 +101,7 @@
                                     "emacs-lsp-mode"
                                     "emacs-ccls"
                                     "emacs-eldev"
+                                    "emacs-bluetooth"
                                     "ccls"))
 
 
