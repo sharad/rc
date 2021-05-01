@@ -80,10 +80,7 @@
       ;; (defvar erc-save-buffer-on-part nil)
       ;; (defvar erc-save-queries-on-quit nil)
 
-      ;;TODO: disable imenu
-      (add-hook 'erc-mode-hook #'(lambda ()
-                                   (imenu-list-stop-timer)
-                                   (setq-local imenu-list-auto-update nil)))
+      )
 
     (progn
       (defun lotus-messaging-bnc4free-connect ()
@@ -975,7 +972,27 @@ waiting for responses from the server"
   ())
 
 (defun lotus-messaging/post-init-rcirc-config ()
-  (add-to-list 'rcirc-server-alist
-               '("localhost")))
+  (setq rcirc-auto-authenticate-flag nil)
+  (setq rcirc-authinfo '(("localhost" bitlbee "sharad" "test")
+                         ("freenode" nickserv "bob" "p455w0rd")
+                         ("freenode" chanserv "bob" "#bobland" "passwd99")))
+  (add-to-list 'rcirc-server-alist '("localhost"))
+  (progn
+    (defadvice rcirc (before rcirc-read-from-authinfo activate)
+      "Allow rcirc to read authinfo from ~/.authinfo.gpg via the auth-source API.
+This doesn't support the chanserv auth method"
+      (unless arg
+        (dolist (p (auth-source-search :port '("nickserv" "bitlbee" "quakenet")
+                                       :require '(:port :user :secret)))
+          (let ((secret (plist-get p :secret))
+                (method (intern (plist-get p :port))))
+            (add-to-list 'rcirc-authinfo
+                         (list (plist-get p :host)
+                               method
+                               (plist-get p :user)
+                               (if (functionp secret)
+                                   (funcall secret)
+                                 secret)))))))
+))
 
 ;;; config.el ends here

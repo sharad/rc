@@ -544,9 +544,11 @@
                                                                               updatedb-job))))))
 
 
+(define %lotus-bitlbee-service-use-default? #f)
+
 (define %lotus-bitlbee-configuration (bitlbee-configuration
-                                      (bitlbee (if %lotus-system-init bitlbee bitlbee-purple))
-                                      (plugins (if %lotus-system-init '() (list skype4pidgin)))))
+                                      (bitlbee (if %lotus-bitlbee-service-use-default? bitlbee bitlbee-purple))
+                                      (plugins (if %lotus-bitlbee-service-use-default? '() (list skype4pidgin)))))
 
 (define %lotus-bitlbee-services (list (service bitlbee-service-type
                                                %lotus-bitlbee-configuration)))
@@ -576,11 +578,6 @@
 ;; https://stackoverflow.com/questions/48644841/multiple-addn-hosts-conf-in-dnsmasq
 (define %lotus-dnsmasq-services (list (service dnsmasq-service-type
                                                (dnsmasq-configuration (no-resolv? #t)
-                                                                      ;; (resolv-file)
-                                                                      ;; (no-resolv? #f)
-                                                                      ;; (servers '("82.196.9.45"
-                                                                      ;;            "51.255.48.78"
-                                                                      ;;            "51.15.98.97"))
                                                                       (local-service? #t)))))
 
 ;; https://guix.gnu.org/manual/en/html_node/Networking-Services.html
@@ -595,9 +592,7 @@
 (define %lotus-audio-services (list (service mpd-service-type
                                              (mpd-configuration
                                               (user %lotus-account-user-name)
-                                              (music-dir "~/Music")
-                                              ;; (music-dir (string-append %lotus-account-home-parent-directory "/" %lotus-account-user-name "/" "hell/Music"))
-                                              ))))
+                                              (music-dir "~/Music")))))
 
 
 ;; https://github.com/alezost/guix-config/blob/master/system-config/os-main.scm
@@ -659,7 +654,7 @@
                                                                                (tmpdir (string-append "/srv/guix/build/" %local-disk-hitachi-serial-id "/tmp")) ;; https://guix.gnu.org/manual/en/html_node/Base-Services.html
                                                                                (substitute-urls (append %lotus-guix-substitute-urls
                                                                                                         %default-substitute-urls))
-                                                                               (extra-options %lotus-guix-extra-options)))))q
+                                                                               (extra-options %lotus-guix-extra-options)))))
 
 ;; https://issues.guix.info/issue/35674
 (when #t
