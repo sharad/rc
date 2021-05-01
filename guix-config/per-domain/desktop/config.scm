@@ -545,12 +545,11 @@
 
 
 (define %lotus-bitlbee-configuration (bitlbee-configuration
-                                      (bitlbee bitlbee-purple)
-                                      (plugins (list skype4pidgin))))
+                                      (bitlbee (if %lotus-system-init bitlbee bitlbee-purple))
+                                      (plugins (if %lotus-system-init '() (list skype4pidgin)))))
 
 (define %lotus-bitlbee-services (list (service bitlbee-service-type
-                                               ;; %lotus-bitlbee-configuration
-                                               )))
+                                               %lotus-bitlbee-configuration)))
 
 
 ;; https://guix.gnu.org/manual/en/html_node/Mail-Services.html
@@ -639,38 +638,46 @@
 
 ;; services modifications
 
-(define %lotus-desktop-nm-services (modify-services %desktop-services
-                                                    (network-manager-service-type config =>
-                                                                                  (network-manager-configuration (inherit config)
-                                                                                                                 ;; (vpn-plugins '("network-manager-openconnect"))
-                                                                                                                 (dns "dnsmasq")))
-                                                    ;; https://gitlab.com/Efraim/guix-config/blob/master/macbook41_config.scm
-                                                    (guix-service-type config =>
-                                                                       (guix-configuration (inherit config)
-                                                                                           ;; (use-substitutes? %lotus-guix-use-substitutes)
-                                                                                           ;; (authorized-keys '())
-                                                                                           ;; (tmpdir "/gnu/tmp") ;; https://guix.gnu.org/manual/en/html_node/Base-Services.html
-                                                                                           (tmpdir (string-append "/srv/guix/build/" %local-disk-hitachi-serial-id "/tmp")) ;; https://guix.gnu.org/manual/en/html_node/Base-Services.html
-                                                                                           (substitute-urls (append %lotus-guix-substitute-urls
-                                                                                                                    %default-substitute-urls))
-                                                                                           (extra-options %lotus-guix-extra-options)))))
+
+(define %lotus-desktop-general-services %desktop-services)
+
+(set! %lotus-desktop-general-services (modify-services
+                                          %lotus-desktop-general-services
+                                        (network-manager-service-type config =>
+                                                                      (network-manager-configuration (inherit config)
+                                                                                                     ;; (vpn-plugins '("network-manager-openconnect"))
+                                                                                                     (dns "dnsmasq")))))
+
+(set! %lotus-desktop-general-services (modify-services
+                                          %lotus-desktop-general-services
+                                        ;; https://gitlab.com/Efraim/guix-config/blob/master/macbook41_config.scm
+                                        (guix-service-type config =>
+                                                           (guix-configuration (inherit config)
+                                                                               ;; (use-substitutes? %lotus-guix-use-substitutes)
+                                                                               ;; (authorized-keys '())
+                                                                               ;; (tmpdir "/gnu/tmp") ;; https://guix.gnu.org/manual/en/html_node/Base-Services.html
+                                                                               (tmpdir (string-append "/srv/guix/build/" %local-disk-hitachi-serial-id "/tmp")) ;; https://guix.gnu.org/manual/en/html_node/Base-Services.html
+                                                                               (substitute-urls (append %lotus-guix-substitute-urls
+                                                                                                        %default-substitute-urls))
+                                                                               (extra-options %lotus-guix-extra-options)))))q
 
 ;; https://issues.guix.info/issue/35674
 (when #t
-  (set! %lotus-desktop-nm-services (modify-services %lotus-desktop-nm-services
-                                                    (gdm-service-type config =>
-                                                                      (gdm-configuration (inherit config)
-                                                                                         (xorg-configuration
-                                                                                          (xorg-configuration
-                                                                                           (keyboard-layout %lotus-keyboard-layout)))
-                                                                                         (allow-empty-passwords? %lotus-gdm-allow-empty-password)
-                                                                                         (auto-login?            %lotus-gdm-auto-login)
-                                                                                         (default-user           %lotus-account-user-name))))))
+  (set! %lotus-desktop-general-services (modify-services
+                                            %lotus-desktop-general-services
+                                          (gdm-service-type config =>
+                                                            (gdm-configuration (inherit config)
+                                                                               (xorg-configuration
+                                                                                (xorg-configuration
+                                                                                 (keyboard-layout %lotus-keyboard-layout)))
+                                                                               (allow-empty-passwords? %lotus-gdm-allow-empty-password)
+                                                                               (auto-login?            %lotus-gdm-auto-login)
+                                                                               (default-user           %lotus-account-user-name))))))
 
 ;; services add
 
 
-(define %lotus-desktop-services %lotus-desktop-nm-services)
+(define %lotus-desktop-services %lotus-desktop-general-services)
 
 
 (define %lotus-network-services  (list (service openssh-service-type)
@@ -684,8 +691,8 @@
 (define %lotus-many-services (append %lotus-network-services
                                      %lotus-heavy-wm-services))
 
-(define %lotus-few-services  (append (list (service gnome-desktop-service-type)) 
-				     %lotus-network-services))
+(define %lotus-few-services  (append (list (service gnome-desktop-service-type))
+				                             %lotus-network-services))
 
 
 (define %lotus-simple-services %lotus-few-services)

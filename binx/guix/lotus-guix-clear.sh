@@ -7,8 +7,6 @@ function main()
 
     trap setup_finish EXIT SIGINT SIGTERM
 
-    running debug process_arg $@
-
     # calculate
     GNU_STORE_MINIMUM_AVAIL_MEGABYTES=300
     # make 21% of available space of /gnu/store
@@ -23,6 +21,9 @@ function main()
     DEFAULT_SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=30d
     DEFAULT_SYSTEM_GENERATION_CLEANUP_TIME=10m
     DEFAULT_USER_GENERATION_CLEANUP_TIME=96h
+
+    running debug process_arg $@
+
 
     info printing default values
     info DEFAULT_SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=$DEFAULT_SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE  -- 21 percentage of store size
@@ -154,7 +155,7 @@ function process_arg()
     warn=1
     error=1
 
-    if ! set -- $(getopt -n $pgm -o "s:g:u:a:nehvdw" -- $@)
+    if ! set -- $(getopt -n $pgm -o "s:a:g:u:nehvdw" -- $@)
     then
         verbose Wrong command line.
     fi
@@ -169,9 +170,9 @@ function process_arg()
         echo option $1
         case $1 in
             (-s) eval SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=$2; shift;;
-            (-g) eval SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=$2; shift;;
-            (-u) eval SYSTEM_GENERATION_CLEANUP_TIME=$2; shift;;
-            (-a) eval USER_GENERATION_CLEANUP_TIME=$2; shift;;
+            (-a) eval SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=$2; shift;;
+            (-g) eval SYSTEM_GENERATION_CLEANUP_TIME=$2; shift;;
+            (-u) eval USER_GENERATION_CLEANUP_TIME=$2; shift;;
             (-n) noaction="";;
             (-d) debug=1;;
             (-v) verbose=1;;
@@ -190,7 +191,7 @@ function process_arg()
 function help()
 {
     cat <<-EOF
-    -S : SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=$SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE
+    -s : SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE=$SYSTEM_ABONDONED_PKG_CLEANUP_MIN_SPACE
     -a : SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME=$SYSTEM_ABONDONED_PKG_CLEANUP_MIN_TIME
     -g : SYSTEM_GENERATION_CLEANUP_TIME=$SYSTEM_GENERATION_CLEANUP_TIME
     -u : USER_GENERATION_CLEANUP_TIME=$USER_GENERATION_CLEANUP_TIME
