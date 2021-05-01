@@ -80,7 +80,10 @@
       ;; (defvar erc-save-buffer-on-part nil)
       ;; (defvar erc-save-queries-on-quit nil)
 
-      )
+      ;;TODO: disable imenu
+      (add-hook 'erc-mode-hook #'(lambda ()
+                                   (imenu-list-stop-timer)
+                                   (setq-local imenu-list-auto-update nil)))
 
     (progn
       (defun lotus-messaging-bnc4free-connect ()
