@@ -670,6 +670,14 @@
                                                                                (allow-empty-passwords? %lotus-gdm-allow-empty-password)
                                                                                (auto-login?            %lotus-gdm-auto-login)
                                                                                (default-user           %lotus-account-user-name))))))
+(when #f
+  ;; https://www.mail-archive.com/search?l=help-guix@gnu.org&q=subject:%22Re%5C%3A+Guix+Bluetooth+Headset%22&o=newest&f=1
+  (set! %lotus-desktop-general-services (modify-services
+                                            %lotus-desktop-general-services
+                                          (pulseaudio-service-type config =>
+                                                                   (pulseaudio-configuration
+                                                                    (inherit config)
+                                                                    (script-file (local-file "/etc/guix/default.pa")))))))
 
 ;; services add
 

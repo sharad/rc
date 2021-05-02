@@ -42,6 +42,15 @@
                                        "sbcl-stumpwm-globalwindows"))
 ;; "notification-daemon" "trezord-udev-rules" "trezord"
 
+(define %lotus-device-hardware-packages (list "lm-sensors"
+                                              "bluez-alsa"
+                                              "blueman"
+                                              "ddcutil"
+                                              ;; https://github.com/stumpwm/stumpwm/wiki/Tips-And-Tricks#mounting-storage-devices
+                                              ;; "udisks"
+                                              ;; "udisks-glue"
+                                              "udevil"))
+
 (define %lotus-other-packages (list "vim"
                                     "gnu-pw-mgr"
                                     "mpd-mpc"
@@ -73,13 +82,7 @@
                                     "pwgen"
                                     "synergy"
                                     ;; "gettext"
-
-                                    ;; https://github.com/stumpwm/stumpwm/wiki/Tips-And-Tricks#mounting-storage-devices
-                                    ;; "udisks"
-                                    ;; "udisks-glue"
-                                    "udevil"
-
-                                    ;; "blueman"
+                                    
                                     ;; "visidata"
 
                                     "baobab"
@@ -295,10 +298,6 @@
                                     "gpa"
                                     "jetring"
 
-                                    "lm-sensors"
-
-                                    "blueman-manager"
-                                    "bluez-alsa"
 
                                     "beep"))
 
@@ -308,8 +307,6 @@
 
 (define %lotus-audio-packages (list "sox"
                                     "alsa-utils"))
-
-(define %lotus-hardware-packages (list "ddcutil"))
 
 (define %lotus-user-selected-package-names (list "m4"
                                                  "binutils"
@@ -548,8 +545,8 @@
 (define %lotus-package-names-for-installation (append %lotus-user-selected-package-names
                                                       %lotus-lang-packages
                                                       %lotus-audio-packages
-                                                      ;; %lotus-hardware-packages
                                                       %lotus-disputed-packages
+                                                      %lotus-device-hardware-packages
                                                       %lotus-other-packages
                                                       %lotus-network-packages
                                                       %lotus-mail-packages
