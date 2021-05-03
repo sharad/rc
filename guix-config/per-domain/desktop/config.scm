@@ -546,8 +546,8 @@
 
 
 (define %lotus-bitlbee-configuration (bitlbee-configuration
-                                      (bitlbee (if %lotus-bitlbee-service-use-default? bitlbee bitlbee-purple))
-                                      (plugins (if %lotus-bitlbee-service-use-default? '() (list skype4pidgin)))))
+                                      (plugins (if %lotus-bitlbee-service-use-default? '() (list skype4pidgin)))
+                                      (bitlbee (if %lotus-bitlbee-service-use-default? bitlbee bitlbee-purple))))
 
 (define %lotus-bitlbee-services (list (service bitlbee-service-type
                                                %lotus-bitlbee-configuration)))

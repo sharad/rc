@@ -972,10 +972,11 @@ waiting for responses from the server"
   ())
 
 (defun lotus-messaging/post-init-rcirc-config ()
-  (setq rcirc-auto-authenticate-flag nil)
-  (setq rcirc-authinfo '(("freenode" nickserv "bob" "p455w0rd")
-                         ("freenode" chanserv "bob" "#bobland" "passwd99")
-                         ("localhost" bitlbee "sharad" "test")))
+  (setq rcirc-auto-authenticate-flag t)
+  (setq rcirc-authinfo '(;; ("freenode" nickserv "bob" "p455w0rd")
+                         ;; ("freenode" chanserv "bob" "#bobland" "passwd99")
+                         ;; ("localhost" bitlbee "sharad" "test")
+                         ))
   (add-to-list 'rcirc-server-alist '("localhost"))
   (progn
     (defadvice rcirc (before rcirc-read-from-authinfo activate)
@@ -992,7 +993,6 @@ This doesn't support the chanserv auth method"
                                (plist-get p :user)
                                (if (functionp secret)
                                    (funcall secret)
-                                 secret)))))))
-))
+                                 secret)))))))))
 
 ;;; config.el ends here
