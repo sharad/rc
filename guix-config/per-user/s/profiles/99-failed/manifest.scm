@@ -1,9 +1,5 @@
 
-(define %lotus-failed-package-names (list "nomad"
-                                          "swi-prolog"
-                                          ;; "openfortivpn"
-                                          "wmutils-core"
-                                          "wmutils-opt"
+(define %lotus-failed-package-names (list "python-rofi-tmux"
                                           "hello"))
 
 
