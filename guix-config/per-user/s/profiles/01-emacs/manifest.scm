@@ -63,6 +63,7 @@
                                           "emacs-deft"
                                           "emacs-dashboard"
                                           "emacs-typo"
+                                          "emacs-pass"
                                           ;; https://develop.spacemacs.org/layers/+lang/c-c++/README.html
                                           "emacs-lsp-ui"
                                           "emacs-lsp-ivy"

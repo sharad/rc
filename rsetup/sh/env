@@ -510,6 +510,12 @@ function eval_guix_profiles()
             unset profile_path
             unset profile
         done
+
+        if [ -n "$GUIX_ENVIRONMENT" -a -n "$LIBRARY_PATH" ]
+        then
+            LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIBRARY_PATH
+            export LD_LIBRARY_PATH
+        fi
     fi
 }
 

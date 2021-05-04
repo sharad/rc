@@ -214,7 +214,7 @@
                                            "rdup"
 
                                            "ledger"
-                                           
+
                                            "sbcl-cl-ledger"
 
                                            "lsh"
@@ -224,7 +224,7 @@
                                            "enscript"
 
                                            ;; "agda"
-                                           
+
 
                                            "gnupg"
                                            "paperkey"
@@ -239,7 +239,7 @@
                                            "pinentry"
                                            "pinentry-tty"
                                            "pinentry-gtk2"
-                                           
+
                                            "signing-party"
                                            "pius"
                                            "gpa"
@@ -292,7 +292,7 @@
                                                         "hstr"
                                                         "shflags"
                                                         "the-silver-searcher"
-                                                        
+
 
                                                         ;; "cdesktopenv"
 
@@ -419,7 +419,6 @@
                                          "sakura"
                                          "nautilus"
                                          "tracker"
-                                         "emacs-pass"
                                          ;; "keychain"
                                          "gnome-keyring"
                                          "gcr"
@@ -450,7 +449,7 @@
                                           "libxslt"
                                           "tidy"))
 
-(define %lotus-simple-notification-packages (list "guile-xosd" 
+(define %lotus-simple-notification-packages (list "guile-xosd"
                                                   ;; "osdsh"
                                                   "xosd"
                                                   "libnotify"
@@ -520,4 +519,3 @@
 (define %lotus-simple-packages (append %lotus-simple-user-packages))
 
 (packages->manifest %lotus-simple-packages)
-
