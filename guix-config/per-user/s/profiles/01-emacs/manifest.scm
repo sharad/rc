@@ -120,7 +120,9 @@
 
 (define %lotus-emacs-file-packages (list))
 
-(define %lotus-emacs-misc-packages (list))
+(define %lotus-emacs-misc-packages (list "mu"
+                                         "notmuch"
+                                         "pandoc"))
 
 
 (define %lotus-emacs-package-names-for-installation (append %lotus-emacs-user-selected-package-names

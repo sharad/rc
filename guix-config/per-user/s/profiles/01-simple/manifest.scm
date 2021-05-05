@@ -324,10 +324,11 @@
 
 (define %lotus-simple-mail-packages (list "mailutils"
                                           "offlineimap"
-                                          "notmuch"
+                                          ;; "notmuch"
                                           "notmuch-addrlookup-c"
-                                          "notifymuch"
-                                          "mu"))
+                                          "notifymuch"))
+                                          ;; "mu"
+                                          
 
 (define %lotus-simple-font-packages (list "freetype"
                                           ;; ftview
@@ -403,8 +404,6 @@
                                          "i3status"
                                          ;; "xvkbd" ;; https://unix.stackexchange.com/a/11890
                                          "libwm"
-                                         "wmutils-core"
-                                         "wmutils-opt"
                                          "xautomation"
                                          "dmenu"
                                          "st"

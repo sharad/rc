@@ -73,7 +73,7 @@
 (define %lotus-account-supplementry-groups      '("wheel" "netdev" "audio" "video"))
 (define %lotus-account-home-parent-directory    "/home")
 (define %lotus-account-shell                    #~(string-append #$zsh "/bin/zsh"))
-(define %lotus-gdm-auto-login                   #t)
+(define %lotus-gdm-auto-login                   #f)
 (define %lotus-gdm-allow-empty-password         #t)
 
 ;; (define %lotus-nm-dnsmasq-ns-path            #~(string-append #$nm-dnsmasq-ns "/etc/NetworkManager/dnsmasq.d"))

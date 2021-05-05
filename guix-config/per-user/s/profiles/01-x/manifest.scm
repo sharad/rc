@@ -5,17 +5,59 @@
 (use-modules (lotus packages cdesktopenv))
 
 (define %lotus-x-package-names (list "pidgin"
-                                     ;; "wmutils-core"
-                                     ;; "wmutils-opt"
-                                     ;; "skype4pidgin@1.6"
                                      "skype4pidgin"
                                      "pidgin-otr"
                                      "geeqie"
                                      "telegram-purple"
                                      "telegram-purple"))
 
+(define %lotus-x-gui-packages (list "xinit"
+                                    "i3status"
+                                    ;; "xvkbd" ;; https://unix.stackexchange.com/a/11890
+                                    "libwm"
+                                    "wmutils-core"
+                                    "wmutils-opt"
+                                    "xautomation"
+                                    "dmenu"
+                                    "st"
+                                    "xrdb"
+                                    "xterm"
+                                    "xdotool"
+                                    "xrandr"
+                                    "arandr"
+                                    "autorandr"
+                                    "xrandr-invert-colors"
+                                    "rxvt-unicode"
+                                    "sakura"
+                                    "nautilus"
+                                    "tracker"
+                                    ;; "keychain"
+                                    "gnome-keyring"
+                                    "gcr"
+                                    "seahorse"
+                                    "libsecret"
+                                    "libxft"
+                                    "scsh"
+                                    "wmnd"
+                                    "menumaker"
+                                    "emacs-stumpwm-mode"
+
+                                    "keynav"
+                                    "conky"
+                                    ;; "surf"
+                                    "xprop"
+                                    "xwininfo"
+                                    "xautolock"
+                                    ;; "slock" -- need suid
+                                    "xset"
+                                    "xsetroot"
+                                    "python-dbus"))
+
+(define %lotus-x-package-names-for-installation (append %lotus-x-package-names
+                                                        %lotus-x-gui-packages))
+
 (define %lotus-x-packages
-  (append (map specification->package
-               %lotus-x-package-names)))
+  (map specification->package
+       %lotus-x-package-names-for-installation))
 
 (packages->manifest %lotus-x-packages)

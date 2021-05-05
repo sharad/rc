@@ -978,21 +978,23 @@ waiting for responses from the server"
                          ;; ("localhost" bitlbee "sharad" "test")
                          ))
   (add-to-list 'rcirc-server-alist '("localhost"))
-  (progn
-    (defadvice rcirc (before rcirc-read-from-authinfo activate)
-      "Allow rcirc to read authinfo from ~/.authinfo.gpg via the auth-source API.
+  (if nil
+      (progn
+        ;; (ad-deactivate 'rcirc)
+        (defadvice rcirc (before rcirc-read-from-authinfo activate)
+          "Allow rcirc to read authinfo from ~/.authinfo.gpg via the auth-source API.
 This doesn't support the chanserv auth method"
-      (unless arg
-        (dolist (p (auth-source-search :port '("nickserv" "bitlbee" "quakenet")
-                                       :require '(:port :user :secret)))
-          (let ((secret (plist-get p :secret))
-                (method (intern (plist-get p :port))))
-            (add-to-list 'rcirc-authinfo
-                         (list (plist-get p :host)
-                               method
-                               (plist-get p :user)
-                               (if (functionp secret)
-                                   (funcall secret)
-                                 secret)))))))))
+          (unless arg
+            (dolist (p (auth-source-search :port '("nickserv" "bitlbee" "quakenet")
+                                           :require '(:port :user :secret)))
+              (let ((secret (plist-get p :secret))
+                    (method (intern (plist-get p :port))))
+                (add-to-list 'rcirc-authinfo
+                             (list (plist-get p :host)
+                                   method
+                                   (plist-get p :user)
+                                   (if (functionp secret)
+                                       (funcall secret)
+                                     secret))))))))))
 
 ;;; config.el ends here
