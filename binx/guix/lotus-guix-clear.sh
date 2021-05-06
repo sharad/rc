@@ -50,7 +50,7 @@ function main()
 
     if [ -f "$HOME/.setup/guix-config/per-user/$USER/meta/current" ]
     then
-        LOCAL_GUIX_EXTRA_PROFILES=( $(cat "$HOME/.setup/guix-config/per-user/$USER/meta/current" | grep -v "01-essential" ) )
+        LOCAL_GUIX_EXTRA_PROFILES=( $(cat "$HOME/.setup/guix-config/per-user/$USER/meta/current" | grep -v "01-guixprofile" ) )
         # LOCAL_GUIX_EXTRA_PROFILES=( $(cat "$HOME/.setup/guix-config/per-user/$USER/meta/current" ) )
     else
         LOCAL_GUIX_EXTRA_PROFILES=("01-dev" "01-console" "01-x" "01-dynamic-hash" "90-heavy" "60-lengthy")
@@ -93,7 +93,7 @@ function main()
             if true
             then
 
-                running info guix package  --delete-generations=${USER_GENERATION_CLEANUP_TIME} # for "01-essential"
+                running info guix package  --delete-generations=${USER_GENERATION_CLEANUP_TIME} # for "01-guixprofile"
 
 
                 for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"

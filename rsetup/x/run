@@ -42,28 +42,7 @@ if [ $DISPLAY ]
 then
     # https://askubuntu.com/questions/574208/deactivate-caps-lock-in-14-04
     # https://unix.stackexchange.com/questions/207754/how-to-identify-if-num-lock-or-caps-lock-is-turned-on-in-rhel-6-6
-    if whence -p xset >& /dev/null
-    then
-        CAPS_STATUS=$(xset q | grep -i caps | cut -c 22-24)
-        if [ $CAPS_STATUS = "on" ]
-        then
-            if whence -p xkbset >& /dev/null
-            then
-                xkbset nullify lock
-            elif whence -p setxkbmap >& /dev/null
-            then
-                setxkbmap -option caps:none
-            elif whence -p xdotool >& /dev/null
-            then
-                xdotool key Caps_Lock  >> ~/.xsession-errors 2>&1
-            elif whence -p python >& /dev/null
-            then
-                # unset Caps Lock
-                python -c 'from ctypes import *; X11 = cdll.LoadLibrary("libX11.so.6"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'  >> ~/.xsession-errors 2>&1
-            fi
-        fi
-        unset CAPS_STATUS
-    fi
+    env_addsysfonts
 
     if whence -p setxkbmap > /dev/null 2>&1
     then
@@ -97,32 +76,18 @@ then
     xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >> ~/.xsession-errors 2>&1
 fi
 
-##{{
-LOTUS_FONTDIR=~/.guix-profile/share/fonts
-if [ -d "$LOTUS_FONTDIR" ]
-then
-    for fdir in $LOTUS_FONTDIR/*/fonts.dir
-    do
-        fontdir=$fdir
-        # ls $fontdir
-        xset +fp $(dirname $(readlink -f $fontdir))
-    done
-fi
-# fc-cache -f
-# sudo fc-cache -f
-##}}
 
 ##{{ compositor
 if false
 then
-GUIX_PROFILE="$HOME/.guix-profile"
-if [ -r $GUIX_PROFILE/etc/profile ] &&  whence -p compton >& /dev/null && ! pgrep -u "$(id -u)" compton >& /dev/null
-then
-    compton &!
-elif whence -p xcompmgr >& /dev/null && ! pgrep -u "$(id -u)" xcompmgr >& /dev/null
-then
-    xcompmgr -a &!
-fi
+    GUIX_PROFILE="$HOME/.guix-profile"
+    if [ -r $GUIX_PROFILE/etc/profile ] &&  whence -p compton >& /dev/null && ! pgrep -u "$(id -u)" compton >& /dev/null
+    then
+        compton &!
+    elif whence -p xcompmgr >& /dev/null && ! pgrep -u "$(id -u)" xcompmgr >& /dev/null
+    then
+        xcompmgr -a &!
+    fi
 fi
 ##}}
 

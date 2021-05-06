@@ -67,12 +67,12 @@ fi
 
 if whence -p ibus-x11 >& /dev/null && ! pgrep -u "$(id -u)" ibus-x11 >& /dev/null
 then
-    ~/.guix-profile/libexec/ibus-x11 --kill-daemon &!
+    ~/.setup/guix-config/per-user/s/profiles/01-simple/profiles.d/profile/libexec/ibus-x11 --kill-daemon &!
 fi
 
 if whence -p ibus-portal >& /dev/null && ! pgrep -u "$(id -u)" ibus-portal >& /dev/null
 then
-    ~/.guix-profile/libexec/ibus-portal &!
+    p~/.setup/guix-config/per-user/s/profiles/01-simple/profiles.d/profile/libexec/ibus-portal &!
 fi
 ### }}
 ###

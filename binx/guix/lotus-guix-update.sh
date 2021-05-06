@@ -16,7 +16,7 @@ function main()
     # https://guix.gnu.org/cookbook/en/html_node/Basic-setup-with-manifests.html#Basic-setup-with-manifests
     if [ -f "$HOME/.setup/guix-config/per-user/$USER/meta/current" ]
     then
-        LOCAL_GUIX_EXTRA_PROFILES=( $(cat "$HOME/.setup/guix-config/per-user/$USER/meta/current" | grep -v "01-essential" ) )
+        LOCAL_GUIX_EXTRA_PROFILES=( $(cat "$HOME/.setup/guix-config/per-user/$USER/meta/current" | grep -v "01-guixprofile" ) )
     else
         LOCAL_GUIX_EXTRA_PROFILES=("01-dev" "01-console" "01-x" "01-dynamic-hash" "90-heavy" "60-lengthy")
     fi
@@ -108,7 +108,7 @@ function main()
                 done
 
                 verbose guix installing
-                running info guix package -m "${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/01-essential/manifest.scm" # default
+                running info guix package -m "${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/01-guixprofile/manifest.scm" # default
                 for profile in "${LOCAL_GUIX_EXTRA_PROFILES[@]}"
                 do
                     profile_container_path="${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/${profile}"
@@ -177,15 +177,20 @@ function update_fc_cache()
     then
 	      if which xset
 	      then
-    	      for fdir in ~/.guix-profile/share/fonts/**/fonts.dir ${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/*/profiles.d/profile/share/fonts/**/fonts.dir
-    	      do
-                fontdir=$fdir
-                ls $fontdir
-                if [ -e "$fontdir" ]
+            LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER/profiles"
+            for fdirfile in $(find ~/.guix-profile/share ${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/*/profiles.d/profile/share -name fonts.dir )
+            do
+                if [ ! -d $fdirfile ]
                 then
-                    xset +fp $(dirname $(readlink -f $fontdir))
+                    fontdir=$(dirname $(readlink -m $fdirfile))
+                    echo ls -l $fdirfile
+                    ls -l $fdirfile
+                    echo ls -ld $fontdir
+                    ls -ld $fontdir
+                    echo xset +fp $fontdir
+                    xset +fp $fontdir
                 else
-                    warn fontdir $fontdir file do not exists.
+                    echo $fdirfile is dir
                 fi
             done
 	          if which fc-cache >/dev/null 2>&1

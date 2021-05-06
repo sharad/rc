@@ -503,7 +503,9 @@ function eval_guix_profiles()
             # profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"profile"
             if [ -f "$profile_path"/etc/profile ]
             then
+
                 eval $(memoize_run guix package  -p "$profile_path" --search-paths=suffix)
+
             else
                echo file "${profile_path}"/etc/profile not exist, for "${profile_path}" >/dev/null 2>&1
             fi
@@ -517,6 +519,34 @@ function eval_guix_profiles()
             export LD_LIBRARY_PATH
         fi
     fi
+}
+
+function env_addsysfonts()
+{
+    LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR="$HOME/.setup/guix-config/per-user/$USER/profiles"
+    LOTUS_FONT_DIRS=()
+    for fdirfile in $(find ~/.guix-profile/share ${LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR}/*/profiles.d/profile/share -name fonts.dir )
+    do
+        if [ ! -d $fdirfile ]
+        then
+            fontdir=$(dirname $(readlink -m $fdirfile))
+            echo ls -l $fdirfile
+            ls -l $fdirfile
+            echo ls -ld $fontdir
+            ls -ld $fontdir
+            echo xset +fp $fontdir
+            xset +fp $fontdir
+            LOTUS_FONT_DIRS=(${LOTUS_FONT_DIRS[@]} $fontdir)
+        else
+            echo $fdirfile is dir
+        fi
+    done
+	  if which fc-cache >/dev/null 2>&1
+	  then
+        echo LOTUS_FONT_DIRS=${LOTUS_FONT_DIRS[@]}
+        echo fc-cache -rfv ${LOTUS_FONT_DIRS[@]}
+        fc-cache -rfv ${LOTUS_FONT_DIRS[@]}
+	  fi
 }
 
 ##

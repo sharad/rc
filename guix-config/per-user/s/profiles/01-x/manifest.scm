@@ -4,12 +4,7 @@
 
 (use-modules (lotus packages cdesktopenv))
 
-(define %lotus-x-package-names (list "pidgin"
-                                     "skype4pidgin"
-                                     "pidgin-otr"
-                                     "geeqie"
-                                     "telegram-purple"
-                                     "telegram-purple"))
+(define %lotus-x-package-names (list))
 
 (define %lotus-x-gui-packages (list "xinit"
                                     "i3status"

@@ -7,7 +7,6 @@
 (define %lotus-text-package-names
   (list "jupyter" 
         "unrar"))
-;; "linux-libre-headers@4.19.56"
 ;; "fribidi"
 ;; "bicon"
 

@@ -37,22 +37,22 @@ export GNUSTEP_USER_ROOT=~/.GNUstep/
 
 
 ##{{ https://lists.gnu.org/archive/html/help-guix/2016-04/msg00016.html
-IBUS_COMPONENT_PATH=$HOME/.guix-profile/share/ibus/component
+IBUS_COMPONENT_PATH="$HOME/.setup/guix-config/per-user/s/profiles/01-simple/profiles.d/profile/share/ibus/component"
 # and the usual
 QT_IM_MODULE=ibus
 # address@hidden
 GTK_IM_MODULE=ibus
 # You will also need
-GUIX_GTK2_PATH=$HOME/.guix-profile/lib/gtk-2.0
-GUIX_GTK3_PATH=$HOME/.guix-profile/lib/gtk-3.0
+GUIX_GTK2_PATH="$HOME/.setup/guix-config/per-user/s/profiles/01-simple/profiles.d/profile/lib/gtk-2.0"
+GUIX_GTK3_PATH="$HOME/.setup/guix-config/per-user/s/profiles/01-simple/profiles.d/profile/lib/gtk-3.0"
 
 
-IBUS_COMPONENT_PATH="$HOME/.guix-profile/share/ibus/component"
+IBUS_COMPONENT_PATH="$HOME/.setup/guix-config/per-user/s/profiles/01-simple/profiles.d/profile/share/ibus/component"
 GTK_IM_MODULE=ibus
 
 QT_IM_MODULE=ibus
-GUIX_GTK2_PATH="$HOME/.guix-profile/lib/gtk-2.0"
-GUIX_GTK3_PATH="$HOME/.guix-profile/lib/gtk-3.0"
+GUIX_GTK2_PATH="$HOME/.setup/guix-config/per-user/s/profiles/01-simple/profiles.d/profile/lib/gtk-2.0"
+GUIX_GTK3_PATH="$HOME/.setup/guix-config/per-user/s/profiles/01-simple/profiles.d/profile/lib/gtk-3.0"
 
 export IBUS_COMPONENT_PATH
 export QT_IM_MODULE
