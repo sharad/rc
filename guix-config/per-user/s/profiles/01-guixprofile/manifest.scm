@@ -48,7 +48,7 @@
                                                           "bluez"
                                                           "bluez-alsa"
                                                           "bluez-alsa"
-                                                          "blueman"
+                                                          ;; "blueman"
                                                           "ddcutil"
                                                           ;; https://github.com/stumpwm/stumpwm/wiki/Tips-And-Tricks#mounting-storage-devices
                                                           ;; "udisks"

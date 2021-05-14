@@ -6,6 +6,7 @@
                                                     "skype4pidgin"
                                                     "pidgin-otr"
                                                     "geeqie"
+                                                    "blueman"
                                                     "telegram-purple"
                                                     "telegram-purple"))
 
