@@ -443,9 +443,7 @@
 
 (define %lotus-guixprofile-file-packages (list "inotify-tools"))
 
-(define %lotus-guixprofile-misc-packages (list "bluez"
-                                               "blueman"
-                                               "simple-scan"
+(define %lotus-guixprofile-misc-packages (list "simple-scan"
                                                "xsane"
                                                "sane-backends"
                                                "sane-backends-minimal"))

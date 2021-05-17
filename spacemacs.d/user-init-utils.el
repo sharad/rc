@@ -283,7 +283,9 @@
   '((shell :variables
            shell-default-height   30
            shell-default-position 'bottom)
-    (c-c++ :variables c-c++-backend 'lsp-clangd)))
+    ;; https://www.reddit.com/r/emacs/comments/b91rrc/using_lsp_and_ccls_for_c/
+    ;; (c-c++ :variables c-c++-backend 'lsp-clangd)
+    (c-c++ :variables c-c++-backend 'lsp-ccls)))
 
 
 (defun lotus-dist-layers-group-dirs (&optional layers-group-top-dir)
