@@ -1,4 +1,3 @@
-v
 ;; https://wingolog.org/archives/2015/08/04/developing-v8-with-guix
 (use-package-modules base
                      gcc

@@ -1,5 +1,6 @@
 
 (define %lotus-failed-package-names (list "python-rofi-tmux"
+                                          "ghc"
                                           "hello"))
 
 
