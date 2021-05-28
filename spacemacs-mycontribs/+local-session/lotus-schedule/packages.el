@@ -301,10 +301,9 @@ Each entry is either:
 
       (progn
         ;;https://www.emacswiki.org/emacs/CleanBufferList
-        (setq
-         clean-buffer-list-delay-general 1       ;day
-         ;; clean-buffer-list-delay-special (* 3 60 60)
-         clean-buffer-list-delay-special (* 1 60 60))) ;hour min sec
+        (setq clean-buffer-list-delay-general 1       ;day
+              ;; clean-buffer-list-delay-special (* 3 60 60)
+              clean-buffer-list-delay-special (* 8 60 60))) ;hour min sec
 
 
 

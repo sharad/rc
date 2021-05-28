@@ -25,6 +25,7 @@
                      image
                      commencement
                      fontutils
+                     rust
                      shells)
 
 (use-modules (lotus packages cdesktopenv))
@@ -53,11 +54,11 @@
                                      "gdb"
 
                                      "dosfstools"
-
                                      "rpm"
-
                                      "picocom"
 
+                                     "erlang"
+                                     "elixir"
                                      "smalltalk"
 
                                      "go"
@@ -73,7 +74,6 @@
                                      "idris"
                                      "swi-prolog"
 
-                                     "rust"
                                      ;; "scala"
                                      "vala"
                                      ;; "kotlin"
@@ -81,8 +81,7 @@
                                      "r"
                                      "r-ggplot2"
                                      "r-cowplot"
-                                     "erlang"
-                                     "elixir"
+                                     "rust"
 
                                      ;; "fribidi"
                                      ;; "bicon"
@@ -121,7 +120,10 @@
                                          %lotus-dev-tools-names
                                          %lotus-dev-package-experimental-names))
 
+(define %lotus-dev-lang-packages `((,rust "cargo")))
+
 (define %lotus-dev-packages (append (map specification->package
-                                         %lotus-dev-package-names)))
+                                         %lotus-dev-package-names)
+                                    %lotus-dev-lang-packages))
 
 (packages->manifest %lotus-dev-packages)
