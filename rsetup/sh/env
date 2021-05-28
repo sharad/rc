@@ -466,6 +466,7 @@ function memoize_run()
 
 function eval_guix_profiles()
 {
+    _OUTPUT=$1
     GUIX_PROFILE="$HOME/.guix-profile"
     if [ -r $GUIX_PROFILE/etc/profile ]
     then
@@ -496,18 +497,42 @@ function eval_guix_profiles()
             LOCAL_GUIX_EXTRA_PROFILES_PATHS=($GUIX_ENVIRONMENT ${LOCAL_GUIX_EXTRA_PROFILES_PATHS[@]})
         fi
 
-        eval $(memoize_run guix package --search-paths=suffix)
+        if [ "x" = "x$_OUTPUT" ]
+        then
+            echo calling memoize_run
+            echo memoize_run guix package --search-paths=suffix
+        fi
+        if [ "x" = "x$_OUTPUT" ]
+        then
+            eval $(memoize_run guix package --search-paths=suffix)
+        else
+            memoize_run guix package --search-paths=suffix
+        fi
+        if [ "x" = "x$_OUTPUT" ]
+        then
+            echo called memoize_run
+        fi
 
         for profile_path in ${LOCAL_GUIX_EXTRA_PROFILES_PATHS[@]}
         do
             # profile_path="$LOCAL_GUIX_EXTRA_PROFILE_CONTAINER_DIR"/"$profile"/profiles.d/"profile"
             if [ -f "$profile_path"/etc/profile ]
             then
-
-                eval $(memoize_run guix package  -p "$profile_path" --search-paths=suffix)
-
+                if [ "x" = "x$_OUTPUT" ]
+                then
+                    echo memoize_run guix package -p "$profile_path" --search-paths=suffix
+                fi
+                if [ "x" = "x$_OUTPUT" ]
+                then
+                    eval $(memoize_run guix package -p "$profile_path" --search-paths=suffix)
+                else
+                    memoize_run guix package -p "$profile_path" --search-paths=suffix
+                fi
             else
-               echo file "${profile_path}"/etc/profile not exist, for "${profile_path}" >/dev/null 2>&1
+                if [ "x" = "x$_OUTPUT" ]
+                then
+                    echo file "${profile_path}"/etc/profile not exist, for "${profile_path}" >/dev/null 2>&1
+                fi
             fi
             unset profile_path
             unset profile
@@ -519,6 +544,11 @@ function eval_guix_profiles()
             export LD_LIBRARY_PATH
         fi
     fi
+}
+
+function memoize_eval_guix_profiles()
+{
+    eval $(memoize_run eval_guix_profiles 1)
 }
 
 function env_addsysfonts()
@@ -599,7 +629,7 @@ unset MACHINE_ID
 
 
 ## GUIX
-eval_guix_profiles
+memoize_eval_guix_profiles
 ## GUIX
 ## PATH
 possible_path=( ~/bin
