@@ -457,6 +457,7 @@ function memoize_run()
     then
         cat "$MEMOIZE_FILE"
     else
+        echo "$MEMOIZE_FILE" not exists >&2
         mkdir -p "$(dirname $MEMOIZE_FILE)"
         touch "$MEMOIZE_FILE"
         shift
@@ -499,8 +500,8 @@ function eval_guix_profiles()
 
         if [ "x" = "x$_OUTPUT" ]
         then
-            echo calling memoize_run
-            echo memoize_run guix package --search-paths=suffix
+            # echo calling memoize_run
+            echo memoize_run guix package --search-paths=suffix 2>&1 >/dev/null
         fi
         if [ "x" = "x$_OUTPUT" ]
         then
@@ -510,7 +511,7 @@ function eval_guix_profiles()
         fi
         if [ "x" = "x$_OUTPUT" ]
         then
-            echo called memoize_run
+            # echo called memoize_run
         fi
 
         for profile_path in ${LOCAL_GUIX_EXTRA_PROFILES_PATHS[@]}
@@ -520,7 +521,7 @@ function eval_guix_profiles()
             then
                 if [ "x" = "x$_OUTPUT" ]
                 then
-                    echo memoize_run guix package -p "$profile_path" --search-paths=suffix
+                    echo memoize_run guix package -p "$profile_path" --search-paths=suffix 2>&1 >/dev/null
                 fi
                 if [ "x" = "x$_OUTPUT" ]
                 then
@@ -548,7 +549,9 @@ function eval_guix_profiles()
 
 function memoize_eval_guix_profiles()
 {
+    # echo begin memoize_run eval_guix_profiles 1
     eval $(memoize_run eval_guix_profiles 1)
+    # echo finish memoize_run eval_guix_profiles 1
 }
 
 function env_addsysfonts()
@@ -629,7 +632,8 @@ unset MACHINE_ID
 
 
 ## GUIX
-memoize_eval_guix_profiles
+# memoize_eval_guix_profiles
+eval_guix_profiles
 ## GUIX
 ## PATH
 possible_path=( ~/bin
