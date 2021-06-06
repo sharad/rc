@@ -341,7 +341,7 @@
                                                "gs-fonts"
                                                "font-ibm-plex"
                                                "font-inconsolata"
-                                               "font-ubuntu"
+                                               ;; "font-ubuntu"
                                                "font-dejavu"
                                                "font-bitstream-vera"
                                                "font-abattis-cantarell"
