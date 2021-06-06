@@ -37,8 +37,8 @@
 (defconst lotus-screen-packages
   '(
     elscreen
-    (elscreen-server :location local)
-    )
+    (elscreen-server :location local))
+    
   "The list of Lisp packages required by the lotus-screen layer.
 
 Each entry is either:
@@ -77,8 +77,8 @@ Each entry is either:
   (use-package elscreen-server
     :defer t
     :config
-    (progn
-      )))
+    (progn)))
+      
 
 (defun lotus-screen/init-elscreen ()
   (use-package elscreen
@@ -99,6 +99,17 @@ Each entry is either:
         (interactive)
         (elscreen-previous)
         (elscreen-swap)
-        (elscreen-notify-screen-modification)))))
+        (elscreen-notify-screen-modification))
+      (progn
+        (use-package org-agenda
+          :defer t
+          :config
+          (progn
+            (add-to-enable-login-session-interrupting-feature-hook
+             #'(lambda ()
+                 (when (and org-agenda-buffer
+                            (not (buffer-live-p org-agenda-buffer)))
+                   (setq org-agenda-buffer nil)
+                   (elscreen-start))))))))))
 
 ;;; packages.el ends here
