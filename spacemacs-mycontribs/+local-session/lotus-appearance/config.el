@@ -142,7 +142,7 @@
   ())
 
 
-(when nil
+(when nil)
   ;; (progn ;; "face size"
 
   ;; http://stackoverflow.com/questions/3514299/how-do-i-find-the-display-size-of-my-system-in-emacs
@@ -197,7 +197,7 @@
   ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Faces.html
   ;; http://david.rothlis.net/emacs/customize_colors.html
   ;; http://david.rothlis.net/emacs/customize_colors.html
-  )
+  
 
 ;; (face-attribute 'default :width nil)
 
@@ -236,8 +236,9 @@
 
 
 
-(defvar face-size-display-matrix
-  '(((1080 3286 285 869) (:height 68 :width normal :machine "guilem-evo860"))
+(defvar face-size-display-matrix        ;call M-x get-current-attribes-matrix-row
+  '(((1080 1920 285 508) (:height 83 :width normal :machine "guilem-evo860"))
+    ((1080 3286 285 869) (:height 68 :width normal :machine "guilem-evo860"))
     ;; ((1080 3286 284 866)  (:height 98 :width normal :machine "guilem-evo860"))
     ((1080 1920 285 508)  (:height 87 :width normal :machine "lispm"))
     ((900  2966 238 784)  (:height 71 :width normal :machine "think530-spratap"))

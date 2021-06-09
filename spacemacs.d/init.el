@@ -500,106 +500,106 @@ before packages are loaded."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(confirm-kill-processes nil)
- '(evil-want-Y-yank-to-eol nil)
- '(flycheck-checkers
-   '(reason-merlin ocaml-merlin lsp lsp-ui ycmd elm kotlin-ktlint pact-checker bashate yang-pyang perl6 nim ledger swift ada-gnat asciidoctor asciidoc c/c++-clang c/c++-gcc c/c++-cppcheck cfengine chef-foodcritic coffee coffee-coffeelint coq css-csslint css-stylelint d-dmd dockerfile-hadolint elixir-dogma emacs-lisp emacs-lisp-checkdoc erlang-rebar3 erlang eruby-erubis fortran-gfortran go-gofmt go-golint go-vet go-build go-test go-errcheck go-unconvert go-megacheck groovy haml handlebars haskell-stack-ghc haskell-ghc haskell-hlint html-tidy javascript-eslint javascript-jshint javascript-jscs javascript-standard json-jsonlint json-python-json less less-stylelint llvm-llc lua-luacheck lua perl perl-perlcritic php php-phpmd php-phpcs processing proselint protobuf-protoc pug puppet-parser puppet-lint python-flake8 python-pylint python-pycompile r-lintr racket rpm-rpmlint markdown-mdl nix rst-sphinx rst ruby-rubocop ruby-reek ruby-rubylint ruby ruby-jruby rust-cargo rust scala scala-scalastyle scheme-chicken scss-lint scss-stylelint sass/scss-sass-lint sass scss sh-bash sh-posix-dash sh-posix-bash sh-zsh sh-shellcheck slim slim-lint sql-sqlint systemd-analyze tex-chktex tex-lacheck texinfo typescript-tslint verilog-verilator xml-xmlstarlet xml-xmllint yaml-jsyaml yaml-ruby emacs-lisp-package elixir-credo drupal-phpcs))
- '(flycheck-javascript-flow-args '("--respect-pragma"))
- '(lsp-auto-guess-root t)
- '(muse-blosxom-base-directory
-   "/home/s/hell/Documents/online/CreatedContent/gen/virtual/muse/default/web/site/blog")
- '(muse-colors-autogen-headings 'outline)
- '(muse-colors-inline-image-method 'muse-colors-use-publishing-directory)
- '(muse-completing-read-function 'ido-completing-read)
- '(muse-html-charset-default "utf-8")
- '(muse-html-encoding-default 'utf-8)
- '(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
- '(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
- '(muse-html-meta-content-encoding 'utf-8)
- '(muse-html-style-sheet
-   "<lisp>
+ (custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(confirm-kill-processes nil)
+  '(evil-want-Y-yank-to-eol nil)
+  '(flycheck-checkers
+    '(reason-merlin ocaml-merlin lsp lsp-ui ycmd elm kotlin-ktlint pact-checker bashate yang-pyang perl6 nim ledger swift ada-gnat asciidoctor asciidoc c/c++-clang c/c++-gcc c/c++-cppcheck cfengine chef-foodcritic coffee coffee-coffeelint coq css-csslint css-stylelint d-dmd dockerfile-hadolint elixir-dogma emacs-lisp emacs-lisp-checkdoc erlang-rebar3 erlang eruby-erubis fortran-gfortran go-gofmt go-golint go-vet go-build go-test go-errcheck go-unconvert go-megacheck groovy haml handlebars haskell-stack-ghc haskell-ghc haskell-hlint html-tidy javascript-eslint javascript-jshint javascript-jscs javascript-standard json-jsonlint json-python-json less less-stylelint llvm-llc lua-luacheck lua perl perl-perlcritic php php-phpmd php-phpcs processing proselint protobuf-protoc pug puppet-parser puppet-lint python-flake8 python-pylint python-pycompile r-lintr racket rpm-rpmlint markdown-mdl nix rst-sphinx rst ruby-rubocop ruby-reek ruby-rubylint ruby ruby-jruby rust-cargo rust scala scala-scalastyle scheme-chicken scss-lint scss-stylelint sass/scss-sass-lint sass scss sh-bash sh-posix-dash sh-posix-bash sh-zsh sh-shellcheck slim slim-lint sql-sqlint systemd-analyze tex-chktex tex-lacheck texinfo typescript-tslint verilog-verilator xml-xmlstarlet xml-xmllint yaml-jsyaml yaml-ruby emacs-lisp-package elixir-credo drupal-phpcs))
+  '(flycheck-javascript-flow-args '("--respect-pragma"))
+  '(lsp-auto-guess-root t)
+  '(muse-blosxom-base-directory
+    "/home/s/hell/Documents/online/CreatedContent/gen/virtual/muse/default/web/site/blog")
+  '(muse-colors-autogen-headings 'outline)
+  '(muse-colors-inline-image-method 'muse-colors-use-publishing-directory)
+  '(muse-completing-read-function 'ido-completing-read)
+  '(muse-html-charset-default "utf-8")
+  '(muse-html-encoding-default 'utf-8)
+  '(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+  '(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+  '(muse-html-meta-content-encoding 'utf-8)
+  '(muse-html-style-sheet
+    "<lisp>
        (concat
         (muse-insert-css-link \"all\" \"common.css\")
         (muse-insert-css-link \"screen\" \"screen.css\")
         (muse-insert-css-link \"print\" \"print.css\"))
        </lisp>")
- '(muse-latex-header "<lisp>(muse-insert-meta-file \"header.tex\")</lisp>")
- '(muse-latex-pdf-browser "evince %s &")
- '(muse-mode-hook '(flyspell-mode footnote-mode))
- '(muse-project-alist nil)
- '(muse-publish-comments-p t)
- '(muse-publish-date-format "%b. %e, %Y")
- '(muse-publish-desc-transforms
-   '(muse-wiki-publish-pretty-title muse-wiki-publish-pretty-interwiki muse-publish-strip-URL))
- '(muse-wiki-publish-small-title-words '("the" "and" "at" "on" "of" "for" "in" "an" "a" "page"))
- '(muse-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
- '(muse-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
- '(muse-xhtml-style-sheet
-   "<lisp>
+  '(muse-latex-header "<lisp>(muse-insert-meta-file \"header.tex\")</lisp>")
+  '(muse-latex-pdf-browser "evince %s &")
+  '(muse-mode-hook '(flyspell-mode footnote-mode))
+  '(muse-project-alist nil)
+  '(muse-publish-comments-p t)
+  '(muse-publish-date-format "%b. %e, %Y")
+  '(muse-publish-desc-transforms
+    '(muse-wiki-publish-pretty-title muse-wiki-publish-pretty-interwiki muse-publish-strip-URL))
+  '(muse-wiki-publish-small-title-words '("the" "and" "at" "on" "of" "for" "in" "an" "a" "page"))
+  '(muse-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+  '(muse-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+  '(muse-xhtml-style-sheet
+    "<lisp>
        (concat
         (muse-insert-css-link \"all\" \"common.css\")
         (muse-insert-css-link \"screen\" \"screen.css\")
         (muse-insert-css-link \"print\" \"print.css\"))
        </lisp>")
- '(package-selected-packages
-   '(org-plus-contrib occ org-clock-resolve-advanced lotus-crypt-utils org-ql ansi package-build shut-up epl git commander f dash s org-sync ibus-el org-capture+ yas-suggest test-session task-manager tagging publishing pgm-utils org-scahachua org-clock-wrapper org-clock-hooks org-clock-experimental org-agenda-refiletarget-files-filters next-package mindshare-contrib-mgr lotus-schedule lotus-notify lotus-note lotus-helm lotus-finance lotus-annotate iswitchb-fc ff-relativedir emacs-panel emacs-db-mode echoserver copywithoutsel code-snippet annot+ annot xwin org-outlook outlook contentswitch org-onchange gnus-namazu gnus-pers lotus-all lotus-utils p4 project-buffer-mode rcs-backup rs-gnus-exts lotus-tree-manager lotus-basic-utils helm-match-plugin ffw lotus-spacemacs-utils magithub magit-annex lbdb git-annex flx-ido ert-expectations ert-async el-mock agda2-mode ag zen-and-art-theme zeal-at-point yaoddmuse yang-mode xref-js2 xquery-mode xkcd x86-lookup ws-butler wolfram-mode winum white-sand-theme web-beautify wcheck-mode volatile-highlights vimrc-mode vi-tilde-fringe vala-snippets vala-mode vagrant utop underwater-theme uncrustify-mode ujelly-theme twittering-mode twilight-theme twilight-bright-theme twilight-anti-bright-theme ttl-mode transmission toxi-theme toml-mode toc-org thinks term-projectile term-alert tangotango-theme tango-plus-theme tango-2-theme tagedit symon sws-mode sunny-day-theme sublime-themes subatomic256-theme subatomic-theme string-inflection stickyfunc-enhance startup-hooks srefactor sql-indent spray spotify sparql-mode spaceline-all-the-icons spacegray-theme soothe-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smex smeargle slime-company slim-mode shell-pop seti-theme sessions-unified seeing-is-believing scss-mode sass-mode sailfish-scratchbox rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop reverse-theme restclient-helm restart-emacs recentf-ext rebecca-theme reason-mode rcirc-notify rcirc-color rbenv rainbow-identifiers rainbow-delimiters railscasts-theme racer qml-mode pytest pyenv-mode py-isort purple-haze-theme puppet-mode pug-mode protobuf-mode project-root professional-theme prettier-js powershell popup-kill-ring poporg pony-mode pointback play-crystal planet-theme pippel pipenv pip-requirements phpunit phpcbf php-extras php-auto-yasnippets phoenix-dark-pink-theme phoenix-dark-mono-theme perl6-mode paths-mapper pastebin password-generator parinfer paradox pandoc-mode package-dev-utils-lotus pabbrev overseer outline-magic orgnav org-snooze org-repo-todo org-pomodoro org-parser org-noter org-mobile-sync org-email org-doing org-dashboard org-context org-clock-table-misc-lotus org-clock-in-if-not org-clock-daysummary org-clock-check org-cliplink org-bullets org-alert opencl-mode open-junk-file omtose-phellack-theme omnisharp oldlace-theme oddmuse ocp-indent occidental-theme obsidian-theme ob-sml ob-ipython ob-hy ob-http ob-crystal ob-coffeescript ob-cfengine3 notify noctilux-theme nlinum-relative nginx-mode navi-mode nasm-mode naquadah-theme nameless mwim mvn mustang-theme muse multibackup mu4e-maildirs-extension mu4e-alert moz move-text monokai-theme monochrome-theme molokai-theme minimap minimal-theme memory-usage maven-test-mode material-theme markdown-toc majapahit-theme magit-svn magit-gitflow madhat2r-theme macrostep lush-theme lsp-julia lotus-wrapper lorem-ipsum logcat livid-mode linum-relative light-soap-theme less-css-mode kivy-mode js2-refactor js-doc jbeans-theme jazz-theme jade-mode ir-black-theme insert-shebang inf-crystal importmagic import-js ietf-docs idris-mode idomenu hybrid-mode hoon-mode hlint-refactor hindent highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-themes helm-spotify-plus helm-pydoc helm-purpose helm-pass helm-org-rifle helm-notmuch helm-nixos-options helm-mu helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-git-grep helm-flx helm-descbinds helm-dash helm-cscope helm-company helm-c-yasnippet hc-zenburn-theme haskell-snippets gxref gruber-darker-theme groovy-imports grandshell-theme gradle-mode google-c-style godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gmail-message-mode glsl-mode gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags geeknote gandalf-theme fuzzy function-args frame-utils forth-mode font-lock+ folding fm flymd flymake-cursor flycheck-ycmd flycheck-rust flycheck-pos-tip flycheck-perl6 flycheck-pact flycheck-package flycheck-ocaml flycheck-nim flycheck-kotlin flycheck-haskell flycheck-elm flycheck-credo floobits flatui-theme flatland-theme faust-mode fasd farmhouse-theme fancy-battery fakir eyebrowse exotica-theme evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-numbers evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-escape evil-ediff evil-cleverparens evil-args evil-anzu evernote-mode ess-R-data-view espresso-theme esh-help ertx ert-modeline ert-junit erc-view-log erc-social-graph erc-hl-nicks eproject ensime emmet-mode ember-yasnippets elm-test-runner elfeed-goodies edit-server ecb ebuild-mode dune dpaste dockerfile-mode django-theme disaster diminish diff-hl devdocs deft define-word debug-info dart-server dart-mode darktooth-theme darkokai-theme darkmine-theme darkburn-theme dante dakrone-theme dactyl-mode d-mode cython-mode cyberpunk-theme cuda-mode csv-mode cquery cpp-auto-include corral copy-as-format confluence company-ycmd company-web company-terraform company-tern company-statistics company-shell company-rtags company-restclient company-reftex company-plsense company-php company-nixos-options company-lua company-lsp company-go company-ghci company-ghc company-emoji company-dcd company-cabal company-c-headers company-auctex company-ansible company-anaconda common-lisp-snippets command-log-mode column-enforce-mode coffee-mode cmm-mode cmake-mode cmake-ide clues-theme clojure-snippets clean-aindent-mode clang-format cider-eval-sexp-fu chruby chocolate-theme cherry-blossom-theme centered-cursor-mode cargo calfw-org calfw-cal calfw c-eldoc busybee-theme bundler buffer-utils bubbleberry-theme browse-at-remote bm bitlbee birds-of-paradise-plus-theme badwolf-theme autoinsert+ auto-highlight-symbol auto-dictionary auto-complete-rst auto-compile attrap arjen-grey-theme arduino-mode apropospriate-theme aok anti-zenburn-theme ansible-doc ansible annotate ample-zen-theme ample-theme ameba alect-themes alda-mode alchemist ahk-mode aggressive-indent afternoon-theme adoc-mode activity achievements ace-popup-menu ace-jump-helm-line academic-phrases ac-ispell))
- '(planner-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
- '(planner-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
- '(psc-ide-add-import-on-completion t t)
- '(psc-ide-rebuild-on-save nil t)
- '(safe-local-variable-values
-   '((eval let
-           ((root-dir-unexpanded
-             (locate-dominating-file default-directory ".dir-locals.el")))
-           (when root-dir-unexpanded
-             (let*
-                 ((root-dir
-                   (expand-file-name root-dir-unexpanded))
-                  (root-dir*
-                   (directory-file-name root-dir)))
-               (unless
-                   (boundp 'geiser-guile-load-path)
-                 (defvar geiser-guile-load-path 'nil))
-               (make-local-variable 'geiser-guile-load-path)
-               (require 'cl-lib)
-               (cl-pushnew root-dir* geiser-guile-load-path :test #'string-equal))))
-     (eval setq-local guix-directory
-           (locate-dominating-file default-directory ".dir-locals.el"))
-     (ee-line-start . "/+_? *. ")
-     (ee-comment-prefix . "/")
-     (folded-file . t)
-     (major-mode . scheme)
-     (major-mode . sh-mode)
-     (major-mode . scheme-mode)
-     (default-tab-width . 3)
-     (mangle-whitespace . t)
-     (eval modify-syntax-entry 43 "'")
-     (eval modify-syntax-entry 36 "'")
-     (eval modify-syntax-entry 126 "'")
-     (folded-file . f)
-     (checkdoc-minor-mode . 1)
-     (major-mode . emacs-lisp)
-     (typescript-backend . tide)
-     (typescript-backend . lsp)
-     (javascript-backend . tern)
-     (javascript-backend . lsp)
-     (go-backend . go-mode)
-     (go-backend . lsp)
-     (elixir-enable-compilation-checking . t)
-     (elixir-enable-compilation-checking)))
- '(send-mail-function 'sendmail-send-it))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:background nil))))
- '(muse-bad-link ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold)))))
-)
+  '(package-selected-packages
+    '(org-plus-contrib occ org-clock-resolve-advanced lotus-crypt-utils org-ql ansi package-build shut-up epl git commander f dash s org-sync ibus-el org-capture+ yas-suggest test-session task-manager tagging publishing pgm-utils org-scahachua org-clock-wrapper org-clock-hooks org-clock-experimental org-agenda-refiletarget-files-filters next-package mindshare-contrib-mgr lotus-schedule lotus-notify lotus-note lotus-helm lotus-finance lotus-annotate iswitchb-fc ff-relativedir emacs-panel emacs-db-mode echoserver copywithoutsel code-snippet annot+ annot xwin org-outlook outlook contentswitch org-onchange gnus-namazu gnus-pers lotus-all lotus-utils p4 project-buffer-mode rcs-backup rs-gnus-exts lotus-tree-manager lotus-basic-utils helm-match-plugin ffw lotus-spacemacs-utils magithub magit-annex lbdb git-annex flx-ido ert-expectations ert-async el-mock agda2-mode ag zen-and-art-theme zeal-at-point yaoddmuse yang-mode xref-js2 xquery-mode xkcd x86-lookup ws-butler wolfram-mode winum white-sand-theme web-beautify wcheck-mode volatile-highlights vimrc-mode vi-tilde-fringe vala-snippets vala-mode vagrant utop underwater-theme uncrustify-mode ujelly-theme twittering-mode twilight-theme twilight-bright-theme twilight-anti-bright-theme ttl-mode transmission toxi-theme toml-mode toc-org thinks term-projectile term-alert tangotango-theme tango-plus-theme tango-2-theme tagedit symon sws-mode sunny-day-theme sublime-themes subatomic256-theme subatomic-theme string-inflection stickyfunc-enhance startup-hooks srefactor sql-indent spray spotify sparql-mode spaceline-all-the-icons spacegray-theme soothe-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smex smeargle slime-company slim-mode shell-pop seti-theme sessions-unified seeing-is-believing scss-mode sass-mode sailfish-scratchbox rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop reverse-theme restclient-helm restart-emacs recentf-ext rebecca-theme reason-mode rcirc-notify rcirc-color rbenv rainbow-identifiers rainbow-delimiters railscasts-theme racer qml-mode pytest pyenv-mode py-isort purple-haze-theme puppet-mode pug-mode protobuf-mode project-root professional-theme prettier-js powershell popup-kill-ring poporg pony-mode pointback play-crystal planet-theme pippel pipenv pip-requirements phpunit phpcbf php-extras php-auto-yasnippets phoenix-dark-pink-theme phoenix-dark-mono-theme perl6-mode paths-mapper pastebin password-generator parinfer paradox pandoc-mode package-dev-utils-lotus pabbrev overseer outline-magic orgnav org-snooze org-repo-todo org-pomodoro org-parser org-noter org-mobile-sync org-email org-doing org-dashboard org-context org-clock-table-misc-lotus org-clock-in-if-not org-clock-daysummary org-clock-check org-cliplink org-bullets org-alert opencl-mode open-junk-file omtose-phellack-theme omnisharp oldlace-theme oddmuse ocp-indent occidental-theme obsidian-theme ob-sml ob-ipython ob-hy ob-http ob-crystal ob-coffeescript ob-cfengine3 notify noctilux-theme nlinum-relative nginx-mode navi-mode nasm-mode naquadah-theme nameless mwim mvn mustang-theme muse multibackup mu4e-maildirs-extension mu4e-alert moz move-text monokai-theme monochrome-theme molokai-theme minimap minimal-theme memory-usage maven-test-mode material-theme markdown-toc majapahit-theme magit-svn magit-gitflow madhat2r-theme macrostep lush-theme lsp-julia lotus-wrapper lorem-ipsum logcat livid-mode linum-relative light-soap-theme less-css-mode kivy-mode js2-refactor js-doc jbeans-theme jazz-theme jade-mode ir-black-theme insert-shebang inf-crystal importmagic import-js ietf-docs idris-mode idomenu hybrid-mode hoon-mode hlint-refactor hindent highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-themes helm-spotify-plus helm-pydoc helm-purpose helm-pass helm-org-rifle helm-notmuch helm-nixos-options helm-mu helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-git-grep helm-flx helm-descbinds helm-dash helm-cscope helm-company helm-c-yasnippet hc-zenburn-theme haskell-snippets gxref gruber-darker-theme groovy-imports grandshell-theme gradle-mode google-c-style godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gmail-message-mode glsl-mode gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags geeknote gandalf-theme fuzzy function-args frame-utils forth-mode font-lock+ folding fm flymd flymake-cursor flycheck-ycmd flycheck-rust flycheck-pos-tip flycheck-perl6 flycheck-pact flycheck-package flycheck-ocaml flycheck-nim flycheck-kotlin flycheck-haskell flycheck-elm flycheck-credo floobits flatui-theme flatland-theme faust-mode fasd farmhouse-theme fancy-battery fakir eyebrowse exotica-theme evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-numbers evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-escape evil-ediff evil-cleverparens evil-args evil-anzu evernote-mode ess-R-data-view espresso-theme esh-help ertx ert-modeline ert-junit erc-view-log erc-social-graph erc-hl-nicks eproject ensime emmet-mode ember-yasnippets elm-test-runner elfeed-goodies edit-server ecb ebuild-mode dune dpaste dockerfile-mode django-theme disaster diminish diff-hl devdocs deft define-word debug-info dart-server dart-mode darktooth-theme darkokai-theme darkmine-theme darkburn-theme dante dakrone-theme dactyl-mode d-mode cython-mode cyberpunk-theme cuda-mode csv-mode cquery cpp-auto-include corral copy-as-format confluence company-ycmd company-web company-terraform company-tern company-statistics company-shell company-rtags company-restclient company-reftex company-plsense company-php company-nixos-options company-lua company-lsp company-go company-ghci company-ghc company-emoji company-dcd company-cabal company-c-headers company-auctex company-ansible company-anaconda common-lisp-snippets command-log-mode column-enforce-mode coffee-mode cmm-mode cmake-mode cmake-ide clues-theme clojure-snippets clean-aindent-mode clang-format cider-eval-sexp-fu chruby chocolate-theme cherry-blossom-theme centered-cursor-mode cargo calfw-org calfw-cal calfw c-eldoc busybee-theme bundler buffer-utils bubbleberry-theme browse-at-remote bm bitlbee birds-of-paradise-plus-theme badwolf-theme autoinsert+ auto-highlight-symbol auto-dictionary auto-complete-rst auto-compile attrap arjen-grey-theme arduino-mode apropospriate-theme aok anti-zenburn-theme ansible-doc ansible annotate ample-zen-theme ample-theme ameba alect-themes alda-mode alchemist ahk-mode aggressive-indent afternoon-theme adoc-mode activity achievements ace-popup-menu ace-jump-helm-line academic-phrases ac-ispell))
+  '(planner-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+  '(planner-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+  '(psc-ide-add-import-on-completion t t)
+  '(psc-ide-rebuild-on-save nil t)
+  '(safe-local-variable-values
+    '((eval let
+            ((root-dir-unexpanded
+              (locate-dominating-file default-directory ".dir-locals.el")))
+            (when root-dir-unexpanded
+              (let*
+                  ((root-dir
+                    (expand-file-name root-dir-unexpanded))
+                   (root-dir*
+                    (directory-file-name root-dir)))
+                (unless
+                    (boundp 'geiser-guile-load-path)
+                  (defvar geiser-guile-load-path 'nil))
+                (make-local-variable 'geiser-guile-load-path)
+                (require 'cl-lib)
+                (cl-pushnew root-dir* geiser-guile-load-path :test #'string-equal))))
+      (eval setq-local guix-directory
+            (locate-dominating-file default-directory ".dir-locals.el"))
+      (ee-line-start . "/+_? *. ")
+      (ee-comment-prefix . "/")
+      (folded-file . t)
+      (major-mode . scheme)
+      (major-mode . sh-mode)
+      (major-mode . scheme-mode)
+      (default-tab-width . 3)
+      (mangle-whitespace . t)
+      (eval modify-syntax-entry 43 "'")
+      (eval modify-syntax-entry 36 "'")
+      (eval modify-syntax-entry 126 "'")
+      (folded-file . f)
+      (checkdoc-minor-mode . 1)
+      (major-mode . emacs-lisp)
+      (typescript-backend . tide)
+      (typescript-backend . lsp)
+      (javascript-backend . tern)
+      (javascript-backend . lsp)
+      (go-backend . go-mode)
+      (go-backend . lsp)
+      (elixir-enable-compilation-checking . t)
+      (elixir-enable-compilation-checking)))
+  '(send-mail-function 'sendmail-send-it))
+ (custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(default ((t (:background nil))))
+  '(muse-bad-link ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold))))))
+ 
  
 

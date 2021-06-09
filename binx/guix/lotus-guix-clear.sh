@@ -121,7 +121,7 @@ function main()
 
             fi
             running info df -hx tmpfs -x devtmpfs
-        fi                      # if [ "x" != "x$LOTUS_GUIX_NOPULL" ] || [ "$GNU_STORE_AVAIL_MEGABYTES" -lt "$GNU_STORE_MINIMUM_AVAIL_MEGABYTES" ] || running info guix pull
+        fi # if [ "x" != "x$LOTUS_GUIX_NOPULL" ] || [ "$GNU_STORE_AVAIL_MEGABYTES" -lt "$GNU_STORE_MINIMUM_AVAIL_MEGABYTES" ] || running info guix pull
 
         if true
         then
