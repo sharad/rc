@@ -20,7 +20,7 @@
 
 (define %guix-lotus-channels (list (channel (name 'lotus)
                                             (url "https://github.com/sharad/guix"))))
-                                    
+
 (define %nonguix-channels (list (channel (name 'nonguix)
                                          (url "https://gitlab.com/nonguix/nonguix")
                                          ;; Enable signature verification:
