@@ -100,6 +100,10 @@ Each entry is either:
         (elscreen-previous)
         (elscreen-swap)
         (elscreen-notify-screen-modification))
+      (defun elscree-reset ()
+        (interactive)
+        (setq org-agenda-buffer nil)
+        (elscreen-start))
       (progn
         (use-package org-agenda
           :defer t

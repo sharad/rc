@@ -74,7 +74,7 @@
                                      "idris"
                                      "swi-prolog"
 
-                                     ;; "scala"
+                                     "scala"
                                      "vala"
                                      ;; "kotlin"
 
@@ -85,6 +85,8 @@
 
                                      ;; "fribidi"
                                      ;; "bicon"
+
+                                     "groovy"
 
                                      "artanis"
                                      "doxygen"))

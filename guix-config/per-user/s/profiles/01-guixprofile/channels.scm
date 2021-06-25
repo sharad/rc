@@ -35,9 +35,14 @@
 
 (define %guix-more-channels (list (channel (name 'guix-more)
                                            (url "https://framagit.org/tyreunom/guix-more.git"))))
+
+;; (define %guix-more-channels (list (channel (name 'guix-more)
+;;                                            (branch "few-fixes")
+;;                                            (url "https://framagit.org/gu1/guix-more.git"))))
+
 
 
-(define %local-channels (append ;; %guix-more-channels
+(define %local-channels (append %guix-more-channels
                                 %nonguix-channels
                                 %guix-lotus-channels
                                 %local-default-channels))
