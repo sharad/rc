@@ -5,7 +5,7 @@
 (use-modules (lotus packages cdesktopenv))
 
 (define %lotus-text-package-names
-  (list "jupyter" 
+  (list "jupyter"
         "unrar"))
 ;; "fribidi"
 ;; "bicon"

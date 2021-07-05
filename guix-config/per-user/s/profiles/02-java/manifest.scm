@@ -13,7 +13,9 @@
 ;; (use-package-modules scheme java base)
 
 (define %lotus-java-package-names
-  (list ;; "maven"
+  (list "scala"
+        "sbt"
+        ;; "maven"
         ;; "maven-compact"
         "java-picocli"))
 

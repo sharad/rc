@@ -223,7 +223,7 @@
 
                                                 "lsh"
 
-                                                "esmtp"
+                                                ;; "esmtp"
 
                                                 "enscript"
 

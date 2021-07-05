@@ -10,6 +10,7 @@
         "gst-plugins-bad"
         "gst-plugins-ugly"
         "gst-libav"
+        "cdesktopenv"
         "gst123"
         "gstreamer"
         "openh264"
