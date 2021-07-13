@@ -16,7 +16,7 @@ function main()
     # echo 0 ${args[0]}
     # echo 1 ${args[1]}
     # echo ${args[*]}
-    # exit 
+    # exit
 
     CURR_BRANCH=$(git rev-parse --abbrev-ref HEAD)
     if [ "HEAD" != "$CURR_BRANCH" ]
@@ -59,6 +59,8 @@ function main()
                     running git checkout $BRANCH_MERGE
                     running $pgm $@
                     running git checkout $CURR_BRANCH
+                else
+                    echo no checkout
                 fi
             fi # if [ $force ]
             running git pull -v --rebase $BRANCH_REMOTE $BRANCH_MERGE

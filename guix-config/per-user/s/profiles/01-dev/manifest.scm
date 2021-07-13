@@ -91,7 +91,6 @@
                                      "artanis"
                                      "doxygen"))
 
-
 (define %lotus-dev-emacs-name (list "emacs-emacsql-sqlite3"
                                     "emacs-lsp-ui"
                                     "emacs-lsp-treemacs"
