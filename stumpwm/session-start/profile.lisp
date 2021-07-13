@@ -79,10 +79,10 @@
       (format nil "~a" current)))
 
   (profile-add :cprofile
-               '(:map . "~/.Xmodmaps/xmodmaprc-normal-but-super")
+               '(:map "~/.Xmodmaps/base-map" "~/.Xmodmaps/xmodmaprc-normal-but-super")
                '(:cmd "python -c 'from ctypes import *; X11 = cdll.LoadLibrary(\"libX11.so.6\"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'" "synclient TouchpadOff=0"))
   (profile-add :myprofile
-               '(:map . "~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt")
+               '(:map "~/.Xmodmaps/base-map" "~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt")
                '(:cmd "python -c 'from ctypes import *; X11 = cdll.LoadLibrary(\"libX11.so.6\"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'" "synclient TouchpadOff=1")))
 
 

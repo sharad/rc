@@ -87,6 +87,10 @@ fi
 
 if whence -p xmodmap >& /dev/null
 then
+    if [ -e ~/.Xmodmaps/base-map ]
+    then
+        xmodmap ~/.Xmodmaps/base-map 2>&1
+    fi
     if [ -e ~/.xmodmaprc  ]
     then
         xmodmap ~/.xmodmaprc >&/dev/null >> ~/.xsession-errors 2>&1
